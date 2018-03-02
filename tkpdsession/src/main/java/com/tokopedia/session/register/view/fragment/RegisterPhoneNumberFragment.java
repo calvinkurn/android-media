@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
@@ -49,6 +52,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     TextView nextButton;
     TextView message;
     TextView errorText;
+    TextView bottomInfo;
 
     TkpdProgressDialog progressDialog;
 
@@ -94,19 +98,44 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
         errorText = view.findViewById(R.id.error);
+        bottomInfo = view.findViewById(R.id.botton_info);
         prepareView();
         presenter.attachView(this);
         return view;
     }
 
     private void prepareView() {
+
+        phoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (isValidNumber(charSequence.toString())) {
+                    enableButton(nextButton);
+                } else  {
+                    disableButton(nextButton);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if (isValidNumber(v.getText().toString())) {
 //                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-                    presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
+                        presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
+                    }
                     handled = true;
                 }
                 return handled;
@@ -116,11 +145,25 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                errorText.setText("");
 //                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
+
+        bottomInfo.setLinkTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+    }
+
+    public boolean isValidNumber(String phoneNumber) {
+        if (phoneNumber.length() == 0) {
+            errorText.setText(getResources().getString(R.string.error_input_phone_number));
+            return false;
+        }
+        if (phoneNumber.length() < 8) {
+            errorText.setText(getResources().getString(R.string.error_char_count_under));
+            return false;
+        }
+        errorText.setText("");
+        return true;
     }
 
     @Override
@@ -261,4 +304,17 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         super.onDestroy();
         presenter.detachView();
     }
+
+    private void enableButton(TextView button) {
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setEnabled(true);
+    }
+
+    private void disableButton(TextView button) {
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        button.setEnabled(true);
+    }
+
 }

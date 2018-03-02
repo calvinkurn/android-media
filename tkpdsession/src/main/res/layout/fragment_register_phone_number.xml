@@ -6,19 +6,7 @@
               android:orientation="vertical"
               android:background="@color/white"
               android:padding="@dimen/padding_activity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="8sp"
-        android:text="@string/register_with_phone_number"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/text_size_xlarge"
-        tools:text="Masuk dengan nomor ponsel"
-        android:textStyle="bold"
-        />
-
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,7 +59,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/margin_sm"
-        android:background="@drawable/green_button_rounded"
+        android:background="@drawable/bg_button_enable"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/register"
@@ -81,4 +69,16 @@
         android:textStyle="bold"
         />
 
+    <TextView
+        android:id="@+id/botton_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        android:textColor="@color/black_38"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:text="@string/string_bottom_info"
+        tools:text="@string/string_bottom_info"
+        />
 </LinearLayout>
