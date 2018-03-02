@@ -125,7 +125,7 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -151,23 +151,23 @@
                 android:layout_marginRight="@dimen/new_margin_med"
                 android:layout_marginTop="@dimen/margin_small"
                 android:lines="1"
-                android:minWidth="25dp"
                 android:singleLine="true"
                 android:text="@string/home_header_tokopoint_new_label" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/container_action_tokopoint"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:visibility="gone"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/card_view_margin"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/padding_vs"
                 android:paddingTop="@dimen/padding_vs"
@@ -186,7 +186,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone"
-                    tools:text="90 Poin"
+                    tools:text="900000000000000000 Poin"
                     tools:visibility="visible" />
 
                 <TextView
@@ -201,7 +201,7 @@
                     android:textSize="12sp"
                     android:visibility="gone"
                     tools:text="Silver Member"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_btn_action_tokopoint"
