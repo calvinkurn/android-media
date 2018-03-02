@@ -9,12 +9,12 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 
 public class VoteAnnouncementViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
-    public static final int VOTE_ACTIVE = 1;
-    public static final int VOTE_FINISHED = 2;
+    public static final String POLLING_START = "polling_start";
+    public static final String POLLING_FINISHED = "polling_finished";
 
-    private final int voteType;
+    private final String voteType;
 
-    public VoteAnnouncementViewModel(String message, int voteType, long createdAt,
+    public VoteAnnouncementViewModel(String message, String voteType, long createdAt,
                                      long updatedAt, String messageId, String senderId,
                                      String senderName, String senderIconUrl,
                                      boolean isInfluencer, boolean isAdministrator) {
@@ -23,7 +23,7 @@ public class VoteAnnouncementViewModel extends BaseChatViewModel implements Visi
         this.voteType = voteType;
     }
 
-    public int getVoteType() {
+    public String getVoteType() {
         return voteType;
     }
 

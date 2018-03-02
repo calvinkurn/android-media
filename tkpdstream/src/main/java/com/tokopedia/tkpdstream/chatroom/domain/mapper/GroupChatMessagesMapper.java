@@ -2,16 +2,20 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.util.TimeConverter;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +52,7 @@ public class GroupChatMessagesMapper {
                 && ((FileMessage) message).getType().toLowerCase().contains(IMAGE)
                 && !TextUtils.isEmpty(((FileMessage) message).getUrl())) {
             return mapToImageMessage((FileMessage) message);
-        }else{
+        } else {
             return null;
         }
     }
@@ -68,8 +72,32 @@ public class GroupChatMessagesMapper {
     }
 
     private Visitable mapToUserMessage(UserMessage message) {
-        return new ChatViewModel(
-                message.getMessage(),
+        switch (message.getCustomType()) {
+            case VoteAnnouncementViewModel.POLLING_START:
+                return mapCustomData(message,
+                        message.getData().replace("\\\"", "\""));
+            default:
+                return new ChatViewModel(
+                        message.getMessage(),
+                        message.getCreatedAt(),
+                        message.getUpdatedAt(),
+                        String.valueOf(message.getMessageId()),
+                        message.getSender().getUserId(),
+                        message.getSender().getNickname(),
+                        message.getSender().getProfileUrl(),
+                        false,
+                        false
+                );
+        }
+    }
+
+    private VoteAnnouncementViewModel mapCustomData(UserMessage message, String json) {
+        Gson gson = new Gson();
+        ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
+
+        return new VoteAnnouncementViewModel(
+                pojo.getDescription(),
+                message.getCustomType(),
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId()),
@@ -77,7 +105,7 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                false
+                true
         );
     }
 
@@ -87,21 +115,6 @@ public class GroupChatMessagesMapper {
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId())
-        );
-    }
-
-    private Visitable mapToVoteAnnouncement(UserMessage message) {
-        return new VoteAnnouncementViewModel(
-                message.getMessage(),
-                1,
-                message.getCreatedAt(),
-                message.getUpdatedAt(),
-                String.valueOf(message.getMessageId()),
-                message.getSender().getUserId(),
-                message.getSender().getNickname(),
-                message.getSender().getProfileUrl(),
-                false,
-                true
         );
     }
 
