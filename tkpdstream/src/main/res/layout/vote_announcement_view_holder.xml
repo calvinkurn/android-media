@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_header"
         android:layout_toRightOf="@id/avatar"
+        android:layout_toEndOf="@id/avatar"
         android:padding="@dimen/space_average"
         android:layout_marginLeft="@dimen/space_small"
         android:layout_marginStart="@dimen/space_small"

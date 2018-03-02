@@ -818,7 +818,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
-        ((SimpleItemAnimator) voteRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         voteAdapter.addList(voteInfoViewModel.getListOption());
         voteStatus.setText(voteInfoViewModel.getVoteStatus());
         voteTitle.setText(voteInfoViewModel.getTitle());
