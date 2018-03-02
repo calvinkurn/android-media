@@ -16,13 +16,13 @@
 
     <ImageView
         android:id="@+id/close_button"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_marginLeft="@dimen/new_margin_small"
-        android:layout_marginStart="@dimen/new_margin_small"
-        android:layout_marginTop="@dimen/new_margin_small"
-        android:padding="@dimen/new_margin_med"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        android:paddingLeft="@dimen/space_sm"
+        android:paddingRight="@dimen/space_sm"
+        android:paddingTop="@dimen/space_med"
+        android:paddingBottom="@dimen/space_med"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_close"/>
 

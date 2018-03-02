@@ -8,17 +8,25 @@ import android.view.View;
  * @author by StevenFredian on 27/02/18.
  */
 
-public class VoteSpaceItemDecoration extends RecyclerView.ItemDecoration {
+public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
     private int spanCount;
     private int space;
+    private boolean includeEdge;
 
-    public VoteSpaceItemDecoration(int verticalSpaceHeight) {
+    public SpaceItemDecoration(int verticalSpaceHeight) {
         this.space = verticalSpaceHeight;
         spanCount = 0;
+        includeEdge = true;
     }
 
-    public VoteSpaceItemDecoration(int dimension, int spanCount) {
+    public SpaceItemDecoration(int verticalSpaceHeight, boolean includeEdge) {
+        this.space = verticalSpaceHeight;
+        spanCount = 0;
+        this.includeEdge = includeEdge;
+    }
+
+    public SpaceItemDecoration(int dimension, int spanCount) {
         this.space = dimension;
         this.spanCount = spanCount;
     }
@@ -27,8 +35,13 @@ public class VoteSpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         if (spanCount == 0) {
-            if (parent.getChildAdapterPosition(view) != 0) {
-                outRect.top = space;
+            if(includeEdge){
+                outRect.top = space/2;
+                outRect.bottom = space/2;
+            }else {
+                if (parent.getChildAdapterPosition(view) != 0) {
+                    outRect.top = space;
+                }
             }
         }else {
             if (parent.getChildAdapterPosition(view) == 0) {

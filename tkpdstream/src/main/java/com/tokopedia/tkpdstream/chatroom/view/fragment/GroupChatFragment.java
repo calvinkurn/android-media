@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -22,7 +21,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +32,6 @@ import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -60,7 +57,7 @@ import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.ShareData;
 import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
-import com.tokopedia.tkpdstream.chatroom.view.VoteSpaceItemDecoration;
+import com.tokopedia.tkpdstream.chatroom.view.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
@@ -287,6 +284,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(adapter);
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
+        chatRecyclerView.addItemDecoration(itemDecoration);
 
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
@@ -427,7 +426,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onResume() {
         super.onResume();
 
-        progressBarWithTimer.restart();
+//        progressBarWithTimer.restart();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
                 .CONNECTION_HANDLER_ID, new
@@ -577,7 +576,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-
         if (hasPoll && voteInfoViewModel != null) {
             showVoteLayout(voteInfoViewModel);
         } else {
@@ -801,12 +799,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         LinearLayoutManager voteLayoutManager;
         RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteType().equals(VoteViewModel.IMAGE_TYPE)) {
+        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
-            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med), false);
         }
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);

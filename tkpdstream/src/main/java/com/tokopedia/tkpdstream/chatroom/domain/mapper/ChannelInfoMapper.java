@@ -67,6 +67,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                             activePollPojo.getOptions()),
                     String.valueOf(activePollPojo.getStatistic().getTotalVoter()),
                     activePollPojo.getPollType(),
+                    getVoteOptionType(activePollPojo.getOptionType()),
                     activePollPojo.getStatus(),
                     activePollPojo.isIsAnswered(),
                     "INFO YG PERLU DI UPDATE",
@@ -125,5 +126,12 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         } else {
             return VoteViewModel.DEFAULT;
         }
+    }
+
+    private String getVoteOptionType(String type) {
+        if (type.equalsIgnoreCase(OPTION_IMAGE)) {
+            return VoteViewModel.IMAGE_TYPE;
+        }
+        return VoteViewModel.BAR_TYPE;
     }
 }

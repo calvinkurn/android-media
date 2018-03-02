@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_editor_absoluteY="81dp">
+    android:layout_height="wrap_content">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
         android:fontFamily="sans-serif"
         android:textAllCaps="true"
         android:textColor="@color/font_black_disabled_38"
@@ -28,13 +27,10 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginEnd="@dimen/new_margin_small"
         android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginRight="@dimen/new_margin_small"
         android:layout_marginStart="@dimen/new_margin_med"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_time"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_below="@id/header_time"
+        android:layout_marginTop="@dimen/margin_vs"
         tools:src="@color/background_notification"/>
 
     <include
@@ -44,18 +40,16 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/space_small"
         android:layout_marginStart="@dimen/space_small"
-        android:layout_marginTop="@dimen/space_small"
+        android:layout_below="@id/header_time"
+        android:layout_toRightOf="@id/avatar"
         android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/header_time" />
+        android:layout_toEndOf="@id/avatar" />
 
     <TextView
         android:id="@+id/message"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nickname"
         android:layout_toEndOf="@id/avatar"
-        android:layout_toRightOf="@id/avatar"
         android:fontFamily="sans-serif"
         android:textColor="@color/font_black_primary_70"
         android:textColorLink="@color/font_black_primary_70"
@@ -63,9 +57,9 @@
         android:textStyle="normal"
         android:visibility="visible"
         tools:text="Wuuu baik om! Go Brazil go!"
+        android:layout_below="@id/chat_header"
+        android:layout_toRightOf="@id/avatar"
         android:layout_marginLeft="@dimen/space_small"
-        android:layout_marginStart="@dimen/space_small"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/chat_header"/>
+        android:layout_marginStart="@dimen/space_small"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
