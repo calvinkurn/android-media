@@ -9,10 +9,14 @@ import com.google.gson.JsonParser;
 import com.tokopedia.transaction.checkout.data.entity.request.MultipleAddressRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.transaction.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -53,6 +57,67 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         submitMultipleAddressUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());
+    }
+
+    @Override
+    public List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
+            CartListData cartListData,
+            RecipientAddressModel recipientAddressModel) {
+        List<CartItemData> cartItemDataList = cartListData.getCartItemDataList();
+        List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
+        for (int i = 0; i < cartItemDataList.size(); i++) {
+            MultipleAddressAdapterData addressAdapterData = new MultipleAddressAdapterData();
+            addressAdapterData.setItemListData(
+                    generateinitialItemData(
+                            i,
+                            recipientAddressModel,
+                            cartItemDataList.get(i).getOriginData(),
+                            cartItemDataList.get(i).getUpdatedData())
+            );
+            addressAdapterData.setProductImageUrl(
+                    cartItemDataList.get(i).getOriginData().getProductImage()
+            );
+            addressAdapterData.setProductName(
+                    cartItemDataList.get(i).getOriginData().getProductName()
+            );
+            addressAdapterData.setProductPrice(
+                    cartItemDataList.get(i).getOriginData().getPriceFormatted()
+            );
+            addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
+            adapterModels.add(addressAdapterData);
+        }
+        return adapterModels;
+    }
+
+    private List<MultipleAddressItemData> generateinitialItemData(
+            int cartPosition,
+            RecipientAddressModel shipmentRecipientModel,
+            CartItemData.OriginData originData,
+            CartItemData.UpdatedData updatedData) {
+        List<MultipleAddressItemData> initialItemData = new ArrayList<>();
+        MultipleAddressItemData addressData = new MultipleAddressItemData();
+        addressData.setCartPosition(cartPosition);
+        addressData.setAddressPosition(0);
+        addressData.setCartId(String.valueOf(originData.getCartId()));
+        addressData.setProductId(originData.getProductId());
+        addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
+        addressData.setProductWeight(String.valueOf(originData.getWeightFormatted()));
+        addressData.setProductNotes(updatedData.getRemark());
+        addressData.setAddressId(shipmentRecipientModel.getId());
+        addressData.setAddressTitle(shipmentRecipientModel.getRecipientName());
+        addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
+        addressData.setAddressProvinceName(shipmentRecipientModel.getAddressProvinceName());
+        addressData.setAddressPostalCode(shipmentRecipientModel.getAddressPostalCode());
+        addressData.setAddressCityName(shipmentRecipientModel.getAddressCityName());
+        addressData.setAddressStreet(shipmentRecipientModel.getAddressStreet());
+        addressData.setAddressCountryName(shipmentRecipientModel.getAddressCountryName());
+        addressData.setRecipientPhoneNumber(shipmentRecipientModel.getRecipientPhoneNumber());
+        addressData.setDestinationDistrictId(shipmentRecipientModel.getDestinationDistrictId());
+        addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
+        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMinQuantity(originData.getMinimalQtyOrder());
+        initialItemData.add(addressData);
+        return initialItemData;
     }
 
     @Override

@@ -173,7 +173,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.notesField.setText(itemData.getProductNotes());
         itemViewHolder.addressTitle.setText(itemData.getAddressTitle());
         itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
-        itemViewHolder.address.setText(itemData.getAddress());
+        itemViewHolder.address.setText(itemData.getAddressStreet()
+                + ", " + itemData.getAddressCityName()
+                + ", " + itemData.getAddressProvinceName()
+                + ", " + itemData.getRecipientPhoneNumber());
         itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
@@ -358,7 +361,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
 
-        private LinearLayout multipleAddressPromoSuggestionLayout;
+        private ViewGroup multipleAddressPromoSuggestionLayout;
         private VoucherCartHachikoView voucherCartHachikoView;
         private ImageView btnClose;
         private TextView tvDesc;

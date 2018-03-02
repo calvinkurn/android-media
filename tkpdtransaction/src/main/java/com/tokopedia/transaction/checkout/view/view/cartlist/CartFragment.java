@@ -24,6 +24,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -43,6 +44,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.Recipi
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
@@ -52,6 +54,7 @@ import com.tokopedia.transaction.checkout.view.di.component.DaggerCartListCompon
 import com.tokopedia.transaction.checkout.view.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 
@@ -229,12 +232,27 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdCartCheckoutGetProductDetailIntent(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(cartItemHolderData.getCartItemData().getOriginData().getProductId())
+                            .setProductImage(cartItemHolderData.getCartItemData().getOriginData().getProductImage())
+                            .setProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName())
+                            .setProductPrice(cartItemHolderData.getCartItemData().getOriginData().getPriceFormatted())
+                            .build()
+            ));
+        }
     }
 
     @Override
     public void onCartItemShopNameClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivity(((ICartCheckoutModuleRouter) getActivity().getApplication()).tkpdCartCheckoutGetShopInfoIntent(
+                    getActivity(),
+                    cartItemHolderData.getCartItemData().getOriginData().getShopId()
+            ));
+        }
     }
 
     @Override
@@ -289,6 +307,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onCartItemQuantityFormEdited() {
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
+    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+        showDeleteCartItemDialog(getCartDataList(), new ArrayList<CartItemData>());
     }
 
     @Override
@@ -354,6 +377,17 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
+        cartListAdapter.resetData();
+        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setPromoNotActive();
+        cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
+        if (cartListData.isError()) {
+            cartListAdapter.addCartTickerError(
+                    new CartItemTickerErrorHolderData.Builder()
+                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
+                            .build()
+            );
+        }
         if (cartListData.getCartPromoSuggestion().isVisible()) {
             cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
         }
@@ -603,10 +637,18 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderLoadGetCartDataFinish() {
+        cartListAdapter.resetData();
         bottomLayout.setVisibility(View.VISIBLE);
     }
 
-    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
+    @Override
+    public void renderCartTickerError(CartTickerErrorData cartTickerErrorData) {
+        cartListAdapter.addCartTickerError(new CartItemTickerErrorHolderData.Builder()
+                .cartTickerErrorData(cartTickerErrorData)
+                .build());
+    }
+
+    void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
         DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
                     @Override
@@ -621,12 +663,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
                     @Override
                     public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-
+                        dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
                     }
 
                     @Override
                     public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-
+                        dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
                     }
                 });
 

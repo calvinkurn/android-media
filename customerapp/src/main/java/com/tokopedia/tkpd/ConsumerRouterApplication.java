@@ -80,6 +80,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -1414,5 +1415,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         new VoucherCouponMapper(new MapperUtil())
                 );
         return getCouponListCartMarketPlaceUseCase.createObservable(requestParams);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetProductDetailIntent(Context context, ProductPass productPass) {
+        return ProductInfoActivity.createInstance(context, productPass);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetShopInfoIntent(Context context, String shopId) {
+        Bundle bundle = ShopInfoActivity.createBundle(shopId, "");
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

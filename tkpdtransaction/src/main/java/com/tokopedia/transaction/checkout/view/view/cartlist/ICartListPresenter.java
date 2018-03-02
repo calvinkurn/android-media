@@ -16,6 +16,8 @@ public interface ICartListPresenter {
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
+    void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList);
+
     void processToShipmentSingleAddress();
 
     void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
@@ -25,4 +27,5 @@ public interface ICartListPresenter {
     void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
     void processToShipmentForm();
+
 }

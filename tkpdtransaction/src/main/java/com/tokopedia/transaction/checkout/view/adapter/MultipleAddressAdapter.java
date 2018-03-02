@@ -87,7 +87,7 @@ public class MultipleAddressAdapter
                     new MultipleAddressItemAdapter(data, data.getItemListData(), this)
             );
             itemViewHolder.addNewShipmentAddressButton.setOnClickListener(
-                    onAddAddressClickedListener(data, data.getItemListData().get(0))
+                    onAddAddressClickedListener(data.getItemListData().size(), data, data.getItemListData().get(0))
             );
             if (position == FIRST_ITEM_POSITION) setShowCase(itemViewHolder.context,
                     itemViewHolder.addNewShipmentAddressButton);
@@ -176,12 +176,13 @@ public class MultipleAddressAdapter
     }
 
     private View.OnClickListener onAddAddressClickedListener(
+            final int latestPositionToAdd,
             final MultipleAddressAdapterData data,
             final MultipleAddressItemData firstItemData) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onAddNewShipmentAddress(data, firstItemData);
+                listener.onAddNewShipmentAddress(latestPositionToAdd, data, firstItemData);
             }
         };
     }
@@ -193,7 +194,8 @@ public class MultipleAddressAdapter
         void onItemChoosen(MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
-        void onAddNewShipmentAddress(MultipleAddressAdapterData data,
+        void onAddNewShipmentAddress(int addressPositionToAdd,
+                                     MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
     }
 
@@ -235,4 +237,7 @@ public class MultipleAddressAdapter
                 .build();
     }
 
+    public List<MultipleAddressAdapterData> getAddressData() {
+        return addressData;
+    }
 }
