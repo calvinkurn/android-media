@@ -19,8 +19,8 @@
             android:orientation="vertical"
             app:cardBackgroundColor="@color/cardview_light_background"
             app:cardCornerRadius="3dp"
-            app:cardElevation="@dimen/card_channel_elevation"
-            app:cardPreventCornerOverlap="false">>
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false">
 
             <ImageView
                 android:id="@+id/product_image"
