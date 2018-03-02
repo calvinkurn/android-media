@@ -77,6 +77,6 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
                 temp.setSelected(VoteViewModel.UNSELECTED);
             }
         }
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, list.size());
     }
 }

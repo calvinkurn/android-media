@@ -11,10 +11,7 @@
     <RelativeLayout
         android:id="@+id/vote_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/space_med"
-        android:paddingTop="@dimen/space_med"
-        android:visibility="gone">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,14 +33,16 @@
             <TextView
                 android:id="@+id/vote_status"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/vote_has_ended"
                 android:textAllCaps="true"
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/font_micro"
-                android:textStyle="normal"/>
+
+                android:textStyle="normal" android:paddingTop="@dimen/space_med"
+                android:paddingBottom="@dimen/space_med"/>
 
             <Space
                 android:layout_width="@dimen/space_small"
@@ -60,8 +59,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="visible"
+                android:paddingTop="@dimen/space_average"
+                android:paddingBottom="@dimen/space_average"
+                android:visibility="gone">
 
                 <View
                     android:layout_width="@dimen/space_micro"
@@ -73,8 +74,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_choose"/>
-
+                    app:srcCompat="@drawable/ic_choose" />
                 <Space
                     android:layout_width="@dimen/space_mini"
                     android:layout_height="match_parent"

@@ -1,15 +1,19 @@
 package com.tokopedia.tkpdstream.vote.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -26,7 +30,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
     private ProgressBar progressBar;
     private TextView option;
     private TextView percent;
-    private ImageView imageView;
+    private SquareImageView imageView;
     private View icon;
     private View percentLayout;
 
@@ -65,7 +69,13 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
 
         option.setText(element.getOption());
         percent.setText(String.valueOf(element.getPercentage()));
-        ImageHandler.loadImage(imageView.getContext(), imageView, element.getUrl(), R.drawable.ic_loading_image);
+        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
+
+            @Override
+            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
+                imageView.setImageBitmap(arg0);
+            }
+        });
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

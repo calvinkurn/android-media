@@ -99,8 +99,6 @@ public class ProgressBarWithTimer extends FrameLayout {
             public void onTick(long l) {
                 long now = System.currentTimeMillis() / 1000L;
                 text.setText(formatMilliSecondsToTime(l));
-//                int percent = (int) ((endTime-now)*100/(endTime-startTime));
-//                progressBar.setProgress(Math.abs(percent-100));
                 int percent = (int) ((now - startTime) * 100 / (endTime - startTime));
                 progressBar.setProgress(Math.abs(percent));
             }
@@ -133,5 +131,9 @@ public class ProgressBarWithTimer extends FrameLayout {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    public void restart(){
+        setTimer(startTime, endTime);
     }
 }
