@@ -9,13 +9,14 @@ import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
-import com.tokopedia.tkpdstream.common.util.TimeConverter;
-
-import org.json.JSONObject;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,11 @@ import javax.inject.Inject;
 public class GroupChatMessagesMapper {
 
     private static final String IMAGE = "image";
+
+    private static final int DEFAULT_NO_POLL = 0;
+    private static final String OPTION_TEXT = "Text";
+    private static final String OPTION_IMAGE = "Image";
+
 
     @Inject
     public GroupChatMessagesMapper() {
@@ -44,10 +50,10 @@ public class GroupChatMessagesMapper {
     }
 
     private Visitable mapMessage(BaseMessage message) {
-        if (message instanceof AdminMessage) {
-            return mapToAdminMessage((AdminMessage) message);
-        } else if (message instanceof UserMessage) {
+        if (message instanceof UserMessage) {
             return mapToUserMessage((UserMessage) message);
+        } else if (message instanceof AdminMessage) {
+            return mapToAnnouncement((AdminMessage) message);
         } else if (message instanceof FileMessage
                 && ((FileMessage) message).getType().toLowerCase().contains(IMAGE)
                 && !TextUtils.isEmpty(((FileMessage) message).getUrl())) {
@@ -74,24 +80,63 @@ public class GroupChatMessagesMapper {
     private Visitable mapToUserMessage(UserMessage message) {
         switch (message.getCustomType()) {
             case VoteAnnouncementViewModel.POLLING_START:
-                return mapCustomData(message,
+            case VoteAnnouncementViewModel.POLLING_FINISHED:
+            case VoteAnnouncementViewModel.POLLING_CANCEL:
+            case VoteAnnouncementViewModel.POLLING_UPDATE:
+                return mapToPollingViewModel(message,
                         message.getData().replace("\\\"", "\""));
+            case ChatViewModel.ADMIN_MESSAGE:
+                return mapToAdminChat(message);
+            case ImageViewModel.ADMIN_ANNOUNCEMENT:
+                return mapToAdminImageChat(message);
             default:
-                return new ChatViewModel(
-                        message.getMessage(),
-                        message.getCreatedAt(),
-                        message.getUpdatedAt(),
-                        String.valueOf(message.getMessageId()),
-                        message.getSender().getUserId(),
-                        message.getSender().getNickname(),
-                        message.getSender().getProfileUrl(),
-                        false,
-                        false
-                );
+                return mapToUserChat(message);
         }
     }
 
-    private VoteAnnouncementViewModel mapCustomData(UserMessage message, String json) {
+    private Visitable mapToUserChat(UserMessage message) {
+        return new ChatViewModel(
+                message.getMessage(),
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                false
+        );
+    }
+
+    private Visitable mapToAdminImageChat(UserMessage message) {
+        return new ImageViewModel(
+                "",
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true
+        );
+    }
+
+    private Visitable mapToAdminChat(UserMessage message) {
+        return new ChatViewModel(
+                message.getMessage(),
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true
+        );
+    }
+
+    private VoteAnnouncementViewModel mapToPollingViewModel(UserMessage message, String json) {
         Gson gson = new Gson();
         ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
 
@@ -105,11 +150,94 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                true
+                true,
+                mappingToVoteInfoViewModel(pojo)
         );
     }
 
-    private AdminAnnouncementViewModel mapToAdminMessage(AdminMessage message) {
+
+    private boolean hasPoll(ActivePollPojo activePoll) {
+        return activePoll != null
+                && activePoll.getStatistic() != null
+                && activePoll.getPollId() != DEFAULT_NO_POLL;
+    }
+
+    private VoteInfoViewModel mappingToVoteInfoViewModel(ActivePollPojo activePollPojo) {
+        if (hasPoll(activePollPojo)) {
+
+            return new VoteInfoViewModel(
+                    String.valueOf(activePollPojo.getPollId()),
+                    activePollPojo.getQuestion(),
+                    mapToListOptions(activePollPojo.isIsAnswered(),
+                            activePollPojo.getOptionType(),
+                            activePollPojo.getStatistic().getStatisticOptions(),
+                            activePollPojo.getOptions()),
+                    String.valueOf(activePollPojo.getStatistic().getTotalVoter()),
+                    activePollPojo.getPollType(),
+                    getVoteOptionType(activePollPojo.getOptionType()),
+                    activePollPojo.getStatus(),
+                    activePollPojo.isIsAnswered(),
+                    "INFO YG PERLU DI UPDATE",
+                    "Belon ada",
+                    activePollPojo.getStartTime(),
+                    activePollPojo.getEndTime()
+            );
+        } else {
+            return null;
+        }
+    }
+
+
+    private List<Visitable> mapToListOptions(boolean isAnswered, String optionType,
+                                             List<StatisticOption> statisticOptions,
+                                             List<Option> options) {
+        List<Visitable> list = new ArrayList<>();
+        for (int i = 0; i < statisticOptions.size(); i++) {
+
+            StatisticOption statisticOptionPojo = statisticOptions.get(i);
+            Option optionPojo = options.get(i);
+
+            if (optionType.equalsIgnoreCase(OPTION_TEXT)) {
+                list.add(new VoteViewModel(
+                        String.valueOf(statisticOptionPojo.getOptionId()),
+                        statisticOptionPojo.getOption(),
+                        statisticOptionPojo.getPercentage(),
+                        checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
+                ));
+            } else if (optionType.equalsIgnoreCase(OPTION_IMAGE)) {
+                list.add(new VoteViewModel(
+                        String.valueOf(statisticOptionPojo.getOptionId()),
+                        statisticOptionPojo.getOption(),
+                        optionPojo.getImageOption().trim(),
+                        statisticOptionPojo.getPercentage(),
+                        checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
+                ));
+            }
+
+        }
+
+        return list;
+    }
+
+
+    private int checkIfSelected(boolean isAnswered, boolean isSelected) {
+        if (isAnswered && isSelected) {
+            return VoteViewModel.SELECTED;
+        } else if (isAnswered) {
+            return VoteViewModel.UNSELECTED;
+        } else {
+            return VoteViewModel.DEFAULT;
+        }
+    }
+
+    private String getVoteOptionType(String type) {
+        if (type.equalsIgnoreCase(OPTION_IMAGE)) {
+            return VoteViewModel.IMAGE_TYPE;
+        }
+        return VoteViewModel.BAR_TYPE;
+    }
+
+    private AdminAnnouncementViewModel mapToAnnouncement(AdminMessage message) {
         return new AdminAnnouncementViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),

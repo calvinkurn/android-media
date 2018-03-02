@@ -9,6 +9,7 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 
 public class ImageViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
+    public static final String ADMIN_ANNOUNCEMENT = "announcement";
     private String contentImageUrl;
 
     public ImageViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,

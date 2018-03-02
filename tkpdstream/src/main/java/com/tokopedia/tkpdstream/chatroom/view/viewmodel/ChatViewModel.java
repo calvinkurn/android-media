@@ -9,6 +9,8 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 
 public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
+    public static final String ADMIN_MESSAGE = "chat";
+
     public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,
                          String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {

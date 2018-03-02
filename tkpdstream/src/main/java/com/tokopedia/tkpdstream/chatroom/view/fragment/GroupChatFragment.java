@@ -69,6 +69,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -469,7 +470,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
         this.mPrevMessageListQuery = previousMessageListQuery;
         adapter.setList(listChat);
-        if(!listChat.isEmpty()) {
+        if (!listChat.isEmpty()) {
             adapter.setCursor(listChat.get(0));
         }
         adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
@@ -649,10 +650,24 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onMessageReceived(Visitable messageItem) {
+        if (messageItem instanceof VoteAnnouncementViewModel) {
+            handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
+        }
+
         adapter.addIncomingMessage(messageItem);
         adapter.notifyItemInserted(0);
 
         scrollToBottomWhenPossible();
+    }
+
+    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
+        if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)
+                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
+            showVoteLayout(messageItem.getVoteInfoViewModel());
+        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)
+                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_FINISHED)) {
+            hideVoteLayout();
+        }
     }
 
     private void scrollToBottomWhenPossible() {
@@ -861,12 +876,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void showLoading(){
+    public void showLoading() {
         loading.setVisibility(View.VISIBLE);
         main.setVisibility(View.GONE);
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         loading.setVisibility(View.GONE);
         main.setVisibility(View.VISIBLE);
     }
