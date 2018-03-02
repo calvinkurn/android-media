@@ -29,6 +29,7 @@ public class MultipleAddressAdapterData implements Parcelable{
         productImageUrl = in.readString();
         productName = in.readString();
         productPrice = in.readString();
+        itemListData = in.createTypedArrayList(MultipleAddressItemData.CREATOR);
     }
 
     public static final Creator<MultipleAddressAdapterData> CREATOR = new Creator<MultipleAddressAdapterData>() {
@@ -83,6 +84,7 @@ public class MultipleAddressAdapterData implements Parcelable{
         this.itemListData = itemListData;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,5 +96,6 @@ public class MultipleAddressAdapterData implements Parcelable{
         parcel.writeString(productImageUrl);
         parcel.writeString(productName);
         parcel.writeString(productPrice);
+        parcel.writeTypedList(itemListData);
     }
 }
