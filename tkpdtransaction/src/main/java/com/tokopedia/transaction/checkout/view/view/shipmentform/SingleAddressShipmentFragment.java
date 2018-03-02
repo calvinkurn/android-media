@@ -263,15 +263,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
-                                 RecipientAddressModel recipientAddressModel) {
+    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData;
         if (cartSellerItemModel.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = cartSellerItemModel.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(
-                    cartSellerItemModel, recipientAddressModel);
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
 
         startActivityForResult(ShipmentDetailActivity.createInstance(

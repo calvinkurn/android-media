@@ -5,10 +5,8 @@ import com.tokopedia.transaction.checkout.data.entity.response.rates.Product;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
-import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
@@ -24,16 +22,9 @@ import java.util.List;
 
 public class ShipmentRatesDataMapper {
 
-    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel,
-                                                    RecipientAddressModel recipientAddressModel) {
+    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        ShipmentCartData shipmentCartData = cartSellerItemModel.getShipmentCartData();
-        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
-        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
-        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
-        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
-        shipmentDetailData.setShipmentCartData(shipmentCartData);
+        shipmentDetailData.setShipmentCartData(cartSellerItemModel.getShipmentCartData());
         return shipmentDetailData;
     }
 
