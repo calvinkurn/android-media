@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
@@ -89,6 +92,11 @@ public class TopProfileActivity extends BaseEmptyActivity
     @Inject
     TopProfileActivityListener.Presenter presenter;
 
+    @DeepLink(SessionApplinkUrl.PROFILE)
+    public static Intent getCallingTopProfile(Context context, Bundle bundle) {
+        return TopProfileActivity.newInstance(context, bundle.getString(EXTRA_PARAM_USER_ID, ""));
+    }
+
     public static Intent newInstance(@NonNull Context context, @NonNull String userId) {
         Intent intent = new Intent(context, TopProfileActivity.class);
         Bundle bundle = new Bundle();
@@ -133,6 +141,10 @@ public class TopProfileActivity extends BaseEmptyActivity
     private void initVar() {
         if (getIntent().getExtras() != null) {
             userId = getIntent().getExtras().getString(EXTRA_PARAM_USER_ID, "");
+
+            if (TextUtils.isEmpty(userId)) {
+                throw new IllegalStateException("usedId can not be empty/null!");
+            }
         }
     }
 
