@@ -17,7 +17,7 @@ public class StatisticOption {
     private int voter;
     @SerializedName("percentage")
     @Expose
-    private int percentage;
+    private String percentage;
     @SerializedName("is_selected")
     @Expose
     private boolean isSelected;
@@ -46,11 +46,11 @@ public class StatisticOption {
         this.voter = voter;
     }
 
-    public int getPercentage() {
+    public String getPercentage() {
         return percentage;
     }
 
-    public void setPercentage(int percentage) {
+    public void setPercentage(String percentage) {
         this.percentage = percentage;
     }
 
