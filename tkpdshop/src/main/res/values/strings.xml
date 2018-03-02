@@ -59,6 +59,7 @@
     <string name="shop_info_filter_all_showcase">Semua Etalase</string>
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
     <string name="shop_info_label_share">Bagikan</string>
+    <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
 
 
 </resources>

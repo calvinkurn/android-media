@@ -101,8 +101,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
-                getView().onSuccessRemoveFromWishList(productId, aBoolean);
+            public void onNext(Boolean value) {
+                getView().onSuccessRemoveFromWishList(productId, value);
             }
         });
     }
