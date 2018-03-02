@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -117,7 +118,7 @@ public class SearchActivity extends DiscoveryActivity
     private OptionSearchFilter searchFilter;
     private TextView buttonReset;
     private View buttonClose;
-    private LinearLayout bottomSheetLayout;
+    private RelativeLayout bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
 
     private HashMap<String, Boolean> savedCheckedState = new HashMap<>();
