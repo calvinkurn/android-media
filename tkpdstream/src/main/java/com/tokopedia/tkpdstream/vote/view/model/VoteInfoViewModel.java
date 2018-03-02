@@ -35,16 +35,24 @@ public class VoteInfoViewModel {
         this.voted = voted;
         this.voteInfoString = voteInfoString;
         this.voteInfoUrl = voteInfoUrl;
-        this.startTime = 1519970400;
-        this.endTime = 1519981200;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public String getVoteOptionType() {
         return voteOptionType;
     }
 
+    public void setVoteOptionType(String voteOptionType) {
+        this.voteOptionType = voteOptionType;
+    }
+
     public String getVoteGiftType() {
         return voteGiftType;
+    }
+
+    public void setVoteGiftType(String voteGiftType) {
+        this.voteGiftType = voteGiftType;
     }
 
     public String getTitle() {
