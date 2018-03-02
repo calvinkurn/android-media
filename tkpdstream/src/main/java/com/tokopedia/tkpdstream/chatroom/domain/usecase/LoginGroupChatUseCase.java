@@ -20,6 +20,8 @@ public class LoginGroupChatUseCase {
         void onSuccessEnterChannel(OpenChannel openChannel);
 
         void onErrorEnterChannel(String errorMessage);
+
+        void onUserKicked(String errorMessage);
     }
 
     @Inject
@@ -28,7 +30,8 @@ public class LoginGroupChatUseCase {
 
     public void execute(final Context context, final String channelUrl,
                         String userId,
-                        final String userName, final String userAvatar, final LoginGroupChatListener listener) {
+                        final String userName, final String userAvatar,
+                        final LoginGroupChatListener listener) {
 
         SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
@@ -51,7 +54,12 @@ public class LoginGroupChatUseCase {
                         OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
                             @Override
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
-                                if (e != null) {
+                                if (e != null && e.getCode() == GroupChatErrorHandler
+                                        .CHANNEL_NOT_FOUND) {
+                                    listener.onUserKicked(GroupChatErrorHandler
+                                            .getSendBirdErrorMessage(context, e, false));
+                                    return;
+                                } else if (e != null) {
                                     listener.onErrorEnterChannel(GroupChatErrorHandler
                                             .getSendBirdErrorMessage(context, e, false));
                                     return;
@@ -61,9 +69,15 @@ public class LoginGroupChatUseCase {
 
                                     @Override
                                     public void onResult(SendBirdException e) {
-                                        if (e != null) {
+                                        if (e != null && e.getCode() == GroupChatErrorHandler
+                                                .USER_IS_BANNED) {
+                                            listener.onUserKicked(GroupChatErrorHandler
+                                                    .getSendBirdErrorMessage(context, e, false));
+                                            return;
+                                        } else if (e != null) {
                                             listener.onErrorEnterChannel(GroupChatErrorHandler
                                                     .getSendBirdErrorMessage(context, e, false));
+                                            return;
                                         }
 
                                         listener.onSuccessEnterChannel(openChannel);

@@ -78,7 +78,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         return view;
     }
 
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
         return swipeRefreshLayout;
     }
 
@@ -132,22 +133,17 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onSuccessGetChannelFirstTime(ChannelListViewModel channelListViewModel) {
-//        getAdapter().clearAllElements();
-//        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
         renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 
     @Override
     public void onSuccessGetChannel(ChannelListViewModel channelListViewModel) {
-//        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
-//        getAdapter().clearAllNonDataElement();
-//        getAdapter().addMoreData(channelListViewModel.getChannelViewModelList());
         renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 
     @Override
     public void onFailedGetChannel(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -169,6 +165,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onSuccessRefreshChannel(ChannelListViewModel channelListViewModel) {
         swipeRefreshLayout.setRefreshing(false);
+        getAdapter().clearAllElements();
         renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 

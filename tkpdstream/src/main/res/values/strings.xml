@@ -36,5 +36,9 @@
     <string name="title_poll_started">VOTE TELAH DIMULAI</string>
     <string name="title_poll_finished">VOTE TELAH BERAKHIR</string>
     <string name="chat_as">Chat sebagai</string>
+    <string name="channel_not_found">Channel tidak ditemukan.</string>
+    <string name="exit">Keluar</string>
+    <string name="default_kicked_message">Anda telah dikeluarkan dari room.</string>
+    <string name="user_is_banned">Anda telah di blokir.</string>
 
 </resources>

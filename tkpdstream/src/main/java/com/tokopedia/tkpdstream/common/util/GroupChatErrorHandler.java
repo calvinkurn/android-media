@@ -3,6 +3,7 @@ package com.tokopedia.tkpdstream.common.util;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.JsonSyntaxException;
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdstream.R;
@@ -33,6 +34,9 @@ public class GroupChatErrorHandler {
     private static final int ERR_WEBSOCKET_CONNECTION_FAILED = 800210;
     private static final int ERR_REQUEST_FAILED = 800220;
 
+    public static final int CHANNEL_NOT_FOUND = 400201;
+    public static final int USER_IS_BANNED = 900100;
+
     public static String getSendBirdErrorMessage(Context context, SendBirdException e, boolean withCode) {
         switch (e.getCode()) {
             case ERR_INVALID_INITIALIZATION:
@@ -58,6 +62,10 @@ public class GroupChatErrorHandler {
             case ERR_LOGIN_TIMEOUT:
                 return formattedString(context.getString(R.string
                         .default_request_error_timeout), e.getCode(), withCode);
+            case CHANNEL_NOT_FOUND:
+                return formattedString(context.getString(R.string.channel_not_found), e.getCode(), withCode);
+            case USER_IS_BANNED:
+                return formattedString(context.getString(R.string.user_is_banned), e.getCode(), withCode);
             default:
                 return formattedString(context.getString(R.string.default_sendbird_error),
                         GroupChatErrorCode.UNKNOWN, withCode);
@@ -78,6 +86,10 @@ public class GroupChatErrorHandler {
     public static String getErrorMessage(Context context, Throwable e, boolean withCode) {
         if (e instanceof NullPointerException) {
             return formattedString(context.getString(R.string.default_request_error_unknown),
+                    GroupChatErrorCode.MALFORMED_DATA, withCode);
+        } else if (e instanceof JsonSyntaxException
+                && !TextUtils.isEmpty(e.getMessage())) {
+            return formattedString(e.getMessage(),
                     GroupChatErrorCode.MALFORMED_DATA, withCode);
         } else if (e instanceof ErrorNetworkException
                 && !TextUtils.isEmpty(e.getMessage())

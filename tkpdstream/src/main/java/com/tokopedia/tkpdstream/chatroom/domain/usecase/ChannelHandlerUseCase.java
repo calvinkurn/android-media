@@ -39,6 +39,8 @@ public class ChannelHandlerUseCase {
         void onUserEntered(UserActionViewModel userActionViewModel);
 
         void onUserExited(UserActionViewModel userActionViewModel);
+
+        void onUserKicked();
     }
 
     public void execute(final String mChannelUrl, final ChannelHandlerListener listener) {
@@ -49,6 +51,18 @@ public class ChannelHandlerUseCase {
                 if (baseChannel.getUrl().equals(mChannelUrl)) {
                     listener.onMessageReceived(mapper.map(baseMessage));
                 }
+            }
+
+            @Override
+            public void onUserBanned(OpenChannel channel, User user) {
+                super.onUserBanned(channel, user);
+                listener.onUserKicked();
+            }
+
+            @Override
+            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+                super.onChannelDeleted(channelUrl, channelType);
+                listener.onUserKicked();
             }
 
             @Override

@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -78,14 +79,12 @@ import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.tkpdstream.vote.view.model.VoteViewModel.IMAGE_TYPE;
 
 /**
  * @author by nisie on 2/6/18.
@@ -95,6 +94,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener, ProgressBarWithTimer.Listener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
+    private static final String RESULT_MESSAGE = "result_message";
 
     @Inject
     GroupChatPresenter presenter;
@@ -186,6 +186,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteRecyclerView = view.findViewById(R.id.vote_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
+
         voteBar = view.findViewById(R.id.vote_header);
         voteBody = view.findViewById(R.id.vote_body);
         voteTitle = view.findViewById(R.id.vote_title);
@@ -469,7 +470,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
         this.mPrevMessageListQuery = previousMessageListQuery;
         adapter.setList(listChat);
-        adapter.setCursor(listChat.get(0));
+        if(!listChat.isEmpty()) {
+            adapter.setCursor(listChat.get(0));
+        }
         adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         scrollToBottom();
 
@@ -566,7 +569,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         channelInfoDialog.setContentView(createBottomSheetView(channelInfoViewModel.getChannelViewModel()));
     }
 
-    void setVisibilityHeader(int visible){
+    void setVisibilityHeader(int visible) {
         voteBar.setVisibility(visible);
         toolbar.setVisibility(visible);
         divider.setVisibility(visible);
@@ -574,23 +577,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-        List<Visitable> list = new ArrayList<>();
-        String title = "Title";
-        String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
-        String messi = "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2014/07/09/23/10-messi.jpg";
-        VoteViewModel channelViewModel = new VoteViewModel("Cristiano Ronaldo", cr7, 40, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
-        channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
-
-        voteInfoViewModel = new VoteInfoViewModel("123", title, list, "1000", IMAGE_TYPE
-                , "Vote", false, "Info Pemenang", "www.google.com"
-                , 1519887600, 1519898400);
-
-//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
-//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
 
         if (hasPoll && voteInfoViewModel != null) {
             showVoteLayout(voteInfoViewModel);
@@ -653,7 +639,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void successVote(VoteViewModel element) {
+    public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
         voteAdapter.change(element);
         setVoted();
     }
@@ -777,6 +763,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorEnterChannel(String errorMessage) {
+        hideVoteLayout();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -785,6 +772,28 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         GroupChatFragment.this);
             }
         });
+    }
+
+    @Override
+    public void onUserKicked(final String errorMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(errorMessage);
+        builder.setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                getActivity().finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+
+    }
+
+    @Override
+    public void onUserKicked() {
+        onUserKicked(getString(R.string.default_kicked_message));
     }
 
     public void showVoteLayout(VoteInfoViewModel voteInfoViewModel) {

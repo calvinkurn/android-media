@@ -24,19 +24,19 @@
             tools:src="@color/cardview_dark_background"
             android:alpha="0.5"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/channel_banner"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
-            app:titleTextAppearance="@style/ToolbarGroupChat"
-            android:layout_marginTop="@dimen/new_margin_med"
-            tools:layout_height="64dp" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
+        app:titleTextAppearance="@style/ToolbarGroupChat"
+
+        tools:layout_height="64dp" />
 
         <View
             android:id="@+id/view"

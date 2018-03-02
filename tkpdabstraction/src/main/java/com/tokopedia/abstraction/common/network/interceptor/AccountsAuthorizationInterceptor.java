@@ -34,9 +34,7 @@ public class AccountsAuthorizationInterceptor implements Interceptor {
         if (userSession.isLoggedIn()) {
             newRequest.addHeader(KEY_ACCOUNTS_AUTHORIZATION, BEARER + " "
                     + userSession.getAccessToken());
-            newRequest.removeHeader("Authorization");
-            newRequest.addHeader("Authorization", BEARER + " "
-                    + userSession.getAccessToken());
+            newRequest.removeHeader("authorization");
         }
         return newRequest;
     }

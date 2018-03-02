@@ -24,10 +24,10 @@ public class Channel {
     private String coverUrl;
     @SerializedName("start_time")
     @Expose
-    private int startTime;
+    private long startTime;
     @SerializedName("end_time")
     @Expose
-    private int endTime;
+    private long endTime;
     @SerializedName("total_participants_online")
     @Expose
     private int totalParticipantsOnline;
@@ -90,19 +90,19 @@ public class Channel {
         this.coverUrl = coverUrl;
     }
 
-    public int getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
