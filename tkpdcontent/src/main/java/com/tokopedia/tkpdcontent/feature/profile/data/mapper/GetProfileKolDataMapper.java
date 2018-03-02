@@ -54,7 +54,7 @@ public class GetProfileKolDataMapper
                     getTagPrice(postKol),
                     false,
                     getTagType(postKol),
-                    getTagType(postKol),
+                    getTagLink(postKol),
                     postKol.userId != null ? postKol.userId : 0,
                     true,
                     ""
