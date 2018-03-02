@@ -426,8 +426,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onResume() {
         super.onResume();
-
-//        progressBarWithTimer.restart();
+        progressBarWithTimer.restart();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
                 .CONNECTION_HANDLER_ID, new
@@ -478,23 +477,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         presenter.setHandler(viewModel.getChannelUrl(), this);
 
-        if (getArguments() != null
-                && getArguments().getParcelable(GroupChatActivity.EXTRA_CHANNEL_INFO) != null) {
-            ChannelViewModel model = getArguments().getParcelable(GroupChatActivity.EXTRA_CHANNEL_INFO);
-//            channelInfoDialog.setContentView(createBottomSheetView(model));
-            channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    BottomSheetDialog d = (BottomSheetDialog) dialog;
+        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                    FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            });
-            channelInfoDialog.show();
-        }
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+        channelInfoDialog.show();
 
     }
 
@@ -856,13 +850,29 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
-            progressBarWithTimer.setVisibility(View.GONE);
+            if(iconVote!=null && iconVote.getBackground()!=null) {
+                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
+            }
+        }
+    }
+
+    public void setVoteStarted() {
+        if (getActivity() != null) {
+            voteStatus.setText(R.string.vote);
+            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
+            if(iconVote!=null && iconVote.getBackground()!=null) {
+                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.medium_green));
+            }
         }
     }
 
     public void setVoted() {
         votedView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onStartTick() {
+        setVoteStarted();
     }
 
     @Override

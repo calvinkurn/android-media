@@ -1,40 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/header_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="@color/font_black_disabled_38"
+        android:textSize="@dimen/font_micro"
+        android:textStyle="normal"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="HARI INI" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_below="@id/header_time"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/margin_vs"
+        tools:src="@color/background_notification" />
 
     <include
         android:id="@+id/chat_header"
         layout="@layout/chat_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_time"
+        android:layout_marginLeft="@dimen/space_small"
+        android:layout_marginStart="@dimen/space_small"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:visibility="visible" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/vote_layout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_vote_chat"
-        android:layout_marginStart="@dimen/margin_vote_chat"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/chat_vote_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_header">
+        android:layout_below="@id/chat_header"
+        android:layout_toRightOf="@id/avatar"
+        android:padding="@dimen/space_average"
+        android:layout_marginLeft="@dimen/space_small"
+        android:layout_marginStart="@dimen/space_small"
+        android:background="@drawable/chat_vote_background">
 
         <ImageView
             android:id="@+id/vote_icon"
             android:layout_width="@dimen/vote_icon_size"
             android:layout_height="@dimen/vote_icon_size"
-            android:layout_marginLeft="@dimen/new_margin_small"
-            android:layout_marginStart="@dimen/new_margin_small"
-            android:layout_marginTop="@dimen/new_margin_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_vote_inactive"/>
+            android:layout_marginTop="@dimen/space_micro"
+            app:srcCompat="@drawable/ic_vote_inactive" />
 
         <TextView
             android:id="@+id/vote_title"
@@ -42,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/new_margin_small"
             android:layout_marginStart="@dimen/new_margin_small"
-            android:layout_marginTop="@dimen/new_margin_small"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_micro"
@@ -51,15 +79,13 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/vote_icon"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="VOTE TELAH BERAKHIR"/>
+            tools:text="VOTE TELAH BERAKHIR" />
 
         <TextView
             android:id="@+id/vote_question"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/new_margin_small"
-            android:layout_marginEnd="@dimen/new_margin_small"
-            android:layout_marginStart="@dimen/new_margin_small"
+            android:maxWidth="@dimen/max_size_bubble"
             android:layout_marginTop="@dimen/new_margin_small"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
@@ -72,6 +98,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vote_title"
             app:layout_constraintVertical_weight="1"
-            tools:text="Menurut Toppers, siapa ya yang akan jadi pemain MVP di Piala Dunia Tahun Ini?"/>
+            tools:text="Menurut Toppers, siapa ya yang akan jadi pemain MVP di Piala Dunia Tahun Ini?" />
     </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>
