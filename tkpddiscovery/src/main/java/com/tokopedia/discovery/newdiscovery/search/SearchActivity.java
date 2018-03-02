@@ -688,7 +688,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private void showFilterDetailPage() {
         bottomSheetFilterDetail.setVisibility(View.VISIBLE);
-        bottomSheetFilterMain.setVisibility(View.GONE);
+        bottomSheetFilterMain.setVisibility(View.INVISIBLE);
     }
 
     private boolean isFilterDetailShown() {
@@ -765,7 +765,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private void hideFilterDetailPage() {
         bottomSheetFilterMain.setVisibility(View.VISIBLE);
-        bottomSheetFilterDetail.setVisibility(View.GONE);
+        bottomSheetFilterDetail.setVisibility(View.INVISIBLE);
         refreshFilterMainPage();
     }
 
