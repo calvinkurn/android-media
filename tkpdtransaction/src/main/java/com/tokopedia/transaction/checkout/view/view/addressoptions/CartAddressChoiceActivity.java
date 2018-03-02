@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class CartAddressChoiceActivity extends BasePresenterActivity implements ICartAddressChoiceActivityListener {
-    public static final int REQUEST_CODE = CartAddressChoiceActivity.class.hashCode();
+    public static final int REQUEST_CODE = 35;
     public static final int RESULT_CODE_ACTION_SELECT_ADDRESS = 100;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
     private static final String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";

@@ -34,9 +34,12 @@ public class MultipleAddressAdapter
         implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
 
-    private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT = R.layout.multiple_address_header;
-    private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT = R.layout.multiple_address_adapter;
-    private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT = R.layout.multiple_address_footer;
+    private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT =
+            R.layout.multiple_address_step_1_header;
+    private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT =
+            R.layout.multiple_address_adapter;
+    private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT =
+            R.layout.multiple_address_footer;
     private static final int HEADER_SIZE = 1;
     private static final int FOOTER_SIZE = 1;
     private static final int FIRST_ITEM_POSITION = 1;
