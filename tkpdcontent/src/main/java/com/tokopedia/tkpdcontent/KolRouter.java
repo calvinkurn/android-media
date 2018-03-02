@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdcontent;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -23,4 +24,6 @@ public interface KolRouter {
     void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
 
     void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
+
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
 }

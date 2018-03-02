@@ -160,7 +160,6 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         presenter.updateCursor(lastCursor);
     }
 
-    //TODO milhamj do something with these actions
     @Override
     public void onGoToKolProfile(int page, int rowNumber, String url) {
 
@@ -168,7 +167,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onOpenKolTooltip(int page, int rowNumber, String url) {
-
+        ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
     }
 
     @Override
