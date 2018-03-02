@@ -216,7 +216,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     public void setFilterResultCount(String formattedResultCount) {
-        filterResultCountText.setText(formattedResultCount);
+        filterResultCountText.setText(String.format(getString(R.string.result_count_template_text), formattedResultCount));
     }
 
     private void initFilterBottomSheet(Bundle savedInstanceState) {
@@ -267,10 +267,22 @@ public class SearchActivity extends DiscoveryActivity
     public void loadFilterItems(List<Filter> filterList) {
         List<Filter> list = new ArrayList<>();
         list.addAll(filterList);
+        removeCategoryFilter(list);
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
         filterMainAdapter.setFilterList(list);
+    }
+
+    private void removeCategoryFilter(List<Filter> filterList) {
+        Iterator<Filter> iterator = filterList.iterator();
+        while (iterator.hasNext()) {
+            Filter filter = iterator.next();
+            if (filter.isCategoryFilter()) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -503,7 +515,6 @@ public class SearchActivity extends DiscoveryActivity
     public void closeFilterBottomSheet() {
         if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            showBottomNavigation();
             enableAutoShowBottomNav();
         }
     }
@@ -676,8 +687,14 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void showFilterDetailPage() {
+        closeFilterBottomSheet();
         bottomSheetFilterMain.setVisibility(View.GONE);
         bottomSheetFilterDetail.setVisibility(View.VISIBLE);
+        launchFilterBottomSheet();
+    }
+
+    private boolean isFilterDetailShown() {
+        return isBottomSheetShown() && bottomSheetFilterDetail.getVisibility() == View.VISIBLE;
     }
 
     private void initFilterDetailTopBar(Filter filter) {
@@ -749,8 +766,10 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void hideFilterDetailPage() {
+        closeFilterBottomSheet();
         bottomSheetFilterDetail.setVisibility(View.GONE);
         bottomSheetFilterMain.setVisibility(View.VISIBLE);
+        launchFilterBottomSheet();
         refreshFilterMainPage();
     }
 
@@ -827,6 +846,17 @@ public class SearchActivity extends DiscoveryActivity
     public boolean isBottomSheetShown() {
         return bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isFilterDetailShown()) {
+            hideFilterDetailPage();
+        } else if (isBottomSheetShown()) {
+            closeFilterBottomSheet();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class OptionSearchFilter extends android.widget.Filter {

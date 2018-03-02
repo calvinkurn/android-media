@@ -217,6 +217,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             List<Visitable> list = new ArrayList<Visitable>();
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().setEmptyProduct();
+                                getView().setTotalSearchResultCount("0");
                                 getView().showBottomBarNavigation(false);
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
