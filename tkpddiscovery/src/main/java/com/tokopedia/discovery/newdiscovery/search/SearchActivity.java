@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -259,8 +260,6 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     public void launchFilterBottomSheet() {
-        hideBottomNavigation();
-        disableAutoShowBottomNav();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -665,6 +664,22 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    enableAutoShowBottomNav();
+                } else {
+                    hideBottomNavigation();
+                    disableAutoShowBottomNav();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
