@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/bg_circular_progress">
         <shape
-            android:innerRadius="21dp"
+            android:innerRadius="20dp"
             android:shape="ring"
-            android:thickness="4dp"
+            android:thickness="5dp"
             android:useLevel="false">
 
             <solid android:color="#e0e0e0" />
@@ -13,9 +13,9 @@
 
     <item android:id="@+id/circular_progress">
         <shape
-            android:innerRadius="21dp"
+            android:innerRadius="20dp"
             android:shape="ring"
-            android:thickness="4dp"
+            android:thickness="5dp"
             android:useLevel="true">
 
             <solid android:color="#42b549" />
