@@ -7,5 +7,6 @@ package com.tokopedia.applink;
 public class SessionApplinkUrl {
     public static final String REGISTER = "tokopedia://registration";
     public static final String LOGIN = "tokopedia://login";
+    public static final String PROFILE = "tokopedia://profile/{user_id}";
 
 }

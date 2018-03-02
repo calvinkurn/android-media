@@ -55,6 +55,7 @@
 
     <LinearLayout
         android:id="@+id/progress_view"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -70,11 +71,12 @@
 
     <LinearLayout
         android:id="@+id/error_view"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="@dimen/default_big_icon"

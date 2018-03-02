@@ -113,6 +113,7 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -184,7 +185,6 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
-import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.FollowKolPostSubscriber;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -1427,17 +1427,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void doFollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
-        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_FOLLOW, followKolPostSubscriber);
+    public void doFollowKolPost(int id, FollowKolSubscriber followKolSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_FOLLOW, followKolSubscriber);
     }
 
     @Override
-    public void doUnfollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
-        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_UNFOLLOW, followKolPostSubscriber);
+    public void doUnfollowKolPost(int id, FollowKolSubscriber followKolSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_UNFOLLOW, followKolSubscriber);
     }
 
     private void followUnfollowKolPost(int id, int action,
-                                       FollowKolPostSubscriber followKolPostSubscriber) {
+                                       FollowKolSubscriber followKolSubscriber) {
         FollowKolPostUseCase followKolPostUseCase = ContentGetFeedUseCase
                 .newInstance(getContentConsumerComponent())
                 .inject()
@@ -1451,6 +1451,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(followKolPostSubscriber);
+                .subscribe(followKolSubscriber);
     }
 }

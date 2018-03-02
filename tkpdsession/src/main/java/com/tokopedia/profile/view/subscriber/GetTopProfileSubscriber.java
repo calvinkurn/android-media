@@ -34,6 +34,7 @@ public class GetTopProfileSubscriber extends Subscriber<TopProfileViewModel>{
     @Override
     public void onNext(TopProfileViewModel topProfileViewModel) {
         view.hideLoading();
+        view.showMainView();
         view.onSuccessGetProfileData(topProfileViewModel);
     }
 }
