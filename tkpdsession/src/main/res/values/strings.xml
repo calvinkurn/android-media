@@ -203,5 +203,7 @@
     <string name="data_verified">Terverifikasi</string>
     <string name="fav_shop">Favoritkan</string>
     <string name="shop_info_title">Informasi Toko</string>
+    <string name="reputation_description">Reputasi pengguna adalah penilaian smiley yang diberikan oleh penjual saat memberi ulasan ke pembeli.</string>
+    <string name="status_description">Status Verified Account adalah status bagi pengguna yang sudah melengkapi data diri, nomor ponsel, dan email yang sudah terverifikasi.</string>
 
 </resources>

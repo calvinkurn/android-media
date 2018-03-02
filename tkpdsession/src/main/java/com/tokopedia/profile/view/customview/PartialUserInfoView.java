@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
@@ -28,7 +29,8 @@ public class PartialUserInfoView extends BaseCustomView {
     private ImageView ivStatusInfo;
     private ImageView ivReputationInfo;
 
-
+    private BottomSheetView statusBottomSheetView;
+    private BottomSheetView reputationBottomSheetView;
 
     public PartialUserInfoView(@NonNull Context context) {
         super(context);
@@ -79,6 +81,24 @@ public class PartialUserInfoView extends BaseCustomView {
         tvReputationSummaryScore = view.findViewById(R.id.tv_reputation_summary);
         ivStatusInfo = view.findViewById(R.id.iv_status_info);
         ivReputationInfo = view.findViewById(R.id.iv_reputation_info);
+
+        statusBottomSheetView = new BottomSheetView(getContext());
+        statusBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
+        statusBottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getContext().getString(R.string.title_user_information_status))
+                .setBody(getContext().getString(R.string.status_description))
+                .setCloseButton(getContext().getString(R.string.title_ok))
+                .build());
+
+        reputationBottomSheetView = new BottomSheetView(getContext());
+        reputationBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
+        reputationBottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getContext().getString(R.string.title_user_information_reputation))
+                .setBody(getContext().getString(R.string.reputation_description))
+                .setCloseButton(getContext().getString(R.string.title_ok))
+                .build());
     }
 
     public void renderData(TopProfileViewModel model){
@@ -98,6 +118,20 @@ public class PartialUserInfoView extends BaseCustomView {
 
         tvReputationNegativeScore.setVisibility(VISIBLE);
         tvReputationNegativeScore.setText(model.getNegativeScore());
+
+        ivStatusInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                statusBottomSheetView.show();
+            }
+        });
+
+        ivReputationInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reputationBottomSheetView.show();
+            }
+        });
     }
 
 }
