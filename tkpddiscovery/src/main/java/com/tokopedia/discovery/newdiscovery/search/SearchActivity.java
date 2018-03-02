@@ -135,6 +135,7 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private TextWatcher filterDetailSearchTextWatcher;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -722,8 +723,13 @@ public class SearchActivity extends DiscoveryActivity
         }
         filterDetailSearchContainer.setVisibility(View.VISIBLE);
         searchFilter = null;
-        filterDetailSearch.setHint(filter.getSearch().getPlaceholder());
-        filterDetailSearch.addTextChangedListener(new TextWatcher() {
+
+        if (filterDetailSearchTextWatcher != null) {
+            filterDetailSearch.removeTextChangedListener(filterDetailSearchTextWatcher);
+            filterDetailSearchTextWatcher = null;
+        }
+
+        filterDetailSearchTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -740,7 +746,10 @@ public class SearchActivity extends DiscoveryActivity
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        };
+
+        filterDetailSearch.addTextChangedListener(filterDetailSearchTextWatcher);
+        filterDetailSearch.setHint(filter.getSearch().getPlaceholder());
     }
 
     private OptionSearchFilter getSearchFilter(Filter filter) {
