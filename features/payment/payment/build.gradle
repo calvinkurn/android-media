@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
