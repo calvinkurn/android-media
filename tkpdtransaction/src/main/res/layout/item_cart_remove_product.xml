@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="16dp"
-    android:background="@color/grey_200">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <FrameLayout android:id="@+id/fl_select_to_remove"
+        <FrameLayout
+            android:id="@+id/fl_select_to_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp">
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp">
 
-            <CheckBox android:id="@+id/cb_remove_product"
+            <CheckBox
+                android:id="@+id/cb_remove_product"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
         </FrameLayout>
 
-        <LinearLayout android:id="@+id/ll_product_container"
+        <LinearLayout
+            android:id="@+id/ll_product_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_toEndOf="@+id/fl_select_to_remove"
             android:layout_toRightOf="@id/fl_select_to_remove"
-            android:layout_toEndOf="@+id/fl_select_to_remove">
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,140 +38,148 @@
                 android:background="@color/white"
                 android:padding="8dp">
 
-                <TextView android:id="@+id/tv_text_sender"
+                <TextView
+                    android:id="@+id/tv_text_sender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:fontFamily="sans-serif-medium"
-                    android:textStyle="normal"
-                    android:textColor="@color/black_38"
                     android:lineSpacingExtra="5sp"
-                    android:text="Dikirim oleh : " />
+                    android:text="Dikirim oleh : "
+                    android:textColor="@color/black_38"
+                    android:textSize="12sp"
+                    android:textStyle="normal"/>
 
-                <TextView android:id="@+id/tv_sender_name"
+                <TextView
+                    android:id="@+id/tv_sender_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:layout_toEndOf="@id/tv_text_sender"
                     android:layout_toRightOf="@id/tv_text_sender"
-                    android:textSize="12sp"
-                    android:textColor="@color/black_70"
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="5sp"
-                    tools:text="Adidas" />
+                    android:textColor="@color/black_70"
+                    android:textSize="12sp"
+                    tools:text="Adidas"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#e0e0e0" />
+                android:background="#e0e0e0"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp"
                 android:paddingBottom="16dp"
                 android:paddingEnd="16dp"
+                android:paddingLeft="8dp"
                 android:paddingRight="16dp"
-                android:background="@color/white">
+                android:paddingStart="8dp"
+                android:paddingTop="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/white">
 
-                    <ImageView android:id="@+id/iv_product_image_container"
+                    <ImageView
+                        android:id="@+id/iv_product_image_container"
                         android:layout_width="52dp"
                         android:layout_height="52dp"
-                        android:layout_marginRight="8dp"
                         android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/googleg_standard_color_18"
-                        tools:ignore="ContentDescription" />
+                        tools:ignore="ContentDescription"/>
 
-                    <TextView android:id="@+id/tv_shipping_product_name"
+                    <TextView
+                        android:id="@+id/tv_shipping_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@id/iv_product_image_container"
                         android:layout_toRightOf="@id/iv_product_image_container"
-                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
                         android:textColor="@color/black"
-                        android:fontFamily="sans-serif-medium"
+                        android:textSize="14sp"
                         android:textStyle="normal"
-                        tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
+                        tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS"/>
 
-                    <TextView android:id="@+id/tv_shipped_product_price"
+                    <TextView
+                        android:id="@+id/tv_shipped_product_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_shipping_product_name"
                         android:layout_toEndOf="@id/iv_product_image_container"
                         android:layout_toRightOf="@id/iv_product_image_container"
-                        android:layout_below="@id/tv_shipping_product_name"
-                        android:textSize="14sp"
-                        android:textColor="@color/orange_red"
                         android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/orange_red"
+                        android:textSize="14sp"
                         android:textStyle="normal"
-                        tools:text="Rp200.000" />
+                        tools:text="Rp200.000"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/iv_product_image_container"
-                        android:layout_toRightOf="@id/iv_product_image_container"
                         android:layout_below="@id/tv_shipped_product_price"
-                        android:layout_marginTop="6dp">
+                        android:layout_marginTop="6dp"
+                        android:layout_toEndOf="@id/iv_product_image_container"
+                        android:layout_toRightOf="@id/iv_product_image_container">
 
-                        <TextView android:id="@+id/tv_text_product_weight"
+                        <TextView
+                            android:id="@+id/tv_text_product_weight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/black_38"
                             android:fontFamily="sans-serif"
-                            android:textStyle="normal"
-                            android:text="Berat :" />
+                            android:text="Berat :"
+                            android:textColor="@color/black_38"
+                            android:textSize="12sp"
+                            android:textStyle="normal"/>
 
-                        <TextView android:id="@+id/tv_product_weight"
+                        <TextView
+                            android:id="@+id/tv_product_weight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/black_70"
                             android:layout_marginLeft="4dp"
                             android:layout_marginStart="4dp"
-                            android:layout_toRightOf="@id/tv_text_product_weight"
                             android:layout_toEndOf="@id/tv_text_product_weight"
+                            android:layout_toRightOf="@id/tv_text_product_weight"
                             android:fontFamily="sans-serif"
+                            android:textColor="@color/black_70"
+                            android:textSize="12sp"
                             android:textStyle="normal"
-                            tools:text="3kg" />
+                            tools:text="3kg"/>
 
-                        <TextView android:id="@+id/tv_total_product_item"
+                        <TextView
+                            android:id="@+id/tv_total_product_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
-                            android:textSize="12sp"
-                            android:textColor="@color/black_70"
+                            android:layout_alignParentRight="true"
                             android:fontFamily="sans-serif"
+                            android:textColor="@color/black_70"
+                            android:textSize="12sp"
                             android:textStyle="normal"
-                            tools:text="1" />
+                            tools:text="1"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toLeftOf="@id/tv_total_product_item"
-                            android:layout_toStartOf="@id/tv_total_product_item"
-                            android:layout_toRightOf="@id/tv_product_weight"
-                            android:layout_toEndOf="@id/tv_product_weight"
-                            android:layout_marginRight="4dp"
                             android:layout_marginEnd="4dp"
-                            android:gravity="end"
+                            android:layout_marginRight="4dp"
+                            android:layout_toEndOf="@id/tv_product_weight"
+                            android:layout_toLeftOf="@id/tv_total_product_item"
+                            android:layout_toRightOf="@id/tv_product_weight"
+                            android:layout_toStartOf="@id/tv_total_product_item"
                             android:fontFamily="sans-serif"
-                            android:textSize="12sp"
+                            android:gravity="end"
+                            android:text="Jumlah :"
                             android:textColor="@color/black_38"
-                            android:textStyle="normal"
-                            android:text="Jumlah :" />
+                            android:textSize="12sp"
+                            android:textStyle="normal"/>
 
                     </RelativeLayout>
 

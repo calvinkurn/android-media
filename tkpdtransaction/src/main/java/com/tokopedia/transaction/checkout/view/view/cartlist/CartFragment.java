@@ -97,6 +97,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private OnPassingCartDataListener mDataPasserListener;
     private CartListData cartListData;
+    private PromoCodeCartListData promoCodeCartListData;
 
     @Override
     public void onAttach(Activity activity) {
@@ -336,8 +337,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
-        return originParams == null ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return originParams == null
+                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
                 : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), originParams);
     }
 
@@ -416,6 +420,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
                     getActivity(),
                     shipmentAddressFormData,
+                    this.promoCodeCartListData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
@@ -423,6 +428,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             Intent intent = CartShipmentActivity.createInstanceSingleAddress(
                     getActivity(),
                     shipmentAddressFormData,
+                    this.promoCodeCartListData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
@@ -479,6 +485,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+        this.promoCodeCartListData = promoCodeCartListData;
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
         cartItemPromoHolderData.setPromoVoucherType(promoCodeCartListData.getDataVoucher().getCode(),
                 promoCodeCartListData.getDataVoucher().getMessageSuccess(),

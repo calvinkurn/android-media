@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class CourierItemData implements Parcelable {
+    private int shipperId;
     private int shipperProductId;
     private String name;
     private String estimatedDayDelivery;
@@ -22,12 +23,14 @@ public class CourierItemData implements Parcelable {
     private String insuranceUsedInfo;
     private int insuranceUsedDefault;
     private boolean usePinPoint;
+    private boolean allowDropshiper;
     private boolean selected;
 
     public CourierItemData() {
     }
 
     protected CourierItemData(Parcel in) {
+        shipperId = in.readInt();
         shipperProductId = in.readInt();
         name = in.readString();
         estimatedDayDelivery = in.readString();
@@ -43,6 +46,7 @@ public class CourierItemData implements Parcelable {
         insuranceUsedDefault = in.readInt();
         selected = in.readByte() != 0;
         usePinPoint = in.readByte() != 0;
+        allowDropshiper = in.readByte() != 0;
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -56,6 +60,14 @@ public class CourierItemData implements Parcelable {
             return new CourierItemData[size];
         }
     };
+
+    public int getShipperId() {
+        return shipperId;
+    }
+
+    public void setShipperId(int shipperId) {
+        this.shipperId = shipperId;
+    }
 
     public int getShipperProductId() {
         return shipperProductId;
@@ -177,6 +189,14 @@ public class CourierItemData implements Parcelable {
         this.estimatedHourDelivery = estimatedHourDelivery;
     }
 
+    public boolean isAllowDropshiper() {
+        return allowDropshiper;
+    }
+
+    public void setAllowDropshiper(boolean allowDropshiper) {
+        this.allowDropshiper = allowDropshiper;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -184,6 +204,7 @@ public class CourierItemData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(shipperId);
         dest.writeInt(shipperProductId);
         dest.writeString(name);
         dest.writeString(estimatedDayDelivery);
@@ -199,5 +220,6 @@ public class CourierItemData implements Parcelable {
         dest.writeInt(insuranceUsedDefault);
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (usePinPoint ? 1 : 0));
+        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
     }
 }

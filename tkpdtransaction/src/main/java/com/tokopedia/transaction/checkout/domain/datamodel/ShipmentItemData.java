@@ -16,7 +16,6 @@ public class ShipmentItemData implements Parcelable {
     private String multiplePriceRange;
     private String deliveryTimeRange;
     private List<CourierItemData> courierItemData;
-    private boolean allowDropshiper;
     private boolean selected;
 
     public ShipmentItemData() {
@@ -30,7 +29,6 @@ public class ShipmentItemData implements Parcelable {
         multiplePriceRange = in.readString();
         courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
         selected = in.readByte() != 0;
-        allowDropshiper = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentItemData> CREATOR = new Creator<ShipmentItemData>() {
@@ -101,14 +99,6 @@ public class ShipmentItemData implements Parcelable {
         this.multiplePriceRange = multiplePriceRange;
     }
 
-    public boolean isAllowDropshiper() {
-        return allowDropshiper;
-    }
-
-    public void setAllowDropshiper(boolean allowDropshiper) {
-        this.allowDropshiper = allowDropshiper;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -123,6 +113,5 @@ public class ShipmentItemData implements Parcelable {
         dest.writeString(deliveryTimeRange);
         dest.writeTypedList(courierItemData);
         dest.writeByte((byte) (selected ? 1 : 0));
-        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
     }
 }

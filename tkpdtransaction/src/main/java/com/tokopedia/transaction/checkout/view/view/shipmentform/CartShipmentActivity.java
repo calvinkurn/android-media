@@ -12,6 +12,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 /**
@@ -26,17 +27,21 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
+    public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final int TYPE_ADDRESS_SHIPMENT_SINGLE = 1;
     public static final int TYPE_ADDRESS_SHIPMENT_MULTIPLE = 2;
 
     private int typeAddressShipment;
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestionData;
+    private PromoCodeCartListData promoCodeCartListData;
 
     public static Intent createInstanceSingleAddress(Context context,
                                                      CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                     PromoCodeCartListData promoCodeCartListData,
                                                      CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
+        intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
         intent.putExtra(EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_ADDRESS_SHIPMENT_TYPE, TYPE_ADDRESS_SHIPMENT_SINGLE);
@@ -45,8 +50,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     public static Intent createInstanceMultipleAddress(Context context,
                                                        CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                       PromoCodeCartListData promoCodeCartListData,
                                                        CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
+        intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
         intent.putExtra(EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_ADDRESS_SHIPMENT_TYPE, TYPE_ADDRESS_SHIPMENT_MULTIPLE);
@@ -60,6 +67,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     protected void setupBundlePass(Bundle extras) {
+        promoCodeCartListData = extras.getParcelable(EXTRA_PROMO_CODE_APPLIED_DATA);
         typeAddressShipment = extras.getInt(EXTRA_ADDRESS_SHIPMENT_TYPE);
         cartShipmentAddressFormData = extras.getParcelable(EXTRA_SHIPMENT_FORM_DATA);
         cartPromoSuggestionData = extras.getParcelable(EXTRA_CART_PROMO_SUGGESTION);
@@ -89,7 +97,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         SingleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeCartListData, cartPromoSuggestionData
                         )).commit();
             } else {
                 //TODO Change Later

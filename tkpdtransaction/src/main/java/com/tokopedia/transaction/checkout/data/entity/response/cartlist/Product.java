@@ -15,6 +15,9 @@ public class Product {
     @SerializedName("product_name")
     @Expose
     private String productName;
+    @SerializedName("free_returns")
+    @Expose
+    private FreeReturns freeReturns;
     @SerializedName("product_price_fmt")
     @Expose
     private String productPriceFmt;
@@ -62,7 +65,7 @@ public class Product {
     private int productMinOrder;
     @SerializedName("product_rating")
     @Expose
-    private int productRating;
+    private double productRating;
     @SerializedName("product_invenage_value")
     @Expose
     private int productInvenageValue;
@@ -174,7 +177,7 @@ public class Product {
         return productMinOrder;
     }
 
-    public int getProductRating() {
+    public double getProductRating() {
         return productRating;
     }
 
@@ -232,5 +235,9 @@ public class Product {
 
     public ProductShowCase getProductShowcase() {
         return productShowcase;
+    }
+
+    public FreeReturns getFreeReturns() {
+        return freeReturns;
     }
 }
