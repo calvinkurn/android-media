@@ -46,13 +46,6 @@ import java.util.Map;
  */
 
 public class TrackingUtils extends TrackingConfig {
-    public static void eventCampaign(Campaign campaign) {
-        Campaign temp = new Campaign(campaign);
-        getGTMEngine()
-                .sendCampaign(temp)
-                .clearCampaign(campaign);
-    }
-
     private static final String COMP_1 = "com.gojek.app";
     private static final String COMP_2 = "com.shopee.id";
     private static final String COMP_3 = "com.lazada.android";
@@ -60,9 +53,12 @@ public class TrackingUtils extends TrackingConfig {
     private static final String COMP_5 = "com.grabtaxi.passenger";
     private static final String COMP_6 = "com.traveloka.android";
 
-    private static final String[] COMPARR = {
-            COMP_1, COMP_2, COMP_3, COMP_4, COMP_5, COMP_6
-    };
+    public static void eventCampaign(Campaign campaign) {
+        Campaign temp = new Campaign(campaign);
+        getGTMEngine()
+                .sendCampaign(temp)
+                .clearCampaign(campaign);
+    }
 
     public static void activityBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
@@ -740,9 +736,12 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static String getCIntelData(Context context) {
+        String[] competitions = {
+                COMP_1, COMP_2, COMP_3, COMP_4, COMP_5, COMP_6
+        };
         String compList = "";
         PackageManager pm = context.getPackageManager();
-        for (String key : COMPARR) {
+        for (String key : competitions) {
             if (pm != null) {
                 if (TrackingUtils.isAppInstalled(key, pm)) {
                     if (TextUtils.isEmpty(compList))

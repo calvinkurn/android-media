@@ -203,6 +203,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     @Override
+    protected void sendScreenAnalytics() {
+        // TODO: 3/2/18 need to implement spesific method for parent index home
+    }
+
+    @Override
     protected void onCreate(Bundle arg0) {
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
