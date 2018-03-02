@@ -1,7 +1,6 @@
 package com.tokopedia.seller.orderstatus.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
@@ -32,6 +28,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -333,10 +330,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(),
-                                presenter.getInvoiceData().getUserId())
-                );
+                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(),
+                                presenter.getInvoiceData().getUserId()));
             }
         };
     }

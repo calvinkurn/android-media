@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -56,7 +58,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat
+        .NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
@@ -678,7 +681,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionPeopleDetailClick(String buyerID) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), buyerID));
+        startActivity(
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(), buyerID));
     }
 
     @Override

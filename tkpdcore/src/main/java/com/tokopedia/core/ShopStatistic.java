@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
@@ -291,9 +291,8 @@ public class ShopStatistic extends TActivity {
 			
 			@Override
 			public void onClick(View v) {
-				startActivity(
-						PeopleInfoNoDrawerActivity.createInstance(getBaseContext(), OwnerId)
-				);
+				startActivity(((TkpdCoreRouter) getBaseContext().getApplicationContext())
+						.getTopProfileIntent(getBaseContext(), OwnerId));
 			}
 		});
 		

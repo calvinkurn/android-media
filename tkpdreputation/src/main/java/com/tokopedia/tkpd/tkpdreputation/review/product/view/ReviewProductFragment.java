@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -31,18 +32,21 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DetailReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount
+        .DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount
+        .DetailReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelTitleHeader;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter
+        .ReviewProductTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductContract;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ReviewProductItemFilterView;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ReviewProductItemFilterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,9 +184,9 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToProfile(String reviewerId) {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
-        );
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getTopProfileIntent(getActivity(),
+                        String.valueOf(reviewerId)));
     }
 
     @Override

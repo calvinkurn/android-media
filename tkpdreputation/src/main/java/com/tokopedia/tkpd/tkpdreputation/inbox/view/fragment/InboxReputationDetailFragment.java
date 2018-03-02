@@ -23,6 +23,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.SimpleAppRatingDialog;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -42,16 +43,21 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail
+        .InboxReputationDetailTypeFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail
+        .InboxReputationDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShareReviewDialog;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
+        .InboxReputationDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
+        .InboxReputationDetailItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail
+        .InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 
 import java.util.ArrayList;
@@ -455,9 +461,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(int reviewerId) {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
-        );
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getTopProfileIntent(getActivity(),
+                        String.valueOf(reviewerId)));
     }
 
     @Override
@@ -507,8 +513,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToPeopleProfile(int userId) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf
-                (userId)));
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getTopProfileIntent(getActivity(), String.valueOf(userId)));
     }
 
     private String getReputationSmileyMessage(String name) {

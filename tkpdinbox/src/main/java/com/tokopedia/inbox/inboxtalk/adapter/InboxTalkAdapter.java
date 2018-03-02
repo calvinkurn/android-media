@@ -23,11 +23,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
-import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talk.model.model.TalkUserReputation;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
@@ -297,8 +295,8 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
             @Override
             public void onClick(View v) {
                 context.startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(context, talkUserId)
-                );
+                        ((TkpdCoreRouter) context.getApplicationContext())
+                                .getTopProfileIntent(context, talkUserId));
             }
         };
     }
