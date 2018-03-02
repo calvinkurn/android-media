@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class CartPayableDetailModel implements Parcelable {
+public class ShipmentCostModel implements Parcelable {
 
     private int totalItem;
     private double totalItemPrice;
@@ -89,10 +89,10 @@ public class CartPayableDetailModel implements Parcelable {
         dest.writeDouble(this.promoPrice);
     }
 
-    public CartPayableDetailModel() {
+    public ShipmentCostModel() {
     }
 
-    protected CartPayableDetailModel(Parcel in) {
+    protected ShipmentCostModel(Parcel in) {
         this.totalItem = in.readInt();
         this.totalItemPrice = in.readDouble();
         this.totalPrice = in.readDouble();
@@ -102,15 +102,15 @@ public class CartPayableDetailModel implements Parcelable {
         this.promoPrice = in.readDouble();
     }
 
-    public static final Creator<CartPayableDetailModel> CREATOR = new Creator<CartPayableDetailModel>() {
+    public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {
         @Override
-        public CartPayableDetailModel createFromParcel(Parcel source) {
-            return new CartPayableDetailModel(source);
+        public ShipmentCostModel createFromParcel(Parcel source) {
+            return new ShipmentCostModel(source);
         }
 
         @Override
-        public CartPayableDetailModel[] newArray(int size) {
-            return new CartPayableDetailModel[size];
+        public ShipmentCostModel[] newArray(int size) {
+            return new ShipmentCostModel[size];
         }
     };
 

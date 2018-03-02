@@ -24,9 +24,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartPayableDetailModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
@@ -35,6 +34,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -45,6 +46,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private static final String TAG = SingleAddressShipmentAdapter.class.getSimpleName();
 
     private static final int PRIME_ADDRESS = 2;
+    private static final int FIRST_ELEMENT = 0;
 
     private static final NumberFormat CURRENCY_IDR =
             NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
@@ -53,43 +55,26 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             R.layout.holder_item_cart_promo;
     private static final int ITEM_VIEW_PROMO_SUGGESTION =
             R.layout.holder_item_cart_potential_promo;
-    private static final int ITEM_VIEW_FREE_SHIPPING_FEE =
-            R.layout.view_item_free_shipping_fee;
-    private static final int ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS =
+    private static final int ITEM_VIEW_RECIPIENT_ADDRESS =
             R.layout.view_item_shipment_recipient_address;
-    private static final int ITEM_VIEW_SHIPMENT_COST_DETAIL =
+    private static final int ITEM_VIEW_SHIPMENT_COST =
             R.layout.view_item_shipment_cost_details;
-    private static final int ITEM_SHIPPED_PRODUCT_DETAILS =
+    private static final int ITEM_VIEW_CART =
             R.layout.item_shipped_product_details;
-
-    private static final int PROMO_POSITION = 0;
-    private static final int ADDRESS_POSITION = 1;
-    private static final int ALL_HEADER_SIZE = 2;
-    private static final int ALL_FOOTER_SIZE = 1;
-
-    private static final int FIRST_ELEMENT = 0;
 
     private Context mContext;
 
-    private CartSingleAddressData mCartSingleAddressData;
+    private List<Object> mShipmentDataList;
+    private ActionListener mActionListener;
 
-    private SingleAddressShipmentAdapterListener mAdapterViewListener;
-
-    public SingleAddressShipmentAdapter() {
-
+    @Inject
+    public SingleAddressShipmentAdapter(ActionListener actionListener) {
+        mShipmentDataList = new ArrayList<>();
+        mActionListener = actionListener;
     }
 
-    public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
-        mCartSingleAddressData.getCartSellerItemModelList().get(position - ALL_HEADER_SIZE)
-                .setSelectedShipmentDetailData(shipmentDetailData);
-    }
-
-    public void setViewListener(SingleAddressShipmentAdapterListener shipmentAdapterListener) {
-        this.mAdapterViewListener = shipmentAdapterListener;
-    }
-
-    public void updateData(CartSingleAddressData cartSingleAddressData) {
-        mCartSingleAddressData = cartSingleAddressData;
+    public void changeDataSet(List<Object> shipmentDataList) {
+        mShipmentDataList = shipmentDataList;
     }
 
     @Override
@@ -101,59 +86,60 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return new CartPromoHolder(view);
         } else if (viewType == ITEM_VIEW_PROMO_SUGGESTION) {
             return new CartPromoSuggestionHolder(view);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
-            return new ShippingRecipientHolder(view);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
-            return new ShipmentCostDetailHolder(view);
-        } else {
-            return new ShippedProductDetailsHolder(view);
+        } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
+            return new RecipientAddressHolder(view);
+        } else if (viewType == ITEM_VIEW_CART) {
+            return new CartSellerItemHolder(view);
+        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
+            return new ShipmentCostHolder(view);
         }
 
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         int viewType = getItemViewType(position);
+        Object data = mShipmentDataList.get(position);
 
         if (viewType == ITEM_VIEW_PROMO) {
-            ((CartPromoHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartPromo(), position);
+            ((CartPromoHolder) viewHolder).bindViewHolder((CartPromo) data, position);
         } else if (viewType == ITEM_VIEW_PROMO_SUGGESTION) {
-            ((CartPromoSuggestionHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartPromoSuggestion(), position);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
-            ((ShippingRecipientHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getRecipientAddressModel());
-        } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
-            ((ShipmentCostDetailHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
-        } else {
-            ((ShippedProductDetailsHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel(),
-                            mCartSingleAddressData.getCartSellerItemModelList()
-                            .get(position - ALL_HEADER_SIZE));
+            ((CartPromoSuggestionHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data, position);
+        } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
+            ((RecipientAddressHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
+        } else if (viewType == ITEM_VIEW_CART) {
+            ((CartSellerItemHolder) viewHolder).bindViewHolder((CartSellerItemModel) data);
+        } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
+            ((ShipmentCostHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
         }
     }
 
     @Override
     public int getItemCount() {
-        return getCartItemSize() + ALL_HEADER_SIZE + ALL_FOOTER_SIZE;
+        return mShipmentDataList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == PROMO_POSITION) {
+        Object item = mShipmentDataList.get(position);
+
+        if (item instanceof CartPromo) {
             return ITEM_VIEW_PROMO;
-        } else if (position == ADDRESS_POSITION) {
-            return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
-        } else if (position == ALL_HEADER_SIZE + getCartItemSize()) {
-            return ITEM_VIEW_SHIPMENT_COST_DETAIL;
-        } else {
-            return ITEM_SHIPPED_PRODUCT_DETAILS;
+        } else if (item instanceof CartPromoSuggestion) {
+            return ITEM_VIEW_PROMO_SUGGESTION;
+        } else if (item instanceof RecipientAddressModel) {
+            return ITEM_VIEW_RECIPIENT_ADDRESS;
+        } else if (item instanceof CartSellerItemModel) {
+            return ITEM_VIEW_CART;
+        } else if (item instanceof ShipmentCostModel) {
+            return ITEM_VIEW_SHIPMENT_COST;
         }
+
+        return super.getItemViewType(position);
     }
 
-    public interface SingleAddressShipmentAdapterListener {
+    public interface ActionListener {
 
         void onAddOrChangeAddress();
 
@@ -177,20 +163,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onCartPromoTrackingCancelled(CartPromo cartPromo, int position);
 
-        void onTotalPaymentChange(CartPayableDetailModel cartPayableDetailModel);
+        void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
 
     }
 
     public void setPickupPoint(Store store) {
-        mCartSingleAddressData.getRecipientAddressModel().setStore(store);
+//        mShipmentDataList.getRecipientAddressModel().setStore(store);
     }
 
     public void unSetPickupPoint() {
-        mCartSingleAddressData.getRecipientAddressModel().setStore(null);
-    }
-
-    private int getCartItemSize() {
-        return mCartSingleAddressData.getCartSellerItemModelList().size();
+//        mShipmentDataList.getRecipientAddressModel().setStore(null);
     }
 
     private String getPriceFormat(double pricePlan) {
@@ -228,22 +210,22 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
                 @Override
                 public void onClickUseVoucher() {
-                    mAdapterViewListener.onCartPromoUseVoucherPromoClicked(data, position);
+                    mActionListener.onCartPromoUseVoucherPromoClicked(data, position);
                 }
 
                 @Override
                 public void disableVoucherDisount() {
-                    mAdapterViewListener.onCartPromoCancelVoucherPromoClicked(data, position);
+                    mActionListener.onCartPromoCancelVoucherPromoClicked(data, position);
                 }
 
                 @Override
                 public void trackingSuccessVoucher(String voucherName) {
-                    mAdapterViewListener.onCartPromoTrackingSuccess(data, position);
+                    mActionListener.onCartPromoTrackingSuccess(data, position);
                 }
 
                 @Override
                 public void trackingCancelledVoucher() {
-                    mAdapterViewListener.onCartPromoTrackingCancelled(data, position);
+                    mActionListener.onCartPromoTrackingCancelled(data, position);
                 }
             });
 
@@ -289,14 +271,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 tvAction.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapterViewListener.onCartPromoSuggestionActionClicked(data, position);
+                        mActionListener.onCartPromoSuggestionActionClicked(data, position);
                     }
                 });
 
                 btnClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mAdapterViewListener.onCartPromoSuggestionButtonCloseClicked(data, position);
+                        mActionListener.onCartPromoSuggestionButtonCloseClicked(data, position);
                     }
                 });
             } else {
@@ -305,7 +287,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
     }
 
-    class ShippingRecipientHolder extends RecyclerView.ViewHolder {
+    class RecipientAddressHolder extends RecyclerView.ViewHolder {
 
         TextView mTvAddressStatus;
         TextView mTvAddressName;
@@ -315,7 +297,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         TextView mTvAddOrChangeAddress;
         PickupPointLayout pickupPointLayout;
 
-        ShippingRecipientHolder(View itemView) {
+        RecipientAddressHolder(View itemView) {
             super(itemView);
 
             mTvAddressStatus = itemView.findViewById(R.id.tv_address_status);
@@ -337,7 +319,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     model.getAddressProvinceName()));
             mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
 
-            renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getRecipientAddressModel());
+//            renderPickupPoint(pickupPointLayout, mShipmentDataList.getRecipientAddressModel());
 
             mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
         }
@@ -352,17 +334,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
                 @Override
                 public void onChoosePickupPoint() {
-                    mAdapterViewListener.onChoosePickupPoint(data);
+                    mActionListener.onChoosePickupPoint(data);
                 }
 
                 @Override
                 public void onClearPickupPoint(Store oldStore) {
-                    mAdapterViewListener.onClearPickupPoint(data);
+                    mActionListener.onClearPickupPoint(data);
                 }
 
                 @Override
                 public void onEditPickupPoint(Store oldStore) {
-                    mAdapterViewListener.onEditPickupPoint(data);
+                    mActionListener.onEditPickupPoint(data);
                 }
             });
 
@@ -379,14 +361,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAdapterViewListener.onAddOrChangeAddress();
+                    mActionListener.onAddOrChangeAddress();
                 }
             };
         }
 
     }
 
-    class ShipmentCostDetailHolder extends RecyclerView.ViewHolder {
+    class ShipmentCostHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout mRlDetailShipmentFee;
         TextView mTvTotalItemLabel;
@@ -399,7 +381,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         TextView mTvPromoFreeShipping;
         TextView mTvPromoTextViewRemove;
 
-        ShipmentCostDetailHolder(View itemView) {
+        ShipmentCostHolder(View itemView) {
             super(itemView);
 
             mRlDetailShipmentFee = itemView.findViewById(R.id.rl_detail_shipment_fee);
@@ -414,7 +396,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvPromoTextViewRemove = itemView.findViewById(R.id.tv_promo_text_view_remove);
         }
 
-        void bindViewHolder(CartPayableDetailModel model) {
+        void bindViewHolder(ShipmentCostModel model) {
             mRlDetailShipmentFee.setVisibility(View.VISIBLE);
 
             mTvTotalItemLabel.setText(getTotalItemFormat(model.getTotalItem()));
@@ -431,7 +413,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvPromoFreeShipping.setVisibility(View.VISIBLE);
             mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
 
-            mAdapterViewListener.onTotalPaymentChange(model);
+            mActionListener.onTotalPaymentChange(model);
         }
 
         private void togglePromoText() {
@@ -448,7 +430,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     }
 
-    class ShippedProductDetailsHolder extends RecyclerView.ViewHolder {
+    class CartSellerItemHolder extends RecyclerView.ViewHolder {
 
         private static final int IMAGE_ALPHA_DISABLED = 128;
         private static final int IMAGE_ALPHA_ENABLED = 255;
@@ -502,7 +484,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
 
-        ShippedProductDetailsHolder(View itemView) {
+        CartSellerItemHolder(View itemView) {
             super(itemView);
 
             mTvSenderName = itemView.findViewById(R.id.tv_sender_name);
@@ -552,7 +534,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mLlNoteToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
         }
 
-        void bindViewHolder(CartPayableDetailModel cost, CartSellerItemModel model) {
+        void bindViewHolder(CartSellerItemModel model) {
             // Initialize variables
             List<CartItemModel> cartItemModels = new ArrayList<>(model.getCartItemModels());
 
@@ -574,12 +556,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 mTvSelectedShipment.setText(getCourierName(courier));
                 shippingFee = CURRENCY_IDR.format(courier.getDeliveryPrice());
                 model.setTotalPrice(model.getTotalPrice() + courier.getDeliveryPrice());
-                cost.setShippingFee(cost.getShippingFee() + courier.getDeliveryPrice());
+//                cost.setShippingFee(cost.getShippingFee() + courier.getDeliveryPrice());
 
                 if (shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) {
                     insuranceFee = CURRENCY_IDR.format(courier.getInsurancePrice());
                     model.setTotalPrice(model.getTotalPrice() + courier.getInsurancePrice());
-                    cost.setInsuranceFee(cost.getInsuranceFee() + courier.getInsurancePrice());
+//                    cost.setInsuranceFee(cost.getInsuranceFee() + courier.getInsurancePrice());
                 }
             }
 
@@ -715,7 +697,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAdapterViewListener.onChooseShipment(position, cartSellerItemModel);
+                    mActionListener.onChooseShipment(position, cartSellerItemModel);
                 }
             };
         }

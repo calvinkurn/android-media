@@ -22,7 +22,7 @@ public class CartSingleAddressData implements Parcelable {
     private CartPromoSuggestion cartPromoSuggestion;
     private RecipientAddressModel recipientAddressModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
-    private CartPayableDetailModel cartPayableDetailModel;
+    private ShipmentCostModel shipmentCostModel;
     private ShipmentCartData shipmentCartData;
 
     public CartPromo getCartPromo() {
@@ -57,12 +57,12 @@ public class CartSingleAddressData implements Parcelable {
         this.cartSellerItemModelList = cartSellerItemModelList;
     }
 
-    public CartPayableDetailModel getCartPayableDetailModel() {
-        return cartPayableDetailModel;
+    public ShipmentCostModel getShipmentCostModel() {
+        return shipmentCostModel;
     }
 
-    public void setCartPayableDetailModel(CartPayableDetailModel cartPayableDetailModel) {
-        this.cartPayableDetailModel = cartPayableDetailModel;
+    public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
+        this.shipmentCostModel = shipmentCostModel;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CartSingleAddressData implements Parcelable {
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeParcelable(this.recipientAddressModel, flags);
         dest.writeTypedList(this.cartSellerItemModelList);
-        dest.writeParcelable(this.cartPayableDetailModel, flags);
+        dest.writeParcelable(this.shipmentCostModel, flags);
     }
 
     public CartSingleAddressData() {
@@ -87,7 +87,7 @@ public class CartSingleAddressData implements Parcelable {
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
-        this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
+        this.shipmentCostModel = in.readParcelable(ShipmentCostModel.class.getClassLoader());
     }
 
     public static final Creator<CartSingleAddressData> CREATOR = new Creator<CartSingleAddressData>() {
