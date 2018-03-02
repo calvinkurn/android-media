@@ -355,9 +355,30 @@ public class TopProfileActivity extends BaseEmptyActivity
         fragmentListener = profileFragment;
     }
 
-
-
     private void populateData() {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (topProfileViewModel == null) return;
+
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(
+                            topProfileViewModel.getName()
+                    );
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle("");
+                    isShow = false;
+                }
+            }
+        });
+
         tabLayout.setVisibility(topProfileViewModel.isKol() ? View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
@@ -442,26 +463,6 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void setupToolbar() {
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(
-                            topProfileViewModel != null ? topProfileViewModel.getName() : ""
-                    );
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle("");
-                    isShow = false;
-                }
-            }
-        });
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
