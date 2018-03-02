@@ -82,6 +82,7 @@ public class TopProfileDataMapper
         model.setShopBadgeLevel(data.getShopReputation().getBadgeLevel());
         model.setShopLastOnline(data.getLastOnline());
         model.setShopAppLink(data.getApplink());
+        model.setFavorite(data.getIsFavorite());
     }
 
     private ProfileGraphql getDataOrError(Response<GraphqlResponse<ProfileGraphql>>

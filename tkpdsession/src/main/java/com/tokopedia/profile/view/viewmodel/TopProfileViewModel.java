@@ -41,6 +41,7 @@ public class TopProfileViewModel {
     private int shopBadgeLevel;
     private String shopLastOnline;
     private String shopAppLink;
+    private boolean isFavorite;
 
     private boolean isUser;
 
@@ -306,6 +307,14 @@ public class TopProfileViewModel {
 
     public int getShopBadgeLevel() {
         return shopBadgeLevel;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public void setShopBadgeLevel(int shopBadgeLevel) {

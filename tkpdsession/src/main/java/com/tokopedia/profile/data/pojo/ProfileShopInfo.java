@@ -84,6 +84,9 @@ public class ProfileShopInfo {
         @SerializedName("applink")
         @Expose
         private String applink;
+        @SerializedName("is_favorite")
+        @Expose
+        private boolean isFavorite;
 
         public int getShopId() {
             return shopId;
@@ -243,6 +246,14 @@ public class ProfileShopInfo {
 
         public void setApplink(String applink) {
             this.applink = applink;
+        }
+
+        public boolean getIsFavorite() {
+            return isFavorite;
+        }
+
+        public void setIsFavorite(boolean isFavorite) {
+            this.isFavorite = isFavorite;
         }
 
         public static class ShopReputation {
