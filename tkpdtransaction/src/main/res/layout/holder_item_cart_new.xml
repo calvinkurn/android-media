@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -87,7 +88,8 @@
                 android:layout_marginTop="-5dp"
                 android:background="@drawable/circle"
                 android:padding="5dp"
-                android:src="@drawable/ic_wishlist"/>
+                android:src="@drawable/ic_wishlist"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -228,7 +230,7 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/bg_button_counter_plus"/>
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_qty"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
@@ -243,7 +245,9 @@
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:textColor="@color/black_70"
+                android:textColorHighlight="@color/medium_green"
                 android:textSize="16sp"
+                app:backgroundTint="@color/medium_green"
                 tools:text="1"/>
 
             <ImageView
@@ -262,12 +266,12 @@
                 android:layout_below="@id/et_qty"
                 android:fontFamily="sans-serif"
                 android:maxLines="2"
+                android:textColor="@color/text_cart_item_error_red"
                 android:textSize="11sp"
                 android:textStyle="normal"
                 android:visibility="gone"
                 tools:ignore="SmallSp"
                 tools:text="Maksimal 2 broh"
-                tools:textColor="#d30b16"
                 tools:visibility="visible"/>
         </RelativeLayout>
 
@@ -301,26 +305,29 @@
                 android:textStyle="normal"/>
 
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_remark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_label_form_remark"
-                android:background="@color/transparent"
                 android:fontFamily="sans-serif"
                 android:imeActionLabel="Selesai"
                 android:imeOptions="actionDone"
                 android:maxLength="144"
                 android:maxLines="3"
                 android:paddingBottom="10dp"
+                android:textColor="@color/black_70"
+                android:textColorHighlight="@color/medium_green"
                 android:textSize="12sp"
                 android:textStyle="normal"
+                app:backgroundTint="@color/medium_green"
                 tools:ignore="TextFields"
                 tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
 barangnya gan!"/>
         </RelativeLayout>
 
         <View
+            android:id="@+id/line_bottom_remark"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#e0e0e0"/>
