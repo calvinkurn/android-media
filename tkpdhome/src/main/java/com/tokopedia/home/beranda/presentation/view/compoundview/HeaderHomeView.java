@@ -159,7 +159,7 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void renderTokocashLayoutListener() {
-        final HomeHeaderWalletAction homeHeaderWalletAction =
+        HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
         if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.isWalletDataError()) {
             tokoCashHolder.setOnClickListener(getOnClickRefreshTokocash());
@@ -298,9 +298,8 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
         tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
-
+        renderTokocashLayoutListener();
         if (headerViewModel.getHomeHeaderWalletActionData() != null) {
-            renderTokocashLayoutListener();
             renderVisibilityTitleOnlyTokoCash(headerViewModel.getHomeHeaderWalletActionData()
                     .isVisibleActionButton());
         }
