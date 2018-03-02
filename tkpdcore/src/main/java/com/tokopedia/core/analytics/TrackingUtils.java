@@ -712,16 +712,19 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static String getCIntelData(Context context) {
-        ArrayList<String> compList = new ArrayList<>();
+        String compList = "";
         PackageManager pm = context.getPackageManager();
         for (String key : COMPARR) {
             if (pm != null) {
                 if (TrackingUtils.isAppInstalled(key, pm)) {
-                    compList.add(getAlias(key));
+                    if (TextUtils.isEmpty(compList))
+                        compList = compList + getAlias(key);
+                    else if(!TextUtils.isEmpty(getAlias(key)))
+                        compList = compList + "-" + getAlias(key);
                 }
             }
         }
-        return new Gson().toJson(compList);
+        return compList;
     }
 
     private static boolean isAppInstalled(String uri, PackageManager pm) {
