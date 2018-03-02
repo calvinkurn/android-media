@@ -426,7 +426,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     private void disableFollowButton() {
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
                 R.drawable.bg_button_white_enabled_border));
-        buttonFollowText.setText(R.string.follow);
+        buttonFollowText.setText(R.string.following);
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.black_54));
         buttonFollowImage.setVisibility(View.GONE);
