@@ -7,7 +7,8 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.view.activity.PosLoginActivity;
+import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
+import com.tokopedia.posapp.cache.PosCacheHandler;
 
 /**
  * Created by okasurya on 7/28/17.

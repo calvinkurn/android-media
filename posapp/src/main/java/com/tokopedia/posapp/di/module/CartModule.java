@@ -2,13 +2,13 @@ package com.tokopedia.posapp.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.posapp.data.factory.CartFactory;
-import com.tokopedia.posapp.data.mapper.AddToCartMapper;
-import com.tokopedia.posapp.data.repository.CartRepository;
-import com.tokopedia.posapp.data.repository.CartRepositoryImpl;
+import com.tokopedia.posapp.cart.data.factory.CartFactory;
+import com.tokopedia.posapp.cart.data.mapper.AddToCartMapper;
+import com.tokopedia.posapp.cart.data.repository.CartRepository;
+import com.tokopedia.posapp.cart.data.repository.CartRepositoryImpl;
 import com.tokopedia.posapp.di.scope.CartScope;
-import com.tokopedia.posapp.domain.usecase.AddToCartUseCase;
-import com.tokopedia.posapp.domain.usecase.GetAllCartUseCase;
+import com.tokopedia.posapp.cart.domain.usecase.AddToCartUseCase;
+import com.tokopedia.posapp.cart.domain.usecase.GetAllCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;

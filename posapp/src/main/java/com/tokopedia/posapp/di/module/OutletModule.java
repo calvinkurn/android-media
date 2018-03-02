@@ -1,15 +1,14 @@
 package com.tokopedia.posapp.di.module;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.data.source.cloud.api.OutletApi;
-import com.tokopedia.posapp.data.factory.OutletFactory;
-import com.tokopedia.posapp.data.mapper.GetOutletMapper;
-import com.tokopedia.posapp.data.repository.OutletRepository;
-import com.tokopedia.posapp.data.repository.OutletRepositoryImpl;
-import com.tokopedia.posapp.domain.usecase.GetOutletUseCase;
+import com.tokopedia.posapp.outlet.data.source.OutletApi;
+import com.tokopedia.posapp.outlet.data.factory.OutletFactory;
+import com.tokopedia.posapp.outlet.data.mapper.GetOutletMapper;
+import com.tokopedia.posapp.outlet.data.repository.OutletRepository;
+import com.tokopedia.posapp.outlet.data.repository.OutletRepositoryImpl;
+import com.tokopedia.posapp.outlet.domain.usecase.GetOutletUseCase;
 import com.tokopedia.posapp.di.scope.OutletScope;
 
 import dagger.Module;

@@ -1,10 +1,10 @@
 package com.tokopedia.posapp.di.module;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.data.factory.BankFactory;
-import com.tokopedia.posapp.data.factory.CartFactory;
-import com.tokopedia.posapp.data.factory.EtalaseFactory;
-import com.tokopedia.posapp.data.factory.ProductFactory;
+import com.tokopedia.posapp.bank.data.factory.BankFactory;
+import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
+import com.tokopedia.posapp.cart.data.factory.CartFactory;
+import com.tokopedia.posapp.product.ProductFactory;
 import com.tokopedia.posapp.di.scope.ReactCacheScope;
 import com.tokopedia.posapp.react.datasource.ReactCacheRepository;
 import com.tokopedia.posapp.react.datasource.ReactCacheRepositoryImpl;

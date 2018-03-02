@@ -4,6 +4,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.auth.validatepassword.data.model.ValidatePasswordResponse;
 import com.tokopedia.posapp.auth.validatepassword.domain.model.ValidatePasswordDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -12,6 +14,11 @@ import rx.functions.Func1;
  */
 
 public class ValidatePasswordMapper implements Func1<Response<TkpdResponse>, ValidatePasswordDomain> {
+    @Inject
+    public ValidatePasswordMapper() {
+
+    }
+
     @Override
     public ValidatePasswordDomain call(Response<TkpdResponse> tkpdResponse) {
         ValidatePasswordDomain validatePasswordDomain = new ValidatePasswordDomain();

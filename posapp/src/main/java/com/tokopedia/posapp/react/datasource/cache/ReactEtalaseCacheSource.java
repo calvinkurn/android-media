@@ -1,8 +1,8 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.data.factory.EtalaseFactory;
-import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
+import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
+import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
 

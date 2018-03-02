@@ -4,15 +4,15 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.posapp.data.factory.PaymentFactory;
-import com.tokopedia.posapp.data.mapper.CreateOrderMapper;
-import com.tokopedia.posapp.data.mapper.PaymentStatusMapper;
-import com.tokopedia.posapp.data.repository.PaymentRepository;
-import com.tokopedia.posapp.data.repository.PaymentRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.GatewayPaymentApi;
+import com.tokopedia.posapp.payment.otp.data.factory.PaymentFactory;
+import com.tokopedia.posapp.payment.otp.data.mapper.CreateOrderMapper;
+import com.tokopedia.posapp.payment.otp.data.mapper.PaymentStatusMapper;
+import com.tokopedia.posapp.payment.otp.data.repository.PaymentRepository;
+import com.tokopedia.posapp.payment.otp.data.repository.PaymentRepositoryImpl;
+import com.tokopedia.posapp.payment.otp.data.source.PaymentApi;
 import com.tokopedia.posapp.di.scope.PaymentScope;
-import com.tokopedia.posapp.domain.usecase.CheckPaymentStatusUseCase;
-import com.tokopedia.posapp.domain.usecase.CreateOrderUseCase;
+import com.tokopedia.posapp.payment.otp.domain.usecase.CheckPaymentStatusUseCase;
+import com.tokopedia.posapp.payment.otp.domain.usecase.CreateOrderUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,8 +25,8 @@ import retrofit2.Retrofit;
 @Module(includes = CartModule.class)
 public class PaymentModule {
     @Provides
-    GatewayPaymentApi provideGatewayPaymentApi(@PosGatewayAuth Retrofit retrofit) {
-        return retrofit.create(GatewayPaymentApi.class);
+    PaymentApi provideGatewayPaymentApi(@PosGatewayAuth Retrofit retrofit) {
+        return retrofit.create(PaymentApi.class);
     }
 
     @Provides
@@ -40,10 +40,10 @@ public class PaymentModule {
     }
 
     @Provides
-    PaymentFactory providePaymentFactory(GatewayPaymentApi gatewayPaymentApi,
+    PaymentFactory providePaymentFactory(PaymentApi paymentApi,
                                          PaymentStatusMapper paymentStatusmapper,
                                          CreateOrderMapper createOrderMapper) {
-        return new PaymentFactory(gatewayPaymentApi, paymentStatusmapper, createOrderMapper);
+        return new PaymentFactory(paymentApi, paymentStatusmapper, createOrderMapper);
     }
 
     @Provides

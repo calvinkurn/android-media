@@ -3,20 +3,18 @@ package com.tokopedia.posapp.di.module;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.posapp.data.factory.EtalaseFactory;
-import com.tokopedia.posapp.data.mapper.GetEtalaseMapper;
-import com.tokopedia.posapp.data.repository.EtalaseRepository;
-import com.tokopedia.posapp.data.repository.EtalaseRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
+import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
+import com.tokopedia.posapp.cache.data.mapper.GetEtalaseMapper;
+import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
+import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
+import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
 import com.tokopedia.posapp.di.scope.EtalaseScope;
-import com.tokopedia.posapp.domain.usecase.GetEtalaseCacheUseCase;
-import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
+import com.tokopedia.posapp.product.productlist.domain.usecase.GetEtalaseCacheUseCase;
+import com.tokopedia.posapp.cache.domain.usecase.GetEtalaseUseCase;
+import com.tokopedia.posapp.cache.domain.usecase.StoreEtalaseCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 
 /**
  * Created by okasurya on 9/19/17.
@@ -31,7 +29,7 @@ public class EtalaseModule {
     }
 
     @Provides
-    EtalaseFactory provideEtalaseFactory(GatewayProductApi posProductApi, GetEtalaseMapper getEtalaseMapper) {
+    EtalaseFactory provideEtalaseFactory(ProductListApi posProductApi, GetEtalaseMapper getEtalaseMapper) {
         return new EtalaseFactory(posProductApi, getEtalaseMapper);
     }
 

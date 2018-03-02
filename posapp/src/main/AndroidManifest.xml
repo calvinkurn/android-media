@@ -21,15 +21,15 @@
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
 
         <service
-            android:name=".view.service.CacheService"
+            android:name=".cache.view.service.CacheService"
             android:exported="false" />
 
         <service
-            android:name=".view.service.SchedulerService"
+            android:name=".cache.view.service.SchedulerService"
             android:exported="false" />
 
         <receiver
-            android:name=".view.service.StartUpReceiver"
+            android:name=".cache.view.service.StartUpReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -46,54 +46,54 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".deeplink.DeeplinkHandlerActivity"
+            android:name=".applink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.PosLoginActivity"
+            android:name=".auth.login.view.activity.PosLoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.OutletActivity"
+            android:name=".outlet.view.activity.OutletActivity"
             android:label="@string/outlet_page_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ProductDetailActivity"
+            android:name=".product.productdetail.view.activity.ProductDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.InstallmentSimulationActivity"
+            android:name=".product.productdetail.view.activity.InstallmentSimulationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ScanCreditCardActivity"
+            android:name=".payment.cardscanner.view.activity.ScanCreditCardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.CardDetailActivity"
+            android:name=".payment.cardscanner.view.activity.CardDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ProductListActivity"
+            android:name=".product.productlist.view.ProductListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
         <activity
-            android:name=".view.activity.LocalCartActivity"
+            android:name=".cart.view.LocalCartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.PaymentActivity"
+            android:name=".payment.checkout.CheckoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.PaymentProcessingActivity"
+            android:name=".payment.process.PaymentProcessingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.TransactionHistoryActivity"
+            android:name=".transaction.TransactionHistoryActivity"
             android:label="@string/tx_history_page_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ReactInstallmentActivity"
+            android:name=".payment.process.ReactInstallmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.OTPActivity"
+            android:name=".payment.otp.view.activity.OTPActivity"
             android:label="OTP"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.InvoiceActivity"
+            android:name=".payment.invoice.InvoiceActivity"
             android:screenOrientation="portrait" />
     </application>
 

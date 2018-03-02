@@ -4,15 +4,15 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.posapp.data.factory.BankFactory;
-import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
-import com.tokopedia.posapp.data.repository.BankRepository;
-import com.tokopedia.posapp.data.repository.BankRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.GatewayBankApi;
-import com.tokopedia.posapp.database.manager.BankDbManager;
+import com.tokopedia.posapp.bank.data.source.cloud.api.BankApi;
+import com.tokopedia.posapp.bank.data.factory.BankFactory;
+import com.tokopedia.posapp.bank.data.mapper.GetBankInstallmentMapper;
+import com.tokopedia.posapp.cache.data.repository.BankRepository;
+import com.tokopedia.posapp.cache.data.repository.BankRepositoryImpl;
+import com.tokopedia.posapp.bank.data.source.local.BankDbManager;
 import com.tokopedia.posapp.di.scope.BankScope;
-import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreBankUsecase;
+import com.tokopedia.posapp.bank.domain.usecase.GetBankUseCase;
+import com.tokopedia.posapp.bank.domain.usecase.StoreBankUsecase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,8 +31,8 @@ public class BankModule {
     }
 
     @Provides
-    GatewayBankApi provideGatewayBankApi(@PosGatewayAuth Retrofit retrofit) {
-        return retrofit.create(GatewayBankApi.class);
+    BankApi provideGatewayBankApi(@PosGatewayAuth Retrofit retrofit) {
+        return retrofit.create(BankApi.class);
     }
 
     @Provides
@@ -41,9 +41,9 @@ public class BankModule {
     }
 
     @Provides
-    BankFactory provideBankFactory(GatewayBankApi gatewayBankApi,
+    BankFactory provideBankFactory(BankApi bankApi,
                                    GetBankInstallmentMapper getBankInstallmentMapper) {
-        return new BankFactory(gatewayBankApi, getBankInstallmentMapper);
+        return new BankFactory(bankApi, getBankInstallmentMapper);
     }
 
     @Provides

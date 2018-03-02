@@ -3,7 +3,7 @@ package com.tokopedia.posapp.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.module.PosCacheModule;
 import com.tokopedia.posapp.di.scope.PosCacheScope;
-import com.tokopedia.posapp.view.service.CacheService;
+import com.tokopedia.posapp.cache.view.service.CacheService;
 
 import dagger.Component;
 

@@ -22,28 +22,7 @@ import retrofit2.Retrofit;
 public class ValidatePasswordModule {
     @ValidatePasswordScope
     @Provides
-    ValidatePasswordMapper provideValidatePasswordMapper() {
-        return new ValidatePasswordMapper();
-    }
-
-    @ValidatePasswordScope
-    @Provides
-    ValidatePasswordFactory provideValidatePasswordFactory(AccountApi accountApi,
-                                                  ValidatePasswordMapper validatePasswordMapper) {
-        return new ValidatePasswordFactory(accountApi, validatePasswordMapper);
-    }
-
-    @ValidatePasswordScope
-    @Provides
     ValidatePasswordRepository provideValidatePasswordRepository(ValidatePasswordFactory validatePasswordFactory) {
         return new ValidatePasswordRepositoryImpl(validatePasswordFactory);
-    }
-
-    @ValidatePasswordScope
-    @Provides
-    ValidatePasswordUseCase provideValidatePasswordUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        ValidatePasswordRepository validatePasswordRepository) {
-        return new ValidatePasswordUseCase(threadExecutor, postExecutionThread, validatePasswordRepository);
     }
 }

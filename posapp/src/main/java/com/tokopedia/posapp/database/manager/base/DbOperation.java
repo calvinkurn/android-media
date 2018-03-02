@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.base.domain.model.DataStatus;
 
 import java.util.ArrayList;
 import java.util.List;

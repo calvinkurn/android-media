@@ -18,13 +18,13 @@
                 android:fitsSystemWindows="true"
                 android:orientation="vertical" />
 
-            <com.tokopedia.posapp.view.widget.HeaderInfoView
+            <com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView
                 android:id="@+id/view_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
-            <com.tokopedia.posapp.view.widget.InstallmentSimulationView
+            <com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView
                 android:id="@+id/view_price_simulation"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

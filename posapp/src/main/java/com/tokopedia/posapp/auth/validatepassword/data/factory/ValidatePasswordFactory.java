@@ -9,7 +9,7 @@ import javax.inject.Inject;
 /**
  * Created by okasurya on 9/28/17.
  */
-
+@Deprecated
 public class ValidatePasswordFactory {
     private AccountApi accountApi;
     private ValidatePasswordMapper validatePasswordMapper;

@@ -3,13 +3,14 @@ package com.tokopedia.posapp.di.module;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.data.factory.ShopFactory;
-import com.tokopedia.posapp.data.mapper.GetShopMapper;
-import com.tokopedia.posapp.data.repository.ShopRepository;
-import com.tokopedia.posapp.data.repository.ShopRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
+import com.tokopedia.posapp.shop.data.factory.ShopFactory;
+import com.tokopedia.posapp.shop.data.GetShopMapper;
+import com.tokopedia.posapp.shop.data.repository.ShopRepository;
+import com.tokopedia.posapp.shop.data.repository.ShopRepositoryImpl;
+import com.tokopedia.posapp.shop.data.source.cloud.ShopApi;
 import com.tokopedia.posapp.di.scope.ShopScope;
-import com.tokopedia.posapp.domain.usecase.GetShopUseCase;
+import com.tokopedia.posapp.shop.data.source.cloud.ShopCloudSource;
+import com.tokopedia.posapp.shop.domain.usecase.GetShopUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,15 +36,8 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    ShopFactory provideShopFactory(ShopApi shopApi,
-                                   GetShopMapper shopMapper) {
-        return new ShopFactory(shopApi, shopMapper);
-    }
-
-    @ShopScope
-    @Provides
-    ShopRepository provideShopRepository(ShopFactory shopFactory) {
-        return new ShopRepositoryImpl(shopFactory);
+    ShopRepository provideShopRepository(ShopCloudSource shopCloudSource) {
+        return new ShopRepositoryImpl(shopCloudSource);
     }
 
     @ShopScope

@@ -12,10 +12,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.data.factory.CartFactory;
+import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.di.component.CartComponent;
 import com.tokopedia.posapp.di.component.DaggerCartComponent;
-import com.tokopedia.posapp.domain.model.cart.CartDomain;
+import com.tokopedia.posapp.cart.domain.model.CartDomain;
 
 import java.util.List;
 

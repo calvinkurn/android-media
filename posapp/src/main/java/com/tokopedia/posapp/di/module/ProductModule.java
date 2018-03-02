@@ -5,17 +5,16 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.data.mapper.GetGatewayProductListMapper;
-import com.tokopedia.posapp.data.mapper.GetProductMapper;
-import com.tokopedia.posapp.data.repository.ProductRepository;
-import com.tokopedia.posapp.data.repository.ProductRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
-import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
+import com.tokopedia.posapp.cache.data.mapper.GetProductListMapper;
+import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
+import com.tokopedia.posapp.product.ProductFactory;
+import com.tokopedia.posapp.product.productdetail.data.mapper.GetProductMapper;
+import com.tokopedia.posapp.product.ProductRepository;
+import com.tokopedia.posapp.product.ProductRepositoryImpl;
+import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.di.scope.ProductScope;
-import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
-import com.tokopedia.posapp.domain.usecase.GetProductUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
+import com.tokopedia.posapp.product.productdetail.domain.usecase.GetProductUseCase;
+import com.tokopedia.posapp.cache.domain.usecase.StoreProductCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,8 +27,8 @@ import retrofit2.Retrofit;
 @Module
 public class ProductModule {
     @Provides
-    GatewayProductApi provideGatewayProductApi(@PosGatewayAuth Retrofit retrofit) {
-        return retrofit.create(GatewayProductApi.class);
+    ProductListApi provideGatewayProductApi(@PosGatewayAuth Retrofit retrofit) {
+        return retrofit.create(ProductListApi.class);
     }
 
     @Provides
@@ -43,20 +42,20 @@ public class ProductModule {
     }
 
     @Provides
-    GetGatewayProductListMapper provideGetGatewayProductListMapper(Gson gson) {
-        return new GetGatewayProductListMapper(gson);
+    GetProductListMapper provideGetGatewayProductListMapper(Gson gson) {
+        return new GetProductListMapper(gson);
     }
 
     @Provides
-    ProductFactory provideProductFactory(GatewayProductApi gatewayProductApi,
+    ProductFactory provideProductFactory(ProductListApi productListApi,
                                          ProductApi productApi,
                                          GetProductMapper getProductMapper,
-                                         GetGatewayProductListMapper getGatewayProductListMapper) {
+                                         GetProductListMapper getProductListMapper) {
         return new ProductFactory(
-                gatewayProductApi,
+                productListApi,
                 productApi,
                 getProductMapper,
-                getGatewayProductListMapper
+                getProductListMapper
         );
     }
 
@@ -70,13 +69,6 @@ public class ProductModule {
                                                PostExecutionThread postExecutionThread,
                                                ProductRepository productRepository) {
         return new GetProductUseCase(threadExecutor, postExecutionThread, productRepository);
-    }
-
-    @Provides
-    GetProductListUseCase provideGetProductListUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       ProductRepository productRepository) {
-        return new GetProductListUseCase(threadExecutor, postExecutionThread, productRepository);
     }
 
     @Provides

@@ -1,10 +1,10 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.data.pojo.base.Paging;
-import com.tokopedia.posapp.data.pojo.ShopProductResponse;
-import com.tokopedia.posapp.domain.model.product.ProductDomain;
+import com.tokopedia.posapp.product.ProductFactory;
+import com.tokopedia.posapp.base.data.pojo.Paging;
+import com.tokopedia.posapp.shop.data.ShopProductResponse;
+import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;

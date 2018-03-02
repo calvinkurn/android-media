@@ -3,7 +3,7 @@ package com.tokopedia.posapp.auth.validatepassword.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.auth.validatepassword.domain.ValidatePasswordUseCase;
 import com.tokopedia.posapp.auth.validatepassword.view.ValidatePassword;
-import com.tokopedia.posapp.view.subscriber.CheckPasswordSubscriber;
+import com.tokopedia.posapp.auth.validatepassword.view.CheckPasswordSubscriber;
 
 import javax.inject.Inject;
 

@@ -3,7 +3,7 @@ package com.tokopedia.posapp.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.module.PaymentModule;
 import com.tokopedia.posapp.di.scope.PaymentScope;
-import com.tokopedia.posapp.view.activity.OTPActivity;
+import com.tokopedia.posapp.payment.otp.view.activity.OTPActivity;
 
 import dagger.Component;
 

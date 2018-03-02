@@ -6,7 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.auth.validatepassword.view.ValidatePasswordFragment;
+import com.tokopedia.posapp.auth.validatepassword.view.fragment.ValidatePasswordFragment;
 
 /**
  * Created by okasurya on 9/26/17.

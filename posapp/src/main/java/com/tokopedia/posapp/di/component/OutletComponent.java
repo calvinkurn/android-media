@@ -5,7 +5,7 @@ import com.tokopedia.posapp.di.module.OutletModule;
 import com.tokopedia.posapp.di.module.ShopModule;
 import com.tokopedia.posapp.di.scope.OutletScope;
 import com.tokopedia.posapp.di.scope.ShopScope;
-import com.tokopedia.posapp.view.fragment.OutletFragment;
+import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
 
 import dagger.Component;
 

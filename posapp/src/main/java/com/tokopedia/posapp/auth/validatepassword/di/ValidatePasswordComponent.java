@@ -1,8 +1,7 @@
 package com.tokopedia.posapp.auth.validatepassword.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.auth.di.AuthComponent;
-import com.tokopedia.posapp.auth.validatepassword.view.ValidatePasswordFragment;
+import com.tokopedia.posapp.auth.validatepassword.view.fragment.ValidatePasswordFragment;
 
 import dagger.Component;
 

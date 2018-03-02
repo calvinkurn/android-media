@@ -1,10 +1,9 @@
 package com.tokopedia.posapp.database.manager;
 
-import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.EtalaseDb;
-import com.tokopedia.posapp.domain.model.DataStatus;
-import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
+import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.ArrayList;
 import java.util.List;
