@@ -145,10 +145,6 @@ public class ShipmentRatesDataMapper {
         if (shipmentItemData.getCourierItemData().size() > 0) {
             minEtd = shipmentItemData.getCourierItemData().get(0).getMinEtd();
             maxEtd = shipmentItemData.getCourierItemData().get(0).getMaxEtd();
-            if (minEtd == 0) {
-                shipmentItemData.setDeliveryTimeRange(
-                        shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
-            }
             if (shipmentItemData.getCourierItemData().size() > 1) {
                 for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
                     if (courierItemData.getMinEtd() != 0) {
@@ -172,15 +168,21 @@ public class ShipmentRatesDataMapper {
                             }
                         }
                     }
-                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, minEtd, maxEtd));
+                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
                 }
             } else {
-                shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, minEtd, maxEtd));
+                if (minEtd == 0) {
+                    shipmentItemData.setDeliveryTimeRange(
+                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
+                } else {
+                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
+                }
             }
         }
     }
 
-    private String formatEtd(@Nullable ShipmentItemData shipmentItemData, int minEtd, int maxEtd) {
+    private String formatEtd(@Nullable ShipmentItemData shipmentItemData, @Nullable Product product,
+                             int minEtd, int maxEtd) {
         String deliveryTimeRange = "";
         if (minEtd != 0 && maxEtd != 0) {
             if (minEtd != maxEtd) {
@@ -231,14 +233,20 @@ public class ShipmentRatesDataMapper {
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
-            String formattedEtd = formatEtd(null, product.getMinEtd(), product.getMaxEtd());
-            if (!TextUtils.isEmpty(formattedEtd)) {
-                courierItemData.setEstimatedHourDelivery(formattedEtd);
+            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
+                    courierItemData.getMaxEtd());
+            if (courierItemData.getMaxEtd() >= DAY_IN_SECONDS) {
+                if (!TextUtils.isEmpty(formattedEtd)) {
+                    courierItemData.setEstimatedHourDelivery(formattedEtd);
+                } else {
+                    courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+                }
             } else {
-                courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+                courierItemData.setEstimatedDayDelivery(formattedEtd);
             }
         } else {
-            String formattedEtd = formatEtd(null, product.getMinEtd(), product.getMaxEtd());
+            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
+                    courierItemData.getMaxEtd());
             if (!TextUtils.isEmpty(formattedEtd)) {
                 courierItemData.setEstimatedDayDelivery(formattedEtd);
             } else {
