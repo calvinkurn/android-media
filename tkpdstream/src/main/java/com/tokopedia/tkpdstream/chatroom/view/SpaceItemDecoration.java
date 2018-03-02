@@ -37,9 +37,11 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
         if (spanCount == 0) {
             if(includeEdge){
                 if (parent.getChildAdapterPosition(view) == 0) {
-                    outRect.top = space;
-                }else if(parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount()-1){
                     outRect.bottom = space;
+                    outRect.top = space/2;
+                }else if(parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount()-1){
+                    outRect.top = space;
+                    outRect.bottom = space/2;
                 }else {
                     outRect.top = space/2;
                     outRect.bottom = space/2;
