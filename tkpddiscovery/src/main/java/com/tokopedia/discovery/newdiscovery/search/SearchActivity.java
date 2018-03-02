@@ -687,10 +687,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void showFilterDetailPage() {
-        closeFilterBottomSheet();
-        bottomSheetFilterMain.setVisibility(View.GONE);
         bottomSheetFilterDetail.setVisibility(View.VISIBLE);
-        launchFilterBottomSheet();
+        bottomSheetFilterMain.setVisibility(View.GONE);
     }
 
     private boolean isFilterDetailShown() {
@@ -766,10 +764,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void hideFilterDetailPage() {
-        closeFilterBottomSheet();
-        bottomSheetFilterDetail.setVisibility(View.GONE);
         bottomSheetFilterMain.setVisibility(View.VISIBLE);
-        launchFilterBottomSheet();
+        bottomSheetFilterDetail.setVisibility(View.GONE);
         refreshFilterMainPage();
     }
 
