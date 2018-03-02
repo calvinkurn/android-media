@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.EmptyKolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +24,14 @@ import javax.inject.Inject;
 public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> list;
     private final KolPostTypeFactory typeFactory;
-    private EmptyModel emptyModel;
+    private EmptyKolPostViewModel emptyModel;
     private LoadingModel loadingModel;
 
     @Inject
     public KolPostAdapter(KolPostTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
-        this.emptyModel = new EmptyModel();
+        this.emptyModel = new EmptyKolPostViewModel();
         this.loadingModel = new LoadingModel();
     }
 

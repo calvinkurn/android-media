@@ -130,6 +130,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void showLoading() {
+        adapter.removeEmpty();
         adapter.showLoading();
     }
 
@@ -141,6 +142,12 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     @Override
     public void onSuccessGetProfileData(List<Visitable> visitableList) {
         adapter.addList(visitableList);
+    }
+
+    @Override
+    public void onEmptyKolPost() {
+        adapter.removeLoading();
+        adapter.showEmpty();
     }
 
     @Override

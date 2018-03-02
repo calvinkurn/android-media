@@ -14,7 +14,7 @@ import rx.Subscriber;
  */
 
 public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
-    private final KolPostListener.View  view;
+    private final KolPostListener.View view;
 
     public GetProfileKolDataSubscriber(KolPostListener.View view) {
         this.view = view;
@@ -36,9 +36,14 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
     @Override
     public void onNext(KolProfileModel kolProfileModel) {
         view.hideLoading();
-        view.onSuccessGetProfileData(
-                new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
-        );
+        if (kolProfileModel.getKolPostViewModels() != null &&
+                !kolProfileModel.getKolPostViewModels().isEmpty()) {
+            view.onSuccessGetProfileData(
+                    new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
+            );
+        } else {
+            view.onEmptyKolPost();
+        }
         view.updateCursor(kolProfileModel.getLastCursor());
     }
 }
