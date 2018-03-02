@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
 
 import android.support.annotation.Nullable;
 
+import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 /**
@@ -17,15 +18,17 @@ public class ChannelInfoViewModel {
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
+    private ChannelViewModel channelViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, int
-            totalParticipantsOnline, boolean hasPoll, @Nullable VoteInfoViewModel voteInfoViewModel) {
+            totalParticipantsOnline, boolean hasPoll, @Nullable VoteInfoViewModel voteInfoViewModel, ChannelViewModel channelViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
         this.totalParticipantsOnline = totalParticipantsOnline;
         this.hasPoll = hasPoll;
         this.voteInfoViewModel = voteInfoViewModel;
+        this.channelViewModel = channelViewModel;
     }
 
     public String getChannelUrl() {
@@ -59,5 +62,13 @@ public class ChannelInfoViewModel {
     @Nullable
     public VoteInfoViewModel getVoteInfoViewModel() {
         return voteInfoViewModel;
+    }
+
+    public ChannelViewModel getChannelViewModel() {
+        return channelViewModel;
+    }
+
+    public void setChannelViewModel(ChannelViewModel channelViewModel) {
+        this.channelViewModel = channelViewModel;
     }
 }

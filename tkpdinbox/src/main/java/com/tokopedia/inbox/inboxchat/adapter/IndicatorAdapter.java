@@ -75,7 +75,7 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
 
         IndicatorItem indicatorItem = list.get(position);
         holder.title.setText(indicatorItem.getTitle());
-        ImageHandler.loadImageWithId(holder.icon, indicatorItem.getIconResId());
+        ImageHandler.loadImageWithIdWithoutPlaceholder(holder.icon, indicatorItem.getIconResId());
 
         if (indicatorItem.getNotificationCount() > 0) {
             holder.notification.setText(String.valueOf(indicatorItem.getNotificationCount()));
@@ -116,7 +116,7 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
         list.get(position).setActive(true);
         this.currentActivePosition = position;
 
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, list.size());
     }
 
     public void setNotification(int indicatorPosition, int notifUnreads) {

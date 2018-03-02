@@ -2,7 +2,9 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.Channel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
@@ -42,8 +44,10 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getTitle(),
                 pojo.getChannel().getTotalParticipantsOnline(),
                 hasPoll(pojo.getChannel().getActivePolls()),
-                mapToVoteViewModel(pojo.getChannel().getActivePolls()));
+                mapToVoteViewModel(pojo.getChannel().getActivePolls()),
+                mapToChannelDesc(pojo.getChannel()));
     }
+
 
     private boolean hasPoll(ActivePollPojo activePoll) {
         return activePoll != null
@@ -63,6 +67,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                             activePollPojo.getOptions()),
                     String.valueOf(activePollPojo.getStatistic().getTotalVoter()),
                     activePollPojo.getPollType(),
+                    getVoteOptionType(activePollPojo.getOptionType()),
                     activePollPojo.getStatus(),
                     activePollPojo.isIsAnswered(),
                     "INFO YG PERLU DI UPDATE",
@@ -106,6 +111,13 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         return list;
     }
 
+
+    private ChannelViewModel mapToChannelDesc(Channel pojo) {
+
+        return new ChannelViewModel(String.valueOf(pojo.getChannelId()), pojo.getModeratorName()
+                , pojo.getCoverUrl(), pojo.getModeratorProfileUrl(), pojo.getTitle(), pojo.getDescription(), pojo.getTotalParticipantsOnline());
+    }
+
     private int checkIfSelected(boolean isAnswered, boolean isSelected) {
         if (isAnswered && isSelected) {
             return VoteViewModel.SELECTED;
@@ -114,5 +126,12 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         } else {
             return VoteViewModel.DEFAULT;
         }
+    }
+
+    private String getVoteOptionType(String type) {
+        if (type.equalsIgnoreCase(OPTION_IMAGE)) {
+            return VoteViewModel.IMAGE_TYPE;
+        }
+        return VoteViewModel.BAR_TYPE;
     }
 }

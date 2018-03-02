@@ -11,7 +11,8 @@ import java.util.List;
 public class VoteInfoViewModel {
 
     private final String pollId;
-    private String voteType;
+    private String voteOptionType;
+    private String voteGiftType;
     private String voteStatus;
     private String voteInfoString;
     private String voteInfoUrl;
@@ -22,23 +23,28 @@ public class VoteInfoViewModel {
     private String participant;
 
     public VoteInfoViewModel(String pollId, String title, List<Visitable> listOption, String participant,
-                             String voteType, String voteStatus, boolean voted,
+                             String voteGiftType, String voteOptionType, String voteStatus, boolean voted,
                              String voteInfoString, String voteInfoUrl, long startTime, long endTime) {
         this.pollId= pollId;
         this.title = title;
         this.listOption = listOption;
         this.participant = participant;
         this.voteStatus = voteStatus;
-        this.voteType = voteType;
+        this.voteOptionType = voteOptionType;
+        this.voteGiftType = voteGiftType;
         this.voted = voted;
         this.voteInfoString = voteInfoString;
         this.voteInfoUrl = voteInfoUrl;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = 1486098000;
+        this.endTime = 1486108800;
     }
 
-    public String getVoteType() {
-        return voteType;
+    public String getVoteOptionType() {
+        return voteOptionType;
+    }
+
+    public String getVoteGiftType() {
+        return voteGiftType;
     }
 
     public String getTitle() {
