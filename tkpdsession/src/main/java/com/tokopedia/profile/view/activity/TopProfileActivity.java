@@ -79,6 +79,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View followersSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
+    private View headerSeparator;
     private View header;
     private View progressView;
     private View errorView;
@@ -169,6 +170,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         followersSeparator = findViewById(R.id.followers_separator);
         favoriteShopLayout = findViewById(R.id.favorite_shop_layout);
         favoriteShopValue = findViewById(R.id.favorite_shop_value);
+        headerSeparator = findViewById(R.id.header_separator);
         header = findViewById(R.id.header);
         progressView = findViewById(R.id.progress_view);
         errorView = findViewById(R.id.error_view);
@@ -381,10 +383,13 @@ public class TopProfileActivity extends BaseEmptyActivity
             title.setText(topProfileViewModel.getTitle());
             description.setVisibility(View.VISIBLE);
             description.setText(topProfileViewModel.getBiodata());
+            followersLayout.setVisibility(View.VISIBLE);
+            followersSeparator.setVisibility(View.VISIBLE);
             followersValue.setText(topProfileViewModel.getFollowers());
             setTextDisabledOrNot(followersLayout,
                     followersValue,
                     topProfileViewModel.getFollowers());
+            headerSeparator.setVisibility(View.VISIBLE);
 
             if (!topProfileViewModel.isUser()) {
                 buttonFollow.setVisibility(View.VISIBLE);
@@ -394,14 +399,22 @@ public class TopProfileActivity extends BaseEmptyActivity
                 } else {
                     disableFollowButton();
                 }
+            } else {
+                buttonFollow.setVisibility(View.GONE);
             }
         } else {
+            name.setCompoundDrawables(null, null, null, null);
+            title.setVisibility(View.GONE);
+            description.setVisibility(View.GONE);
             followersLayout.setVisibility(View.GONE);
             followersSeparator.setVisibility(View.GONE);
+            headerSeparator.setVisibility(View.GONE);
         }
 
         if (topProfileViewModel.isUser()) {
             buttonManageAccount.setVisibility(View.VISIBLE);
+        } else {
+            buttonManageAccount.setVisibility(View.GONE);
         }
     }
 
