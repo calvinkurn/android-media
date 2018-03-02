@@ -61,6 +61,8 @@
                         android:id="@+id/iv_gold_shop"
                         android:layout_width="@dimen/large_dp"
                         android:layout_height="@dimen/large_dp"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/margin_vs"
                         android:src="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
@@ -69,25 +71,16 @@
                         android:id="@+id/iv_official"
                         android:layout_width="@dimen/large_dp"
                         android:layout_height="@dimen/large_dp"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/margin_vs"
                         android:src="@drawable/ic_badge_official"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
-
-                    <ImageView
-                        android:id="@+id/iv_lucky"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
-                        android:padding="@dimen/margin_vvs"
-                        android:visibility="gone"
-                        tools:ignore="ContentDescription" />
-
 
                     <TextView
                         android:id="@+id/tv_shop_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_vs"
-                        android:layout_marginStart="@dimen/margin_vs"
                         android:background="@drawable/tab_selector"
                         android:gravity="center"
                         android:lines="1"
@@ -103,15 +96,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/ll_medal"
+                    <ImageView
+                        android:id="@+id/iv_medal"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
+                        android:layout_height="16dp"
                         android:layout_gravity="start"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:layout_weight="1"
-                        android:gravity="start"
-                        android:orientation="horizontal" />
+                        android:gravity="start" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -189,8 +181,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="0.60"
             android:gravity="end"
@@ -205,18 +197,19 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="8dp">
 
                 <TextView
                     android:id="@+id/favorite_tv"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_add_24dp"
                     android:drawableStart="@drawable/ic_add_24dp"
+                    android:drawablePadding="6dp"
                     android:gravity="center_vertical"
                     android:text="@string/fav_shop"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_11" />
+                    android:textSize="@dimen/text_size_12" />
             </LinearLayout>
 
         </LinearLayout>
