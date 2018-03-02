@@ -7,7 +7,6 @@ import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.tkpd.BuildConfig;
 
 /**
  * Created by okasurya on 7/25/17.
@@ -30,7 +29,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     public void checkApplicationUpdate(final OnUpdateListener listener) {
         if(remoteConfig != null) {
             DetailUpdate detailUpdate = getDetailUpdate();
-            if (detailUpdate.isNeedUpdate() && BuildConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
+            if (detailUpdate.isNeedUpdate() && GlobalConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
                 listener.onNeedUpdate(detailUpdate);
             } else {
                 listener.onNotNeedUpdate();
