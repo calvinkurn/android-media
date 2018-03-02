@@ -50,8 +50,6 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
     private String getAuthKey(String url) {
         if (url.contains("mojito")) {
             return AuthUtil.KEY.KEY_MOJITO;
-        } else if (url.contains("pulsa-api")) {
-            return TkpdBaseURL.DigitalApi.HMAC_KEY;
         }
         return AuthUtil.KEY.KEY_WSV4;
     }

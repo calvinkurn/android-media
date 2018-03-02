@@ -38,6 +38,7 @@ public interface ReactConst {
     interface Networking{
         String WSAUTH = "wsauth";
         String BEARER = "bearer";
+        String DIGITAL = "digital";
 
         String URL = "url";
         String PARAMS = "params";

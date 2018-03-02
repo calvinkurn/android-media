@@ -45,6 +45,6 @@ public class UnifyReactNetworkRepositoryImpl implements UnifyReactNetworkReposit
     }
 
     private Boolean isWsV4Url(String url) {
-        return url.contains("ws.tokopedia.com") || url.contains(TkpdBaseURL.DIGITAL_API_DOMAIN);
+        return url.contains("ws.tokopedia.com");
     }
 }
