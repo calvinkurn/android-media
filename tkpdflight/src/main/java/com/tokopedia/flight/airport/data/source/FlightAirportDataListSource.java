@@ -141,4 +141,10 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
             }
         });
     }
+
+    public  Observable<Integer> getAirportCount(String query, String idCountry) {
+        HashMap<String, Object> map = generateGetParam(query);
+        map.put(ID_COUNTRY, idCountry);
+        return getCacheDataListCount(map);
+    }
 }
