@@ -85,7 +85,12 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvProductName.setText(data.getCartItemData().getOriginData().getProductName());
             holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
             holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
+            String quantity = String.valueOf(data.getCartItemData().getUpdatedData().getQuantity());
+
             holderView.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
+            if (quantity.length() > 0) {
+                holderView.etQty.setSelection(quantity.length());
+            }
 
             ImageHandler.loadImageRounded2(
                     holderView.itemView.getContext(), holderView.ivProductImage,
@@ -169,6 +174,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             renderErrorFormItemValidation(data, holderView, position);
             renderErrorItemHeader(data, holderView, position);
+
 
             holderView.etRemark.addTextChangedListener(new RemarkTextWatcher(position));
             holderView.etQty.addTextChangedListener(new TextWatcher() {
@@ -295,17 +301,17 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void renderErrorFormItemValidation(CartItemHolderData data, CartItemHolder holderView, int position) {
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
-            holderView.errorContainer.setVisibility(View.GONE);
-            holderView.tvError.setVisibility(View.GONE);
-            holderView.tvErrorDetail.setVisibility(View.GONE);
+//            holderView.errorContainer.setVisibility(View.GONE);
+//            holderView.tvError.setVisibility(View.GONE);
+//            holderView.tvErrorDetail.setVisibility(View.GONE);
 
             holderView.tvErrorFormValidation.setText("");
             holderView.tvErrorFormValidation.setVisibility(View.GONE);
         } else {
-            holderView.errorContainer.setVisibility(View.VISIBLE);
-            holderView.tvError.setVisibility(View.VISIBLE);
-            holderView.tvErrorDetail.setVisibility(View.GONE);
-            holderView.tvError.setText(data.getErrorFormItemValidationMessage());
+//            holderView.errorContainer.setVisibility(View.VISIBLE);
+//            holderView.tvError.setVisibility(View.VISIBLE);
+//            holderView.tvErrorDetail.setVisibility(View.GONE);
+//            holderView.tvError.setText(data.getErrorFormItemValidationMessage());
 
             holderView.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
             holderView.tvErrorFormValidation.setVisibility(View.VISIBLE);
