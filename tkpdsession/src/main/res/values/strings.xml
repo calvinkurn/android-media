@@ -203,5 +203,7 @@
     <string name="data_verified">Terverifikasi</string>
     <string name="fav_shop">Favoritkan</string>
     <string name="shop_info_title">Informasi Toko</string>
+    <string name="shop_not_favorite">Favoritkan</string>
+    <string name="shop_favorited">Favorit</string>
 
 </resources>
