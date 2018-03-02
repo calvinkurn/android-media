@@ -5,8 +5,10 @@ import com.tokopedia.transaction.checkout.data.entity.response.rates.Product;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
@@ -22,9 +24,16 @@ import java.util.List;
 
 public class ShipmentRatesDataMapper {
 
-    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel) {
+    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel,
+                                                    RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        shipmentDetailData.setShipmentCartData(cartSellerItemModel.getShipmentCartData());
+        ShipmentCartData shipmentCartData = cartSellerItemModel.getShipmentCartData();
+        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
+        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
+        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
+        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+        shipmentDetailData.setShipmentCartData(shipmentCartData);
         return shipmentDetailData;
     }
 

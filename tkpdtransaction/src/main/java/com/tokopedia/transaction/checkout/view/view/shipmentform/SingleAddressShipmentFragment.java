@@ -262,13 +262,15 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel) {
+    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
+                                 RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData;
         if (cartSellerItemModel.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = cartSellerItemModel.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(
+                    cartSellerItemModel, recipientAddressModel);
         }
 
         startActivityForResult(ShipmentDetailActivity.createInstance(
@@ -354,9 +356,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     RecipientAddressModel thisSelectedAddressData = data.getParcelableExtra(
                             CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
 
-                    mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
-                    mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
-
+                    if (!thisSelectedAddressData.getId().equals(
+                            mCartSingleAddressData.getRecipientAddressModel().getId())) {
+                        mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
+                        mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
+                        mSingleAddressShipmentAdapter.resetSelectedShipment();
+                        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                    }
                     break;
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:

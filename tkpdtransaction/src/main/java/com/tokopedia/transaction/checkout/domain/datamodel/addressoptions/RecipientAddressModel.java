@@ -23,6 +23,8 @@ public class RecipientAddressModel implements Parcelable {
     private String recipientPhoneNumber;
     private String destinationDistrictId;
     private String destinationDistrictName;
+    private Double latitude;
+    private Double longitude;
 
     // For PickupPoint Alfamart
     private String tokenPickup;
@@ -30,6 +32,87 @@ public class RecipientAddressModel implements Parcelable {
     private Store store;
 
     private boolean selected;
+
+    public RecipientAddressModel() {
+    }
+
+    protected RecipientAddressModel(Parcel in) {
+        id = in.readString();
+        addressStatus = in.readInt();
+        addressName = in.readString();
+        addressProvinceName = in.readString();
+        addressPostalCode = in.readString();
+        addressCityName = in.readString();
+        addressStreet = in.readString();
+        addressCountryName = in.readString();
+        recipientName = in.readString();
+        recipientPhoneNumber = in.readString();
+        destinationDistrictId = in.readString();
+        destinationDistrictName = in.readString();
+        if (in.readByte() == 0) {
+            latitude = null;
+        } else {
+            latitude = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            longitude = null;
+        } else {
+            longitude = in.readDouble();
+        }
+        tokenPickup = in.readString();
+        unixTime = in.readString();
+        store = in.readParcelable(Store.class.getClassLoader());
+        selected = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeInt(addressStatus);
+        dest.writeString(addressName);
+        dest.writeString(addressProvinceName);
+        dest.writeString(addressPostalCode);
+        dest.writeString(addressCityName);
+        dest.writeString(addressStreet);
+        dest.writeString(addressCountryName);
+        dest.writeString(recipientName);
+        dest.writeString(recipientPhoneNumber);
+        dest.writeString(destinationDistrictId);
+        dest.writeString(destinationDistrictName);
+        if (latitude == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(latitude);
+        }
+        if (longitude == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(longitude);
+        }
+        dest.writeString(tokenPickup);
+        dest.writeString(unixTime);
+        dest.writeParcelable(store, flags);
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
+        @Override
+        public RecipientAddressModel createFromParcel(Parcel in) {
+            return new RecipientAddressModel(in);
+        }
+
+        @Override
+        public RecipientAddressModel[] newArray(int size) {
+            return new RecipientAddressModel[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -159,6 +242,22 @@ public class RecipientAddressModel implements Parcelable {
         this.selected = selected;
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -206,62 +305,4 @@ public class RecipientAddressModel implements Parcelable {
         return result;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeInt(this.addressStatus);
-        dest.writeString(this.addressName);
-        dest.writeString(this.addressProvinceName);
-        dest.writeString(this.addressPostalCode);
-        dest.writeString(this.addressCityName);
-        dest.writeString(this.addressStreet);
-        dest.writeString(this.addressCountryName);
-        dest.writeString(this.recipientName);
-        dest.writeString(this.recipientPhoneNumber);
-        dest.writeString(this.destinationDistrictId);
-        dest.writeString(this.destinationDistrictName);
-        dest.writeString(this.tokenPickup);
-        dest.writeString(this.unixTime);
-        dest.writeParcelable(this.store, flags);
-        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
-    }
-
-    public RecipientAddressModel() {
-    }
-
-    protected RecipientAddressModel(Parcel in) {
-        this.id = in.readString();
-        this.addressStatus = in.readInt();
-        this.addressName = in.readString();
-        this.addressProvinceName = in.readString();
-        this.addressPostalCode = in.readString();
-        this.addressCityName = in.readString();
-        this.addressStreet = in.readString();
-        this.addressCountryName = in.readString();
-        this.recipientName = in.readString();
-        this.recipientPhoneNumber = in.readString();
-        this.destinationDistrictId = in.readString();
-        this.destinationDistrictName = in.readString();
-        this.tokenPickup = in.readString();
-        this.unixTime = in.readString();
-        this.store = in.readParcelable(Store.class.getClassLoader());
-        this.selected = in.readByte() != 0;
-    }
-
-    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
-        @Override
-        public RecipientAddressModel createFromParcel(Parcel source) {
-            return new RecipientAddressModel(source);
-        }
-
-        @Override
-        public RecipientAddressModel[] newArray(int size) {
-            return new RecipientAddressModel[size];
-        }
-    };
 }
