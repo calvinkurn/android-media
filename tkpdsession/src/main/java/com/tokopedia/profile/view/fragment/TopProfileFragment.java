@@ -49,7 +49,6 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
 
     @Override
     protected String getScreenName() {
-        //TODO milhamj
         return null;
     }
 
