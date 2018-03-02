@@ -141,6 +141,7 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
         recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
         recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
 
