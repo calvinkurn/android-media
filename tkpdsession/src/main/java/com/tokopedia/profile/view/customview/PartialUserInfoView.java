@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -26,8 +25,8 @@ public class PartialUserInfoView extends BaseCustomView {
     private TextView tvReputationPositiveScore;
     private TextView tvReputationNegativeScore;
     private TextView tvReputationNetralScore;
-    private ImageView ivStatusInfo;
-    private ImageView ivReputationInfo;
+    private View userStatusLayout;
+    private View userReputationLayout;
 
     private BottomSheetView statusBottomSheetView;
     private BottomSheetView reputationBottomSheetView;
@@ -79,8 +78,8 @@ public class PartialUserInfoView extends BaseCustomView {
         tvReputationNegativeScore = view.findViewById(R.id.tv_reputation_negative_score);
         tvReputationNetralScore = view.findViewById(R.id.tv_reputation_netral_score);
         tvReputationSummaryScore = view.findViewById(R.id.tv_reputation_summary);
-        ivStatusInfo = view.findViewById(R.id.iv_status_info);
-        ivReputationInfo = view.findViewById(R.id.iv_reputation_info);
+        userStatusLayout = view.findViewById(R.id.ll_status_title);
+        userReputationLayout = view.findViewById(R.id.ll_reputation_title);
 
         statusBottomSheetView = new BottomSheetView(getContext());
         statusBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
@@ -119,14 +118,14 @@ public class PartialUserInfoView extends BaseCustomView {
         tvReputationNegativeScore.setVisibility(VISIBLE);
         tvReputationNegativeScore.setText(model.getNegativeScore());
 
-        ivStatusInfo.setOnClickListener(new OnClickListener() {
+        userStatusLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 statusBottomSheetView.show();
             }
         });
 
-        ivReputationInfo.setOnClickListener(new OnClickListener() {
+        userReputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 reputationBottomSheetView.show();
