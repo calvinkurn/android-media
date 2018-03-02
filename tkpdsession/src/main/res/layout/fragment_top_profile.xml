@@ -15,8 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@color/font_white_primary_70"
-            android:elevation="4dp"
+            android:background="@drawable/background_shadow_top_profile"
             android:visibility="visible" />
 
         <com.tokopedia.profile.view.customview.PartialUserInfoView
@@ -24,8 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@color/font_white_primary_70"
-            android:elevation="4dp"
+            android:background="@drawable/background_shadow_top_profile"
             android:visibility="visible" />
 
         <com.tokopedia.profile.view.customview.PartialUserShopView
@@ -33,8 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@color/font_white_primary_70"
-            android:elevation="4dp"
+            android:background="@drawable/background_shadow_top_profile"
             android:visibility="visible" />
 
     </LinearLayout>
