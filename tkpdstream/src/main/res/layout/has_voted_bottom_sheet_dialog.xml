@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@drawable/ic_checked_large"
+            app:srcCompat="@drawable/ic_checked_large"
             android:layout_gravity="center"
             android:scaleType="centerCrop" />
 
