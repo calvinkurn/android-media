@@ -21,7 +21,7 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel
 public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.kol_layout;
+    public static final int LAYOUT = R.layout.kol_post_layout;
 
     private static final int MAX_CHAR = 250;
     private final KolPostListener.View viewListener;

@@ -9,4 +9,10 @@
     <color name="black_70b">#b3000000</color>
     <color name="black_87">#de000000</color>
     <color name="black_tooltip">#96000000</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
 </resources>
