@@ -21,9 +21,12 @@ import com.tokopedia.session.R;
 public class TopProfileFragment extends TkpdBaseV4Fragment
         implements TopProfileFragmentListener.View {
 
+    private View rootView;
     private PartialUserDataView partialUserDataView;
     private PartialUserInfoView partialUserInfoView;
     private PartialUserShopView partialUserShopView;
+
+    private TopProfileViewModel topProfileViewModel;
 
     public static TopProfileFragment newInstance() {
         TopProfileFragment fragment = new TopProfileFragment();
@@ -37,10 +40,11 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_top_profile, container, false);
+        rootView = inflater.inflate(R.layout.fragment_top_profile, container, false);
 
-        initView(view);
-        return view;
+        initView(rootView);
+        populateData();
+        return rootView;
     }
 
     @Override
@@ -57,10 +61,19 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
 
     @Override
     public void renderData(TopProfileViewModel topProfileViewModel) {
-        partialUserDataView.renderData(topProfileViewModel);
-        partialUserInfoView.renderData(topProfileViewModel);
-        partialUserShopView.renderData(topProfileViewModel);
+        this.topProfileViewModel = topProfileViewModel;
+        populateData();
     }
 
+    private void populateData() {
+        if (rootView == null) {
+            return;
+        }
 
+        if (topProfileViewModel != null) {
+            partialUserDataView.renderData(topProfileViewModel);
+            partialUserInfoView.renderData(topProfileViewModel);
+            partialUserShopView.renderData(topProfileViewModel);
+        }
+    }
 }
