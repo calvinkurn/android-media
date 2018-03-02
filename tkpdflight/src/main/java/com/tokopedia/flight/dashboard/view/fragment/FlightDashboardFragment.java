@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -80,6 +82,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     TextInputView returnDateTextInputView;
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
+    ProgressBar progressBar;
+    NestedScrollView formContainerLayout;
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
@@ -130,6 +134,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         returnDateSeparatorView = view.findViewById(R.id.separator_date_return);
         bannerLayout = view.findViewById(R.id.banner_layout);
         bannerView = view.findViewById(R.id.banner);
+        progressBar = view.findViewById(R.id.progress_bar);
+        formContainerLayout = view.findViewById(R.id.dashboard_container);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -307,6 +313,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel) {
         this.passData = flightDashboardPassDataViewModel;
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFormContainer() {
+        formContainerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

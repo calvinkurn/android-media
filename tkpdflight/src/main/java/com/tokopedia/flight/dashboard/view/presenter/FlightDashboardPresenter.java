@@ -553,11 +553,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
+                                if (isViewAttached()) {
+                                    getView().hideProgressBar();
+                                    getView().showFormContainer();
+                                }
+
                             }
 
                             @Override
                             public void onNext(FlightDashboardAirportAndClassWrapper flightDashboardAirportAndClassWrapper) {
                                 if (flightDashboardAirportAndClassWrapper != null) {
+                                    getView().hideProgressBar();
+                                    getView().showFormContainer();
                                     boolean isAvailableToSearch = true;
                                     if (flightDashboardAirportAndClassWrapper.getDepartureAirport() != null
                                             && getView().getCurrentDashboardViewModel().getDepartureAirport() == null) {

@@ -84,6 +84,10 @@ public interface FlightDashboardContract {
         FlightDashboardPassDataViewModel getDashboardPassData();
 
         void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel);
+
+        void hideProgressBar();
+
+        void showFormContainer();
     }
 
     interface Presenter extends CustomerPresenter<View> {
