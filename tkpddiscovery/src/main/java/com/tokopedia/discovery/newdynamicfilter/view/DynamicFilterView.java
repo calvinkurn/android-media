@@ -22,4 +22,5 @@ public interface DynamicFilterView {
     void removeSelectedOption(Option option);
 
     void updateLastRangeValue(int minValue, int maxValue);
+    void onPriceSliderRelease();
 }

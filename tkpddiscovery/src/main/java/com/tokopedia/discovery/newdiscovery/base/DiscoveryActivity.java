@@ -331,6 +331,20 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void enableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(true);
+        }
+    }
+
+    @Override
+    public void disableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(false);
+        }
+    }
+
+    @Override
     public void refreshBottomNavigationIcon(List<AHBottomNavigationItem> items) {
         bottomNavigation.removeAllItems();
         bottomNavigation.addItems(items);

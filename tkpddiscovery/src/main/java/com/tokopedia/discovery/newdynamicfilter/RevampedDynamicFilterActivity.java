@@ -399,6 +399,11 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
     }
 
+    @Override
+    public void onPriceSliderRelease() {
+
+    }
+
     private void applyFilter() {
         renderFilterResult();
         finish();

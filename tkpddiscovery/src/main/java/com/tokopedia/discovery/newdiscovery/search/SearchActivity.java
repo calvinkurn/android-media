@@ -259,6 +259,7 @@ public class SearchActivity extends DiscoveryActivity
 
     public void launchFilterBottomSheet() {
         hideBottomNavigation();
+        disableAutoShowBottomNav();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -502,16 +503,26 @@ public class SearchActivity extends DiscoveryActivity
         if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             showBottomNavigation();
+            enableAutoShowBottomNav();
         }
     }
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
+        enrichWithInputState(filter);
         initFilterDetailTopBar(filter);
         initFilterDetailSearchView(filter);
         initFilterDetailRecyclerView();
         loadFilterDetailItems(filter.getOptions());
-        showFilterDetailPage(filter);
+        showFilterDetailPage();
+    }
+
+    private void enrichWithInputState(Filter filter) {
+        for (Option option : filter.getOptions()) {
+            option.setInputState(
+                    OptionHelper.loadOptionInputState(option, savedCheckedState, savedTextInput)
+            );
+        }
     }
 
     @Override
@@ -663,9 +674,9 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private void showFilterDetailPage(Filter filter) {
-        bottomSheetFilterDetail.setVisibility(View.VISIBLE);
+    private void showFilterDetailPage() {
         bottomSheetFilterMain.setVisibility(View.GONE);
+        bottomSheetFilterDetail.setVisibility(View.VISIBLE);
     }
 
     private void initFilterDetailTopBar(Filter filter) {
@@ -764,6 +775,11 @@ public class SearchActivity extends DiscoveryActivity
     protected void onDestroy() {
         searchPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public void onPriceSliderRelease() {
+        applyFilter();
     }
 
     private void applyFilter() {

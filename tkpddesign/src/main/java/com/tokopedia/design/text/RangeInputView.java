@@ -41,6 +41,7 @@ public class RangeInputView extends BaseCustomView {
     private View minButton;
     private View maxButton;
     private OnValueChangedListener onValueChangedListener;
+    private GestureListener gestureListener;
     private int seekBarButtonSize;
     private int minBound = 0;
     private int maxBound = 0;
@@ -322,6 +323,9 @@ public class RangeInputView extends BaseCustomView {
                     maxButton.setElevation(DEFAULT_ELEVATION);
                     minButton.setElevation(DEFAULT_ELEVATION);
                 }
+                if (gestureListener != null) {
+                    gestureListener.onButtonRelease();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 float targetX = event.getRawX() - seekBarButtonSize;
@@ -377,8 +381,16 @@ public class RangeInputView extends BaseCustomView {
         this.onValueChangedListener = onValueChangedListener;
     }
 
+    public void setGestureListener(GestureListener gestureListener) {
+        this.gestureListener = gestureListener;
+    }
+
     public interface OnValueChangedListener {
         void onValueChanged(int minValue, int maxValue, int minBound, int maxBound);
+    }
+
+    public interface GestureListener {
+        void onButtonRelease();
     }
 
     private class MinInputListener extends InputTextFocusChangeListener {
