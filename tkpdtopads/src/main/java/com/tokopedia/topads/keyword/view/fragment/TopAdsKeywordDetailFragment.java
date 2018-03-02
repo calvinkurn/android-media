@@ -15,6 +15,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailStatisticFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordDetailModule;
@@ -143,6 +144,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
         intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
+        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
         startActivity(intent);
     }
 

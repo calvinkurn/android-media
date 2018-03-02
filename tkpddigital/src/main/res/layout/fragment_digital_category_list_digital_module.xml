@@ -15,19 +15,19 @@
             android:orientation="horizontal"
             android:paddingBottom="@dimen/digital_padding_10">
 
-            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+            <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_my_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
 
-            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+            <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_subscription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
 
-            <com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder
+            <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_fav_number"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

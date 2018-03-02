@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 
@@ -51,6 +52,7 @@ public class ProductDetailData implements Parcelable{
      */
     private LatestTalkViewModel latestTalkViewModel;
     private List<Review> reviewList;
+    private Campaign campaign;
 
     public ProductDetailData() {
     }
@@ -142,6 +144,14 @@ public class ProductDetailData implements Parcelable{
 
     public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
     }
 
     public static class Builder {
@@ -237,6 +247,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeTypedList(this.productImages);
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
+        dest.writeParcelable(this.campaign,flags);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -251,6 +262,7 @@ public class ProductDetailData implements Parcelable{
         this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
+        this.campaign = in.readParcelable(Campaign.class.getClassLoader());
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

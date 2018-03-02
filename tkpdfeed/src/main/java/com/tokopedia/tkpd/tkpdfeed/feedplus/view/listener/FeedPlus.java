@@ -191,6 +191,10 @@ public interface FeedPlus {
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
 
         void onContentProductLinkClicked(String url);
+
+        void onUserNotLogin();
+
+        void onGoToLogin();
     }
 
     interface Presenter extends CustomerPresenter<View> {

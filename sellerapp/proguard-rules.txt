@@ -309,6 +309,11 @@
 
 -dontwarn android.content.pm.PackageManager
 -dontwarn com.crashlytics.android.answers.shim.**
+
+-dontwarn com.google.i18n.phonenumbers.**
+
+-dontwarn sun.net.spi.nameservice.**
+
 -dontwarn com.nimbusds.jwt.SignedJWT
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
 
@@ -319,3 +324,8 @@
 -keep public class com.google.android.gms.iid.InstanceID {
     public *;
 }
+
+-dontwarn android.net.http.**
+-dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor

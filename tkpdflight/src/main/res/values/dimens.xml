@@ -3,6 +3,9 @@
     <dimen name="progress_bar_height">3dp</dimen>
     <dimen name="dep_arr_height">100dp</dimen>
 
+    <dimen name="margin_16">16dp</dimen>
     <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_8">8dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
     <dimen name="bottom_search_filter_margin">60dp</dimen>
 </resources>

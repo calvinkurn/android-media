@@ -24,10 +24,10 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -475,13 +475,13 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
+        String userId = SessionHandler.isV4Login(getContext()) ?
+                SessionHandler.getLoginID(getContext()) : "";
+
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductName(),
-                item.getProductID(),
-                item.getPrice(),
-                item.getPosition(),
-                SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "",
-                productViewModel.getQuery());
+                item.getProductAsObjectDataLayer(userId),
+                productViewModel.getQuery()
+        );
     }
 
     @Override
@@ -539,7 +539,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = ((DiscoveryRouter)MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }

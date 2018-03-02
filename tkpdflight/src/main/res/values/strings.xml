@@ -56,8 +56,8 @@
     <string name="flight_dashboard_arrival_departure_same_error">Airport kedatangan dan keberangkatan tidak boleh sama</string>
     <string name="flight_dashboard_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
     <string name="flight_dashboard_departure_max_two_years_from_today_error">Tanggal keberangkatan maksimal dua tahun dari hari ini</string>
-    <string name="flight_dashboard_arrival_should_greater_equal_error">Tanggal kedatangan harus lebih besar sama dengan tanggal keberangkatan</string>
-    <string name="flight_dashboard_arrival_max_two_years_from_today_error">Tanggal kedatangan maksimal dua tahun dari hari ini</string>
+    <string name="flight_dashboard_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
+    <string name="flight_dashboard_return_max_two_years_from_today_error">Tanggal keberangkatan pulang maksimal dua tahun dari hari ini</string>
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
     <string name="flight_label_refundable_info">Refundable</string>
@@ -246,7 +246,7 @@
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
     <string name="flight_label_order_id_detail">Invoice :</string>
-    <string name="flight_label_eticket">E-TICKET</string>
+    <string name="flight_label_eticket">KIRIM E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
     <string name="flight_label_cek_t_and_c">* Harap cek syarat dan ketentuan pada e-tiket Anda</string>
@@ -277,7 +277,7 @@
     <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
     <string name="flight_order_departure_schedule">Jadwal Penerbangan</string>
     <string name="flight_label_copy_clipboard">Copy To Clipboard</string>
-    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>/>
+    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>
     <string name="flight_booking_atc_loading_label">Sedang menyiapkan formulir pemesanan Anda</string>
     <string name="flight_review_failed_checkout_message">Pembayaran gagal</string>
     <string name="flight_review_cancel_checkout_message">Pembayaran dibatalkan</string>
@@ -315,4 +315,15 @@
     <string name="flight_order_branch_prefix">Cabang</string>
     <string name="flight_error_pick_journey">Terjadi kesalahan, Silakan ulangi kembali.</string>
     <string name="flight_booking_passenger_last_name_should_same_error">Jika nama belakang tidak tersedia, mohon isi dengan nama depan</string>
+    <string name="flight_order_detail_due_date_label">Batas Akhir Pembayaran</string>
+    <string name="flight_resend_eticket_dialog_title">Kirim E-Ticket</string>
+    <string name="flight_resend_eticket_dialog_description">Masukkan alamat Email tujuan Anda.</string>
+    <string name="flight_resend_eticket_dialog_abort">BATAL</string>
+    <string name="flight_resend_eticket_dialog_send">KIRIM</string>
+    <string name="flight_resend_eticket_dialog_email_hint">Alamat Email</string>
+    <string name="flight_resend_eticket_dialog_email_empty_error">Alamat Email tidak boleh kosong</string>
+    <string name="flight_resend_eticket_dialog_email_invalid_error">Alamat Email tidak valid</string>
+    <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
+    <string name="resend_eticket_success">E-Ticket anda berhasil dikirim.</string>
+    <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
 </resources>

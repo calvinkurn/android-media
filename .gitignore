@@ -49,3 +49,13 @@ gradlew.bat
 # react native
 node_modules/
 jsconfig.json
+
+# buck
+.buckconfig.local
+.buckd/
+.okbuck/
+.watchmanconfig
+buck-out/
+buckw
+BUCK
+.buckconfig

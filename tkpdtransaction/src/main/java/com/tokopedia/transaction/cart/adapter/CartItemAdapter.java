@@ -33,6 +33,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.cart.model.CartInsurance;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
@@ -94,7 +95,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderDetailCartItem(holderItemCart, cartData, cartItemEditable);
             renderEditableMode(holderItemCart, cartItemEditable.isEditMode(), adapterProduct);
             renderPartialDeliverOption(holderItemCart, cartData);
-            if(unEditable(cartData)) {
+            if (unEditable(cartData)) {
                 holderItemCart.spShipmentOptionChoosen.setEnabled(false);
                 holderItemCart.spUseInsurance.setEnabled(false);
                 holderItemCart.cbDropshiper.setVisibility(View.GONE);
@@ -108,7 +109,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private boolean unEditable(CartItem cartData) {
-        return cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() !=null
+        return cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() != null
                 && cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() == 1;
     }
 
@@ -118,6 +119,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         cartItemEditable.setCartCourierPrices(cartCourierPrices);
         removeCartErrors(cartItemEditable);
         cartItemEditable.setInsuranceUsedInfo(cartCourierPrices.getInsuranceUsedInfo());
+        cartItemEditable.setInsuranceType(cartCourierPrices.getInsuranceMode());
+        if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+            cartItemEditable.setUseInsurance(false);
+        } else if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+            cartItemEditable.setUseInsurance(true);
+        }
     }
 
     private void removeCartErrors(CartItemEditable cartItemEditable) {
@@ -148,7 +155,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CartItem data = dataList.get(i);
             CartItemEditable cartItemEditable = new CartItemEditable(data);
             cartItemEditable.setKeroToken(keroToken);
-            cartItemEditable.setUseInsurance(isInsuranced(data));
+            cartItemEditable.setUseInsurance(isProductUseInsurance(data.getCartProducts()));
             this.dataList.add(cartItemEditable);
             this.expandState.append(i, false);
         }
@@ -243,7 +250,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(hostFragment.getActivity(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.cart_item_menu, popupMenu.getMenu());
-                if(unEditable(cartData)) {
+                if (unEditable(cartData)) {
                     popupMenu.getMenu().getItem(EDIT_MENU_INDEX).setVisible(false);
                 } else {
                     popupMenu.getMenu().getItem(EDIT_MENU_INDEX).setVisible(true);
@@ -584,13 +591,15 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-        if (cartData.getCartCannotInsurance() == 1 ||
-                (cartData.getCartForceInsurance() == 1 ||
-                        isProductMustInsurance(cartData.getCartProducts()))) {
+        if (isProductMustInsurance(cartData.getCartProducts())) {
             holder.spUseInsurance.setEnabled(false);
-        }
-        else if (unEditable(cartData)) {
+        } else if (unEditable(cartData)) {
             holder.spUseInsurance.setEnabled(false);
+        } else if (cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.MUST ||
+                cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.NO) {
+            holder.spUseInsurance.setEnabled(false);
+        } else if (cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.OPTIONAL) {
+            holder.spUseInsurance.setEnabled(true);
         } else {
             holder.spUseInsurance.setEnabled(true);
         }
@@ -598,7 +607,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
 
-        if(cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0){
+        if (cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0) {
             holder.imgInsuranceInfo.setVisibility(View.GONE);
         } else {
             holder.imgInsuranceInfo.setVisibility(View.VISIBLE);
@@ -657,12 +666,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return;
             }
         }
-    }
-
-    private boolean isInsuranced(CartItem cartItem) {
-        return (cartItem.getCartForceInsurance() == 1
-                || cartItem.getCartInsuranceProd() == 1
-                || isProductUseInsurance(cartItem.getCartProducts()));
     }
 
     @NonNull

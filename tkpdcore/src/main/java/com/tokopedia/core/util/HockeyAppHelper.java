@@ -20,13 +20,13 @@ public class HockeyAppHelper {
 
     public static void handleLogin(Activity activity) {
         if (isAllow() && !ANONYMOUS_LOGIN) {
-            LoginManager.register(activity, HOCKEYAPP_KEY, LoginManager.LOGIN_MODE_VALIDATE);
+            LoginManager.register(activity, HOCKEYAPP_KEY, LoginManager.LOGIN_MODE_EMAIL_ONLY);
             LoginManager.verifyLogin(activity, activity.getIntent());
         }
     }
 
     public static void checkForUpdate(Activity activity) {
-        if (isAllow()) UpdateManager.register(activity, HOCKEYAPP_KEY);
+        if (isAllow()) UpdateManager.register(activity);
     }
 
     public static void unregisterManager() {

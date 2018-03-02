@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_100">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/margin_default"
+                    android:paddingTop="@dimen/margin_default">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/margin_default"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingStart="@dimen/margin_default"
+                        android:text="@string/detail_tiket"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/textsize_huge"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/event_image_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/margin_default"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:scaleType="centerCrop"
+                        android:src="@color/deep_orange_500" />
+
+                    <TextView
+                        android:id="@+id/event_name_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingRight="@dimen/margin_default"
+                        android:text="@string/rp_5980000"
+                        android:textColor="@color/grey_150"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="bold" />
+
+                    <include
+                        android:id="@+id/event_time_tv"
+                        layout="@layout/image_textview_holder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/margin_default" />
+
+                    <include
+                        android:id="@+id/event_address_tv"
+                        layout="@layout/image_textview_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/keyline_1_minus_8dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/divider_height_thin"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:background="@color/grey_100" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_ticket_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="15dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginTop="@dimen/margin_default"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="@string/tiket"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/tv_ticket_cnt_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="100dp"
+                            android:layout_marginTop="@dimen/margin_default"
+                            android:text="@string/rp_5980000"
+                            android:textColor="@color/green_nob"
+                            android:textSize="12sp"
+                            android:textStyle="normal"
+                            android:layout_marginEnd="100dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/selected_seats_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/event_total_tickets"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_padding_small"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="@string/nomor_kursi"
+                            android:textColor="@color/black_70"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/seat_numbers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="100dp"
+                            android:layout_marginTop="@dimen/margin_padding_small"
+                            android:textColor="@color/black_54"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/margin_default"
+                    android:paddingTop="@dimen/margin_default">
+
+                    <TextView
+                        android:id="@+id/tv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:paddingBottom="8dp"
+                        android:text="@string/tujuan_pengiriman_tiket"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/textsize_huge"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/info_email"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignBottom="@+id/tv1"
+                        android:layout_marginBottom="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_toEndOf="@+id/tv1"
+                        android:layout_toRightOf="@+id/tv1"
+                        app:srcCompat="@drawable/ic_info" />
+
+                    <TextView
+                        android:id="@+id/update_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/tv_telephone"
+                        android:layout_alignBottom="@+id/tv_telephone"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:background="@drawable/rounded_rectangle_grey_solid"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="@dimen/divider_height_thin"
+                        android:text="@string/ubah"
+                        android:textColor="@color/black_38"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv1"
+                        android:layout_marginBottom="-8dp"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:text="@string/email"
+                        android:textColor="@color/grey_700"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/tv_visitor_names"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv2"
+                        android:layout_marginBottom="@dimen/margin_default"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:text="Mad Max and 4 Others"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/update_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/tv_visitor_names"
+                        android:layout_alignBottom="@+id/tv_visitor_names"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:background="@drawable/rounded_rectangle_grey_solid"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="@dimen/divider_height_thin"
+                        android:text="@string/ubah"
+                        android:textColor="@color/black_38"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_visitor_names"
+                        android:layout_marginBottom="-8dp"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:text="No. Telepon"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/tv_telephone"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv3"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:paddingBottom="8dp"
+                        android:text="Mad Max and 4 Others"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/form_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:visibility="gone"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/margin_default"
+                    android:paddingTop="@dimen/margin_default">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_more_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_ms"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:text="@string/data_pelanggan_tambahan"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/textsize_huge"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/info_moreinfo"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="14dp"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            app:srcCompat="@drawable/ic_info" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_default"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:text="Informasi ini akan digunakan pada saat penukaran tiket"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal" />
+
+                    <EditText
+                        android:id="@+id/ed_form_1"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_form_2"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_form_3"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/ed_form_4"
+                        android:layout_width="296dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:paddingBottom="@dimen/margin_padding_medium"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/font_small"
+                        android:textStyle="normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/margin_default">
+
+                        <CheckBox
+                            android:id="@+id/promo_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:text="@string/promo_section"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/ed_promo_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/margin_padding_medium"
+                        android:paddingTop="@dimen/margin_padding_medium"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/ed_promo"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:hint="@string/kode_promo"
+                            android:paddingEnd="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="0dp"
+                            android:paddingStart="0dp"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/update_promo"
+                            android:layout_width="80dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:background="@drawable/rounded_rectangle_green_solid"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="@string/cek_kode"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/batal"
+                            android:layout_width="80dp"
+                            android:layout_height="@dimen/icon_size_large"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/update_promo"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/rounded_rectangle_grey_solid"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="Batal"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_promo_success_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@+id/update_promo"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginTop="8dp"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="Anda mendapatkan promo:"
+                            android:textColor="@color/grey_700"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_promo_cashback_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@+id/tv_promo_success_msg"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginTop="@dimen/margin_padding_medium"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="cashback mesage"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/margin_default"
+                    android:paddingTop="@dimen/margin_default">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv3"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="@dimen/margin_default"
+                        android:paddingStart="@dimen/margin_default"
+                        android:text="Rincian Harga"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/textsize_huge"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/basefare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Base Fare"
+                            android:textColor="@color/grey_700"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/tv_base_fare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Rp 540000"
+                            android:textColor="@color/grey_500"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/base_fare_break"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/basefare"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="@string/rp_5980000"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Biaya Layanan"
+                            android:textColor="@color/grey_700"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/tv_conv_fees"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Rp 540000"
+                            android:textColor="@color/grey_500"
+                            android:textSize="@dimen/font_micro"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/divider_height_thin"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:background="@color/black_12" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Pembayaran Anda"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/font_small"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_total_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:text="Rp 540000"
+                            android:textColor="@color/price_pdp"
+                            android:textSize="@dimen/textsize_big"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_gravity="bottom"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_someinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_default"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:text="@string/some_info"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/font_micro" />
+
+                <include
+                    android:id="@+id/btn_go_to_payment"
+                    layout="@layout/btn_book_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+            app:theme="@style/AppBarTheme"
+            app:titleTextAppearance="@style/EventToolbarTextStyle" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_12" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/tooltip_layout"
+        layout="@layout/review_tooltipinfo_layout"
+        android:visibility="gone" />
+</FrameLayout>

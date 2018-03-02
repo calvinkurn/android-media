@@ -21,6 +21,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
+import com.tokopedia.loyalty.applink.LoyaltyAppLink;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
 import com.tokopedia.loyalty.di.module.PromoListActivityModule;
@@ -53,6 +54,11 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Inject
     IPromoListActivityPresenter dPresenter;
+
+    @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
+    public static Intent appLinkInstance(Context context) {
+        return new Intent(context, PromoListActivity.class);
+    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, PromoListActivity.class);
