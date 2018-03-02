@@ -305,14 +305,6 @@ public class TopProfileActivity extends BaseEmptyActivity
         showError(message);
     }
 
-    private void setTextDisabledOrNot(TextView textView, String value) {
-        textView.setTextColor(
-                MethodChecker.getColor(
-                        this,
-                        value.trim().equals(ZERO) ? R.color.disabled_text : R.color.black_70)
-        );
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_top_profile, menu);
@@ -374,9 +366,13 @@ public class TopProfileActivity extends BaseEmptyActivity
 
         name.setText(topProfileViewModel.getName());
         followingValue.setText(topProfileViewModel.getFollowing());
-        setTextDisabledOrNot(followingValue, topProfileViewModel.getFollowing());
+        setTextDisabledOrNot(followingLayout,
+                followingValue,
+                topProfileViewModel.getFollowing());
         favoriteShopValue.setText(topProfileViewModel.getFavoritedShop());
-        setTextDisabledOrNot(favoriteShopValue, topProfileViewModel.getFavoritedShop());
+        setTextDisabledOrNot(favoriteShopLayout,
+                favoriteShopValue,
+                topProfileViewModel.getFavoritedShop());
 
         if (topProfileViewModel.isKol()) {
             name.setCompoundDrawables(
@@ -386,7 +382,9 @@ public class TopProfileActivity extends BaseEmptyActivity
             description.setVisibility(View.VISIBLE);
             description.setText(topProfileViewModel.getBiodata());
             followersValue.setText(topProfileViewModel.getFollowers());
-            setTextDisabledOrNot(followersValue, topProfileViewModel.getFollowers());
+            setTextDisabledOrNot(followersLayout,
+                    followersValue,
+                    topProfileViewModel.getFollowers());
 
             if (!topProfileViewModel.isUser()) {
                 buttonFollow.setVisibility(View.VISIBLE);
@@ -405,6 +403,15 @@ public class TopProfileActivity extends BaseEmptyActivity
         if (topProfileViewModel.isUser()) {
             buttonManageAccount.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setTextDisabledOrNot(View parentLayout, TextView textView, String value) {
+        parentLayout.setEnabled(!value.trim().equals(ZERO));
+        textView.setTextColor(
+                MethodChecker.getColor(
+                        this,
+                        value.trim().equals(ZERO) ? R.color.disabled_text : R.color.black_70)
+        );
     }
 
     private void enableFollowButton() {
