@@ -74,7 +74,7 @@ public class ShopModule {
     @Provides
     public Retrofit provideWS4Retrofit(@ShopQualifier OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_URL_WS).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
     }
 
     @ShopScope

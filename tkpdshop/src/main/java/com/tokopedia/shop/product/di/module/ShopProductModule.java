@@ -18,7 +18,7 @@ import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.shop.common.data.source.cloud.api.EtalaseApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopWS4Api;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopEtalaseCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
@@ -123,10 +123,8 @@ public class ShopProductModule {
     @Provides
     public OkHttpClient provideWishListOkHttpClient(WishListAuthInterceptor wishListAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(wishListAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
@@ -150,13 +148,13 @@ public class ShopProductModule {
     @Provides
     public Retrofit provideEtalaseRetrofit(@WsV4Qualifier OkHttpClient okHttpClient,
                                             Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ShopUrl.BASE_WSV4_URL).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(ShopUrl.BASE_WS_URL).client(okHttpClient).build();
     }
 
     @ShopProductScope
     @Provides
-    public EtalaseApi provideEtalaseApi(@ShopEtalaseQualifier Retrofit retrofit) {
-        return retrofit.create(EtalaseApi.class);
+    public ShopWS4Api provideEtalaseApi(@ShopEtalaseQualifier Retrofit retrofit) {
+        return retrofit.create(ShopWS4Api.class);
     }
 
     @ShopProductWishListFeaturedQualifier

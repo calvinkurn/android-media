@@ -32,6 +32,7 @@ import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.page.di.module.ShopPageModule;
@@ -233,7 +234,13 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 view.getContext().startActivity(intent);
             }
         });
-
+        totalFavouriteDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ShopFavouriteListActivity.createIntent(view.getContext(), shopId);
+                view.getContext().startActivity(intent);
+            }
+        });
         reputationDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

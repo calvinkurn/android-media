@@ -7,7 +7,7 @@ package com.tokopedia.shop.common.constant;
 public class ShopCommonUrl {
 
     public static String BASE_URL = "https://tome.tokopedia.com";
-    public static String BASE_URL_WS = "https://ws.tokopedia.com";
+    public static String BASE_WS_URL = "https://ws.tokopedia.com";
 
     public static final String SHOP_INFO_PATH = "v1/web-service/shop/get_shop_info";
 
