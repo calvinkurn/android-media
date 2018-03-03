@@ -1,8 +1,7 @@
 package com.tokopedia.shop.favourite.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWS4Api;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.favourite.data.source.cloud.model.ShopFavouritePagingList;
 import com.tokopedia.shop.favourite.data.source.cloud.model.ShopFavouriteUser;
 import com.tokopedia.shop.favourite.domain.model.ShopFavouriteRequestModel;
@@ -18,10 +17,10 @@ import rx.Observable;
 
 public class ShopFavouriteCloudDataSource {
 
-    private final ShopWS4Api shopWS4Api;
+    private final ShopWSApi shopWS4Api;
 
     @Inject
-    public ShopFavouriteCloudDataSource(ShopWS4Api shopWS4Api) {
+    public ShopFavouriteCloudDataSource(ShopWSApi shopWS4Api) {
         this.shopWS4Api = shopWS4Api;
     }
 

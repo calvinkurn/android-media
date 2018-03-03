@@ -18,7 +18,7 @@ import rx.Observable;
  * Created by Hendry on 4/20/2017.
  */
 
-public interface ShopCommonWS4Api {
+public interface ShopCommonWSApi {
 
     @POST(ShopCommonUrl.TOGGLE_FAVOURITE_SHOP)
     @FormUrlEncoded

@@ -1,10 +1,10 @@
-package com.tokopedia.shop.product.data.source.cloud;
+package com.tokopedia.shop.etalase.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWS4Api;
-import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
-import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
+import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
+import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
+import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 
 import javax.inject.Inject;
 
@@ -16,10 +16,10 @@ import rx.Observable;
  */
 
 public class ShopEtalaseCloudDataSource {
-    private final ShopWS4Api shopWS4Api;
+    private final ShopWSApi shopWS4Api;
 
     @Inject
-    public ShopEtalaseCloudDataSource(ShopWS4Api shopWS4Api) {
+    public ShopEtalaseCloudDataSource(ShopWSApi shopWS4Api) {
         this.shopWS4Api = shopWS4Api;
     }
 

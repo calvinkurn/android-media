@@ -11,9 +11,10 @@ import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWS4Api;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.ShopQualifier;
-import com.tokopedia.shop.common.di.ShopWS4Qualifier;
+import com.tokopedia.shop.common.di.ShopWSQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -54,7 +55,6 @@ public class ShopModule {
                 .build();
     }
 
-
     @ShopQualifier
     @ShopScope
     @Provides
@@ -69,18 +69,12 @@ public class ShopModule {
         return retrofit.create(ShopCommonApi.class);
     }
 
-    @ShopWS4Qualifier
+    @ShopWSQualifier
     @ShopScope
     @Provides
-    public Retrofit provideWS4Retrofit(@ShopQualifier OkHttpClient okHttpClient,
+    public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
-    }
-
-    @ShopScope
-    @Provides
-    public ShopCommonWS4Api provideShopCommonWs4Api(@ShopWS4Qualifier Retrofit retrofit) {
-        return retrofit.create(ShopCommonWS4Api.class);
     }
 
     @ShopScope
@@ -91,7 +85,19 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, ShopCommonWS4Api shopCommonWS4Api, UserSession userSession) {
+    public ShopCommonWSApi provideShopCommonWsApi(@ShopWSQualifier Retrofit retrofit) {
+        return retrofit.create(ShopCommonWSApi.class);
+    }
+
+    @ShopScope
+    @Provides
+    public ShopWSApi provideShopWsApi(@ShopWSQualifier Retrofit retrofit) {
+        return retrofit.create(ShopWSApi.class);
+    }
+
+    @ShopScope
+    @Provides
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, ShopCommonWSApi shopCommonWS4Api, UserSession userSession) {
         return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
     }
 

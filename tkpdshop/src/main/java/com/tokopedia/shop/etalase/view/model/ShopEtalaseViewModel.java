@@ -1,7 +1,7 @@
-package com.tokopedia.shop.product.view.model;
+package com.tokopedia.shop.etalase.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopEtalaseAdapterTypeFactory;
+import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
 
 /**
  * Created by normansyahputa on 2/28/18.

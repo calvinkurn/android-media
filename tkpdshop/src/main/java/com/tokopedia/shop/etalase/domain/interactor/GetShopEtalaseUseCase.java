@@ -1,9 +1,9 @@
-package com.tokopedia.shop.product.domain.interactor;
+package com.tokopedia.shop.etalase.domain.interactor;
 
-import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
-import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
-import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
+import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
+import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
+import com.tokopedia.shop.etalase.domain.repository.ShopEtalaseRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -18,16 +18,16 @@ import rx.Observable;
 public class GetShopEtalaseUseCase extends UseCase<PagingListOther<EtalaseModel>> {
 
     public static final String SHOP_ETALASE_REQUEST_MODEL = "SHOP_ETALASE_REQUEST_MODEL";
-    private ShopProductRepository shopProductRepository;
+    private ShopEtalaseRepository shopEtalaseRepository;
 
     @Inject
-    public GetShopEtalaseUseCase(ShopProductRepository shopProductRepository) {
-        this.shopProductRepository = shopProductRepository;
+    public GetShopEtalaseUseCase(ShopEtalaseRepository shopEtalaseRepository) {
+        this.shopEtalaseRepository = shopEtalaseRepository;
     }
 
     @Override
     public Observable<PagingListOther<EtalaseModel>> createObservable(RequestParams requestParams) {
-        return shopProductRepository.getShopEtalaseList((ShopEtalaseRequestModel) requestParams.getObject(SHOP_ETALASE_REQUEST_MODEL));
+        return shopEtalaseRepository.getShopEtalaseList((ShopEtalaseRequestModel) requestParams.getObject(SHOP_ETALASE_REQUEST_MODEL));
     }
 
     public static RequestParams createParams(ShopEtalaseRequestModel shopEtalaseRequestModel){

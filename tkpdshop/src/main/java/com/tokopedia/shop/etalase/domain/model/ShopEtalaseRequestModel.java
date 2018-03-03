@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.domain.model;
+package com.tokopedia.shop.etalase.domain.model;
 
 import android.text.TextUtils;
 

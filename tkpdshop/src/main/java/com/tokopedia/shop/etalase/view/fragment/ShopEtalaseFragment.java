@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.fragment;
+package com.tokopedia.shop.etalase.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,14 +9,14 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
-import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
-import com.tokopedia.shop.product.view.adapter.ShopEtalaseAdapterTypeFactory;
-import com.tokopedia.shop.product.view.listener.ShopEtalaseFragmentListener;
-import com.tokopedia.shop.product.view.listener.ShopEtalaseView;
-import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.product.view.presenter.ShopEtalasePresenter;
+import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
+import com.tokopedia.shop.etalase.di.module.ShopEtalaseModule;
+import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
+import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
+import com.tokopedia.shop.etalase.view.listener.ShopEtalaseFragmentListener;
+import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.etalase.view.presenter.ShopEtalasePresenter;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/28/18.
  */
 
-public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAdapterTypeFactory> implements ShopEtalaseView{
+public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAdapterTypeFactory> implements ShopEtalaseView {
     public static final int DEFAULT_INDEX_SELECTION = 0;
     String shopId, shopDomain;
 
@@ -47,7 +47,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             shopId = getArguments().getString(ShopParamApiConstant.SHOP_ID);
             shopDomain = getArguments().getString(ShopParamApiConstant.SHOP_DOMAIN);
             selectedEtalaseId = getArguments().getString(ShopEtalaseActivity.SELECTED_ETALASE_ID);
@@ -75,11 +75,11 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
 
     @Override
     public void renderList(@NonNull List<ShopEtalaseViewModel> list, boolean isHasNext) {
-        if(selectedEtalaseId != null){
-            for(int i=0;i<list.size();i++)
-                if(list.get(i).getEtalaseId().equalsIgnoreCase(selectedEtalaseId))
+        if (selectedEtalaseId != null) {
+            for (int i = 0; i < list.size(); i++)
+                if (list.get(i).getEtalaseId().equalsIgnoreCase(selectedEtalaseId))
                     list.get(i).setSelected(true);
-        }else{
+        } else {
             list.get(DEFAULT_INDEX_SELECTION).setSelected(true);
         }
         super.renderList(list, isHasNext);
@@ -87,9 +87,9 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
 
     @Override
     protected void initInjector() {
-        DaggerShopProductComponent
+        DaggerShopEtalaseComponent
                 .builder()
-                .shopProductModule(new ShopProductModule())
+                .shopEtalaseModule(new ShopEtalaseModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);

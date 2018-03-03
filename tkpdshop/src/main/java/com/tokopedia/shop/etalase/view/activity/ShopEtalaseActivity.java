@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.activity;
+package com.tokopedia.shop.etalase.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,10 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.product.view.fragment.ShopEtalaseFragment;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.etalase.view.fragment.ShopEtalaseFragment;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
-import com.tokopedia.shop.product.view.listener.ShopEtalaseFragmentListener;
-import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.etalase.view.listener.ShopEtalaseFragmentListener;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 
 /**
  * Created by normansyahputa on 2/28/18.

@@ -1,13 +1,13 @@
-package com.tokopedia.shop.product.view.presenter;
+package com.tokopedia.shop.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.util.PagingListUtils;
-import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
-import com.tokopedia.shop.product.domain.interactor.GetShopEtalaseUseCase;
-import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
-import com.tokopedia.shop.product.view.listener.ShopEtalaseView;
-import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
+import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
+import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
+import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
+import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
 
-    public void getShopEtalase(String shopId, String shopDomain){
+    public void getShopEtalase(String shopId, String shopDomain) {
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
         shopEtalaseRequestModel.setShopId(shopId);
         shopEtalaseRequestModel.setShopDomain(shopDomain);
@@ -54,14 +54,14 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
             @Override
             public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().renderList(mergeListOther(pagingListOther), PagingListUtils.checkNextPage(pagingListOther));
                 }
             }
         });
     }
 
-    private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther){
+    private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther) {
         pagingListOther.getListOther().addAll(pagingListOther.getList());
         List<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
         for (EtalaseModel etalaseModel : pagingListOther.getListOther()) {

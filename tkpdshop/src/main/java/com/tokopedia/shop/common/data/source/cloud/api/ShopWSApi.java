@@ -2,10 +2,10 @@ package com.tokopedia.shop.common.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
+import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.favourite.data.source.cloud.model.ShopFavouritePagingList;
 import com.tokopedia.shop.favourite.data.source.cloud.model.ShopFavouriteUser;
-import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import rx.Observable;
  * Created by Hendry on 4/20/2017.
  */
 
-public interface ShopWS4Api {
+public interface ShopWSApi {
 
     @GET(ShopUrl.SHOP_ETALASE)
     Observable<Response<DataResponse<PagingListOther<EtalaseModel>>>> getShopEtalase(@QueryMap Map<String, String> params);
