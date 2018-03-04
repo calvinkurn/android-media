@@ -2,6 +2,7 @@ package com.tokopedia.shop.page.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -11,21 +12,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -82,6 +77,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private LinearLayout shopTitleLinearLayout;
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
 
     private ShopPageSubDetailView totalFavouriteDetailView;
     private ShopPageSubDetailView totalProductDetailView;
@@ -106,6 +102,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private ShopModuleRouter shopModuleRouter;
     private int tabPosition;
     private Menu menu;
+    private String shopUrl;
+    private String shopLocation;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -125,6 +123,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -135,6 +134,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -142,8 +142,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @DeepLink(ShopAppLink.SHOP_REVIEW)
     public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
+        return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }
@@ -156,6 +157,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
+        viewPager.setCurrentItem(tabPosition);
         if (!TextUtils.isEmpty(shopId)) {
             shopPagePresenter.getShopInfo(shopId);
         } else {
@@ -222,6 +224,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonFavouriteShop = findViewById(R.id.button_favourite_shop);
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
         shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,11 +259,37 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 shopPagePresenter.toggleFavouriteShop(shopId);
             }
         });
+        buttonManageShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ShopModuleRouter) getApplication()).goToManageShop(ShopPageActivity.this);
+            }
+        });
+        buttonAddProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ShopModuleRouter) getApplication()).goToAddProduct(ShopPageActivity.this);
+            }
+        });
+        buttonChatSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopNameTextView.getText().toString());
+            }
+        });
+        totalFavouriteDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(tabPosition);
+        setSupportActionBar(toolbar);
         shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
-        collapsingToolbarLayout.setTitle("");
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
+        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        collapsingToolbarLayout.setTitle(" ");
     }
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
@@ -273,7 +302,10 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if (scrollRange + verticalOffset == 0) {
+
+                float percentage = (float) Math.abs(verticalOffset) / (float) scrollRange;
+
+                if (percentage > 1f) {
                     setCollapsedToolbar();
                     isShow = true;
                 } else if (isShow) {
@@ -285,7 +317,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void setExpandedToolbar() {
-        collapsingToolbarLayout.setTitle("");
+        collapsingToolbarLayout.setTitle(" ");
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         if (menu != null && menu.size() > 0) {
             menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_share_white));
@@ -305,6 +337,19 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         getMenuInflater().inflate(R.menu.menu_shop_info, menu);
         this.menu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onShareShop() {
+        ((ShopModuleRouter) getApplication()).goToShareShop(ShopPageActivity.this, shopId, shopUrl,
+                getString(R.string.shop_label_share_formatted, shopNameTextView.getText().toString(), shopLocation));
     }
 
     @Override
@@ -364,6 +409,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     private void updateShopInfo(ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
+        shopUrl = shopInfo.getInfo().getShopUrl();
+        shopLocation = shopInfo.getInfo().getShopLocation();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
         shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
 

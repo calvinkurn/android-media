@@ -22,9 +22,11 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
     public static final int LAYOUT = R.layout.item_shop_product_limited_featured;
 
     private RecyclerView recyclerView;
+    private ShopProductClickedListener shopProductClickedListener;
 
-    public ShopProductLimitedFeaturedViewHolder(View itemView) {
+    public ShopProductLimitedFeaturedViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
+        this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
 
@@ -34,12 +36,7 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
 
     @Override
     public void bind(ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel) {
-        ShopProductLimitedFeaturedAdapter adapter = new ShopProductLimitedFeaturedAdapter(new ShopProductClickedListener() {
-            @Override
-            public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-
-            }
-        });
+        ShopProductLimitedFeaturedAdapter adapter = new ShopProductLimitedFeaturedAdapter(shopProductClickedListener);
         adapter.setList(shopProductLimitedFeaturedViewModel.getShopProductViewModelList());
         LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

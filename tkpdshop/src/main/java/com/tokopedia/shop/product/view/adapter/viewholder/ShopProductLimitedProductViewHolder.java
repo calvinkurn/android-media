@@ -26,12 +26,15 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
     private static final int SPAN_COUNT = 2;
     private RecyclerView recyclerView;
     private AppCompatButton showMoreProductButton;
+    private ShopProductClickedListener shopProductClickedListener;
     private LabelView etalaseButton;
 
     public ShopProductLimitedProductViewHolder(View itemView,
                                                View.OnClickListener showMoreProductOnclickListener,
-                                               View.OnClickListener showMoreEtalaseOnclickListener) {
+                                               View.OnClickListener showMoreEtalaseOnclickListener,
+                                               ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
+        this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView, showMoreProductOnclickListener, showMoreEtalaseOnclickListener);
     }
 
@@ -45,12 +48,7 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
 
     @Override
     public void bind(ShopProductLimitedProductViewModel shopProductLimitedProductViewModel) {
-        ShopProductLimitedProductAdapter adapter = new ShopProductLimitedProductAdapter(new ShopProductClickedListener() {
-            @Override
-            public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-
-            }
-        });
+        ShopProductLimitedProductAdapter adapter = new ShopProductLimitedProductAdapter(shopProductClickedListener);
         adapter.setList(shopProductLimitedProductViewModel.getShopProductViewModelList());
         LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);

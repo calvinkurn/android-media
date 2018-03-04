@@ -45,7 +45,8 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         this.userSession = userSession;
     }
 
-    public void addToWishList(String productId){
+    public void addToWishList(final String productId){
+        getView().showLoading();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -56,13 +57,15 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showGetListError(e);
+                    getView().onErrorAddToWishList(e);
+                    getView().hideLoading();
                 }
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
-                Log.d(TAG, "berhasil wishlist -> "+aBoolean);
+                getView().onSuccessAddToWishList(productId, aBoolean);
+                getView().hideLoading();
             }
         });
     }
@@ -99,5 +102,30 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         if (getShopProductLimitedUseCase != null) {
             getShopProductLimitedUseCase.unsubscribe();
         }
+    }
+
+    public void removeFromWishList(final String productId){
+        getView().showLoading();
+        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
+        removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorRemoveFromWishList(e);
+                    getView().hideLoading();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean value) {
+                getView().onSuccessRemoveFromWishList(productId, value);
+                getView().hideLoading();
+            }
+        });
     }
 }
