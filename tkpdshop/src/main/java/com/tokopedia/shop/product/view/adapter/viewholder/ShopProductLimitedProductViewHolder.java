@@ -13,7 +13,6 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedProductAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -26,8 +25,10 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
     private static final int SPAN_COUNT = 2;
     private RecyclerView recyclerView;
     private AppCompatButton showMoreProductButton;
-    private ShopProductClickedListener shopProductClickedListener;
     private LabelView etalaseButton;
+
+    private ShopProductClickedListener shopProductClickedListener;
+
 
     public ShopProductLimitedProductViewHolder(View itemView,
                                                View.OnClickListener showMoreProductOnclickListener,

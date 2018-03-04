@@ -21,6 +21,14 @@ public class ShopProductLimitedProductAdapter extends RecyclerView.Adapter<ShopP
     private final ShopProductClickedListener shopProductClickedListener;
     private List<ShopProductViewModel> list;
 
+    public List<ShopProductViewModel> getList() {
+        return list;
+    }
+
+    public void setList(List<ShopProductViewModel> list) {
+        this.list = list;
+    }
+
     public ShopProductLimitedProductAdapter(ShopProductClickedListener shopProductClickedListener) {
         this.shopProductClickedListener = shopProductClickedListener;
         list = new ArrayList<>();
@@ -40,9 +48,5 @@ public class ShopProductLimitedProductAdapter extends RecyclerView.Adapter<ShopP
     @Override
     public int getItemCount() {
         return list.size();
-    }
-
-    public void setList(List<ShopProductViewModel> list) {
-        this.list = list;
     }
 }

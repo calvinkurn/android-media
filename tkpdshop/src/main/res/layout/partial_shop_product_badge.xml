@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/badges_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/text_view_cashback"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        android:background="@drawable/bg_rect_stroke_green"
+        android:padding="@dimen/padding_vvs"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        tools:text="@string/product_manage_item_cashback"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/text_view_wholesale"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        android:background="@drawable/bg_rect_stroke_lighter_gray"
+        android:padding="@dimen/padding_vvs"
+        android:text="@string/product_label_wholesale"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/text_view_pre_order"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        android:background="@drawable/bg_rect_stroke_lighter_gray"
+        android:padding="@dimen/padding_vvs"
+        android:text="@string/product_label_po"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/image_view_free_return"
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
+        android:src="@drawable/ic_free_return"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>

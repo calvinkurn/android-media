@@ -11,6 +11,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
  */
 
 public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> {
+
     public ShopProductLimitedAdapter(ShopProductLimitedAdapterTypeFactory adapterTypeFactory) {
         super(adapterTypeFactory);
     }
@@ -22,24 +23,20 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
                 for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedFeaturedViewModel) shopProductViewModel).getShopProductViewModelList()) {
                     if (shopProductViewModelContent.getId().equalsIgnoreCase(productId)) {
                         shopProductViewModelContent.setWishList(wishList);
-                        break;
+                        notifyItemChanged(i);
+                        return;
                     }
                 }
-                notifyItemChanged(i);
-                return;
             }
-
             if (shopProductViewModel instanceof ShopProductLimitedProductViewModel) {
                 for (ShopProductViewModel shopProductViewModelContent : ((ShopProductLimitedProductViewModel) shopProductViewModel).getShopProductViewModelList()) {
                     if (shopProductViewModelContent.getId().equalsIgnoreCase(productId)) {
                         shopProductViewModelContent.setWishList(wishList);
-                        break;
+                        notifyItemChanged(i);
+                        return;
                     }
                 }
-                notifyItemChanged(i);
-                return;
             }
         }
     }
-
 }

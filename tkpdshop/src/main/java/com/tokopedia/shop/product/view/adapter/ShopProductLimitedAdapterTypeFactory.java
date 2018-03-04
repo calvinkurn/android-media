@@ -18,16 +18,16 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    private final View.OnClickListener showMoreProductOnclickListener;
-    private ShopProductClickedListener shopProductClickedListener;
-    private View.OnClickListener showMoreEtalaseOnclickListener;
+    private final View.OnClickListener showMoreProductOnClickListener;
+    private final ShopProductClickedListener shopProductClickedListener;
+    private final View.OnClickListener showMoreEtalaseOnClickListener;
 
-    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener,
-                                                View.OnClickListener showMoreEtalaseOnclickListener,
+    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnClickListener,
+                                                View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener) {
-        this.showMoreProductOnclickListener = showMoreProductOnclickListener;
+        this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
-        this.showMoreEtalaseOnclickListener = showMoreEtalaseOnclickListener;
+        this.showMoreEtalaseOnClickListener = showMoreEtalaseOnClickListener;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -50,8 +50,8 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
             return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
             return new ShopProductLimitedProductViewHolder(parent,
-                    showMoreProductOnclickListener,
-                    showMoreEtalaseOnclickListener,
+                    showMoreProductOnClickListener,
+                    showMoreEtalaseOnClickListener,
                     shopProductClickedListener);
         } else {
             return super.createViewHolder(parent, type);
