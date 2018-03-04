@@ -60,7 +60,7 @@ public abstract class BaseTextPickerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_base_text_picker, container, false);
-        stringPickerTitle = (TextView) view.findViewById(R.id.string_picker_dialog_title);
+        stringPickerTitle = (TextView) view.findViewById(R.id.text_view_title);
         textInput = (EditText) view.findViewById(R.id.string_picker_dialog_edit_text);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.string_picker_dialog_input_layout);
         view.findViewById(R.id.string_picker_dialog_confirm)

@@ -116,8 +116,9 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public WholesaleModel getLastItem() {
-        if (isWithinDataset(wholesaleModels.size() - 1))
+        if (isWithinDataset(wholesaleModels.size() - 1)) {
             return getItem(wholesaleModels.size() - 1);
+        }
         return null;
     }
 

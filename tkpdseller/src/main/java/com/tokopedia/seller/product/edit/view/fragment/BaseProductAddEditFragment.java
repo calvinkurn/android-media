@@ -36,10 +36,10 @@ import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
@@ -64,7 +64,6 @@ import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
 
@@ -118,9 +117,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
         void startUploadProductWithShare(long productId);
 
-        void startAddWholeSaleDialog(WholesaleModel fixedPrice,
-                                     @CurrencyTypeDef int currencyType,
-                                     WholesaleModel previousWholesalePrice, boolean officialStore);
+        void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 
@@ -221,10 +218,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
     @Override
-    public void startAddWholeSaleDialog(WholesaleModel fixedPrice,
-                                        @CurrencyTypeDef int currencyType,
-                                        WholesaleModel previousWholesalePrice, boolean officialStore) {
-        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice, officialStore);
+    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
+        listener.startAddWholeSaleDialog(currencyType, previousWholesalePrice, officialStore);
     }
 
 
@@ -399,7 +394,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public final void startYoutubeVideoActivity(ArrayList<String> videoIds) {
-        Intent intent = new Intent(getActivity(), YoutubeAddVideoActivity.class);
+        Intent intent = new Intent(getActivity(), ProductAddVideoActivity.class);
         if (CommonUtils.checkCollectionNotNull(videoIds)) {
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
@@ -431,7 +426,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public final void onCatalogPickerClicked(String keyword, long depId, long selectedCatalogId) {
-        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG, keyword, depId, selectedCatalogId);
+        ProductAddCatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG, keyword, depId, selectedCatalogId);
     }
 
     @Override

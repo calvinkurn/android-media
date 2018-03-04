@@ -46,7 +46,7 @@ import javax.inject.Inject;
  * @author normansyahputa on 4/17/17.
  */
 
-public class YoutubeAddVideoFragment extends BaseDaggerFragment implements YoutubeAddVideoView {
+public class ProductAddVideoFragment extends BaseDaggerFragment implements YoutubeAddVideoView {
     public static final String TAG = "YoutubeAddVideoFragment";
     public static final int MAX_ROWS = 3;
     @Inject
@@ -67,7 +67,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     private Menu menu;
 
     public static Fragment createInstance() {
-        return new YoutubeAddVideoFragment();
+        return new ProductAddVideoFragment();
     }
 
     @SuppressWarnings("unchecked")

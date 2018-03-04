@@ -13,13 +13,13 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.di.component.CatalogPickerComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerCatalogPickerComponent;
 import com.tokopedia.seller.product.edit.di.module.CatalogPickerModule;
-import com.tokopedia.seller.product.edit.view.fragment.CatalogPickerFragment;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddCatalogPickerFragment;
 
 /**
  * @author hendry on 4/3/17.
  */
 
-public class CatalogPickerActivity extends BaseSimpleActivity implements HasComponent<CatalogPickerComponent> {
+public class ProductAddCatalogPickerActivity extends BaseSimpleActivity implements HasComponent<CatalogPickerComponent> {
 
     public static final String KEYWORD = "q";
     public static final String DEP_ID = "dep_id";
@@ -43,7 +43,7 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
     }
 
     private static Intent createIntent(Context context, @Nullable String keyword, long departmentId, long selectedCatalogId) {
-        Intent intent = new Intent(context, CatalogPickerActivity.class);
+        Intent intent = new Intent(context, ProductAddCatalogPickerActivity.class);
         intent.putExtra(KEYWORD, keyword);
         intent.putExtra(DEP_ID, departmentId);
         intent.putExtra(CATALOG_ID, selectedCatalogId);
@@ -61,7 +61,7 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
             departmentId = extras.getLong(DEP_ID);
             selectedCatalogId = extras.getLong(CATALOG_ID);
         }
-        return CatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
+        return ProductAddCatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
     }
 
     @Override

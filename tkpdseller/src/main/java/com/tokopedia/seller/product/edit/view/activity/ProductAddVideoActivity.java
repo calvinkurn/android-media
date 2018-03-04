@@ -13,7 +13,7 @@ import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.YoutubeAddUrlDialog;
-import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddVideoFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 4/17/17.
  */
-public class YoutubeAddVideoActivity extends BaseSimpleActivity
+public class ProductAddVideoActivity extends BaseSimpleActivity
         implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, BaseTextPickerDialogFragment.Listener {
 
     /**
@@ -49,14 +49,14 @@ public class YoutubeAddVideoActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return YoutubeAddVideoFragment.createInstance();
+        return ProductAddVideoFragment.createInstance();
     }
 
     @Override
-    public YoutubeAddVideoFragment youtubeAddVideoFragment() {
+    public ProductAddVideoFragment youtubeAddVideoFragment() {
         Fragment fragment = getFragment();
-        return (fragment != null && fragment instanceof YoutubeAddVideoFragment) ?
-                (YoutubeAddVideoFragment) fragment : null;
+        return (fragment != null && fragment instanceof ProductAddVideoFragment) ?
+                (ProductAddVideoFragment) fragment : null;
     }
 
     @Override
