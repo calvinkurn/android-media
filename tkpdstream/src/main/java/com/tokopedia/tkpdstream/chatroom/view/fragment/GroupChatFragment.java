@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -15,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -45,8 +45,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
@@ -89,7 +91,8 @@ import javax.inject.Inject;
  */
 
 public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View,
-        ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener, ProgressBarWithTimer.Listener {
+        ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener,
+        ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final String RESULT_MESSAGE = "result_message";
@@ -426,7 +429,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onResume() {
         super.onResume();
-        progressBarWithTimer.restart();
+        if (viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStartTime() != 0
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime() != 0
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStartTime()
+                < viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
+                > System.currentTimeMillis() / 1000L) {
+            progressBarWithTimer.restart();
+        }
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
                 .CONNECTION_HANDLER_ID, new
@@ -571,7 +583,23 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-        if (hasPoll && voteInfoViewModel != null) {
+        if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
+            Snackbar snackBar = SnackbarManager.make(getActivity(), getString(R.string
+                            .please_check_timezone_to_vote),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.action_check, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                        }
+                    });
+            snackBar.show();
+        } else if (hasPoll
+                && voteInfoViewModel != null
+                && voteInfoViewModel.getStartTime() != 0
+                && voteInfoViewModel.getEndTime() != 0
+                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
+                && voteInfoViewModel.getEndTime() > System.currentTimeMillis() / 1000L) {
             showVoteLayout(voteInfoViewModel);
         } else {
             hideVoteLayout();
@@ -849,7 +877,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            if(iconVote!=null && iconVote.getBackground()!=null) {
+            if (iconVote != null && iconVote.getBackground() != null) {
                 DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
             }
         }
@@ -859,7 +887,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
-            if(iconVote!=null && iconVote.getBackground()!=null) {
+            if (iconVote != null && iconVote.getBackground() != null) {
                 DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.medium_green));
             }
         }
@@ -893,5 +921,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void hideLoading() {
         loading.setVisibility(View.GONE);
         main.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRedirectUrl(String url) {
+        ((StreamModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
     }
 }

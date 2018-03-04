@@ -75,7 +75,7 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 false,
-                pojo.getRedirectUrl());
+                "");
     }
 
     private Visitable mapToUserMessage(UserMessage message) {

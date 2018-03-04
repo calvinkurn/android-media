@@ -57,7 +57,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
         }else{
             percent.setVisibility(View.VISIBLE);
             percentLayout.setVisibility(View.VISIBLE);
-            progressBar.setProgress(element.getPercentage());
+            progressBar.setProgress(element.getPercentageInteger());
             if(element.getSelected() == VoteViewModel.SELECTED) {
                 icon.setVisibility(View.VISIBLE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_selected));
@@ -68,7 +68,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
         }
 
         option.setText(element.getOption());
-        percent.setText(String.valueOf(element.getPercentage()));
+        percent.setText(element.getPercentage());
         ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
 
             @Override

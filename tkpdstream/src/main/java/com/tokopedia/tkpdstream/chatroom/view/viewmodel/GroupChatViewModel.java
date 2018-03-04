@@ -78,4 +78,8 @@ public class GroupChatViewModel implements Parcelable {
             return "";
         }
     }
+
+    public ChannelInfoViewModel getChannelInfoViewModel() {
+        return channelInfoViewModel;
+    }
 }

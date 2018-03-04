@@ -62,6 +62,10 @@ public interface GroupChatContract {
         void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel);
 
         void onErrorVote(String errorMessage);
+
+        interface ImageViewHolderListener {
+            void onRedirectUrl(String url);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {
