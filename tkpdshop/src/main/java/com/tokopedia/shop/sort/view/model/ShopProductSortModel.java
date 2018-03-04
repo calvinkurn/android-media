@@ -1,7 +1,7 @@
-package com.tokopedia.shop.product.view.model;
+package com.tokopedia.shop.sort.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopProductSortAdapterTypeFactory;
+import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory;
 
 /**
  * Created by normansyahputa on 2/24/18.

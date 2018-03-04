@@ -2,14 +2,10 @@ package com.tokopedia.shop.product.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,13 +20,10 @@ import rx.functions.Func1;
 public class ShopProductRepositoryImpl implements ShopProductRepository {
 
     private final ShopProductCloudDataSource shopProductCloudDataSource;
-    private ShopFilterCloudDataSource shopFilterCloudDataSource;
 
     @Inject
-    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource,
-                                     ShopFilterCloudDataSource shopFilterCloudDataSource) {
+    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource) {
         this.shopProductCloudDataSource = shopProductCloudDataSource;
-        this.shopFilterCloudDataSource = shopFilterCloudDataSource;
     }
 
     @Override
@@ -41,10 +34,5 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
                 return Observable.just(dataResponseResponse.body().getData());
             }
         });
-    }
-
-    @Override
-    public Observable<List<ShopProductSort>> getShopProductFilter() {
-        return shopFilterCloudDataSource.getDynamicFilter();
     }
 }

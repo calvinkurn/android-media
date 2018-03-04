@@ -5,8 +5,6 @@ import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
-import com.tokopedia.shop.product.view.model.ShopProductSortModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
@@ -81,18 +79,5 @@ public class ShopProductMapper {
         shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
         shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
         return shopProductViewModel;
-    }
-
-    public List<ShopProductSortModel> convertSort(List<ShopProductSort> shopProductSortList) {
-        List<ShopProductSortModel> result = new ArrayList<>();
-        for (ShopProductSort data : shopProductSortList) {
-            ShopProductSortModel shopProductFilterModel = new ShopProductSortModel();
-            shopProductFilterModel.setInputType(data.getInputType());
-            shopProductFilterModel.setKey(data.getKey());
-            shopProductFilterModel.setName(data.getName());
-            shopProductFilterModel.setValue(data.getValue());
-            result.add(shopProductFilterModel);
-        }
-        return result;
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.shop.product.di.component;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
-import com.tokopedia.shop.product.view.fragment.ShopProductSortFragment;
+import com.tokopedia.shop.sort.view.fragment.ShopProductSortFragment;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
@@ -20,5 +20,4 @@ public interface ShopProductComponent {
 
     void inject(ShopProductListFragment shopProductListFragment);
 
-    void inject(ShopProductSortFragment shopProductFilterFragment);
 }

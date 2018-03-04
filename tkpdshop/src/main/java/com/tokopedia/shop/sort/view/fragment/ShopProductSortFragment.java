@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.fragment;
+package com.tokopedia.shop.sort.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
+import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
+import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.activity.ShopProductSortActivity;
-import com.tokopedia.shop.product.view.adapter.ShopProductSortAdapterTypeFactory;
-import com.tokopedia.shop.product.view.listener.ShopProductFilterListView;
-import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
-import com.tokopedia.shop.product.view.model.ShopProductSortModel;
-import com.tokopedia.shop.product.view.presenter.ShopProductSortPresenter;
+import com.tokopedia.shop.sort.di.module.ShopProductSortModule;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory;
+import com.tokopedia.shop.sort.view.listener.ShopProductSortListView;
+import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
+import com.tokopedia.shop.sort.view.model.ShopProductSortModel;
+import com.tokopedia.shop.sort.view.presenter.ShopProductSortPresenter;
 
 import java.util.List;
 
@@ -27,12 +29,12 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductSortFragment extends BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory> implements ShopProductFilterListView {
+public class ShopProductSortFragment extends BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory> implements ShopProductSortListView {
 
     @Inject
     ShopProductSortPresenter shopProductFilterPresenter;
     private String sortName;
-    private ShopProductFilterFragmentListener shopFilterFragmentListener;
+    private ShopProductSortFragmentListener shopFilterFragmentListener;
 
     public static ShopProductSortFragment createInstance(String sortName) {
         ShopProductSortFragment fragment = new ShopProductSortFragment();
@@ -58,8 +60,8 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context != null && context instanceof ShopProductFilterFragmentListener) {
-            shopFilterFragmentListener = (ShopProductFilterFragmentListener) context;
+        if (context != null && context instanceof ShopProductSortFragmentListener) {
+            shopFilterFragmentListener = (ShopProductSortFragmentListener) context;
         }
     }
 
@@ -99,9 +101,9 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     protected void initInjector() {
-        DaggerShopProductComponent
+        DaggerShopProductSortComponent
                 .builder()
-                .shopProductModule(new ShopProductModule())
+                .shopProductSortModule(new ShopProductSortModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);

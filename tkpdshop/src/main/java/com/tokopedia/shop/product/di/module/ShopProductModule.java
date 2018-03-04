@@ -17,7 +17,6 @@ import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
-import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
 import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier;
@@ -183,13 +182,11 @@ public class ShopProductModule {
         return new RemoveFromWishListUseCase(wishListCommonRepository);
     }
 
-    // Filter
+    // Product
     @ShopProductScope
     @Provides
-    public ShopProductRepository provideShopProductRepository(
-            ShopProductCloudDataSource shopProductDataSource,
-            ShopFilterCloudDataSource shopFilterCloudDataSource) {
-        return new ShopProductRepositoryImpl(shopProductDataSource, shopFilterCloudDataSource);
+    public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource) {
+        return new ShopProductRepositoryImpl(shopProductDataSource);
     }
 
     @ShopProductScope

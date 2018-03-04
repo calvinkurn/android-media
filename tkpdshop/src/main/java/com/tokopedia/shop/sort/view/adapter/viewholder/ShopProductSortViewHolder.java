@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.adapter.viewholder;
+package com.tokopedia.shop.sort.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.product.view.model.ShopProductSortModel;
+import com.tokopedia.shop.sort.view.model.ShopProductSortModel;
 
 /**
  * Created by normansyahputa on 2/24/18.

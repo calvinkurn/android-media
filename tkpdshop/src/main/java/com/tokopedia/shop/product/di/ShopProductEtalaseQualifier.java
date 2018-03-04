@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
  */
 
 @Qualifier
-public @interface ShopEtalaseQualifier {
+public @interface ShopProductEtalaseQualifier {
 }

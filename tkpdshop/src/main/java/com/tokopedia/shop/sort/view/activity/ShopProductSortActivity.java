@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.activity;
+package com.tokopedia.shop.sort.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,14 +10,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.product.view.fragment.ShopProductSortFragment;
-import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
+import com.tokopedia.shop.sort.view.fragment.ShopProductSortFragment;
+import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
 
 /**
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductSortActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductFilterFragmentListener {
+public class ShopProductSortActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductSortFragmentListener {
     public static final String SORT_NAME = "SORT_NAME";
     public static final String SORT_ID = "SORT_ID";
     private ShopComponent component;
