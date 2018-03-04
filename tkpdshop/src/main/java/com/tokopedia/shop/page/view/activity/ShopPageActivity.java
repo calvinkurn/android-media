@@ -247,6 +247,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
             }
         });
+        totalProductDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -282,12 +288,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             @Override
             public void onClick(View view) {
                 ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopNameTextView.getText().toString());
-            }
-        });
-        totalFavouriteDetailView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
         tabLayout.setupWithViewPager(viewPager);

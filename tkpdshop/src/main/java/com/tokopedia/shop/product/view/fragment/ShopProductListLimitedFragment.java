@@ -37,7 +37,6 @@ import javax.inject.Inject;
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
         implements ShopProductListLimitedView, ShopProductClickedListener {
 
-
     private ProgressDialog progressDialog;
 
     @Inject

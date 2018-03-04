@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
             app:lv_image="@drawable/ic_info_email_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
@@ -57,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
             app:lv_image="@drawable/ic_info_phone_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
@@ -65,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
             app:lv_image="@drawable/ic_info_fax_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
