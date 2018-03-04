@@ -63,7 +63,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         });
     }
 
-    public void addToWishList(final String productId){
+    public void addToWishList(final String productId) {
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -85,8 +85,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         });
     }
 
-    public void removeFromWishList(final String productId){
-        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
+    public void removeFromWishList(final String productId) {
+        RequestParams requestParam = RemoveFromWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

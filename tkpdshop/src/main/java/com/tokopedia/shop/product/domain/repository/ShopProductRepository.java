@@ -1,9 +1,11 @@
 package com.tokopedia.shop.product.domain.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -15,5 +17,5 @@ public interface ShopProductRepository {
 
     Observable<PagingList<ShopProduct>> getShopProductList(ShopProductRequestModel shopProductRequestModel);
 
-    Observable<DynamicFilterModel.DataValue> getShopProductFilter();
+    Observable<List<ShopProductSort>> getShopProductFilter();
 }

@@ -5,6 +5,8 @@ import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
+import com.tokopedia.shop.product.view.model.ShopProductSortModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
@@ -35,13 +37,11 @@ public class ShopProductMapper {
         shopProductViewModel.setName(shopProduct.getProductName());
         shopProductViewModel.setPrice(shopProduct.getProductPrice());
         shopProductViewModel.setImageUrl(shopProduct.getProductImage());
-//        shopProductViewModel.setRating(); rating
-//        shopProductViewModel.setCashback(shopProduct.get); cashback
-//        shopProductViewModel.setFreeReturn(shopProduct.); free return
+//        shopProductViewModel.setRating(); Api not support
+//        shopProductViewModel.setCashback(shopProduct.get); Api not support
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         shopProductViewModel.setTotalReview(Integer.valueOf(shopProduct.getProductReviewCount()));
         shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
-        shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
             for (ShopProductBadge badge : shopProduct.getBadges()) {
                 if (badge.getTitle().equalsIgnoreCase(BADGE_FREE_RETURN)){
@@ -81,5 +81,18 @@ public class ShopProductMapper {
         shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
         shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
         return shopProductViewModel;
+    }
+
+    public List<ShopProductSortModel> convertSort(List<ShopProductSort> shopProductSortList) {
+        List<ShopProductSortModel> result = new ArrayList<>();
+        for (ShopProductSort data : shopProductSortList) {
+            ShopProductSortModel shopProductFilterModel = new ShopProductSortModel();
+            shopProductFilterModel.setInputType(data.getInputType());
+            shopProductFilterModel.setKey(data.getKey());
+            shopProductFilterModel.setName(data.getName());
+            shopProductFilterModel.setValue(data.getValue());
+            result.add(shopProductFilterModel);
+        }
+        return result;
     }
 }

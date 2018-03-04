@@ -1,9 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
-import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -13,7 +15,7 @@ import rx.Observable;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class GetShopProductFilterUseCase extends UseCase<DynamicFilterModel.DataValue> {
+public class GetShopProductFilterUseCase extends UseCase<List<ShopProductSort>> {
 
     private ShopProductRepository shopProductRepository;
 
@@ -23,7 +25,7 @@ public class GetShopProductFilterUseCase extends UseCase<DynamicFilterModel.Data
     }
 
     @Override
-    public Observable<DynamicFilterModel.DataValue> createObservable(RequestParams requestParams) {
+    public Observable<List<ShopProductSort>> createObservable(RequestParams requestParams) {
         return shopProductRepository.getShopProductFilter();
     }
 }

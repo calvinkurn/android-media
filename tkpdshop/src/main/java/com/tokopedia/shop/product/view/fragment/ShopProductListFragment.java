@@ -29,7 +29,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
-import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductSortActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
@@ -177,7 +177,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShopProductListFragment.this.startActivityForResult(ShopProductFilterActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
+                ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
             }
         });
 
@@ -310,8 +310,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
             case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
-                    sortId = data.getStringExtra(ShopProductFilterActivity.SORT_ID);
-                    sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
+                    sortId = data.getStringExtra(ShopProductSortActivity.SORT_ID);
+                    sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
                     this.isLoadingInitialData = true;
                     loadInitialData();
                 }

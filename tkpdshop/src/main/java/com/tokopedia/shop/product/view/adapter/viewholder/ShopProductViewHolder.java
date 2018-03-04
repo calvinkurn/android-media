@@ -27,7 +27,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private final ShopProductClickedListener shopProductClickedListener;
     private TextView titleTextView;
     private TextView priceTextView;
-    private TextView cashbackTextView;
+    private TextView cashBackTextView;
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
     private ImageView freeReturnImageView, productImageView;
@@ -45,7 +45,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private void findViews(View view) {
         titleTextView = view.findViewById(R.id.title);
         priceTextView = view.findViewById(R.id.price);
-        cashbackTextView = view.findViewById(R.id.text_view_cashback);
+        cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
 
@@ -82,11 +82,11 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             totalReview.setText(String.valueOf(shopProductViewModel.getTotalReview()));
         }
         if (shopProductViewModel.getCashback() > 0) {
-            cashbackTextView.setText(cashbackTextView.getContext().getString(
-                    R.string.product_manage_item_cashback, shopProductViewModel.getCashback()));
-            cashbackTextView.setVisibility(View.VISIBLE);
+            cashBackTextView.setText(cashBackTextView.getContext().getString(
+                    R.string.product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
+            cashBackTextView.setVisibility(View.VISIBLE);
         } else {
-            cashbackTextView.setVisibility(View.GONE);
+            cashBackTextView.setVisibility(View.GONE);
         }
         freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);

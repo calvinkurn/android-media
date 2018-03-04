@@ -4,10 +4,12 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
-import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,12 +44,7 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
     }
 
     @Override
-    public Observable<DynamicFilterModel.DataValue> getShopProductFilter() {
-        return shopFilterCloudDataSource.getDynamicFilter().flatMap(new Func1<Response<DynamicFilterModel>, Observable<DynamicFilterModel.DataValue>>() {
-            @Override
-            public Observable<DynamicFilterModel.DataValue> call(Response<DynamicFilterModel> response) {
-                return Observable.just(response.body().getData());
-            }
-        });
+    public Observable<List<ShopProductSort>> getShopProductFilter() {
+        return shopFilterCloudDataSource.getDynamicFilter();
     }
 }

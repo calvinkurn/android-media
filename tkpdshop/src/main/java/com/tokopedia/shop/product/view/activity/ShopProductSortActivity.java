@@ -10,21 +10,21 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.product.view.fragment.ShopProductFilterFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductSortFragment;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
 
 /**
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductFilterFragmentListener {
+public class ShopProductSortActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductFilterFragmentListener {
     public static final String SORT_NAME = "SORT_NAME";
     public static final String SORT_ID = "SORT_ID";
     private ShopComponent component;
     private String sortName;
 
     public static Intent createIntent(Context context, String sortName){
-           Intent intent = new Intent(context, ShopProductFilterActivity.class);
+           Intent intent = new Intent(context, ShopProductSortActivity.class);
            intent.putExtra(SORT_NAME, sortName);
            return intent;
 
@@ -32,7 +32,7 @@ public class ShopProductFilterActivity extends BaseSimpleActivity implements Has
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductFilterFragment.createInstance(sortName);
+        return ShopProductSortFragment.createInstance(sortName);
     }
 
     @Override

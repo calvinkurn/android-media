@@ -24,7 +24,6 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     public static final String KEYWORD_EXTRAS = "KEYWORD_EXTRAS";
     private String shopId;
-    private String shopDomain;
     private String keyword;
     private ShopComponent component;
     private String etalaseId;
@@ -45,12 +44,6 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         return intent;
     }
 
-    public static Intent createIntentWithDomain(Context context, String shopDomain) {
-        Intent intent = new Intent(context, ShopProductListActivity.class);
-        intent.putExtra(SHOP_DOMAIN, shopDomain);
-        return intent;
-    }
-
     @DeepLink(ShopAppLink.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -63,7 +56,6 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
-        shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         keyword = getIntent().getStringExtra(KEYWORD_EXTRAS);
         etalaseId = getIntent().getStringExtra(ShopProductListFragment.ETALASE_ID);
         etalaseName = getIntent().getStringExtra(ShopProductListFragment.ETALASE_NAME);

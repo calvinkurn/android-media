@@ -26,6 +26,6 @@ public interface WishListCommonApi {
     Observable<Response<Void>> addToWishList(@Path(WishListParamApiConstant.USER_ID) String userId, @Path(WishListParamApiConstant.PRODUCT_ID) String productId);
 
     @DELETE(WishListCommonUrl.SET_WISHLIST_URL)
-    Observable<Response<Void>> removeFromWishList(@Path(WishListParamApiConstant.USER_ID) String userId, @Path(WishListParamApiConstant.PRODUCT_ID) String product);
+    Observable<Response<Void>> removeFromWishList(@Path(WishListParamApiConstant.USER_ID) String userId, @Path(WishListParamApiConstant.PRODUCT_ID) String productId);
 
 }

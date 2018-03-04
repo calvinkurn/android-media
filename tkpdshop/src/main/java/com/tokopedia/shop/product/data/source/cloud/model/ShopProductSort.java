@@ -1,26 +1,26 @@
-package com.tokopedia.shop.product.view.model;
+package com.tokopedia.shop.product.data.source.cloud.model;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by normansyahputa on 2/24/18.
+ * Created by nathan on 3/4/18.
  */
 
-public class ShopProductFilterModel implements Visitable<ShopProductFilterAdapterTypeFactory> {
+public class ShopProductSort {
+
+    @SerializedName("name")
+    @Expose
     String name;
+    @SerializedName("key")
+    @Expose
     String key;
+    @SerializedName("value")
+    @Expose
     String value;
+    @SerializedName("input_type")
+    @Expose
     String inputType;
-    boolean isSelected;
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
 
     /**
      * @return The name
@@ -82,10 +82,5 @@ public class ShopProductFilterModel implements Visitable<ShopProductFilterAdapte
     @Override
     public String toString() {
         return getName();
-    }
-
-    @Override
-    public int type(ShopProductFilterAdapterTypeFactory shopProductFilterAdapterTypeFactory) {
-        return shopProductFilterAdapterTypeFactory.type(this);
     }
 }

@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
-import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
-import com.tokopedia.shop.product.view.listener.ShopFilterListView;
+import com.tokopedia.shop.product.view.activity.ShopProductSortActivity;
+import com.tokopedia.shop.product.view.adapter.ShopProductSortAdapterTypeFactory;
+import com.tokopedia.shop.product.view.listener.ShopProductFilterListView;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
-import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
-import com.tokopedia.shop.product.view.presenter.ShopProductFilterPresenter;
+import com.tokopedia.shop.product.view.model.ShopProductSortModel;
+import com.tokopedia.shop.product.view.presenter.ShopProductSortPresenter;
 
 import java.util.List;
 
@@ -27,17 +27,17 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterFragment extends BaseListFragment<ShopProductFilterModel, ShopProductFilterAdapterTypeFactory> implements ShopFilterListView {
+public class ShopProductSortFragment extends BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory> implements ShopProductFilterListView {
 
     @Inject
-    ShopProductFilterPresenter shopProductFilterPresenter;
+    ShopProductSortPresenter shopProductFilterPresenter;
     private String sortName;
     private ShopProductFilterFragmentListener shopFilterFragmentListener;
 
-    public static ShopProductFilterFragment createInstance(String sortName) {
-        ShopProductFilterFragment fragment = new ShopProductFilterFragment();
+    public static ShopProductSortFragment createInstance(String sortName) {
+        ShopProductSortFragment fragment = new ShopProductSortFragment();
         Bundle arguments = new Bundle();
-        arguments.putString(ShopProductFilterActivity.SORT_NAME, sortName);
+        arguments.putString(ShopProductSortActivity.SORT_NAME, sortName);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -70,7 +70,7 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductFilte
     }
 
     @Override
-    public void renderList(@NonNull List<ShopProductFilterModel> list, boolean hasNextPage) {
+    public void renderList(@NonNull List<ShopProductSortModel> list, boolean hasNextPage) {
         if (sortName != null) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getValue().equalsIgnoreCase(sortName)) {
@@ -87,14 +87,14 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductFilte
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null && savedInstanceState == null) {
-            sortName = getArguments().getString(ShopProductFilterActivity.SORT_NAME);
+            sortName = getArguments().getString(ShopProductSortActivity.SORT_NAME);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
-    protected ShopProductFilterAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductFilterAdapterTypeFactory();
+    protected ShopProductSortAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopProductSortAdapterTypeFactory();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductFilte
     }
 
     @Override
-    public void onItemClicked(ShopProductFilterModel filterModel) {
+    public void onItemClicked(ShopProductSortModel filterModel) {
         shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }
