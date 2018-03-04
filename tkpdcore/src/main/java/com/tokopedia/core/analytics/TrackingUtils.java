@@ -15,6 +15,7 @@ import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -22,6 +23,7 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
@@ -46,13 +48,6 @@ import java.util.Map;
  */
 
 public class TrackingUtils extends TrackingConfig {
-    private static final String COMP_1 = "com.gojek.app";
-    private static final String COMP_2 = "com.shopee.id";
-    private static final String COMP_3 = "com.lazada.android";
-    private static final String COMP_4 = "com.bukalapak.android";
-    private static final String COMP_5 = "com.grabtaxi.passenger";
-    private static final String COMP_6 = "com.traveloka.android";
-
     public static void eventCampaign(Campaign campaign) {
         Campaign temp = new Campaign(campaign);
         getGTMEngine()
@@ -733,56 +728,6 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
         getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
-    }
-
-    public static String getCIntelData(Context context) {
-        String[] competitions = {
-                COMP_1, COMP_2, COMP_3, COMP_4, COMP_5, COMP_6
-        };
-        String compList = "";
-        PackageManager pm = context.getPackageManager();
-        for (String key : competitions) {
-            if (pm != null) {
-                if (TrackingUtils.isAppInstalled(key, pm)) {
-                    if (TextUtils.isEmpty(compList))
-                        compList = compList + getAlias(key);
-                    else if(!TextUtils.isEmpty(getAlias(key)))
-                        compList = compList + "-" + getAlias(key);
-                }
-            }
-        }
-        return compList;
-    }
-
-    private static boolean isAppInstalled(String uri, PackageManager pm) {
-
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private static String getAlias(String key) {
-        switch (key) {
-            case COMP_1:
-                return "app 1";
-            case COMP_2:
-                return "app 2";
-            case COMP_3:
-                return "app 3";
-            case COMP_4:
-                return "app 4";
-            case COMP_5:
-                return "app 5";
-            case COMP_6:
-                return "app 6";
-            default:
-                return "";
-        }
     }
 }
 
