@@ -188,6 +188,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }
     }
 
+    @Override
+    public void onSwipeRefresh() {
+        shopProductListPresenter.clearProductCache();
+        super.onSwipeRefresh();
+
+    }
+
     private void setBottomActionViewImage(int index) {
         if (bottomActionView != null && (index >= 0 && index < LAYOUT_IMAGE_DRAWABLE_LIST.length))
             bottomActionView.setSecondImageDrawable(LAYOUT_IMAGE_DRAWABLE_LIST[index]);

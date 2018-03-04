@@ -21,6 +21,8 @@ import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
 import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
@@ -193,5 +195,17 @@ public class ShopProductModule {
     @Provides
     public ShopProductMapper provideShopProductMapper() {
         return new ShopProductMapper();
+    }
+
+    @ShopProductScope
+    @Provides
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
+        return new DeleteShopProductTomeUseCase();
+    }
+
+    @ShopProductScope
+    @Provides
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
+        return new DeleteShopProductAceUseCase();
     }
 }
