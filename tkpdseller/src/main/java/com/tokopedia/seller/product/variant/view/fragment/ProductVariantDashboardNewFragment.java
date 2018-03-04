@@ -3,7 +3,10 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -20,7 +23,6 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevel1ListActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevelLeafActivity;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST;
@@ -45,9 +48,6 @@ import static com.tokopedia.seller.product.variant.view.activity.ProductVariantD
 public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardNewViewModel>
         implements ProductVariantMainView {
 
-    //TODO, do not use this
-    private static final int MULTIPLY_START_TEMP_ID = 10000;
-
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -55,7 +55,12 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private ProductVariantViewModel productVariantViewModel;
     private RecyclerView recyclerView;
     private List<ProductVariantDashboardNewViewModel> productVariantDashboardNewViewModelList;
-    private @CurrencyTypeDef int currencyType;
+    private @CurrencyTypeDef
+    int currencyType;
+    private HashMap<String, Integer> mapLevel1;
+    private HashMap<String, Integer> mapLevel2;
+    private HashMap<Pair<String, String>, Integer> mapCombination;
+    private Parcelable recyclerViewState;
 
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
@@ -159,6 +164,11 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         updateVariantItemListView();
     }
 
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return null;
+    }
+
     private void initVariantLabel() {
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             return;
@@ -232,7 +242,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     @Override
     protected BaseListAdapter<ProductVariantDashboardNewViewModel> getNewAdapter() {
-        return new ProductVariantDashboardNewAdapter();
+        return new ProductVariantDashboardNewAdapter(currencyType);
     }
 
     @Override
@@ -253,20 +263,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     currencyType);
         }
-//        ProductVariantByCatModel productVariantByCatModel = ProductVariantViewConverter.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
-//        ArrayList<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();
-//        if (productVariantByCatModel != null) {
-//            productVariantDetailViewModelList = new ArrayList<>(ProductVariantViewConverter.getProductVariantValueListForVariantDetail(
-//                    ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE,
-//                    productVariantDataSubmit.getProductVariantUnitSubmitList(),
-//                    productVariantByCatModel.getUnitList()));
-//        }
-//        ProductVariantDetailActivity.start(getContext(), ProductVariantDashboardNewFragment.this,
-//                productVariantDashboardViewModel.getTemporaryId(),
-//                productVariantDashboardViewModel.getTitle(),
-//                ProductVariantViewConverter.isContainVariantStatusByOptionId(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList()),
-//                productVariantDetailViewModelList,
-//                new ArrayList<>(ProductVariantUtils.getSelectedOptionIdList(productVariantDashboardViewModel.getTemporaryId(), productVariantDataSubmit.getProductVariantCombinationSubmitList())));
     }
 
     private void pickVariant(int level) {
@@ -300,103 +296,120 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
     }
 
-    private void onActivityResultFromItemPicker(int requestCode, Intent data) {
-        int level = requestCode ;
+    private void onActivityResultFromItemPicker(int requestCodeLevel, Intent data) {
         // it already been sorted. level 1 must be index 0. level 2 = index 1
-        if (data.hasExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL)) {
-            ProductVariantOptionParent productVariantOptionParent =
-                    data.getParcelableExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
-            productVariantViewModel.replaceVariantOptionParentFor (level, productVariantOptionParent);
+        if (!data.hasExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL)) {
+            return;
+        }
+        recyclerViewState = null;
+
+        ProductVariantOptionParent productVariantOptionParent =
+                data.getParcelableExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
+        if (requestCodeLevel == 1 &&  (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild())) {
+            productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
+            if (productVariantViewModel.getVariantOptionParent(2)!= null) {
+                productVariantViewModel.getVariantOptionParent(2).setProductVariantOptionChild(null);
+            }
+            productVariantViewModel.setProductVariant(null);
+            initVariantLabel();
+            updateVariantItemListView();
+            return;
         }
 
-        // TODO level1: update the product variant combination, remove data which not included in the parent
-        // TODO level1: also generate for all default matrix combination, ex: add "red" will add "red" S/M/L
+        productVariantViewModel.replaceVariantOptionParentFor(requestCodeLevel, productVariantOptionParent);
 
-        // TODO level2: update the product variant combination, remove data which not included in the parent,
-        // TODO level2: also add the default matrix combination, ex: add "S" will add red/yellow/green S
+        // get current selection for item level 1, level 2, and the matrix combination
+        ProductVariantOptionParent productVariantOptionParentLevel1 = productVariantViewModel.getVariantOptionParent(1);
+        ProductVariantOptionParent productVariantOptionParentLevel2 = productVariantViewModel.getVariantOptionParent(2);
+        List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
+        List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
+        if (productVariantOptionParentLevel2 != null) {
+            productVariantOptionChildLevel2List = productVariantOptionParentLevel2.getProductVariantOptionChild();
+        }
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = productVariantViewModel.getProductVariant();
 
-        // TODO update UI
+        // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
+        createOptionMap(productVariantOptionChildLevel1List,productVariantOptionChildLevel2List);
+        createCombinationMap(productVariantCombinationViewModelList);
+
+        // generate the matrix axb based on level 1 and level2.
+        // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
+        // map is used to lookup if the value1x value2 already exist.
+        List<ProductVariantCombinationViewModel> newProductVariantCombinationViewModelList = new ArrayList<>();
+        for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
+            if (productVariantOptionChildLevel2List != null) { // have 2 level of variant
+                for (int j = 0, sizej = productVariantOptionChildLevel2List.size(); j < sizej; j++) {
+                    Pair<String, String> pair = new Pair<>(
+                            productVariantOptionChildLevel1List.get(i).getValue(),
+                            productVariantOptionChildLevel2List.get(j).getValue());
+                    if (mapCombination.containsKey(pair)) {
+                        int combinationIndex = mapCombination.get(pair);
+                        newProductVariantCombinationViewModelList.add(productVariantCombinationViewModelList.get(combinationIndex));
+                    } else {
+                        newProductVariantCombinationViewModelList.add(new ProductVariantCombinationViewModel(
+                                0, // TODO setup default price for generated variant
+                                0, // TODO setup default stock for generated variant
+                                "",
+                                productVariantOptionChildLevel1List.get(i).getValue(),
+                                productVariantOptionChildLevel2List.get(j).getValue()
+                        ));
+                    }
+                }
+            } else { // only have 1 level of variant, exmple: red, but no XL
+                Pair<String, String> pair = new Pair<>(productVariantOptionChildLevel1List.get(i).getValue(), "");
+                if (mapCombination.containsKey(pair)) {
+                    int combinationIndex = mapCombination.get(pair);
+                    newProductVariantCombinationViewModelList.add(productVariantCombinationViewModelList.get(combinationIndex));
+                } else {
+                    newProductVariantCombinationViewModelList.add(new ProductVariantCombinationViewModel(
+                            0, // TODO setup default price for generated variant
+                            0, // TODO setup default stock for generated variant
+                            "",
+                            productVariantOptionChildLevel1List.get(i).getValue(),
+                            ""
+                    ));
+                }
+            }
+        }
+        productVariantViewModel.setProductVariant(newProductVariantCombinationViewModelList);
+
         initVariantLabel();
         updateVariantItemListView();
-
-//        ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
-//        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
-//        switch (requestCode) {
-//            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-//                level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
-//                break;
-//            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
-//                level = ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
-//                break;
-//        }
-//
-//        addVariantCombination(level, productVariantUnitSubmit);
-//        updateVariantUnitList(productVariantUnitSubmit);
-//        checkVariantValidation(level, productVariantUnitSubmit);
-
-        //TODO remap image need?
-        remapImageToVariant();
-//TODO
-//        updateVariantUnitView();
-//        updateVariantItemListView();
     }
 
-    /**
-     * this is to give the variant the imageURL, currenly imageURL can be uploaded from desktop (retrieve from server)
-     * Change this logic when we already have the logic to upload variant image
-     */
-    private void remapImageToVariant() {
-        //TODO image variant, need or not?
-//        if (this.productVariantDataSubmit == null || this.productVariantDataSubmit.getProductVariantUnitSubmitList() == null ||
-//                this.productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0 ||
-//                oldProductVariantOptionSubmitListLv1 == null || oldProductVariantOptionSubmitListLv1.size() == 0) {
-//            return;
-//        }
-//        List<ProductVariantUnitSubmit> productVariantUnitSubmitList = this.productVariantDataSubmit.getProductVariantUnitSubmitList();
-//        for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
-//            ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
-//            if (productVariantUnitSubmit.getPosition() == ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE) {
-//                List<ProductVariantOptionSubmit> productVariantOptionSubmitList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
-//                for (int j = 0, sizej = productVariantOptionSubmitList.size(); j < sizej; j++) {
-//                    ProductVariantOptionSubmit productVariantOptionSubmit =
-//                            productVariantOptionSubmitList.get(j);
-//                    productVariantOptionSubmit.setPictureItemList(getOldPictureItem(productVariantOptionSubmit));
-//                }
-//                break;
-//            }
-//        }
+    private void createOptionMap(List<ProductVariantOptionChild> productVariantOptionChildLevel1List,
+                                 List<ProductVariantOptionChild> productVariantOptionChildLevel2List) {
+        mapLevel1 = new HashMap<>();
+        mapLevel2 = new HashMap<>();
+        int counter = 1;
+        for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
+            ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
+            productVariantOptionChild.settId(counter++);
+            mapLevel1.put(productVariantOptionChild.getValue(), i);
+        }
+
+        if (productVariantOptionChildLevel2List != null) {
+            for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
+                ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
+                productVariantOptionChild.settId(counter++);
+                mapLevel2.put(productVariantOptionChild.getValue(), i);
+            }
+        }
     }
 
-//    private List<PictureItem> getOldPictureItem(ProductVariantOptionSubmit productVariantOptionSubmit) {
-//        long vuvId = productVariantOptionSubmit.getVariantUnitValueId();
-//        String customText = productVariantOptionSubmit.getCustomText();
-//        if (vuvId == 0 && TextUtils.isEmpty(customText)) {
-//            return null;
-//        }
-//        if (vuvId != 0) {
-//            for (int i = 0, sizei = oldProductVariantOptionSubmitListLv1.size(); i < sizei; i++) {
-//                ProductVariantOptionSubmit oldProductVariantOptionSubmit = oldProductVariantOptionSubmitListLv1.get(i);
-//                if (vuvId == oldProductVariantOptionSubmit.getVariantUnitValueId()) {
-//                    return oldProductVariantOptionSubmit.getPictureItemList();
-//                }
-//            }
-//        } else {
-//            for (int i = 0, sizei = oldProductVariantOptionSubmitListLv1.size(); i < sizei; i++) {
-//                ProductVariantOptionSubmit oldProductVariantOptionSubmit = oldProductVariantOptionSubmitListLv1.get(i);
-//                if (customText.equals(oldProductVariantOptionSubmit.getCustomText())) {
-//                    return oldProductVariantOptionSubmit.getPictureItemList();
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    private void createCombinationMap(List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
+        mapCombination = new HashMap<>();
+        if (productVariantCombinationViewModelList != null) {
+            for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+                ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+                mapCombination.put(new Pair<>(productVariantCombinationViewModel.getLevel1String(),
+                        productVariantCombinationViewModel.getLevel2String()), i);
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     private void onActivityResultFromDetail(Intent data) {
-        //TODO level 1 can delete?
-//        if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-//            onActivityResultFromDetailDeleteOption(data);
-//        } else
         if (ProductVariantDetailLevel1ListActivity.EXTRA_ACTION_SUBMIT.equals(data.getAction())) {
             onActivityResultFromDetailUpdateList((ProductVariantDashboardNewViewModel)
                     data.getParcelableExtra(ProductVariantDetailLevel1ListActivity.EXTRA_PRODUCT_VARIANT_DATA));
@@ -405,24 +418,10 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     @SuppressWarnings("unchecked")
     private void onActivityResultFromLeaf(Intent data) {
-        //TODO level 1 can delete?
-//        if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-//            onActivityResultFromDetailDeleteOption(data);
-//        } else
         if (ProductVariantDetailLevelLeafActivity.EXTRA_ACTION_SUBMIT.equals(data.getAction())) {
             onActivityResultFromDetailLeafUpdateList((ProductVariantCombinationViewModel)
                     data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_LEAF_DATA));
         }
-    }
-
-    private void onActivityResultFromDetailDeleteOption(Intent data) {
-//        long optionIdToDelete = data.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
-//        if (optionIdToDelete == ProductVariantConstant.NOT_AVAILABLE_OPTION_ID) {
-//            return;
-//        }
-//        productVariantDataSubmit = ProductVariantUtils.getRemovedVariantDataByOptionId(optionIdToDelete, productVariantDataSubmit);
-//        updateVariantUnitView();
-//        updateVariantItemListView();
     }
 
     private void onActivityResultFromDetailUpdateList(ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel) {
@@ -430,6 +429,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         String lv1Value = productVariantDashboardNewViewModel.getProductVariantOptionChildLv1().getValue();
         productVariantViewModel.replaceSelectedVariantFor(lv1Value,
                 productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList());
+        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
         adapter.clearData();
         onSearchLoaded(this.productVariantDashboardNewViewModelList, this.productVariantDashboardNewViewModelList.size());
@@ -438,71 +438,19 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private void onActivityResultFromDetailLeafUpdateList(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
         // update from dashboardviewmodel back to the variantview model
         productVariantViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
+        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
         adapter.clearData();
         onSearchLoaded(this.productVariantDashboardNewViewModelList, this.productVariantDashboardNewViewModelList.size());
     }
 
-    private void updateVariantUnitList(ProductVariantUnitSubmit productVariantUnitSubmit) {
-//        List<ProductVariantUnitSubmit> variantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
-//        // Update variant unit list position
-//        variantUnitSubmitList = ProductVariantUtils.getUpdatedVariantUnitListPosition(variantUnitSubmitList, productVariantUnitSubmit);
-//        // Validate variant unit list
-//        variantUnitSubmitList = ProductVariantUtils.getValidatedVariantUnitList(variantUnitSubmitList);
-//
-//        productVariantDataSubmit.setProductVariantUnitSubmitList(variantUnitSubmitList);
+    @Override
+    public void onSearchLoaded(@NonNull List<ProductVariantDashboardNewViewModel> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        if (recyclerViewState!= null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        }
     }
-
-    /**
-     * If option list empty, need to remove other variant level
-     * for example level 1 empty, level 2, 3, 4 need to be removed
-     *
-     * @param level
-     * @param productVariantUnitSubmit
-     */
-    private void checkVariantValidation(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
-//        if (productVariantUnitSubmit.getProductVariantOptionSubmitList() != null &&
-//                productVariantUnitSubmit.getProductVariantOptionSubmitList().size() > 0) {
-//            return;
-//        }
-//        int variantUnitSubmitSize = productVariantDataSubmit.getProductVariantUnitSubmitList().size();
-//        for (int i = variantUnitSubmitSize - 1; i >= 0; i--) {
-//            ProductVariantUnitSubmit productVariantUnitSubmitTemp = productVariantDataSubmit.getProductVariantUnitSubmitList().get(i);
-//            if (productVariantUnitSubmitTemp.getPosition() > level) {
-//                productVariantDataSubmit.getProductVariantUnitSubmitList().remove(i);
-//            }
-//        }
-    }
-
-//    private void addVariantCombination(int level, ProductVariantUnitSubmit productVariantUnitSubmit) {
-//        ProductVariantUnitSubmit otherVariantUnitSubmit = null;
-//        List<ProductVariantOptionSubmit> otherVariantUnitSubmitList = new ArrayList<>();
-//        ProductVariantUnitSubmit oldVariantUnitSubmit = null;
-//        List<ProductVariantOptionSubmit> oldProductVariantOptionSubmitList = new ArrayList<>();
-//        List<ProductVariantCombinationSubmit> variantCombinationSubmitList = new ArrayList<>();
-//        switch (level) {
-//            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-//                otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE);
-//                break;
-//            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
-//                otherVariantUnitSubmit = getVariantUnitSubmit(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE);
-//                break;
-//        }
-//        if (otherVariantUnitSubmit != null) {
-//            otherVariantUnitSubmitList = otherVariantUnitSubmit.getProductVariantOptionSubmitList();
-//        }
-//        oldVariantUnitSubmit = getVariantUnitSubmit(level);
-//        if (oldVariantUnitSubmit != null) {
-//            oldProductVariantOptionSubmitList = oldVariantUnitSubmit.getProductVariantOptionSubmitList();
-//        }
-//        if (productVariantDataSubmit != null) {
-//            variantCombinationSubmitList = productVariantDataSubmit.getProductVariantCombinationSubmitList();
-//        }
-//        List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = ProductVariantUtils.getAddedVariantCombinationList(
-//                oldProductVariantOptionSubmitList, productVariantUnitSubmit.getProductVariantOptionSubmitList(),
-//                variantCombinationSubmitList, otherVariantUnitSubmitList);
-//        productVariantDataSubmit.setProductVariantCombinationSubmitList(productVariantCombinationSubmitList);
-//    }
 
     /**
      * Update variant item list view
@@ -513,11 +461,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             return;
         }
         generateToDashboardViewModel();
-//        List<ProductVariantDashboardViewModel> variantManageViewModelList = ProductVariantViewConverter.getGeneratedVariantDashboardViewModelList(
-//                productVariantDataSubmit.getProductVariantUnitSubmitList(),
-//                productVariantDataSubmit.getProductVariantCombinationSubmitList(),
-//                productVariantByCatModelList);
-
         recyclerView.setVisibility(View.VISIBLE);
         onSearchLoaded(productVariantDashboardNewViewModelList, productVariantDashboardNewViewModelList.size());
     }
@@ -536,13 +479,15 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         if (productVariantOptionChildListLv1 == null) {
             return;
         }
+        //TODO use map to change this double loop to single loop.
         List<ProductVariantOptionChild> productVariantOptionChildListLv2LookUp =
                 productVariantViewModel.getProductVariantOptionChild(1);
+        // loop for level 1: ex: red, blue, purple
         for (int i = 0, sizei = productVariantOptionChildListLv1.size(); i < sizei; i++) {
             ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel =
                     new ProductVariantDashboardNewViewModel(productVariantOptionChildListLv1.get(i));
             List<ProductVariantCombinationViewModel> productVariant = productVariantViewModel.getProductVariant();
-            for (int j = 0, sizej = productVariant.size(); j<sizej; j++) {
+            for (int j = 0, sizej = productVariant.size(); j < sizej; j++) {
                 productVariantDashboardNewViewModel.addCombinationModelIfAligned(productVariant.get(j),
                         productVariantOptionChildListLv2LookUp);
             }
@@ -550,57 +495,42 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
     }
 
-//    private void updateVariantUnitView() {
-//        if (productVariantByCatModelList.size() >= 1) {
-//            variantLevelOneLabelView.setContent(getVariantTitle(ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE));
-//        }
-//        if (productVariantByCatModelList.size() >= 2) {
-//            if (TextUtils.isEmpty(variantLevelOneLabelView.getContent()) ||
-//                    variantLevelOneLabelView.isContentDefault()) {
-//                variantLevelTwoLabelView.setEnabled(false);
-//                variantLevelTwoLabelView.resetContentText();
-//            } else {
-//                variantLevelTwoLabelView.setEnabled(true);
-//                variantLevelTwoLabelView.setContent(getVariantTitle(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE));
-//            }
-//        }
-//    }
-
-    /**
-     * @param level ex 1
-     * @return selected name String for that variant, ex: "hijau, merah, biru"
-     */
-//    private String getVariantTitle(int level) {
-//        String title = "";
-//        ProductVariantUnitSubmit productVariantUnitSubmit = getVariantUnitSubmit(level);
-//        if (productVariantUnitSubmit != null) {
-//            title = ProductVariantViewConverter.getMultipleVariantOptionTitle(level, productVariantUnitSubmit.getProductVariantOptionSubmitList(), productVariantByCatModelList);
-//        }
-//        if (TextUtils.isEmpty(title)) {
-//            title = getString(R.string.product_label_choose);
-//        }
-//        return title;
-//    }
-
-//    private ProductVariantUnitSubmit getVariantUnitSubmit(int level) {
-//        return null;
-//        if (productVariantDataSubmit == null) {
-//            return null;
-//        }
-//        return ProductVariantViewConverter.getVariantUnitSubmitByLevel(level, productVariantDataSubmit.getProductVariantUnitSubmitList());
-//    }
-
-    /**
-     * function to return the result to the caller (activity)
-     *
-     * @return
-     */
-    public ProductVariantViewModel getProductVariantViewModel() {
-        return productVariantViewModel;
-    }
-
     public ProductVariantViewModel getProductVariantViewModelGenerateTid() {
-        //TODO generate TID
+        if (!productVariantViewModel.hasSelectedVariant()) {
+            return productVariantViewModel;
+        }
+        // get current selection for item level 1, level 2, and the matrix combination
+        ProductVariantOptionParent productVariantOptionParentLevel1 = productVariantViewModel.getVariantOptionParent(1);
+        ProductVariantOptionParent productVariantOptionParentLevel2 = productVariantViewModel.getVariantOptionParent(2);
+        List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
+        List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
+        if (productVariantOptionParentLevel2 != null) {
+            productVariantOptionChildLevel2List = productVariantOptionParentLevel2.getProductVariantOptionChild();
+        }
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = productVariantViewModel.getProductVariant();
+
+        // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
+        createOptionMap(productVariantOptionChildLevel1List,productVariantOptionChildLevel2List);
+
+        // generate the matrix axb based on level 1 and level2.
+        // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
+        // map is used to lookup if the value1x value2 already exist.
+        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+            String level1String = productVariantCombinationViewModel.getLevel1String();
+
+            List<Integer> integerList = new ArrayList<>();
+            int indexLevel1 = mapLevel1.get(level1String);
+            int tIdLevel1 = productVariantOptionParentLevel1.getProductVariantOptionChild().get(indexLevel1).gettId();
+            integerList.add(tIdLevel1);
+            if (productVariantOptionParentLevel2!= null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
+                String level2String = productVariantCombinationViewModel.getLevel2String();
+                int indexLevel2 = mapLevel2.get(level2String);
+                int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
+                integerList.add(tIdLevel2);
+            }
+            productVariantCombinationViewModel.setOpt(integerList);
+        }
         return productVariantViewModel;
     }
 

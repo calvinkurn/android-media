@@ -36,7 +36,7 @@ public class ProductVariantViewModel implements Parcelable {
         return null;
     }
 
-    public void replaceVariantOptionParentFor (int level, @NonNull ProductVariantOptionParent productVariantOptionParent) {
+    public void replaceVariantOptionParentFor (int level, ProductVariantOptionParent productVariantOptionParent) {
         int index = level -1;
         if (variantOptionParent == null) {
             variantOptionParent = new ArrayList<>();
@@ -44,7 +44,9 @@ public class ProductVariantViewModel implements Parcelable {
         if (variantOptionParent.size() > index) {
             variantOptionParent.remove(index);
         }
-        variantOptionParent.add(index , productVariantOptionParent);
+        if (productVariantOptionParent!= null && productVariantOptionParent.hasProductVariantOptionChild()) {
+            variantOptionParent.add(index, productVariantOptionParent);
+        }
     }
 
     public ProductVariantOptionParent getVariantOptionParent(int position) {
@@ -52,10 +54,6 @@ public class ProductVariantViewModel implements Parcelable {
         return (variantOptionParent == null || index >= variantOptionParent.size()) ?
                 null :
                 variantOptionParent.get(index);
-    }
-
-    public void setVariantOptionParent(List<ProductVariantOptionParent> variant) {
-        this.variantOptionParent = variant;
     }
 
     public List<ProductVariantCombinationViewModel> getProductVariant() {
@@ -77,9 +75,7 @@ public class ProductVariantViewModel implements Parcelable {
         int firstIndex = -1;
         for (int i = productVariant.size() - 1; i >= 0; i--) {
             if (productVariant.get(i).getLevel1String().equalsIgnoreCase(lv1Value)) {
-                if (firstIndex == -1) {
-                    firstIndex = i;
-                }
+                firstIndex = i;
                 productVariant.remove(i);
             }
         }
@@ -96,7 +92,7 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
-    public int removeSelectedVariantFor(String lv1Value, String lvl2Value) {
+    private int removeSelectedVariantFor(String lv1Value, String lvl2Value) {
         if (productVariant == null || productVariant.size() == 0) {
             return -1;
         }

@@ -60,6 +60,9 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
                 productVariantOptionParent.setVu(productVariantByCatModel.getUnitList().get(0).getUnitId());
                 productVariantOptionParent.setV(productVariantByCatModel.getVariantId());
                 productVariantOptionParent.setPosition(productVariantByCatModel.getLevel());
+                productVariantOptionParent.setName(productVariantByCatModel.getName());
+                productVariantOptionParent.setIdentifier(productVariantByCatModel.getIdentifier());
+                productVariantOptionParent.setUnitName(productVariantByCatModel.getUnitList().get(0).getName());
             }
         } else {
             productVariantOptionParent = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
@@ -141,6 +144,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     private ProductVariantOptionParent collectListDataFromView() {
         // get data from cache and map to the original source
+        //TODO to increase perfomance, don't use getOriginalProductOptionChild loop. use hashmap instead.
         List<ProductVariantOption> productVariantOptionList = getCacheFragment().getItemList();
         List<ProductVariantOptionChild> productVariantOptionChildList = new ArrayList<>();
         for (int i = 0, sizei = productVariantOptionList.size(); i < sizei; i++) {

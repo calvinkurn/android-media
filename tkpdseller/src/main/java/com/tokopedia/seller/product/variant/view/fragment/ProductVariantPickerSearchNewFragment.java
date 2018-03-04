@@ -233,6 +233,7 @@ public class ProductVariantPickerSearchNewFragment extends BaseSearchListFragmen
                         productVariantOptionParent.setProductVariantOptionChild(new ArrayList<ProductVariantOptionChild>());
                         productVariantOptionParent.setVu(unitIdTarget);
                         onProductVariantPickerSearchNewFragmentListener.removeAllItemFromSearch();
+                        productVariantPickerSearchListNewAdapter.resetCheckedItemSet();
                         selectVariantUnitId(unitIdTarget);
                         resetPageAndSearch();
                     }

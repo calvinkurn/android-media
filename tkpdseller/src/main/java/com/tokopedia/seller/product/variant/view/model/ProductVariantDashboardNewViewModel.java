@@ -34,7 +34,9 @@ public class ProductVariantDashboardNewViewModel implements ItemType, Parcelable
                                              @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp){
         List<Integer> optionIntegerList = productVariantCombinationViewModel.getOpt();
         if (optionIntegerList != null && optionIntegerList.size() != 0) {
-            if (productVariantCombinationViewModel.getOpt().contains(productVariantOptionChildLv1.getPvo())){
+            int level1IdOrPvo = productVariantOptionChildLv1.gettId() > 0 ? productVariantOptionChildLv1.gettId():
+                    productVariantOptionChildLv1.getPvo();
+            if (productVariantCombinationViewModel.getOpt().contains(level1IdOrPvo)){
 
                 // add the string name to the model
                 // example: from "opt": [23495,23497] to [Level 1 = "Merah"; Level 2 = "XL"]
@@ -63,6 +65,11 @@ public class ProductVariantDashboardNewViewModel implements ItemType, Parcelable
             return false;
         }
         return !TextUtils.isEmpty(productVariantCombinationViewModelList.get(0).getLevel2String());
+    }
+
+    public boolean has1LevelOnly(){
+        return (productVariantCombinationViewModelList != null && productVariantCombinationViewModelList.size() == 1 &&
+                TextUtils.isEmpty(productVariantCombinationViewModelList.get(0).getLevel2String()));
     }
 
     public List<ProductVariantCombinationViewModel> getProductVariantCombinationViewModelList() {
