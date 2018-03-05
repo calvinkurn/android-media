@@ -19,7 +19,6 @@ public class ShipmentDetailActivity extends BasePresenterActivity
         implements ShipmentDetailFragment.FragmentListener {
 
     public static final String EXTRA_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
-    public static final String EXTRA_CART_SELLER_ITEM_MODEL = "cartSellerItemModel";
     public static final String EXTRA_SINGLE_ADDRESS_POSITION = "singleAddressPosition";
 
     public static Intent createInstance(Activity activity, ShipmentDetailData shipmentDetailData) {

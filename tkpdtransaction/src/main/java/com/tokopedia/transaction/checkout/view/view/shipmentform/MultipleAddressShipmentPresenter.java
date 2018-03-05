@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter{
+public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter {
 
     public MultipleAddressShipmentPresenter() {
 
@@ -36,7 +37,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             for (int shopIndex = 0; shopIndex < groupShopList.size(); shopIndex++) {
                 GroupShop currentGroupShop = groupShopList.get(shopIndex);
                 List<Product> productList = currentGroupShop.getProducts();
-                for(int productIndex = 0; productIndex < productList.size(); productIndex++) {
+                for (int productIndex = 0; productIndex < productList.size(); productIndex++) {
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
@@ -47,6 +48,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
                     addressItemData.setProductWeight(currentProduct.getProductWeightFmt());
+                    addressItemData.setProductRawWeight(currentProduct.getProductWeight());
                     addressItemData.setProductNotes(currentProduct.getProductNotes());
                     addressItemData.setProductQty(
                             String.valueOf(currentProduct.getProductQuantity())
@@ -62,6 +64,9 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     addressItemData.setAddressCountryName(currentAddress.getUserAddress()
                             .getCountry());
                     adapterData.setItemData(addressItemData);
+                    adapterData.setShipmentCartData(new ShipmentRatesDataMapper()
+                            .getShipmentCartData(data, currentAddress.getUserAddress(),
+                                    currentGroupShop, adapterData));
                     adapterDataList.add(adapterData);
                 }
             }

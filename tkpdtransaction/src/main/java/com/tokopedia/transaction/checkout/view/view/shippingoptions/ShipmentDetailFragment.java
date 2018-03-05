@@ -75,7 +75,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         implements IShipmentDetailView, CourierChoiceAdapter.ViewListener, OnMapReadyCallback,
         ShipmentChoiceBottomSheet.ActionListener {
 
-    private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
     private static final int DELAY_IN_MILISECOND = 500;
     private static final String ARG_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
