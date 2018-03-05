@@ -170,13 +170,18 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.productPrice.setText(data.getProductPrice());
         itemViewHolder.productWeight.setText(itemData.getProductWeight());
         itemViewHolder.productQty.setText(itemData.getProductQty());
-        itemViewHolder.notesField.setText(itemData.getProductNotes());
+        if(itemData.getProductNotes().isEmpty()) {
+            itemViewHolder.notesToSellerLayout.setVisibility(View.GONE);
+        } else {
+            itemViewHolder.notesToSellerLayout.setVisibility(View.VISIBLE);
+            itemViewHolder.notesField.setText(itemData.getProductNotes());
+        }
         itemViewHolder.addressTitle.setText(itemData.getAddressTitle());
         itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
         itemViewHolder.address.setText(itemData.getAddressStreet()
                 + ", " + itemData.getAddressCityName()
-                + ", " + itemData.getAddressProvinceName()
-                + ", " + itemData.getRecipientPhoneNumber());
+                + ", " + itemData.getAddressProvinceName());
+        itemViewHolder.phoneNumber.setText(itemData.getRecipientPhoneNumber());
         itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
@@ -270,6 +275,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView productQty;
 
+        private ViewGroup notesToSellerLayout;
+
         private TextView notesField;
 
         private ViewGroup addressLayout;
@@ -293,6 +300,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         private PickupPointLayout pickupPointLayout;
 
         private TextView phoneNumber;
+
+        private TextView changeAddress;
 
         private RelativeLayout rlProductPoliciesLayout;
 
@@ -319,6 +328,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             productQty = itemView.findViewById(R.id.tv_total_product_item);
 
+            notesToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
+
             notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
             addressLayout = itemView.findViewById(R.id.address_layout);
@@ -329,9 +340,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             address = itemView.findViewById(R.id.tv_recipient_address);
 
+            changeAddress = itemView.findViewById(R.id.tv_change_address);
+
             phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
 
-            phoneNumber.setVisibility(View.GONE);
+            changeAddress.setVisibility(View.GONE);
 
             chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
 
