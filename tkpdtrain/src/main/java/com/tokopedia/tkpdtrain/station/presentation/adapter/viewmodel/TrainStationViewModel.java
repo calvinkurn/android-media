@@ -1,14 +1,16 @@
-package com.tokopedia.tkpdtrain.homepage.presentation.model;
+package com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFactory;
 
 /**
  * Created by Rizky on 21/02/18.
  */
 
-public class TrainStationViewModel implements Parcelable {
-
+public class TrainStationViewModel implements Parcelable, Visitable<TrainStationTypeFactory> {
     private String stationId;
     private String stationCode;
     private String cityCode;
@@ -69,7 +71,10 @@ public class TrainStationViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
     }
-
+    @Override
+    public int type(TrainStationTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 
 
 }

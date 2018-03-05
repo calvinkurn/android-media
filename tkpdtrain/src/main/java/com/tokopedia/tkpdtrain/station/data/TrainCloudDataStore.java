@@ -14,10 +14,10 @@ import rx.functions.Func1;
  * @author by alvarisi on 3/5/18.
  */
 
-public class TrainCloudDataSource {
+public class TrainCloudDataStore {
     private TrainApi trainApi;
 
-    public TrainCloudDataSource(TrainApi trainApi) {
+    public TrainCloudDataStore(TrainApi trainApi) {
         this.trainApi = trainApi;
     }
 

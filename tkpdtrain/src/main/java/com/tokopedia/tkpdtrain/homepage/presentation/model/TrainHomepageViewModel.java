@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
+
 /**
  * Created by Rizky on 21/02/18.
  */

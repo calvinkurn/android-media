@@ -2,12 +2,12 @@ package com.tokopedia.tkpdtrain.common.di;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
 import com.tokopedia.tkpdtrain.common.constant.TrainUrl;
 import com.tokopedia.tkpdtrain.common.data.TrainDataStoreFactory;
 import com.tokopedia.tkpdtrain.common.data.TrainRepositoryImpl;
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -55,10 +55,15 @@ public class TrainModule {
     public TrainDataStoreFactory provideDataStoreFactory(TrainApi trainApi) {
         return new TrainDataStoreFactory(trainApi);
     }
+    @TrainScope
+    @Provides
+    public TrainStationDataStoreFactory provideTrainStationDataStoreFactory(TrainApi trainApi) {
+        return new TrainStationDataStoreFactory(trainApi);
+    }
 
     @TrainScope
     @Provides
-    public TrainRepository provideDataStoreFactory(TrainDataStoreFactory trainDataStoreFactory) {
-        return new TrainRepositoryImpl(trainDataStoreFactory);
+    public TrainRepository provideDataStoreFactory(TrainDataStoreFactory trainDataStoreFactory, TrainStationDataStoreFactory trainStationDataStoreFactory) {
+        return new TrainRepositoryImpl(trainDataStoreFactory, trainStationDataStoreFactory);
     }
 }
