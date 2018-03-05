@@ -1,7 +1,6 @@
 package com.tokopedia.shop;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 /**
@@ -14,16 +13,15 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
-    @Deprecated
-    Intent getEtalaseIntent(Context context, String shopId, int currentChoosen);
-
     boolean isMyOwnShop(String shopId);
 
     void goToManageShop(Context context);
 
     void goToAddProduct(Context context);
 
-    void goToChatSeller(Context context, String shopId, String shopName);
+    void goToChatSeller(Context context, String shopId, String shopName, String avatar);
 
     void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
+
+    void goToProductDetailFromShop(Context context, String productUrl);
 }

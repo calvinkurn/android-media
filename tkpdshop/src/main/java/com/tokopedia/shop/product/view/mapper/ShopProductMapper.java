@@ -35,6 +35,7 @@ public class ShopProductMapper {
         shopProductViewModel.setName(shopProduct.getProductName());
         shopProductViewModel.setPrice(shopProduct.getProductPrice());
         shopProductViewModel.setImageUrl(shopProduct.getProductImage());
+        shopProductViewModel.setProductUrl(shopProduct.getProductUrl());
 //        shopProductViewModel.setRating(); Api not support
 //        shopProductViewModel.setCashback(shopProduct.get); Api not support
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
@@ -69,6 +70,7 @@ public class ShopProductMapper {
         shopProductViewModel.setName(gmFeaturedProduct.getName());
         shopProductViewModel.setPrice(gmFeaturedProduct.getPrice());
         shopProductViewModel.setImageUrl(gmFeaturedProduct.getImageUri());
+        shopProductViewModel.setProductUrl(gmFeaturedProduct.getUri());
 
         shopProductViewModel.setTotalReview(gmFeaturedProduct.getTotalReview());
         shopProductViewModel.setRating(gmFeaturedProduct.getRating());

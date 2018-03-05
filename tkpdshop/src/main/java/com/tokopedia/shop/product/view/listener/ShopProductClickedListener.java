@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.listener;
 
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
@@ -9,4 +10,6 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public interface ShopProductClickedListener {
 
     void onWishListClicked(ShopProductViewModel shopProductViewModel);
+
+    ShopModuleRouter getShopModuleRouter();
 }

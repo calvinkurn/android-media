@@ -20,6 +20,7 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     private boolean po;
     private boolean freeReturn;
     private boolean wishList;
+    private String productUrl;
 
     public String getId() {
         return id;
@@ -112,5 +113,13 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     @Override
     public int type(ShopProductAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
     }
 }

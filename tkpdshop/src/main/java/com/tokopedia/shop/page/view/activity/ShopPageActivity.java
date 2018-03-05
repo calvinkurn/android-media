@@ -105,6 +105,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private Menu menu;
     private String shopUrl;
     private String shopLocation;
+    private String shopAvatar;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -287,7 +288,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonChatSeller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopNameTextView.getText().toString());
+                ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopNameTextView.getText().toString(), shopAvatar);
             }
         });
         tabLayout.setupWithViewPager(viewPager);
@@ -417,6 +418,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private void updateShopInfo(ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
         shopUrl = shopInfo.getInfo().getShopUrl();
+        shopAvatar = shopInfo.getInfo().getShopAvatar();
         shopLocation = shopInfo.getInfo().getShopLocation();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
         shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
