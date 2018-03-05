@@ -33,8 +33,8 @@ public class ScreenTrackingBuilder {
         authEvent.setAfUniqueId(afUniqueId != null ? afUniqueId : AF_UNAVAILABLE_VALUE);
     }
 
-    public ScreenTrackingBuilder setNetworkSpeed() {
-        authEvent.setNetworkSpeed(TrackingUtils.getNetworkSpeed(mActivity));
+    public ScreenTrackingBuilder setNetworkSpeed(String networkSpeed) {
+        authEvent.setNetworkSpeed(networkSpeed);
         return this;
     }
 

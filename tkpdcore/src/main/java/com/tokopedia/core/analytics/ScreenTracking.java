@@ -35,7 +35,8 @@ public class ScreenTracking extends TrackingUtils {
 
     public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
         try {
-            ScreenTrackingBuilder.newInstance(activity, openScreenAnalytics, getAfUniqueId())
+            ScreenTrackingBuilder
+                    .newInstance(activity, openScreenAnalytics, getAfUniqueId())
                     .execute();
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,12 +45,7 @@ public class ScreenTracking extends TrackingUtils {
 
     public static void screen(String screen){
         if(TextUtils.isEmpty(screen)){
-            try {
-                throw new Exception("Fragment ScreenName cannot null");
-            } catch (Exception e) {
-                e.printStackTrace();
-                screen = "Default Fragment Name";
-            }
+            screen = "Default Fragment Name";
         }
 
         getGTMEngine().sendScreen(screen);
