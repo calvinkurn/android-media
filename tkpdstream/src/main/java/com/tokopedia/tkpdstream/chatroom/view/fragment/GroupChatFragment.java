@@ -76,6 +76,7 @@ import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
@@ -392,7 +393,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         });
         actionButton.setText(R.string.lets_vote);
 
-        participant.setText(String.valueOf(channelViewModel.getParticipant()));
+        participant.setText(TextFormatter.format(channelViewModel.getParticipant()));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());
@@ -860,9 +861,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (voteInfoViewModel.isVoted()) {
             setVoted();
         }
-        DecimalFormat formatter = new DecimalFormat("#,###,###");
-        String yourFormattedString = formatter.format(100000);
-        participant.setText(String.format("%s %s", voteInfoViewModel.getParticipant()
+        participant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                 , getActivity().getString(R.string.participant)));
         voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
