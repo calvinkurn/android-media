@@ -199,8 +199,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         });
 
         mSingleAddressShipmentPresenter.attachView(this);
-
-//        onTotalPaymentChange(mShipmentDataList.getShipmentCostModel());
     }
 
     /**
@@ -272,8 +270,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
 
-        startActivityForResult(ShipmentDetailActivity.createInstance(
-                getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
+        Intent intent = ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData,
+                position);
+        startActivityForResult(intent, REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override
@@ -310,12 +309,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                    getActivity(), "", true
-                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-            );
+            Intent intent = ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(),
+                            "", true);
+
+            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 

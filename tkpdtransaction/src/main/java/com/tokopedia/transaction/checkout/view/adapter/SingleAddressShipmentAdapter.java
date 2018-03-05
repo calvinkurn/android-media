@@ -59,6 +59,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void changeDataSet(List<Object> shipmentDataList) {
         mShipmentDataList = shipmentDataList;
+        initVariable();
     }
 
     public void setPickupPoint(Store store) {
@@ -113,6 +114,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
     }
 
+    private void initVariable() {
+        for (Object item : mShipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                mRecipientAddress = (RecipientAddressModel) item;
+            } else if (item instanceof ShipmentCostModel) {
+                mShipmentCost = (ShipmentCostModel) item;
+            }
+        }
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
@@ -144,13 +155,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ((CartPromoSuggestionViewHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data,
                     position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
-            mRecipientAddress = (RecipientAddressModel) data;
-            ((RecipientAddressViewHolder) viewHolder).bindViewHolder(mRecipientAddress);
+            ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
-            mShipmentCost = (ShipmentCostModel) data;
-            ((ShipmentCostViewHolder) viewHolder).bindViewHolder(mShipmentCost);
+            ((ShipmentCostViewHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
         }
     }
 
