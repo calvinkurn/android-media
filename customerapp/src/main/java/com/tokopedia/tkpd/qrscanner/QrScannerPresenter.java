@@ -13,6 +13,7 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
@@ -141,7 +142,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         }
     }
 
-    private void getInfoQrCampaign(String idCampaign) {
+    private void getInfoQrCampaign(final String idCampaign) {
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(CAMPAIGN_ID, idCampaign);
@@ -168,6 +169,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 } else {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
+
+                CampaignTracking.eventScanQRCode("fail",idCampaign,"");
             }
 
             @Override
@@ -176,6 +179,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 getView().startActivity(intent);
+
+                CampaignTracking.eventScanQRCode("success",idCampaign,s.getUrl());
                 //Open next activity based upon the result from server
             }
         });

@@ -16,6 +16,8 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.tkpd.campaign.analytics.CampaignAppEventTracking;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
@@ -91,6 +93,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
 
                 intent.putExtra("isSuccess",false);
+
+                CampaignTracking.eventShakeShake("fail",ShakeDetectManager.sTopActivity,"","");
                 getView().sendBroadcast(intent);
                 v.vibrate(500);
                 getView().finish();
@@ -106,6 +110,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
                 getView().sendBroadcast(intent);
+                CampaignTracking.eventShakeShake("success",ShakeDetectManager.sTopActivity,"",s.getUrl());
 
                 //Open next activity based upon the result from server
             }

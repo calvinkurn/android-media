@@ -70,6 +70,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.campaign.view.activity.CapturedAudioCampaignActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
@@ -478,6 +479,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 return true;
             case R.id.action_barcode_scan:
                 startActivity(QrScannerActivity.newInstance(this));
+                CampaignTracking.eventQRButtonClick();
                 return true;
 
             default:
