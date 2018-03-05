@@ -387,6 +387,8 @@ public class TopProfileActivity extends BaseEmptyActivity
                             enableFollowToolbarButton();
                         }
                         buttonFollowToolbar.setVisibility(View.VISIBLE);
+                    } else {
+                        buttonFollowToolbar.setVisibility(View.GONE);
                     }
                     isShow = true;
 
