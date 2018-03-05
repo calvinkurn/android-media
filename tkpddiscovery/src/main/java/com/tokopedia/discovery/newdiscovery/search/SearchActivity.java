@@ -609,7 +609,6 @@ public class SearchActivity extends DiscoveryActivity
         loadFilterDetailItems(activeFilterDetailOptionList);
         clearSearchInput();
         KeyboardHandler.hideSoftKeyboard(this);
-        filterDetailEmptySearchResultView.setVisibility(View.GONE);
     }
 
     private void resetAllOptionState() {
@@ -623,6 +622,7 @@ public class SearchActivity extends DiscoveryActivity
         isAutoTextChange = true;
         filterDetailSearch.setText("");
         isAutoTextChange = false;
+        filterDetailEmptySearchResultView.setVisibility(View.GONE);
     }
 
     private void resetAllFilter() {
