@@ -199,8 +199,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         });
 
         mSingleAddressShipmentPresenter.attachView(this);
-
-//        onTotalPaymentChange(mShipmentDataList.getShipmentCostModel());
     }
 
     /**
@@ -257,7 +255,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onAddOrChangeAddress() {
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION);
+                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
 
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
@@ -274,8 +272,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     recipientAddressModel);
         }
 
-        startActivityForResult(ShipmentDetailActivity.createInstance(
-                getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
+        Intent intent = ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData,
+                position);
+        startActivityForResult(intent, REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override
@@ -312,12 +311,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                    getActivity(), "", true
-                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-            );
+            Intent intent = ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(),
+                            "", true);
+
+            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
@@ -354,11 +352,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
-                    RecipientAddressModel thisSelectedAddressData = data.getParcelableExtra(
+                    RecipientAddressModel selectedAddress = data.getParcelableExtra(
                             CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
 
+                    updateSelectedAddress(selectedAddress);
                     mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
-
                     break;
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
@@ -397,6 +395,15 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             }
         }
 
+    }
+
+    private void updateSelectedAddress(RecipientAddressModel recipientAddress) {
+        for (Object item : mShipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                mShipmentDataList.set(mShipmentDataList.indexOf(item), recipientAddress);
+                break;
+            }
+        }
     }
 
 }

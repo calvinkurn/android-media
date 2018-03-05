@@ -59,6 +59,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void changeDataSet(List<Object> shipmentDataList) {
         mShipmentDataList = shipmentDataList;
+        initVariable();
     }
 
     public void setPickupPoint(Store store) {
@@ -78,6 +79,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
         int counter = 0;
+
         mShipmentCost.setShippingFee(0);
         mShipmentCost.setInsuranceFee(0);
 
@@ -86,12 +88,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;
 
                 if (counter == position) {
-                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
-
                     CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+                    boolean isUseInsurance = shipmentDetailData.getUseInsurance() != null
+                            && shipmentDetailData.getUseInsurance();
+
+                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                     cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
                             + courierItemData.getAdditionalPrice());
-                    cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    if (isUseInsurance) {
+                        cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    }
+
                     cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
                             + cartSellerItemModel.getShippingFee()
                             + cartSellerItemModel.getInsuranceFee());
@@ -104,6 +111,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             }
 
             counter++;
+        }
+    }
+
+    private void initVariable() {
+        for (Object item : mShipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                mRecipientAddress = (RecipientAddressModel) item;
+            } else if (item instanceof ShipmentCostModel) {
+                mShipmentCost = (ShipmentCostModel) item;
+            }
         }
     }
 
@@ -138,14 +155,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ((CartPromoSuggestionViewHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data,
                     position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
-            mRecipientAddress = (RecipientAddressModel) data;
-            ((RecipientAddressViewHolder) viewHolder).bindViewHolder(mRecipientAddress);
+            ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
                     mShipmentCost, mRecipientAddress);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
-            mShipmentCost = (ShipmentCostModel) data;
-            ((ShipmentCostViewHolder) viewHolder).bindViewHolder(mShipmentCost);
+            ((ShipmentCostViewHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
         }
     }
 

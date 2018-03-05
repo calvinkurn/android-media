@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.REQUEST_CODE;
-import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_ONLY_ADDRESS_SELECTION;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST;
 
 /**
  * Created by kris on 1/25/18. Tokopedia
@@ -298,6 +298,13 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 TYPE_REQUEST_ONLY_ADDRESS_SELECTION
         );
         startActivityForResult(intent, REQUEST_CODE);
+                Intent intent = CartAddressChoiceActivity.createInstance(
+                        AddShipmentAddressActivity.this,
+                        TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST
+                );
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        };
     }
 
     private View.OnClickListener onSaveChangesClickedListener() {
