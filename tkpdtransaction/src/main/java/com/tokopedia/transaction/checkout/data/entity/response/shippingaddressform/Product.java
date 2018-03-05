@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.data.entity.response.shippingaddressf
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transaction.checkout.data.entity.response.cartlist.FreeReturns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,9 +99,16 @@ public class Product {
     @SerializedName("product_catalog_id")
     @Expose
     private int productCatalogId;
+    @SerializedName("free_returns")
+    @Expose
+    private FreeReturns freeReturns;
 
     public List<String> getErrors() {
         return errors;
+    }
+
+    public FreeReturns getFreeReturns() {
+        return freeReturns;
     }
 
     public int getProductId() {

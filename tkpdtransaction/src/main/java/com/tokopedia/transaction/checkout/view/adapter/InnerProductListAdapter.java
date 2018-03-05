@@ -64,7 +64,15 @@ public class InnerProductListAdapter
                 cartItemModel.isCashback(),
                 cartItemModel.isFreeReturn(),
                 cartItemModel.isPreOrder()));
-        holder.mIvFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isFreeReturn()) {
+            holder.mIvFreeReturnIcon.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageRounded2(
+                    holder.itemView.getContext(), holder.mIvFreeReturnIcon,
+                    cartItemModel.getFreeReturnLogo()
+            );
+        } else {
+            holder.mIvFreeReturnIcon.setVisibility(View.GONE);
+        }
         holder.mTvFreeReturnText.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         holder.mTvPoSign.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
         holder.mTvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
@@ -95,19 +103,31 @@ public class InnerProductListAdapter
 
     class CartItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
-        @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
-        @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
-        @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
-        @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
-        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvOptionalNote;
+        @BindView(R2.id.iv_product_image_container)
+        ImageView mIvProductImage;
+        @BindView(R2.id.tv_shipping_product_name)
+        TextView mTvProductName;
+        @BindView(R2.id.tv_shipped_product_price)
+        TextView mTvProductPrice;
+        @BindView(R2.id.tv_product_weight)
+        TextView mTvProductWeight;
+        @BindView(R2.id.tv_total_product_item)
+        TextView mTvTotalProductItem;
+        @BindView(R2.id.tv_optional_note_to_seller)
+        TextView mTvOptionalNote;
 
-        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesContainer;
-        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
-        @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
-        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
-        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
-        @BindView(R2.id.ll_note_to_seller) LinearLayout mLlNoteToSellerLayout;
+        @BindView(R2.id.rl_product_policies_layout)
+        RelativeLayout mRlProductPoliciesContainer;
+        @BindView(R2.id.iv_free_return_icon)
+        ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_free_return_text)
+        TextView mTvFreeReturnText;
+        @BindView(R2.id.tv_po_sign)
+        TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text)
+        TextView mTvCashback;
+        @BindView(R2.id.ll_note_to_seller)
+        LinearLayout mLlNoteToSellerLayout;
 
         CartItemViewHolder(View view) {
             super(view);

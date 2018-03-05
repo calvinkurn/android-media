@@ -13,8 +13,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Shop
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +118,7 @@ public class SingleAddressShipmentDataConverter
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+        cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
 
         return cartItemModel;
     }
