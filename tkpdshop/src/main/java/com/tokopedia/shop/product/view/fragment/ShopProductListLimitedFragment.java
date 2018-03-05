@@ -44,6 +44,14 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
+            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -153,8 +161,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public ShopModuleRouter getShopModuleRouter() {
-        return shopModuleRouter;
+    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
     @Override
@@ -185,13 +193,5 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void hideLoading() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
-            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
-        }
     }
 }

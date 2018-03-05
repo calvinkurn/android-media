@@ -21,8 +21,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_product_grid;
-
     public static final int SPAN_LOOK_UP = 1;
+
     private final ShopProductClickedListener shopProductClickedListener;
     private TextView titleTextView;
     private TextView priceTextView;
@@ -62,11 +62,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shopProductClickedListener != null) {
-                    shopProductClickedListener.getShopModuleRouter().goToProductDetail(
-                            itemView.getContext(),
-                            shopProductViewModel.getProductUrl());
-                }
+                shopProductClickedListener.onProductClicked(shopProductViewModel);
             }
         });
 

@@ -10,14 +10,9 @@ import java.util.Iterator;
  */
 
 public class ShopProductAdapter extends BaseListAdapter<ShopProductViewModel, ShopProductAdapterTypeFactory> {
-    private static final int LIKE_STATUS_ACTIVE = 1;
 
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
-    }
-
-    public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory, OnAdapterInteractionListener<ShopProductViewModel> onAdapterInteractionListener) {
-        super(baseListAdapterTypeFactory, onAdapterInteractionListener);
     }
 
     public void updateWishListStatus(String productId, boolean wishList) {
