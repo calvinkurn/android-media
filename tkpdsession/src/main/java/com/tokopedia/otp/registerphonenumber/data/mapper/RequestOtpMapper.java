@@ -16,7 +16,7 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by yfsx on 5/3/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class RequestOtpMapper implements Func1<Response<TkpdDigitalResponse>, RequestOtpViewModel> {

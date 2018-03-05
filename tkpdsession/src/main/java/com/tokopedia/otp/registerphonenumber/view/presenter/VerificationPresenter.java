@@ -7,12 +7,14 @@ import com.tokopedia.otp.registerphonenumber.domain.usecase.RequestOtpUseCase;
 import com.tokopedia.otp.registerphonenumber.domain.usecase.VerifyOtpUseCase;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.listener.Verification;
+import com.tokopedia.otp.registerphonenumber.view.subscriber.RequestOtpSubscriber;
+import com.tokopedia.otp.registerphonenumber.view.subscriber.VerifyOtpSubscriber;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerificationViewModel;
 
 import javax.inject.Inject;
 
 /**
- * @author by yfsx on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationPresenter extends BaseDaggerPresenter<Verification.View> implements
@@ -46,14 +48,14 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
             int type = viewModel.getType();
             switch (type) {
                 case VerificationActivity.TYPE_SMS:
-//                    requestTokoCashOTPUseCase.execute(RequestOtpUseCase.getParam(viewModel
-//                            .getPhoneNumber(), RequestOtpUseCase.TYPE_SMS), new
-//                            RequestOtpTokoCashSubscriber(getView()));
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(RequestOtpUseCase.MODE_CALL,
+                            viewModel.getPhoneNumber()), new
+                            RequestOtpSubscriber(getView()));
                     break;
                 case VerificationActivity.TYPE_PHONE_CALL:
-//                    requestTokoCashOTPUseCase.execute(RequestOtpUseCase.getParam(viewModel
-//                            .getPhoneNumber(), RequestOtpUseCase.TYPE_PHONE), new
-//                            RequestOtpTokoCashSubscriber(getView()));
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(RequestOtpUseCase.MODE_CALL,
+                            viewModel.getPhoneNumber()), new
+                            RequestOtpSubscriber(getView()));
                     break;
             }
         }
@@ -63,7 +65,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     public void verifyOtp(String phoneNumber, String otpCode) {
         getView().dropKeyboard();
         getView().showLoadingProgress();
-//        verifyTokoCashOTPUseCase.execute(VerifyOtpTokoCashUseCase.getParam(phoneNumber, otpCode), new
-//                VerifyOtpTokoCashSubscriber(getView()));
+        verifyOtpUseCase.execute(VerifyOtpUseCase.getParam(phoneNumber, otpCode), new
+                VerifyOtpSubscriber(getView()));
     }
 }

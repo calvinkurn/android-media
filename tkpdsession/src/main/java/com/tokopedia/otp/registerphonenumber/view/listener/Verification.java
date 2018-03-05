@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 
 /**
- * @author by yfsx on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public interface Verification {

@@ -1,7 +1,7 @@
 package com.tokopedia.otp.registerphonenumber.view.viewmodel;
 
 /**
- * @author by yfsx on 5/3/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class RequestOtpViewModel {

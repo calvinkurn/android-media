@@ -4,6 +4,10 @@ package com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * @author by yfsx on 5/3/18.
+ */
+
 public class UserDetailResponse {
 
     @SerializedName("name")

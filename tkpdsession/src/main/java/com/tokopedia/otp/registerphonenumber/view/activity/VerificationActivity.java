@@ -15,13 +15,13 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.registerphonenumber.view.fragment.VerificationFragment;
 import com.tokopedia.otp.registerphonenumber.view.fragment.VerificationMethodFragment;
-import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
 
 /**
- * @author by yfsx on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationActivity extends TActivity implements HasComponent {

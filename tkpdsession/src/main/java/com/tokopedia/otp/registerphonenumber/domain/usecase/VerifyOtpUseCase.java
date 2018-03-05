@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author by yfsx on 5/3/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerifyOtpUseCase extends UseCase<VerifyOtpViewModel> {

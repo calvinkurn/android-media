@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author by yfsx on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationViewModel implements Parcelable{

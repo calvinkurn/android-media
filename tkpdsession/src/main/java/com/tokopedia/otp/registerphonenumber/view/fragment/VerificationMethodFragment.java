@@ -26,7 +26,7 @@ import com.tokopedia.session.R;
 import java.util.ArrayList;
 
 /**
- * @author by nisie on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationMethodFragment extends BaseDaggerFragment implements

@@ -73,6 +73,10 @@ public interface SessionComponent {
 
     void inject(RegisterPhoneNumberFragment registerPhoneNumberFragment);
 
+    void inject(com.tokopedia.otp.registerphonenumber.view.fragment.VerificationFragment verificationFragment);
+
+    void inject(com.tokopedia.otp.registerphonenumber.view.fragment.VerificationMethodFragment verificationMethodFragment);
+
     GetUserInfoUseCase getUserInfoUseCase();
 
 }

@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * @author by yfsx on 5/3/18.
+ */
+
 public class VerifyOtpResponse {
 
     @SerializedName("key")

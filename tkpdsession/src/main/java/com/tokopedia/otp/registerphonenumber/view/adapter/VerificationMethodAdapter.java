@@ -16,7 +16,7 @@ import com.tokopedia.session.R;
 import java.util.ArrayList;
 
 /**
- * @author by yfsx on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationMethodAdapter extends RecyclerView.Adapter<VerificationMethodAdapter

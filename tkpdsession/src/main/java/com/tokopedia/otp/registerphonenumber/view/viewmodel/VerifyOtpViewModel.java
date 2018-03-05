@@ -6,7 +6,7 @@ import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokoca
 import java.util.ArrayList;
 
 /**
- * @author by yfsx on 5/3/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerifyOtpViewModel {

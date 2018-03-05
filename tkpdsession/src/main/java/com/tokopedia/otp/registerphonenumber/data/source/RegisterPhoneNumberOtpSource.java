@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author by nisie on 12/4/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class RegisterPhoneNumberOtpSource {
