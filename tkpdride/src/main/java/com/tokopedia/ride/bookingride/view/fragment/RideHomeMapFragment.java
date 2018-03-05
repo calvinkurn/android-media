@@ -928,34 +928,17 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         double radiusInDegrees = radius / 111000f;
         for (int i = 0; i < 10; i++) {
 
-
             double angle = Math.random() * PI * 2;
-
             double x = Math.cos(angle) * radiusInDegrees;
             double y = Math.sin(angle) * radiusInDegrees;
 
             double foundLatitude = x + x0;
             double foundLongitude = y + y0;
 
-            /*Random random = new Random();
-            double u = random.nextDouble();
-            double v = random.nextDouble();
-            double w = radiusInDegrees * Math.sqrt(u);
-            double t = 2 * Math.PI * v;
-            double x = w * Math.cos(t);
-            double y = w * Math.sin(t);
-
-            // Adjust the x-coordinate for the shrinking of the east-west distances
-            double new_x = x / Math.cos(y0);
-            double foundLatitude = new_x + x0;
-            double foundLongitude = y + y0;*/
-
             Location location = new Location();
             location.setLatitude(foundLatitude);
             location.setLongitude(foundLongitude);
             locationArrayList.add(location);
-
-            Log.e("Random Points: ", String.valueOf(foundLatitude) + ", " + String.valueOf(foundLongitude));
         }
     }
 
