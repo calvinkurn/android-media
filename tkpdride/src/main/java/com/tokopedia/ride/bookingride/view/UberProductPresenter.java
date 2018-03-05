@@ -303,6 +303,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
                                                 getView().getActivity().getString(R.string.btn_text_retry)
                                         );
+                                        getView().hideNearbyCabs();
                                     }
                                 }
                             }
