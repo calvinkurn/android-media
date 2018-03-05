@@ -124,13 +124,13 @@ public class AddWholeSaleDialog extends DialogFragment {
         // set min based on previous data
         minQuantityCounterInputView.setText(Long.toString(previousValue.getQtyMin() + 1));
         minQuantityCounterInputView.addTextChangedListener(new NumberTextWatcher(minQuantityCounterInputView.getEditText()) {
-
             @Override
             public void onNumberChanged(double minQuantity) {
                 super.onNumberChanged(minQuantity);
                 validateMinQuantity(minQuantity);
             }
         });
+        validateMinQuantity(minQuantityCounterInputView.getDoubleValue());
 
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
@@ -162,15 +162,18 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected boolean validateMinQuantity(double minQuantity) {
-        if (minQuantity <= previousValue.getQtyMin()) {
+        if (minQuantity - 1 == previousValue.getQtyMin()) {
+            minQuantityCounterInputView.updateMinusButtonState(false);
+            return isErrorReturn = false;
+        } else if (minQuantity <= previousValue.getQtyMin()) {
             minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
             minQuantityCounterInputView.updateMinusButtonState(false);
             return isErrorReturn = true;
+        } else {
+            minQuantityCounterInputView.setError(null);
+            minQuantityCounterInputView.updateMinusButtonState(true);
+            return isErrorReturn = false;
         }
-
-        minQuantityCounterInputView.setError(null);
-        minQuantityCounterInputView.updateMinusButtonState(true);
-        return isErrorReturn = false;
     }
 
     protected void extractBundle(Bundle data) {

@@ -15,7 +15,7 @@ public class ProductVideoViewModel implements Parcelable{
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("source")
+    @SerializedName("type")
     @Expose
     private String source;
 
