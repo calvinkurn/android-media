@@ -17,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -149,7 +150,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
-                               ShipmentCostModel shipmentCostModel) {
+                               ShipmentCostModel shipmentCostModel,
+                               RecipientAddressModel recipientAddressModel) {
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
 
@@ -159,7 +161,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         bindOtherCartItems(cartItemModelList);
         bindCostDetail(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
                 shipmentCostModel);
-        bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData());
+        bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
+                recipientAddressModel);
     }
 
     private void bindFirstCartItem(CartItemModel cartItemModel) {
@@ -196,13 +199,14 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void bindChooseCourier(CartSellerItemModel cartSellerItemModel,
-                                   ShipmentDetailData shipmentDetailData) {
+                                   ShipmentDetailData shipmentDetailData,
+                                   RecipientAddressModel recipientAddressModel) {
         mTvChooseCourierButton.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItemModel));
+                cartSellerItemModel, recipientAddressModel));
         mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItemModel));
+                cartSellerItemModel, recipientAddressModel));
         mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItemModel));
+                cartSellerItemModel, recipientAddressModel));
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
@@ -320,11 +324,12 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener selectShippingOptionListener(final int position,
-                                                              final CartSellerItemModel cartSellerItemModel) {
+                                                              final CartSellerItemModel cartSellerItemModel,
+                                                              final RecipientAddressModel recipientAddressModel) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActionListener.onChooseShipment(position, cartSellerItemModel);
+                mActionListener.onChooseShipment(position, cartSellerItemModel, recipientAddressModel);
             }
         };
     }
