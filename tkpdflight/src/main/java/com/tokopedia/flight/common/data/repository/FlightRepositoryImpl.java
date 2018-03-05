@@ -332,8 +332,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightPassengerDB>> getSavedPassenger() {
-        return flightPassengerDataListSource.getPassengerList();
+    public Observable<List<FlightPassengerDB>> getSavedPassenger(String passengerId) {
+        return flightPassengerDataListSource.getPassengerList(passengerId);
     }
 
     @Override

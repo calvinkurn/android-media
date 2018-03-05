@@ -21,6 +21,8 @@ import rx.functions.Func1;
 
 public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBookingPassengerViewModel>> {
 
+    private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
+
     private final FlightRepository flightRepository;
     private final SavedPassengerViewModelMapper savedPassengerViewModelMapper;
 
@@ -32,7 +34,7 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
 
     @Override
     public Observable<List<FlightBookingPassengerViewModel>> createObservable(RequestParams requestParams) {
-        return flightRepository.getSavedPassenger()
+        return flightRepository.getSavedPassenger(requestParams.getString(PARAM_PASSENGER_ID, ""))
                 .map(new Func1<List<FlightPassengerDB>, List<FlightBookingPassengerViewModel>>() {
                     @Override
                     public List<FlightBookingPassengerViewModel> call(List<FlightPassengerDB> flightPassengerDBS) {
@@ -42,6 +44,14 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
     }
 
     public RequestParams createEmptyRequestParams() {
-        return RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PASSENGER_ID, "");
+        return requestParams;
+    }
+
+    public RequestParams generateRequestParams(String passengerId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PASSENGER_ID, passengerId);
+        return requestParams;
     }
 }

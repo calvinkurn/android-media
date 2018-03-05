@@ -24,7 +24,7 @@ import rx.functions.Func1;
 
 public class FlightPassengerDataListDBSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDB> {
 
-    public static final String ID = "id";
+    public static final String PASSENGER_ID = "PASSENGER_ID";
 
     @Inject
     public FlightPassengerDataListDBSource() {
@@ -82,11 +82,22 @@ public class FlightPassengerDataListDBSource extends BaseDataListDBSource<SavedP
 
     @Override
     public Observable<List<FlightPassengerDB>> getData(HashMap<String, Object> params) {
+        final ConditionGroup conditions = ConditionGroup.clause();
+        conditions.and(FlightPassengerDB_Table.is_selected.eq(0));
+
+        if (params != null &&
+                params.containsKey(PASSENGER_ID) &&
+                !params.get(PASSENGER_ID).equals("")) {
+            conditions.or(FlightPassengerDB_Table.id.eq((String) params.get(PASSENGER_ID)));
+        }
+
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDB>>() {
             @Override
             public void call(Subscriber<? super List<FlightPassengerDB>> subscriber) {
                 List<FlightPassengerDB> flightPassengerDBList;
+
                 flightPassengerDBList = new Select().from(FlightPassengerDB.class)
+                        .where(conditions)
                         .queryList();
                 subscriber.onNext(flightPassengerDBList);
             }

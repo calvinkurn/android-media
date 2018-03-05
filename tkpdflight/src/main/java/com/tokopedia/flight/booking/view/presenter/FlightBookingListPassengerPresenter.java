@@ -9,6 +9,7 @@ import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerU
 import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;
 import java.util.List;
@@ -91,7 +92,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private void getSavedPassengerList() {
         flightBookingGetSavedPassengerUseCase.execute(
-                flightBookingGetSavedPassengerUseCase.createEmptyRequestParams(),
+                getSavedPassengerRequestParams(),
                 new Subscriber<List<FlightBookingPassengerViewModel>>() {
                     @Override
                     public void onCompleted() {
@@ -110,6 +111,14 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     }
                 }
         );
+    }
+
+    private RequestParams getSavedPassengerRequestParams() {
+        if (getView().getCurrentPassenger().getPassengerId() != null) {
+            return flightBookingGetSavedPassengerUseCase.generateRequestParams(getView().getCurrentPassenger().getPassengerId());
+        } else {
+            return flightBookingGetSavedPassengerUseCase.createEmptyRequestParams();
+        }
     }
 
     private void changePassengerToSelected(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {

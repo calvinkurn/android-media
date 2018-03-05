@@ -7,6 +7,7 @@ import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.db.FlightPassengerDataListDBSource;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,13 +33,16 @@ public class FlightPassengerDataListSource extends DataListSource<SavedPassenger
         this.flightSavedPassengerDataListCloudSource = flightSavedPassengerDataListCloudSource;
     }
 
-    public Observable<List<FlightPassengerDB>> getPassengerList() {
+    public Observable<List<FlightPassengerDB>> getPassengerList(String passengerId) {
+        final HashMap<String, Object> params = new HashMap<>();
+        params.put(FlightPassengerDataListDBSource.PASSENGER_ID, passengerId);
+
         return flightPassengerDataListDBSource.isDataAvailable()
                 .flatMap(new Func1<Boolean, Observable<List<FlightPassengerDB>>>() {
                     @Override
                     public Observable<List<FlightPassengerDB>> call(Boolean aBoolean) {
                         if (aBoolean) {
-                            return flightPassengerDataListDBSource.getData(null);
+                            return flightPassengerDataListDBSource.getData(params);
                         } else {
                             return getPassengerListFromCloud();
                         }
