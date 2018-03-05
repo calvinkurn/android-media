@@ -553,6 +553,16 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
     }
 
+    private void renderPartialOrderView() {
+        if (presenter.getShipmentDetailData().getTotalQuantity() > 1) {
+            llPartialOrder.setVisibility(View.VISIBLE);
+            separatorInsurance.setVisibility(View.VISIBLE);
+        } else {
+            llPartialOrder.setVisibility(View.GONE);
+            separatorInsurance.setVisibility(View.GONE);
+        }
+    }
+
     private void renderDropshipperView(CourierItemData courierItemData) {
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             renderDropshipperInput(presenter.getShipmentDetailData().getUseDropshipper());
@@ -798,6 +808,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderInsuranceView(courierItemData);
             renderAdditionalPriceView(courierItemData);
             renderDropshipperView(courierItemData);
+            renderPartialOrderView();
             updateFeesGroupLayout();
         }
     }
@@ -821,6 +832,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
         renderDropshipperView(courierItemData);
+        renderPartialOrderView();
         updateFeesGroupLayout();
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());
@@ -845,6 +857,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             presenter.setSelectedCourier(null);
             presenter.setSelectedShipment(shipmentItemData);
             tvShipmentType.setText(shipmentItemData.getType());
+            renderPartialOrderView();
         }
     }
 

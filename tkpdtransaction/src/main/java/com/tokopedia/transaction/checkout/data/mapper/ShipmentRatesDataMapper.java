@@ -41,6 +41,7 @@ public class ShipmentRatesDataMapper {
         shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
         shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
         shipmentDetailData.setShipmentCartData(shipmentCartData);
+        shipmentDetailData.setTotalQuantity(cartSellerItemModel.getTotalQuantity());
         return shipmentDetailData;
     }
 

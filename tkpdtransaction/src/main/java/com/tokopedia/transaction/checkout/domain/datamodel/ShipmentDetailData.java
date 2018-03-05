@@ -12,6 +12,7 @@ import java.util.List;
 public class ShipmentDetailData implements Parcelable {
 
     private List<ShipmentItemData> shipmentItemData;
+    private int totalQuantity;
     private String shipmentTickerInfo;
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
@@ -27,6 +28,7 @@ public class ShipmentDetailData implements Parcelable {
 
     protected ShipmentDetailData(Parcel in) {
         shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
+        totalQuantity = in.readInt();
         shipmentTickerInfo = in.readString();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
@@ -39,6 +41,26 @@ public class ShipmentDetailData implements Parcelable {
         useDropshipper = tmpUseDropshipper == 0 ? null : tmpUseDropshipper == 1;
         dropshipperName = in.readString();
         dropshipperPhone = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(shipmentItemData);
+        dest.writeInt(totalQuantity);
+        dest.writeString(shipmentTickerInfo);
+        dest.writeParcelable(shipmentCartData, flags);
+        dest.writeParcelable(selectedShipment, flags);
+        dest.writeParcelable(selectedCourier, flags);
+        dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
+        dest.writeByte((byte) (usePartialOrder == null ? 0 : usePartialOrder ? 1 : 2));
+        dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
+        dest.writeString(dropshipperName);
+        dest.writeString(dropshipperPhone);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -133,22 +155,12 @@ public class ShipmentDetailData implements Parcelable {
         this.dropshipperPhone = dropshipperPhone;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getTotalQuantity() {
+        return totalQuantity;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(shipmentItemData);
-        parcel.writeString(shipmentTickerInfo);
-        parcel.writeParcelable(shipmentCartData, i);
-        parcel.writeParcelable(selectedShipment, i);
-        parcel.writeParcelable(selectedCourier, i);
-        parcel.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
-        parcel.writeByte((byte) (usePartialOrder == null ? 0 : usePartialOrder ? 1 : 2));
-        parcel.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
-        parcel.writeString(dropshipperName);
-        parcel.writeString(dropshipperPhone);
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
+
 }
