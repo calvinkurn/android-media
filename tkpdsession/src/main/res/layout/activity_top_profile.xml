@@ -80,6 +80,9 @@
                         android:textSize="@dimen/text_size_14"
                         android:textStyle="normal"
                         android:visibility="gone"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         tools:text="@string/follow_with_plus" />
                 </LinearLayout>
 
