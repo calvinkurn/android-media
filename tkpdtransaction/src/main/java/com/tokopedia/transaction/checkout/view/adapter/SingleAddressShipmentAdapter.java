@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -70,21 +71,46 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mRecipientAddress.setStore(null);
     }
 
+    public void updatePromo(double promo) {
+        // TODO update promo price here
+        mShipmentCost.setPromoPrice(promo);
+    }
+
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
         int counter = 0;
+        mShipmentCost.setShippingFee(0);
+        mShipmentCost.setInsuranceFee(0);
+
         for (Object item : mShipmentDataList) {
-            if (item instanceof CartSellerItemModel && counter == position) {
-                ((CartSellerItemModel) item).setSelectedShipmentDetailData(shipmentDetailData);
-                break;
+            if (item instanceof CartSellerItemModel) {
+                CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;
+
+                if (counter == position) {
+                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
+
+                    CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+                    cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
+                            + courierItemData.getAdditionalPrice());
+                    cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
+                            + cartSellerItemModel.getShippingFee()
+                            + cartSellerItemModel.getInsuranceFee());
+                }
+
+                mShipmentCost.setShippingFee(mShipmentCost.getShippingFee()
+                        + cartSellerItemModel.getShippingFee());
+                mShipmentCost.setInsuranceFee(mShipmentCost.getInsuranceFee()
+                        + cartSellerItemModel.getInsuranceFee());
             }
+
             counter++;
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context mContext = viewGroup.getContext();
-        View view = LayoutInflater.from(mContext).inflate(viewType, viewGroup, false);
+        Context context = viewGroup.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
 
         if (viewType == ITEM_VIEW_PROMO) {
             return new CartPromoViewHolder(view, mActionListener);
@@ -93,7 +119,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new RecipientAddressViewHolder(view, mActionListener);
         } else if (viewType == ITEM_VIEW_CART) {
-            return new CartSellerItemViewHolder(view, mActionListener);
+            return new CartSellerItemViewHolder(view, context, mActionListener);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, mActionListener);
         }
@@ -109,13 +135,15 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         if (viewType == ITEM_VIEW_PROMO) {
             ((CartPromoViewHolder) viewHolder).bindViewHolder((CartPromo) data, position);
         } else if (viewType == ITEM_VIEW_PROMO_SUGGESTION) {
-            ((CartPromoSuggestionViewHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data, position);
+            ((CartPromoSuggestionViewHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data,
+                    position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
             mRecipientAddress = (RecipientAddressModel) data;
             ((RecipientAddressViewHolder) viewHolder).bindViewHolder(mRecipientAddress);
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
                     mShipmentCost, mRecipientAddress);
+            ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             mShipmentCost = (ShipmentCostModel) data;
             ((ShipmentCostViewHolder) viewHolder).bindViewHolder(mShipmentCost);
