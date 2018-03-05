@@ -36,6 +36,15 @@ public class ShopCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_ACE_URL, ShopUrl.SHOP_PRODUCT_PATH, ONE_HOUR));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_PRODUCT_PATH, ONE_HOUR));
 
+        // Shop Etalase
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_WS_URL, ShopUrl.SHOP_ETALASE, ONE_HOUR));
+
+        // Shop Filter
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_ACE_URL, ShopUrl.SHOP_DYNAMIC_FILTER, ONE_HOUR));
+
+        // Shop Favourite
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_WS_URL, ShopUrl.SHOP_FAVOURITE_USER, ONE_HOUR));
+
         return cacheApiWhiteList;
     }
 }

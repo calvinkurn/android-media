@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWS4Api;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopFavourite;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 
@@ -18,10 +18,10 @@ import rx.Observable;
 public class ShopCommonCloudDataSource {
 
     private final ShopCommonApi shopApi;
-    private final ShopCommonWS4Api shopCommonWS4Api;
+    private final ShopCommonWSApi shopCommonWS4Api;
     private final UserSession userSession;
 
-    public ShopCommonCloudDataSource(ShopCommonApi shopApi, ShopCommonWS4Api shopCommonWS4Api, UserSession userSession) {
+    public ShopCommonCloudDataSource(ShopCommonApi shopApi, ShopCommonWSApi shopCommonWS4Api, UserSession userSession) {
         this.shopApi = shopApi;
         this.shopCommonWS4Api = shopCommonWS4Api;
         this.userSession = userSession;

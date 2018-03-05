@@ -1,0 +1,79 @@
+package com.tokopedia.shop.favourite.view.fragment;
+
+import android.os.Bundle;
+
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.favourite.di.component.DaggerShopFavouriteComponent;
+import com.tokopedia.shop.favourite.di.module.ShopFavouriteModule;
+import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory;
+import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
+import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
+import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
+
+import javax.inject.Inject;
+
+/**
+ * Created by nathan on 2/5/18.
+ */
+
+public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteViewModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView {
+
+    public static ShopFavouriteListFragment createInstance(String shopId) {
+        ShopFavouriteListFragment shopFavouriteListFragment = new ShopFavouriteListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        shopFavouriteListFragment.setArguments(bundle);
+        return shopFavouriteListFragment;
+    }
+
+    @Inject
+    ShopFavouriteListPresenter shopFavouriteListPresenter;
+    private String shopId;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopFavouriteListPresenter.attachView(this);
+    }
+
+    @Override
+    public void loadData(int page) {
+        shopFavouriteListPresenter.getshopFavouriteList(shopId, page);
+    }
+
+    @Override
+    protected ShopFavouriteAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopFavouriteAdapterTypeFactory();
+    }
+
+    @Override
+    public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
+
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerShopFavouriteComponent
+                .builder()
+                .shopFavouriteModule(new ShopFavouriteModule())
+                .shopComponent(getComponent(ShopComponent.class))
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (shopFavouriteListPresenter != null) {
+            shopFavouriteListPresenter.detachView();
+        }
+    }
+}

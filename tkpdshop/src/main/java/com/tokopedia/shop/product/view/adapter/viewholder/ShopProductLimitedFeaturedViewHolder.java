@@ -10,7 +10,6 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedFeaturedAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.

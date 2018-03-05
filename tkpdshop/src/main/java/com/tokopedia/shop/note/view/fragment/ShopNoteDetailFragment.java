@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.util.TextHtmlUtils;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
@@ -108,10 +109,6 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     public void onSuccessGetShopNoteList(ShopNoteDetail shopNoteDetail) {
         titleTextView.setText(shopNoteDetail.getNotes().getTitle());
         dateTextView.setText(shopNoteDetail.getNotes().getLastUpdate());
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            descTextView.setText(Html.fromHtml(shopNoteDetail.getNotes().getContent(), Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            descTextView.setText(Html.fromHtml(shopNoteDetail.getNotes().getContent()));
-        }
+        descTextView.setText(TextHtmlUtils.getTextFromHtml(shopNoteDetail.getNotes().getContent()));
     }
 }

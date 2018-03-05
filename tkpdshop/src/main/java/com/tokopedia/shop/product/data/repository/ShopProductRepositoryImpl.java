@@ -2,14 +2,8 @@ package com.tokopedia.shop.product.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.product.data.source.cloud.ShopEtalaseCloudDataSource;
-import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
-import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
-import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
-import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 
@@ -26,46 +20,19 @@ import rx.functions.Func1;
 public class ShopProductRepositoryImpl implements ShopProductRepository {
 
     private final ShopProductCloudDataSource shopProductCloudDataSource;
-    private ShopFilterCloudDataSource shopFilterCloudDataSource;
-    private ShopEtalaseCloudDataSource shopEtalaseCloudDataSource;
 
     @Inject
-    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource,
-                                     ShopFilterCloudDataSource shopFilterCloudDataSource,
-                                     ShopEtalaseCloudDataSource shopEtalaseCloudDataSource) {
+    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource) {
         this.shopProductCloudDataSource = shopProductCloudDataSource;
-        this.shopFilterCloudDataSource = shopFilterCloudDataSource;
-        this.shopEtalaseCloudDataSource = shopEtalaseCloudDataSource;
     }
 
     @Override
     public Observable<PagingList<ShopProduct>> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
-        return shopProductCloudDataSource.getShopProductList( shopProductRequestModel).flatMap(new Func1<Response<DataResponse<PagingList<ShopProduct>>>, Observable<PagingList<ShopProduct>>>() {
+        return shopProductCloudDataSource.getShopProductList(shopProductRequestModel).flatMap(new Func1<Response<DataResponse<PagingList<ShopProduct>>>, Observable<PagingList<ShopProduct>>>() {
             @Override
             public Observable<PagingList<ShopProduct>> call(Response<DataResponse<PagingList<ShopProduct>>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
             }
         });
-    }
-
-    @Override
-    public Observable<DynamicFilterModel.DataValue> getShopProductFilter(){
-        return shopFilterCloudDataSource.getDynamicFilter().flatMap(new Func1<Response<DynamicFilterModel>, Observable<DynamicFilterModel.DataValue>>() {
-            @Override
-            public Observable<DynamicFilterModel.DataValue> call(Response<DynamicFilterModel> response) {
-                return Observable.just(response.body().getData());
-            }
-        });
-    }
-
-    @Override
-    public Observable<PagingListOther<EtalaseModel>> getShopEtalaseList(ShopEtalaseRequestModel shopProductRequestModel) {
-        return shopEtalaseCloudDataSource.getShopEtalaseList(shopProductRequestModel)
-                .map(new Func1<Response<DataResponse<PagingListOther<EtalaseModel>>>, PagingListOther<EtalaseModel>>() {
-                    @Override
-                    public PagingListOther<EtalaseModel> call(Response<DataResponse<PagingListOther<EtalaseModel>>> dataResponseResponse) {
-                        return dataResponseResponse.body().getData();
-                    }
-                });
     }
 }

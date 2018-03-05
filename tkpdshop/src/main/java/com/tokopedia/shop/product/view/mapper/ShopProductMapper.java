@@ -35,13 +35,11 @@ public class ShopProductMapper {
         shopProductViewModel.setName(shopProduct.getProductName());
         shopProductViewModel.setPrice(shopProduct.getProductPrice());
         shopProductViewModel.setImageUrl(shopProduct.getProductImage());
-//        shopProductViewModel.setRating(); rating
-//        shopProductViewModel.setCashback(shopProduct.get); cashback
-//        shopProductViewModel.setFreeReturn(shopProduct.); free return
+//        shopProductViewModel.setRating(); Api not support
+//        shopProductViewModel.setCashback(shopProduct.get); Api not support
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         shopProductViewModel.setTotalReview(Integer.valueOf(shopProduct.getProductReviewCount()));
         shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
-        shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
             for (ShopProductBadge badge : shopProduct.getBadges()) {
                 if (badge.getTitle().equalsIgnoreCase(BADGE_FREE_RETURN)){

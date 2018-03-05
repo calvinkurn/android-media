@@ -32,6 +32,7 @@ import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.page.di.module.ShopPageModule;
@@ -233,11 +234,23 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 view.getContext().startActivity(intent);
             }
         });
-
+        totalFavouriteDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ShopFavouriteListActivity.createIntent(view.getContext(), shopId);
+                view.getContext().startActivity(intent);
+            }
+        });
         reputationDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
+            }
+        });
+        totalProductDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
@@ -275,12 +288,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             @Override
             public void onClick(View view) {
                 ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopNameTextView.getText().toString());
-            }
-        });
-        totalFavouriteDetailView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
         tabLayout.setupWithViewPager(viewPager);

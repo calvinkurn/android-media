@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
+import com.tokopedia.shop.common.util.TextApiUtils;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -46,8 +47,17 @@ public class ShopAddressViewHolder extends AbstractViewHolder<ShopAddressViewMod
         contentTextView.setText(element.getContent());
         areaTextView.setText(element.getArea());
 
-        emailLabelView.setTitle(element.getEmail());
-        phoneLabelView.setTitle(element.getPhone());
-        faxLabelView.setTitle(element.getFax());
+        if (!TextApiUtils.isTextEmpty(element.getEmail())) {
+            emailLabelView.setVisibility(View.VISIBLE);
+            emailLabelView.setTitle(element.getEmail());
+        }
+        if (!TextApiUtils.isTextEmpty(element.getPhone())) {
+            phoneLabelView.setVisibility(View.VISIBLE);
+            phoneLabelView.setTitle(element.getPhone());
+        }
+        if (!TextApiUtils.isTextEmpty(element.getFax())) {
+            faxLabelView.setVisibility(View.VISIBLE);
+            faxLabelView.setTitle(element.getFax());
+        }
     }
 }

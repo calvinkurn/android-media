@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
@@ -34,7 +34,9 @@ public interface ShopComponent {
 
     CacheApiInterceptor cacheApiInterceptor();
 
-    ShopApi getshopApi();
+    ShopApi getShopApi();
+
+    ShopWSApi ShopWSApi();
 
     UserSession getUserSession();
 

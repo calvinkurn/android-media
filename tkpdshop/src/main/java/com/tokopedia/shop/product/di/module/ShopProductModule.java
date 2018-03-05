@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
@@ -17,17 +16,13 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.shop.common.data.source.cloud.api.EtalaseApi;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
-import com.tokopedia.shop.product.data.source.cloud.ShopEtalaseCloudDataSource;
-import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
-import com.tokopedia.shop.product.di.ShopEtalaseQualifier;
-import com.tokopedia.shop.product.di.WsV4Qualifier;
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
 import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
@@ -62,9 +57,9 @@ public class ShopProductModule {
     @ShopProductGMFeaturedQualifier
     @Provides
     public OkHttpClient provideGMOkHttpClient(GMAuthInterceptor gmAuthInterceptor,
-                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                              @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                              HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                              CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(gmAuthInterceptor)
@@ -77,7 +72,7 @@ public class ShopProductModule {
     @ShopProductScope
     @Provides
     public Retrofit provideGMRetrofit(@ShopProductGMFeaturedQualifier OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
+                                      Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build();
     }
 
@@ -122,41 +117,13 @@ public class ShopProductModule {
     @ShopProductWishListFeaturedQualifier
     @Provides
     public OkHttpClient provideWishListOkHttpClient(WishListAuthInterceptor wishListAuthInterceptor,
-                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                                    @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                    HeaderErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(wishListAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
-    }
-
-    @WsV4Qualifier
-    @Provides
-    public OkHttpClient provideWsv4OkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor,
-                                                @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                CacheApiInterceptor cacheApiInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
-    }
-
-    @ShopEtalaseQualifier
-    @ShopProductScope
-    @Provides
-    public Retrofit provideEtalaseRetrofit(@WsV4Qualifier OkHttpClient okHttpClient,
-                                            Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ShopUrl.BASE_WSV4_URL).client(okHttpClient).build();
-    }
-
-    @ShopProductScope
-    @Provides
-    public EtalaseApi provideEtalaseApi(@ShopEtalaseQualifier Retrofit retrofit) {
-        return retrofit.create(EtalaseApi.class);
     }
 
     @ShopProductWishListFeaturedQualifier
@@ -207,29 +174,38 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository){
+    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository) {
         return new AddToWishListUseCase(wishListCommonRepository);
     }
 
     @ShopProductScope
     @Provides
-    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository){
+    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository) {
         return new RemoveFromWishListUseCase(wishListCommonRepository);
     }
 
-    // Filter
+    // Product
     @ShopProductScope
     @Provides
-    public ShopProductRepository provideShopProductRepository(
-            ShopProductCloudDataSource shopProductDataSource,
-            ShopFilterCloudDataSource shopFilterCloudDataSource,
-            ShopEtalaseCloudDataSource shopEtalaseCloudDataSource) {
-        return new ShopProductRepositoryImpl(shopProductDataSource, shopFilterCloudDataSource, shopEtalaseCloudDataSource);
+    public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource) {
+        return new ShopProductRepositoryImpl(shopProductDataSource);
     }
 
     @ShopProductScope
     @Provides
     public ShopProductMapper provideShopProductMapper() {
         return new ShopProductMapper();
+    }
+
+    @ShopProductScope
+    @Provides
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
+        return new DeleteShopProductTomeUseCase();
+    }
+
+    @ShopProductScope
+    @Provides
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
+        return new DeleteShopProductAceUseCase();
     }
 }

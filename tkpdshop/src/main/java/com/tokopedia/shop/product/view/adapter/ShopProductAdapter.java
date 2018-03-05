@@ -28,6 +28,7 @@ public class ShopProductAdapter extends BaseListAdapter<ShopProductViewModel, Sh
                 notifyItemChanged(i);
                 return;
             }
+            i++;
         }
     }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.util.PagingListUtils;
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductWithWishListUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
@@ -24,20 +25,22 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
-    private static final String TAG = "ShopProductListPresente";
     private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
+    private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final UserSession userSession;
 
     @Inject
     public ShopProductListPresenter(GetShopProductWithWishListUseCase getShopProductWithWishListUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
                                     RemoveFromWishListUseCase removeFromWishListUseCase,
+                                    DeleteShopProductUseCase deleteShopProductUseCase,
                                     UserSession userSession) {
         this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
+        this.deleteShopProductUseCase = deleteShopProductUseCase;
         this.userSession = userSession;
     }
 
@@ -63,7 +66,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         });
     }
 
-    public void addToWishList(final String productId){
+    public void addToWishList(final String productId) {
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -85,8 +88,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         });
     }
 
-    public void removeFromWishList(final String productId){
-        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
+    public void removeFromWishList(final String productId) {
+        RequestParams requestParam = RemoveFromWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -105,6 +108,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 getView().onSuccessRemoveFromWishList(productId, value);
             }
         });
+    }
+
+    public void clearProductCache() {
+        deleteShopProductUseCase.executeSync();
     }
 
     @NonNull

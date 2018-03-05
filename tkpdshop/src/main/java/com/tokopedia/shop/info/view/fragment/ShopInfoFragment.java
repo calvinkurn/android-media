@@ -22,6 +22,7 @@ import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.util.TextHtmlUtils;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter;
@@ -134,8 +135,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         scoreNeutralTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreNeutral());
         scoreBadTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreBad());
 
-        taglineTextView.setText(shopInfo.getInfo().getShopTagline());
-        descriptionTextView.setText(shopInfo.getInfo().getShopDescription());
+        taglineTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopTagline()));
+        descriptionTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopDescription()));
 
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
