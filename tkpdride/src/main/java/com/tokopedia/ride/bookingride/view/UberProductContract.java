@@ -58,6 +58,8 @@ public interface UberProductContract {
         PlacePassViewModel getSource();
 
         void renderNearbyRides(NearbyRides nearbyRides);
+
+        void hideNearbyCabs();
     }
 
     interface Presenter extends CustomerPresenter<View> {

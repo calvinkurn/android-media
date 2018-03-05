@@ -1061,6 +1061,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
+    public void hideNearbyCabs() {
+        if (nearbyCabsMarkerList != null && !nearbyCabsMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyCabsMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                marker.remove();
+                iterator.remove();
+            }
+        }
+        if (nearbyMOTOMarkerList != null && !nearbyMOTOMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyMOTOMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                marker.remove();
+                iterator.remove();
+            }
+        }
+    }
+
     private BitmapDescriptor getCarMapIcon(int resourceId) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);

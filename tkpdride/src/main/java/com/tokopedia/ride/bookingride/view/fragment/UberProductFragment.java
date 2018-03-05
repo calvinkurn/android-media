@@ -98,6 +98,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
         void renderNearbyRides(NearbyRides nearbyRides);
 
+        void hideNearbyCabs();
+
         void renderNearbyCabs(List<ProductEstimate> productEstimates);
     }
 
@@ -373,6 +375,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void renderNearbyRides(NearbyRides nearbyRides) {
         interactionListener.renderNearbyRides(nearbyRides);
+    }
+
+    @Override
+    public void hideNearbyCabs() {
+        interactionListener.hideNearbyCabs();
     }
 
     @Override

@@ -647,13 +647,21 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public void renderNearbyCabs(List<ProductEstimate> productEstimates) {
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(RideHomeActivity.this);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_NEARBY_CABS, false)) {
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_NEARBY_CABS, true)) {
             RideHomeMapFragment rideHomeMapFragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (rideHomeMapFragment != null) {
                 rideHomeMapFragment.displayNearByCabs(productEstimates);
             }
         }
 
+    }
+
+    @Override
+    public void hideNearbyCabs() {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.hideNearbyCabs();
+        }
     }
 
     @Override
