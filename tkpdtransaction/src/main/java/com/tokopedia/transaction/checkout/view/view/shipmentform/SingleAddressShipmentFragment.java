@@ -336,7 +336,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
         double price = shipmentCostModel.getTotalPrice();
-        mTvTotalPayment.setText(CURRENCY_ID.format(price));
+        mTvTotalPayment.setText(price == 0 ? "-" : CURRENCY_ID.format(price));
     }
 
     @Override
