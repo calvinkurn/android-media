@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -24,6 +26,8 @@ public class KolModule {
                                                         httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
         return new OkHttpClient.Builder()
+                .readTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(1, TimeUnit.MINUTES)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .build();
