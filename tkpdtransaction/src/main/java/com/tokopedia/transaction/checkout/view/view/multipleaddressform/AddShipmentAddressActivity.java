@@ -295,7 +295,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private void openAddressSelectionPage() {
         Intent intent = CartAddressChoiceActivity.createInstance(
                 AddShipmentAddressActivity.this,
-                TYPE_REQUEST_ONLY_ADDRESS_SELECTION, presenter.getEditableModel()
+                TYPE_REQUEST_ONLY_ADDRESS_SELECTION
         );
         startActivityForResult(intent, REQUEST_CODE);
     }
