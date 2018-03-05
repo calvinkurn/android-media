@@ -80,6 +80,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View header;
     private View progressView;
     private View errorView;
+    private View headerSeparator;
     private TextView errorText;
     private TextView buttonTryAgain;
     private TextView buttonFollowToolbar;
@@ -176,6 +177,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonTryAgain = findViewById(R.id.button_try_again);
         buttonFollowToolbar = findViewById(R.id.button_follow_toolbar);
         tvTitleToolbar = findViewById(R.id.tv_title_toolbar);
+        headerSeparator = findViewById(R.id.header_separator);
     }
 
     private void setViewListener() {
@@ -346,6 +348,9 @@ public class TopProfileActivity extends BaseEmptyActivity
             BaseDaggerFragment kolPostFragment =
                     ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
+            headerSeparator.setVisibility(View.VISIBLE);
+        } else {
+            headerSeparator.setVisibility(View.GONE);
         }
 
         TopProfileFragment profileFragment = TopProfileFragment.newInstance();
@@ -410,8 +415,8 @@ public class TopProfileActivity extends BaseEmptyActivity
                 topProfileViewModel.getFavoritedShop());
 
         if (topProfileViewModel.isKol()) {
-            name.setCompoundDrawables(
-                    MethodChecker.getDrawable(this, R.drawable.ic_kol_badge), null, null, null);
+            name.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_kol_badge, 0, 0, 0);
             title.setVisibility(View.VISIBLE);
             title.setText(topProfileViewModel.getTitle());
             description.setVisibility(View.VISIBLE);
@@ -476,13 +481,13 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonFollowImage.setVisibility(View.GONE);
     }
 
-    private void enableFollowToolbarButton(){
+    private void enableFollowToolbarButton() {
         buttonFollowToolbar.setText(R.string.follow_with_plus);
         buttonFollowToolbar.setTextColor(getResources().getColor(R.color
                 .tkpd_main_green));
     }
 
-    private void disableFollowToolbarButton(){
+    private void disableFollowToolbarButton() {
         buttonFollowToolbar.setText(R.string.following);
         buttonFollowToolbar.setTextColor(getResources().getColor(R.color
                 .font_black_secondary_54));

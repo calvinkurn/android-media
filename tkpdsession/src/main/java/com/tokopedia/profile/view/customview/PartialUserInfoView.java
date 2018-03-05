@@ -20,6 +20,7 @@ import com.tokopedia.session.R;
 
 public class PartialUserInfoView extends BaseCustomView {
 
+    private TextView tvSubtitle;
     private View partialUserStatus;
     private TextView tvReputationSummaryScore;
     private TextView tvReputationPositiveScore;
@@ -73,6 +74,7 @@ public class PartialUserInfoView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_user_info, this);
+        tvSubtitle = view.findViewById(R.id.tv_subtitle_user_info);
         partialUserStatus = view.findViewById(R.id.rl_partial_status);
         tvReputationPositiveScore = view.findViewById(R.id.tv_reputation_positive_score);
         tvReputationNegativeScore = view.findViewById(R.id.tv_reputation_negative_score);
@@ -102,6 +104,8 @@ public class PartialUserInfoView extends BaseCustomView {
 
     public void renderData(TopProfileViewModel model){
         this.setVisibility(VISIBLE);
+
+        tvSubtitle.setVisibility(model.getIsUser() ? VISIBLE : GONE);
 
         partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ? VISIBLE : GONE);
 
