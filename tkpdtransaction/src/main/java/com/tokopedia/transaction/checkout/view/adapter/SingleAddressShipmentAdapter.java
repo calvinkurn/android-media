@@ -78,6 +78,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
         int counter = 0;
+
         mShipmentCost.setShippingFee(0);
         mShipmentCost.setInsuranceFee(0);
 
@@ -86,12 +87,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;
 
                 if (counter == position) {
-                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
-
                     CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+                    boolean isUseInsurance = shipmentDetailData.getUseInsurance() != null
+                            && shipmentDetailData.getUseInsurance();
+
+                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                     cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
                             + courierItemData.getAdditionalPrice());
-                    cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    if (isUseInsurance) {
+                        cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    }
+
                     cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
                             + cartSellerItemModel.getShippingFee()
                             + cartSellerItemModel.getInsuranceFee());
