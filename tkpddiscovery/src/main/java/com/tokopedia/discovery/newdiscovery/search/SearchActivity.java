@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
@@ -877,6 +878,12 @@ public class SearchActivity extends DiscoveryActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onSearchViewShown() {
+        closeFilterBottomSheet();
+        super.onSearchViewShown();
     }
 
     private class OptionSearchFilter extends android.widget.Filter {
