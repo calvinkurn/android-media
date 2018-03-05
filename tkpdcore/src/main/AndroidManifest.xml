@@ -43,8 +43,7 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission
-        android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -134,7 +133,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
@@ -311,8 +310,9 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.tokopedia.sellerapp.welcome.WelcomeActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.tokopedia.sellerapp.welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
@@ -373,6 +373,11 @@
         <activity
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopinfo.activity.ShopDiscussionActivity"
+            android:label="@string/title_talk_only"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
