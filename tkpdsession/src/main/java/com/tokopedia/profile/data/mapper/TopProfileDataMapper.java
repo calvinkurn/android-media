@@ -43,7 +43,7 @@ public class TopProfileDataMapper
         model.setUserId(data.getId());
         model.setName(data.getName());
         model.setTitle(data.getInfo());
-        model.setBiodata(data.getBio());
+        model.setBiodata(data.getBio() != null ? data.getBio().replace("\n","") : "");
         model.setFollowing(data.getFollowingFmt());
         model.setFollowers(data.getFollowersFmt());
         model.setFollowed(data.isFollowed());
