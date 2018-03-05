@@ -114,11 +114,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
 
     public static FlightBookingPassengerFragment newInstance(String departureId,
-                                       FlightBookingPassengerViewModel viewModel,
-                                       List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                       List<FlightBookingAmenityMetaViewModel> mealViewModels,
-                                       boolean isAirAsiaAirlines,
-                                       String departureDate) {
+                                                             FlightBookingPassengerViewModel viewModel,
+                                                             List<FlightBookingAmenityMetaViewModel> luggageViewModels,
+                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                                             boolean isAirAsiaAirlines,
+                                                             String departureDate) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -594,8 +594,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     public void onBackPressed() {
-        if (!viewModel.getPassengerId().equals(selectedPassengerId)) {
+        if (selectedPassengerId == null && viewModel.getPassengerId() != null) {
             presenter.onUnselectPassengerList(viewModel.getPassengerId());
+        } else if (viewModel.getPassengerId() != null &&
+                !viewModel.getPassengerId().equals(selectedPassengerId)) {
+            presenter.onUnselectPassengerList(viewModel.getPassengerId());
+        } else {
+            canGoBack();
         }
     }
 

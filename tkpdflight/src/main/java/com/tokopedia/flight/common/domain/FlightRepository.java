@@ -84,4 +84,6 @@ public interface FlightRepository {
     Observable<List<FlightPassengerDB>> getSavedPassenger(String passengerId);
 
     Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
+
+    Observable<Boolean> deleteAllListPassenger();
 }

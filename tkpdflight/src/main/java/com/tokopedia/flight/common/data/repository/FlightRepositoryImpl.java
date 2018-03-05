@@ -340,4 +340,9 @@ public class FlightRepositoryImpl implements FlightRepository {
     public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
         return flightPassengerDataListSource.updateIsSelected(passengerId, isSelected);
     }
+
+    @Override
+    public Observable<Boolean> deleteAllListPassenger() {
+        return flightPassengerDataListSource.deleteAllListPassenger();
+    }
 }
