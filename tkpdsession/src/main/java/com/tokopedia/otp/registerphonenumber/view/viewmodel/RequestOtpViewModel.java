@@ -5,11 +5,19 @@ package com.tokopedia.otp.registerphonenumber.view.viewmodel;
  */
 
 public class RequestOtpViewModel {
-    private final int attemptLeft;
-    private final boolean isSuccess;
+    boolean isSuccess;
+    String messageStatus;
 
-    public RequestOtpViewModel(int otpAttemptLeft, boolean sent) {
-        this.attemptLeft = otpAttemptLeft;
-        this.isSuccess = sent;
+    public RequestOtpViewModel(boolean isSuccess, String messageStatus) {
+        this.isSuccess = isSuccess;
+        this.messageStatus = messageStatus;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public String getMessageStatus() {
+        return messageStatus;
     }
 }

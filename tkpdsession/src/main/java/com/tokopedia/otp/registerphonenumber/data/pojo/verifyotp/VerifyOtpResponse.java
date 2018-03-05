@@ -4,57 +4,26 @@ package com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
  * @author by yfsx on 5/3/18.
  */
 
 public class VerifyOtpResponse {
 
-    @SerializedName("key")
+    @SerializedName("is_success")
     @Expose
-    private String key;
-    @SerializedName("tokocash_account_exist")
-    @Expose
-    private boolean tokocashAccountExist;
-    @SerializedName("user_details")
-    @Expose
-    private List<UserDetailResponse> userDetailResponses = null;
-    @SerializedName("verified")
-    @Expose
-    private boolean verified;
+    int isSuccess;
 
-    public String getKey() {
-        return key;
+    public int getIsSuccess() {
+        return isSuccess;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setIsSuccess(int isSuccess) {
+        this.isSuccess = isSuccess;
     }
 
-    public boolean isTokocashAccountExist() {
-        return tokocashAccountExist;
-    }
-
-    public void setTokocashAccountExist(boolean tokocashAccountExist) {
-        this.tokocashAccountExist = tokocashAccountExist;
-    }
-
-    public List<UserDetailResponse> getUserDetailResponses() {
-        return userDetailResponses;
-    }
-
-    public void setUserDetailResponses(List<UserDetailResponse> userDetailResponses) {
-        this.userDetailResponses = userDetailResponses;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
+    public boolean isSuccess() {
+        return isSuccess == 1;
     }
 
 }

@@ -1,37 +1,26 @@
 package com.tokopedia.otp.registerphonenumber.view.viewmodel;
 
 
-import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
-
-import java.util.ArrayList;
-
 /**
  * @author by yfsx on 5/3/18.
  */
 
 public class VerifyOtpViewModel {
 
-    private String key;
-    private boolean isVerified;
-    private ArrayList<AccountTokocash> list;
+    private boolean isSuccess;
+    private String uuid;
 
-    public VerifyOtpViewModel(String key,
-                                      boolean isVerified, ArrayList<AccountTokocash> list) {
-        this.key = key;
-        this.isVerified = isVerified;
-        this.list = list;
+    public VerifyOtpViewModel(boolean isSuccess, String uuid) {
+        this.isSuccess = isSuccess;
+        this.uuid = uuid;
     }
 
-    public String getKey() {
-        return key;
+    public boolean isSuccess() {
+        return isSuccess;
     }
 
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public ArrayList<AccountTokocash> getList() {
-        return list;
+    public String getUuid() {
+        return uuid;
     }
 
 }

@@ -31,8 +31,7 @@ public class VerifyOtpSubscriber extends Subscriber<VerifyOtpViewModel> {
     @Override
     public void onNext(VerifyOtpViewModel verifyOtpViewModel) {
         view.dismissLoadingProgress();
-        if (verifyOtpViewModel.isVerified()
-                && !verifyOtpViewModel.getList().isEmpty())
+        if (verifyOtpViewModel.isSuccess())
             view.onSuccessVerifyOTP(verifyOtpViewModel);
         else {
             view.onErrorNoAccountTokoCash();

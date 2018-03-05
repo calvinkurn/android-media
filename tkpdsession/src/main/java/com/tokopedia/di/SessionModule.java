@@ -324,7 +324,7 @@ SessionModule {
     @SessionScope
     @Provides
     RegisterPhoneNumberOtpSource providesRegisterPhoneNumberOtpSource(
-            @Named(BEARER_SERVICE) AccountsService service,
+            AccountsService service,
             com.tokopedia.otp.registerphonenumber.data.mapper.RequestOtpMapper requestOtpMapper,
             VerifyOtpMapper verifyOtpMapper) {
         return new RegisterPhoneNumberOtpSource(service, requestOtpMapper, verifyOtpMapper);

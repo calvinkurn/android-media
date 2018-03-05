@@ -2,16 +2,12 @@ package com.tokopedia.otp.registerphonenumber.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp.UserDetailResponse;
-import com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp.VerifyOtpResponse;
+import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
+import com.tokopedia.otp.domain.pojo.ValidateOtpSQPojo;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
-import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,19 +18,38 @@ import rx.functions.Func1;
  * @author by yfsx on 5/3/18.
  */
 
-public class VerifyOtpMapper implements Func1<Response<TkpdDigitalResponse>, VerifyOtpViewModel> {
+public class VerifyOtpMapper implements Func1<Response<TkpdResponse>, VerifyOtpViewModel> {
 
     @Inject
     public VerifyOtpMapper() {
     }
 
     @Override
-    public VerifyOtpViewModel call(Response<TkpdDigitalResponse> response) {
+    public VerifyOtpViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            VerifyOtpResponse pojo = response.body().convertDataObj(VerifyOtpResponse.class);
-            return convertToDomain(pojo);
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || (!response.body().isNullData()
+                    && response.body().getErrorMessages() == null)) {
+                if (responseIsSecurityQuestion(response.body())) {
+                    ValidateOtpSQPojo validateOtpSQData = response.body().convertDataObj(
+                            ValidateOtpSQPojo.class);
+                    return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
+                } else {
+                    ValidateOtpPojo validateOtpData = response.body().convertDataObj(
+                            ValidateOtpPojo.class);
+                    return convertToDomain(validateOtpData.isSuccess(), "");
+                }
+            } else {
+                if (response.body().getErrorMessages() != null
+                        && !response.body().getErrorMessages().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
         } else {
-            String messageError = ErrorHandler.getErrorMessageTokoCash(response);
+            String messageError = ErrorHandler.getErrorMessage(response);
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {
@@ -43,24 +58,10 @@ public class VerifyOtpMapper implements Func1<Response<TkpdDigitalResponse>, Ver
         }
     }
 
-    private VerifyOtpViewModel convertToDomain(VerifyOtpResponse pojo) {
-        return new VerifyOtpViewModel(
-                pojo.getKey(),
-                pojo.isVerified(),
-                convertToDomainAccountList(pojo.getUserDetailResponses())
-        );
+    private boolean responseIsSecurityQuestion(TkpdResponse body) {
+        return body.toString().contains("uuid");
     }
-
-    private ArrayList<AccountTokocash> convertToDomainAccountList(List<UserDetailResponse> userDetails) {
-        ArrayList<AccountTokocash> list = new ArrayList<>();
-        for (UserDetailResponse pojo : userDetails) {
-            list.add(new AccountTokocash(
-                    pojo.getTkpdUserId(),
-                    pojo.getName(),
-                    pojo.getEmail(),
-                    pojo.getImage()
-            ));
-        }
-        return list;
+    private VerifyOtpViewModel convertToDomain(boolean isSuccess, String uuid) {
+        return new VerifyOtpViewModel(isSuccess, uuid);
     }
 }

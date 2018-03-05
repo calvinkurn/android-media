@@ -9,27 +9,20 @@ import com.google.gson.annotations.SerializedName;
  */
 public class RequestOtpResponse {
 
-    @SerializedName("otp_attempt_left")
+    @SerializedName("is_success")
     @Expose
-    private int otpAttemptLeft;
-    @SerializedName("sent")
-    @Expose
-    private boolean sent;
+    int isSuccess;
 
-    public int getOtpAttemptLeft() {
-        return otpAttemptLeft;
+    public int getIsSuccess() {
+        return isSuccess;
     }
 
-    public void setOtpAttemptLeft(int otpAttemptLeft) {
-        this.otpAttemptLeft = otpAttemptLeft;
+    public void setIsSuccess(int isSuccess) {
+        this.isSuccess = isSuccess;
     }
 
-    public boolean isSent() {
-        return sent;
-    }
-
-    public void setSent(boolean sent) {
-        this.sent = sent;
+    public boolean isSuccess() {
+        return isSuccess == 1;
     }
 
 }
