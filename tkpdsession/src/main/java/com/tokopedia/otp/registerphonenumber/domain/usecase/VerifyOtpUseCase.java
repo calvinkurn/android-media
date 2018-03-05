@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.tokocashotp.data.source.TokoCashOtpSource;
-import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
+import com.tokopedia.otp.registerphonenumber.data.source.RegisterPhoneNumberOtpSource;
+import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 
 import javax.inject.Inject;
 
@@ -15,19 +15,19 @@ import rx.Observable;
  * @author by yfsx on 5/3/17.
  */
 
-public class VerifyOtpUseCase extends UseCase<VerifyOtpTokoCashViewModel> {
+public class VerifyOtpUseCase extends UseCase<VerifyOtpViewModel> {
 
     private static final String PARAM_PHONE_NUMBER = "msisdn";
     private static final String PARAM_OTP_CODE = "otp";
 
-    private final TokoCashOtpSource tokoCashLoginSource;
+    private final RegisterPhoneNumberOtpSource otpSource;
 
     @Inject
     public VerifyOtpUseCase(ThreadExecutor threadExecutor,
                             PostExecutionThread postExecutionThread,
-                            TokoCashOtpSource tokoCashLoginSource) {
+                            RegisterPhoneNumberOtpSource otpSource) {
         super(threadExecutor, postExecutionThread);
-        this.tokoCashLoginSource = tokoCashLoginSource;
+        this.otpSource = otpSource;
     }
 
     public static RequestParams getParam(String phoneNumber, String otpCode) {
@@ -38,7 +38,7 @@ public class VerifyOtpUseCase extends UseCase<VerifyOtpTokoCashViewModel> {
     }
 
     @Override
-    public Observable<VerifyOtpTokoCashViewModel> createObservable(RequestParams requestParams) {
-        return tokoCashLoginSource.verifyOtpTokoCash(requestParams.getParameters());
+    public Observable<VerifyOtpViewModel> createObservable(RequestParams requestParams) {
+        return otpSource.verifyRegisterOtp(requestParams.getParameters());
     }
 }

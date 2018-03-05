@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.tokocashotp.data.source.TokoCashOtpSource;
-import com.tokopedia.otp.tokocashotp.view.viewmodel.RequestOtpTokoCashViewModel;
+import com.tokopedia.otp.registerphonenumber.data.source.RegisterPhoneNumberOtpSource;
+import com.tokopedia.otp.registerphonenumber.view.viewmodel.RequestOtpViewModel;
 
 import javax.inject.Inject;
 
@@ -15,26 +15,26 @@ import rx.Observable;
  * @author by yfsx on 5/3/17.
  */
 
-public class RequestOtpUseCase extends UseCase<RequestOtpTokoCashViewModel> {
+public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     private static final String PARAM_PHONE_NUMBER = "msisdn";
     private static final String PARAM_METHOD = "accept";
     public static final String TYPE_SMS = "sms";
     public static final String TYPE_PHONE = "call";
 
-    private TokoCashOtpSource tokoCashLoginSource;
+    private RegisterPhoneNumberOtpSource otpSource;
 
     @Inject
     public RequestOtpUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             TokoCashOtpSource tokoCashLoginSource) {
+                             RegisterPhoneNumberOtpSource otpSource) {
         super(threadExecutor, postExecutionThread);
-        this.tokoCashLoginSource = tokoCashLoginSource;
+        this.otpSource = otpSource;
     }
 
     @Override
-    public Observable<RequestOtpTokoCashViewModel> createObservable(RequestParams requestParams) {
-        return tokoCashLoginSource.requestLoginOtp(requestParams.getParameters());
+    public Observable<RequestOtpViewModel> createObservable(RequestParams requestParams) {
+        return otpSource.requestRegisterOtp(requestParams.getParameters());
     }
 
     public static RequestParams getParam(String phoneNumber, String type) {

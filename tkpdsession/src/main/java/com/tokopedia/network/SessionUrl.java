@@ -26,6 +26,8 @@ public class SessionUrl {
         public static final String VALIDATE_OTP = BASE_OTP + "/validate";
         public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
         public static final String PATH_GET_METHOD_LIST = BASE_OTP + "/ws/mode-list";
+        public static final String REQUEST_OTP_REGISTER = "";
+        public static final String VERIFY_OTP_REGISTER = "";
     }
 
     public class Image {
