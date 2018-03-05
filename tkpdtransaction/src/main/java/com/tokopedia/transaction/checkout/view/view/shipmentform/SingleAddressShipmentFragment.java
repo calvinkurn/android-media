@@ -209,6 +209,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     protected void setViewListener() {
         mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
+
     }
 
     /**
