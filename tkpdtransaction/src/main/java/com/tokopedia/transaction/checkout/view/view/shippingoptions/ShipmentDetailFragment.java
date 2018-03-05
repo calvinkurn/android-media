@@ -616,6 +616,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
         llFeesGroup.setVisibility(View.GONE);
         llPinpoint.setVisibility(View.GONE);
+        imgBtInsuranceInfo.setVisibility(View.GONE);
         setText(tvDeliveryFeeTotal, null);
     }
 
