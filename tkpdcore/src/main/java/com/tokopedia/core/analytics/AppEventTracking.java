@@ -1119,6 +1119,6 @@ public interface AppEventTracking {
     }
 
     interface ResoDimension {
-        String RESOLUTION_ID = "resolution_id";
+        String RESOLUTION_ID = "resolutionId";
     }
 }
