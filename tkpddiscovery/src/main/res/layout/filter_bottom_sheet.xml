@@ -8,7 +8,6 @@
     android:layout_height="@dimen/filter_bottom_sheet_height"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
-    android:animateLayoutChanges="true"
     app:behavior_hideable="true"
     app:behavior_peekHeight="@dimen/filter_bottom_sheet_height"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
