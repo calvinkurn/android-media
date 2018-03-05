@@ -50,7 +50,7 @@
                     android:textStyle="normal"/>
 
                 <TextView
-                    android:id="@+id/tv_sender_name"
+                    android:id="@+id/tv_shop_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
@@ -87,7 +87,7 @@
                     android:background="@color/white">
 
                     <ImageView
-                        android:id="@+id/iv_product_image_container"
+                        android:id="@+id/iv_product_image"
                         android:layout_width="52dp"
                         android:layout_height="52dp"
                         android:layout_marginEnd="8dp"
@@ -97,11 +97,11 @@
                         tools:ignore="ContentDescription"/>
 
                     <TextView
-                        android:id="@+id/tv_shipping_product_name"
+                        android:id="@+id/tv_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/iv_product_image_container"
-                        android:layout_toRightOf="@id/iv_product_image_container"
+                        android:layout_toEndOf="@id/iv_product_image"
+                        android:layout_toRightOf="@id/iv_product_image"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -109,12 +109,12 @@
                         tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS"/>
 
                     <TextView
-                        android:id="@+id/tv_shipped_product_price"
+                        android:id="@+id/tv_product_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_shipping_product_name"
-                        android:layout_toEndOf="@id/iv_product_image_container"
-                        android:layout_toRightOf="@id/iv_product_image_container"
+                        android:layout_below="@id/tv_product_name"
+                        android:layout_toEndOf="@id/iv_product_image"
+                        android:layout_toRightOf="@id/iv_product_image"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/orange_red"
                         android:textSize="14sp"
@@ -124,10 +124,10 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_shipped_product_price"
+                        android:layout_below="@id/tv_product_price"
                         android:layout_marginTop="6dp"
-                        android:layout_toEndOf="@id/iv_product_image_container"
-                        android:layout_toRightOf="@id/iv_product_image_container">
+                        android:layout_toEndOf="@id/iv_product_image"
+                        android:layout_toRightOf="@id/iv_product_image">
 
                         <TextView
                             android:id="@+id/tv_text_product_weight"
@@ -154,7 +154,7 @@
                             tools:text="3kg"/>
 
                         <TextView
-                            android:id="@+id/tv_total_product_item"
+                            android:id="@+id/tv_product_total_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -171,9 +171,9 @@
                             android:layout_marginEnd="4dp"
                             android:layout_marginRight="4dp"
                             android:layout_toEndOf="@id/tv_product_weight"
-                            android:layout_toLeftOf="@id/tv_total_product_item"
+                            android:layout_toLeftOf="@id/tv_product_total_item"
                             android:layout_toRightOf="@id/tv_product_weight"
-                            android:layout_toStartOf="@id/tv_total_product_item"
+                            android:layout_toStartOf="@id/tv_product_total_item"
                             android:fontFamily="sans-serif"
                             android:gravity="end"
                             android:text="Jumlah :"

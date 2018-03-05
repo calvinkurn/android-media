@@ -249,7 +249,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 @Override
-                public void disableVoucherDisount() {
+                public void disableVoucherDiscount() {
                     actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
                 }
 

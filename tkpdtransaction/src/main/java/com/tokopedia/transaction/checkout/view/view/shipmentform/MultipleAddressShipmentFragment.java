@@ -27,6 +27,9 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSug
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -82,19 +85,28 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initInjector();
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
         totalPayment = view.findViewById(R.id.total_payment_text_view);
         ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
-                dataList(),
-                dummyPriceSummaryData(),
+                presenter.initiateAdapterData(
+                        (CartShipmentAddressFormData) getArguments()
+                        .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
+                ), new MultipleAddressPriceSummaryData(),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
         return view;
+    }
+
+    private void initInjector() {
+        MultipleAddressShipmentComponent component = DaggerMultipleAddressShipmentComponent
+                .builder().build();
+        component.inject(this);
     }
 
     private List<MultipleAddressShipmentAdapterData> dataList() {

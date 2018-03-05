@@ -79,7 +79,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
         private TextView shippingIndex;
 
-        private ImageView editButton;
+        private TextView editButton;
 
         private ImageView deleteButton;
 
@@ -106,7 +106,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             shippingIndex = itemView.findViewById(R.id.shipping_index);
 
-            editButton = itemView.findViewById(R.id.edit_button);
+            editButton = itemView.findViewById(R.id.tv_change_address);
 
             deleteButton = itemView.findViewById(R.id.delete_button);
 

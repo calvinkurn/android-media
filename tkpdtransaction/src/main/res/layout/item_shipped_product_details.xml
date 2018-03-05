@@ -30,7 +30,7 @@
             android:textStyle="normal" />
 
         <TextView
-            android:id="@+id/tv_sender_name"
+            android:id="@+id/tv_shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -50,10 +50,10 @@
         android:layout_height="0.5dp"
         android:background="#e0e0e0" />
 
-    <include layout="@layout/item_product_detail" />
+    <include layout="@layout/item_cart_product" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_product_list"
+        android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
@@ -215,7 +215,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rl_detail_shipment_fee"
+            android:id="@+id/rl_shipment_cost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"

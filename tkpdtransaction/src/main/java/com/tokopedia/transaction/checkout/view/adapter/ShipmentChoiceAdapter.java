@@ -62,7 +62,17 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             holder.tvPriceRange.setVisibility(View.GONE);
         }
 
-        holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
+        if (shipmentItemData.isLessThanADayDelivery()) {
+            String deliveryHour = holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery) +
+                    shipmentItemData.getDeliveryTimeRange() +
+                    holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_hour);
+            holder.tvDeliveryTimeRange.setText(deliveryHour);
+        } else {
+            String deliveryDay = shipmentItemData.getDeliveryTimeRange() +
+                    holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_day);
+            holder.tvDeliveryTimeRange.setText(deliveryDay);
+        }
+
         holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
 
         if (shipmentItemData.isSelected()) {

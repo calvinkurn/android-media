@@ -7,7 +7,7 @@
     android:paddingBottom="24dp"
     android:background="@color/grey_200">
 
-    <RelativeLayout android:id="@+id/rl_detail_shipment_fee"
+    <RelativeLayout android:id="@+id/rl_shipment_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -113,7 +113,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_detail_shipment_fee"
+        android:layout_below="@id/rl_shipment_cost"
         android:background="@color/white"
         android:paddingLeft="16dp"
         android:paddingStart="16dp"

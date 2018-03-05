@@ -130,10 +130,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                         )).commit();
             } else {
                 //TODO Change Later
-                /*getFragmentManager().beginTransaction().replace(R.id.container,
+                getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
                                 cartShipmentAddressFormData, cartPromoSuggestionData
-                        )).commit();*/
+                        )).commit();
             }
         }
     }

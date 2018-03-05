@@ -33,15 +33,6 @@
             android:layout_alignParentRight="true">
 
             <ImageView
-                android:id="@+id/edit_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingRight="@dimen/padding_ms"
-                android:src="@drawable/ic_edit_pencil" />
-
-            <ImageView
                 android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
