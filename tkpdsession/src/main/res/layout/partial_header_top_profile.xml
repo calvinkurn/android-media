@@ -44,8 +44,11 @@
                 android:textSize="14sp"
                 android:textStyle="normal"
                 android:drawablePadding="4dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
                 tools:drawableLeft="@drawable/ic_kol_badge"
-                tools:text="Benny Alexandra" />
+                tools:text="Benny Alexandra Dia Dan Aku Selalu Bersama Huahahahaha" />
 
             <LinearLayout
                 android:id="@+id/button_manage_account"
