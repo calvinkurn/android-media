@@ -3,12 +3,14 @@ package com.tokopedia.core.analytics.screen;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.ScreenTrackingBuilder;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,7 +24,7 @@ public class IndexScreenTracking extends TrackingUtils {
     private static final String COMP_4 = "com.bukalapak.android";
     private static final String COMP_5 = "com.grabtaxi.passenger";
     private static final String COMP_6 = "com.traveloka.android";
-    private static final String CI_DATA = "ci_data";
+    private static final String CI_DATA = "CI_DATA";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(30);
 
     public static void sendScreen(Activity activity,
@@ -39,15 +41,16 @@ public class IndexScreenTracking extends TrackingUtils {
     }
 
     private static String getCIData(Context context) {
+        Log.d("oka", "getcompetitor");
         GlobalCacheManager cache = new GlobalCacheManager();
+        cache.setKey(CI_DATA);
+        cache.setCacheDuration(EXPIRED_TIME);
         if(cache.get(CI_DATA) != null
                 && !cache.isExpired(CI_DATA)
                 && !cache.get(CI_DATA).isEmpty()) {
             return cache.get(CI_DATA);
         } else {
             String value = getCurrentInstalledList(context);
-            cache.setKey(CI_DATA);
-            cache.setCacheDuration(EXPIRED_TIME);
             cache.setValue(value);
             cache.store();
 
@@ -63,10 +66,11 @@ public class IndexScreenTracking extends TrackingUtils {
         PackageManager pm = context.getPackageManager();
         for (int i = 0; i < competitions.length; i++) {
             if (pm != null && isAppInstalled(competitions[i], pm)) {
-                compList.append("app ").append(i + 1).append("-");
+                compList.append("app ").append(i + 1);
+                if(i < competitions.length-1) compList.append("-");
             }
         }
-        return compList.toString().substring(0, compList.length()-1);
+        return compList.toString();
     }
 
     private static boolean isAppInstalled(String uri, PackageManager pm) {
