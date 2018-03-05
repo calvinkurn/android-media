@@ -72,6 +72,14 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (getView().getCurrentPassengerViewModel().getPassengerBirthdate() != null) {
             getView().renderBirthdate(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getCurrentPassengerViewModel().getPassengerBirthdate()));
         }
+
+        if (getView().getCurrentPassengerViewModel().getPassengerId() != null &&
+                !getView().getCurrentPassengerViewModel().getPassengerId().equals("")) {
+            getView().renderSelectedList(String.format("%s %s",
+                            getView().getCurrentPassengerViewModel().getPassengerFirstName(),
+                            getView().getCurrentPassengerViewModel().getPassengerLastName()
+            ));
+        }
     }
 
     @Override
