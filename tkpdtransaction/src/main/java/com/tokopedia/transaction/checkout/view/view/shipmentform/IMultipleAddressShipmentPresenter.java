@@ -15,7 +15,7 @@ public interface IMultipleAddressShipmentPresenter {
     void sendData(List<MultipleAddressShipmentAdapterData> shipmentData,
                   MultipleAddressPriceSummaryData priceData);
 
-    List<MultipleAddressShipmentAdapterData> setAdapter(
+    List<MultipleAddressShipmentAdapterData> initiateAdapterData(
             CartShipmentAddressFormData dataFromWebService
     );
 }
