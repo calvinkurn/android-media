@@ -46,6 +46,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private View topSeparator;
     private View commentButton;
     private View likeButton;
+    private View topShadow;
 
     public KolPostViewHolder(View itemView, KolPostListener.View viewListener) {
         super(itemView);
@@ -67,10 +68,15 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         topSeparator = itemView.findViewById(R.id.separator);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
+        topShadow = itemView.findViewById(R.id.top_shadow);
     }
 
     @Override
     public void bind(KolPostViewModel element) {
+        if(getAdapterPosition() == 0) {
+            topShadow.setVisibility(View.VISIBLE);
+        }
+
         if (TextUtils.isEmpty(element.getTitle())) {
             title.setVisibility(View.GONE);
         } else {

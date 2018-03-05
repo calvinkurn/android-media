@@ -15,12 +15,17 @@ public class EmptyKolPostViewHolder extends AbstractViewHolder<EmptyKolPostViewM
 
     @LayoutRes public static final int LAYOUT = R.layout.kol_post_empty;
 
+    private View topShadow;
+
     public EmptyKolPostViewHolder(View itemView) {
         super(itemView);
+        topShadow = itemView.findViewById(R.id.top_shadow);
     }
 
     @Override
     public void bind(EmptyKolPostViewModel element) {
-
+        if(getAdapterPosition() == 0) {
+            topShadow.setVisibility(View.VISIBLE);
+        }
     }
 }

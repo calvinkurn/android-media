@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/margin_small"
+    android:orientation="vertical"
     android:background="@drawable/shadow_bottom">
+
+    <View
+        android:id="@+id/top_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:visibility="gone"
+        android:background="@drawable/shadow_bottom"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -183,4 +191,4 @@
             android:layout_below="@id/footer"
             android:background="@color/grey_300" />
     </RelativeLayout>
-</FrameLayout>
+</LinearLayout>
