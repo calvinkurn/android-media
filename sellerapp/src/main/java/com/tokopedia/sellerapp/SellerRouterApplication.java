@@ -130,6 +130,7 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -1077,5 +1078,15 @@ public abstract class SellerRouterApplication extends MainApplication
                 });
             }
         };
+    }
+
+    @Override
+    public Intent getShopPageIntent(Context context, String shopId) {
+        return ShopPageActivity.createIntent(context, shopId);
+    }
+
+    @Override
+    public Intent getShopPageIntentByDomain(Context context, String domain) {
+        return ShopPageActivity.createIntentWithDomain(context, domain);
     }
 }

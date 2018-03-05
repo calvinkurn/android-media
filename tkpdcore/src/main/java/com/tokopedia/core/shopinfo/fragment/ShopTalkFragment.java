@@ -18,11 +18,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
@@ -278,12 +276,6 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         isViewShown = getView() != null;
-        if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(true);
-            }
-        }
     }
 
     @Override
