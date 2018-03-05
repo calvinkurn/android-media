@@ -22,8 +22,8 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
@@ -86,6 +86,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private boolean isAirAsiaAirlines = false;
     private String departureDate;
+    private String selectedPassengerId;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -112,7 +113,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
 
-    public static Fragment newInstance(String departureId,
+    public static FlightBookingPassengerFragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
                                        List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                        List<FlightBookingAmenityMetaViewModel> mealViewModels,
@@ -138,6 +139,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealViewModels = getArguments().getParcelableArrayList(EXTRA_MEALS);
         isAirAsiaAirlines = getArguments().getBoolean(EXTRA_AIR_ASIA);
         departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
+        selectedPassengerId = (viewModel.getPassengerId() != null) ? viewModel.getPassengerId() : "";
     }
 
     @Override
@@ -535,6 +537,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void canGoBack() {
+        if (interactionListener != null) {
+            interactionListener.goBack();
+        }
+    }
+
+    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
@@ -584,7 +593,15 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         }
     }
 
+    public void onBackPressed() {
+        if (!viewModel.getPassengerId().equals(selectedPassengerId)) {
+            presenter.onUnselectPassengerList(viewModel.getPassengerId());
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
+        void goBack();
     }
 }

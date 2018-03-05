@@ -27,6 +27,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     public static final String EXTRA_IS_AIRASIA = "EXTRA_IS_AIRASIA";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     private FlightBookingPassengerViewModel viewModel;
+    FlightBookingPassengerFragment flightBookingPassengerFragment;
 
     public static Intent getCallingIntent(Activity activity,
                                           String departureId,
@@ -73,15 +74,15 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
         List<FlightBookingAmenityMetaViewModel> luggageViewModels = getIntent().getParcelableArrayListExtra(EXTRA_LUGGAGES);
         List<FlightBookingAmenityMetaViewModel> mealViewModels = getIntent().getParcelableArrayListExtra(EXTRA_MEALS);
         if (getIntent().getStringExtra(EXTRA_RETURN) != null) {
-            return FlightBookingPassengerFragment.newInstance(
+            flightBookingPassengerFragment = FlightBookingPassengerFragment.newInstance(
                     getIntent().getStringExtra(EXTRA_DEPARTURE),
                     getIntent().getStringExtra(EXTRA_RETURN),
                     viewModel, luggageViewModels, mealViewModels,
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
                     getIntent().getStringExtra(EXTRA_DEPARTURE_DATE)
             );
-        } else
-            return FlightBookingPassengerFragment.newInstance(
+        } else {
+            flightBookingPassengerFragment =  FlightBookingPassengerFragment.newInstance(
                     getIntent().getStringExtra(EXTRA_DEPARTURE),
                     viewModel,
                     luggageViewModels,
@@ -89,6 +90,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
                     getIntent().getStringExtra(EXTRA_DEPARTURE_DATE)
             );
+        }
+        return flightBookingPassengerFragment;
     }
 
     @Override
@@ -104,5 +107,15 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
         intent.putExtra(EXTRA_PASSENGER, flightBookingPassengerViewModel);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void goBack() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        flightBookingPassengerFragment.onBackPressed();
     }
 }

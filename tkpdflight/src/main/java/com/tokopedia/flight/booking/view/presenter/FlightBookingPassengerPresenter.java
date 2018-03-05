@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
+import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -19,15 +21,19 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * @author by alvarisi on 11/16/17.
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
-    @Inject
-    public FlightBookingPassengerPresenter() {
+    private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
 
+    @Inject
+    public FlightBookingPassengerPresenter(FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase) {
+        this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
     }
 
 
@@ -38,7 +44,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (isAdultPassenger()) {
             getView().renderHeaderSubtitle(R.string.flight_booking_passenger_adult_subtitle);
             getView().renderSpinnerForAdult();
-            if(getView().isAirAsiaAirline()) {
+            if (getView().isAirAsiaAirline()) {
                 getView().showBirthdayInputView();
             } else {
                 getView().hideBirthdayInputView();
@@ -76,8 +82,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (getView().getCurrentPassengerViewModel().getPassengerId() != null &&
                 !getView().getCurrentPassengerViewModel().getPassengerId().equals("")) {
             getView().renderSelectedList(String.format("%s %s",
-                            getView().getCurrentPassengerViewModel().getPassengerFirstName(),
-                            getView().getCurrentPassengerViewModel().getPassengerLastName()
+                    getView().getCurrentPassengerViewModel().getPassengerFirstName(),
+                    getView().getCurrentPassengerViewModel().getPassengerLastName()
             ));
         }
     }
@@ -109,7 +115,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
             selectedDate = maxDate;
-        } else if(isAdultPassenger()) {
+        } else if (isAdultPassenger()) {
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
@@ -123,7 +129,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate());
         }
 
-        if(minDate != null) {
+        if (minDate != null) {
             getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
         } else {
             getView().showBirthdatePickerDialog(selectedDate, maxDate);
@@ -200,14 +206,14 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
         int index = viewModels.indexOf(flightBookingLuggageMetaViewModel);
 
-        if(flightBookingLuggageMetaViewModel.getAmenities().size() != 0) {
+        if (flightBookingLuggageMetaViewModel.getAmenities().size() != 0) {
             if (index != -1) {
                 viewModels.set(index, flightBookingLuggageMetaViewModel);
             } else {
                 viewModels.add(flightBookingLuggageMetaViewModel);
             }
         } else {
-            if(index != -1) {
+            if (index != -1) {
                 viewModels.remove(index);
             }
         }
@@ -220,14 +226,14 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(flightBookingAmenityMetaViewModel);
 
-        if(flightBookingAmenityMetaViewModel.getAmenities().size() != 0) {
+        if (flightBookingAmenityMetaViewModel.getAmenities().size() != 0) {
             if (index != -1) {
                 viewModels.set(index, flightBookingAmenityMetaViewModel);
             } else {
                 viewModels.add(flightBookingAmenityMetaViewModel);
             }
         } else {
-            if(index != -1) {
+            if (index != -1) {
                 viewModels.remove(index);
             }
         }
@@ -244,6 +250,32 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         getView().navigateToSavedPassengerPicker(existingSelected);
+    }
+
+    @Override
+    public void onUnselectPassengerList(String passengerId) {
+        flightBookingUpdateSelectedPassengerUseCase.execute(
+                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                        passengerId,
+                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
+                ),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        getView().canGoBack();
+                    }
+                }
+        );
     }
 
     @Override

@@ -106,6 +106,8 @@ public interface FlightBookingPassengerContract {
         String getDepartureDateString();
 
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
+
+        void canGoBack();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -134,5 +136,6 @@ public interface FlightBookingPassengerContract {
 
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
+        void onUnselectPassengerList(String passengerId);
     }
 }

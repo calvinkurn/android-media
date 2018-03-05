@@ -10,12 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
     <TextView
         android:id="@+id/txt_new_passenger"
         style="@style/TextView.Title.Green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_16"
+        android:padding="@dimen/padding_med"
         android:text="@string/flight_list_passenger_add_passenger_label"
         android:textStyle="bold" />
 
