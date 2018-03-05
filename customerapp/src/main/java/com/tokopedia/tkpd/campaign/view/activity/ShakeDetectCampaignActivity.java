@@ -29,7 +29,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
     private TkpdProgressDialog progressDialog;
-    private CampaignComponent campaignComponent;
+    protected CampaignComponent campaignComponent;
     @Inject
     ShakeDetectPresenter presenter;
 
@@ -43,7 +43,16 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
-        presenter.attachView(this);
+        attachToPresenter();
+        shakeDetect();
+
+    }
+
+    void attachToPresenter() {
+         presenter.attachView(this);
+    }
+
+    protected void shakeDetect() {
         presenter.onShakeDetect();
     }
 
@@ -64,7 +73,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         return campaignComponent;
     }
 
-    private void initInjector() {
+    protected void initInjector() {
         campaignComponent = DaggerCampaignComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();

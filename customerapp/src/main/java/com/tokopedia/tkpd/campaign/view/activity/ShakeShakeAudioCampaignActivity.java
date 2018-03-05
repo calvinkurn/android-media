@@ -3,15 +3,15 @@ package com.tokopedia.tkpd.campaign.view.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.tkpd.campaign.configuration.AudioRecorder;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
+import com.tokopedia.tkpd.campaign.view.presenter.AudioShakeDetectPresenter;
 
-import java.io.IOException;
+import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -23,10 +23,14 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class CapturedAudioCampaignActivity extends BaseSimpleActivity implements AudioRecorder.RecordCompleteListener{
+public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity {
+
+
+    @Inject
+    AudioShakeDetectPresenter presenter;
 
     public static Intent getCapturedAudioCampaignActivity(Context context) {
-        Intent i = new Intent(context, CapturedAudioCampaignActivity.class);
+        Intent i = new Intent(context, ShakeShakeAudioCampaignActivity.class);
         return i;
     }
 
@@ -36,24 +40,26 @@ public class CapturedAudioCampaignActivity extends BaseSimpleActivity implements
         return 0;
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        CapturedAudioCampaignActivityPermissionsDispatcher.isRequiredPermissionAvailableWithCheck(this);
+    void attachToPresenter() {
+        presenter.attachView(this);
     }
 
+    protected void shakeDetect() {
+        ShakeShakeAudioCampaignActivityPermissionsDispatcher.isRequiredPermissionAvailableWithCheck(this);
+    }
+
+    @Override
+    protected void initInjector() {
+        campaignComponent = DaggerCampaignComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+        campaignComponent.inject(this);
+    }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void isRequiredPermissionAvailable() {
-        try {
+        presenter.onShakeDetect();
 
-                    startRecording();
-
-            Toast.makeText(this,"Recording Start",Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -71,24 +77,11 @@ public class CapturedAudioCampaignActivity extends BaseSimpleActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CapturedAudioCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ShakeShakeAudioCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
 
 
-    AudioRecorder recorder;
-
-    private void startRecording() throws IOException {
-        recorder = new AudioRecorder("/sdcard/campaign.wav");
-        recorder.start(this);
-    }
-
-
-    @Override
-    public void onRecordComplete() {
-        Toast.makeText(this,"Recording Complete",Toast.LENGTH_LONG).show();
-        finish();
-    }
 
     @Override
     public void onBackPressed() {

@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
-import com.tokopedia.tkpd.campaign.view.activity.CapturedAudioCampaignActivity;
+import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 
 import java.util.List;
@@ -49,11 +49,12 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
     @Override
     public void hearShake() {
         if(!isAppIsInBackground(mContext)) {
-            if (true) {
+            if (false) {
                 mContext.startActivity(ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext));
                 mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
             } else {
-                mContext.startActivity(CapturedAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext));
+                mContext.startActivity(ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext));
+                mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
             }
         }
     }

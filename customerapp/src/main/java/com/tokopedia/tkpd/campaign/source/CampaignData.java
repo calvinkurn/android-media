@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 
@@ -33,5 +34,10 @@ public class CampaignData implements CampaignDataRepository {
     @Override
     public Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, RequestBody> params) {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaignForShake(params);
+    }
+
+    @Override
+    public Observable<CampaignResponseEntity> getCampaignFromShakeAudio(HashMap<String, RequestBody> params, MultipartBody.Part audioFile) {
+        return campaignDataFactory.createCloudCampaignDataStore().getCampaignFromAudio(params,audioFile);
     }
 }

@@ -245,9 +245,9 @@
             android:name=".datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
-        <activity android:name=".campaign.view.activity.CapturedAudioCampaignActivity"
+        <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.White"></activity>
+            android:theme="@style/DialogTheme"></activity>
 
         <activity android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"

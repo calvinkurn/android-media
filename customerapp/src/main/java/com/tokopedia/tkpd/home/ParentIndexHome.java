@@ -1,11 +1,9 @@
 package com.tokopedia.tkpd.home;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,7 +69,6 @@ import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tkpd.campaign.view.activity.CapturedAudioCampaignActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;

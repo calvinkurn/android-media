@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
@@ -31,6 +32,11 @@ public class CampaignModule {
     @Provides
     PostBarCodeDataUseCase providePostBarCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
         return new PostBarCodeDataUseCase(bookingRideRepository);
+    }
+
+    @Provides
+    PostAudioDataUseCase providePostAudioCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
+        return new PostAudioDataUseCase(bookingRideRepository);
     }
     @Provides
     ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {

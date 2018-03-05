@@ -1,13 +1,12 @@
 package com.tokopedia.tkpd.campaign.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.tkpd.campaign.di.scope.CampaignModuleScope;
+import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 
 import dagger.Component;
-import okhttp3.OkHttpClient;
 
 /**
  * Created by sandeepgoyal on 15/12/17.
@@ -18,4 +17,5 @@ public interface CampaignComponent {
 
     void inject(QrScannerActivity activity);
     void inject(ShakeDetectCampaignActivity activity);
+    void inject(ShakeShakeAudioCampaignActivity activity);
 }

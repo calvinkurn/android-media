@@ -1,69 +1,85 @@
 package com.tokopedia.tkpd.campaign.view.presenter;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.tkpd.campaign.configuration.AudioRecorder;
+import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
+import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.usecase.RequestParams;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
+import static com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase.AUDIO_PATH;
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
 
 /**
- * Created by sandeepgoyal on 14/02/18.
+ * Created by sandeepgoyal on 21/02/18.
  */
 
-public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContract.View> implements ShakeDetectContract.Presenter {
+public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements AudioRecorder.RecordCompleteListener{
 
 
-    private final ShakeUseCase shakeUseCase;
-    protected final Context context;
+    PostAudioDataUseCase postShakeDetectUseCase;
+
 
     @Inject
-    public ShakeDetectPresenter(ShakeUseCase shakeDetectUseCase, @ApplicationContext Context context) {
-        this.shakeUseCase = shakeDetectUseCase;
-        this.context = context;
+    public AudioShakeDetectPresenter(PostAudioDataUseCase shakeDetectUseCase, @ApplicationContext Context context) {
+        super(shakeDetectUseCase, context);
+        this.postShakeDetectUseCase = shakeDetectUseCase;
     }
 
     @Override
     public void onShakeDetect() {
+        try {
+            startRecording();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    WavRecorder recorder;
+
+    private void startRecording() throws IOException {
+        recorder = new WavRecorder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdcard/campaign.wav");
+        recorder.startRecording(this);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recorder.stopRecording();
+            }
+        }, 10000);
+    }
+
+
+    @Override
+    public void onRecordComplete() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(IS_AUDIO, "false");
-        shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
+        requestParams.putString(IS_AUDIO, "true");
+        requestParams.putString(AUDIO_PATH, Environment.getExternalStorageDirectory().getAbsolutePath()+"/sdcard/campaign.wav");
+        postShakeDetectUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
                 getView().finish();
@@ -76,7 +92,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 } else if (e instanceof SocketTimeoutException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
-                    getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+                    getView().showErrorNetwork(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
                 } else if (e instanceof ResponseDataNullException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
@@ -112,19 +128,4 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         });
     }
 
-    @Override
-    public void onDestroyView() {
-        if (shakeUseCase != null) shakeUseCase.unsubscribe();
-    }
-
-    @Override
-    public void onRetryClick() {
-
-        getView().finish();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getView().finish();
-    }
 }
