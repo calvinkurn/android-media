@@ -240,9 +240,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
+        RecipientAddressModel recipientAddressModel
+                = mCartAddressChoicePresenter.getSelectedRecipientAddress();
+
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA,
-                mCartAddressChoicePresenter.getSelectedRecipientAddress());
+        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddressModel);
+
         getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
         getActivity().finish();
     }
