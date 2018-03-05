@@ -3,7 +3,6 @@ package com.tokopedia.profile.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -11,7 +10,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -84,6 +82,8 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View errorView;
     private TextView errorText;
     private TextView buttonTryAgain;
+    private TextView buttonFollowToolbar;
+    private TextView tvTitleToolbar;
 
     private String userId;
     private TopProfileViewModel topProfileViewModel;
@@ -174,6 +174,8 @@ public class TopProfileActivity extends BaseEmptyActivity
         errorView = findViewById(R.id.error_view);
         errorText = findViewById(R.id.error_text);
         buttonTryAgain = findViewById(R.id.button_try_again);
+        buttonFollowToolbar = findViewById(R.id.button_follow_toolbar);
+        tvTitleToolbar = findViewById(R.id.tv_title_toolbar);
     }
 
     private void setViewListener() {
@@ -211,6 +213,13 @@ public class TopProfileActivity extends BaseEmptyActivity
         });
 
         buttonFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                followUnfollowKol();
+            }
+        });
+
+        buttonFollowToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 followUnfollowKol();
@@ -296,7 +305,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     public void onSuccessFollowKol() {
         topProfileViewModel.setFollowed(!topProfileViewModel.isFollowed());
 
-        if (topProfileViewModel.isFollowed()) enableFollowButton();
+        if (!topProfileViewModel.isFollowed()) enableFollowButton();
         else disableFollowButton();
     }
 
@@ -306,17 +315,12 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_profile, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -368,12 +372,22 @@ public class TopProfileActivity extends BaseEmptyActivity
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(
-                            topProfileViewModel.getName()
-                    );
+                    tvTitleToolbar.setText(topProfileViewModel.getName());
+                    tvTitleToolbar.setVisibility(View.VISIBLE);
+
+                    if (topProfileViewModel.isKol() && !topProfileViewModel.isUser()) {
+                        if (topProfileViewModel.isFollowed()) {
+                            disableFollowToolbarButton();
+                        } else {
+                            enableFollowToolbarButton();
+                        }
+                        buttonFollowToolbar.setVisibility(View.VISIBLE);
+                    }
                     isShow = true;
+
                 } else if (isShow) {
-                    collapsingToolbarLayout.setTitle("");
+                    tvTitleToolbar.setVisibility(View.GONE);
+                    buttonFollowToolbar.setVisibility(View.GONE);
                     isShow = false;
                 }
             }
@@ -413,9 +427,9 @@ public class TopProfileActivity extends BaseEmptyActivity
                 buttonFollow.setVisibility(View.VISIBLE);
 
                 if (topProfileViewModel.isFollowed()) {
-                    enableFollowButton();
-                } else {
                     disableFollowButton();
+                } else {
+                    enableFollowButton();
                 }
             } else {
                 buttonFollow.setVisibility(View.GONE);
@@ -462,10 +476,19 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonFollowImage.setVisibility(View.GONE);
     }
 
+    private void enableFollowToolbarButton(){
+        buttonFollowToolbar.setText(R.string.follow_with_plus);
+        buttonFollowToolbar.setTextColor(getResources().getColor(R.color
+                .tkpd_main_green));
+    }
+
+    private void disableFollowToolbarButton(){
+        buttonFollowToolbar.setText(R.string.following);
+        buttonFollowToolbar.setTextColor(getResources().getColor(R.color
+                .font_black_secondary_54));
+    }
+
     private void setupToolbar() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(
-                MethodChecker.getColor(this, R.color.black_70));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
 
         setSupportActionBar(toolbar);
