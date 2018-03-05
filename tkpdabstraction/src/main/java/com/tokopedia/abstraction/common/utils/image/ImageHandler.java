@@ -533,18 +533,11 @@ public class ImageHandler {
     }
 
     public static void loadUberDriverImage(final Context context, final ImageView imageView, int errorDrawable, String url) {
-        Glide.with(context).load(url)
+        Glide.with(context)
+                .load(url)
                 .asBitmap()
                 .error(errorDrawable)
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable roundedBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        roundedBitmapDrawable.setCircular(true);
-                        imageView.setImageDrawable(roundedBitmapDrawable);
-                    }
-                });
+                .into(getCircleImageViewTarget(imageView));
     }
 
 }
