@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -12,4 +13,6 @@ public interface StreamModuleRouter {
     Intent getHomeIntent(Context context);
 
     Intent getInboxChannelsIntent(Context context);
+
+    void openRedirectUrl(Activity activity, String url);
 }

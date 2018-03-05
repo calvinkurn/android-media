@@ -19,10 +19,10 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
     public static final String BAR_TYPE = "Bar";
     public static final String IMAGE_TYPE = "Image";
 
-    private String optionId, option, url, type;
-    private int percentage, selected;
+    private String optionId, option, url, type, percentage;
+    private int selected;
 
-    public VoteViewModel(String optionId, String option, int percentage, int selected) {
+    public VoteViewModel(String optionId, String option, String percentage, int selected) {
         this.optionId = optionId;
         this.option = option;
         this.percentage = percentage;
@@ -30,7 +30,7 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
         this.type = BAR_TYPE;
     }
 
-    public VoteViewModel(String optionId, String option, String url, int percentage, int selected) {
+    public VoteViewModel(String optionId, String option, String url, String percentage, int selected) {
         this.optionId = optionId;
         this.option = option;
         this.url = url;
@@ -47,12 +47,8 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
         this.option = option;
     }
 
-    public int getPercentage() {
+    public String getPercentage() {
         return percentage;
-    }
-
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
     }
 
     public int getSelected() {
@@ -97,7 +93,7 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.optionId);
         dest.writeString(this.option);
-        dest.writeInt(this.percentage);
+        dest.writeString(this.percentage);
         dest.writeInt(this.selected);
         dest.writeString(this.type);
         dest.writeString(this.url);
@@ -106,7 +102,7 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
     protected VoteViewModel(Parcel in) {
         this.optionId = in.readString();
         this.option = in.readString();
-        this.percentage = in.readInt();
+        this.percentage = in.readString();
         this.selected = in.readInt();
         this.type = in.readString();
         this.url = in.readString();
@@ -123,4 +119,13 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
             return new VoteViewModel[size];
         }
     };
+
+    public int getPercentageInteger() {
+        try {
+            return (int) Double.parseDouble(percentage);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

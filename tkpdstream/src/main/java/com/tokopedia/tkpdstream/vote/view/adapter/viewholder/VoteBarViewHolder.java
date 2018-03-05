@@ -7,11 +7,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
+
+import java.util.Locale;
 
 /**
  * @author by StevenFredian on 21/02/18.
@@ -40,25 +41,25 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
     public void bind(final VoteViewModel element) {
 
         Context context = itemView.getContext();
-        if(element.getSelected() == VoteViewModel.DEFAULT){
+        if (element.getSelected() == VoteViewModel.DEFAULT) {
             percent.setVisibility(View.GONE);
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_default));
             icon.setVisibility(View.GONE);
-        }else{
+        } else {
             percent.setVisibility(View.VISIBLE);
-            progressBar.setProgress(element.getPercentage());
-            if(element.getSelected() == VoteViewModel.SELECTED) {
+            progressBar.setProgress(element.getPercentageInteger());
+            if (element.getSelected() == VoteViewModel.SELECTED) {
                 icon.setVisibility(View.VISIBLE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_selected));
-            }else if(element.getSelected() == VoteViewModel.UNSELECTED) {
+            } else if (element.getSelected() == VoteViewModel.UNSELECTED) {
                 icon.setVisibility(View.GONE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_unselected));
             }
         }
 
         option.setText(element.getOption());
-        percent.setText(String.format("%d%%", element.getPercentage()));
+        percent.setText(String.format(Locale.getDefault(), "%d%%", element.getPercentageInteger()));
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

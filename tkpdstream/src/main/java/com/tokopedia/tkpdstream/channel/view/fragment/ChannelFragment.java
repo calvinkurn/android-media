@@ -28,6 +28,7 @@ import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     ChannelPresenter presenter;
+
+    @Inject
+    StreamAnalytics analytics;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -68,6 +72,12 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
 
         presenter.attachView(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics.eventClickInboxChat();
     }
 
     @Nullable
@@ -186,6 +196,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     private void goToChannel(ChannelViewModel channelViewModel) {
+        analytics.eventClickGroupChatList(channelViewModel.getId());
         startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(), channelViewModel),
                 REQUEST_OPEN_GROUPCHAT);
     }

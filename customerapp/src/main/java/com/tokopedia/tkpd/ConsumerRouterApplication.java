@@ -123,7 +123,6 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -177,9 +176,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
-import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -1043,7 +1040,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1352,5 +1349,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
+    }
+
+    @Override
+    public void openRedirectUrl(Activity activity, String url) {
+        if (isSupportedDelegateDeepLink(url)) {
+            actionAppLink(activity, url);
+        } else {
+            actionOpenGeneralWebView(activity, url);
+        }
     }
 }
