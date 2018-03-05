@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -740,12 +739,6 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
         adapter.setGuidedSearch(guidedSearchViewModel);
-        Toast.makeText(getContext(), "Retrieve Guided Search Complete", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onGetGuidedSearchFailed() {
-        Toast.makeText(getContext(), "Retrieve Guided Search Failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -255,7 +255,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                getView().onGetGuidedSearchFailed();
+                
             }
 
             @Override
