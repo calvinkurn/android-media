@@ -1,5 +1,7 @@
 package com.tokopedia.posapp;
 
+import android.content.Context;
+
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;

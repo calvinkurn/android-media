@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/codepush.gradle"
 
 def getDpiId(String density) {
 
@@ -15,6 +16,10 @@ def allowSplit() {
 //    return gradle.startParameter.taskNames.contains("assembleRelease") &&
 //            !project.hasProperty('tkpdBuildType');
     return false;
+}
+
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
 }
 
 def allowDistribution() {
@@ -60,6 +65,8 @@ def getAPKArchiveFolder(variant) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
@@ -67,8 +74,8 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     project.ext {
         defaultVersionCode = 1;
@@ -77,12 +84,13 @@ android {
 
     defaultConfig {
         applicationId "com.tokopedia.posapp"
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         multiDexEnabled = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -105,17 +113,23 @@ android {
 
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -141,8 +155,37 @@ android {
             }
         }
     }
+    sourceSets {
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/rxjava.properties'
+        }
+
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
     productFlavors {
         staging {}
@@ -151,14 +194,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':tkpdcore')
-    compile project(':tkpdsession')
-    compile project(':tkpddiscovery')
-    compile project(':tkpdpdp')
-    compile project(':tkpdseller')
-    compile project(':tkpddesign')
-    compile project(':tkpdreactnative')
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.session)
+    compile project(rootProject.ext.features.discovery)
+    compile project(rootProject.ext.features.productDetail)
+    compile project(rootProject.ext.features.seller)
+    compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.libraries.reactNative)
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
@@ -173,4 +215,6 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.frescoGif
+
+    compile rootProject.ext.miscDependencies.multiDex
 }
