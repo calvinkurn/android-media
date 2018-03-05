@@ -33,9 +33,11 @@ import rx.functions.Func1;
 public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomViewModel> {
 
     private static final String TOKOPEDIA = "Tokopedia";
+    private final SessionHandler sessionHandler;
 
-    @Inject
-    SessionHandler sessionHandler;
+    public GetReplyMapper(SessionHandler sessionHandler) {
+        this.sessionHandler = sessionHandler;
+    }
 
     @Override
     public ChatRoomViewModel call(Response<TkpdResponse> response) {
