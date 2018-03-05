@@ -539,5 +539,4 @@ public class ImageHandler {
                 .error(errorDrawable)
                 .into(getCircleImageViewTarget(imageView));
     }
-
 }
