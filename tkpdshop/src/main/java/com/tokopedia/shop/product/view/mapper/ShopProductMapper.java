@@ -18,17 +18,17 @@ public class ShopProductMapper {
 
     private static final String BADGE_FREE_RETURN = "Free Return";
 
-    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList) {
+    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList, boolean showWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (ShopProduct shopProduct: shopProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
+            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct, showWishList);
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct) {
+    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct, boolean showWishList) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(shopProduct.getProductId());
@@ -49,21 +49,22 @@ public class ShopProductMapper {
                 }
             }
         }
+        shopProductViewModel.setShowWishList(showWishList);
         return shopProductViewModel;
     }
 
 
-    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList) {
+    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList, boolean showWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (GMFeaturedProduct shopProduct: gmFeaturedProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
+            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct, showWishList);
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
+    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct, boolean showWishList) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(gmFeaturedProduct.getProductId());
@@ -80,6 +81,7 @@ public class ShopProductMapper {
         shopProductViewModel.setWholesale(gmFeaturedProduct.isWholesale());
         shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
         shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
+        shopProductViewModel.setShowWishList(showWishList);
         return shopProductViewModel;
     }
 }

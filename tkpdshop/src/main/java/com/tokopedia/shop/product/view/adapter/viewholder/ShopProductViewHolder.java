@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
@@ -59,6 +60,12 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
+        updateDisplayGeneralView(shopProductViewModel);
+        updateDisplayBadges(shopProductViewModel);
+        updateDisplayWishList(shopProductViewModel);
+    }
+
+    private void updateDisplayGeneralView(final ShopProductViewModel shopProductViewModel) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,17 +76,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(shopProductViewModel.getName());
         priceTextView.setText(shopProductViewModel.getPrice());
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
-        if (shopProductViewModel.isWishList()) {
-            wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
-        } else {
-            wishlistImageView.setImageResource(R.drawable.ic_wishlist);
-        }
-        wishlistContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopProductClickedListener.onWishListClicked(shopProductViewModel);
-            }
-        });
+
         if (qualityRatingBar != null) {
             qualityRatingBar.setRating((float) shopProductViewModel.getRating());
             qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
@@ -87,6 +84,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         if (totalReview != null) {
             totalReview.setText(String.valueOf(shopProductViewModel.getTotalReview()));
         }
+    }
+
+    private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
                     R.string.product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
@@ -97,5 +97,16 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
         wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
+        wishlistContainer.setVisibility(shopProductViewModel.isShowWishList() ? View.VISIBLE : View.GONE);
+        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wish_list_checked : R.drawable.ic_wish_list_unchecked);
+        wishlistContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shopProductClickedListener.onWishListClicked(shopProductViewModel);
+            }
+        });
     }
 }

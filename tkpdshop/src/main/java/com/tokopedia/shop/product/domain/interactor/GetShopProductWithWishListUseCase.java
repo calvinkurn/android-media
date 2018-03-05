@@ -48,29 +48,33 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
             @Override
             public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
-                if (shopProductPagingList.getList().size() > 0) {
-                    final List<String> productIdList = new ArrayList<>();
-                    for (ShopProduct shopProduct : shopProductPagingList.getList()) {
-                        productIdList.add(shopProduct.getProductId());
-                    }
-                    return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
-                        @Override
-                        public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
-                            return getShopProductViewModelList(shopProductPagingList, productWishList);
-                        }
-                    });
-                } else {
-                    return getShopProductViewModelList(shopProductPagingList, new ArrayList<String>());
+                // Show shop product list without wish list
+                if (shopProductPagingList.getList().size() <= 0 || isShopOwner(shopProductRequestModel.getShopId())) {
+                    return getShopProductViewModelList(shopProductPagingList, new ArrayList<String>(), false);
                 }
+                final List<String> productIdList = new ArrayList<>();
+                for (ShopProduct shopProduct : shopProductPagingList.getList()) {
+                    productIdList.add(shopProduct.getProductId());
+                }
+                return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
+                    @Override
+                    public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
+                        return getShopProductViewModelList(shopProductPagingList, productWishList, true);
+                    }
+                });
             }
         });
     }
 
-    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(PagingList<ShopProduct> shopProductPagingList, List<String> productIdList) {
+    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(PagingList<ShopProduct> shopProductPagingList, List<String> productIdList, boolean showWishList) {
         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
         pagingList.setTotalData(shopProductPagingList.getTotalData());
-        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList));
+        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList, showWishList));
         return Observable.just(pagingList);
+    }
+
+    private boolean isShopOwner(String shopId) {
+        return userSession.getShopId().equals(shopId);
     }
 
     public static RequestParams createRequestParam(ShopProductRequestModel shopProductRequestModel) {
