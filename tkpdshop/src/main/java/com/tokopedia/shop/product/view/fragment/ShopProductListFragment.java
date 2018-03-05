@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
@@ -26,10 +25,9 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
@@ -40,6 +38,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import javax.inject.Inject;
 
@@ -268,6 +267,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         } else {
             shopProductListPresenter.addToWishList(shopProductViewModel.getId());
         }
+    }
+
+    @Override
+    public ShopModuleRouter getShopModuleRouter() {
+        return shopModuleRouter;
     }
 
     @Override

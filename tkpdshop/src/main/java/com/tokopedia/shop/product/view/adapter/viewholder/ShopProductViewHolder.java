@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
@@ -60,6 +59,17 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shopProductClickedListener != null) {
+                    shopProductClickedListener.getShopModuleRouter().goToProductDetailFromShop(
+                            itemView.getContext(),
+                            shopProductViewModel.getProductUrl());
+                }
+            }
+        });
+
         titleTextView.setText(shopProductViewModel.getName());
         priceTextView.setText(shopProductViewModel.getPrice());
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());

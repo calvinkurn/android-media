@@ -1,25 +1,25 @@
 package com.tokopedia.shop.product.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
@@ -42,6 +42,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private String shopId;
+    private ShopModuleRouter shopModuleRouter;
 
     @Nullable
     @Override
@@ -152,6 +153,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
+    public ShopModuleRouter getShopModuleRouter() {
+        return shopModuleRouter;
+    }
+
+    @Override
     public void onErrorRemoveFromWishList(Throwable e) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
     }
@@ -179,5 +185,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void hideLoading() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
+            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+        }
     }
 }

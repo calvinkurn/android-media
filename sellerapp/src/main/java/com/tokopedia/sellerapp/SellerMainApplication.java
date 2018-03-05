@@ -7,16 +7,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.*;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -166,9 +161,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
-        ShopUrl.BASE_WSV4_URL = SellerAppBaseUrl.BASE_DOMAIN;
         ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
-        ShopCommonUrl.BASE_URL_WS = SellerAppBaseUrl.BASE_DOMAIN;
 
 
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
