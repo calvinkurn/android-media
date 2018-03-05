@@ -6,7 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
-import com.tokopedia.otp.domain.pojo.ValidateOtpSQPojo;
+import com.tokopedia.otp.registerphonenumber.data.pojo.verifyotp.VerifyOtpResponse;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 
 import javax.inject.Inject;
@@ -32,8 +32,8 @@ public class VerifyOtpMapper implements Func1<Response<TkpdResponse>, VerifyOtpV
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
                 if (responseIsSecurityQuestion(response.body())) {
-                    ValidateOtpSQPojo validateOtpSQData = response.body().convertDataObj(
-                            ValidateOtpSQPojo.class);
+                    VerifyOtpResponse validateOtpSQData = response.body().convertDataObj(
+                            VerifyOtpResponse.class);
                     return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
                 } else {
                     ValidateOtpPojo validateOtpData = response.body().convertDataObj(

@@ -9,10 +9,13 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class VerifyOtpResponse {
-
     @SerializedName("is_success")
     @Expose
     int isSuccess;
+
+    @SerializedName("uuid")
+    @Expose
+    String uuid;
 
     public int getIsSuccess() {
         return isSuccess;
@@ -26,4 +29,11 @@ public class VerifyOtpResponse {
         return isSuccess == 1;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

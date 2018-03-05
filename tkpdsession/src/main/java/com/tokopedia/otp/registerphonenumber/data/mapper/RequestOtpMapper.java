@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.otp.domain.pojo.RequestOtpPojo;
+import com.tokopedia.otp.registerphonenumber.data.pojo.requestotp.RequestOtpResponse;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.RequestOtpViewModel;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
-                RequestOtpPojo pojo = response.body().convertDataObj(RequestOtpPojo.class);
+                RequestOtpResponse pojo = response.body().convertDataObj(RequestOtpResponse.class);
                 return convertToDomain(pojo, response);
             } else {
                 if (response.body().getErrorMessages() != null
@@ -52,7 +52,7 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
         }
     }
 
-    private RequestOtpViewModel convertToDomain(RequestOtpPojo pojo, Response<TkpdResponse> response) {
+    private RequestOtpViewModel convertToDomain(RequestOtpResponse pojo, Response<TkpdResponse> response) {
         return new RequestOtpViewModel(pojo.isSuccess(), response.body().getStatusMessageJoined());
     }
 }

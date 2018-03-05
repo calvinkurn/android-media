@@ -1,6 +1,5 @@
 package com.tokopedia.network.service;
 
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.SessionUrl;
@@ -148,11 +147,11 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(SessionUrl.OTP.REQUEST_OTP_REGISTER)
-    Observable<Response<TkpdDigitalResponse>> requestRegisterOtp(@FieldMap Map<String, Object> params);
+    Observable<Response<TkpdResponse>> requestRegisterOtp(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(SessionUrl.OTP.VERIFY_OTP_REGISTER)
-    Observable<Response<TkpdDigitalResponse>> verifyRegisterOtp(@FieldMap Map<String,
+    Observable<Response<TkpdResponse>> verifyRegisterOtp(@FieldMap Map<String,
             Object> parameters);
 
 }
