@@ -87,6 +87,7 @@ public class UberSMSChatActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_chat);
         chatView = findViewById(R.id.chat_view);
+        chatView.setSendActionButton(false);
 
         driverDetails = getIntent().getParcelableExtra(DRIVER_INFO);
         vehicleDetails = getIntent().getParcelableExtra(VEHICLE_INFO);
@@ -160,12 +161,18 @@ public class UberSMSChatActivity extends BaseActivity {
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void requestCallPermissionDenied() {
-        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.permission_error_call), Toast.LENGTH_LONG).show();
     }
 
     @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void requestCallPermissionNeverAsk() {
-        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+        openDialerIntent();
+    }
+
+    public void openDialerIntent() {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        startActivity(callIntent);
     }
 
     private void proceed() {
@@ -312,6 +319,8 @@ public class UberSMSChatActivity extends BaseActivity {
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_PHONE_STATE})
     public void fetchSMSHistory() {
+
+        chatView.setSendActionButton(true);
         readSentSMS();
         readInboxSMS();
         mergeSMS();
@@ -322,16 +331,26 @@ public class UberSMSChatActivity extends BaseActivity {
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_PHONE_STATE})
     void requestSMSPermissionDenied() {
-        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+        chatView.setSendActionButton(false);
+        Toast.makeText(this, getResources().getString(R.string.permission_error_send_sms), Toast.LENGTH_LONG).show();
     }
 
     @OnNeverAskAgain({Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS,
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_PHONE_STATE})
     void requestSMSPermissionNeverAsk() {
-        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+        chatView.setSendActionButton(false);
+        openSmsIntent();
+        UberSMSChatActivity.this.finish();
     }
 
+    public void openSmsIntent() {
+        if (!TextUtils.isEmpty(phoneNo)) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.fromParts("sms", phoneNo, null))
+            );
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

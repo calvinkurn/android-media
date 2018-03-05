@@ -244,6 +244,11 @@ public class ChatView extends RelativeLayout {
         });
     }
 
+    public void setSendActionButton(boolean flag) {
+        actionButton.setEnabled(flag);
+        actionButton.setClickable(flag);
+    }
+
     private void setButtonClickListeners() {
 
         actionButton.setOnClickListener(new OnClickListener() {

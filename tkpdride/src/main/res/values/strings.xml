@@ -213,4 +213,6 @@
     <string name="call">Call</string>
     <string name="sms_charges_msg">Standard SMS rates will apply for each message you send</string>
     <string name="tap_retry">Tap to resend</string>
+    <string name="permission_error_send_sms">Izin Ditolak untuk mengirim SMS</string>
+    <string name="permission_error_call">Izin ditolak untuk melakukan panggilan telepon</string>
 </resources>
