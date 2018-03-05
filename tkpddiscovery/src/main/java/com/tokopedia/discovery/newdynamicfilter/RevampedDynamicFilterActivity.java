@@ -400,12 +400,12 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public void onPriceSliderRelease() {
+    public void onPriceSliderRelease(int minValue, int maxValue) {
 
     }
 
     @Override
-    public void onPriceSliderPressed() {
+    public void onPriceSliderPressed(int minValue, int maxValue) {
 
     }
 

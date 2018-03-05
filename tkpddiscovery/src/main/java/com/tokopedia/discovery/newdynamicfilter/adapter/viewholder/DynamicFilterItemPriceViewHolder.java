@@ -83,13 +83,13 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         priceRangeInputView.setGestureListener(new RangeInputView.GestureListener() {
             @Override
-            public void onButtonRelease() {
-                dynamicFilterView.onPriceSliderRelease();
+            public void onButtonRelease(int minValue, int maxValue) {
+                dynamicFilterView.onPriceSliderRelease(minValue, maxValue);
             }
 
             @Override
-            public void onButtonPressed() {
-                dynamicFilterView.onPriceSliderPressed();
+            public void onButtonPressed(int minValue, int maxValue) {
+                dynamicFilterView.onPriceSliderPressed(minValue, maxValue);
             }
         });
 

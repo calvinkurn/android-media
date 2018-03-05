@@ -25,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
@@ -46,7 +45,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
-import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
@@ -132,8 +130,8 @@ public class SearchActivity extends DiscoveryActivity
     private String selectedCategoryRootId;
     private boolean isAutoTextChange = false;
 
-    private int lastUpdatedMinValue = -1;
-    private int lastUpdatedMaxValue = -1;
+    private int pressedSliderMinValueState = -1;
+    private int pressedSliderMaxValueState = -1;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -613,12 +611,6 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     public void updateLastRangeValue(int minValue, int maxValue) {
 
-        if (!isRangeValueSameAsBefore(minValue, maxValue)) {
-            isPriceValueChangedSinceButtonPressed = true;
-            lastUpdatedMinValue = minValue;
-            lastUpdatedMaxValue = maxValue;
-        }
-
         Filter priceFilter = getPriceFilter();
         if (priceFilter == null) {
             return;
@@ -633,8 +625,8 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
-    private boolean isRangeValueSameAsBefore(int minValue, int maxValue) {
-        return minValue == lastUpdatedMinValue && maxValue == lastUpdatedMaxValue;
+    private boolean isPriceRangeValueSameAsSliderPressedState(int minValue, int maxValue) {
+        return minValue == pressedSliderMinValueState && maxValue == pressedSliderMaxValueState;
     }
 
     private Filter getPriceFilter() {
@@ -835,15 +827,16 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void onPriceSliderRelease() {
-        if (isPriceValueChangedSinceButtonPressed) {
+    public void onPriceSliderRelease(int minValue, int maxValue) {
+        if (!isPriceRangeValueSameAsSliderPressedState(minValue, maxValue)) {
             applyFilter();
         }
     }
 
     @Override
-    public void onPriceSliderPressed() {
-        isPriceValueChangedSinceButtonPressed = false;
+    public void onPriceSliderPressed(int minValue, int maxValue) {
+        pressedSliderMinValueState = minValue;
+        pressedSliderMaxValueState = maxValue;
     }
 
     private void applyFilter() {

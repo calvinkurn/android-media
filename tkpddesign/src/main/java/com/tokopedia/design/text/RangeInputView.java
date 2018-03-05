@@ -315,7 +315,7 @@ public class RangeInputView extends BaseCustomView {
                     }
                 }
                 if (gestureListener != null) {
-                    gestureListener.onButtonPressed();
+                    gestureListener.onButtonPressed(minValue, maxValue);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -327,7 +327,7 @@ public class RangeInputView extends BaseCustomView {
                     minButton.setElevation(DEFAULT_ELEVATION);
                 }
                 if (gestureListener != null) {
-                    gestureListener.onButtonRelease();
+                    gestureListener.onButtonRelease(minValue, maxValue);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -393,8 +393,8 @@ public class RangeInputView extends BaseCustomView {
     }
 
     public interface GestureListener {
-        void onButtonRelease();
-        void onButtonPressed();
+        void onButtonRelease(int minValue, int maxValue);
+        void onButtonPressed(int minValue, int maxValue);
     }
 
     private class MinInputListener extends InputTextFocusChangeListener {
