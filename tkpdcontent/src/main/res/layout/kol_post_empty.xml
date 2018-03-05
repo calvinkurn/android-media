@@ -6,9 +6,15 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/new_margin_big" android:paddingStart="@dimen/new_margin_big"
     android:paddingEnd="@dimen/new_margin_big" android:paddingRight="@dimen/new_margin_big"
-    android:background="@color/white"
-    android:id="@+id/partial_empty_feed"
-    android:layout_marginBottom="@dimen/new_margin_small">
+    android:background="@drawable/shadow_bottom"
+    android:id="@+id/partial_empty_feed">
+
+    <View
+        android:id="@+id/top_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:visibility="gone"
+        android:background="@drawable/shadow_bottom"/>
 
     <ImageView
         android:layout_width="@dimen/img_width"

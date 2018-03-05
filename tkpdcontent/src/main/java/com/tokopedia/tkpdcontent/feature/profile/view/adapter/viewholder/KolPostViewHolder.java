@@ -73,9 +73,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     @Override
     public void bind(KolPostViewModel element) {
-        if(getAdapterPosition() == 0) {
-            topShadow.setVisibility(View.VISIBLE);
-        }
+        topShadow.setVisibility(getAdapterPosition() == 0 ? View.VISIBLE : View.GONE);
 
         if (TextUtils.isEmpty(element.getTitle())) {
             title.setVisibility(View.GONE);
