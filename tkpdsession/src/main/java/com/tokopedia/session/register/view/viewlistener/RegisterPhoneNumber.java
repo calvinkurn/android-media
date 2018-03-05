@@ -24,7 +24,7 @@ public interface RegisterPhoneNumber {
 
         void showLoading();
 
-        void showAlreadyRegisteredDialog();
+        void showAlreadyRegisteredDialog(String phoneNumber);
 
     }
 

@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +106,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        errorText.setVisibility(View.VISIBLE);
 
         phoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -151,17 +153,24 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         });
 
         bottomInfo.setLinkTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public boolean isValidNumber(String phoneNumber) {
         if (phoneNumber.length() == 0) {
+            message.setVisibility(View.GONE);
+            errorText.setVisibility(View.VISIBLE);
             errorText.setText(getResources().getString(R.string.error_input_phone_number));
             return false;
         }
         if (phoneNumber.length() < 8) {
+            message.setVisibility(View.GONE);
+            errorText.setVisibility(View.VISIBLE);
             errorText.setText(getResources().getString(R.string.error_char_count_under));
             return false;
         }
+        message.setVisibility(View.VISIBLE);
+        errorText.setVisibility(View.GONE);
         errorText.setText("");
         return true;
     }
@@ -229,43 +238,49 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showAlreadyRegisteredDialog() {
+    public void showAlreadyRegisteredDialog(String phoneNumber) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(String.valueOf(phoneNumber));
-        builder.setMessage(getResources().getString(R.string.phone_number_already_registered));
-        builder.setPositiveButton(getResources().getString(R.string.login), new DialogInterface.OnClickListener() {
+        builder.setTitle(getResources().getString(R.string.phone_number_already_registered));
+        builder.setMessage(String.format(getResources().getString(R.string.phone_number_already_registered_info), phoneNumber));
+        builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
             //go to login
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.change), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 dialog.dismiss();
             }
         });
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
     }
 
     @Override
-    public void showConfirmationPhoneNumber(String phoneNumber) {
+    public void showConfirmationPhoneNumber(final String phoneNumber) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(String.valueOf(phoneNumber));
-        builder.setMessage(getResources().getString(R.string.phone_number_not_registered));
-        builder.setPositiveButton(getResources().getString(R.string.login), new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.phone_number_not_registered_info));
+        builder.setPositiveButton(getResources().getString(R.string.phone_number_not_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                //go to login
+                goToVerifyAccountPage(phoneNumber);
             }
         });
-        builder.setNegativeButton(getResources().getString(R.string.change), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.phone_number_not_registered_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 dialog.dismiss();
             }
         });
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
     }
 
     @Override

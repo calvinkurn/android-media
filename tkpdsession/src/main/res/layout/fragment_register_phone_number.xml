@@ -77,6 +77,7 @@
         android:textStyle="normal"
         android:textColor="@color/black_38"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_sm"
         android:gravity="center_horizontal"
         android:text="@string/string_bottom_info"
         tools:text="@string/string_bottom_info"
