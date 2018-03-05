@@ -6,6 +6,8 @@ import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.profile.data.network.ProfileApi;
 import com.tokopedia.profile.data.network.ProfileUrl;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -25,6 +27,8 @@ public class ProfileModule {
                                                         httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
         return new OkHttpClient.Builder()
+                .readTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(1, TimeUnit.MINUTES)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(new FingerprintInterceptor())
