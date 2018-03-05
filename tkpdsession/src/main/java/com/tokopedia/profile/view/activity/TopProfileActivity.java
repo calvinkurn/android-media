@@ -463,7 +463,8 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void setupToolbar() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(
+                MethodChecker.getColor(this, R.color.black_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
 
