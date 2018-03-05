@@ -74,9 +74,10 @@ public class DeeplinkUTMUtils {
 
     public static boolean isValidCampaignUrl(Uri uri) {
         Map<String, String> maps = splitQuery(uri);
-        return maps.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+        return maps.containsKey(AppEventTracking.GTM.UTM_GCLID) ||
+                (maps.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
                 maps.containsKey(AppEventTracking.GTM.UTM_MEDIUM) &&
-                maps.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN);
+                maps.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN));
     }
 
     public static Campaign convertUrlCampaign(Uri uri) {
