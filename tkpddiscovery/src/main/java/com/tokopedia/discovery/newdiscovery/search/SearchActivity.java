@@ -139,6 +139,7 @@ public class SearchActivity extends DiscoveryActivity
     private SearchComponent searchComponent;
     private TextWatcher filterDetailSearchTextWatcher;
     private boolean isPriceValueChangedSinceButtonPressed = false;
+    private List<Option> activeFilterDetailOptionList;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -523,11 +524,12 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
+        activeFilterDetailOptionList = filter.getOptions();
         enrichWithInputState(filter);
         initFilterDetailTopBar(filter);
         initFilterDetailSearchView(filter);
         initFilterDetailRecyclerView();
-        loadFilterDetailItems(filter.getOptions());
+        loadFilterDetailItems(activeFilterDetailOptionList);
         showFilterDetailPage();
     }
 
@@ -603,10 +605,24 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void resetFilterDetail() {
-        filterDetailSearch.setText("");
+        resetAllOptionState();
+        loadFilterDetailItems(activeFilterDetailOptionList);
+        clearSearchInput();
         KeyboardHandler.hideSoftKeyboard(this);
         filterDetailEmptySearchResultView.setVisibility(View.GONE);
-        filterDetailAdapter.resetAllOptionsInputState();
+    }
+
+    private void resetAllOptionState() {
+        for (Option option : activeFilterDetailOptionList) {
+            option.setInputState("");
+            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        }
+    }
+
+    private void clearSearchInput() {
+        isAutoTextChange = true;
+        filterDetailSearch.setText("");
+        isAutoTextChange = false;
     }
 
     private void resetAllFilter() {
@@ -727,6 +743,7 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onClick(View v) {
                 resetAllFilter();
+                applyFilter();
             }
         });
         filterDetailTopBarButtonReset.setOnClickListener(new View.OnClickListener() {
@@ -771,7 +788,7 @@ public class SearchActivity extends DiscoveryActivity
             filterDetailSearchTextWatcher = null;
         }
 
-        filterDetailSearch.setText("");
+        clearSearchInput();
 
         filterDetailSearchTextWatcher = new TextWatcher() {
             @Override
@@ -918,6 +935,7 @@ public class SearchActivity extends DiscoveryActivity
     public void onBackPressed() {
         if (isFilterDetailShown()) {
             hideFilterDetailPage();
+            applyFilter();
         } else if (isBottomSheetShown()) {
             closeFilterBottomSheet();
         } else {
