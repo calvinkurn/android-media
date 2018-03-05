@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -143,7 +144,7 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     private void renderPhoneNumber(TopProfileViewModel model) {
-        if (!model.getPhoneNumber().equals("")) {
+        if (!TextUtils.isEmpty(model.getPhoneNumber())) {
             partialPhoneNumber.setVisibility(VISIBLE);
             dataPhoneNumber.setText(model.getPhoneNumber());
             if (model.isPhoneVerified()) {
@@ -152,9 +153,9 @@ public class PartialUserDataView extends BaseCustomView {
                 verifiedPhoneNumber.setVisibility(GONE);
             }
 
-            if (model.getEmail().equals("")
-                    && model.getGender().equals("")
-                    && model.getBirthDate().equals("")) {
+            if (TextUtils.isEmpty(model.getEmail())
+                    && TextUtils.isEmpty(model.getGender())
+                    && TextUtils.isEmpty(model.getBirthDate())) {
                 separatorPhone.setVisibility(GONE);
             } else {
                 separatorPhone.setVisibility(VISIBLE);
@@ -165,7 +166,7 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     private void renderEmail(TopProfileViewModel model) {
-        if (!model.getEmail().equals("")) {
+        if (!TextUtils.isEmpty(model.getEmail())) {
             partialEmail.setVisibility(VISIBLE);
             dataEmail.setText(model.getEmail());
             if (model.isEmailVerified()) {
@@ -174,7 +175,7 @@ public class PartialUserDataView extends BaseCustomView {
                 verifiedEmail.setVisibility(GONE);
             }
 
-            if (model.getGender().equals("") && model.getBirthDate().equals("")) {
+            if (TextUtils.isEmpty(model.getGender()) && TextUtils.isEmpty(model.getBirthDate())) {
                 separatorEmail.setVisibility(GONE);
             } else {
                 separatorEmail.setVisibility(VISIBLE);
@@ -185,7 +186,7 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     private void renderBirthDate(TopProfileViewModel model) {
-        if (!model.getBirthDate().equals("")) {
+        if (!TextUtils.isEmpty(model.getBirthDate())) {
             partialBirthDate.setVisibility(VISIBLE);
             dataBirthDate.setText(model.getBirthDate());
         } else {
@@ -194,11 +195,11 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     private void renderGender(TopProfileViewModel model) {
-        if (!model.getGender().equals("")) {
+        if (!TextUtils.isEmpty(model.getGender())) {
             partialGender.setVisibility(VISIBLE);
             dataGender.setText(model.getGender());
 
-            if (model.getBirthDate().equals("")) {
+            if (TextUtils.isEmpty(model.getBirthDate())) {
                 separatorGender.setVisibility(GONE);
             } else {
                 separatorGender.setVisibility(VISIBLE);
