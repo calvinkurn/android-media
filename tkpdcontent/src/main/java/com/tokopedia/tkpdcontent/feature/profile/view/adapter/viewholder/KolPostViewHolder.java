@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.adapter.viewholder;
 
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -109,7 +112,16 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        MethodChecker.loadImageFitCenter(reviewImage, element.getKolImage());
+        ImageHandler.loadImageWithTarget(
+                reviewImage.getContext(),
+                element.getKolImage(),
+                new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource,
+                                                GlideAnimation<? super Bitmap> glideAnimation) {
+                        reviewImage.setImageBitmap(resource);
+                    }
+                });
 
         if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
