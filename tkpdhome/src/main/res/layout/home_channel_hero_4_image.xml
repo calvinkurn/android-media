@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:padding="@dimen/page_margin">
+
+        <TextView
+            android:id="@+id/channel_title"
+            android:maxEms="12"
+            android:layout_centerVertical="true"
+            style="@style/TextView.Title.Bold"
+            tools:text="Hypebeast Banget Pokoknya"/>
+
+        <TextView
+            android:id="@+id/see_all_button"
+            style="@style/TextView.Small.Green"
+            android:text="@string/see_all"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/channel_hero_image"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_channel_hero_height"
+            tools:src="@color/green_80"
+            />
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_channel_hero_height">
+
+            <ImageView
+                android:id="@+id/channel_image_1"
+                android:layout_width="@dimen/home_channel_4_image_size"
+                android:layout_height="@dimen/home_channel_4_image_size"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_centerHorizontal="true"
+                tools:src="@color/green_80"/>
+
+            <TextView
+                android:id="@+id/channel_caption_1"
+                style="@style/TextView.Micro"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_below="@id/channel_image_1"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_centerHorizontal="true"
+                tools:text="Snapback Kekinian"/>
+
+            <ImageView
+                android:id="@+id/channel_image_3"
+                android:layout_width="@dimen/home_channel_4_image_size"
+                android:layout_height="@dimen/home_channel_4_image_size"
+                android:layout_below="@id/channel_image_1"
+                android:layout_marginTop="@dimen/margin_xl"
+                android:layout_centerHorizontal="true"
+                tools:src="@color/green_80"/>
+
+            <TextView
+                android:id="@+id/channel_caption_3"
+                style="@style/TextView.Micro"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_below="@id/channel_image_3"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_centerHorizontal="true"
+                tools:text="Snapback Kekinian"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_channel_hero_height">
+
+            <ImageView
+                android:id="@+id/channel_image_2"
+                android:layout_width="@dimen/home_channel_4_image_size"
+                android:layout_height="@dimen/home_channel_4_image_size"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_centerHorizontal="true"
+                tools:src="@color/green_80"/>
+
+            <TextView
+                android:id="@+id/channel_caption_2"
+                style="@style/TextView.Micro"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_below="@id/channel_image_2"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_centerHorizontal="true"
+                tools:text="Snapback Kekinian"/>
+
+            <ImageView
+                android:id="@+id/channel_image_4"
+                android:layout_width="@dimen/home_channel_4_image_size"
+                android:layout_height="@dimen/home_channel_4_image_size"
+                android:layout_below="@id/channel_image_2"
+                android:layout_marginTop="@dimen/margin_xl"
+                android:layout_centerHorizontal="true"
+                tools:src="@color/green_80"/>
+
+            <TextView
+                android:id="@+id/channel_caption_4"
+                style="@style/TextView.Micro"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_below="@id/channel_image_4"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_centerHorizontal="true"
+                tools:text="Snapback Kekinian"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

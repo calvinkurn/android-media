@@ -56,6 +56,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.ContentProductWebViewActivity;
@@ -144,6 +145,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String TOPADS_ITEM = "4,1";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
+
+    boolean hasLoadedOnce = false;
 
     @Override
     protected String getScreenName() {
@@ -336,9 +339,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.fetchFirstPage();
-        if (trace != null)
-            trace.stop();
     }
 
     @Override
@@ -839,7 +839,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     public void scrollToTop() {
-        if (recyclerView != null) recyclerView.smoothScrollToPosition(0);
+        if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 
     @Override
@@ -848,7 +848,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (firstCursor == null)
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
+            loadData(getUserVisibleHint());
+        }
+    }
+
+    private void loadData(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded()
+                && getActivity()!= null && presenter != null) {
+
+            if (!hasLoadedOnce) {
+                presenter.fetchFirstPage();
+                if (trace != null)
+                    trace.stop();
+                hasLoadedOnce = true;
+            }
+
             presenter.checkNewFeed(firstCursor);
+            ScreenTracking.screen(getScreenName());
         }
     }
 
@@ -857,11 +873,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.setUserVisibleHint(isVisibleToUser);
         if (firstCursor == null)
             firstCursor = "";
-        if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null) {
-            presenter.checkNewFeed(firstCursor);
-            ScreenTracking.screen(getScreenName());
-        }
+        loadData(isVisibleToUser);
+
     }
 
     @Override
@@ -1132,5 +1145,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
             }
         }
+    }
+
+    @Override
+    public void onUserNotLogin() {
+        finishLoading();
+        adapter.clearData();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
+        adapter.showUserNotLogin();
+        adapter.addItem(new EmptyTopAdsProductModel(""));
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGoToLogin() {
+        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        startActivity(intent);
     }
 }

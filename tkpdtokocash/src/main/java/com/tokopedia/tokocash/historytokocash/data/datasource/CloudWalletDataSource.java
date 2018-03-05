@@ -13,6 +13,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.Util;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
@@ -46,7 +47,7 @@ public class CloudWalletDataSource implements WalletDataSource {
     }
 
     @Override
-    public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(TKPDMapParam<String, Object> mapParams) {
+    public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, Object> mapParams) {
         return walletService.getApi().getHistoryTokocash(mapParams)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<TokoCashHistoryEntity>>() {
                     @Override
@@ -59,14 +60,14 @@ public class CloudWalletDataSource implements WalletDataSource {
 
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
-        String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash.json");
+        String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash_2.json");
         return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
                 HelpHistoryTokoCashEntity[].class)));
     }
 
     @Override
     public Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId) {
-        TKPDMapParam tkpdMapParam = new TKPDMapParam();
+        HashMap tkpdMapParam = new HashMap<>();
         tkpdMapParam.put(SUBJECT, subject);
         tkpdMapParam.put(MESSAGE, message);
         tkpdMapParam.put(CATEGORY, category);

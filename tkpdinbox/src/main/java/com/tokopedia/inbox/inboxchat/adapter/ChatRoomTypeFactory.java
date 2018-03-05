@@ -7,6 +7,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
@@ -17,6 +18,8 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 public interface ChatRoomTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
+
+    int type(ThumbnailChatViewModel thumbnailChatViewModel);
 
     int type(OppositeChatViewModel oppositeChatViewModel);
 

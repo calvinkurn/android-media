@@ -113,12 +113,12 @@ public class CurrencyFormatUtil {
         return new ThousandString(textToFormat, selectionStart);
     }
 
-    public static String convertPriceValueToIdrFormat(int price) {
+    public static String convertPriceValueToIdrFormat(int price, boolean hasSpace) {
         DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
         kursIndonesia.setMaximumFractionDigits(0);
         DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
 
-        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setCurrencySymbol("Rp" + (hasSpace?" ":""));
         formatRp.setGroupingSeparator('.');
         formatRp.setMonetaryDecimalSeparator('.');
         formatRp.setDecimalSeparator('.');
@@ -129,17 +129,6 @@ public class CurrencyFormatUtil {
     }
 
     public static String convertPriceValueToIdrFormatNoSpace(int price) {
-        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        kursIndonesia.setMaximumFractionDigits(0);
-        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
-
-        formatRp.setCurrencySymbol("Rp");
-        formatRp.setGroupingSeparator('.');
-        formatRp.setMonetaryDecimalSeparator('.');
-        formatRp.setDecimalSeparator('.');
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-        String result = kursIndonesia.format(price);
-
-        return result.replace(",", ".");
+        return convertPriceValueToIdrFormat(price, false);
     }
 }

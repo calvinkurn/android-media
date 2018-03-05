@@ -57,13 +57,13 @@ public class ComplaintDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.dialog_complaint, container, false);
 
-        TextView complaintTitle = (TextView) view.findViewById(R.id.complaint_title);
-        TextView complaintText = (TextView) view.findViewById(R.id.complaint_body);
-        TextView complaintButton = (TextView) view.findViewById(R.id.receive_btn);
-        Button cancelButton = (Button) view.findViewById(R.id.cancel_button);
-        Button notReceiveButton = (Button) view.findViewById(R.id.not_receive_btn);
-        LinearLayout llFreeReturn = (LinearLayout) view.findViewById(R.id.layout_free_return);
-        TextView tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
+        TextView complaintTitle = view.findViewById(R.id.complaint_title);
+        TextView complaintText = view.findViewById(R.id.complaint_body);
+        TextView complaintButton = view.findViewById(R.id.receive_btn);
+        Button cancelButton = view.findViewById(R.id.cancel_button);
+        Button notReceiveButton = view.findViewById(R.id.not_receive_btn);
+        LinearLayout llFreeReturn = view.findViewById(R.id.layout_free_return);
+        TextView tvFreeReturn = view.findViewById(R.id.tv_free_return);
 
         complaintTitle.setText(getString(R.string.button_order_detail_complaint));
         complaintText.setText(String.format(getString(R.string.text_complaint_dialog),

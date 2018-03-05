@@ -12,12 +12,12 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.compoundview.BaseDigitalChooserView;
-import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.compoundview.DigitalProductChooserView;
-import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
+import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 
@@ -71,7 +71,8 @@ public class TopUpTokoCashView extends LinearLayout {
         this.categoryData = categoryData;
         this.operatorSelected = operatorSelected;
         digitalProductChooserView.setActionListener(getActionListener(operatorSelected.getRule().getProductText()));
-        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
+        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
+                operatorSelected.getDefaultProductId());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         instantCheckoutCheckbox.setVisibility(categoryData.isInstantCheckout() ? VISIBLE : GONE);
     }
@@ -88,9 +89,19 @@ public class TopUpTokoCashView extends LinearLayout {
             }
 
             @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Product data, boolean resetClientNumber) {
+
+            }
+
+            @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                UnifyTracking.eventSelectProduct(categoryData.getName(), categoryData.getName());
+                UnifyTracking.eventSelectProductOnNativePage(categoryData.getName(), categoryData.getName());
                 listener.onDigitalChooserClicked(data, productText);
+            }
+
+            @Override
+            public void tracking() {
+
             }
         };
     }
@@ -99,7 +110,8 @@ public class TopUpTokoCashView extends LinearLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickBeli(categoryData.getName(), categoryData.getName());
+                String isInstant = instantCheckoutCheckbox.isChecked() ? "instant" : "no instant";
+                UnifyTracking.eventClickBuyOnNative(categoryData.getName(), isInstant);
                 listener.onProcessAddToCart(generatePreCheckoutData());
             }
         };

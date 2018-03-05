@@ -19,9 +19,6 @@ import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.favorite.view.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 /**
@@ -34,28 +31,17 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
 
     private final WishlistAdapter wishlistAdapter;
     private Context context;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.title)
-    TextView titleTextView;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.textview_see_all)
-    TextView seeAllTextView;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.empty_wishlist)
-    RelativeLayout emptyWishlistLayout;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.main_content)
-    LinearLayout mainContentLayout;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.wishlist_recycler_view)
-    RecyclerView wishlistRecyclerView;
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.find_now)
-    TextView findNowTextview;
+    private TextView titleTextView;
+    private TextView seeAllTextView;
+    private RelativeLayout emptyWishlistLayout;
+    private LinearLayout mainContentLayout;
+    private RecyclerView wishlistRecyclerView;
+    private TextView findNowTextview;
 
     public WishlistViewHolder(View itemView) {
         super(itemView);
         context = itemView.getContext();
+        initView(itemView);
         LinearLayoutManager linearLayoutManager
                 = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         wishlistRecyclerView.setLayoutManager(linearLayoutManager);
@@ -63,6 +49,28 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         wishlistAdapter = new WishlistAdapter();
         wishlistRecyclerView.setAdapter(wishlistAdapter);
 
+    }
+
+    private void initView(View itemView) {
+        titleTextView = itemView.findViewById(R.id.title);
+        seeAllTextView = itemView.findViewById(R.id.textview_see_all);
+        emptyWishlistLayout = itemView.findViewById(R.id.empty_wishlist);
+        mainContentLayout = itemView.findViewById(R.id.main_content);
+        wishlistRecyclerView = itemView.findViewById(R.id.wishlist_recycler_view);
+        findNowTextview = itemView.findViewById(R.id.find_now);
+        seeAllTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSeeAllClicked();
+            }
+        });
+
+        findNowTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFindNowClicked();
+            }
+        });
     }
 
     @Override
@@ -81,8 +89,7 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         }
     }
 
-    @OnClick(R.id.textview_see_all)
-    public void onClick() {
+    private void onSeeAllClicked() {
         UnifyTracking.eventWishlistAll();
         Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
@@ -93,11 +100,8 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         }
     }
 
-    @OnClick(R.id.find_now)
-    public void onFindNowClicked() {
-        ParentIndexHome.ChangeTabListener listener
-                = ((ParentIndexHome) context).GetHotListListener();
-
+    private void onFindNowClicked() {
+        ParentIndexHome.ChangeTabListener listener = ((ParentIndexHome) context).changeTabListener();
         listener.onChangeTab(HOTLIST_TAB);
     }
 }
