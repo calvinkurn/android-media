@@ -61,6 +61,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
         updateDisplayGeneralView(shopProductViewModel);
+        updateDisplayRating(shopProductViewModel);
         updateDisplayBadges(shopProductViewModel);
         updateDisplayWishList(shopProductViewModel);
     }
@@ -76,13 +77,17 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(shopProductViewModel.getName());
         priceTextView.setText(shopProductViewModel.getPrice());
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+    }
 
-        if (qualityRatingBar != null) {
-            qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-            qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
-        }
-        if (totalReview != null) {
+    private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
+        if (totalReview != null && shopProductViewModel.getTotalReview() > 0) {
             totalReview.setText(String.valueOf(shopProductViewModel.getTotalReview()));
+            totalReview.setVisibility(View.VISIBLE);
+            if (qualityRatingBar != null) {
+                qualityRatingBar.setRating((float) shopProductViewModel.getRating());
+                qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
+                qualityRatingBar.setVisibility(View.VISIBLE);
+            }
         }
     }
 
