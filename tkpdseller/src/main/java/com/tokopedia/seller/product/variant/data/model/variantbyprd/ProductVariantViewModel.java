@@ -144,27 +144,34 @@ public class ProductVariantViewModel implements Parcelable {
         // generate the matrix axb based on level 1 and level2.
         // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
         // map is used to lookup if the value1x value2 already exist.
-//        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
-//            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-//            String level1String = productVariantCombinationViewModel.getLevel1String();
-//
-//            List<Integer> integerList = new ArrayList<>();
-//            if (TextUtils.isEmpty( level1String)) {
-//                // using pvo
-//                int indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.get);
-//            } else {
-//                int indexLevel1 = mapLevel1.get(level1String);
-//            }
-//            int tIdLevel1 = productVariantOptionParentLevel1.getProductVariantOptionChild().get(indexLevel1).gettId();
-//            integerList.add(tIdLevel1);
-//            if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
-//                String level2String = productVariantCombinationViewModel.getLevel2String();
-//                int indexLevel2 = mapLevel2.get(level2String);
-//                int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
-//                integerList.add(tIdLevel2);
-//            }
-//            productVariantCombinationViewModel.setOpt(integerList);
-//        }
+        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+            String level1String = productVariantCombinationViewModel.getLevel1String();
+
+            List<Integer> integerList = new ArrayList<>();
+            Integer indexLevel1 = null;
+            if (TextUtils.isEmpty( level1String)) {
+                // using pvo
+                indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.getOpt().get(0));
+            } else {
+                indexLevel1 = mapLevel1.get(level1String);
+            }
+            int tIdLevel1 = productVariantOptionParentLevel1.getProductVariantOptionChild().get(indexLevel1).gettId();
+            integerList.add(tIdLevel1);
+            if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
+                String level2String = productVariantCombinationViewModel.getLevel2String();
+                Integer indexLevel2 = null;
+                if (TextUtils.isEmpty( level1String)) {
+                    // using pvo
+                    indexLevel2 = mapPvoLevel2.get(productVariantCombinationViewModel.getOpt().get(1));
+                } else {
+                    indexLevel2 = mapLevel2.get(level2String);
+                }
+                int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
+                integerList.add(tIdLevel2);
+            }
+            productVariantCombinationViewModel.setOpt(integerList);
+        }
         return this;
     }
 
