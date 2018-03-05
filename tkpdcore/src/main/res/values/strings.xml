@@ -531,7 +531,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 
 
     <!-- Strings related Manage People -->
-    <string name="error_phone_too_short">Nomor mobileNumber terlalu pendek, minimum 6 karakter</string>
+    <string name="error_phone_too_short">Nomor mobile terlalu pendek, minimum 6 karakter</string>
     <string name="title_null">null</string>
     <string name="title_newsletter">Newsletter</string>
     <string name="title_newsletter_desc">Setiap promosi, tips dan trik, update informasi tentang Tokopedia</string>
@@ -1366,7 +1366,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_deep_link">Tokopedia</string>
     <string name="title_activity_add_to_cart_v2">Beli Produk</string>
     <string name="title_visit_shop">Kunjungi Toko</string>
-    <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobileNumber browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
+    <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobile browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
     <string name="title_activity_credit_card">Informasi Credit Card</string>
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
     <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
