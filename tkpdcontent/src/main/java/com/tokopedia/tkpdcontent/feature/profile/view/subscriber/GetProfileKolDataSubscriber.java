@@ -47,7 +47,7 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
                     new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
             );
 
-            for (int index = 0; index <= kolProfileModel.getKolPostViewModels().size(); index++) {
+            for (int index = 0; index < kolProfileModel.getKolPostViewModels().size(); index++) {
                 KolPostViewModel kolPostViewModel =
                         kolProfileModel.getKolPostViewModels().get(index);
 
