@@ -725,6 +725,7 @@ public class SearchActivity extends DiscoveryActivity
             return;
         }
         filterDetailSearchContainer.setVisibility(View.VISIBLE);
+        filterDetailSearch.setText("");
         searchFilter = null;
 
         if (filterDetailSearchTextWatcher != null) {
