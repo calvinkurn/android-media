@@ -602,6 +602,35 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
+    private void resetFilterDetail() {
+        filterDetailSearch.setText("");
+        KeyboardHandler.hideSoftKeyboard(this);
+        filterDetailEmptySearchResultView.setVisibility(View.GONE);
+        filterDetailAdapter.resetAllOptionsInputState();
+    }
+
+    private void resetAllFilter() {
+        resetSelectedCategory();
+        clearPriceRangeRecentValue();
+        savedCheckedState.clear();
+        savedTextInput.clear();
+        filterMainAdapter.notifyDataSetChanged();
+    }
+
+    private void clearPriceRangeRecentValue() {
+        Filter priceFilter = getPriceFilter();
+        if (priceFilter == null) {
+            return;
+        }
+
+        for (Option option : priceFilter.getOptions()) {
+            if(Option.KEY_PRICE_MIN.equals(option.getKey())
+                    || Option.KEY_PRICE_MAX.equals(option.getKey())) {
+                option.setValue("");
+            }
+        }
+    }
+
     private void resetSelectedCategory() {
         selectedCategoryId = null;
         selectedCategoryRootId = null;
@@ -697,7 +726,13 @@ public class SearchActivity extends DiscoveryActivity
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                resetAllFilter();
+            }
+        });
+        filterDetailTopBarButtonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetFilterDetail();
             }
         });
         filterDetailTopBarCloseButton.setOnClickListener(new View.OnClickListener() {
@@ -788,12 +823,6 @@ public class SearchActivity extends DiscoveryActivity
 
     private void hideKeyboard() {
         KeyboardHandler.hideSoftKeyboard(this);
-    }
-
-    private void clearSearchInput() {
-        isAutoTextChange = true;
-        filterDetailSearch.setText("");
-        isAutoTextChange = false;
     }
 
     private void hideFilterDetailPage() {
