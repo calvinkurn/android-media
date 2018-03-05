@@ -372,7 +372,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             this.voucherCartHachikoView = itemView
                     .findViewById(R.id.voucher_cart_holder_view);
             this.multipleAddressPromoSuggestionLayout = itemView
-                    .findViewById(R.id.rl_promo_suggestion_layout);
                     .findViewById(R.id.promo_suggestion_holder);
             this.btnClose = itemView.findViewById(R.id.btn_close);
             this.tvAction = itemView.findViewById(R.id.tv_action);
@@ -453,8 +452,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private long calculateTotalProductCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
-            if(isShipmentDataInitiated(i))
-            totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
+            if (isShipmentDataInitiated(i))
+                totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
         }
         return totalProductPrice;
     }
