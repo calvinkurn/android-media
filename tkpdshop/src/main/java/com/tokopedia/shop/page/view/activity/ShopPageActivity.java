@@ -54,6 +54,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public static final int MAX_RATING_STAR = 5;
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "shop_domain";
+    public static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
+
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
     private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
     private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
@@ -504,8 +506,15 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         if (successValue) {
             favouriteShop = !favouriteShop;
             updateFavouriteButtonView();
+            updateFavouriteResult();
         }
         buttonFavouriteShop.setEnabled(true);
+    }
+
+    private void updateFavouriteResult() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(SHOP_STATUS_FAVOURITE, favouriteShop);
+        setResult(RESULT_OK, resultIntent);
     }
 
     @Override

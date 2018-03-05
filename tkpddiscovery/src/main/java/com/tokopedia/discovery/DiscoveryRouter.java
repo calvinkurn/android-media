@@ -10,4 +10,8 @@ import android.content.Intent;
 public interface DiscoveryRouter {
 
     Intent getLoginIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
 }

@@ -42,4 +42,6 @@ public interface PdpRouter {
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
     Intent getLoginIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
 }

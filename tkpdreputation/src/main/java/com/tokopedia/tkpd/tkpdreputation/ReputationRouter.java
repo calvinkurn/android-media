@@ -18,4 +18,6 @@ public interface ReputationRouter {
     Fragment getReputationHistoryFragment();
 
     Intent getLoginIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
 }

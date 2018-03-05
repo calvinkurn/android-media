@@ -50,4 +50,6 @@ public interface SellerModuleRouter {
     Intent getLoginIntent(Context context);
 
     Intent getPhoneVerificationActivityIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
 }
