@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * @author Aghny A. Putra on 5/02/18
  */
+
 public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ITEM_VIEW_REMOVE_ALL_CHECKBOX =
@@ -169,7 +170,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
 
             mCbRemoveProduct = itemView.findViewById(R.id.cb_remove_product);
-            mTvSenderName = itemView.findViewById(R.id.tv_sender_name);
+            mTvSenderName = itemView.findViewById(R.id.tv_shop_name);
             mIvProductImage = itemView.findViewById(R.id.iv_product_image);
             mTvProductName = itemView.findViewById(R.id.tv_product_name);
             mTvProductPrice = itemView.findViewById(R.id.tv_product_price);

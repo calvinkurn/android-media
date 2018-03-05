@@ -220,7 +220,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_label_note_to_seller"
+            android:id="@+id/tv_note_to_seller_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

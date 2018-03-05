@@ -15,32 +15,33 @@ import java.util.List;
 /**
  * @author Aghny A. Putra on 05/02/18
  */
+
 public class InnerProductListAdapter extends RecyclerView.Adapter<CartItemViewHolder> {
 
     private static final String TAG = InnerProductListAdapter.class.getSimpleName();
 
-    private List<CartItemModel> mProductList;
+    private List<CartItemModel> mCartItemList;
 
-    public InnerProductListAdapter(List<CartItemModel> cartItemModels) {
-        mProductList = cartItemModels;
+    public InnerProductListAdapter(List<CartItemModel> cartItemList) {
+        mCartItemList = cartItemList;
     }
 
     @Override
     public CartItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context mContext = parent.getContext();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_product_detail, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_cart_product, parent, false);
         return new CartItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final CartItemViewHolder holder, int position) {
-        CartItemModel cartItemModel = mProductList.get(position);
+        CartItemModel cartItemModel = mCartItemList.get(position);
         holder.bindViewHolder(cartItemModel);
     }
 
     @Override
     public int getItemCount() {
-        return mProductList.size();
+        return mCartItemList.size();
     }
 
 }

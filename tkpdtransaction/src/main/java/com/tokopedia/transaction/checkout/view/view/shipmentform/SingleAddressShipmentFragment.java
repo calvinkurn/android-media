@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -42,9 +41,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SINGLE_ADDRESS_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
@@ -69,19 +65,17 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
 
-    @BindView(R2.id.rv_cart_order_details)
-    RecyclerView mRvCartOrderDetails;
-    @BindView(R2.id.tv_select_payment_method)
-    TextView mTvSelectPaymentMethod;
-    @BindView(R2.id.ll_total_payment_layout)
-    LinearLayout mLlTotalPaymentLayout;
-    @BindView(R2.id.tv_total_payment)
-    TextView mTvTotalPayment;
+    private RecyclerView mRvCartOrderDetails;
+    private TextView mTvSelectPaymentMethod;
+    private LinearLayout mLlTotalPaymentLayout;
+    private TextView mTvTotalPayment;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
+
     @Inject
     SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
+
     @Inject
     SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
 
@@ -186,6 +180,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        mRvCartOrderDetails = view.findViewById(R.id.rv_cart_order_details);
+        mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
+        mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
+        mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -198,6 +197,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 }
             }
         });
+
         mSingleAddressShipmentPresenter.attachView(this);
 
 //        onTotalPaymentChange(mShipmentDataList.getShipmentCostModel());
@@ -372,7 +372,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             }
         }
 
-
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CHOOSE_PICKUP_POINT:
@@ -384,8 +383,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
-//                    mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+                    mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
+
                 default:
                     break;
             }

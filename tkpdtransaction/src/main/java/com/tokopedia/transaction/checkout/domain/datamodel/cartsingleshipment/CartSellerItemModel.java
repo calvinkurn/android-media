@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
+
 public class CartSellerItemModel implements Parcelable {
 
     private String shopId;
@@ -18,6 +19,8 @@ public class CartSellerItemModel implements Parcelable {
     private List<CartItemModel> cartItemModels;
 
     private double totalItemPrice;
+    private double shippingFee;
+    private double insuranceFee;
     private double totalPrice;
     private double totalWeight;
     private int weightUnit;
@@ -56,6 +59,22 @@ public class CartSellerItemModel implements Parcelable {
 
     public void setTotalItemPrice(double totalItemPrice) {
         this.totalItemPrice = totalItemPrice;
+    }
+
+    public double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public double getInsuranceFee() {
+        return insuranceFee;
+    }
+
+    public void setInsuranceFee(double insuranceFee) {
+        this.insuranceFee = insuranceFee;
     }
 
     public double getTotalPrice() {
@@ -117,6 +136,8 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeString(this.shopName);
         dest.writeTypedList(this.cartItemModels);
         dest.writeDouble(this.totalItemPrice);
+        dest.writeDouble(this.shippingFee);
+        dest.writeDouble(this.insuranceFee);
         dest.writeDouble(this.totalPrice);
         dest.writeDouble(this.totalWeight);
         dest.writeInt(this.weightUnit);
@@ -133,6 +154,8 @@ public class CartSellerItemModel implements Parcelable {
         this.shopName = in.readString();
         this.cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
         this.totalItemPrice = in.readDouble();
+        this.shippingFee = in.readDouble();
+        this.insuranceFee = in.readDouble();
         this.totalPrice = in.readDouble();
         this.totalWeight = in.readDouble();
         this.weightUnit = in.readInt();

@@ -26,12 +26,13 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     private RelativeLayout mRlShipmentCostLayout;
     private TextView mTvTotalItemLabel;
-    private TextView mTvTotalItem;
+    private TextView mTvTotalItemPrice;
     private TextView mTvShippingFeeLabel;
     private TextView mTvShippingFee;
     private TextView mTvInsuranceFee;
-    private TextView mTvPromo;
-    private TextView mTvPayable;
+    private TextView mTvPromoDiscount;
+    private TextView mTvGrandTotal;
+
     private TextView mTvPromoFreeShipping;
     private TextView mTvPromoTextViewRemove;
 
@@ -43,12 +44,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         mRlShipmentCostLayout = itemView.findViewById(R.id.rl_shipment_cost);
         mTvTotalItemLabel = itemView.findViewById(R.id.tv_total_item_label);
-        mTvTotalItem = itemView.findViewById(R.id.tv_total_item_price);
+        mTvTotalItemPrice = itemView.findViewById(R.id.tv_total_item_price);
         mTvShippingFeeLabel = itemView.findViewById(R.id.tv_shipping_fee_label);
         mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
         mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
-        mTvPromo = itemView.findViewById(R.id.tv_promo);
-        mTvPayable = itemView.findViewById(R.id.tv_payable);
+        mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
+        mTvGrandTotal = itemView.findViewById(R.id.tv_payable);
         mTvPromoFreeShipping = itemView.findViewById(R.id.tv_promo_free_shipping);
         mTvPromoTextViewRemove = itemView.findViewById(R.id.tv_promo_text_view_remove);
 
@@ -59,14 +60,14 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(shipmentCostModel.getTotalItem()));
-        mTvTotalItem.setText(getPriceFormat(shipmentCostModel.getTotalItemPrice()));
+        mTvTotalItemPrice.setText(getPriceFormat(shipmentCostModel.getTotalItemPrice()));
         mTvShippingFeeLabel.setText(getTotalWeightLabel(shipmentCostModel.getTotalWeight(), GRAM));
         mTvShippingFee.setText(getPriceFormat(shipmentCostModel.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(shipmentCostModel.getInsuranceFee()));
-        mTvPromo.setText(getPriceFormat(shipmentCostModel.getPromoPrice()));
+        mTvPromoDiscount.setText(getPriceFormat(shipmentCostModel.getPromoPrice()));
 
         shipmentCostModel.setTotalPrice(calculateTotalPrice(shipmentCostModel));
-        mTvPayable.setText(getPriceFormat(shipmentCostModel.getTotalPrice()));
+        mTvGrandTotal.setText(getPriceFormat(shipmentCostModel.getTotalPrice()));
 
         mTvPromoFreeShipping.setVisibility(View.VISIBLE);
         mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
@@ -80,7 +81,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     private String getTotalWeightLabel(double weight, int weightUnit) {
         String unit = weightUnit == GRAM ? "gr" : "Kg";
-        return String.format("%s %s", (int) weight, unit);
+        return String.format("Ongkos Kirim (%s %s)", (int) weight, unit);
     }
 
     private String getPriceFormat(double price) {

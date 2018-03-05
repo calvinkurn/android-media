@@ -87,9 +87,12 @@ public class SingleAddressShipmentDataConverter
         sellerItemModel.setCartItemModels(cartItemModels);
 
         for (CartItemModel cartItemModel : cartItemModels) {
-            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice() + cartItemModel.getPrice());
-            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight() + cartItemModel.getWeight());
-            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
+            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice()
+                    + (cartItemModel.getPrice() * cartItemModel.getQuantity()));
+            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight()
+                    + cartItemModel.getWeight() * cartItemModel.getQuantity());
+            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity()
+                    + cartItemModel.getQuantity());
         }
 
         sellerItemModel.setTotalPrice(sellerItemModel.getTotalItemPrice());
