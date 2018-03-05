@@ -121,6 +121,14 @@ SessionModule {
     }
 
 
+    @SessionScope
+    @Provides
+    AccountsService provideAccountsService() {
+        Bundle bundle = new Bundle();
+        return new AccountsService(bundle);
+    }
+
+
     /**
      * @param context
      * @param sessionHandler
