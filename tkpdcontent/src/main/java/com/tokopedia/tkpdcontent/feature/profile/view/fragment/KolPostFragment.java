@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,8 +101,12 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     private void initView(View view) {
         mainView = view.findViewById(R.id.main_view);
         kolRecyclerView = view.findViewById(R.id.kol_rv);
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
+        if (kolRecyclerView.getItemAnimator() instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) kolRecyclerView.getItemAnimator())
+                    .setSupportsChangeAnimations(false);
+        }
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         ViewCompat.setNestedScrollingEnabled(kolRecyclerView, false);
         kolRecyclerView.setLayoutManager(layoutManager);
         kolRecyclerView.setAdapter(adapter);
