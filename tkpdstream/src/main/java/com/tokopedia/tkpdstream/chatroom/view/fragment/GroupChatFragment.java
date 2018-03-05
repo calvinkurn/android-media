@@ -80,6 +80,7 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -828,6 +829,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (voteInfoViewModel.isVoted()) {
             setVoted();
         }
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        String yourFormattedString = formatter.format(100000);
         participant.setText(String.format("%s %s", voteInfoViewModel.getParticipant()
                 , getActivity().getString(R.string.participant)));
         voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
