@@ -17,7 +17,7 @@ public class HomePageTracking extends TrackingUtils {
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
-    private static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
+    public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     public static void eventPromoImpression(Promotion promotion) {
         getGTMEngine().clearEnhanceEcommerce();
