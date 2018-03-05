@@ -5,4 +5,6 @@ package com.tokopedia.tkpdtrain.common.constant;
  */
 
 public class TrainUrl {
+
+    public static final String BASE_URL = "http://private-anon-29fe7d008c-kainativecontractpart1.apiary-mock.com";
 }
