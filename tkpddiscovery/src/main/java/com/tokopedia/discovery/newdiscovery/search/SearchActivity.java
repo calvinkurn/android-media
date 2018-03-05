@@ -132,6 +132,9 @@ public class SearchActivity extends DiscoveryActivity
     private String selectedCategoryRootId;
     private boolean isAutoTextChange = false;
 
+    private int lastUpdatedMinValue = -1;
+    private int lastUpdatedMaxValue = -1;
+
     @Inject
     SearchPresenter searchPresenter;
 
@@ -610,7 +613,13 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void updateLastRangeValue(int minValue, int maxValue) {
-        isPriceValueChangedSinceButtonPressed = true;
+
+        if (!isRangeValueSameAsBefore(minValue, maxValue)) {
+            isPriceValueChangedSinceButtonPressed = true;
+            lastUpdatedMinValue = minValue;
+            lastUpdatedMaxValue = maxValue;
+        }
+        
         Filter priceFilter = getPriceFilter();
         if (priceFilter == null) {
             return;
@@ -623,6 +632,10 @@ public class SearchActivity extends DiscoveryActivity
                 option.setValue(String.valueOf(maxValue));
             }
         }
+    }
+
+    private boolean isRangeValueSameAsBefore(int minValue, int maxValue) {
+        return minValue == lastUpdatedMinValue && maxValue == lastUpdatedMaxValue;
     }
 
     private Filter getPriceFilter() {
@@ -892,8 +905,9 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onSearchViewShown() {
-        closeFilterBottomSheet();
         super.onSearchViewShown();
+        closeFilterBottomSheet();
+        disableAutoShowBottomNav();
     }
 
     private class OptionSearchFilter extends android.widget.Filter {
