@@ -176,6 +176,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
+import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -1332,8 +1333,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGroupChatIntent(Context context) {
-        return new Intent(context, ChannelActivity.class);
+    public Intent getGroupChatIntent(Context context, String channelUrl) {
+        return GroupChatActivity.getCallingIntent(context, channelUrl);
     }
 
     @Override

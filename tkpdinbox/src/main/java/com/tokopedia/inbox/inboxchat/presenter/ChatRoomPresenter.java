@@ -200,7 +200,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().setUploadingMode(false);
-                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable,getView().getActivity()), model);
+                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable, getView().getActivity()), model);
             }
 
             @Override
@@ -213,7 +213,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void sendMessageWithApi(){
+    public void sendMessageWithApi() {
         if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);
@@ -243,39 +243,44 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void addDummyMessage(WebSocketResponse response) {
-        if (getView().isCurrentThread(response.getData().getMsgId())
-                && getView().isMyMessage(response.getData().getFromUid())) {
-            getView().getAdapter().removeLast();
-            MyChatViewModel item = new MyChatViewModel();
-            item.setReplyId(response.getData().getMsgId());
-            item.setMsgId(response.getData().getMsgId());
-            item.setSenderId(String.valueOf(response.getData().getFromUid()));
-            item.setMsg(response.getData().getMessage().getCensoredReply());
-            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-            item.setAttachment(response.getData().getAttachment());
-            getView().getAdapter().addReply(item);
-            getView().finishLoading();
-            getView().resetReplyColumn();
-            getView().scrollToBottom();
-        } else if (getView().isCurrentThread(response.getData().getMsgId())) {
-            OppositeChatViewModel item = new OppositeChatViewModel();
-            item.setReplyId(response.getData().getMsgId());
-            item.setMsgId(response.getData().getMsgId());
-            item.setSenderId(String.valueOf(response.getData().getFromUid()));
-            item.setMsg(response.getData().getMessage().getCensoredReply());
-            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-            item.setAttachment(response.getData().getAttachment());
-            if (getView().getAdapter().isTyping()) {
-                getView().getAdapter().removeTyping();
+        try {
+            if (getView().isCurrentThread(response.getData().getMsgId())
+                    && getView().isMyMessage(response.getData().getFromUid())) {
+                getView().getAdapter().removeLast();
+                MyChatViewModel item = new MyChatViewModel();
+                item.setReplyId(response.getData().getMsgId());
+                item.setMsgId(response.getData().getMsgId());
+                item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+                item.setAttachment(response.getData().getAttachment());
+                getView().getAdapter().addReply(item);
+                getView().finishLoading();
+                getView().resetReplyColumn();
+                getView().scrollToBottom();
+            } else if (getView() != null &&
+                    getView().isCurrentThread(response.getData().getMsgId())) {
+                OppositeChatViewModel item = new OppositeChatViewModel();
+                item.setReplyId(response.getData().getMsgId());
+                item.setMsgId(response.getData().getMsgId());
+                item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+                item.setAttachment(response.getData().getAttachment());
+                if (getView().getAdapter().isTyping()) {
+                    getView().getAdapter().removeTyping();
+                }
+                getView().getAdapter().addReply(item);
+                getView().finishLoading();
+                getView().scrollToBottomWithCheck();
+                try {
+                    readMessage(String.valueOf(response.getData().getMsgId()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            getView().getAdapter().addReply(item);
-            getView().finishLoading();
-            getView().scrollToBottomWithCheck();
-            try {
-                readMessage(String.valueOf(response.getData().getMsgId()));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -333,8 +338,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().setUploadingMode(false);
-                String error = ErrorHandler.getErrorMessage(throwable,getView().getActivity());
-                if(throwable instanceof MessageErrorException){
+                String error = ErrorHandler.getErrorMessage(throwable, getView().getActivity());
+                if (throwable instanceof MessageErrorException) {
                     error = throwable.getLocalizedMessage();
                 }
                 getView().onErrorUploadImages(error, list.get(0));
@@ -342,14 +347,13 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onNext(UploadImageDomain uploadImageDomain) {
-                if(network == InboxChatConstant.MODE_WEBSOCKET){
+                if (network == InboxChatConstant.MODE_WEBSOCKET) {
                     try {
                         sendImage(messageId, uploadImageDomain.getPicSrc());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-                else if(network == InboxChatConstant.MODE_API) {
+                } else if (network == InboxChatConstant.MODE_API) {
                     uploadWithApi(uploadImageDomain.getPicSrc(), list.get(0));
                 }
             }

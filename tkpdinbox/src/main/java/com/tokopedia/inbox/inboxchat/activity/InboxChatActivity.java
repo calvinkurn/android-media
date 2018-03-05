@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -27,6 +28,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
@@ -39,6 +41,8 @@ import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class InboxChatActivity extends DrawerPresenterActivity
         implements InboxMessageConstant, NotificationReceivedListener, HasComponent,
         ChatNotifInterface, IndicatorAdapter.OnIndicatorClickListener {
@@ -47,8 +51,12 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private static final int POSITION_GROUP_CHAT = 1;
 
     private static final String ACTIVE_INDICATOR_POSITION = "active";
+    private static final int REQUEST_LOGIN = 101;
     IndicatorAdapter indicatorAdapter;
     RecyclerView indicator;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     @DeepLink(Constants.Applinks.TOPCHAT_IDLESS)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {
@@ -144,9 +152,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private List<IndicatorItem> getIndicatorList() {
         List<IndicatorItem> list = new ArrayList<>();
         list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
-                .ic_chat_personal, true));
+                .ic_done_24dp, true));
         list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
-                .ic_chat_personal, false));
+                .ic_done_24dp, false));
         return list;
     }
 

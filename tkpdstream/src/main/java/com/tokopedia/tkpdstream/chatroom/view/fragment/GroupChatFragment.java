@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -95,7 +96,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
-    private static final String RESULT_MESSAGE = "result_message";
+    private static final int REQUEST_LOGIN = 101;
 
     @Inject
     GroupChatPresenter presenter;
@@ -175,6 +176,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
 
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getLoginIntent
+                            (getActivity()), REQUEST_LOGIN);
+        }
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Nullable
@@ -202,7 +209,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         loading = view.findViewById(R.id.loading);
         main = view.findViewById(R.id.main_content);
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
 
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
         setupToolbar();
         prepareView();
         return view;
@@ -408,7 +425,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void initData() {
-        callbackManager = CallbackManager.Factory.create();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -489,18 +505,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         presenter.setHandler(viewModel.getChannelUrl(), this);
 
-        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
-        channelInfoDialog.show();
+        if (getArguments() != null & getArguments().getBoolean(GroupChatActivity
+                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+            channelInfoDialog.show();
+        }
 
     }
 
@@ -910,7 +918,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_CANCELED) {
+            Intent intent = ((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getHomeIntent(getActivity());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.removeEmptyState(getView());
+            initData();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public void showLoading() {

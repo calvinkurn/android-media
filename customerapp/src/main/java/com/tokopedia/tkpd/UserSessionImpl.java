@@ -19,13 +19,10 @@ public class UserSessionImpl implements UserSession {
 
     private SessionHandler sessionHandler;
     private FCMCacheManager fcmCacheManager;
-    private GlobalCacheManager peopleCache;
-
 
     public UserSessionImpl(Context context) {
         this.sessionHandler = new SessionHandler(context);
         this.fcmCacheManager = new FCMCacheManager(context);
-        this.peopleCache = new GlobalCacheManager();
     }
 
     @Override
@@ -70,9 +67,6 @@ public class UserSessionImpl implements UserSession {
 
     @Override
     public String getProfilePicture() {
-        ProfileModel profileModel = CacheUtil.convertStringToModel(peopleCache.getValueString(ProfileSourceFactory.KEY_PROFILE_DATA),
-                new TypeToken<ProfileModel>() {
-                }.getType());
-        return profileModel.getProfileData().getUserInfo().getUserImage();
+        return sessionHandler.getProfilePicture();
     }
 }
