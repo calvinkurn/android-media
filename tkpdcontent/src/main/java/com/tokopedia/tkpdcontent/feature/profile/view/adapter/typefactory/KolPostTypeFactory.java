@@ -3,6 +3,7 @@ package com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 /**
@@ -11,7 +12,9 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel
 
 public interface KolPostTypeFactory {
 
-    int type(KolPostViewModel emptyFeedBeforeLoginModel);
+    int type(KolPostViewModel kolPostViewModel);
+
+    int type(EmptyKolPostViewModel emptyKolPostViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

@@ -5,4 +5,5 @@
     <string name="read_more_english">Read More</string>
     <string name="comment">Comment</string>
     <string name="following">Following</string>
+    <string name="empty_kol_post">Belum ada post</string>
 </resources>

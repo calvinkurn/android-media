@@ -26,6 +26,8 @@ public interface KolPostListener {
 
         void onSuccessGetProfileData(List<Visitable> visitableList);
 
+        void onEmptyKolPost();
+
         void onErrorGetProfileData(String message);
 
         void updateCursor(String lastCursor);

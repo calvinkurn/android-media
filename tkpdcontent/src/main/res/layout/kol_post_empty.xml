@@ -11,7 +11,7 @@
     android:layout_marginBottom="@dimen/new_margin_small">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/img_width"
         android:layout_height="@dimen/img_height"
         android:src="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
@@ -21,35 +21,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/feed_empty_title"
+        android:text="@string/empty_kol_post"
         android:fontFamily="sans-serif"
         android:textColor="@color/grey_550"
-        android:textSize="@dimen/font_medium"
+        android:textSize="@dimen/font_title"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_small"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feed_empty_msg"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/grey_450"
-        android:textSize="@dimen/font_small"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_tiny"/>
-
-    <com.tokopedia.design.button.Button
-        android:id="@+id/btn_login"
-        android:layout_width="@dimen/button_width"
-        android:layout_height="wrap_content"
-        app:type="primary"
-        app:size="medium"
-        android:textAllCaps="false"
-        android:text="@string/empty_button"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_small"
         android:layout_marginBottom="@dimen/new_margin_sm"/>
 
 </LinearLayout>
