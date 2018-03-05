@@ -3,7 +3,6 @@ package com.tokopedia.profile.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -478,28 +477,18 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void enableFollowToolbarButton(){
-        buttonFollowToolbar.setText(R.string.follow);
+        buttonFollowToolbar.setText(R.string.follow_with_plus);
         buttonFollowToolbar.setTextColor(getResources().getColor(R.color
                 .tkpd_main_green));
-        buttonFollowToolbar.
-                setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_add_green_12dp,
-                        0, 0, 0);
     }
 
     private void disableFollowToolbarButton(){
         buttonFollowToolbar.setText(R.string.following);
         buttonFollowToolbar.setTextColor(getResources().getColor(R.color
                 .font_black_secondary_54));
-        buttonFollowToolbar.
-                setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                        0, 0);
     }
 
     private void setupToolbar() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(
-                MethodChecker.getColor(this, R.color.black_70));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
 
         setSupportActionBar(toolbar);

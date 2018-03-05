@@ -49,14 +49,15 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="start"
                         android:layout_weight="3"
+                        android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:gravity="center_vertical"
                         android:lineSpacingExtra="4sp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-                        android:textColor="@color/font_black_primary_70"
-                        android:textStyle="bold"
-                        android:ellipsize="end"
                         android:maxLines="1"
+                        android:textAppearance="@style/Theme.Tokopedia3"
+                        android:textColor="@color/font_black_primary_70"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         android:visibility="gone"
                         tools:text="Benny Alexandra" />
 
@@ -68,18 +69,16 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/ic_add_green_12dp"
                         android:drawablePadding="4dp"
-                        android:drawableStart="@drawable/ic_add_green_12dp"
                         android:fontFamily="sans-serif"
                         android:gravity="center"
                         android:lineSpacingExtra="2sp"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        android:textAppearance="@style/Theme.Tokopedia3"
                         android:textColor="@color/tkpd_main_green"
                         android:textSize="@dimen/text_size_14"
                         android:textStyle="normal"
                         android:visibility="gone"
-                        tools:text="@string/follow" />
+                        tools:text="@string/follow_with_plus" />
                 </LinearLayout>
 
             </android.support.v7.widget.Toolbar>
