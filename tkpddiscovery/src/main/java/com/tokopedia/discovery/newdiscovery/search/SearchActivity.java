@@ -520,7 +520,6 @@ public class SearchActivity extends DiscoveryActivity
     public void closeFilterBottomSheet() {
         if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            enableAutoShowBottomNav();
         }
     }
 
@@ -684,7 +683,7 @@ public class SearchActivity extends DiscoveryActivity
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN && !searchView.isSearchOpen()) {
                     enableAutoShowBottomNav();
                 } else {
                     hideBottomNavigation();
@@ -908,7 +907,6 @@ public class SearchActivity extends DiscoveryActivity
     public void onSearchViewShown() {
         super.onSearchViewShown();
         closeFilterBottomSheet();
-        disableAutoShowBottomNav();
     }
 
     private class OptionSearchFilter extends android.widget.Filter {
