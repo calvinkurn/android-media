@@ -245,7 +245,13 @@ public class ShipmentRatesDataMapper {
                 courierItemData.setEstimatedDayDelivery(formattedEtd);
             }
         } else {
-            courierItemData.setEstimatedDayDelivery(product.getEtd());
+            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
+                    courierItemData.getMaxEtd());
+            if (!TextUtils.isEmpty(formattedEtd)) {
+                courierItemData.setEstimatedDayDelivery(formattedEtd);
+            } else {
+                courierItemData.setEstimatedDayDelivery(product.getEtd());
+            }
         }
         courierItemData.setSelected(false);
 
