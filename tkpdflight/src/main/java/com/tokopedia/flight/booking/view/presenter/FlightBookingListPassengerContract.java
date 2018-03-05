@@ -22,6 +22,8 @@ public interface FlightBookingListPassengerContract {
         String getSalutationString(int resId);
 
         void onSelectPassengerSuccess(FlightBookingPassengerViewModel selectedPassenger);
+
+        String getSelectedPassengerId();
     }
 
     interface Presenter {
@@ -30,5 +32,7 @@ public interface FlightBookingListPassengerContract {
         boolean isPassengerSame(FlightBookingPassengerViewModel selectedPassenger);
 
         void selectPassenger(FlightBookingPassengerViewModel selectedPassenger);
+
+        void onDestroyView();
     }
 }

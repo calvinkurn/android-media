@@ -16,7 +16,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
@@ -37,12 +43,15 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     private static int TWELVE_YEARS = 12;
     private static int TWO_YEARS = 2;
 
+    private CompositeSubscription compositeSubscription;
+
 
     @Inject
     public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase,
                                                FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase) {
         this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
         this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
+        compositeSubscription = new CompositeSubscription();
     }
 
 
@@ -87,7 +96,18 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     @Override
     public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
-        changePassengerToSelected(selectedPassenger);
+        if (selectedPassenger != null) {
+            onSelectPassenger(selectedPassenger);
+        } else {
+            onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     private void getSavedPassengerList() {
@@ -102,7 +122,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        Log.e("ERROR", e.getLocalizedMessage());
                     }
 
                     @Override
@@ -121,11 +140,54 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         }
     }
 
-    private void changePassengerToSelected(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+    private void onSelectPassenger(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+        compositeSubscription.add(
+                Observable.zip(
+                        flightBookingUpdateSelectedPassengerUseCase.createObservable(
+                                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                                        flightBookingPassengerViewModel.getPassengerId(),
+                                        FlightBookingListPassengerFragment.IS_SELECTING
+                                )
+                        ),
+                        flightBookingUpdateSelectedPassengerUseCase.createObservable(
+                                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                                        getView().getSelectedPassengerId(),
+                                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
+                                )
+                        ),
+                        new Func2<Boolean, Boolean, Boolean>() {
+                            @Override
+                            public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                                return true;
+                            }
+                        }
+                )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Boolean>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(Boolean aBoolean) {
+                                getView().onSelectPassengerSuccess(flightBookingPassengerViewModel);
+                            }
+                        })
+        );
+    }
+
+    private void onUnselectPassenger(String passengerId) {
         flightBookingUpdateSelectedPassengerUseCase.execute(
                 flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
-                        flightBookingPassengerViewModel.getPassengerId(),
-                        FlightBookingListPassengerFragment.IS_SELECTING
+                        passengerId,
+                        FlightBookingListPassengerFragment.IS_NOT_SELECTING
                 ),
                 new Subscriber<Boolean>() {
                     @Override
@@ -135,14 +197,12 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        throwable.printStackTrace();
                     }
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            getView().onSelectPassengerSuccess(flightBookingPassengerViewModel);
-                        }
+                        getView().onSelectPassengerSuccess(null);
                     }
                 }
         );

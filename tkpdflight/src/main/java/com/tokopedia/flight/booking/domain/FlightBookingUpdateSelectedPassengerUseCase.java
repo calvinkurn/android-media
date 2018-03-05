@@ -30,7 +30,7 @@ public class FlightBookingUpdateSelectedPassengerUseCase extends UseCase<Boolean
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         return flightRepository.updateIsSelected(
                 requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_PASSENGER_ID),
-                requestParams.getInt(PARAM_IS_SELECTED, 0)
+                requestParams.getInt(PARAM_IS_SELECTED, DEFAULT_IS_SELECTED)
         );
     }
 

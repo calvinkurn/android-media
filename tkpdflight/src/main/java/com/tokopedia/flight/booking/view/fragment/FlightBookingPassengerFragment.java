@@ -575,6 +575,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     if (data != null) {
                         FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
                         presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
+                    } else {
+                        etSavedPassenger.setText(getString(R.string.flight_booking_passenger_saved_secondary_hint));
+                        viewModel.setPassengerId("");
                     }
                     break;
             }

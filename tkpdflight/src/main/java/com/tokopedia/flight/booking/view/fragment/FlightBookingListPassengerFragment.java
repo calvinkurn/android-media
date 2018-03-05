@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
@@ -33,10 +34,12 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public static final int IS_SELECTING = 1;
     public static final int IS_NOT_SELECTING = 0;
 
+    private String selectedPassengerId;
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
     FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
+    TextView txtNewPassenger;
 
     public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger) {
         FlightBookingListPassengerFragment flightBookingListPassengerFragment = new FlightBookingListPassengerFragment();
@@ -51,16 +54,23 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
         super.onCreate(savedInstanceState);
+        selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
+        selectedPassengerId = (selectedPassenger.getPassengerId() != null) ? selectedPassenger.getPassengerId() : "";
         flightBookingPassengerViewModelList = new ArrayList<>();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // karena layout yang di butuhkan sama, maka digunakan layout yg sama dengan booking luggage
         View view = inflater.inflate(R.layout.fragment_booking_list_passenger, container, false);
+        txtNewPassenger = view.findViewById(R.id.txt_new_passenger);
+        txtNewPassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectNewPassenger();
+            }
+        });
         return view;
     }
 
@@ -69,6 +79,12 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.onViewCreated();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.onDestroyView();
+        super.onDestroy();
     }
 
     @Override
@@ -133,9 +149,22 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void onSelectPassengerSuccess(FlightBookingPassengerViewModel selectedPassenger) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_PASSENGER, selectedPassenger);
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        if (selectedPassenger != null) {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_SELECTED_PASSENGER, selectedPassenger);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+        } else {
+            getActivity().setResult(Activity.RESULT_OK, null);
+        }
         getActivity().finish();
+    }
+
+    @Override
+    public String getSelectedPassengerId() {
+        return selectedPassengerId;
+    }
+
+    private void onSelectNewPassenger() {
+        presenter.selectPassenger(null);
     }
 }
