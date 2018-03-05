@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="@dimen/margin_small"
     android:paddingEnd="16dp"
     android:paddingLeft="72dp"
     android:paddingRight="16dp"
@@ -45,11 +45,6 @@
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
-        <!--<android.support.v4.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="4dp" />-->
-
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,18 +73,5 @@
 
 
     </LinearLayout>
-
-    <!--<TextView
-        android:id="@+id/hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/card_group_chat_message"
-        android:layout_alignRight="@id/card_group_chat_message"
-        android:layout_below="@id/main"
-        android:layout_marginTop="@dimen/margin_vvs"
-        android:textColor="@color/time_color"
-        android:textSize="@dimen/fontvvs"
-        tools:text="10:13 pm"
-        tools:visibility="visible" />-->
 
 </RelativeLayout>

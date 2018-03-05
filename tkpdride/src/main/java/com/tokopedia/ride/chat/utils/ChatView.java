@@ -42,18 +42,16 @@ public class ChatView extends RelativeLayout {
 
     private ViewBuilderInterface viewBuilder;
     private FloatingActionButton actionButton;
-    private boolean previousFocusState = false, useEditorAction, isTyping;
+    private boolean useEditorAction, isTyping;
 
     private Runnable typingTimerRunnable = new Runnable() {
         @Override
         public void run() {
             if (isTyping) {
                 isTyping = false;
-                if (typingListener != null) typingListener.userStoppedTyping();
             }
         }
     };
-    private TypingListener typingListener;
     private OnSentMessageListener onSentMessageListener;
     private OnSendSMSRetry onSendSMSRetry;
     private ChatViewListAdapter chatViewListAdapter;
@@ -112,7 +110,6 @@ public class ChatView extends RelativeLayout {
     private void getXMLAttributes(AttributeSet attrs, int defStyleAttr) {
         attributes = context.obtainStyledAttributes(attrs, R.styleable.ChatView, defStyleAttr, R.style.ChatViewDefault);
         getChatViewBackgroundColor();
-        getAttributesForBubbles();
         getAttributesForInputFrame();
         getAttributesForInputText();
         getAttributesForSendButton();
@@ -145,14 +142,6 @@ public class ChatView extends RelativeLayout {
     private void getChatViewBackgroundColor() {
         backgroundColor = attributes.getColor(R.styleable.ChatView_backgroundColor, -1);
     }
-
-    private void getAttributesForBubbles() {
-
-        float dip4 = context.getResources().getDisplayMetrics().density * 4.0f;
-        int elevation = attributes.getInt(R.styleable.ChatView_bubbleElevation, ELEVATED);
-
-    }
-
 
     private void getAttributesForInputFrame() {
         inputFrameBackgroundColor = attributes.getColor(R.styleable.ChatView_inputBackgroundColor, -1);
@@ -197,15 +186,8 @@ public class ChatView extends RelativeLayout {
     }
 
     private void setSendButtonAttributes() {
-        /*actionsMenu.getSendButton().setColorNormal(sendButtonBackgroundTint);
-        actionsMenu.setIconDrawable(sendButtonIcon);
-
-        buttonDrawable = actionsMenu.getIconDrawable();
-        actionsMenu.setButtonIconTint(sendButtonIconTint);*/
-
         actionButton.setColorNormal(sendButtonBackgroundTint);
         actionButton.setIconDrawable(sendButtonIcon);
-
     }
 
     private void getUseEditorAction() {
@@ -276,33 +258,6 @@ public class ChatView extends RelativeLayout {
 
     private void setButtonClickListeners() {
 
-        /*actionsMenu.getSendButton().setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (actionsMenu.isExpanded()) {
-                    actionsMenu.collapse();
-                    return;
-                }
-
-                long stamp = System.currentTimeMillis();
-                String message = inputEditText.getText().toString();
-                if (!TextUtils.isEmpty(message)) {
-                    sendMessage(message, stamp);
-                }
-
-            }
-        });
-
-        actionsMenu.getSendButton().setOnLongClickListener(new OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                actionsMenu.expand();
-                return true;
-            }
-        });*/
-
         actionButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -328,7 +283,6 @@ public class ChatView extends RelativeLayout {
 
                     if (!isTyping) {
                         isTyping = true;
-                        if (typingListener != null) typingListener.userStartedTyping();
                     }
 
                     removeCallbacks(typingTimerRunnable);
@@ -347,9 +301,6 @@ public class ChatView extends RelativeLayout {
         inputEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (previousFocusState && !hasFocus && typingListener != null) {
-                    typingListener.userStoppedTyping();
-                }
                 previousFocusState = hasFocus;
             }
         });
@@ -359,14 +310,6 @@ public class ChatView extends RelativeLayout {
     @Override
     protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
         return super.addViewInLayout(child, index, params);
-    }
-
-    public String getTypedMessage() {
-        return inputEditText.getText().toString();
-    }
-
-    public void setTypingListener(TypingListener typingListener) {
-        this.typingListener = typingListener;
     }
 
     public void setOnSentMessageListener(OnSentMessageListener onSentMessageListener) {
@@ -399,18 +342,6 @@ public class ChatView extends RelativeLayout {
         chatViewListAdapter.addMessages(messages);
     }
 
-    public void removeMessage(int position) {
-        chatViewListAdapter.removeMessage(position);
-    }
-
-    public void clearMessages() {
-        chatViewListAdapter.clearMessages();
-    }
-
-    public EditText getInputEditText() {
-        return inputEditText;
-    }
-
     public void updateMessageSentStatus(ChatMessage.DeliveryStatus deliveryStatus, int id) {
         ArrayList<ChatMessage> chatMessageArrayList = chatViewListAdapter.getChatMessages();
 
@@ -423,15 +354,6 @@ public class ChatView extends RelativeLayout {
         }
 
         chatViewListAdapter.setChatMessages(chatMessageArrayList);
-    }
-
-
-    public interface TypingListener {
-
-        void userStartedTyping();
-
-        void userStoppedTyping();
-
     }
 
     public interface OnSentMessageListener {

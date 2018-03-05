@@ -13,8 +13,8 @@
         android:layout_above="@+id/input_frame"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:paddingBottom="@dimen/padding_ms"
+        android:paddingTop="@dimen/padding_ms"
         android:stackFromBottom="false"
         android:transcriptMode="alwaysScroll" />
 
@@ -35,9 +35,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginBottom="@dimen/margin_small_sm"
+        android:layout_marginLeft="@dimen/margin_small_sm"
+        android:layout_marginStart="@dimen/margin_small_sm"
         android:layout_toLeftOf="@id/sendButton"
         android:layout_toStartOf="@id/sendButton"
         android:descendantFocusability="beforeDescendants"
@@ -46,7 +46,7 @@
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="2dp"
         app:cardElevation="1dp"
-        app:contentPadding="2dp">
+        app:contentPadding="@dimen/padding_vvvs">
 
         <EditText
             android:id="@+id/input_edit_text"
@@ -57,11 +57,11 @@
             android:hint="@string/default_input_hint"
             android:inputType="text"
             android:maxLines="5"
-            android:minHeight="48dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="4dp"
+            android:minHeight="@dimen/chat_view_min_height"
+            android:paddingBottom="@dimen/padding_vvs"
+            android:paddingLeft="@dimen/padding_ms"
+            android:paddingRight="@dimen/padding_ms"
+            android:paddingTop="@dimen/padding_vvs"
             android:textColor="@color/black"
             android:textColorHint="@color/grey_300"
             android:textSize="@dimen/default_input_text_size" />
