@@ -9,6 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.data.entity.request.RemoveCartRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.data.exception.ResponseCartApiErrorException;
+import com.tokopedia.transaction.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
@@ -93,17 +94,11 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onNext(CartListData cartListData) {
                 view.renderLoadGetCartDataFinish();
-                if (cartListData.isError()) {
-                    view.renderErrorInitialGetCartListData(cartListData.getErrorMessage());
+                if (cartListData.getCartItemDataList().isEmpty()) {
+                    view.renderEmptyCartData();
                 } else {
-                    if (cartListData.getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData();
-                    } else {
-                        view.renderPromoVoucher();
-                        view.renderInitialGetCartListDataSuccess(cartListData);
-                    }
+                    view.renderInitialGetCartListDataSuccess(cartListData);
                 }
-
 
             }
         }, view.getGeneratedAuthParamNetwork(param));
@@ -171,6 +166,83 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorActionDeleteCartData(deleteCartData.getMessage());
             }
         }, view.getGeneratedAuthParamNetwork(param));
+    }
+
+    @Override
+    public void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList) {
+        view.showProgressLoading();
+        List<Integer> ids = new ArrayList<>();
+        for (CartItemData cartItemData : removedCartItems) {
+            ids.add(cartItemData.getOriginData().getCartId());
+        }
+        RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
+                .cartIds(ids)
+                .addWishlist(addWishList ? 1 : 0)
+                .build();
+        TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
+        paramDelete.put("params", new Gson().toJson(removeCartRequest));
+
+        TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
+        paramGetList.put("lang", "id");
+
+        cartListInteractor.deleteCartAndRefreshCartList(
+                new Subscriber<DeleteAndRefreshCartListData>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                            view.renderErrorNoConnectionActionDeleteCartData(
+                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                            );
+                        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    /* Ini kalau timeout */
+                            view.renderErrorTimeoutConnectionActionDeleteCartData(
+                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                            );
+                        } else if (e instanceof ResponseErrorException) {
+                     /* Ini kalau error dari API kasih message error */
+                            view.renderErrorActionDeleteCartData(e.getMessage());
+                        } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                            view.renderErrorActionDeleteCartData(e.getMessage());
+                        } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                            view.renderErrorHttpActionDeleteCartData(e.getMessage());
+                        } else if (e instanceof ResponseCartApiErrorException) {
+                            view.renderErrorActionDeleteCartData(e.getMessage());
+                        } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                            view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                        view.hideProgressLoading();
+                        view.renderLoadGetCartDataFinish();
+                        if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
+                                && deleteAndRefreshCartListData.getCartListData() != null) {
+                            if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
+                                view.renderEmptyCartData();
+                            } else {
+                                view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
+                            }
+                        } else {
+                            view.renderErrorActionDeleteCartData(
+                                    deleteAndRefreshCartListData.getDeleteCartData().getMessage()
+                            );
+                        }
+                    }
+                }, paramDelete, paramGetList
+        );
     }
 
     @SuppressWarnings("deprecation")

@@ -76,26 +76,6 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
                     .addToBackStack(backStateName)
                     .commit();
         }
-
-//        FragmentManager fragmentManager = getFragmentManager();
-//        List<CartSellerItemModel> cartSellerItemModels = getIntent()
-//                .getExtras()
-//                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
-//        RecipientAddressModel addressModel = getIntent().getExtras().getParcelable(ADDRESS_MODEL);
-//        Fragment fragment = MultipleAddressFragment.newInstance(
-//                cartSellerItemModels,
-//                addressModel
-//        );
-//
-//        String backStateName = fragment.getClass().getName();
-//
-//        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-//        if (!isFragmentPopped) {
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.container, fragment)
-//                    .addToBackStack(backStateName)
-//                    .commit();
-//        }
     }
 
     @Override

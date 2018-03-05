@@ -23,7 +23,8 @@
                 android:layout_marginTop="@dimen/new_margin_med"
                 android:background="@drawable/border_rectangle_yellow"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visbility="visible">
 
                 <View
                     android:layout_width="2dp"

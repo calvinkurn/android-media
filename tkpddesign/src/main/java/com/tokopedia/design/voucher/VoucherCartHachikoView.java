@@ -80,7 +80,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
     }
 
     private void cancelVoucher() {
-        actionListener.disableVoucherDisount();
+        actionListener.disableVoucherDiscount();
 
         actionListener.trackingCancelledVoucher();
 
@@ -135,7 +135,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
     public interface ActionListener {
         void onClickUseVoucher();
 
-        void disableVoucherDisount();
+        void disableVoucherDiscount();
 
         void trackingSuccessVoucher(String voucherName);
 

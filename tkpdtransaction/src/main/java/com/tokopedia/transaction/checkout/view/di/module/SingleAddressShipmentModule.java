@@ -15,8 +15,10 @@ import dagger.Provides;
 @Module(includes = {DataModule.class, ConverterDataModule.class, PeopleAddressModule.class})
 public class SingleAddressShipmentModule {
 
-    public SingleAddressShipmentModule(SingleAddressShipmentFragment singleAddressShipmentFragment) {
+    private SingleAddressShipmentAdapter.ActionListener actionListener;
 
+    public SingleAddressShipmentModule(SingleAddressShipmentFragment singleAddressShipmentFragment) {
+        actionListener = singleAddressShipmentFragment;
     }
 
     @Provides
@@ -28,7 +30,7 @@ public class SingleAddressShipmentModule {
     @Provides
     @SingleAddressShipmentScope
     SingleAddressShipmentAdapter provideCartSingleAddressAdapter() {
-        return new SingleAddressShipmentAdapter();
+        return new SingleAddressShipmentAdapter(actionListener);
     }
 
 }

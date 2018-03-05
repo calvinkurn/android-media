@@ -36,11 +36,9 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     private RecipientAddressModel defaultRecipientAddressModel;
 
     public static Intent createInstance(Activity activity,
-                                        int typeRequest,
-                                        RecipientAddressModel recipientAddressModel) {
+                                        int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
-        intent.putExtra(EXTRA_DEFAULT_SELECTED_ADDRESS, recipientAddressModel);
         return intent;
     }
 

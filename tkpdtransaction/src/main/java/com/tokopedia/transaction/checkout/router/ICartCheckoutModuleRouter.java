@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.router;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+
 /**
  * @author anggaprasetiyo on 28/02/18.
  */
@@ -23,4 +25,12 @@ public interface ICartCheckoutModuleRouter {
 
     Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             Context context, String additionalDataString, boolean couponActive);
+
+    Intent tkpdCartCheckoutGetProductDetailIntent(
+            Context context, ProductPass productPass
+    );
+
+    Intent tkpdCartCheckoutGetShopInfoIntent(
+            Context context, String shopId
+    );
 }

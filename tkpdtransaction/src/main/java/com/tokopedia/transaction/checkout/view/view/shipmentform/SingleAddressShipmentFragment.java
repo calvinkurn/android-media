@@ -14,15 +14,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartPayableDetailModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
@@ -38,12 +36,10 @@ import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCa
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SINGLE_ADDRESS_POSITION;
@@ -54,8 +50,8 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
  */
 
 public class SingleAddressShipmentFragment extends BasePresenterFragment
-        implements ICartSingleAddressView<CartSingleAddressData>,
-        SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
+        implements ICartSingleAddressView,
+        SingleAddressShipmentAdapter.ActionListener {
 
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
@@ -69,25 +65,23 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
 
-    @BindView(R2.id.rv_cart_order_details)
-    RecyclerView mRvCartOrderDetails;
-    @BindView(R2.id.tv_select_payment_method)
-    TextView mTvSelectPaymentMethod;
-    @BindView(R2.id.ll_total_payment_layout)
-    LinearLayout mLlTotalPaymentLayout;
-    @BindView(R2.id.tv_total_payment)
-    TextView mTvTotalPayment;
+    private RecyclerView mRvCartOrderDetails;
+    private TextView mTvSelectPaymentMethod;
+    private LinearLayout mLlTotalPaymentLayout;
+    private TextView mTvTotalPayment;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
+
     @Inject
     SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
+
     @Inject
     SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
 
     ICartShipmentActivity cartShipmentActivityListener;
 
-    private CartSingleAddressData mCartSingleAddressData;
+    private List<Object> mShipmentDataList;
     private PromoCodeCartListData promoCodeAppliedData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -170,11 +164,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setupArguments(Bundle arguments) {
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
+
+        mShipmentDataList = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
-        mCartSingleAddressData.setCartPromoSuggestion(cartPromoSuggestion);
-        mCartSingleAddressData.setCartPromo(new CartPromo());
+
+        mShipmentDataList.add(0, new CartPromo());
+        mShipmentDataList.add(1, cartPromoSuggestion);
     }
 
     @Override
@@ -184,6 +180,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        mRvCartOrderDetails = view.findViewById(R.id.rv_cart_order_details);
+        mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
+        mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
+        mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -196,9 +197,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 }
             }
         });
+
         mSingleAddressShipmentPresenter.attachView(this);
 
-        onTotalPaymentChange(mCartSingleAddressData.getCartPayableDetailModel());
+//        onTotalPaymentChange(mShipmentDataList.getShipmentCostModel());
     }
 
     /**
@@ -206,8 +208,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mSingleAddressShipmentAdapter.setViewListener(this);
-        mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
+        mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
     }
 
     /**
@@ -226,8 +227,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void show(CartSingleAddressData cartSingleAddressData) {
-        mSingleAddressShipmentAdapter.updateData(cartSingleAddressData);
+    public void show(List<Object> shipmentDataList) {
+        mSingleAddressShipmentAdapter.changeDataSet(shipmentDataList);
         mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
@@ -255,22 +256,20 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
-                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
-                mCartSingleAddressData.getRecipientAddressModel()),
-                CartAddressChoiceActivity.REQUEST_CODE);
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION);
+
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
-    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
-                                 RecipientAddressModel recipientAddressModel) {
+    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData;
         if (cartSellerItemModel.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = cartSellerItemModel.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(
-                    cartSellerItemModel, recipientAddressModel);
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
 
         startActivityForResult(ShipmentDetailActivity.createInstance(
@@ -337,8 +336,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onTotalPaymentChange(CartPayableDetailModel cartPayableDetailModel) {
-        double price = cartPayableDetailModel.getTotalPrice();
+    public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
+        double price = shipmentCostModel.getTotalPrice();
         mTvTotalPayment.setText(CURRENCY_ID.format(price));
     }
 
@@ -356,19 +355,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     RecipientAddressModel thisSelectedAddressData = data.getParcelableExtra(
                             CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
 
-                    if (!thisSelectedAddressData.getId().equals(
-                            mCartSingleAddressData.getRecipientAddressModel().getId())) {
-                        mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
-                        mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
-                        mSingleAddressShipmentAdapter.resetSelectedShipment();
-                        mSingleAddressShipmentAdapter.notifyDataSetChanged();
-                    }
+                    mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
+
                     break;
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                     Intent intent = new Intent();
-                    intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-                            mCartSingleAddressData.getRecipientAddressModel());
+//                    intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+//                            mShipmentDataList.getRecipientAddressModel());
                     cartShipmentActivityListener.closeWithResult(
                             CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                     break;
@@ -377,7 +371,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     break;
             }
         }
-
 
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
@@ -392,6 +385,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
+
                 default:
                     break;
             }

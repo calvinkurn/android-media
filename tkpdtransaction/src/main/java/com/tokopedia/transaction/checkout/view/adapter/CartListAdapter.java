@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -24,6 +25,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int TYPE_VIEW_PROMO_SUGGESTION = R.layout.holder_item_cart_potential_promo;
     private static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
+    private static final int TYPE_VIEW_TICKER_CART_ERROR = R.layout.holder_item_cart_ticker_error;
 
     private final ActionListener actionListener;
     private List<Object> cartItemHolderDataList;
@@ -62,6 +65,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(TYPE_VIEW_PROMO, parent, false);
             return new CartPromoHolder(view);
+        } else if (viewType == TYPE_VIEW_TICKER_CART_ERROR) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(TYPE_VIEW_TICKER_CART_ERROR, parent, false);
+            return new CartTickerErrorHolder(view);
         } else {
             return null;
         }
@@ -78,7 +85,12 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvProductName.setText(data.getCartItemData().getOriginData().getProductName());
             holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
             holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
+            String quantity = String.valueOf(data.getCartItemData().getUpdatedData().getQuantity());
+
             holderView.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
+            if (quantity.length() > 0) {
+                holderView.etQty.setSelection(quantity.length());
+            }
 
             ImageHandler.loadImageRounded2(
                     holderView.itemView.getContext(), holderView.ivProductImage,
@@ -119,6 +131,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holderView.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
             }
 
+            holderView.ivProductImage.setOnClickListener(getOnClickProductItemListener(position, data));
+            holderView.tvProductName.setOnClickListener(getOnClickProductItemListener(position, data));
+
+            holderView.tvShopName.setOnClickListener(getOnClickShopItemListener(position, data));
+
             holderView.tvInfoRFreeReturn.setVisibility(
                     data.getCartItemData().getOriginData().isFreeReturn() ? View.VISIBLE : View.GONE
             );
@@ -157,6 +174,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             renderErrorFormItemValidation(data, holderView, position);
             renderErrorItemHeader(data, holderView, position);
+
 
             holderView.etRemark.addTextChangedListener(new RemarkTextWatcher(position));
             holderView.etQty.addTextChangedListener(new TextWatcher() {
@@ -220,7 +238,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 @Override
-                public void disableVoucherDisount() {
+                public void disableVoucherDiscount() {
                     actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
                 }
 
@@ -246,22 +264,54 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holderView.voucherCartHachikoView.setPromoAndCouponLabel();
                 holderView.voucherCartHachikoView.resetView();
             }
+        } else if (getItemViewType(position) == TYPE_VIEW_TICKER_CART_ERROR) {
+            final CartTickerErrorHolder holderView = (CartTickerErrorHolder) holder;
+            final CartItemTickerErrorHolderData data = (CartItemTickerErrorHolderData) cartItemHolderDataList.get(position);
+
+            holderView.tvErrorMessage.setText(data.getCartTickerErrorData().getErrorInfo());
+            holderView.tvBtnAction.setText(data.getCartTickerErrorData().getActionInfo());
+            holderView.tvBtnAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionListener.onCartItemTickerErrorActionClicked(data, position);
+                }
+            });
         }
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickShopItemListener(@SuppressLint("RecyclerView") final int position, final CartItemHolderData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onCartItemShopNameClicked(data, position);
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickProductItemListener(@SuppressLint("RecyclerView") final int position, final CartItemHolderData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onCartItemProductClicked(data, position);
+            }
+        };
     }
 
     private void renderErrorFormItemValidation(CartItemHolderData data, CartItemHolder holderView, int position) {
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
-            holderView.errorContainer.setVisibility(View.GONE);
-            holderView.tvError.setVisibility(View.GONE);
-            holderView.tvErrorDetail.setVisibility(View.GONE);
+//            holderView.errorContainer.setVisibility(View.GONE);
+//            holderView.tvError.setVisibility(View.GONE);
+//            holderView.tvErrorDetail.setVisibility(View.GONE);
 
             holderView.tvErrorFormValidation.setText("");
             holderView.tvErrorFormValidation.setVisibility(View.GONE);
         } else {
-            holderView.errorContainer.setVisibility(View.VISIBLE);
-            holderView.tvError.setVisibility(View.VISIBLE);
-            holderView.tvErrorDetail.setVisibility(View.GONE);
-            holderView.tvError.setText(data.getErrorFormItemValidationMessage());
+//            holderView.errorContainer.setVisibility(View.VISIBLE);
+//            holderView.tvError.setVisibility(View.VISIBLE);
+//            holderView.tvErrorDetail.setVisibility(View.GONE);
+//            holderView.tvError.setText(data.getErrorFormItemValidationMessage());
 
             holderView.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
             holderView.tvErrorFormValidation.setVisibility(View.VISIBLE);
@@ -355,6 +405,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TYPE_VIEW_PROMO_SUGGESTION;
         } else if (cartItemHolderDataList.get(position) instanceof CartItemPromoHolderData) {
             return TYPE_VIEW_PROMO;
+        } else if (cartItemHolderDataList.get(position) instanceof CartItemTickerErrorHolderData) {
+            return TYPE_VIEW_TICKER_CART_ERROR;
         } else {
             return super.getItemViewType(position);
         }
@@ -406,6 +458,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void addCartTickerError(CartItemTickerErrorHolderData cartItemTickerErrorHolderData) {
+        cartItemHolderDataList.add(cartItemTickerErrorHolderData);
+        notifyDataSetChanged();
+    }
+
     public interface ActionListener {
 
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
@@ -435,6 +492,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position);
 
         void onCartItemQuantityFormEdited();
+
+        void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {
@@ -509,6 +568,17 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+
+    public class CartTickerErrorHolder extends RecyclerView.ViewHolder {
+        private TextView tvErrorMessage;
+        private TextView tvBtnAction;
+
+        CartTickerErrorHolder(View itemView) {
+            super(itemView);
+            this.tvErrorMessage = itemView.findViewById(R.id.tv_error);
+            this.tvBtnAction = itemView.findViewById(R.id.btn_error_action);
+        }
+    }
 
     private class RemarkTextWatcher implements TextWatcher {
         private final int position;

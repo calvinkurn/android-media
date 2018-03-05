@@ -7,6 +7,7 @@ import com.tokopedia.transaction.checkout.data.entity.response.updatecart.Update
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateCartData;
 
@@ -32,7 +33,14 @@ public class CartMapper implements ICartMapper {
         CartListData cartListData = new CartListData();
         cartListData.setError(!mapperUtil.isEmpty(cartDataListResponse.getErrors()));
         cartListData.setErrorMessage(mapperUtil.convertToString(cartDataListResponse.getErrors()));
-
+        if (cartListData.isError()) {
+            cartListData.setCartTickerErrorData(
+                    new CartTickerErrorData.Builder()
+                            .errorInfo("Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.")
+                            .actionInfo("Hapus produk yang berkendala")
+                            .build()
+            );
+        }
         List<CartItemData> cartItemDataList = new ArrayList<>();
         for (CartList data : cartDataListResponse.getCartList()) {
             CartItemData cartItemData = new CartItemData();
@@ -59,7 +67,8 @@ public class CartMapper implements ICartMapper {
             if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
             }
-            cartItemDataOrigin.setCashBackInfo(data.getProduct().getProductCashback());
+            cartItemDataOrigin.setCashBack(!mapperUtil.isEmpty(data.getProduct().getProductCashback()));
+            cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
 
             CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();

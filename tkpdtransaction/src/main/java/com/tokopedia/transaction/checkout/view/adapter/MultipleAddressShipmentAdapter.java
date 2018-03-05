@@ -173,7 +173,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.notesField.setText(itemData.getProductNotes());
         itemViewHolder.addressTitle.setText(itemData.getAddressTitle());
         itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
-        itemViewHolder.address.setText(itemData.getAddress());
+        itemViewHolder.address.setText(itemData.getAddressStreet()
+                + ", " + itemData.getAddressCityName()
+                + ", " + itemData.getAddressProvinceName()
+                + ", " + itemData.getRecipientPhoneNumber());
         itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
@@ -306,15 +309,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             senderName = itemView.findViewById(R.id.sender_name);
 
-            productImage = itemView.findViewById(R.id.iv_product_image_container);
+            productImage = itemView.findViewById(R.id.iv_product_image);
 
-            productName = itemView.findViewById(R.id.tv_shipping_product_name);
+            productName = itemView.findViewById(R.id.tv_product_name);
 
-            productPrice = itemView.findViewById(R.id.tv_shipped_product_price);
+            productPrice = itemView.findViewById(R.id.tv_product_price);
 
             productWeight = itemView.findViewById(R.id.tv_product_weight);
 
-            productQty = itemView.findViewById(R.id.tv_total_product_item);
+            productQty = itemView.findViewById(R.id.tv_product_total_item);
 
             notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
@@ -344,11 +347,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
 
-            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_text);
+            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_label);
 
-            tvPoSign = itemView.findViewById(R.id.tv_po_sign);
+            tvPoSign = itemView.findViewById(R.id.tv_pre_order);
 
-            tvCashbackText = itemView.findViewById(R.id.tv_cashback_text);
+            tvCashbackText = itemView.findViewById(R.id.tv_cashback);
 
             tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
 
@@ -358,7 +361,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
 
-        private LinearLayout multipleAddressPromoSuggestionLayout;
+        private ViewGroup multipleAddressPromoSuggestionLayout;
         private VoucherCartHachikoView voucherCartHachikoView;
         private ImageView btnClose;
         private TextView tvDesc;
@@ -369,7 +372,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             this.voucherCartHachikoView = itemView
                     .findViewById(R.id.voucher_cart_holder_view);
             this.multipleAddressPromoSuggestionLayout = itemView
-                    .findViewById(R.id.rl_free_shipment_fee_header);
+                    .findViewById(R.id.rl_promo_suggestion_layout);
             this.btnClose = itemView.findViewById(R.id.btn_close);
             this.tvAction = itemView.findViewById(R.id.tv_action);
             this.tvDesc = itemView.findViewById(R.id.tv_desc);
@@ -528,7 +531,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             }
 
             @Override
-            public void disableVoucherDisount() {
+            public void disableVoucherDiscount() {
                 priceSummaryData.setSuggestionVisible(true);
                 notifyDataSetChanged();
             }

@@ -128,8 +128,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 "kirim barangnya gan!");
         data.setAddressTitle("Alamat Kantor");
         data.setAddressReceiverName("Agus Maulana");
-        data.setAddress("Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\n" +
-                "Tokopedia Lt. 2, Jakarta, 0817 1234 5678");
         return data;
     }
 
