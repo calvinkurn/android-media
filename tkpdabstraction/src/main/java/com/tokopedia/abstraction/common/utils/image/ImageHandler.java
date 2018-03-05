@@ -532,11 +532,12 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    public static void loadUberDriverImage(final Context context, final ImageView imageView, int errorDrawable, String url) {
+    public static void loadCircleImageWithPlaceHolder(final Context context, final ImageView imageView, int placeHolder, String url) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
-                .error(errorDrawable)
+                .placeholder(placeHolder)
+                .error(placeHolder)
                 .into(getCircleImageViewTarget(imageView));
     }
 }

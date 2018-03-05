@@ -174,7 +174,7 @@ public class DriverDetailFragment extends BaseFragment {
 
         shareRideLayout.setVisibility(View.VISIBLE);
 
-        ImageHandler.loadUberDriverImage(getActivity(), driverImageView, R.drawable.default_user_pic_light, driver.getPictureUrl());
+        ImageHandler.loadCircleImageWithPlaceHolder(getActivity(), driverImageView, R.drawable.default_user_pic_light, driver.getPictureUrl());
 
         vehicleDetailTextView.setText(String.format("%s %s", vehicle.getMake(), vehicle.getVehicleModel()));
         vehiclePlateTextView.setText(vehicle.getLicensePlate());

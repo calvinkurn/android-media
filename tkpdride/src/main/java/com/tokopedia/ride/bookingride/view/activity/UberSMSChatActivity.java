@@ -27,9 +27,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.chat.utils.ChatMessage;
@@ -124,7 +124,7 @@ public class UberSMSChatActivity extends BaseActivity {
         String vehicleInfo = vehicleDetails.getVehicleModel() + " | " + vehicleDetails.getLicensePlate();
         licensePlateTV.setText(vehicleInfo);
 
-        ImageHandler.loadUberDriverImage(this, driverImageView, R.drawable.default_user_pic_light, driverDetails.getPictureUrl());
+        ImageHandler.loadCircleImageWithPlaceHolder(this, driverImageView, R.drawable.default_user_pic_light, driverDetails.getPictureUrl());
     }
 
     @Override
@@ -428,7 +428,6 @@ public class UberSMSChatActivity extends BaseActivity {
 
     private void mergeSMS() {
 
-        Log.e("Merge sms call", "   True");
         int receiveSMSCount = receivedMessagesArrayList.size();
         int sentSMSCount = sentMessagesArrayList.size();
 
@@ -455,4 +454,5 @@ public class UberSMSChatActivity extends BaseActivity {
         chatView.addMessages(chatArrayList);
 
     }
+
 }
