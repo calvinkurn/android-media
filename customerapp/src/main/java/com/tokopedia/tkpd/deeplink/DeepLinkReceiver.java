@@ -17,7 +17,6 @@ import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.design.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.ParentIndexHome;
