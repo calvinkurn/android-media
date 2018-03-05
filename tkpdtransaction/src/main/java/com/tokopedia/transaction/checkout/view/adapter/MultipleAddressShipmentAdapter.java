@@ -115,14 +115,14 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                         priceSummaryData.isHasPromoSuggestion()
                                 && priceSummaryData.isSuggestionVisible())
                 );
-        if(headerHolder.multipleAddressPromoSuggestionLayout.isShown()) {
+        if (headerHolder.multipleAddressPromoSuggestionLayout.isShown()) {
             headerHolder.tvDesc.setText(priceSummaryData.getPromoSuggestionDescription());
             headerHolder.tvAction.setText(priceSummaryData.getPromoSuggestionCta());
             headerHolder.tvAction.setTextColor(Color.parseColor(priceSummaryData.getPromoCtaColor()));
             headerHolder.tvAction.setOnClickListener(onPromoSuggestionClickedListener());
         }
 
-        if(priceSummaryData.isCouponActive())
+        if (priceSummaryData.isCouponActive())
             headerHolder.voucherCartHachikoView.setPromoAndCouponLabel();
         else headerHolder.voucherCartHachikoView.setPromoLabelOnly();
 
@@ -373,6 +373,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                     .findViewById(R.id.voucher_cart_holder_view);
             this.multipleAddressPromoSuggestionLayout = itemView
                     .findViewById(R.id.rl_promo_suggestion_layout);
+                    .findViewById(R.id.promo_suggestion_holder);
             this.btnClose = itemView.findViewById(R.id.btn_close);
             this.tvAction = itemView.findViewById(R.id.tv_action);
             this.tvDesc = itemView.findViewById(R.id.tv_desc);
@@ -452,16 +453,23 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private long calculateTotalProductCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
+            if(isShipmentDataInitiated(i))
             totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
         }
         return totalProductPrice;
     }
 
+    private boolean isShipmentDataInitiated(int i) {
+        return addressDataList.get(i).getShipmentCartData() != null;
+    }
+
     private long calculateTotalShippingCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
-            totalProductPrice = totalProductPrice + addressDataList.get(i)
-                    .getShipmentCartData().getDeliveryPriceTotal();
+            if (isShipmentDataInitiated(i)) {
+                totalProductPrice = totalProductPrice + addressDataList.get(i)
+                        .getShipmentCartData().getDeliveryPriceTotal();
+            }
         }
         return totalProductPrice;
     }
@@ -469,8 +477,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private long calculateInsuranceCost() {
         long totalInsuranceCost = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
-            totalInsuranceCost = totalInsuranceCost + addressDataList.get(i)
-                    .getShipmentCartData().getInsurancePrice();
+            if (isShipmentDataInitiated(i)) {
+                totalInsuranceCost = totalInsuranceCost + addressDataList.get(i)
+                        .getShipmentCartData().getInsurancePrice();
+            }
         }
         return totalInsuranceCost;
     }
@@ -478,8 +488,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private long calculateAdditionalFee() {
         long totalAdditionalFee = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
-            totalAdditionalFee = totalAdditionalFee + addressDataList.get(i)
-                    .getShipmentCartData().getAdditionalFee();
+            if (isShipmentDataInitiated(i)) {
+                totalAdditionalFee = totalAdditionalFee + addressDataList.get(i)
+                        .getShipmentCartData().getAdditionalFee();
+            }
         }
         return totalAdditionalFee;
     }
@@ -494,8 +506,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        return data.getProductPriceNumber() + data.getShipmentCartData()
-                .getDeliveryPriceTotal();
+        if (data.getShipmentCartData() != null)
+            return data.getProductPriceNumber() + data.getShipmentCartData()
+                    .getDeliveryPriceTotal();
+        else return 0;
     }
 
     private int switchVisibility(boolean visible) {
