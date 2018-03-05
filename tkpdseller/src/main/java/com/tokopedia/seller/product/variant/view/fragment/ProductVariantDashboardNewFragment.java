@@ -17,6 +17,7 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -62,7 +63,10 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private HashMap<Pair<String, String>, Integer> mapCombination;
     private Parcelable recyclerViewState;
     private int defaultPrice;
+
+    @StockTypeDef
     private int defaultStockType;
+
     private boolean isOfficialStore;
 
     public static ProductVariantDashboardNewFragment newInstance() {
@@ -232,7 +236,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(2) == null) {
             variantLevelTwoLabelView.resetContentText();
             // if level 1 is chosen, set enabled to true
-            variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(1) != null);
+            if (productVariantViewModel != null) {
+                variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(1) != null);
+            }
         } else {
             variantLevelTwoLabelView.setEnabled(true);
             ProductVariantOptionParent optionLv2 = productVariantViewModel.getVariantOptionParent(2);
@@ -323,6 +329,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             return;
         }
 
+        if (productVariantViewModel == null) {
+            productVariantViewModel = new ProductVariantViewModel();
+        }
         productVariantViewModel.replaceVariantOptionParentFor(requestCodeLevel, productVariantOptionParent);
 
         // get current selection for item level 1, level 2, and the matrix combination

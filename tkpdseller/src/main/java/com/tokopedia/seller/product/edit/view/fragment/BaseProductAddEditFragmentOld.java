@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 
 //@RuntimePermissions
+@Deprecated
 public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresenter>
         extends BaseDaggerFragment
         /*implements ProductAddView,

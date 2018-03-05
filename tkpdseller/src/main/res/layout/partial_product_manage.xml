@@ -38,20 +38,11 @@
                 app:spinner_selection_index="1"
                 app:spinner_values="@array/product_stock_status_values" />
 
-            <com.tokopedia.expandable.ExpandableOptionSwitch
-                android:id="@+id/expandable_option_switch_stock_total"
+            <com.tokopedia.design.text.CounterInputView
+                android:id="@+id/counter_input_view_stock_total"
                 style="@style/LabelLayout"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:eo_checked="false"
-                app:eo_theme="@style/ExpandableStyle"
-                app:eo_title="@string/product_label_manage_stock">
-
-                <com.tokopedia.design.text.CounterInputView
-                    android:id="@+id/counter_input_view_stock_total"
-                    style="@style/LabelLayout.InnerExpandable"
-                    app:counter_hint="@string/product_label_stock_total" />
-            </com.tokopedia.expandable.ExpandableOptionSwitch>
+                app:counter_min="1"
+                app:counter_hint="@string/product_label_stock_total" />
         </LinearLayout>
 
         <com.tokopedia.seller.common.widget.LabelView

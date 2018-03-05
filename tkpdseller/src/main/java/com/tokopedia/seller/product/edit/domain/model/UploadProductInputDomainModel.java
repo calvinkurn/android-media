@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.domain.model;
 
 import com.tokopedia.seller.product.edit.constant.ProductStockTypeDef;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
@@ -33,7 +33,7 @@ public class UploadProductInputDomainModel {
     private int productMustInsurance;
     private int productPriceCurrency;
     private int productReturnable;
-    @UploadToTypeDef
+    @StockTypeDef
     private int productUploadTo;
     @ProductStockTypeDef
     private int productInvenageSwitch;
@@ -200,7 +200,7 @@ public class UploadProductInputDomainModel {
         return productUploadTo;
     }
 
-    public void setProductUploadTo(@UploadToTypeDef int productUploadTo) {
+    public void setProductUploadTo(@StockTypeDef int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 

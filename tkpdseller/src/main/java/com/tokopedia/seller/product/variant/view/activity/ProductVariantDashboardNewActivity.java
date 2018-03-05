@@ -1,15 +1,20 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardNewFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +29,19 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
     public static final String EXTRA_DEFAULT_PRICE = "EXTRA_PRICE";
     public static final String EXTRA_STOCK_TYPE = "EXTRA_STOCK_TYPE";
     public static final String EXTRA_IS_OFFICIAL_STORE = "EXTRA_IS_OFFICIAL_STORE";
+
+    public static Intent getIntent(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
+                                   ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
+                                   double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore){
+        Intent intent = new Intent(context, ProductVariantDashboardNewActivity.class);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, currencyType);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, defaultPrice);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, stockType);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        return intent;
+    }
 
     @Override
     protected Fragment getNewFragment() {

@@ -406,6 +406,10 @@ public class ProductPriceViewHolder extends ProductViewHolder
         }
     }
 
+    public boolean isOfficialStore() {
+        return officialStore;
+    }
+
     public interface Listener {
 
         /**
