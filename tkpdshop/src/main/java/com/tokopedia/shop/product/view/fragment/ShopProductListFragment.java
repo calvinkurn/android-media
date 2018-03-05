@@ -180,12 +180,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             }
         });
 
-        if (shopModuleRouter != null && !shopModuleRouter.isMyOwnShop(shopId) && TextUtils.isEmpty(etalaseName)) {
+        if (shopProductListPresenter.getUserSession().getShopId().equals(shopId) && TextUtils.isEmpty(etalaseName)) {
             chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
         } else {
             chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
         }
     }
+
 
     @Override
     public void onSwipeRefresh() {

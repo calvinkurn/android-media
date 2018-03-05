@@ -63,7 +63,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             @Override
             public void onClick(View view) {
                 if (shopProductClickedListener != null) {
-                    shopProductClickedListener.getShopModuleRouter().goToProductDetailFromShop(
+                    shopProductClickedListener.getShopModuleRouter().goToProductDetail(
                             itemView.getContext(),
                             shopProductViewModel.getProductUrl());
                 }

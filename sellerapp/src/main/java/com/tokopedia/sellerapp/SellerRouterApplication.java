@@ -168,7 +168,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter, ShopModuleRouter{
+        MitraToppersRouter, AbstractionRouter, ShopModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -185,49 +185,6 @@ public abstract class SellerRouterApplication extends MainApplication
         super.onCreate();
         initializeDagger();
         initializeRemoteConfig();
-    }
-
-    @Override
-    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.SHOP_TYPE)
-                .setName(getString(R.string.message_share_shop))
-                .setTextContent(shareLabel)
-                .setUri(shopUrl)
-                .setId(shopId)
-                .build();
-        startActivity(ShareActivity.createIntent(context, shareData));
-    }
-
-    @Override
-    public void goToProductDetailFromShop(Context context, String productUrl) {
-        goToProductDetail(context, productUrl);
-    }
-
-    @Override
-    public void goToManageShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
-    }
-
-    @Override
-    public void goToAddProduct(Context context) {
-        if(context != null && context instanceof Activity){
-            ProductAddActivity.start((Activity) context);
-        }
-    }
-
-    @Override
-    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
-            Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
-            startActivity(intent);
-        } else {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("login", true);
-            Intent  intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity)context).startActivityForResult(intent, 100);
-        }
     }
 
     private void initializeRemoteConfig() {
@@ -247,16 +204,6 @@ public abstract class SellerRouterApplication extends MainApplication
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
-    }
-
-    @Override
-    public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
-        return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
-    }
-
-    @Override
-    public Fragment getShopTalkFragment() {
-        return ShopTalkLimitedFragment.createInstance();
     }
 
     public GMComponent getGMComponent() {
@@ -1084,12 +1031,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isMyOwnShop(String shopId){
-        return getSession().getShopId().equals(shopId);
-    }
-
-
-    @Override
     public AnalyticTracker getAnalyticTracker() {
         return new AnalyticTracker() {
             @Override
@@ -1117,6 +1058,54 @@ public abstract class SellerRouterApplication extends MainApplication
                 });
             }
         };
+    }
+
+    @Override
+    public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+    }
+
+    @Override
+    public Fragment getShopTalkFragment() {
+        return ShopTalkLimitedFragment.createInstance();
+    }
+
+    @Override
+    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.SHOP_TYPE)
+                .setName(getString(R.string.message_share_shop))
+                .setTextContent(shareLabel)
+                .setUri(shopUrl)
+                .setId(shopId)
+                .build();
+        startActivity(ShareActivity.createIntent(context, shareData));
+    }
+
+    @Override
+    public void goToManageShop(Context context) {
+        context.startActivity(getIntentManageShop(context));
+    }
+
+    @Override
+    public void goToAddProduct(Context context) {
+        if(context != null && context instanceof Activity){
+            ProductAddActivity.start((Activity) context);
+        }
+    }
+
+    @Override
+    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
+        if (getSession().isLoggedIn()) {
+            UnifyTracking.eventShopSendChat();
+            Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
+            startActivity(intent);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("login", true);
+            Intent  intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+            ((Activity)context).startActivityForResult(intent, 100);
+        }
     }
 
     @Override
