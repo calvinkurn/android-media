@@ -56,7 +56,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
             }
             Intent intent = new Intent();
             intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModelGenerateTid());
+                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());
             setResult(RESULT_OK, intent);
             this.finish();
         } else {

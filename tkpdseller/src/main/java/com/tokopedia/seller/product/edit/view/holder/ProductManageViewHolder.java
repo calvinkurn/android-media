@@ -230,6 +230,10 @@ public class ProductManageViewHolder extends ProductViewHolder{
     public void updateModel(ProductViewModel model) {
         model.setProductStock(getTotalStock());
         model.setProductStatus(getStatusStock());
+        ProductVariantViewModel productVariantViewModel = model.getProductVariant();
+        if (productVariantViewModel!= null) {
+            productVariantViewModel.generateTid();
+        }
     }
 
     @Override
