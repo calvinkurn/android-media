@@ -86,6 +86,11 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             public void onButtonRelease() {
                 dynamicFilterView.onPriceSliderRelease();
             }
+
+            @Override
+            public void onButtonPressed() {
+                dynamicFilterView.onPriceSliderPressed();
+            }
         });
 
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {

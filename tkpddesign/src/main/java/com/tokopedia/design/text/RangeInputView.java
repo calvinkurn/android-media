@@ -314,6 +314,9 @@ public class RangeInputView extends BaseCustomView {
                         maxButton.setElevation(DEFAULT_EMPTY_ELEVATION);
                     }
                 }
+                if (gestureListener != null) {
+                    gestureListener.onButtonPressed();
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 isMinButtonDragging = false;
@@ -391,6 +394,7 @@ public class RangeInputView extends BaseCustomView {
 
     public interface GestureListener {
         void onButtonRelease();
+        void onButtonPressed();
     }
 
     private class MinInputListener extends InputTextFocusChangeListener {

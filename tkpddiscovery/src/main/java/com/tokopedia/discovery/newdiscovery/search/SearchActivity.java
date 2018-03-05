@@ -137,6 +137,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private SearchComponent searchComponent;
     private TextWatcher filterDetailSearchTextWatcher;
+    private boolean isPriceValueChangedSinceButtonPressed = false;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -609,6 +610,7 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void updateLastRangeValue(int minValue, int maxValue) {
+        isPriceValueChangedSinceButtonPressed = true;
         Filter priceFilter = getPriceFilter();
         if (priceFilter == null) {
             return;
@@ -820,7 +822,14 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onPriceSliderRelease() {
-        applyFilter();
+        if (isPriceValueChangedSinceButtonPressed) {
+            applyFilter();
+        }
+    }
+
+    @Override
+    public void onPriceSliderPressed() {
+        isPriceValueChangedSinceButtonPressed = false;
     }
 
     private void applyFilter() {

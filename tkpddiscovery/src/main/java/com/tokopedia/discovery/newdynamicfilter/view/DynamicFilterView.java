@@ -23,4 +23,5 @@ public interface DynamicFilterView {
 
     void updateLastRangeValue(int minValue, int maxValue);
     void onPriceSliderRelease();
+    void onPriceSliderPressed();
 }

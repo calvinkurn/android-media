@@ -404,6 +404,11 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     }
 
+    @Override
+    public void onPriceSliderPressed() {
+
+    }
+
     private void applyFilter() {
         renderFilterResult();
         finish();
