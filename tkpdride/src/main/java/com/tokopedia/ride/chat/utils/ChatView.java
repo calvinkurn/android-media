@@ -6,10 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -42,16 +40,8 @@ public class ChatView extends RelativeLayout {
 
     private ViewBuilderInterface viewBuilder;
     private FloatingActionButton actionButton;
-    private boolean useEditorAction, isTyping;
+    private boolean useEditorAction;
 
-    private Runnable typingTimerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isTyping) {
-                isTyping = false;
-            }
-        }
-    };
     private OnSentMessageListener onSentMessageListener;
     private OnSendSMSRetry onSendSMSRetry;
     private ChatViewListAdapter chatViewListAdapter;
@@ -96,8 +86,6 @@ public class ChatView extends RelativeLayout {
         setViewAttributes();
         setListAdapter();
         setButtonClickListeners();
-        setUserTypingListener();
-        setUserStoppedTypingListener();
     }
 
     private void initializeViews() {
@@ -270,43 +258,6 @@ public class ChatView extends RelativeLayout {
         });
     }
 
-    private void setUserTypingListener() {
-        inputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-
-                    if (!isTyping) {
-                        isTyping = true;
-                    }
-
-                    removeCallbacks(typingTimerRunnable);
-                    postDelayed(typingTimerRunnable, 1500);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
-
-    private void setUserStoppedTypingListener() {
-        inputEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                previousFocusState = hasFocus;
-            }
-        });
-    }
-
-
     @Override
     protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
         return super.addViewInLayout(child, index, params);
@@ -363,5 +314,4 @@ public class ChatView extends RelativeLayout {
     public interface OnSendSMSRetry {
         void onTapRetry(ChatMessage chatMessage);
     }
-
 }
