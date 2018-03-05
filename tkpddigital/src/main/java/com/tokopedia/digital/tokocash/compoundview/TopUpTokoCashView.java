@@ -34,6 +34,7 @@ public class TopUpTokoCashView extends FrameLayout {
     private Product productSelected;
     private CategoryData categoryData;
     private Operator operatorSelected;
+    private TextView title;
 
     public TopUpTokoCashView(Context context) {
         super(context);
@@ -57,6 +58,7 @@ public class TopUpTokoCashView extends FrameLayout {
         digitalProductChooserView = view.findViewById(R.id.digital_product_chooser_view);
         instantCheckoutCheckbox = view.findViewById(R.id.cb_instant_checkout);
         btnTopUp = view.findViewById(R.id.btn_topup);
+        title = view.findViewById(R.id.title_tokocash);
 
         btnTopUp.setOnClickListener(getClickListenerTopUp());
     }
@@ -72,7 +74,9 @@ public class TopUpTokoCashView extends FrameLayout {
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
                 operatorSelected.getDefaultProductId());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
+        title.setText(categoryData.getTitleText());
         instantCheckoutCheckbox.setVisibility(categoryData.isInstantCheckout() ? VISIBLE : GONE);
+        btnTopUp.setText(operatorSelected.getRule().getButtonText());
     }
 
     public void renderUpdateDataSelected(Product data) {
