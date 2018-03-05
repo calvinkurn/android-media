@@ -148,37 +148,27 @@ public class EventBookTicketPresenter
         if (requestCode == getView().getRequestCode()) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getProfile();
+            } else {
+                getView().hideProgressBar();
+                getView().showMessage("Failed to Login, Please try again");
             }
         }
     }
 
     private void getProfile() {
         getView().showProgressBar();
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
+        if (!SessionHandler.isV4Login(getView().getActivity())) {
+            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                    getLoginIntent(getView().getActivity());
+            getView().navigateToActivityRequest(intent, getView().getRequestCode());
+        } else {
+            getView().hideProgressBar();
+            if (hasSeatLayout == 1)
+                getSeatSelectionDetails();
+            else
+                validateSelection();
+        }
 
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase", "ON ERROR");
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().navigateToActivityRequest(intent, getView().getRequestCode());
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                getView().hideProgressBar();
-                if (hasSeatLayout == 1)
-                    getSeatSelectionDetails();
-                else
-                    validateSelection();
-            }
-        });
     }
 
     @Override
