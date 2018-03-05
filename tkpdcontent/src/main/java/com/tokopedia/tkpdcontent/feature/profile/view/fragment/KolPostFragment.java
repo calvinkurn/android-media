@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.KolComponentInstance;
 import com.tokopedia.tkpdcontent.KolRouter;
@@ -40,6 +41,8 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     KolPostListener.Presenter presenter;
     @Inject
     KolPostAdapter adapter;
+    @Inject
+    UserSession userSession;
     private View mainView;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
@@ -126,6 +129,11 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     @Override
     public KolRouter getKolRouter() {
         return kolRouter;
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return userSession;
     }
 
     @Override

@@ -1,14 +1,12 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics;
-
-import com.google.android.gms.tagmanager.DataLayer;
+package com.tokopedia.tkpdcontent.analytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_CLICK;
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_VIEW;
+import static com.tokopedia.tkpdcontent.analytics.KolTracking.Event.PROMO_CLICK;
+import static com.tokopedia.tkpdcontent.analytics.KolTracking.Event.PROMO_VIEW;
 
 /**
  * @author by nisie on 1/2/18.
@@ -41,25 +39,30 @@ public class KolTracking {
 
 
         public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
-            return DataLayer.mapOf(PROMO_VIEW, getListPromotions(listPromotion));
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put(PROMO_VIEW, getListPromotions(listPromotion));
+            return hashMap;
         }
 
         public static Map<String, Object> getKolContentEcommerceClick(List<Promotion> listPromotion) {
-            return DataLayer.mapOf(PROMO_CLICK, getListPromotions(listPromotion));
-
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put(PROMO_CLICK, getListPromotions(listPromotion));
+            return hashMap;
         }
 
         private static Map<String, Object> getListPromotions(List<Promotion> list) {
-            return DataLayer.mapOf(PROMOTIONS, createList(list));
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put(PROMOTIONS, createList(list));
+            return hashMap;
         }
 
         private static List<Object> createList(List<Promotion> listPromotion) {
-            List<Map<String, Object>> list = new ArrayList<>();
+            List<Object> list = new ArrayList<>();
             for (Promotion promo : listPromotion) {
                 Map<String, Object> map = createPromotionMap(promo);
                 list.add(map);
             }
-            return DataLayer.listOf(list.toArray(new Object[list.size()]));
+            return list;
         }
 
         private static Map<String, Object> createPromotionMap(Promotion promo) {
@@ -78,11 +81,8 @@ public class KolTracking {
 
     public static class Promotion {
 
-        private static final String CONTENT_FEED = "content feed";
-        private static final String FOLLOWED_KOL_POST = "followedkolpost";
+        private static final String NAME_PROFILE_PAGE = "/profile page";
         private static final String KOL_POST = "kolpost";
-        private static final String KOL_RECOMMENDATION = "kolrecommendation";
-        private static String PROFILE = "profile";
         int id;
         String name;
         String creative;
@@ -90,9 +90,11 @@ public class KolTracking {
         String category;
         int promoId;
         String promoCode;
+        String userId;
+        String userIdMod50;
 
-        public Promotion(int id, String name, String creative, int position,
-                         String category, int promoId, String promoCode) {
+        public Promotion(int id, String name, String creative, int position, String category, int
+                promoId, String promoCode, int userId) {
             this.id = id;
             this.name = name;
             this.creative = creative;
@@ -100,6 +102,8 @@ public class KolTracking {
             this.category = category;
             this.promoId = promoId;
             this.promoCode = promoCode;
+            this.userId = String.valueOf(userId);
+            this.userIdMod50 = String.valueOf(userId % 50);
         }
 
         /**
@@ -136,32 +140,33 @@ public class KolTracking {
             return promoCode;
         }
 
-        public static String createContentNameRecommendation() {
-            return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
+        public String getUserId() {
+            return userId;
         }
 
-        public static String createContentName(String tagsType, String cardType) {
-            return CONTENT_FEED + " - "
-                    + cardType + " - "
+        public String getUserIdMod50() {
+            return userIdMod50;
+        }
+
+        public static String createContentNameKolPost(String tagsType) {
+            return NAME_PROFILE_PAGE + " - "
+                    + KOL_POST + " - "
                     + tagsType;
         }
     }
 
-    public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion, int
-            userId) {
-        return DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
-                KEY_USER_ID, String.valueOf(userId),
-                KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+    public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(EVENT, PROMO_VIEW);
+        hashMap.put(ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+        return hashMap;
     }
 
-    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion, int
-            userId) {
-        return DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                KEY_USER_ID, String.valueOf(userId),
-                KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
+    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion,
+                                                          int userId) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(EVENT, PROMO_CLICK);
+        hashMap.put(ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+        return hashMap;
     }
 }
