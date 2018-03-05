@@ -257,7 +257,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onAddOrChangeAddress() {
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION);
+                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
 
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
