@@ -53,6 +53,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
         newItemData.setCartPosition(multipleAddressItemData.getCartPosition());
         newItemData.setAddressPosition(multipleAddressAdapterData.getItemListData().size());
         newItemData.setAddressId(editableAddressModel.getId());
+        newItemData.setProductId(multipleAddressItemData.getProductId());
         newItemData.setAddressTitle(editableAddressModel.getAddressName());
         newItemData.setAddressReceiverName(editableAddressModel.getRecipientName());
         newItemData.setAddressStreet(editableAddressModel.getAddressStreet());
