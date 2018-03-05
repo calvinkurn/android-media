@@ -3,16 +3,21 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -20,7 +25,11 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+
+import java.util.List;
 
 /**
  * Created by hendry on 4/3/17.
@@ -35,6 +44,8 @@ public class ProductVariantDetailLeafFragment extends Fragment {
     private @CurrencyTypeDef
     int currencyType;
     private CurrencyTextWatcher currencyTextWatcher;
+    private ImageView ivVariant;
+    private View frameImage;
 
     public interface OnProductVariantDetailLeafFragmentListener {
         void onSubmitVariant();
@@ -45,6 +56,8 @@ public class ProductVariantDetailLeafFragment extends Fragment {
 
         @CurrencyTypeDef
         int getCurrencyTypeDef();
+
+        ProductVariantOptionChild getProductVariantChild();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
@@ -105,6 +118,41 @@ public class ProductVariantDetailLeafFragment extends Fragment {
 
         labelSwitchStatus.setChecked(productVariantCombinationViewModel.isActive());
         setStockLabel(productVariantCombinationViewModel.isActive());
+
+        frameImage = view.findViewById(R.id.frame_image);
+        ivVariant = view.findViewById(R.id.image_view);
+
+        ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
+        if (childLvl1Model == null) {
+            frameImage.setVisibility(View.GONE);
+        } else {
+            frameImage.setVisibility(View.VISIBLE);
+
+            List<ProductPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+            ProductPictureViewModel pictureViewModel = null;
+            if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
+                pictureViewModel = productPictureViewModelList.get(0);
+            }
+
+            if (pictureViewModel != null && !TextUtils.isEmpty(pictureViewModel.getUrlOriginal())) {
+                ivVariant.setBackgroundColor(Color.TRANSPARENT);
+                ImageHandler.LoadImage(ivVariant, pictureViewModel.getUrlOriginal());
+            } else if (!TextUtils.isEmpty(childLvl1Model.getHex())) {
+                ivVariant.setBackgroundColor(Color.parseColor(childLvl1Model.getHex()));
+                ivVariant.setImageDrawable(null);
+            } else {
+                ivVariant.setBackgroundColor(Color.LTGRAY);
+                ivVariant.setImageDrawable(null);
+            }
+
+            ivVariant.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO change image
+                    Toast.makeText(ivVariant.getContext(), "Test", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override

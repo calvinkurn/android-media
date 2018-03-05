@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
@@ -20,6 +21,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         ProductVariantDetailLeafFragment.OnProductVariantDetailLeafFragmentListener {
 
     public static final String EXTRA_PRODUCT_VARIANT_LEAF_DATA = "var_data";
+    public static final String EXTRA_PRODUCT_VARIANT_OPTION_CHILD = "opt_child";
     public static final String EXTRA_PRODUCT_VARIANT_NAME = "var_name";
     public static final String EXTRA_CURRENCY_TYPE = "curr_type";
 //    public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
@@ -33,28 +35,33 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
 
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
     private String variantName;
+    ProductVariantOptionChild productVariantOptionChild;
 
     private @CurrencyTypeDef int currencyType;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                             ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType){
-        Intent intent = getIntent(context, productVariantCombinationViewModel, variantName, currencyType);
+        Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild, variantName, currencyType);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static void start(Activity activity,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                             ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType){
-        Intent intent = getIntent(activity, productVariantCombinationViewModel, variantName, currencyType);
+        Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild, variantName, currencyType);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
                                    ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                                   ProductVariantOptionChild productVariantOptionChild,
                                    String variantName, @CurrencyTypeDef int currencyType){
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_NAME, variantName);
         intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
         return intent;
@@ -73,8 +80,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         } else {
             productVariantCombinationViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_LEAF_DATA);
         }
-
-        toolbar.setTitle(getTitle() + " " + variantName);
+        productVariantOptionChild = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
     }
 
     @Override
@@ -85,6 +91,11 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     @Override
     public int getCurrencyTypeDef() {
         return currencyType;
+    }
+
+    @Override
+    public ProductVariantOptionChild getProductVariantChild() {
+        return productVariantOptionChild;
     }
 
     @Override

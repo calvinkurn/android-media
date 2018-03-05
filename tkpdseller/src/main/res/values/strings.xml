@@ -223,5 +223,6 @@
     <string name="opportunity_detail_info_different_delivery_price_content">Ongkos kirim yang dicoret akan dicantumkan di invoice. Estimasi ongkos kirim baru telah disesuaikan dengan lokasi Anda.</string>
     <string name="product_label_product_delivery">Pengiriman Produk</string>
     <string name="product_label_product_manage">Pengelolaan Produk</string>
+    <string name="product_variant_price_must_be_filled">Harga varian tidak boleh kosong.</string>
 
 </resources>

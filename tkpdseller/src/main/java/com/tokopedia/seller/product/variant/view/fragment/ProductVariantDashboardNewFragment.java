@@ -61,6 +61,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private HashMap<String, Integer> mapLevel2;
     private HashMap<Pair<String, String>, Integer> mapCombination;
     private Parcelable recyclerViewState;
+    private int defaultPrice;
+    private int defaultStockType;
+    private boolean isOfficialStore;
 
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
@@ -80,6 +83,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             productVariantByCatModelList = getProductVariantByCatModelListFromJson();
         }
         currencyType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
+        defaultPrice = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
+        defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
+        isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, false);
 
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
@@ -129,7 +135,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     public String loadJSONFromAsset2() {
         String json = null;
         try {
-            InputStream is = getContext().getAssets().open("test_variant_by_prd.json");
+            InputStream is = getContext().getAssets().open("test_variant_by_prd_empty.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -260,6 +266,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList().get(0),
+                    productVariantDashboardNewViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     currencyType);
         }
@@ -494,6 +501,10 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             }
             productVariantDashboardNewViewModelList.add(productVariantDashboardNewViewModel);
         }
+    }
+
+    public ProductVariantViewModel getProductVariantViewModel() {
+        return productVariantViewModel;
     }
 
     public ProductVariantViewModel getProductVariantViewModelGenerateTid() {
