@@ -55,6 +55,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -111,13 +112,14 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -185,6 +187,49 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
     }
 
+    @Override
+    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.SHOP_TYPE)
+                .setName(getString(R.string.message_share_shop))
+                .setTextContent(shareLabel)
+                .setUri(shopUrl)
+                .setId(shopId)
+                .build();
+        startActivity(ShareActivity.createIntent(context, shareData));
+    }
+
+    @Override
+    public void goToProductDetailFromShop(Context context, String productUrl) {
+        goToProductDetail(context, productUrl);
+    }
+
+    @Override
+    public void goToManageShop(Context context) {
+        context.startActivity(getIntentManageShop(context));
+    }
+
+    @Override
+    public void goToAddProduct(Context context) {
+        if(context != null && context instanceof Activity){
+            ProductAddActivity.start((Activity) context);
+        }
+    }
+
+    @Override
+    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
+        if (getSession().isLoggedIn()) {
+            UnifyTracking.eventShopSendChat();
+            Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
+            startActivity(intent);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("login", true);
+            Intent  intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+            ((Activity)context).startActivityForResult(intent, 100);
+        }
+    }
+
     private void initializeRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
@@ -212,16 +257,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getShopTalkFragment() {
         return ShopTalkLimitedFragment.createInstance();
-    }
-
-    @Override
-    public Intent getEtalaseIntent(Context context, String shopId, int currentChoosen) {
-
-        if(isMyOwnShop(shopId)){
-            return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen);
-        }else{
-            return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen);
-        }
     }
 
     public GMComponent getGMComponent() {
@@ -729,7 +764,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentManageShop(Context context) {
-        return TkpdSeller.getIntentManageShop(context);
+        Intent intent = new Intent(context, ShopEditorActivity.class);
+        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        UnifyTracking.eventManageShopInfo();
+
+        return intent;
     }
 
     @Override
