@@ -10,6 +10,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:visibility="visible"
+            android:background="@drawable/background_shadow_bottom_top_profile"/>
+
         <com.tokopedia.profile.view.customview.PartialUserDataView
             android:id="@+id/profile_data"
             android:layout_width="match_parent"
