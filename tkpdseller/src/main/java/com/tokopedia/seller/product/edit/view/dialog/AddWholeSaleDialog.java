@@ -15,15 +15,15 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.design.text.CounterInputView;
+import com.tokopedia.design.text.DecimalInputView;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
-import com.tokopedia.design.text.CounterInputView;
-import com.tokopedia.design.text.DecimalInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
-import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -39,40 +39,28 @@ import java.util.Locale;
 public class AddWholeSaleDialog extends DialogFragment {
 
     public static final String TAG = "AddWholeSaleDialog";
-    public static final String KEY_WHOLE_SALE_BASE_VALUE = "KEY_WHOLE_SALE_BASE_VALUE";
     public static final String KEY_WHOLE_SALE_PREVIOUS_VALUE = "KEY_WHOLE_SALE_PREVIOUS_VALUE";
     public static final String KEY_CURRENCY_TYPE = "KEY_CURRENCY_TYPE";
     public static final String IS_OFFICIAL_STORE = "isOfficialStore";
-    private final Locale dollarLocale = Locale.US;
-    private final Locale idrLocale = new Locale("in", "ID");
-    OnDismissListener onDismissListener;
+
+    private OnDismissListener onDismissListener;
     private WholeSaleDialogListener listener;
-    private CounterInputView maxWholeSale;
-    private CounterInputView minWholeSale;
-    private DecimalInputView wholesalePrice;
-    private WholesaleModel baseValue;
-    private TextView title;
+
+    private CounterInputView minQuantityCounterInputView;
+    private DecimalInputView priceDecimalInputView;
     @CurrencyTypeDef
     private int currencyType;
     private WholesaleModel previousValue;
     private boolean isErrorReturn;
-    private long minQuantityRaw = 0;
-    private CurrencyIdrTextWatcher idrTextWatcher;
-    private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
     private boolean isOfficialStore;
 
-    public static AddWholeSaleDialog newInstance(
-            WholesaleModel fixedPrice,
-            @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice,
-            boolean isOfficialStore) {
+    public static AddWholeSaleDialog newInstance(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean isOfficialStore) {
         AddWholeSaleDialog addWholeSaleDialog = new AddWholeSaleDialog();
         Bundle bundle = new Bundle();
-        if (previousWholesalePrice != null)
+        if (previousWholesalePrice != null) {
             bundle.putParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE, previousWholesalePrice);
-
-        bundle.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, fixedPrice);
+        }
         bundle.putInt(KEY_CURRENCY_TYPE, currencyType);
         bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore);
         addWholeSaleDialog.setArguments(bundle);
@@ -89,7 +77,6 @@ public class AddWholeSaleDialog extends DialogFragment {
         if (previousValue != null) {
             outState.putParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE, previousValue);
         }
-        outState.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, baseValue);
         outState.putInt(KEY_CURRENCY_TYPE, currencyType);
         outState.putBoolean(IS_OFFICIAL_STORE, isOfficialStore);
     }
@@ -110,26 +97,23 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_product_add_whole_sale, container, false);
-        determineFormatter();
-        title = (TextView) view.findViewById(R.id.string_picker_dialog_title);
-        title.setText(R.string.product_add_whole_sale_title);
-        minWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_whole_sale);
-        maxWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_maximum_whole_sale);
-        wholesalePrice = (DecimalInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
-        view.findViewById(R.id.string_picker_dialog_confirm)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        addItem(getItem());
-                    }
-                });
-        view.findViewById(R.id.string_picker_dialog_cancel)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dismiss();
-                    }
-                });
+        formatter = NumberFormat.getNumberInstance(Locale.US);
+        TextView titleTextView = view.findViewById(R.id.text_view_title);
+        titleTextView.setText(R.string.product_add_whole_sale_title);
+        minQuantityCounterInputView = view.findViewById(R.id.counter_input_view_min_quantity);
+        priceDecimalInputView = view.findViewById(R.id.decimal_input_view_price);
+        view.findViewById(R.id.string_picker_dialog_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem(getItem());
+            }
+        });
+        view.findViewById(R.id.string_picker_dialog_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         if (savedInstanceState == null && getArguments() != null) {
             extractBundle(getArguments());
@@ -138,139 +122,59 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
 
         // set min based on previous data
-        String minQuantity = null;
-        boolean firstTime = false;
-        if (previousValue == null) {
-            firstTime = true;
-            minQuantityRaw = baseValue.getQtyMin() + 1;
-            minQuantity = Long.toString(minQuantityRaw);
-        } else {
-            minQuantityRaw = previousValue.getQtyMin() + 1;
-            minQuantity = Long.toString(minQuantityRaw);
-        }
-        minWholeSale.setText(minQuantity);
-        /**
-         * first time means whole sale price at index 1.
-         */
-        if (firstTime) {
-            minWholeSale.setEnabled(true);
-            minWholeSale.addTextChangedListener(new NumberTextWatcher(minWholeSale.getEditText()) {
-                @Override
-                public void onNumberChanged(double minQuantity) {
-                    super.onNumberChanged(minQuantity);
-                    if (validateMinQuantity(minQuantity)) return;
-                    validateMaxQuantity(maxWholeSale.getDoubleValue(), true);
-                }
-            });
-        } else {
-            minWholeSale.setEnabled(false);
-        }
+        minQuantityCounterInputView.setText(Long.toString(previousValue.getQtyMin() + 1));
+        minQuantityCounterInputView.addTextChangedListener(new NumberTextWatcher(minQuantityCounterInputView.getEditText()) {
 
-        final boolean finalIsFirsttime = firstTime;
-        maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText()) {
             @Override
-            public void onNumberChanged(double maxQuantity) {
-                super.onNumberChanged(maxQuantity);
-                validateMaxQuantity(maxQuantity, finalIsFirsttime);
+            public void onNumberChanged(double minQuantity) {
+                super.onNumberChanged(minQuantity);
+                validateMinQuantity(minQuantity);
             }
         });
-        maxWholeSale.setText(Long.toString(minQuantityRaw + 1));
-        maxWholeSale.invalidate();
-        maxWholeSale.requestLayout();
-
-        double idrBaseMinimumValue = 0;
-        if (previousValue == null) {
-            idrBaseMinimumValue = baseValue.getQtyPrice() - 1;
-        } else {
-            idrBaseMinimumValue = previousValue.getQtyPrice() - 1;
-        }
-
-        idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText()) {
-            @Override
-            public void onNumberChanged(double number) {
-                validatePrice(number);
-            }
-        };
-
-        double usdBaseMinimumValue = 0;
-        if (previousValue == null) {
-            usdBaseMinimumValue = baseValue.getQtyPrice() - 0.01;
-        } else {
-            usdBaseMinimumValue = previousValue.getQtyPrice() - 0.01;
-        }
-        usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText()) {
-            @Override
-            public void onNumberChanged(double number) {
-                validatePrice(number);
-            }
-        };
 
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
-                wholesalePrice.addTextChangedListener(usdTextWatcher);
-                wholesalePrice.setValue(usdBaseMinimumValue);
+                double usdBaseMinimumValue = previousValue.getQtyPrice() - 0.01;
+                priceDecimalInputView.addTextChangedListener(new CurrencyUsdTextWatcher(priceDecimalInputView.getEditText()) {
+                    @Override
+                    public void onNumberChanged(double number) {
+                        validatePrice(number);
+                    }
+                });
+                priceDecimalInputView.setValue(usdBaseMinimumValue);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
-                wholesalePrice.addTextChangedListener(idrTextWatcher);
-                wholesalePrice.setValue(idrBaseMinimumValue);
+                double idrBaseMinimumValue = previousValue.getQtyPrice() - 1;
+                priceDecimalInputView.addTextChangedListener(new CurrencyIdrTextWatcher(priceDecimalInputView.getEditText()) {
+                    @Override
+                    public void onNumberChanged(double number) {
+                        validatePrice(number);
+                    }
+                });
+                priceDecimalInputView.setValue(idrBaseMinimumValue);
                 break;
 
         }
-        wholesalePrice.invalidate();
-        wholesalePrice.requestLayout();
-
+        priceDecimalInputView.invalidate();
+        priceDecimalInputView.requestLayout();
         return view;
     }
 
-    private void determineFormatter() {
-        formatter = NumberFormat.getNumberInstance(dollarLocale);
-    }
-
-    protected void validateMaxQuantity(double maxQuantity, boolean finalIsFirsttime) {
-        /**
-         * less than minimum is not allowed, equal and larger is a must.
-         */
-        if (maxQuantity < minQuantityRaw) {
-            maxWholeSale.setError(getString(R.string.product_quantity_range_is_not_valid));
-            isErrorReturn = true;
-            return;
-        }
-
-        if (finalIsFirsttime) {
-            if (maxQuantity <= minWholeSale.getDoubleValue()) {
-                maxWholeSale.setError(getString(R.string.product_prompt_larger));
-                isErrorReturn = true;
-                return;
-            }
-            validateMinQuantity(minWholeSale.getDoubleValue());
-        }
-
-        isErrorReturn = false;
-        maxWholeSale.setError(null);
-    }
-
     protected boolean validateMinQuantity(double minQuantity) {
-        if (minQuantity <= 0) {
-            minWholeSale.setError(getString(R.string.product_quantity_range_is_not_valid));
-            minWholeSale.updateMinusButtonState(false);
+        if (minQuantity <= previousValue.getQtyMin()) {
+            minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
+            minQuantityCounterInputView.updateMinusButtonState(false);
             return isErrorReturn = true;
         }
 
-        if (minQuantity >= maxWholeSale.getDoubleValue()) {
-            minWholeSale.setError(getString(R.string.product_prompt_lesser));
-            return isErrorReturn = true;
-        }
-
-        minWholeSale.setError(null);
-        minWholeSale.updateMinusButtonState(true);
+        minQuantityCounterInputView.setError(null);
+        minQuantityCounterInputView.updateMinusButtonState(true);
         return isErrorReturn = false;
     }
 
     protected void extractBundle(Bundle data) {
         data.setClassLoader(WholesaleModel.class.getClassLoader());
-        baseValue = data.getParcelable(KEY_WHOLE_SALE_BASE_VALUE);
-
         // parse to certain currency
         switch (data.getInt(KEY_CURRENCY_TYPE)) {
             case CurrencyTypeDef.TYPE_USD:
@@ -289,28 +193,23 @@ public class AddWholeSaleDialog extends DialogFragment {
     protected void validatePrice(double currencyValue) {
         Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType, isOfficialStore);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
-            wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
+            priceDecimalInputView.setError(getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
             isErrorReturn = true;
             return;
         }
 
-        if (currencyValue >= baseValue.getQtyPrice()) {
-            wholesalePrice.setError(getString(R.string.product_price_should_be_cheaper_than_fix_price));
+        if (currencyValue >= previousValue.getQtyPrice()) {
+            if (previousValue.getQtyMin() <= 1) {
+                priceDecimalInputView.setError(getString(R.string.product_price_should_be_cheaper_than_fix_price));
+            } else {
+                priceDecimalInputView.setError(getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
+            }
             isErrorReturn = true;
             return;
         }
-
-        if (previousValue != null) {
-            if (currencyValue >= previousValue.getQtyPrice()) {
-                wholesalePrice.setError(getString(R.string.product_price_should_be_cheaper_than_previous_wholesale_price));
-                isErrorReturn = true;
-                return;
-            }
-        }
-
         isErrorReturn = false;
-        wholesalePrice.setError(null);
+        priceDecimalInputView.setError(null);
     }
 
     @Override
@@ -324,8 +223,8 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void addItem(WholesaleModel object) {
-        if(!isErrorReturn)
-            validatePrice(wholesalePrice.getDoubleValue());
+        if (!isErrorReturn)
+            validatePrice(priceDecimalInputView.getDoubleValue());
 
         if (isErrorReturn)
             return;
@@ -336,8 +235,8 @@ public class AddWholeSaleDialog extends DialogFragment {
 
     protected WholesaleModel getItem() {
         return new WholesaleModel(
-                Integer.parseInt(removeComma(minWholeSale.getEditText().getText().toString())),
-                Double.parseDouble(removeComma(wholesalePrice.getEditText().getText().toString()))
+                Integer.parseInt(removeComma(minQuantityCounterInputView.getEditText().getText().toString())),
+                Double.parseDouble(removeComma(priceDecimalInputView.getEditText().getText().toString()))
         );
     }
 
@@ -348,7 +247,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (onDismissListener!= null) {
+        if (onDismissListener != null) {
             onDismissListener.onDismiss();
             onDismissListener = null;
         }

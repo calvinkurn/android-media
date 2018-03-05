@@ -194,7 +194,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.edit.view.activity.CatalogPickerActivity"
+            android:name=".product.edit.view.activity.ProductAddCatalogPickerActivity"
             android:exported="true"
             android:label="@string/title_activity_catalog_picker"
             android:screenOrientation="portrait" />
@@ -205,7 +205,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
+            android:name=".product.edit.view.activity.ProductAddVideoActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
 

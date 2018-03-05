@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -24,7 +23,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
@@ -369,8 +368,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     private void processCatalogFromActivityResult(Intent intent) {
-        catalogId = intent.getLongExtra(CatalogPickerActivity.CATALOG_ID, 0);
-        String catalogName = intent.getStringExtra(CatalogPickerActivity.CATALOG_NAME);
+        catalogId = intent.getLongExtra(ProductAddCatalogPickerActivity.CATALOG_ID, 0);
+        String catalogName = intent.getStringExtra(ProductAddCatalogPickerActivity.CATALOG_NAME);
         setCatalog(catalogId, catalogName);
     }
 

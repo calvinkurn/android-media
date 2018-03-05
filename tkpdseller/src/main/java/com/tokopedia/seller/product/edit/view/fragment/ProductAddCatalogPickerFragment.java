@@ -19,7 +19,7 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.di.component.CatalogPickerComponent;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.adapter.CatalogPickerAdapter;
 import com.tokopedia.seller.product.edit.view.listener.CatalogPickerView;
 import com.tokopedia.seller.product.edit.view.presenter.CatalogPickerPresenter;
@@ -30,7 +30,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class CatalogPickerFragment extends BaseDaggerFragment implements CatalogPickerView, CatalogPickerAdapter.OnCatalogPickerListener {
+public class ProductAddCatalogPickerFragment extends BaseDaggerFragment implements CatalogPickerView, CatalogPickerAdapter.OnCatalogPickerListener {
     public static final String TAG = "CatalogPicker";
 
     public static final int ROWS = 20;
@@ -45,14 +45,14 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
     private CatalogPickerAdapter adapter;
     private LinearLayoutManager llm;
 
-    public static CatalogPickerFragment newInstance(String keyword, long departmentId, long selectedCatalogID) {
+    public static ProductAddCatalogPickerFragment newInstance(String keyword, long departmentId, long selectedCatalogID) {
 
         Bundle args = new Bundle();
 
-        CatalogPickerFragment fragment = new CatalogPickerFragment();
-        args.putString(CatalogPickerActivity.KEYWORD, keyword);
-        args.putLong(CatalogPickerActivity.DEP_ID, departmentId);
-        args.putLong(CatalogPickerActivity.CATALOG_ID, selectedCatalogID);
+        ProductAddCatalogPickerFragment fragment = new ProductAddCatalogPickerFragment();
+        args.putString(ProductAddCatalogPickerActivity.KEYWORD, keyword);
+        args.putLong(ProductAddCatalogPickerActivity.DEP_ID, departmentId);
+        args.putLong(ProductAddCatalogPickerActivity.CATALOG_ID, selectedCatalogID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,9 +61,9 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        keyword = bundle.getString(CatalogPickerActivity.KEYWORD);
-        departmentId = bundle.getLong(CatalogPickerActivity.DEP_ID);
-        selectedCatalogId = bundle.getLong(CatalogPickerActivity.CATALOG_ID);
+        keyword = bundle.getString(ProductAddCatalogPickerActivity.KEYWORD);
+        departmentId = bundle.getLong(ProductAddCatalogPickerActivity.DEP_ID);
+        selectedCatalogId = bundle.getLong(ProductAddCatalogPickerActivity.CATALOG_ID);
 
         adapter = new CatalogPickerAdapter(null, selectedCatalogId, 0);
         adapter.setListener(this);
@@ -172,8 +172,8 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
             return null;
         } else {
             Intent intent = new Intent();
-            intent.putExtra(CatalogPickerActivity.CATALOG_ID, adapterSelectedCatalogId);
-            intent.putExtra(CatalogPickerActivity.CATALOG_NAME, adapter.getSelectedCatalogName());
+            intent.putExtra(ProductAddCatalogPickerActivity.CATALOG_ID, adapterSelectedCatalogId);
+            intent.putExtra(ProductAddCatalogPickerActivity.CATALOG_NAME, adapter.getSelectedCatalogName());
             return intent;
         }
     }
@@ -185,8 +185,8 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
             resultIntent = null;
         } else {
             Intent intent = new Intent();
-            intent.putExtra(CatalogPickerActivity.CATALOG_ID, catalogId);
-            intent.putExtra(CatalogPickerActivity.CATALOG_NAME, catalogName);
+            intent.putExtra(ProductAddCatalogPickerActivity.CATALOG_ID, catalogId);
+            intent.putExtra(ProductAddCatalogPickerActivity.CATALOG_NAME, catalogName);
             resultIntent = intent;
         }
         if (resultIntent != null) {

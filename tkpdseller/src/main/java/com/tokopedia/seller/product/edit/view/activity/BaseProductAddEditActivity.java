@@ -86,13 +86,8 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void startAddWholeSaleDialog(
-            WholesaleModel fixedPrice,
-            @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice, boolean officialStore) {
-        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(
-                fixedPrice, currencyType, previousWholesalePrice, officialStore
-        );
+    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
+        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(currencyType, previousWholesalePrice, officialStore);
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
         addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
             @Override

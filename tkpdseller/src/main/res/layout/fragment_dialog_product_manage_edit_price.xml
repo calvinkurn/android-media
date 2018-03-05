@@ -6,7 +6,7 @@
     android:padding="@dimen/padding_med">
 
     <TextView
-        android:id="@+id/string_picker_dialog_title"
+        android:id="@+id/text_view_title"
         style="@style/TextView.TitleBig"
         android:layout_marginBottom="@dimen/margin_sm"
         android:text="@string/product_manage_menu_set_price" />
