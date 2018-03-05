@@ -22,7 +22,7 @@ public class PaymentTracking extends TrackingUtils {
     public static void eventTransactionGTM(Purchase purchase) {
         BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         getGTMEngine().eventTransaction(purchase);
-        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX_OLD);
         getGTMEngine().clearTransactionDataLayer(purchase);
     }
 
