@@ -27,12 +27,4 @@ public final class TagsFeedKol {
   @SerializedName("caption")
   @Expose
   public String caption;
-
-  @SerializedName("captionInd")
-  @Expose
-  public String captionInd;
-
-  @SerializedName("captionEng")
-  @Expose
-  public String captionEng;
 }

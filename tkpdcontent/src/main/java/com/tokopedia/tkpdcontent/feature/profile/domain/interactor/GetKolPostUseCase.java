@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdcontent.feature.profile.domain.interactor;
 
-import com.tokopedia.tkpdcontent.feature.profile.data.source.GetProfileKolDataSourceCloud;
+import com.tokopedia.tkpdcontent.feature.profile.data.source.GetKolPostSourceCloud;
 import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -13,22 +13,22 @@ import rx.Observable;
  * @author by milhamj on 20/02/18.
  */
 
-public class GetProfileKolDataUseCase extends UseCase<KolProfileModel> {
+public class GetKolPostUseCase extends UseCase<KolProfileModel> {
     public static final String PARAM_USER_ID = "userID";
     public static final String PARAM_CURSOR = "cursor";
     public static final String PARAM_LIMIT = "limit";
     public static final int KOL_POST_LIMIT = 5;
 
-    private final GetProfileKolDataSourceCloud getProfileKolDataSourceCloud;
+    private final GetKolPostSourceCloud getKolPostSourceCloud;
 
     @Inject
-    public GetProfileKolDataUseCase(GetProfileKolDataSourceCloud getProfileKolDataSourceCloud) {
-        this.getProfileKolDataSourceCloud = getProfileKolDataSourceCloud;
+    public GetKolPostUseCase(GetKolPostSourceCloud getKolPostSourceCloud) {
+        this.getKolPostSourceCloud = getKolPostSourceCloud;
     }
 
     @Override
     public Observable<KolProfileModel> createObservable(RequestParams requestParams) {
-        return getProfileKolDataSourceCloud.getProfileKolData(requestParams);
+        return getKolPostSourceCloud.getProfileKolData(requestParams);
     }
 
     public static RequestParams getParams(String userId, String lastCursor) {

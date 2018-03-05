@@ -1,9 +1,9 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
+import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetKolPostUseCase;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.GetProfileKolDataSubscriber;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.GetKolPostSubscriber;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 
 import javax.inject.Inject;
@@ -14,13 +14,13 @@ import javax.inject.Inject;
 
 public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
         implements KolPostListener.Presenter {
-    private final GetProfileKolDataUseCase getProfileKolDataUseCase;
+    private final GetKolPostUseCase getKolPostUseCase;
 
     private String lastCursor = "";
 
     @Inject
-    public KolPostPresenter(GetProfileKolDataUseCase getProfileKolDataUseCase) {
-        this.getProfileKolDataUseCase = getProfileKolDataUseCase;
+    public KolPostPresenter(GetKolPostUseCase getKolPostUseCase) {
+        this.getKolPostUseCase = getKolPostUseCase;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     @Override
     public void getKolPost(String userId) {
         getView().showLoading();
-        getProfileKolDataUseCase.execute(
-                GetProfileKolDataUseCase.getParams(userId, lastCursor),
-                new GetProfileKolDataSubscriber(getView())
+        getKolPostUseCase.execute(
+                GetKolPostUseCase.getParams(userId, lastCursor),
+                new GetKolPostSubscriber(getView())
         );
 
     }

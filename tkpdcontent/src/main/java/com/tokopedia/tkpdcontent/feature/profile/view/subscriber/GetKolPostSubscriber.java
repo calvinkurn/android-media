@@ -18,10 +18,10 @@ import rx.Subscriber;
  * @author by milhamj on 26/02/18.
  */
 
-public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
+public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
     private final KolPostListener.View view;
 
-    public GetProfileKolDataSubscriber(KolPostListener.View view) {
+    public GetKolPostSubscriber(KolPostListener.View view) {
         this.view = view;
     }
 

@@ -21,28 +21,24 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor
-        .GetProfileKolDataUseCase.KOL_POST_LIMIT;
-import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor
-        .GetProfileKolDataUseCase.PARAM_CURSOR;
-import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor
-        .GetProfileKolDataUseCase.PARAM_LIMIT;
-import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor
-        .GetProfileKolDataUseCase.PARAM_USER_ID;
+import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetKolPostUseCase.KOL_POST_LIMIT;
+import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetKolPostUseCase.PARAM_CURSOR;
+import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetKolPostUseCase.PARAM_LIMIT;
+import static com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetKolPostUseCase.PARAM_USER_ID;
 
 /**
  * @author by milhamj on 20/02/18.
  */
 
-public class GetProfileKolDataSourceCloud {
+public class GetKolPostSourceCloud {
     private final Context context;
     private final KolApi kolApi;
     private final GetProfileKolDataMapper getProfileKolDataMapper;
 
     @Inject
-    public GetProfileKolDataSourceCloud(@ApplicationContext Context context,
-                                        KolApi kolApi,
-                                        GetProfileKolDataMapper getProfileKolDataMapper) {
+    public GetKolPostSourceCloud(@ApplicationContext Context context,
+                                 KolApi kolApi,
+                                 GetProfileKolDataMapper getProfileKolDataMapper) {
         this.context = context;
         this.kolApi = kolApi;
         this.getProfileKolDataMapper = getProfileKolDataMapper;
@@ -61,7 +57,7 @@ public class GetProfileKolDataSourceCloud {
         variables.put(PARAM_LIMIT, requestParams.getInt(PARAM_LIMIT, KOL_POST_LIMIT));
 
         return new GraphqlRequest(
-                loadRawString(context.getResources(), R.raw.query_get_profile_kol_data),
+                loadRawString(context.getResources(), R.raw.query_get_user_kol_post),
                 variables
         );
     }
