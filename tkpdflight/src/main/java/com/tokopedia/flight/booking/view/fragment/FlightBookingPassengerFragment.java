@@ -530,6 +530,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void renderSelectedList(String passengerName) {
+        etSavedPassenger.setText(passengerName);
+    }
+
+    @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
         String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);

@@ -75,6 +75,8 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
+        void renderSelectedList(String passengerName);
+
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
