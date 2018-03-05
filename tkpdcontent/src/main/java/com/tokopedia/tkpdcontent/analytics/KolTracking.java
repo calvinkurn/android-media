@@ -15,8 +15,6 @@ import static com.tokopedia.tkpdcontent.analytics.KolTracking.Event.PROMO_VIEW;
 public class KolTracking {
 
     private static final String EVENT = "event";
-    private static final String KEY_USER_ID = "userId";
-    private static final String KEY_USER_ID_MOD = "userIdmodulo";
     private static final String ECOMMERCE = "ecommerce";
 
     public static class Event {
@@ -36,6 +34,8 @@ public class KolTracking {
         private static final String KEY_CATEGORY = "category";
         private static final String KEY_PROMO_ID = "promo_id";
         private static final String KEY_PROMO_CODE = "promo_code";
+        private static final String KEY_USER_ID = "userId";
+        private static final String KEY_USER_ID_MOD = "userIdmodulo";
 
 
         public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
@@ -74,6 +74,8 @@ public class KolTracking {
             map.put(KEY_CATEGORY, promo.getCategory());
             map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
             map.put(KEY_PROMO_CODE, promo.getPromoCode());
+            map.put(KEY_USER_ID, promo.getUserId());
+            map.put(KEY_USER_ID_MOD, promo.getUserIdMod50());
             return map;
         }
 
@@ -93,8 +95,8 @@ public class KolTracking {
         String userId;
         String userIdMod50;
 
-        public Promotion(int id, String name, String creative, int position, String category, int
-                promoId, String promoCode, int userId) {
+        public Promotion(int id, String name, String creative, int position, String category,
+                         int promoId, String promoCode, int userId) {
             this.id = id;
             this.name = name;
             this.creative = creative;
@@ -162,11 +164,10 @@ public class KolTracking {
         return hashMap;
     }
 
-    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion,
-                                                          int userId) {
+    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(EVENT, PROMO_CLICK);
-        hashMap.put(ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+        hashMap.put(ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
         return hashMap;
     }
 }

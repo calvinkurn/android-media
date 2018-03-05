@@ -2,6 +2,7 @@ package com.tokopedia.tkpdcontent.feature.profile.view.listener;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -20,6 +21,8 @@ public interface KolPostListener {
         Context getContext();
 
         KolRouter getKolRouter();
+
+        AbstractionRouter getAbstractionRouter();
 
         UserSession getUserSession();
 

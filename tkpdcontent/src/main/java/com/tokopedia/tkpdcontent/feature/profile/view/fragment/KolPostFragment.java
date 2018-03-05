@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -46,8 +47,9 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     private View mainView;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
-    private KolRouter kolRouter;
 
+    private AbstractionRouter abstractionRouter;
+    private KolRouter kolRouter;
     private String userId;
     private boolean canLoadMore = true;
 
@@ -78,6 +80,13 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
             kolRouter = (KolRouter) getActivity().getApplicationContext();
         } else {
             throw new IllegalStateException("Application must be an instance of KolRouter!");
+        }
+
+        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of " +
+                    "AbstractionRouter!");
         }
 
         return parentView;
@@ -129,6 +138,11 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     @Override
     public KolRouter getKolRouter() {
         return kolRouter;
+    }
+
+    @Override
+    public AbstractionRouter getAbstractionRouter() {
+        return abstractionRouter;
     }
 
     @Override

@@ -47,15 +47,18 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
                     new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
             );
 
-            List<KolTracking.Promotion> list = new ArrayList<>();
-            for (KolPostViewModel kolPostViewModel : kolProfileModel.getKolPostViewModels()) {
-                list.add(new KolTracking.Promotion(
+            for (int index = 0; index <= kolProfileModel.getKolPostViewModels().size(); index++) {
+                KolPostViewModel kolPostViewModel =
+                        kolProfileModel.getKolPostViewModels().get(index);
+
+                List<KolTracking.Promotion> promotionList = new ArrayList<>();
+                promotionList.add(new KolTracking.Promotion(
                         kolPostViewModel.getId(),
                         KolTracking.Promotion.createContentNameKolPost(
                                 kolPostViewModel.getTagsType()),
                         TextUtils.isEmpty(kolPostViewModel.getName()) ? "-" :
                                 kolPostViewModel.getName(),
-                        list.size(),
+                        index,
                         TextUtils.isEmpty(kolPostViewModel.getLabel()) ? "-" :
                                 kolPostViewModel.getLabel(),
                         kolPostViewModel.getContentId(),
@@ -63,8 +66,11 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
                                 kolPostViewModel.getContentLink(),
                         Integer.valueOf(view.getUserSession().getUserId())
                 ));
-//                ((AbstractionRouter) view.getContext().getApplicationContext())
-//                        .getAnalyticTracker().sendEventTracking(DataLayer);
+
+
+                view.getAbstractionRouter()
+                        .getAnalyticTracker()
+                        .sendEnhancedEcommerce(KolTracking.getKolImpressionTracking(promotionList));
             }
         } else {
             view.onEmptyKolPost();

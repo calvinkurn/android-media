@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.SessionRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -1071,6 +1072,11 @@ public abstract class SellerRouterApplication extends MainApplication
                         return screenName;
                     }
                 });
+            }
+
+            @Override
+            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                TrackingUtils.eventTrackingEnhancedEcommerce(trackingData);
             }
         };
     }
