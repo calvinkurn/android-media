@@ -22,15 +22,15 @@ public class MultipleAddressPriceSummaryData {
 
     private long totalPayment;
 
-    private String totalProductPriceText;
+    private String totalProductPriceText = "";
 
-    private String totalShippingPriceText;
+    private String totalShippingPriceText = "";
 
-    private String insurancePriceText;
+    private String insurancePriceText = "";
 
-    private String additionalFeeText;
+    private String additionalFeeText = "";
 
-    private String totalPaymentText;
+    private String totalPaymentText = "";
 
     private boolean isCouponActive;
 

@@ -28,7 +28,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     }
 
     @Override
-    public List<MultipleAddressShipmentAdapterData> setAdapter(CartShipmentAddressFormData data) {
+    public List<MultipleAddressShipmentAdapterData> initiateAdapterData(CartShipmentAddressFormData data) {
         List<MultipleAddressShipmentAdapterData> adapterDataList = new ArrayList<>();
         for (int addressIndex = 0; addressIndex < data.getGroupAddress().size(); addressIndex++) {
             GroupAddress currentAddress = data.getGroupAddress().get(addressIndex);
@@ -56,12 +56,17 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     );
                     addressItemData.setAddressStreet(currentAddress.getUserAddress().getAddress());
                     addressItemData.setAddressCityName(currentAddress.getUserAddress().getCityName());
-                    //addressItemData.setAddressProvinceName(currentAddress.getUserAddress().ge);
+                    addressItemData.setAddressProvinceName(
+                            currentAddress.getUserAddress().getProvinceName()
+                    );
+                    addressItemData.setAddressCountryName(currentAddress.getUserAddress()
+                            .getCountry());
                     adapterData.setItemData(addressItemData);
+                    adapterDataList.add(adapterData);
                 }
             }
         }
-        return null;
+        return adapterDataList;
     }
 
 }

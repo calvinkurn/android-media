@@ -88,8 +88,10 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
-                dataList(),
-                dummyPriceSummaryData(),
+                presenter.initiateAdapterData(
+                        (CartShipmentAddressFormData) getArguments()
+                        .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
+                ), new MultipleAddressPriceSummaryData(),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
