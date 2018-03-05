@@ -58,8 +58,8 @@ public class WavRecorder {
 
   return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
  }
-AudioRecorder.RecordCompleteListener listener;
- public void startRecording(AudioRecorder.RecordCompleteListener listener) {
+ RecordCompleteListener listener;
+ public void startRecording(RecordCompleteListener listener) {
   this.listener = listener;
   deleteOutputFile();
   recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
@@ -231,5 +231,9 @@ AudioRecorder.RecordCompleteListener listener;
   header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
   out.write(header, 0, 44);
+ }
+
+ public interface RecordCompleteListener {
+  public void onRecordComplete();
  }
 }

@@ -12,7 +12,6 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.tkpd.campaign.configuration.AudioRecorder;
 import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
@@ -38,7 +37,7 @@ import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
  * Created by sandeepgoyal on 21/02/18.
  */
 
-public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements AudioRecorder.RecordCompleteListener{
+public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements WavRecorder.RecordCompleteListener {
 
 
     PostAudioDataUseCase postShakeDetectUseCase;
