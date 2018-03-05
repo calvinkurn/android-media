@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list"
-    android:clickable="true"
-    tools:layout_editor_absoluteY="81dp">
+    android:clickable="true">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline7"
@@ -20,9 +19,10 @@
         android:id="@+id/image_card"
         android:layout_width="@dimen/image_width_product_list"
         android:layout_height="@dimen/image_width_product_list"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/new_margin_small"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginStart="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_ms"
         app:cardElevation="0dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,9 +44,7 @@
         android:id="@+id/wishlist_button_container"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
-        android:layout_marginEnd="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
-        android:background="@drawable/circle_white"
+        android:background="@drawable/bg_wishlist_circle_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,10 +52,10 @@
 
         <ImageView
             android:id="@+id/image_view_wishlist"
-            android:layout_width="@dimen/small_icon_size"
-            android:layout_height="@dimen/small_icon_size"
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
             android:layout_gravity="center"
-            android:background="@drawable/ic_wish_list_unchecked" />
+            android:background="@drawable/ic_wishlist_unchecked" />
 
     </FrameLayout>
 
@@ -129,8 +127,13 @@
         layout="@layout/partial_shop_product_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
         app:layout_constraintStart_toStartOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/margin_ms"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badges_container" />
 
 </android.support.constraint.ConstraintLayout>
