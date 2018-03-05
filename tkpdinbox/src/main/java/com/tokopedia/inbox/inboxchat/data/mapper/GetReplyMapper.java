@@ -154,12 +154,12 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())) {
 
-                if (!TextUtils.isEmpty(contact.getUserName())) {
-                    chatRoomViewModel.setNameHeader(contact.getUserName());
+                if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
+                    chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
                 }
 
-                if (!TextUtils.isEmpty(contact.getUserImage())) {
-                    chatRoomViewModel.setImageHeader(contact.getUserImage());
+                if (!TextUtils.isEmpty(contact.getAttributes().getThumbnail())) {
+                    chatRoomViewModel.setImageHeader(contact.getAttributes().getThumbnail());
                 }
 
             }

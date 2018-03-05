@@ -6,18 +6,37 @@ import com.google.gson.annotations.SerializedName;
 
 public class Contact {
 
+    @SerializedName("attributes")
+    @Expose
+    private Attributes attributes;
+    @SerializedName("interlocutor")
+    @Expose
+    private boolean interlocutor;
     @SerializedName("role")
     @Expose
     private String role;
     @SerializedName("user_id")
     @Expose
     private int userId;
-    @SerializedName("user_name")
+    @SerializedName("shop_id")
     @Expose
-    private String userName;
-    @SerializedName("user_image")
-    @Expose
-    private String userImage;
+    private int shopId;
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
+    }
+
+    public boolean isInterlocutor() {
+        return interlocutor;
+    }
+
+    public void setInterlocutor(boolean interlocutor) {
+        this.interlocutor = interlocutor;
+    }
 
     public String getRole() {
         return role;
@@ -35,15 +54,12 @@ public class Contact {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public int getShopId() {
+        return shopId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
-    public String getUserImage() {
-        return userImage;
-    }
 }
