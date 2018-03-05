@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.data.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
@@ -29,7 +31,9 @@ public class SubmitMultipleAddressUseCase extends UseCase<SetShippingAddressData
     public Observable<SetShippingAddressData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> mapParam = new TKPDMapParam<>();
         mapParam.putAll(requestParams.getParamsAllValueInString());
-        return repository.shippingAddress(mapParam).map(
+        return repository.shippingAddress(
+                AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), mapParam)
+        ).map(
                 new Func1<ShippingAddressDataResponse, SetShippingAddressData>() {
                     @Override
                     public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
