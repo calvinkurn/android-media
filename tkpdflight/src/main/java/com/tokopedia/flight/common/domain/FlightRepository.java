@@ -82,4 +82,6 @@ public interface FlightRepository {
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
     Observable<List<FlightPassengerDB>> getSavedPassenger();
+
+    Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
 }

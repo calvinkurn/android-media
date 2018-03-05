@@ -239,6 +239,25 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
+    public void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger) {
+        FlightBookingPassengerViewModel currentPassengerViewModel = getView().getCurrentPassengerViewModel();
+
+        currentPassengerViewModel.setPassengerFirstName(selectedPassenger.getPassengerFirstName());
+        currentPassengerViewModel.setPassengerLastName(selectedPassenger.getPassengerLastName());
+        currentPassengerViewModel.setType(selectedPassenger.getType());
+        currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
+        currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
+
+        if (selectedPassenger.getPassengerBirthdate() != null &&
+                !selectedPassenger.getPassengerBirthdate().isEmpty()) {
+            currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
+        }
+
+        getView().setCurrentPassengerViewModel(currentPassengerViewModel);
+        onViewCreated();
+    }
+
+    @Override
     public void onDeleteMeal(FlightBookingAmenityMetaViewModel viewModel) {
         List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(viewModel);

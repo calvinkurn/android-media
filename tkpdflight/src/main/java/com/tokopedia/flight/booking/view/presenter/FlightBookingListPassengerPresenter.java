@@ -4,8 +4,9 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
+import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
+import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
@@ -30,13 +31,17 @@ import static com.tokopedia.flight.common.util.FlightPassengerTitleType.TUAN;
 public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<FlightBookingListPassengerContract.View> implements FlightBookingListPassengerContract.Presenter {
 
     private FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase;
+    private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
 
     private static int TWELVE_YEARS = 12;
     private static int TWO_YEARS = 2;
 
+
     @Inject
-    public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase) {
+    public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase,
+                                               FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase) {
         this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
+        this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
     }
 
 
@@ -79,6 +84,11 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         return false;
     }
 
+    @Override
+    public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
+        changePassengerToSelected(selectedPassenger);
+    }
+
     private void getSavedPassengerList() {
         flightBookingGetSavedPassengerUseCase.execute(
                 flightBookingGetSavedPassengerUseCase.createEmptyRequestParams(),
@@ -97,6 +107,33 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     @Override
                     public void onNext(List<FlightBookingPassengerViewModel> flightBookingPassengerViewModels) {
                         formatPassenger(flightBookingPassengerViewModels);
+                    }
+                }
+        );
+    }
+
+    private void changePassengerToSelected(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+        flightBookingUpdateSelectedPassengerUseCase.execute(
+                flightBookingUpdateSelectedPassengerUseCase.createRequestParams(
+                        flightBookingPassengerViewModel.getPassengerId(),
+                        FlightBookingListPassengerFragment.IS_SELECTING
+                ),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            getView().onSelectPassengerSuccess(flightBookingPassengerViewModel);
+                        }
                     }
                 }
         );

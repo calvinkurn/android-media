@@ -46,6 +46,10 @@ public class FlightPassengerDataListSource extends DataListSource<SavedPassenger
                 });
     }
 
+    public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
+        return flightPassengerDataListDBSource.updateIsSelected(passengerId, isSelected);
+    }
+
     private Observable<List<FlightPassengerDB>> getPassengerListFromCloud() {
         return flightSavedPassengerDataListCloudSource.getData(null)
                 .flatMap(new Func1<List<SavedPassengerEntity>, Observable<Boolean>>() {

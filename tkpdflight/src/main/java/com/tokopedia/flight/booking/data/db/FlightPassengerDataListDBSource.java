@@ -1,10 +1,12 @@
 package com.tokopedia.flight.booking.data.db;
 
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.HashMap;
@@ -55,16 +57,27 @@ public class FlightPassengerDataListDBSource extends BaseDataListDBSource<SavedP
                 });
     }
 
-    public Observable<Boolean> insert(SavedPassengerEntity savedPassengerEntity) {
-        return Observable.just(savedPassengerEntity)
-                .map(new Func1<SavedPassengerEntity, Boolean>() {
-                    @Override
-                    public Boolean call(SavedPassengerEntity savedPassengerEntity) {
-                        FlightPassengerDB flightPassengerDB = new FlightPassengerDB(savedPassengerEntity);
-                        flightPassengerDB.insert();
-                        return true;
-                    }
-                });
+    public Observable<Boolean> updateIsSelected(final String passengerId, final int isSelected) {
+
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                conditions.and(FlightPassengerDB_Table.id.eq(passengerId));
+
+                FlightPassengerDB result = new Select().from(FlightPassengerDB.class)
+                        .where(conditions)
+                        .querySingle();
+
+                if (result != null) {
+                    result.setIsSelected(isSelected);
+                    result.save();
+                    subscriber.onNext(true);
+                } else {
+                    subscriber.onNext(false);
+                }
+            }
+        });
     }
 
     @Override

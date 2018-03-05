@@ -21,6 +21,8 @@ public interface FlightBookingPassengerContract {
 
         FlightBookingPassengerViewModel getCurrentPassengerViewModel();
 
+        void setCurrentPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
         void renderSpinnerForAdult();
 
         void renderSpinnerForChildAndInfant();
@@ -127,6 +129,8 @@ public interface FlightBookingPassengerContract {
         void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
         void onSavedPassengerClicked();
+
+        void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
     }
 }

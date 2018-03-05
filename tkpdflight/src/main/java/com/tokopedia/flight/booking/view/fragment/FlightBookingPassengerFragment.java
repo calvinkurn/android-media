@@ -204,6 +204,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void setCurrentPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+        viewModel = flightBookingPassengerViewModel;
+    }
+
+    @Override
     public void renderSpinnerForAdult() {
         String[] entries = getResources().getStringArray(R.array.adult_spinner_titles);
         spTitle.setEntries(entries);
@@ -559,6 +564,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     if (data != null) {
                         FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES);
                         presenter.onMealDataChange(flightBookingLuggageMetaViewModel);
+                    }
+                    break;
+                case REQUEST_CODE_PICK_SAVED_PASSENGER:
+                    if (data != null) {
+                        FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
+                        presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
                     }
                     break;
             }

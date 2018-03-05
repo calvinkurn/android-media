@@ -94,6 +94,9 @@ public class FlightPassengerDB extends BaseModel implements Parcelable {
         return titleId;
     }
 
+    public void setIsSelected(int isSelected) {
+        this.isSelected = isSelected;
+    }
 
     public boolean isSelected() {
         return isSelected == 1;

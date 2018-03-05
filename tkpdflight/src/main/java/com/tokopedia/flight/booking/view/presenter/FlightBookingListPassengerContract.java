@@ -20,11 +20,15 @@ public interface FlightBookingListPassengerContract {
         FlightBookingPassengerViewModel getCurrentPassenger();
 
         String getSalutationString(int resId);
+
+        void onSelectPassengerSuccess(FlightBookingPassengerViewModel selectedPassenger);
     }
 
     interface Presenter {
         void onViewCreated();
 
         boolean isPassengerSame(FlightBookingPassengerViewModel selectedPassenger);
+
+        void selectPassenger(FlightBookingPassengerViewModel selectedPassenger);
     }
 }
