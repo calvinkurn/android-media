@@ -123,7 +123,7 @@
             android:id="@+id/dummy_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/next_ic"
+            app:srcCompat="@drawable/next_ic"
             tools:src="@drawable/circle"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
