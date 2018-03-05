@@ -22,8 +22,8 @@ public class ProductDraftDataSource {
         this.productDraftDataManager = productDraftDataManager;
     }
 
-    public Observable<Long> saveDraft(String productDraftDataBase, long draftProductId, boolean isUploading, String shopId){
-        return productDraftDataManager.saveDraft(productDraftDataBase, draftProductId, isUploading, shopId);
+    public Observable<Long> saveDraft(String productDraftDataBase, boolean isUploading, String shopId){
+        return productDraftDataManager.saveDraft(productDraftDataBase, isUploading, shopId);
     }
 
     public Observable<ProductDraftDataBase> getDraft(long productId) {

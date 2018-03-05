@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,9 +138,14 @@ public class ProductVariantViewModel implements Parcelable {
         // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
         HashMap<String, Integer> mapLevel1 = new HashMap<>();
         HashMap<String, Integer> mapLevel2 = new HashMap<>();
-        HashMap<Integer, Integer> mapPvoLevel1 = new HashMap<>();
-        HashMap<Integer, Integer> mapPvoLevel2 = new HashMap<>();
+        SparseIntArray mapPvoLevel1 = new SparseIntArray();
+        SparseIntArray mapPvoLevel2 = new SparseIntArray();
         createOptionMap(productVariantOptionChildLevel1List, productVariantOptionChildLevel2List, mapLevel1, mapLevel2, mapPvoLevel1, mapPvoLevel2);
+
+        if (mapPvoLevel1.size() == 0 && mapLevel1.size() == 0) {
+            //means, it is already mapped
+            return this;
+        }
 
         // generate the matrix axb based on level 1 and level2.
         // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
@@ -178,7 +184,7 @@ public class ProductVariantViewModel implements Parcelable {
     private void createOptionMap(List<ProductVariantOptionChild> productVariantOptionChildLevel1List,
                                  List<ProductVariantOptionChild> productVariantOptionChildLevel2List,
                                  HashMap<String, Integer> mapLevel1, HashMap<String, Integer> mapLevel2,
-                                 HashMap<Integer, Integer> mapPvoLevel1, HashMap<Integer, Integer> mapPvoLevel2) {
+                                 SparseIntArray mapPvoLevel1, SparseIntArray mapPvoLevel2) {
         int counter = 1;
         for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
             ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
@@ -193,7 +199,6 @@ public class ProductVariantViewModel implements Parcelable {
             for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
                 ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
                 productVariantOptionChild.settId(counter++);
-                productVariantOptionChild.setPvo(0);
                 mapLevel2.put(productVariantOptionChild.getValue(), i);
                 int pvo = productVariantOptionChild.getPvo();
                 mapPvoLevel2.put(pvo, i);

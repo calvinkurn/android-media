@@ -130,7 +130,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     private List<ProductWholesaleViewModel> productWholesale = null;
 
     /**
-     * get from GM. set for saubmit add/edit product
+     * get from GM. set for submit add/edit product
      */
     @SerializedName("product_video")
     @Expose
@@ -143,20 +143,6 @@ public class ProductViewModel implements ItemType, Parcelable {
     @SerializedName("product_name_editable")
     @Expose
     private boolean productNameEditable;
-
-    //TODO remove this from model
-    @Expose
-    private long draftProductId;
-
-    @Deprecated
-    public long getDraftId() {
-        return draftProductId;
-    }
-
-    @Deprecated
-    public void setDraftId(long draftProductId) {
-        this.draftProductId = draftProductId;
-    }
 
     public String getProductId() {
         return productId;
@@ -474,7 +460,6 @@ public class ProductViewModel implements ItemType, Parcelable {
         dest.writeTypedList(this.productVideo);
         dest.writeParcelable(this.productVariant, flags);
         dest.writeByte(this.productNameEditable ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.draftProductId);
     }
 
     public ProductViewModel() {
@@ -513,7 +498,6 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productVideo = in.createTypedArrayList(ProductVideoViewModel.CREATOR);
         this.productVariant = in.readParcelable(ProductVariantViewModel.class.getClassLoader());
         this.productNameEditable = in.readByte() != 0;
-        this.draftProductId = in.readLong();
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

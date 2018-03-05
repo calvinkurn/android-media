@@ -35,7 +35,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public Observable<Long> saveDraft(ProductViewModel domainModel, boolean isUploading) {
         String productDraftJson = ProductDraftMapper.mapFromDomain(domainModel);
         String shopId = SessionHandler.getShopID(context);
-        return productDraftDataSource.saveDraft(productDraftJson, domainModel.getDraftId(), isUploading, shopId);
+        return productDraftDataSource.saveDraft(productDraftJson, isUploading, shopId);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                                 .map(new Func1<ProductViewModel, ProductDraftViewModel>() {
                                     @Override
                                     public ProductDraftViewModel call(ProductViewModel productViewModel) {
-                                        return ProductDraftListMapper.mapDomainToView(productViewModel);
+                                        return ProductDraftListMapper.mapDomainToView(productViewModel, id);
                                     }
                                 })
                                 .toBlocking().first();

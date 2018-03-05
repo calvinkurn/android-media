@@ -56,7 +56,6 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
             productViewModel = mapDraftToDomain(draftModel);
         }
-        productViewModel.setDraftId(productDraftDataBase.getId());
         return productViewModel;
     }
 
