@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdcontent.common.utils;
+package com.tokopedia.tkpdcontent.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

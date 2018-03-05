@@ -3,7 +3,7 @@ package com.tokopedia.tkpdcontent.feature.profile.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.tkpdcontent.common.utils.TimeConverter;
+import com.tokopedia.tkpdcontent.common.util.TimeConverter;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.ProfileKolData;
