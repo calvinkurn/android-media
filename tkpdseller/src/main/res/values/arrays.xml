@@ -37,10 +37,12 @@
 
     <string-array name="product_stock_status_entries">
         <item>Stok Tersedia</item>
+        <item>Stok Terbatas</item>
         <item>Stok Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
+        <item>@string/product_stock_limited_value</item>
         <item>@string/product_stock_not_available_value</item>
     </string-array>
 

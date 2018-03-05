@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.edit.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -12,16 +11,14 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.expandable.BaseExpandableOption;
-import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +31,10 @@ public class ProductManageViewHolder extends ProductViewHolder{
 
     public static final int REQUEST_CODE_VARIANT = 2;
 
-    public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
-    private static final String IS_STOCKTOTAL_VISIBLE = "IS_STOCKTOTAL_VISIBLE";
-
     public static final int DEFAULT_STOCK_VALUE = 0;
 
     private SpinnerTextView stockStatusSpinnerTextView;
-    private ExpandableOptionSwitch stockTotalExpandableOptionSwitch;
+//    private ExpandableOptionSwitch stockTotalExpandableOptionSwitch;
     private CounterInputView stockTotalCounterInputView;
 
     private LabelView variantLabelView;
@@ -52,29 +46,28 @@ public class ProductManageViewHolder extends ProductViewHolder{
     public ProductManageViewHolder(View view, Listener listener) {
 
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
-        stockTotalExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_stock_total);
+
         stockTotalCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_stock_total);
 
         stockStatusSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
             @Override
             public void onItemChanged(int position, String entry, String value) {
-                if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value))) {
-                    stockTotalExpandableOptionSwitch.setExpand(false);
-                    stockTotalExpandableOptionSwitch.setVisibility(View.GONE);
-                } else {
-                    stockTotalExpandableOptionSwitch.setVisibility(View.VISIBLE);
+                if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value))||
+                        value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
+                    stockTotalCounterInputView.setVisibility(View.GONE);
+                    ProductManageViewHolder.this.listener.onTotalStockUpdated(0);
+                } else{
+                    stockTotalCounterInputView.setVisibility(View.VISIBLE);
+                    stockTotalCounterInputView.setValue(1);
+                    ProductManageViewHolder.this.listener.onTotalStockUpdated((int) stockTotalCounterInputView.getDoubleValue());
                 }
             }
         });
-        stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
-            @Override
-            public void onExpandViewChange(boolean isExpand) {
-                ProductManageViewHolder.this.listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getDoubleValue() : 0);
-            }
-        });
+
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText()) {
             @Override
             public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
                 if (isTotalStockValid()) {
                     stockTotalCounterInputView.setError(null);
                 }
@@ -98,10 +91,16 @@ public class ProductManageViewHolder extends ProductViewHolder{
         this.listener = listener;
     }
 
-
+    public int getViewStatusStock() {
+        return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
+    }
 
     public int getStatusStock() {
-        return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
+        int status = getViewStatusStock();
+        if (status == StockTypeDef.TYPE_ACTIVE_LIMITED) {
+            return StockTypeDef.TYPE_ACTIVE;
+        }
+        return status;
     }
 
     public boolean isStockAvailable(){
@@ -112,16 +111,16 @@ public class ProductManageViewHolder extends ProductViewHolder{
         stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public boolean isStockManaged() {
-        return stockTotalExpandableOptionSwitch.isExpanded();
+    public boolean isStockViewVisible() {
+        return stockTotalCounterInputView.getVisibility() == View.VISIBLE;
     }
 
     public void setStockManaged(boolean stockManaged) {
-        stockTotalExpandableOptionSwitch.setExpand(stockManaged);
+        stockTotalCounterInputView.setVisibility(stockManaged? View.VISIBLE: View.GONE);
     }
 
     public int getTotalStock() {
-        if(isStockManaged()) {
+        if(isStockViewVisible()) {
             return (int) stockTotalCounterInputView.getDoubleValue();
         }else{
             return DEFAULT_STOCK_VALUE;
@@ -134,7 +133,7 @@ public class ProductManageViewHolder extends ProductViewHolder{
 
 
     private boolean isTotalStockValid() {
-        if (!stockTotalExpandableOptionSwitch.isExpanded()) {
+        if (!isStockViewVisible()) {
             return true;
         }
         String minStockString = CurrencyFormatHelper.removeCurrencyPrefix(stockTotalCounterInputView.getContext().getString(R.string.product_minimum_total_stock));
@@ -190,60 +189,38 @@ public class ProductManageViewHolder extends ProductViewHolder{
                 variantLabelView.setVisibility(View.VISIBLE);
             }
         } else {
-            List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = productVariantViewModel.getProductVariant();
-            int variantSize = productVariantCombinationViewModelList.size();
-
-            int activeVariantCount = 0;
-            for (int i = 0; i< variantSize; i++) {
-                ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-                if (productVariantCombinationViewModel.isActive()) {
-                    activeVariantCount++;
-                }
+            ProductVariantOptionParent productVariantOptionParentLv1 =
+                    productVariantViewModel.getVariantOptionParent(1);
+            ProductVariantOptionParent productVariantOptionParentLv2 =
+                    productVariantViewModel.getVariantOptionParent(2);
+            StringBuilder selectedVariantString = new StringBuilder(productVariantOptionParentLv1.getProductVariantOptionChild().size()
+                    + " " + productVariantOptionParentLv1.getName());
+            if (productVariantOptionParentLv2!= null && productVariantOptionParentLv2.hasProductVariantOptionChild()) {
+                selectedVariantString.append("\n");
+                selectedVariantString.append(productVariantOptionParentLv2.getProductVariantOptionChild().size());
+                selectedVariantString.append(" ");
+                selectedVariantString.append(productVariantOptionParentLv2.getName());
             }
-            /*boolean hasActiveVariant = false;
-            if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
-                selectedVariantString = defaultStringSelection;
-            } else {
-                List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
-                for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
-                    ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
-                    int position = productVariantUnitSubmit.getPosition();
-                    ProductVariantByCatModel productVariantByCatModel =
-                            ProductVariantViewConverter.getProductVariantByCatModel(position, productVariantByCatModelList);
-                    if (productVariantByCatModel == null) {
-                        continue;
-                    }
-                    String variantName = productVariantByCatModel.getName();
-                    List<ProductVariantOptionSubmit> optionList = productVariantUnitSubmit.getProductVariantOptionSubmitList();
-                    if (optionList == null || optionList.size() == 0) {
-                        continue;
-                    }
-                    if (i != 0 && !TextUtils.isEmpty(selectedVariantString)) {
-                        selectedVariantString += "\n";
-                    }
-                    selectedVariantString += optionList.size() + " " + variantName;
-                }
-                List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList = productVariantDataSubmit.getProductVariantCombinationSubmitList();
-                if (productVariantCombinationSubmitList != null && productVariantCombinationSubmitList.size() > 0) {
-                    hasActiveVariant = true;
-                }
-            }*/
-            if (activeVariantCount == 0) {
-                variantLabelView.resetContentText();
-                listener.onVariantCountChange(false);
-            } else {
-                String selectedVariantString = variantSize + " " + variantLabelView.getContext().getString(R.string.product_label_variant);
-                variantLabelView.setContent(selectedVariantString);
-                listener.onVariantCountChange(true);
-            }
+            variantLabelView.setContent(selectedVariantString);
+            listener.onVariantCountChange(true);
             variantLabelView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void renderData(ProductViewModel model) {
-        setStockStatus(model.getProductStatus());
-        setStockManaged(model.getProductStatus() == UploadToTypeDef.TYPE_ACTIVE && model.getProductStock() > 0);
+        if (model.getProductStock() == 0) {
+            int productStatus = model.getProductStatus();
+            if (productStatus == StockTypeDef.TYPE_ACTIVE) {
+                setStockStatus(StockTypeDef.TYPE_ACTIVE);
+            } else {
+                setStockStatus(StockTypeDef.TYPE_WAREHOUSE);
+            }
+            setStockManaged(false);
+        } else {
+            setStockStatus(StockTypeDef.TYPE_ACTIVE_LIMITED);
+            setStockManaged(true);
+        }
         setTotalStock((int)model.getProductStock());
 
         setUiVariantSelection();
@@ -253,20 +230,20 @@ public class ProductManageViewHolder extends ProductViewHolder{
     public void updateModel(ProductViewModel model) {
         model.setProductStock(getTotalStock());
         model.setProductStatus(getStatusStock());
+        ProductVariantViewModel productVariantViewModel = model.getProductVariant();
+        if (productVariantViewModel!= null) {
+            productVariantViewModel.generateTid();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
-        savedInstanceState.putBoolean(IS_STOCKTOTAL_VISIBLE, stockTotalExpandableOptionSwitch.getVisibility() == View.VISIBLE);
+
     }
 
     @Override
-    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-        stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
+    public void onViewStateRestored(Bundle savedInstanceState) {
 
-        boolean isStockTotalVisible = savedInstanceState.getBoolean(IS_STOCKTOTAL_VISIBLE, false);
-        stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible ? View.VISIBLE : View.GONE);
     }
 
     public interface Listener {

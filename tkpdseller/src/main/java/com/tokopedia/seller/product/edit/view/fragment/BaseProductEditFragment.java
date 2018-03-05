@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.edit.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         extends BaseProductAddEditFragment<T>

@@ -5,13 +5,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
     android:clickable="true"
     android:focusable="true"
     app:cardUseCompatPadding="true"
     android:layout_marginLeft="@dimen/margin_sm"
-    android:layout_marginRight="@dimen/margin_sm">
+    android:layout_marginRight="@dimen/margin_sm"
+    android:layout_marginTop="@dimen/padding_vvvs"
+    android:layout_marginBottom="@dimen/padding_vvvs">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,10 +39,11 @@
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
                     <TextView
                         android:id="@+id/text_view_title"
-                        style="@style/TextView.Title.BlackPrimary"
+                        style="@style/TextView.Title.Bold"
                         android:layout_gravity="center_vertical"
                         tools:text="Nama Variant (Merah)" />
                     <TextView
@@ -82,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_ms"
                 android:paddingBottom="@dimen/padding_ms"
+                app:lv_title_color="@color/colorGray"
                 app:lv_title="@string/product_variant_price_label" />
 
             <com.tokopedia.design.label.LabelView
@@ -90,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_ms"
                 android:paddingBottom="@dimen/padding_ms"
+                app:lv_title_color="@color/colorGray"
                 app:lv_title="@string/product_variant_stock_total_label" />
         </LinearLayout>
 

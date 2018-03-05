@@ -4,12 +4,15 @@ package com.tokopedia.seller.product.variant.data.model.variantbyprd;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
@@ -36,15 +39,15 @@ public class ProductVariantViewModel implements Parcelable {
         return null;
     }
 
-    public void replaceVariantOptionParentFor (int level, ProductVariantOptionParent productVariantOptionParent) {
-        int index = level -1;
+    public void replaceVariantOptionParentFor(int level, ProductVariantOptionParent productVariantOptionParent) {
+        int index = level - 1;
         if (variantOptionParent == null) {
             variantOptionParent = new ArrayList<>();
         }
         if (variantOptionParent.size() > index) {
             variantOptionParent.remove(index);
         }
-        if (productVariantOptionParent!= null && productVariantOptionParent.hasProductVariantOptionChild()) {
+        if (productVariantOptionParent != null && productVariantOptionParent.hasProductVariantOptionChild()) {
             variantOptionParent.add(index, productVariantOptionParent);
         }
     }
@@ -70,7 +73,7 @@ public class ProductVariantViewModel implements Parcelable {
 
     public int removeSelectedVariantFor(String lv1Value) {
         if (productVariant == null || productVariant.size() == 0) {
-            return - 1;
+            return -1;
         }
         int firstIndex = -1;
         for (int i = productVariant.size() - 1; i >= 0; i--) {
@@ -110,10 +113,85 @@ public class ProductVariantViewModel implements Parcelable {
         String lvl1String = productVariantCombinationViewModel.getLevel1String();
         String lvl2String = productVariantCombinationViewModel.getLevel2String();
         int removedIndex = removeSelectedVariantFor(lvl1String, lvl2String);
-        if (removedIndex > - 1) {
+        if (removedIndex > -1) {
             productVariant.add(removedIndex, productVariantCombinationViewModel);
         } else {
             productVariant.add(productVariantCombinationViewModel);
+        }
+    }
+
+    public ProductVariantViewModel generateTid() {
+        if (!hasSelectedVariant()) {
+            return this;
+        }
+        // get current selection for item level 1, level 2, and the matrix combination
+        ProductVariantOptionParent productVariantOptionParentLevel1 = getVariantOptionParent(1);
+        ProductVariantOptionParent productVariantOptionParentLevel2 = getVariantOptionParent(2);
+        List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
+        List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
+        if (productVariantOptionParentLevel2 != null) {
+            productVariantOptionChildLevel2List = productVariantOptionParentLevel2.getProductVariantOptionChild();
+        }
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = getProductVariant();
+
+        // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
+        HashMap<String, Integer> mapLevel1 = new HashMap<>();
+        HashMap<String, Integer> mapLevel2 = new HashMap<>();
+        HashMap<Integer, Integer> mapPvoLevel1 = new HashMap<>();
+        HashMap<Integer, Integer> mapPvoLevel2 = new HashMap<>();
+        createOptionMap(productVariantOptionChildLevel1List, productVariantOptionChildLevel2List, mapLevel1, mapLevel2, mapPvoLevel1, mapPvoLevel2);
+
+        // generate the matrix axb based on level 1 and level2.
+        // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
+        // map is used to lookup if the value1x value2 already exist.
+//        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+//            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+//            String level1String = productVariantCombinationViewModel.getLevel1String();
+//
+//            List<Integer> integerList = new ArrayList<>();
+//            if (TextUtils.isEmpty( level1String)) {
+//                // using pvo
+//                int indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.get);
+//            } else {
+//                int indexLevel1 = mapLevel1.get(level1String);
+//            }
+//            int tIdLevel1 = productVariantOptionParentLevel1.getProductVariantOptionChild().get(indexLevel1).gettId();
+//            integerList.add(tIdLevel1);
+//            if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
+//                String level2String = productVariantCombinationViewModel.getLevel2String();
+//                int indexLevel2 = mapLevel2.get(level2String);
+//                int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
+//                integerList.add(tIdLevel2);
+//            }
+//            productVariantCombinationViewModel.setOpt(integerList);
+//        }
+        return this;
+    }
+
+    private void createOptionMap(List<ProductVariantOptionChild> productVariantOptionChildLevel1List,
+                                 List<ProductVariantOptionChild> productVariantOptionChildLevel2List,
+                                 HashMap<String, Integer> mapLevel1, HashMap<String, Integer> mapLevel2,
+                                 HashMap<Integer, Integer> mapPvoLevel1, HashMap<Integer, Integer> mapPvoLevel2) {
+        int counter = 1;
+        for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
+            ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
+            productVariantOptionChild.settId(counter++);
+            mapLevel1.put(productVariantOptionChild.getValue(), i);
+            int pvo = productVariantOptionChild.getPvo();
+            mapPvoLevel1.put(pvo, i);
+            productVariantOptionChild.setPvo(0);
+        }
+
+        if (productVariantOptionChildLevel2List != null) {
+            for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
+                ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
+                productVariantOptionChild.settId(counter++);
+                productVariantOptionChild.setPvo(0);
+                mapLevel2.put(productVariantOptionChild.getValue(), i);
+                int pvo = productVariantOptionChild.getPvo();
+                mapPvoLevel2.put(pvo, i);
+                productVariantOptionChild.setPvo(0);
+            }
         }
     }
 

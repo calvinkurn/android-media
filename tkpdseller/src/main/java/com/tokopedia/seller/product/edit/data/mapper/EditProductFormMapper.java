@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.ProductEditForm;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.fabric.sdk.android.services.concurrency.DependsOn;
 import rx.functions.Func1;
 
 /**
@@ -58,9 +57,9 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setProductWeight(Integer.parseInt(product.getProductWeight()));
         domainModel.setProductName(product.getProductName());
         domainModel.setProductReturnable(data.getInfo().getProductReturnable());
-        @UploadToTypeDef int uploadTo = Integer.parseInt(product.getProductUploadTo());
-        if (uploadTo == UploadToTypeDef.TYPE_WAREHOUSE) {
-            uploadTo = UploadToTypeDef.TYPE_NOT_ACTIVE;
+        @StockTypeDef int uploadTo = Integer.parseInt(product.getProductUploadTo());
+        if (uploadTo == StockTypeDef.TYPE_WAREHOUSE) {
+            uploadTo = StockTypeDef.TYPE_ACTIVE_LIMITED;
         }
         domainModel.setProductUploadTo(uploadTo);
         if (product.getProductInvenageSwitch() != null) {

@@ -30,16 +30,15 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
     private ImageView imageView;
     private TextView titleTextView;
     private TextView tvSubtitle;
-    private TextView tvSeeDetail;
     private LabelView lvPrice;
     private LabelView lvStock;
-    private @CurrencyTypeDef int currencyType;
+    private @CurrencyTypeDef
+    int currencyType;
 
     public ProductVariantDashboardNewViewHolder(View itemView, @CurrencyTypeDef int currencyType) {
         super(itemView);
         imageView = itemView.findViewById(R.id.image_view);
         titleTextView = itemView.findViewById(R.id.text_view_title);
-        tvSeeDetail = itemView.findViewById(R.id.tv_see_detail);
         lvPrice = itemView.findViewById(R.id.label_view_variant_price);
         lvStock = itemView.findViewById(R.id.label_view_variant_stock);
         tvSubtitle = itemView.findViewById(R.id.tv_subtitle);
@@ -52,11 +51,11 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
         ProductVariantOptionChild childLvl1Model = model.getProductVariantOptionChildLv1();
         List<ProductPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
         ProductPictureViewModel pictureViewModel = null;
-        if (productPictureViewModelList!= null && productPictureViewModelList.size() > 0) {
+        if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
             pictureViewModel = productPictureViewModelList.get(0);
         }
 
-        if (pictureViewModel!= null && !TextUtils.isEmpty(pictureViewModel.getUrlOriginal())) {
+        if (pictureViewModel != null && !TextUtils.isEmpty(pictureViewModel.getUrlOriginal())) {
             imageView.setBackgroundColor(Color.TRANSPARENT);
             ImageHandler.LoadImage(imageView, pictureViewModel.getUrlOriginal());
         } else if (!TextUtils.isEmpty(childLvl1Model.getHex())) {
@@ -71,7 +70,7 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
             @Override
             public void onClick(View v) {
                 //TODO change image
-                Toast.makeText(imageView.getContext(),"Test", Toast.LENGTH_LONG).show();
+                Toast.makeText(imageView.getContext(), "Test", Toast.LENGTH_LONG).show();
             }
         });
         if (model.has1LevelOnly()) {
@@ -83,7 +82,7 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
 
             if (currencyType == CurrencyTypeDef.TYPE_USD) {
                 lvPrice.setContent(String.format(CurrencyEnum.USD.getFormat(), currencyString));
-            } else if (currencyType == CurrencyTypeDef.TYPE_IDR){
+            } else if (currencyType == CurrencyTypeDef.TYPE_IDR) {
                 lvPrice.setContent(String.format(CurrencyEnum.RP.getFormat(), currencyString));
             } else {
                 lvPrice.setContent(currencyString);
@@ -91,10 +90,12 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
 
             lvPrice.setVisibility(View.VISIBLE);
 
-            if (productVariantCombinationViewModel.isActive() && productVariantCombinationViewModel.getStock() == 0) {
-                lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
-            } else if (productVariantCombinationViewModel.getStock() == 0) {
-                lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+            if (productVariantCombinationViewModel.getStock() == 0) {
+                if (productVariantCombinationViewModel.isActive()) {
+                    lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
+                } else {
+                    lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+                }
             } else {
                 lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
             }
@@ -106,5 +107,22 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
         }
         //TODO populate tvSubtitle from variant list
         titleTextView.setText(childLvl1Model.getValue());
+
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
+                model.getProductVariantCombinationViewModelList();
+        if (productVariantCombinationViewModelList != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+                ProductVariantCombinationViewModel variantCombinationViewModel =
+                        productVariantCombinationViewModelList.get(i);
+                if (i > 0) {
+                    stringBuilder.append(", ");
+                }
+                if (variantCombinationViewModel.getStock() > 0 || variantCombinationViewModel.isActive()) {
+                    stringBuilder.append(variantCombinationViewModel.getLevel2String());
+                }
+            }
+            tvSubtitle.setText(stringBuilder.toString());
+        }
     }
 }

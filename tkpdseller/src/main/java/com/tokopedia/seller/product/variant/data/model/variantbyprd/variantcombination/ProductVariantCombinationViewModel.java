@@ -35,8 +35,8 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     @Expose
     private List<Integer> opt = null; // option combination of t_id of selected variants
 
-    private String level1String;
-    private String level2String;
+    private transient String level1String;
+    private transient String level2String;
 
     public ProductVariantCombinationViewModel(double priceVar, int stock, String sku, String level1String, String level2String) {
         this.st = ACTIVE_STATUS;

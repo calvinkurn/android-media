@@ -17,6 +17,7 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -57,10 +58,14 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private List<ProductVariantDashboardNewViewModel> productVariantDashboardNewViewModelList;
     private @CurrencyTypeDef
     int currencyType;
-    private HashMap<String, Integer> mapLevel1;
-    private HashMap<String, Integer> mapLevel2;
     private HashMap<Pair<String, String>, Integer> mapCombination;
     private Parcelable recyclerViewState;
+    private int defaultPrice;
+
+    @StockTypeDef
+    private int defaultStockType;
+
+    private boolean isOfficialStore;
 
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
@@ -80,6 +85,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             productVariantByCatModelList = getProductVariantByCatModelListFromJson();
         }
         currencyType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
+        defaultPrice = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
+        defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
+        isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, false);
 
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
@@ -129,7 +137,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     public String loadJSONFromAsset2() {
         String json = null;
         try {
-            InputStream is = getContext().getAssets().open("test_variant_by_prd.json");
+            InputStream is = getContext().getAssets().open("test_variant_by_prd_empty.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -226,7 +234,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(2) == null) {
             variantLevelTwoLabelView.resetContentText();
             // if level 1 is chosen, set enabled to true
-            variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(1) != null);
+            if (productVariantViewModel != null) {
+                variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(1) != null);
+            }
         } else {
             variantLevelTwoLabelView.setEnabled(true);
             ProductVariantOptionParent optionLv2 = productVariantViewModel.getVariantOptionParent(2);
@@ -260,6 +270,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList().get(0),
+                    productVariantDashboardNewViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     currencyType);
         }
@@ -316,6 +327,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             return;
         }
 
+        if (productVariantViewModel == null) {
+            productVariantViewModel = new ProductVariantViewModel();
+        }
         productVariantViewModel.replaceVariantOptionParentFor(requestCodeLevel, productVariantOptionParent);
 
         // get current selection for item level 1, level 2, and the matrix combination
@@ -329,7 +343,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = productVariantViewModel.getProductVariant();
 
         // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
-        createOptionMap(productVariantOptionChildLevel1List,productVariantOptionChildLevel2List);
         createCombinationMap(productVariantCombinationViewModelList);
 
         // generate the matrix axb based on level 1 and level2.
@@ -375,26 +388,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
         initVariantLabel();
         updateVariantItemListView();
-    }
-
-    private void createOptionMap(List<ProductVariantOptionChild> productVariantOptionChildLevel1List,
-                                 List<ProductVariantOptionChild> productVariantOptionChildLevel2List) {
-        mapLevel1 = new HashMap<>();
-        mapLevel2 = new HashMap<>();
-        int counter = 1;
-        for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
-            ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
-            productVariantOptionChild.settId(counter++);
-            mapLevel1.put(productVariantOptionChild.getValue(), i);
-        }
-
-        if (productVariantOptionChildLevel2List != null) {
-            for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
-                ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
-                productVariantOptionChild.settId(counter++);
-                mapLevel2.put(productVariantOptionChild.getValue(), i);
-            }
-        }
     }
 
     private void createCombinationMap(List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
@@ -449,6 +442,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         super.onSearchLoaded(list, totalItem);
         if (recyclerViewState!= null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            recyclerViewState = null;
         }
     }
 
@@ -495,42 +489,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
     }
 
-    public ProductVariantViewModel getProductVariantViewModelGenerateTid() {
-        if (!productVariantViewModel.hasSelectedVariant()) {
-            return productVariantViewModel;
-        }
-        // get current selection for item level 1, level 2, and the matrix combination
-        ProductVariantOptionParent productVariantOptionParentLevel1 = productVariantViewModel.getVariantOptionParent(1);
-        ProductVariantOptionParent productVariantOptionParentLevel2 = productVariantViewModel.getVariantOptionParent(2);
-        List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
-        List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
-        if (productVariantOptionParentLevel2 != null) {
-            productVariantOptionChildLevel2List = productVariantOptionParentLevel2.getProductVariantOptionChild();
-        }
-        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = productVariantViewModel.getProductVariant();
-
-        // create the map for the lookup (this is for performance, instead we do loop each time to get the combination model)
-        createOptionMap(productVariantOptionChildLevel1List,productVariantOptionChildLevel2List);
-
-        // generate the matrix axb based on level 1 and level2.
-        // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
-        // map is used to lookup if the value1x value2 already exist.
-        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
-            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-            String level1String = productVariantCombinationViewModel.getLevel1String();
-
-            List<Integer> integerList = new ArrayList<>();
-            int indexLevel1 = mapLevel1.get(level1String);
-            int tIdLevel1 = productVariantOptionParentLevel1.getProductVariantOptionChild().get(indexLevel1).gettId();
-            integerList.add(tIdLevel1);
-            if (productVariantOptionParentLevel2!= null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
-                String level2String = productVariantCombinationViewModel.getLevel2String();
-                int indexLevel2 = mapLevel2.get(level2String);
-                int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
-                integerList.add(tIdLevel2);
-            }
-            productVariantCombinationViewModel.setOpt(integerList);
-        }
+    public ProductVariantViewModel getProductVariantViewModel() {
         return productVariantViewModel;
     }
 

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
@@ -77,8 +78,6 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
         super.onCreate(savedInstanceState);
 
-        toolbar.setTitle(getTitle() + " " + productVariantDashboardNewViewModel.getProductVariantOptionChildLv1().getValue());
-
     }
 
     @Override
@@ -94,6 +93,10 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     public List<ProductVariantCombinationViewModel> getProductVariantCombinationViewModelList() {
         return productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList();
+    }
+
+    public ProductVariantOptionChild getProductVariantChild(){
+        return productVariantDashboardNewViewModel.getProductVariantOptionChildLv1();
     }
 
     @Override
@@ -150,7 +153,8 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     @Override
     public void goToLeaf(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
-        ProductVariantDetailLevelLeafActivity.start(this, productVariantCombinationViewModel, varLv2name, currencyType);
+        ProductVariantDetailLevelLeafActivity.start(this, productVariantCombinationViewModel,null,
+                varLv2name, currencyType);
     }
 
     @Override

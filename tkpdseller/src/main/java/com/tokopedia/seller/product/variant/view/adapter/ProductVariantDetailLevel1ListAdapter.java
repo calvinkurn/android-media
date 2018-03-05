@@ -7,7 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.design.intdef.CurrencyEnum;
+import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ public class ProductVariantDetailLevel1ListAdapter extends
 
     private Context context;
     private List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList;
+    private @CurrencyTypeDef int currencyType;
 
     private OnProductVariantDetailLevel1ListAdapterListener onProductVariantDetailLevel1ListAdapterListener;
     public interface OnProductVariantDetailLevel1ListAdapterListener{
@@ -29,10 +34,16 @@ public class ProductVariantDetailLevel1ListAdapter extends
 
     public class ProductVariantDetaillevel1ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView tvTitle;
+        private View vStatus;
+        private LabelView lvPrice;
+        private LabelView lvStock;
 
         public ProductVariantDetaillevel1ListViewHolder(View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.text_view_title);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            vStatus = itemView.findViewById(R.id.tv_status);
+            lvPrice = itemView.findViewById(R.id.label_view_variant_price);
+            lvStock = itemView.findViewById(R.id.label_view_variant_stock);
             itemView.setOnClickListener(this);
         }
 
@@ -45,13 +56,40 @@ public class ProductVariantDetailLevel1ListAdapter extends
 
         public void bind(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
             tvTitle.setText(productVariantCombinationViewModel.getLevel2String());
+
+            String currencyString = CurrencyFormatUtil.convertPriceValue(
+                    productVariantCombinationViewModel.getPriceVar(),
+                    currencyType == CurrencyTypeDef.TYPE_USD);
+
+            if (currencyType == CurrencyTypeDef.TYPE_USD) {
+                lvPrice.setContent(String.format(CurrencyEnum.USD.getFormat(), currencyString));
+            } else if (currencyType == CurrencyTypeDef.TYPE_IDR) {
+                lvPrice.setContent(String.format(CurrencyEnum.RP.getFormat(), currencyString));
+            } else {
+                lvPrice.setContent(currencyString);
+            }
+
+            if (productVariantCombinationViewModel.getStock() == 0) {
+                if (productVariantCombinationViewModel.isActive()) {
+                    lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
+                    vStatus.setVisibility(View.GONE);
+                } else {
+                    lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+                    vStatus.setVisibility(View.VISIBLE);
+                }
+            } else {
+                lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
+                vStatus.setVisibility(View.GONE);
+            }
         }
     }
 
     public ProductVariantDetailLevel1ListAdapter(Context context,
                                                  List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList,
-                                                 OnProductVariantDetailLevel1ListAdapterListener onProductVariantDetailLevel1ListAdapterListener) {
+                                                 OnProductVariantDetailLevel1ListAdapterListener onProductVariantDetailLevel1ListAdapterListener,
+                                                 @CurrencyTypeDef int currencyType) {
         setProductVariantCombinationViewModelList(productVariantCombinationViewModelList);
+        this.currencyType = currencyType;
         this.context = context;
         this.onProductVariantDetailLevel1ListAdapterListener = onProductVariantDetailLevel1ListAdapterListener;
     }
