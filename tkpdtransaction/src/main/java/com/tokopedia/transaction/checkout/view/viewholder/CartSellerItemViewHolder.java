@@ -19,6 +19,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 
@@ -151,7 +152,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
                                ShipmentCostModel shipmentCostModel,
                                RecipientAddressModel recipientAddressModel) {
-    public void bindViewHolder(CartSellerItemModel cartSellerItemModel) {
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
 
@@ -159,12 +159,9 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
 
         bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         bindOtherCartItems(cartItemModelList);
-        bindCostDetail(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
-                shipmentCostModel);
         bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
                 recipientAddressModel);
         bindCostDetail(cartSellerItemModel);
-        bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData());
     }
 
     private void bindFirstCartItem(CartItemModel cartItemModel) {

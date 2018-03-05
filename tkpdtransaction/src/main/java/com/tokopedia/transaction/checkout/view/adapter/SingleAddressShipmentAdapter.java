@@ -143,7 +143,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
                     mShipmentCost, mRecipientAddress);
-            ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             mShipmentCost = (ShipmentCostModel) data;
             ((ShipmentCostViewHolder) viewHolder).bindViewHolder(mShipmentCost);
