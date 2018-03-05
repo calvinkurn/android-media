@@ -31,9 +31,7 @@ public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if (view != null) {
-            view.renderFailGetDynamicFilter();
-        }
+        view.renderFailGetDynamicFilter();
     }
 
     @Override
