@@ -22,7 +22,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.di.qualifier.AceGetGuidedSearchQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -71,9 +70,6 @@ public interface AppComponent {
 
     @AceQualifier
     Retrofit aceRetrofit();
-
-    @AceGetGuidedSearchQualifier
-    Retrofit aceGetGuidedSearchRetrofit();
 
     @MerlinQualifier
     Retrofit merlinRetrofit();

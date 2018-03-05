@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.di.module;
 
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.di.qualifier.AceGetGuidedSearchQualifier;
 import com.tokopedia.discovery.newdiscovery.data.mapper.GuidedSearchMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.GuidedSearchRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.GuidedSearchRepositoryImpl;
@@ -30,7 +29,7 @@ public class GuidedSearchModule {
     }
 
     @Provides
-    GuidedSearchDataSource guidedSearchDataSource(@AceGetGuidedSearchQualifier BrowseApi searchApi,
+    GuidedSearchDataSource guidedSearchDataSource(BrowseApi searchApi,
                                                   GuidedSearchMapper mapper) {
         return new GuidedSearchDataSource(searchApi, mapper);
     }
