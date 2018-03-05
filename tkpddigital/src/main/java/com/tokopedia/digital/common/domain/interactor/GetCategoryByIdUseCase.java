@@ -37,6 +37,7 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_PRODUCT_ID = "product_id";
     private final String PARAM_CLIENT_NUMBER = "client_number";
     private final String PARAM_SORT = "sort";
+    private final String DEFAULT_EMPTY_FIELD = "";
 
     private final String PARAM_IS_RESELLER = "is_reseller";
     private final String PARAM_VALUE_IS_RESELLER = "1";
@@ -103,12 +104,22 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         } else {
             List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
             DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
-            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
-                OrderClientNumber clientNumber = new OrderClientNumber.Builder()
+            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null
+                    && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
+                String productId =
+                        paramQueryLastNumber.get(PARAM_OPERATOR_ID) == null ? DEFAULT_EMPTY_FIELD :
+                                paramQueryLastNumber.get(PARAM_OPERATOR_ID);
+                String clientNumber =
+                        paramQueryLastNumber.get(PARAM_CLIENT_NUMBER) == null ? DEFAULT_EMPTY_FIELD :
+                                paramQueryLastNumber.get(PARAM_CLIENT_NUMBER);
+                OrderClientNumber orderClientNumber = new OrderClientNumber.Builder()
                         .categoryId(paramQueryLastNumber.get(PARAM_CATEGORY_ID))
                         .operatorId(paramQueryLastNumber.get(PARAM_OPERATOR_ID))
+                        .clientNumber(clientNumber)
+                        .name(DEFAULT_EMPTY_FIELD)
+                        .productId(productId)
                         .build();
-                digitalNumberList = new DigitalNumberList(orderClientNumbers, clientNumber);
+                digitalNumberList = new DigitalNumberList(orderClientNumbers, orderClientNumber);
             }
             return Observable.just(digitalNumberList);
         }
