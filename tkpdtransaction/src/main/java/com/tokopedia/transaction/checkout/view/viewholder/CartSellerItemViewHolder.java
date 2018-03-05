@@ -15,11 +15,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 
@@ -97,9 +95,10 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private boolean mIsAllCartItemShown;
     private boolean mIsCostDetailShown;
 
-    public CartSellerItemViewHolder(View itemView,
+    public CartSellerItemViewHolder(View itemView, Context context,
                                     SingleAddressShipmentAdapter.ActionListener actionListener) {
         super(itemView);
+        mContext = context;
         mActionListener = actionListener;
 
         mTvShopName = itemView.findViewById(R.id.tv_shop_name);
@@ -148,8 +147,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
     }
 
-    public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
-                               ShipmentCostModel shipmentCostModel) {
+    public void bindViewHolder(CartSellerItemModel cartSellerItemModel) {
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
 
@@ -157,8 +155,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
 
         bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         bindOtherCartItems(cartItemModelList);
-        bindCostDetail(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
-                shipmentCostModel);
+        bindCostDetail(cartSellerItemModel);
         bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData());
     }
 
@@ -214,9 +211,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvChevronShipmentOption.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
     }
 
-    private void bindCostDetail(CartSellerItemModel cartSellerItemModel,
-                                ShipmentDetailData shipmentDetailData,
-                                ShipmentCostModel shipmentCostModel) {
+    private void bindCostDetail(CartSellerItemModel cartSellerItemModel) {
         mRlSubTotalLayout.setVisibility(View.VISIBLE);
         mRlCostDetailLayout.setVisibility(mIsCostDetailShown ? View.VISIBLE : View.GONE);
 
@@ -226,25 +221,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvTotalItemLabel.setText(getTotalItemLabel(cartSellerItemModel.getTotalQuantity()));
         mTvShippingFeeLabel.setText(getTotalWeightLabel(cartSellerItemModel.getTotalWeight(),
                 cartSellerItemModel.getWeightUnit()));
-
-        if (shipmentDetailData != null) {
-            CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
-
-            cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
-                    + courierItemData.getAdditionalPrice());
-            cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
-
-            cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
-                    + cartSellerItemModel.getShippingFee()
-                    + cartSellerItemModel.getInsuranceFee());
-
-            if (shipmentCostModel != null) {
-                shipmentCostModel.setShippingFee(shipmentCostModel.getShippingFee()
-                        + cartSellerItemModel.getShippingFee());
-                shipmentCostModel.setInsuranceFee(shipmentCostModel.getInsuranceFee()
-                        + cartSellerItemModel.getInsuranceFee());
-            }
-        }
 
         mTvShippingFee.setText(getPriceFormat(cartSellerItemModel.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(cartSellerItemModel.getInsuranceFee()));
@@ -361,7 +337,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private void showGreyWarning(String message) {
         mLlWarningContainer.setBackgroundColor(ContextCompat.getColor(
                 mLlWarningContainer.getContext(), R.color.bg_warning_grey));
-//        imgWarning.setImageResource(R.drawable.ic_warning_grey);
+//        imgWarning.setImageResource(R.drawable.ic_warning_grey)
         mTvWarningText.setText(message);
         mTvWarningText.setTextColor(ContextCompat.getColor(
                 mLlWarningContainer.getContext(), R.color.black_54));

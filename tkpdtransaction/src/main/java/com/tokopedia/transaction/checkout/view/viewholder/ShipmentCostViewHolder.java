@@ -91,7 +91,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private double calculateTotalPrice(ShipmentCostModel shipmentCostModel) {
         return shipmentCostModel.getTotalItemPrice()
                 + shipmentCostModel.getInsuranceFee()
-                + shipmentCostModel.getShippingFee();
+                + shipmentCostModel.getShippingFee()
+                - shipmentCostModel.getPromoPrice();
     }
 
     private void togglePromoText() {
