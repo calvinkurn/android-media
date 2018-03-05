@@ -11,8 +11,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdcontent.R;
+import com.tokopedia.tkpdcontent.analytics.KolTracking;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 10/27/17.
@@ -233,6 +237,25 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     }
 
     private void tooltipAreaClicked(KolPostViewModel element) {
+        List<KolTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new KolTracking.Promotion(
+                element.getId(),
+                KolTracking.Promotion.createContentNameKolPost(
+                        element.getTagsType()),
+                TextUtils.isEmpty(element.getName()) ? "-" :
+                        element.getName(),
+                getAdapterPosition(),
+                TextUtils.isEmpty(element.getLabel()) ? "-" :
+                        element.getLabel(),
+                element.getContentId(),
+                TextUtils.isEmpty(element.getContentLink()) ? "-" :
+                        element.getContentLink(),
+                Integer.valueOf(viewListener.getUserSession().getUserId())
+        ));
+        viewListener.getAbstractionRouter()
+                .getAnalyticTracker()
+                .sendEnhancedEcommerce(KolTracking.getKolClickTracking(promotionList));
+
         viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
                 element.getContentLink());
     }
