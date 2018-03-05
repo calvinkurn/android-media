@@ -31,8 +31,6 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
     private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
 
-    private static final int FIRST_ELEMENT = 0;
-
     private static final int DEFAULT_ORDER = 1;
     private static final String DEFAULT_QUERY = "";
     private static final int DEFAULT_PAGE = 1;
@@ -124,12 +122,11 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressModels) {
         List<RecipientAddressModel> shortList = new ArrayList<>();
 
-        if (recipientAddressModels.remove(mSelectedRecipientAddress)) {
-            shortList.add(mSelectedRecipientAddress);
-            shortList.add(recipientAddressModels.get(FIRST_ELEMENT));
-        } else {
+        if (mSelectedRecipientAddress == null) {
             shortList.addAll(recipientAddressModels.subList(0, 2));
-            shortList.get(FIRST_ELEMENT).setSelected(true);
+        } else {
+            shortList.add(recipientAddressModels.get(0));
+            shortList.add(mSelectedRecipientAddress);
         }
 
         return shortList;

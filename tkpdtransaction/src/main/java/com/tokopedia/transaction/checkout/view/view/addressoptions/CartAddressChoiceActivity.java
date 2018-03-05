@@ -35,8 +35,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     private int typeRequest;
     private RecipientAddressModel defaultRecipientAddressModel;
 
-    public static Intent createInstance(Activity activity,
-                                        int typeRequest) {
+    public static Intent createInstance(Activity activity, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
         return intent;
@@ -74,6 +73,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
         Fragment fragment;
 
         if (typeRequest == TYPE_REQUEST_FULL_SELECTION) {
+            // Go to short listed address
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, defaultRecipientAddressModel);
 
@@ -81,6 +81,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
             fragment.setArguments(bundle);
 
         } else {
+            // Go to full address list
             fragment = ShipmentAddressListFragment.newInstance();
         }
 
