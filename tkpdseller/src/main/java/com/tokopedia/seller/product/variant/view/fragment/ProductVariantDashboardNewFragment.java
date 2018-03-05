@@ -449,6 +449,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         super.onSearchLoaded(list, totalItem);
         if (recyclerViewState!= null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            recyclerViewState = null;
         }
     }
 
