@@ -619,7 +619,7 @@ public class SearchActivity extends DiscoveryActivity
             lastUpdatedMinValue = minValue;
             lastUpdatedMaxValue = maxValue;
         }
-        
+
         Filter priceFilter = getPriceFilter();
         if (priceFilter == null) {
             return;
@@ -738,13 +738,14 @@ public class SearchActivity extends DiscoveryActivity
             return;
         }
         filterDetailSearchContainer.setVisibility(View.VISIBLE);
-        filterDetailSearch.setText("");
         searchFilter = null;
 
         if (filterDetailSearchTextWatcher != null) {
             filterDetailSearch.removeTextChangedListener(filterDetailSearchTextWatcher);
             filterDetailSearchTextWatcher = null;
         }
+
+        filterDetailSearch.setText("");
 
         filterDetailSearchTextWatcher = new TextWatcher() {
             @Override
