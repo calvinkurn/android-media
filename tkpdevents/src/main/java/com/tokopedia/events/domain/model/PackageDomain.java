@@ -3,66 +3,66 @@ package com.tokopedia.events.domain.model;
 
 public class PackageDomain {
 
-    private Integer id;
-    private Integer productId;
-    private Integer productScheduleId;
-    private Integer productGroupId;
+    private int id;
+    private int productId;
+    private int productScheduleId;
+    private int productGroupId;
     private String providerScheduleId;
     private String providerTicketId;
     private String name;
     private String displayName;
     private String description;
     private String tnc;
-    private Integer convenienceFee;
-    private Integer mrp;
-    private Integer commission;
+    private int convenienceFee;
+    private int mrp;
+    private int commission;
     private String commissionType;
-    private Integer salesPrice;
-    private Integer sold;
-    private Integer booked;
-    private Integer available;
-    private Integer minQty;
-    private Integer maxQty;
-    private Integer status;
+    private int salesPrice;
+    private int sold;
+    private int booked;
+    private int available;
+    private int minQty;
+    private int maxQty;
+    private int status;
     private String color;
     private String icon;
     private String providerMetaData;
     private String providerStatus;
     private String venueDetail;
-    private Integer startDate;
+    private int startDate;
     private String updatedAt;
     private String fetchSectionUrl;
     private String createdAt;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getProductScheduleId() {
+    public int getProductScheduleId() {
         return productScheduleId;
     }
 
-    public void setProductScheduleId(Integer productScheduleId) {
+    public void setProductScheduleId(int productScheduleId) {
         this.productScheduleId = productScheduleId;
     }
 
-    public Integer getProductGroupId() {
+    public int getProductGroupId() {
         return productGroupId;
     }
 
-    public void setProductGroupId(Integer productGroupId) {
+    public void setProductGroupId(int productGroupId) {
         this.productGroupId = productGroupId;
     }
 
@@ -114,27 +114,27 @@ public class PackageDomain {
         this.tnc = tnc;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getCommission() {
+    public int getCommission() {
         return commission;
     }
 
-    public void setCommission(Integer commission) {
+    public void setCommission(int commission) {
         this.commission = commission;
     }
 
@@ -146,59 +146,59 @@ public class PackageDomain {
         this.commissionType = commissionType;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSold() {
+    public int getSold() {
         return sold;
     }
 
-    public void setSold(Integer sold) {
+    public void setSold(int sold) {
         this.sold = sold;
     }
 
-    public Integer getBooked() {
+    public int getBooked() {
         return booked;
     }
 
-    public void setBooked(Integer booked) {
+    public void setBooked(int booked) {
         this.booked = booked;
     }
 
-    public Integer getAvailable() {
+    public int getAvailable() {
         return available;
     }
 
-    public void setAvailable(Integer available) {
+    public void setAvailable(int available) {
         this.available = available;
     }
 
-    public Integer getMinQty() {
+    public int getMinQty() {
         return minQty;
     }
 
-    public void setMinQty(Integer minQty) {
+    public void setMinQty(int minQty) {
         this.minQty = minQty;
     }
 
-    public Integer getMaxQty() {
+    public int getMaxQty() {
         return maxQty;
     }
 
-    public void setMaxQty(Integer maxQty) {
+    public void setMaxQty(int maxQty) {
         this.maxQty = maxQty;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -242,11 +242,11 @@ public class PackageDomain {
         this.venueDetail = venueDetail;
     }
 
-    public Integer getStartDate() {
+    public int getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Integer startDate) {
+    public void setStartDate(int startDate) {
         this.startDate = startDate;
     }
 

@@ -117,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_default"
                 android:layout_below="@+id/tv_day_time_bta"
-                android:background="@color/black_12" />
+                android:background="@color/grey_100" />
 
             <FrameLayout
                 android:id="@+id/bookticket_fragment_holder"

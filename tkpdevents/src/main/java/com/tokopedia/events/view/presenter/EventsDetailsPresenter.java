@@ -102,11 +102,8 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
             @Override
             public void onNext(EventsDetailsViewModel detailsViewModel) {
                 getView().renderFromCloud(detailsViewModel);   //chained using mapl
-                if (eventsDetailsViewModel.getHasSeatLayout() != null) {
-                    hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
-                } else {
-                    hasSeatLayout = 0;
-                }
+                hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
+                hasSeatLayout = 0;
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
