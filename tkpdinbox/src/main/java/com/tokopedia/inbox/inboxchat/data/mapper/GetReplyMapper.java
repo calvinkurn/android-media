@@ -149,7 +149,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
         for (Contact contact : contacts) {
-            if (contact.getUserId() != 0g
+            if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())) {
 
                 if (!TextUtils.isEmpty(contact.getUserName())) {
