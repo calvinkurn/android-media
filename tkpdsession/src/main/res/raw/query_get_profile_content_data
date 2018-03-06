@@ -68,6 +68,7 @@ query GetProfileContent($userID: Int!){
                 use_ace
 			    last_online
                 applink
+                is_favorite
             }
         }
     reputationByUserId(user_id: $userID) {
