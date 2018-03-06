@@ -66,6 +66,8 @@ dependencies {
     }
     compile rootProject.ext.supportLibDependencies.supportV4
 
+    compile rootProject.ext.playServicesDependencies.plus
+
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 

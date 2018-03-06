@@ -14,7 +14,6 @@ public class StreamAnalytics {
     private String EVENT_CATEGORY_GROUPCHAT_LIST = "groupchat";
     private String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
     private String EVENT_CATEGORY_SHARE = "share page";
-    private String EVENT_CATEGORY_GROUPCHAT_DETAIL = "detailed groupchat";
     private String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
 
     private String EVENT_ACTION_GROUPCHAT_LIST = "click on group chat list";
@@ -70,7 +69,7 @@ public class StreamAnalytics {
 
     public void eventClickJoin() {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_DETAIL,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_JOIN_VOTE_NOW,
                 ""
         );

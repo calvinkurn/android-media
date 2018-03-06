@@ -9,8 +9,9 @@ import java.text.DecimalFormat;
 public class TextFormatter {
 
     public static String format(long number){
-        DecimalFormat formatter = new DecimalFormat("#.###.###");
-        return formatter.format(number);
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        String temp = formatter.format(number);
+        return temp.replace(",",".");
     }
 
     public static String format(String number) {

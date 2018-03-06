@@ -42,4 +42,6 @@
     <string name="user_is_banned">Anda telah di blokir.</string>
     <string name="please_check_timezone_to_vote">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
 
+    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+
 </resources>
