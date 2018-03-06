@@ -122,10 +122,10 @@ public class EventDetailsViewModelMapper {
 
                     schedulesViewModel.setPackages(packageViewModels);
                 }
-            }
-            schedules.add(schedulesViewModel);
+                schedules.add(schedulesViewModel);
 
+            }
+            target.setSchedulesViewModels(schedules);
         }
-        target.setSchedulesViewModels(schedules);
     }
 }
