@@ -295,7 +295,6 @@ public class TopProfileActivity extends BaseEmptyActivity
 
         initTabLoad();
         populateData();
-        fragmentListener.renderData(topProfileViewModel);
     }
 
     @Override
@@ -343,6 +342,7 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private void initTabLoad() {
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
+        TopProfileFragment profileFragment;
 
         if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
             BaseDaggerFragment kolPostFragment =
@@ -353,15 +353,19 @@ public class TopProfileActivity extends BaseEmptyActivity
             headerSeparator.setVisibility(View.GONE);
         }
 
-        TopProfileFragment profileFragment = TopProfileFragment.newInstance();
-        topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
+        if (topProfileViewModel.isUser() || !topProfileViewModel.isKol()) {
+            profileFragment = TopProfileFragment.newInstance();
+            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE,
+                    profileFragment));
+            fragmentListener = profileFragment;
+            fragmentListener.renderData(topProfileViewModel);
+        }
 
         TopProfileTabPagerAdapter topProfileTabPagerAdapter = new TopProfileTabPagerAdapter
                 (getSupportFragmentManager());
         topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
         viewPager.setAdapter(topProfileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        fragmentListener = profileFragment;
     }
 
     private void populateData() {
@@ -400,7 +404,7 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         });
 
-        tabLayout.setVisibility(topProfileViewModel.isKol() ? View.VISIBLE : View.GONE);
+        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ? View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,

@@ -2,7 +2,6 @@ package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -169,12 +168,13 @@ public class PartialUserShopView extends BaseCustomView {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("shop_id", String.valueOf(data.getShopId()));
-            bundle.putString("shop_name", data.getShopName());
-            bundle.putString("shop_avatar", data.getShopLogo());
-            bundle.putInt("shop_favorite", data.isFavorite() ? 1 : 0);
-            intent.putExtras(bundle);
+            intent.putExtras(
+                    ShopInfoActivity.
+                            createBundle(String.valueOf(data.getShopId()),
+                                    "",
+                                    data.getShopName(),
+                                    data.getShopLogo(),
+                                    data.isFavorite() ? 1 : 0));
             getContext().startActivity(intent);
         }
     }
