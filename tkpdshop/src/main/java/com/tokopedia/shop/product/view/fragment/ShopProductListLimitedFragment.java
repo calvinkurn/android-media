@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -139,7 +140,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void promoClicked(String url) {
-        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url);
+        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url, shopId);
     }
 
     @Override
