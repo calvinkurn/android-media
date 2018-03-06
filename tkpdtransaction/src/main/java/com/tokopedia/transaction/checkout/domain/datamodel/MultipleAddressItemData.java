@@ -23,6 +23,8 @@ public class MultipleAddressItemData implements Parcelable {
 
     private String productWeight = "";
 
+    private int productRawWeight;
+
     private String productQty = "";
 
     private String productNotes = "";
@@ -87,6 +89,7 @@ public class MultipleAddressItemData implements Parcelable {
         store = in.readParcelable(Store.class.getClassLoader());
         maxQuantity = in.readInt();
         minQuantity = in.readInt();
+        productRawWeight = in.readInt();
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
@@ -293,6 +296,14 @@ public class MultipleAddressItemData implements Parcelable {
         this.minQuantity = minQuantity;
     }
 
+    public int getProductRawWeight() {
+        return productRawWeight;
+    }
+
+    public void setProductRawWeight(int productRawWeight) {
+        this.productRawWeight = productRawWeight;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -324,5 +335,6 @@ public class MultipleAddressItemData implements Parcelable {
         parcel.writeParcelable(store, i);
         parcel.writeInt(maxQuantity);
         parcel.writeInt(minQuantity);
+        parcel.writeInt(productRawWeight);
     }
 }

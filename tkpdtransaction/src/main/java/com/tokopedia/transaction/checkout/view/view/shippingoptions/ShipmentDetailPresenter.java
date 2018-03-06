@@ -94,7 +94,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             shipmentDetailData.getShipmentCartData().setDestinationLatitude(Double.parseDouble(locationPass.getLatitude()));
             shipmentDetailData.getShipmentCartData().setDestinationLongitude(Double.parseDouble(locationPass.getLongitude()));
             shipmentDetailData.getShipmentCartData().setDestinationAddress(locationPass.getGeneratedAddress());
-            getView().renderShipmentWithMap(shipmentDetailData);
+            getView().renderSelectedCourier(getSelectedCourier());
         }
     }
 

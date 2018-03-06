@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,8 +42,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
-    private ShipmentDetailData shipmentDetailData;
-
     private MultipleAddressPriceSummaryData priceSummaryData;
 
     private MultipleAddressShipmentAdapterListener listener;
@@ -57,12 +54,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         this.listener = listener;
     }
 
-    public ShipmentDetailData getShipmentDetailData() {
-        return shipmentDetailData;
-    }
-
-    public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
-        this.shipmentDetailData = shipmentDetailData;
+    public void setShipmentDetailData(int position, ShipmentDetailData shipmentDetailData) {
+        this.addressDataList.get(position - HEADER_SIZE).setSelectedShipmentDetailData(shipmentDetailData);
     }
 
     @Override
@@ -183,14 +176,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                 + ", " + itemData.getAddressProvinceName());
         itemViewHolder.phoneNumber.setText(itemData.getRecipientPhoneNumber());
         itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
-        itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
-        if (shipmentDetailData != null &&
-                shipmentDetailData.getSelectedCourier() != null) {
+        itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data, position));
+        if (data.getSelectedShipmentDetailData() != null &&
+                data.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             itemViewHolder.chooseCourierButton.setVisibility(View.GONE);
-            itemViewHolder.tvSelectedShipment.setText(shipmentDetailData.getSelectedCourier().getName());
+            itemViewHolder.tvSelectedShipment.setText(
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getName());
             itemViewHolder.tvSelectedShipment.setVisibility(View.VISIBLE);
             itemViewHolder.ivChevronShipmentOption.setVisibility(View.VISIBLE);
         } else {
@@ -202,11 +196,12 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 //        renderPickupPoint(itemViewHolder, data);
     }
 
-    private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data) {
+    private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data,
+                                                               final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onChooseShipment(data);
+                listener.onChooseShipment(data, position);
             }
         };
     }
@@ -530,12 +525,12 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private View.OnClickListener onChooseCourierClicked(
-            final MultipleAddressShipmentAdapterData data
+            final MultipleAddressShipmentAdapterData data, final int position
     ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onChooseShipment(data);
+                listener.onChooseShipment(data, position);
             }
         };
     }
@@ -580,7 +575,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                 List<MultipleAddressShipmentAdapterData> addressDataList,
                 MultipleAddressPriceSummaryData summaryData);
 
-        void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData);
+        void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 
         void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 

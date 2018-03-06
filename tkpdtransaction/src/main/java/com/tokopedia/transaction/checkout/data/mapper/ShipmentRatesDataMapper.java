@@ -11,8 +11,11 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -50,6 +53,101 @@ public class ShipmentRatesDataMapper {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
         shipmentDetailData.setShipmentCartData(multipleAddressShipmentAdapterData.getShipmentCartData());
         return shipmentDetailData;
+    }
+
+    public ShipmentCartData getShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                UserAddress userAddress, GroupShop groupShop,
+                                                MultipleAddressShipmentAdapterData adapterData) {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
+        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
+
+        return shipmentCartData;
+    }
+
+    public ShipmentCartData getShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                UserAddress userAddress, GroupShop groupShop,
+                                                CartSellerItemModel cartSellerItemModel) {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue(((Double) cartSellerItemModel.getTotalPrice()).intValue());
+        shipmentCartData.setWeight(cartSellerItemModel.getTotalWeight());
+
+        return shipmentCartData;
+    }
+
+    private void initializeShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                            UserAddress userAddress, GroupShop groupShop,
+                                            ShipmentCartData shipmentCartData) {
+        shipmentCartData.setToken(cartShipmentAddressFormData.getKeroToken());
+        shipmentCartData.setUt(String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()));
+        shipmentCartData.setDestinationAddress(userAddress.getAddress());
+        shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
+        shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+                Double.parseDouble(userAddress.getLatitude()) : null);
+        shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+                Double.parseDouble(userAddress.getLongitude()) : null);
+        shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
+        shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
+        shipmentCartData.setOriginLatitude(!TextUtils.isEmpty(groupShop.getShop().getLatitude()) ?
+                Double.parseDouble(groupShop.getShop().getLatitude()) : null);
+        shipmentCartData.setOriginLongitude(!TextUtils.isEmpty(groupShop.getShop().getLongitude()) ?
+                Double.parseDouble(groupShop.getShop().getLongitude()) : null);
+        shipmentCartData.setOriginPostalCode(groupShop.getShop().getPostalCode());
+        shipmentCartData.setCategoryIds(getCategoryIds(groupShop.getProducts()));
+        shipmentCartData.setProductInsurance(isForceInsurance(groupShop.getProducts()) ? 1 : 0);
+        shipmentCartData.setShopShipments(groupShop.getShopShipments());
+        String shippingNames = getShippingNames(groupShop.getShopShipments());
+        shipmentCartData.setShippingNames(shippingNames);
+        String shippingServices = getShippingServices(groupShop.getShopShipments());
+        shipmentCartData.setShippingServices(shippingServices);
+        shipmentCartData.setInsurance(1);
+        shipmentCartData.setDeliveryPriceTotal(0);
+    }
+
+    private String getCategoryIds(List<com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product> products) {
+        List<Integer> categoryIds = new ArrayList<>();
+        for (int i = 0; i < products.size(); i++) {
+            int categoryId = products.get(i).getProductCatId();
+            if (!categoryIds.contains(categoryId)) {
+                categoryIds.add(categoryId);
+            }
+        }
+        return TextUtils.join(",", categoryIds);
+    }
+
+    private boolean isForceInsurance(List<com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product> products) {
+        for (com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product product : products) {
+            if (product.isProductFinsurance()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getShippingNames(List<ShopShipment> shopShipments) {
+        List<String> shippingNames = new ArrayList<>();
+        for (int i = 0; i < shopShipments.size(); i++) {
+            String shippingName = shopShipments.get(i).getShipCode();
+            if (!shippingNames.contains(shippingName)) {
+                shippingNames.add(shippingName);
+            }
+        }
+        return TextUtils.join(",", shippingNames);
+    }
+
+    private String getShippingServices(List<ShopShipment> shopShipments) {
+        List<String> shippingServices = new ArrayList<>();
+        for (int i = 0; i < shopShipments.size(); i++) {
+            for (int j = 0; j < shopShipments.get(i).getShipProds().size(); j++) {
+                String shippingService = shopShipments.get(i).getShipProds().get(j).getShipGroupName();
+                if (!shippingServices.contains(shippingService)) {
+                    shippingServices.add(shippingService);
+                }
+            }
+        }
+        return TextUtils.join(",", shippingServices);
     }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,

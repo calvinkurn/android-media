@@ -42,7 +42,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
-import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SINGLE_ADDRESS_POSITION;
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
@@ -387,7 +387,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
+                    int position = data.getIntExtra(EXTRA_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
 

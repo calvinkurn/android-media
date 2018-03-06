@@ -34,6 +34,8 @@ public class MultipleAddressShipmentAdapterData {
 
     private ShipmentCartData shipmentCartData;
 
+    private ShipmentDetailData selectedShipmentDetailData;
+
     private long subTotal;
 
     private long productPriceNumber;
@@ -156,5 +158,13 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setProductPriceNumber(long productPriceNumber) {
         this.productPriceNumber = productPriceNumber;
+    }
+
+    public ShipmentDetailData getSelectedShipmentDetailData() {
+        return selectedShipmentDetailData;
+    }
+
+    public void setSelectedShipmentDetailData(ShipmentDetailData selectedShipmentDetailData) {
+        this.selectedShipmentDetailData = selectedShipmentDetailData;
     }
 }
