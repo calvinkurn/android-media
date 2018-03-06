@@ -30,7 +30,7 @@ public class SingleAddressShipmentPresenter
         super.checkViewAttached();
     }
 
-    public void getCartShipmentData(final List<Object> shipmentDataList) {
+    public void setShipmentData(final List<Object> shipmentDataList) {
         getMvpView().show(shipmentDataList);
     }
 

@@ -82,16 +82,16 @@ public class SingleAddressShipmentDataConverter
         List<CartItemModel> cartItemModels = convertFromProductList(products);
         sellerItemModel.setCartItemModels(cartItemModels);
 
+        int totalQuantity = 0;
+        double totalItemPrice = 0, totalWeight = 0;
         for (CartItemModel cartItemModel : cartItemModels) {
-            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice()
-                    + (cartItemModel.getPrice() * cartItemModel.getQuantity()));
-            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight()
-                    + cartItemModel.getWeight() * cartItemModel.getQuantity());
-            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity()
-                    + cartItemModel.getQuantity());
+            totalItemPrice += cartItemModel.getPrice() * cartItemModel.getQuantity();
+            totalQuantity += cartItemModel.getQuantity();
+            totalWeight += cartItemModel.getWeight() * cartItemModel.getQuantity();
         }
-
-        sellerItemModel.setTotalPrice(sellerItemModel.getTotalItemPrice());
+        sellerItemModel.setTotalItemPrice(totalItemPrice);
+        sellerItemModel.setTotalQuantity(totalQuantity);
+        sellerItemModel.setTotalWeight(totalWeight);
         sellerItemModel.setShipmentCartData(
                 new ShipmentRatesDataMapper().getShipmentCartData(
                         cartItemDataList, userAddress, groupShop, sellerItemModel));
@@ -161,13 +161,9 @@ public class SingleAddressShipmentDataConverter
 
         for (CartSellerItemModel itemModel : cartSellerItemModels) {
             cartPayable.setTotalItem(cartPayable.getTotalItem() + itemModel.getTotalQuantity());
-            cartPayable.setTotalItemPrice(cartPayable.getTotalItemPrice() + itemModel.getTotalPrice());
+            cartPayable.setTotalItemPrice(cartPayable.getTotalItemPrice() + itemModel.getTotalItemPrice());
             cartPayable.setTotalWeight(cartPayable.getTotalWeight() + itemModel.getTotalWeight());
         }
-
-        cartPayable.setTotalPrice(cartPayable.getTotalItemPrice()
-                + cartPayable.getShippingFee()
-                + cartPayable.getInsuranceFee());
 
         return cartPayable;
     }

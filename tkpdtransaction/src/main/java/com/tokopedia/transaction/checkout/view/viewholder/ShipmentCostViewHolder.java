@@ -56,23 +56,20 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mActionListener = actionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCostModel) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
-        mTvTotalItemLabel.setText(getTotalItemLabel(shipmentCostModel.getTotalItem()));
-        mTvTotalItemPrice.setText(getPriceFormat(shipmentCostModel.getTotalItemPrice()));
-        mTvShippingFeeLabel.setText(getTotalWeightLabel(shipmentCostModel.getTotalWeight(), GRAM));
-        mTvShippingFee.setText(getPriceFormat(shipmentCostModel.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(shipmentCostModel.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(shipmentCostModel.getPromoPrice()));
+        mTvTotalItemLabel.setText(getTotalItemLabel(shipmentCost.getTotalItem()));
+        mTvTotalItemPrice.setText(getPriceFormat(shipmentCost.getTotalItemPrice()));
+        mTvShippingFeeLabel.setText(getTotalWeightLabel(shipmentCost.getTotalWeight(), GRAM));
+        mTvShippingFee.setText(getPriceFormat(shipmentCost.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat(shipmentCost.getInsuranceFee()));
+        mTvPromoDiscount.setText(getPriceFormat(shipmentCost.getPromoPrice()));
 
-        shipmentCostModel.setTotalPrice(calculateTotalPrice(shipmentCostModel));
-        mTvGrandTotal.setText(getPriceFormat(shipmentCostModel.getTotalPrice()));
+        mTvGrandTotal.setText(getPriceFormat(shipmentCost.getTotalPrice()));
 
         mTvPromoFreeShipping.setVisibility(View.VISIBLE);
         mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
-
-        mActionListener.onTotalPaymentChange(shipmentCostModel);
     }
 
     private String getTotalItemLabel(int totalItem) {
@@ -86,13 +83,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     private String getPriceFormat(double price) {
         return price == 0 ? "-" : CURRENCY_IDR.format(price);
-    }
-
-    private double calculateTotalPrice(ShipmentCostModel shipmentCostModel) {
-        return shipmentCostModel.getTotalItemPrice()
-                + shipmentCostModel.getInsuranceFee()
-                + shipmentCostModel.getShippingFee()
-                - shipmentCostModel.getPromoPrice();
     }
 
     private void togglePromoText() {
