@@ -67,14 +67,14 @@
                 android:layout_width="@dimen/icon_prod_pad"
                 android:layout_height="@dimen/icon_prod_pad"
                 android:layout_marginRight="@dimen/med_dp"
-                android:src="@drawable/ic_action_edit"
+                app:srcCompat="@drawable/ic_action_edit"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/delete"
                 android:layout_width="@dimen/icon_prod_pad"
                 android:layout_height="@dimen/icon_prod_pad"
-                android:src="@drawable/ic_action_delete"
+                app:srcCompat="@drawable/ic_action_delete"
                 android:visibility="gone" />
 
             <!-- <TextView -->
@@ -170,7 +170,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@drawable/overflow_selected"
                 android:padding="@dimen/padding_vs"
-                android:src="@drawable/ic_chevron_down" />
+                app:srcCompat="@drawable/ic_chevron_down" />
         </RelativeLayout>
 
         <View

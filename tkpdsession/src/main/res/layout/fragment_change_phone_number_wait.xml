@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_proses_pengecekan_data" />
+        app:srcCompat="@drawable/icon_proses_pengecekan_data" />
 
     <TextView
         android:layout_width="match_parent"

@@ -29,7 +29,7 @@
             android:layout_height="12dp"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/padding_small"
-            android:src="@drawable/ic_kol_badge"/>
+            app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/tv_name"

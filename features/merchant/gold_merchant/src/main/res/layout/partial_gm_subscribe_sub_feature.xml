@@ -19,7 +19,7 @@
             android:layout_width="45dp"
             android:layout_height="42dp"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_gmsubscribe_subfeature_etalase" />
+            app:srcCompat="@drawable/ic_gmsubscribe_subfeature_etalase" />
     </RelativeLayout>
 
     <RelativeLayout

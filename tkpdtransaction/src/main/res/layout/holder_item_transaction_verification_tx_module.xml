@@ -14,7 +14,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/overflow_selected"
-        android:src="@drawable/ic_new_action_overflow_black"
+        app:srcCompat="@drawable/ic_new_action_overflow_black"
         tools:ignore="ContentDescription"/>
 
     <TextView

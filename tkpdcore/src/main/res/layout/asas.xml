@@ -24,7 +24,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_icon_toped_announce" />
+                app:srcCompat="@drawable/ic_icon_toped_announce" />
 
             <!-- invoice number, buyer, & status -->
             <LinearLayout
@@ -73,7 +73,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_icon_toped_announce" />
+                app:srcCompat="@drawable/ic_icon_toped_announce" />
 
             <!-- invoice number, buyer, & status -->
             <LinearLayout
@@ -130,7 +130,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_icon_toped_announce" />
+                app:srcCompat="@drawable/ic_icon_toped_announce" />
 
             <!-- invoice number, buyer, & status -->
             <LinearLayout
@@ -423,13 +423,13 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/resi_button"
                     android:layout_marginLeft="8dp"
-                    android:src="@drawable/ic_barcode"/>
+                    app:srcCompat="@drawable/ic_barcode"/>
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_close_black_24dp"/>
+                    app:srcCompat="@drawable/ic_close_black_24dp"/>
 
             </RelativeLayout>
 
@@ -448,7 +448,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_icon_toped_announce"
+                app:srcCompat="@drawable/ic_icon_toped_announce"
                 android:layout_gravity="center_vertical"
                 />
 

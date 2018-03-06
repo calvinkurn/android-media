@@ -99,7 +99,7 @@
             android:id="@+id/iv_official"
             android:layout_width="@dimen/med_dp"
             android:layout_height="@dimen/med_dp"
-            android:src="@drawable/ic_badge_official"
+            app:srcCompat="@drawable/ic_badge_official"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

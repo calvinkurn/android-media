@@ -34,7 +34,7 @@
             android:paddingLeft="@dimen/small_dp"
             android:paddingRight="@dimen/small_dp"
             android:paddingStart="@dimen/small_dp"
-            android:src="@drawable/ic_chevron_right_black_24dp" />
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
 
     </RelativeLayout>
 

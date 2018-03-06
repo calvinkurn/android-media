@@ -31,7 +31,7 @@
                 android:layout_marginRight="@dimen/twelve_dp"
                 android:background="@drawable/shape_bg_cab_img"
                 android:padding="6dp"
-                android:src="@drawable/cabs_uber_ic" />
+                app:srcCompat="@drawable/cabs_uber_ic" />
 
             <TextView
                 android:id="@+id/tv_cab_name"
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
-                    android:src="@drawable/cab_surge"
+                    app:srcCompat="@drawable/cab_surge"
                     android:visibility="gone" />
 
 

@@ -45,7 +45,7 @@
                 android:layout_marginEnd="26dp"
                 android:layout_marginRight="26dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/cabs_mylocation_button"
+                app:srcCompat="@drawable/cabs_mylocation_button"
                 android:visibility="visible" />
 
             <FrameLayout
@@ -150,7 +150,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/cab_cancel_cross" />
+                    app:srcCompat="@drawable/cab_cancel_cross" />
 
                 <TextView
                     android:layout_width="wrap_content"

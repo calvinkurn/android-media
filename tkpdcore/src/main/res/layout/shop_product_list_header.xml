@@ -64,7 +64,7 @@
             android:layout_marginEnd="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_vs"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_grid" />
+            app:srcCompat="@drawable/ic_grid" />
 
         <ImageView
             android:background="@drawable/overflow_selected"
@@ -78,7 +78,7 @@
             android:layout_marginTop="@dimen/margin_vs"
             android:layout_width="@dimen/margin_large"
             android:layout_centerVertical="true"
-            android:src="@drawable/sorting_icon" />
+            app:srcCompat="@drawable/sorting_icon" />
 
     </RelativeLayout>
 

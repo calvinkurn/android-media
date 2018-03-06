@@ -28,7 +28,7 @@
         <ImageView
             android:id="@+id/category_child_dropdown"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/carret_down"
+            app:srcCompat="@drawable/carret_down"
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 

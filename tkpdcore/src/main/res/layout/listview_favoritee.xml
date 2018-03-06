@@ -17,7 +17,7 @@
             android:layout_width="@dimen/shop_ava"
             android:layout_height="@dimen/shop_ava"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/remove" />
+            app:srcCompat="@drawable/remove" />
 
         <TextView
             android:id="@+id/user_name"

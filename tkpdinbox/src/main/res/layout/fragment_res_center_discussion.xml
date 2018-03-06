@@ -20,7 +20,7 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_action_attachment" />
+            app:srcCompat="@drawable/ic_action_attachment" />
 
         <EditText
             android:id="@+id/reply_box"
@@ -34,7 +34,7 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_send_24dp_green" />
+            app:srcCompat="@drawable/ic_send_24dp_green" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

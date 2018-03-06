@@ -22,7 +22,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="12dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_gmsubscribe_gold_badge" />
+            app:srcCompat="@drawable/ic_gmsubscribe_gold_badge" />
 
         <LinearLayout
             android:layout_width="wrap_content"

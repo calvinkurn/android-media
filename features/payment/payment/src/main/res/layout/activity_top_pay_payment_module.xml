@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/lib/.activity.TopPayActivity"
+    tools:context=".activity.TopPayActivity"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -16,7 +18,7 @@
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
             android:padding="12dp"
-            android:src="@drawable/ic_arrow_back_black"
+            app:srcCompat="@drawable/ic_arrow_back_black"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -40,7 +42,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:padding="12dp"
-            android:src="@drawable/ic_close_white"
+            app:srcCompat="@drawable/ic_close_white"
             android:visibility="invisible"
             tools:ignore="ContentDescription" />
     </RelativeLayout>

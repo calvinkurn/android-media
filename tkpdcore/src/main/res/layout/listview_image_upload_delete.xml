@@ -13,7 +13,7 @@
         android:padding="2dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="@dimen/padding_small"
-        android:src="@drawable/addproduct" />
+        app:srcCompat="@drawable/addproduct" />
 
     <ImageView
         android:id="@+id/delete_but"
@@ -23,6 +23,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@id/image_upload"
-        android:src="@drawable/navigation_cancel" />
+        app:srcCompat="@drawable/navigation_cancel" />
 
 </RelativeLayout>

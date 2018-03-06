@@ -77,7 +77,7 @@
                     android:layout_alignTop="@+id/verified"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_toRightOf="@+id/verified"
-                    android:src="@drawable/ic_verified"/>
+                    app:srcCompat="@drawable/ic_verified"/>
             </RelativeLayout>
 
         </RelativeLayout>

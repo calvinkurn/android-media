@@ -51,7 +51,7 @@
                 android:layout_height="18dp"
                 android:padding="2dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_official" />
+                app:srcCompat="@drawable/ic_official" />
 
             <TextView
                 android:id="@+id/official_store_txt"

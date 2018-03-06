@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="@dimen/search_not_found_icon_size"
         android:layout_height="@dimen/search_not_found_icon_size"
-        android:src="@drawable/ic_toped_empty_search"/>
+        app:srcCompat="@drawable/ic_toped_empty_search"/>
 
     <TextView
         android:id="@+id/title"

@@ -44,7 +44,7 @@
             android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_selected_chat_check"
+            app:srcCompat="@drawable/ic_selected_chat_check"
             android:layout_alignBottom="@+id/user_ava"
             android:layout_alignRight="@+id/user_ava"
             android:layout_alignEnd="@+id/user_ava" />

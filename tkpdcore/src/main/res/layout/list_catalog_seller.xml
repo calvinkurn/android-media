@@ -19,7 +19,7 @@
             android:layout_width="@dimen/img_thumb_m"
             android:layout_height="@dimen/img_thumb_m"
             android:background="@drawable/border_circle"
-            android:src="@drawable/remove" />
+            app:srcCompat="@drawable/remove" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_med"
                     android:scaleType="fitStart"
-                    android:src="@drawable/qc_launcher" />
+                    app:srcCompat="@drawable/qc_launcher" />
 
             </LinearLayout>
 

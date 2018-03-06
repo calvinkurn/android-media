@@ -29,7 +29,7 @@
             <ImageView android:id="@+id/iv_cc_chip_thumb"
                 android:layout_width="@dimen/chip_thumb_size"
                 android:layout_height="@dimen/chip_thumb_size"
-                android:src="@drawable/ic_chip_thumb_bright"
+                app:srcCompat="@drawable/ic_chip_thumb_bright"
                 tools:ignore="ContentDescription" />
 
             <TextView android:id="@+id/tv_credit_card_number"

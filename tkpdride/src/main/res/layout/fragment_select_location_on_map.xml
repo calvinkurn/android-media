@@ -32,7 +32,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_gravity="center"
                 android:padding="10dp"
-                android:src="@drawable/header_blue_back_icon" />
+                app:srcCompat="@drawable/header_blue_back_icon" />
 
             <FrameLayout
                 android:id="@+id/layout_loader_cross"
@@ -48,7 +48,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:padding="10dp"
-                    android:src="@drawable/blue_close_icon"
+                    app:srcCompat="@drawable/blue_close_icon"
                     android:visibility="gone" />
 
                 <ProgressBar
@@ -105,7 +105,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/marker_red"
+                app:srcCompat="@drawable/marker_red"
                 android:visibility="visible" />
 
         </RelativeLayout>

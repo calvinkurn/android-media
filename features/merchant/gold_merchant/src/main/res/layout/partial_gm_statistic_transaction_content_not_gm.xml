@@ -21,7 +21,7 @@
             android:layout_width="26dp"
             android:layout_height="32dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_lock_icon_again" />
+            app:srcCompat="@drawable/ic_lock_icon_again" />
 
         <TextView
             style="@style/TextView.Small.WhiteDisabled"

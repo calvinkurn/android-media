@@ -199,7 +199,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -245,7 +245,7 @@
                         android:id="@+id/rep_icon1"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating1"
@@ -463,7 +463,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -509,7 +509,7 @@
                         android:id="@+id/rep_icon2"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating2"
@@ -727,7 +727,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 android:visibility="gone" />
 
             <RelativeLayout
@@ -773,7 +773,7 @@
                         android:id="@+id/rep_icon3"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active" />
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active" />
 
                     <TextView
                         android:id="@+id/rep_rating3"

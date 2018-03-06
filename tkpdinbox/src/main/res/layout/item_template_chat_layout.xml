@@ -37,7 +37,7 @@
         android:layout_width="@dimen/min_height_template"
         android:layout_height="@dimen/min_height_template"
         android:background="@drawable/interactive_label_template_chat"
-        android:src="@drawable/ic_setting_chat" />
+        app:srcCompat="@drawable/ic_setting_chat" />
 
 
 </LinearLayout>

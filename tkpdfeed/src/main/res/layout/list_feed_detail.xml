@@ -23,7 +23,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:elevation="5dp"
-        android:src="@drawable/wishlist_faved" />
+        app:srcCompat="@drawable/wishlist_faved" />
 
     <TextView
         android:id="@+id/product_name"
@@ -128,7 +128,7 @@
             android:layout_height="@dimen/icon_prod_size"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/preorder"
-            android:src="@drawable/ic_badge_free_return" />
+            app:srcCompat="@drawable/ic_badge_free_return" />
 
     </RelativeLayout>
 

@@ -21,7 +21,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/tokocash"
+            app:srcCompat="@drawable/tokocash"
             android:tint="@color/black_54" />
 
         <TextView
@@ -70,7 +70,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/default_user_pic_light" />
+                app:srcCompat="@drawable/default_user_pic_light" />
 
             <TextView
                 android:id="@+id/tv_driver_rating"
@@ -137,7 +137,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:clickable="true"
-                android:src="@drawable/icon_call_driver" />
+                app:srcCompat="@drawable/icon_call_driver" />
 
             <ImageView
                 android:id="@+id/icon_message"
@@ -145,7 +145,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
                 android:clickable="true"
-                android:src="@drawable/icon_message_driver" />
+                app:srcCompat="@drawable/icon_message_driver" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -173,7 +173,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:padding="3dp"
-                android:src="@drawable/contact"
+                app:srcCompat="@drawable/contact"
                 android:textColor="@color/black" />
 
             <TextView
@@ -208,7 +208,7 @@
                 android:id="@+id/img_help"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_share"
+                app:srcCompat="@drawable/ic_share"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
@@ -246,7 +246,7 @@
                 android:layout_height="24dp"
                 android:layout_centerHorizontal="true"
                 android:padding="3dp"
-                android:src="@drawable/cancel"
+                app:srcCompat="@drawable/cancel"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 

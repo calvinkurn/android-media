@@ -9,7 +9,7 @@
         android:id="@+id/iv_circle"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:src="@drawable/circle_green"
+        app:srcCompat="@drawable/circle_green"
         android:layout_gravity="center_vertical"/>
 
     <TextView

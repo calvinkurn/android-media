@@ -13,7 +13,7 @@
         android:layout_height="75dp"
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginStart="@dimen/margin_med"
-        android:src="@drawable/loading_page"
+        app:srcCompat="@drawable/loading_page"
         tools:ignore="ContentDescription"/>
 
     <TextView

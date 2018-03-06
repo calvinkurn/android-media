@@ -123,7 +123,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_new_action_overflow_black"
+                app:srcCompat="@drawable/ic_new_action_overflow_black"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
 
@@ -213,7 +213,7 @@
         <!-- android:layout_gravity="right" -->
         <!-- android:layout_width="@dimen/med_dp" -->
         <!-- android:layout_height="@dimen/med_dp" -->
-        <!-- android:src="@drawable/ic_chevron_right" /> -->
+        <!-- app:srcCompat="@drawable/ic_chevron_right" /> -->
     </LinearLayout>
 
 </LinearLayout>

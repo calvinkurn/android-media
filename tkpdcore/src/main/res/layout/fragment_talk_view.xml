@@ -86,7 +86,7 @@
             android:paddingLeft="@dimen/padding_small"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small"
-            android:src="@drawable/ic_action_attachment" />
+            app:srcCompat="@drawable/ic_action_attachment" />
 
 
         <EditText
@@ -110,7 +110,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_send_24dp_green" />
+            app:srcCompat="@drawable/ic_send_24dp_green" />
 
 
     </RelativeLayout>

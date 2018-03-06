@@ -38,7 +38,7 @@
         android:paddingBottom="@dimen/new_margin_sm"
         android:paddingRight="@dimen/new_margin_med"
         android:paddingLeft="@dimen/new_margin_med"
-        android:src="@drawable/ic_drag" />
+        app:srcCompat="@drawable/ic_drag" />
 
 
     <ImageView
@@ -52,7 +52,7 @@
         android:paddingBottom="@dimen/new_margin_sm"
         android:paddingRight="@dimen/new_margin_med"
         android:paddingLeft="@dimen/new_margin_med"
-        android:src="@drawable/ic_edit" />
+        app:srcCompat="@drawable/ic_edit" />
 
     <View
         android:id="@+id/divider"

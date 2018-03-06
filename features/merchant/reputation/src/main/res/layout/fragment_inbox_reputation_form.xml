@@ -104,7 +104,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_bulb"
+                app:srcCompat="@drawable/ic_bulb"
                 />
 
             <TextView
@@ -124,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_green_arrow_down"
+                app:srcCompat="@drawable/ic_green_arrow_down"
                 />
         </LinearLayout>
 
@@ -176,7 +176,7 @@
                 android:id="@+id/upload_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/info_icon"/>
+                app:srcCompat="@drawable/info_icon"/>
 
         </LinearLayout>
 

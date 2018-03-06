@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_vs"
-            android:src="@drawable/status_no_result" />
+            app:srcCompat="@drawable/status_no_result" />
 
         <TextView
             android:id="@+id/message_error_1"

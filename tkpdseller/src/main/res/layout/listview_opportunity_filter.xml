@@ -10,7 +10,7 @@
         android:id="@+id/red_circle"
         android:layout_width="8dp"
         android:layout_height="8dp"
-        android:src="@drawable/red_circle"
+        app:srcCompat="@drawable/red_circle"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_small"
         android:visibility="invisible"

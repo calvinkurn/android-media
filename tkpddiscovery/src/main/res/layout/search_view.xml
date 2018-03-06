@@ -46,7 +46,7 @@
                 style="@style/MSV_ImageButton"
                 android:layout_centerVertical="true"
                 android:tint="#4b4b4b"
-                android:src="@drawable/ic_navigation_arrow_back" />
+                app:srcCompat="@drawable/ic_navigation_arrow_back" />
 
             <ImageButton
                 android:id="@+id/action_voice_btn"
@@ -54,7 +54,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:tint="@color/grey"
-                android:src="@drawable/ic_keyboard_voice_black" />
+                app:srcCompat="@drawable/ic_keyboard_voice_black" />
 
             <ImageButton
                 android:id="@+id/action_empty_btn"
@@ -62,7 +62,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:tint="#4b4b4b"
-                android:src="@drawable/ic_clear_black"
+                app:srcCompat="@drawable/ic_clear_black"
                 android:visibility="gone" />
         </RelativeLayout>
 

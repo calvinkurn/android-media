@@ -25,7 +25,7 @@
         <ImageView
             android:layout_width="@dimen/img_thumb"
             android:layout_height="@dimen/img_thumb"
-            android:src="@drawable/instoped_check"
+            app:srcCompat="@drawable/instoped_check"
             android:scaleType="fitXY"
             android:layout_centerInParent="true"
             />

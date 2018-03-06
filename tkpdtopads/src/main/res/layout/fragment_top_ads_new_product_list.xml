@@ -27,7 +27,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_vs"
-                android:src="@drawable/ic_pipe_count" />
+                app:srcCompat="@drawable/ic_pipe_count" />
 
             <TextView
                 android:id="@+id/counter_product"

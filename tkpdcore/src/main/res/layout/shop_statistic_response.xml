@@ -45,7 +45,7 @@
                 android:layout_width="@dimen/img_thumb_m"
                 android:layout_height="@dimen/img_thumb_m"
                 android:layout_marginTop="@dimen/padding_small"
-                android:src="@drawable/ic_icon_repsis_speed_lambat" />
+                app:srcCompat="@drawable/ic_icon_repsis_speed_lambat" />
 
             <TextView
                 android:id="@+id/overall_response"

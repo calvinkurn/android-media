@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/margin_med">
 
         <ImageView
-            android:src="@drawable/ic_empty_inbox"
+            app:srcCompat="@drawable/ic_empty_inbox"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
 

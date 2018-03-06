@@ -35,7 +35,7 @@
                     android:contentDescription=""
                     android:padding="2dp"
                     android:tint="@color/warm_grey"
-                    android:src="@drawable/ic_new_drawer" />
+                    app:srcCompat="@drawable/ic_new_drawer" />
 
                 <TextView
                     android:id="@+id/toggle_count_notif"

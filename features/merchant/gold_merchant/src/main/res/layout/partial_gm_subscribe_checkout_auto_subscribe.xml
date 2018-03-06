@@ -108,7 +108,7 @@
             <ImageView
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:src="@drawable/ic_edit_pencil_green" />
+                app:srcCompat="@drawable/ic_edit_pencil_green" />
 
             <TextView
                 android:layout_width="wrap_content"

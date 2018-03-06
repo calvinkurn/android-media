@@ -103,7 +103,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:layout_marginRight="@dimen/margin_small"
-                    android:src="@drawable/ic_close_24dp"
+                    app:srcCompat="@drawable/ic_close_24dp"
                     android:tint="@color/green_btn" />
 
             </LinearLayout>

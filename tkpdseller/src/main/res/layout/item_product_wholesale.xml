@@ -18,7 +18,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_close_grey_copy" />
+        app:srcCompat="@drawable/ic_close_grey_copy" />
 
     <TextView
         android:id="@+id/text_whole_sale_price"

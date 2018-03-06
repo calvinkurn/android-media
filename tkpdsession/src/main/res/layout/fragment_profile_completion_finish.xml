@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:src="@drawable/akun_terverifikasi"/>
+        app:srcCompat="@drawable/akun_terverifikasi"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"

@@ -16,7 +16,7 @@
             android:layout_marginEnd="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginTop="4dp"
-            android:src="@drawable/ic_warning_triangle_yellow" />
+            app:srcCompat="@drawable/ic_warning_triangle_yellow" />
 
         <LinearLayout
             android:layout_width="wrap_content"

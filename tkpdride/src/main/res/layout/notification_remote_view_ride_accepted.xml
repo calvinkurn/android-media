@@ -37,7 +37,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:src="@drawable/cabs_uber_ic" />
+                app:srcCompat="@drawable/cabs_uber_ic" />
 
             <TextView
                 android:id="@+id/tv_cab_name"
@@ -70,7 +70,7 @@
                 android:id="@+id/iv_driver_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/default_user_pic_light" />
+                app:srcCompat="@drawable/default_user_pic_light" />
 
             <TextView
                 android:id="@+id/tv_driver_name"
@@ -118,7 +118,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/cab_call"
+                app:srcCompat="@drawable/cab_call"
                 android:tint="@color/grey_700" />
 
             <TextView
@@ -148,7 +148,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_share_black_png"
+                app:srcCompat="@drawable/ic_share_black_png"
                 android:tint="@color/grey_700" />
 
             <TextView

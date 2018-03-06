@@ -13,7 +13,7 @@
         android:id="@+id/setting"
         android:layout_width="12dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_plus_green" />
+        app:srcCompat="@drawable/ic_plus_green" />
 
     <android.support.v4.widget.Space
         android:layout_width="10dp"

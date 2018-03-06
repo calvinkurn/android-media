@@ -36,7 +36,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:paddingRight="@dimen/margin_small"
-                android:src="@drawable/icon_info" />
+                app:srcCompat="@drawable/icon_info" />
         </RelativeLayout>
 
     </LinearLayout>

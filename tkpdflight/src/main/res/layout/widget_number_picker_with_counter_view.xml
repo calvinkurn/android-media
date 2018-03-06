@@ -9,7 +9,7 @@
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/image_button_minus"
         style="@style/ImageButton.Counter"
-        android:src="@drawable/bg_button_counter_minus" />
+        app:srcCompat="@drawable/bg_button_counter_minus" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -39,6 +39,6 @@
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/image_button_plus"
         style="@style/ImageButton.Counter"
-        android:src="@drawable/bg_button_counter_plus" />
+        app:srcCompat="@drawable/bg_button_counter_plus" />
 
 </LinearLayout>

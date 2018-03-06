@@ -203,7 +203,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_vs"
-                        android:src="@drawable/ic_barcode" />
+                        app:srcCompat="@drawable/ic_barcode" />
                 </LinearLayout>
 
                 <TextView

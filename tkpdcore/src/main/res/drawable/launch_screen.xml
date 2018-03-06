@@ -4,6 +4,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_tkpd_white" />
+            app:srcCompat="@drawable/logo_tkpd_white" />
     </item>
 </layer-list>

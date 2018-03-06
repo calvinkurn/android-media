@@ -13,7 +13,7 @@
         android:id="@+id/iv_close"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_close_image"
+        app:srcCompat="@drawable/ic_close_image"
         android:layout_gravity="right"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"/>

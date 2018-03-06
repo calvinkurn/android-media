@@ -127,7 +127,7 @@
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_small"
-                android:src="@drawable/ic_thumb"
+                app:srcCompat="@drawable/ic_thumb"
                 />
 
             <TextView
@@ -161,7 +161,7 @@
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_small"
-                android:src="@drawable/ic_comment"
+                app:srcCompat="@drawable/ic_comment"
                 />
 
             <TextView

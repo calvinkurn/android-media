@@ -27,7 +27,7 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/remove_thin"
+        app:srcCompat="@drawable/remove_thin"
         android:background="@color/white"
         android:layout_alignTop="@id/attachment"
         android:layout_alignRight="@id/attachment"

@@ -23,7 +23,7 @@
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:src="@drawable/ic_gold"
+        app:srcCompat="@drawable/ic_gold"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -36,7 +36,7 @@
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:src="@drawable/ic_official"
+        app:srcCompat="@drawable/ic_official"
         android:visibility="gone"
         tools:visibility="gone" />
 

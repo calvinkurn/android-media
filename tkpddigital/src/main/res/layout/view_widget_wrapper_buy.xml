@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_toRightOf="@+id/buy_with_credit_checkbox"
             android:layout_centerVertical="true"
-            android:src="@drawable/info_icon" />
+            app:srcCompat="@drawable/info_icon" />
 
     </RelativeLayout>
 

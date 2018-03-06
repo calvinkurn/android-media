@@ -37,6 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:src="@drawable/vector_cancel_24dp"/>
+        app:srcCompat="@drawable/vector_cancel_24dp"/>
 
 </LinearLayout>

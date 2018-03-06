@@ -38,7 +38,7 @@
                             android:layout_width="@dimen/img_thumb_l"
                             android:layout_height="@dimen/img_thumb_l"
                             android:layout_centerInParent="true"
-                            android:src="@drawable/ic_image_unavailable" />
+                            app:srcCompat="@drawable/ic_image_unavailable" />
 
                         <TextView
                             android:id="@+id/tag_gudang"
@@ -179,7 +179,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:src="@drawable/ic_menu_general_setting" />
+                            app:srcCompat="@drawable/ic_menu_general_setting" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -256,7 +256,7 @@
                 <!-- android:layout_alignParentTop="true" -->
                 <!-- android:layout_width="wrap_content" -->
                 <!-- android:layout_height="@dimen/filter_sort_h" -->
-                <!-- android:src="@drawable/ic_action_overflow" /> -->
+                <!-- app:srcCompat="@drawable/ic_action_overflow" /> -->
 
             </RelativeLayout>
         </LinearLayout>

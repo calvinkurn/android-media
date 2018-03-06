@@ -62,5 +62,5 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small"
-        android:src="@drawable/ic_wishlist"/>
+        app:srcCompat="@drawable/ic_wishlist"/>
 </RelativeLayout>

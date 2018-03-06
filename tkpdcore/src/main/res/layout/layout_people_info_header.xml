@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/margin_small"
         android:background="@drawable/border_circle"
-        android:src="@drawable/remove"
+        app:srcCompat="@drawable/remove"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/tab_selector"
             android:gravity="center"
-            android:src="@drawable/overflow_selected"
+            app:srcCompat="@drawable/overflow_selected"
             android:textColor="@color/href_link"
             android:textSize="@dimen/fonts" />
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/tab_selector"
             android:gravity="center"
-            android:src="@drawable/overflow_selected"
+            app:srcCompat="@drawable/overflow_selected"
             android:textColor="@color/href_link"
             android:textSize="@dimen/fonts" />
     </LinearLayout>
@@ -85,7 +85,7 @@
             android:layout_width="@dimen/icon_prod_size"
             android:layout_height="@dimen/icon_prod_size"
             android:layout_gravity="center"
-            android:src="@drawable/ic_message"
+            app:srcCompat="@drawable/ic_message"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -113,7 +113,7 @@
             android:layout_width="@dimen/icon_prod_size"
             android:layout_height="@dimen/icon_prod_size"
             android:layout_gravity="center"
-            android:src="@drawable/ic_menu_general_setting"
+            app:srcCompat="@drawable/ic_menu_general_setting"
             tools:ignore="ContentDescription" />
 
         <TextView

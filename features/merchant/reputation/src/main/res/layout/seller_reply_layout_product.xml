@@ -32,7 +32,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
-                    android:src="@drawable/ic_like_normal" />
+                    app:srcCompat="@drawable/ic_like_normal" />
 
                 <TextView
                     android:id="@+id/text_counter_like"
@@ -65,7 +65,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/ic_arrow_down_grey" />
+                    app:srcCompat="@drawable/ic_arrow_down_grey" />
             </LinearLayout>
 
         </LinearLayout>
@@ -159,7 +159,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_more_vert_grey" />
+                app:srcCompat="@drawable/ic_more_vert_grey" />
         </RelativeLayout>
     </LinearLayout>
 </merge>

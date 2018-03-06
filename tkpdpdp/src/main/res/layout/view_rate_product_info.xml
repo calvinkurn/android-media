@@ -48,7 +48,7 @@
                 android:layout_width="@dimen/img_thumb_l"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/ic_star_five" />
+                app:srcCompat="@drawable/ic_star_five" />
 
         </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_width="@dimen/img_thumb_l"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/ic_star_five" />
+                app:srcCompat="@drawable/ic_star_five" />
         </LinearLayout>
     </LinearLayout>
 

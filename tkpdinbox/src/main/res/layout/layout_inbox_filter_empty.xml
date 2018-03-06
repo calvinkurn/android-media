@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/margin_med">
 
         <ImageView
-            android:src="@drawable/ic_empty_search"
+            app:srcCompat="@drawable/ic_empty_search"
             android:layout_width="match_parent"
             android:layout_height="150dp" />
 

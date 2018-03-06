@@ -39,7 +39,7 @@
                 android:id="@+id/close_button_klikbca_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/navigation_cancel"/>
+                app:srcCompat="@drawable/navigation_cancel"/>
         </LinearLayout>
     </RelativeLayout>
 

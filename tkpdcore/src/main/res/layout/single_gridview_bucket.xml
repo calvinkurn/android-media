@@ -13,7 +13,7 @@
             android:id="@+id/image_prod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/addproduct"/>
+            app:srcCompat="@drawable/addproduct"/>
 
         <LinearLayout
             android:id="@+id/badges_container"

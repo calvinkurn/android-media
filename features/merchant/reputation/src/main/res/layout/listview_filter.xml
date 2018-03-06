@@ -27,6 +27,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/padding_activity"
-        android:src="@drawable/ic_check_green_24dp"
+        app:srcCompat="@drawable/ic_check_green_24dp"
         />
 </RelativeLayout>

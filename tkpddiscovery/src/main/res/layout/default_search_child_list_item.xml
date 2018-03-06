@@ -47,7 +47,7 @@
             android:layout_margin="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="12dp"
-            android:src="@drawable/ic_diagonal_arrow"/>
+            app:srcCompat="@drawable/ic_diagonal_arrow"/>
 
     </LinearLayout>
 </LinearLayout>

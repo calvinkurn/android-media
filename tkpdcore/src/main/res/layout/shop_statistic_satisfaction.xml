@@ -90,7 +90,7 @@
                 <ImageView
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
-                    android:src="@drawable/ic_icon_repsis_smile_active"
+                    app:srcCompat="@drawable/ic_icon_repsis_smile_active"
                     android:layout_marginBottom="@dimen/padding_vs"
                     />
 
@@ -153,7 +153,7 @@
                 <ImageView
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
-                    android:src="@drawable/ic_icon_repsis_neutral_active"
+                    app:srcCompat="@drawable/ic_icon_repsis_neutral_active"
                     android:layout_marginBottom="@dimen/padding_vs"
                     />
 
@@ -212,7 +212,7 @@
                 <ImageView
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
-                    android:src="@drawable/ic_icon_repsis_sad_active"
+                    app:srcCompat="@drawable/ic_icon_repsis_sad_active"
                     android:layout_marginBottom="@dimen/padding_vs"
                     />
 

@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:src="@drawable/icon_bca" />
+                app:srcCompat="@drawable/icon_bca" />
 
             <TextView
                 android:id="@+id/bca_number"
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:src="@drawable/icon_bni" />
+                app:srcCompat="@drawable/icon_bni" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:src="@drawable/icon_mandiri" />
+                app:srcCompat="@drawable/icon_mandiri" />
 
             <TextView
                 android:id="@+id/mandiri_number_dialog"
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:src="@drawable/ic_bank_bri" />
+                app:srcCompat="@drawable/ic_bank_bri" />
 
             <TextView
                 android:id="@+id/bri_number_dialog"
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_thumb_s"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:src="@drawable/icon_cimb" />
+                app:srcCompat="@drawable/icon_cimb" />
 
             <TextView
                 android:id="@+id/cimb_number_dialog"

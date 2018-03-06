@@ -74,7 +74,7 @@
                                 android:id="@+id/iv_driver_pict"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
-                                android:src="@drawable/default_user_pic_light" />
+                                app:srcCompat="@drawable/default_user_pic_light" />
 
                             <TextView
                                 android:id="@+id/tv_driver_rating"
@@ -114,7 +114,7 @@
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/cabs_uber_ic" />
+                                app:srcCompat="@drawable/cabs_uber_ic" />
 
                             <TextView
                                 android:id="@+id/tv_vehicle_license_number"
@@ -157,7 +157,7 @@
                             android:layout_height="35dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20.5dp"
-                            android:src="@drawable/cabs_src_dest_line" />
+                            app:srcCompat="@drawable/cabs_src_dest_line" />
 
                         <RelativeLayout
                             android:id="@+id/crux_cabs_source_container"
@@ -170,7 +170,7 @@
                                 android:layout_height="13dp"
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="15dp"
-                                android:src="@drawable/cabs_source_ic" />
+                                app:srcCompat="@drawable/cabs_source_ic" />
 
                             <android.support.v7.widget.AppCompatTextView
                                 android:id="@+id/tv_source"
@@ -208,7 +208,7 @@
                                 android:layout_height="13dp"
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="15dp"
-                                android:src="@drawable/cabs_dest_ic" />
+                                app:srcCompat="@drawable/cabs_dest_ic" />
 
                             <TextView
                                 android:id="@+id/tv_destination"

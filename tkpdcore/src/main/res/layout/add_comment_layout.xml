@@ -24,7 +24,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/list_image_upload"
         android:padding="@dimen/padding_small"
-        android:src="@drawable/ic_action_attachment"
+        app:srcCompat="@drawable/ic_action_attachment"
         tools:visibility="invisible" />
 
     <ImageView
@@ -36,7 +36,7 @@
         android:layout_below="@id/list_image_upload"
         android:layout_centerVertical="true"
         android:padding="@dimen/padding_small"
-        android:src="@drawable/ic_action_send" />
+        app:srcCompat="@drawable/ic_action_send" />
 
     <EditText
         android:id="@+id/new_comment"

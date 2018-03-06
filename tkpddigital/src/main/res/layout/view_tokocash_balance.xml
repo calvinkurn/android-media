@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/margin_vs"
                     android:layout_toEndOf="@+id/title_hold_balance"
                     android:layout_toRightOf="@+id/title_hold_balance"
-                    android:src="@drawable/info_icon"
+                    app:srcCompat="@drawable/info_icon"
                     tools:ignore="ContentDescription"/>
 
                 <TextView

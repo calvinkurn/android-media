@@ -105,7 +105,7 @@
                     android:id="@+id/template_list_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_information"
+                    app:srcCompat="@drawable/ic_information"
                     android:layout_toRightOf="@id/template_list"
                     android:layout_alignTop="@id/template_list"
                     android:layout_alignBottom="@id/template_list"

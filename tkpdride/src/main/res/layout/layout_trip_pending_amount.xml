@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/twelve_dp"
             android:layout_marginTop="@dimen/twelve_dp"
             android:layerType="software"
-            android:src="@drawable/shape_dash_line" />
+            app:srcCompat="@drawable/shape_dash_line" />
 
         <TextView
             android:id="@+id/label_total_pending"
@@ -56,7 +56,7 @@
         android:layout_marginRight="@dimen/keyline_1"
         android:layout_marginTop="@dimen/twelve_dp"
         android:layerType="software"
-        android:src="@drawable/shape_dash_line" />
+        app:srcCompat="@drawable/shape_dash_line" />
 
     <LinearLayout
         android:id="@+id/layout_topup"

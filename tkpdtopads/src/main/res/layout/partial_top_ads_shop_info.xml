@@ -13,7 +13,7 @@
         android:scaleType="fitXY"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/icon_penjualan"/>
+        app:srcCompat="@drawable/icon_penjualan"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -41,5 +41,5 @@
         android:layout_width="@dimen/topads_dashboard_size_image_plus"
         android:layout_height="@dimen/topads_dashboard_size_image_plus"
         android:background="@null"
-        android:src="@drawable/ic_add_green"/>
+        app:srcCompat="@drawable/ic_add_green"/>
 </LinearLayout>

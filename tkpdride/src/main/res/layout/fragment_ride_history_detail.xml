@@ -116,7 +116,7 @@
                         android:layout_height="35dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="20.5dp"
-                        android:src="@drawable/cabs_src_dest_line" />
+                        app:srcCompat="@drawable/cabs_src_dest_line" />
 
                     <RelativeLayout
                         android:id="@+id/crux_cabs_source_container"
@@ -130,7 +130,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_sm"
                             android:layout_marginStart="@dimen/margin_sm"
-                            android:src="@drawable/cabs_source_ic" />
+                            app:srcCompat="@drawable/cabs_source_ic" />
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_source"
@@ -173,7 +173,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_sm"
                             android:layout_marginStart="@dimen/margin_sm"
-                            android:src="@drawable/cabs_dest_ic" />
+                            app:srcCompat="@drawable/cabs_dest_ic" />
 
                         <TextView
                             android:id="@+id/tv_destination"
@@ -225,7 +225,7 @@
                             android:id="@+id/iv_driver_pict"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
-                            android:src="@drawable/default_user_pic_light" />
+                            app:srcCompat="@drawable/default_user_pic_light" />
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_driver_name"

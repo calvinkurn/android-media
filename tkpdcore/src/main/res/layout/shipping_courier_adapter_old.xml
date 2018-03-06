@@ -24,7 +24,7 @@
             android:layout_weight="0.1"
             android:layout_height="@dimen/img_thumb"
             android:layout_gravity="right|center_vertical"
-            android:src="@drawable/ic_14_google"
+            app:srcCompat="@drawable/ic_14_google"
             android:gravity="center"
             android:layout_marginLeft="@dimen/margin_vs"/>
 

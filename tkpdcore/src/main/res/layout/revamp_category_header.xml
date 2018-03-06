@@ -85,7 +85,7 @@
             android:layout_height="20dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_more_black_24dp"/>
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
     </LinearLayout>
 
@@ -110,7 +110,7 @@
             android:layout_height="@dimen/med_dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_less_grey_24dp"/>
+            app:srcCompat="@drawable/ic_expand_less_grey_24dp"/>
 
     </LinearLayout>
 

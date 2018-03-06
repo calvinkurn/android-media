@@ -34,7 +34,7 @@
             android:layout_gravity="top"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
-            android:src="@drawable/remove" />
+            app:srcCompat="@drawable/remove" />
 
         <TextView
             android:id="@+id/shop_name"
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_icon_repsis_speed_lambat"
+                    app:srcCompat="@drawable/ic_icon_repsis_speed_lambat"
                     android:visibility="gone" />
             </LinearLayout>
 

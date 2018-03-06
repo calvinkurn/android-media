@@ -34,7 +34,7 @@
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:padding="@dimen/padding_vvs"
-                android:src="@drawable/ic_period_promo"
+                app:srcCompat="@drawable/ic_period_promo"
                 tools:ignore="ContentDescription"/>
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:padding="@dimen/padding_vvs"
-                android:src="@drawable/ic_coupon_promo"
+                app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
             <TextView
@@ -133,7 +133,7 @@
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:padding="@dimen/padding_vvs"
-                android:src="@drawable/ic_coupon_promo"
+                app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
             <TextView
@@ -166,7 +166,7 @@
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:padding="@dimen/padding_vvs"
-                android:src="@drawable/ic_coupon_promo"
+                app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
             <TextView

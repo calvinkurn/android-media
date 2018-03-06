@@ -75,7 +75,7 @@
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_toRightOf="@+id/cb_instant_checkout"
             android:layout_centerVertical="true"
-            android:src="@drawable/info_icon" />
+            app:srcCompat="@drawable/info_icon" />
 
     </RelativeLayout>
 

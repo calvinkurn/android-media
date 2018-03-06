@@ -44,7 +44,7 @@
             android:layout_width="@dimen/loading_img_big"
             android:layout_height="@dimen/loading_img_big"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/status_no_result"
+            app:srcCompat="@drawable/status_no_result"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/loading_add_product"

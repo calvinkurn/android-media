@@ -153,7 +153,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/margin_vs"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_badge_free_return"
+            app:srcCompat="@drawable/ic_badge_free_return"
             android:visibility="visible"/>
     </LinearLayout>
 

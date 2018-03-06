@@ -25,7 +25,7 @@
             android:id="@+id/box"
             android:layout_width="75dp"
             android:layout_height="41dp"
-            android:src="@drawable/box_atc"/>
+            app:srcCompat="@drawable/box_atc"/>
 
         <TextView
             android:id="@+id/arrow_max_hour"
@@ -43,7 +43,7 @@
             android:id="@+id/deliver"
             android:layout_width="66dp"
             android:layout_height="42dp"
-            android:src="@drawable/deliver_atc"/>
+            app:srcCompat="@drawable/deliver_atc"/>
 
     </LinearLayout>
 

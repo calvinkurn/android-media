@@ -37,7 +37,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:background="@drawable/overflow_selected"
                 android:padding="@dimen/padding_vs"
-                android:src="@drawable/ic_edit_pencil" />
+                app:srcCompat="@drawable/ic_edit_pencil" />
 
             <ImageView
                 android:id="@+id/delete_location"
@@ -47,7 +47,7 @@
                 android:layout_toRightOf="@id/edit_bank"
                 android:background="@drawable/overflow_selected"
                 android:padding="@dimen/padding_vs"
-                android:src="@drawable/remove_thin" />
+                app:srcCompat="@drawable/remove_thin" />
         </LinearLayout>
     </LinearLayout>
 

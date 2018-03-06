@@ -33,7 +33,7 @@
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/circle_green" />
+                    app:srcCompat="@drawable/circle_green" />
 
                 <TextView
                     android:id="@+id/tv_text_top"
@@ -59,7 +59,7 @@
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/circle_grey_gmstat" />
+                    app:srcCompat="@drawable/circle_grey_gmstat" />
 
                 <TextView
                     android:id="@+id/tv_text_bottom"

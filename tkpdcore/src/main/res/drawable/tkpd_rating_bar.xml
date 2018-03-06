@@ -9,7 +9,7 @@
     <item
         android:id="@android:id/progress">
         <bitmap
-            android:src="@drawable/ic_rating_gold"
+            app:srcCompat="@drawable/ic_rating_gold"
             android:tileModeX="repeat"/>
     </item>
 </layer-list>

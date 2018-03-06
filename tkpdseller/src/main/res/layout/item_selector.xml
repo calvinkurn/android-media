@@ -10,7 +10,7 @@
         android:id="@+id/image_selected"
         android:layout_width="@dimen/shop_ava"
         android:layout_height="@dimen/shop_ava"
-        android:src="@drawable/ic_add_black_48dp"
+        app:srcCompat="@drawable/ic_add_black_48dp"
         android:layout_gravity="center_vertical"
         />
 

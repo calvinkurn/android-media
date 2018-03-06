@@ -16,7 +16,7 @@
             android:id="@+id/img_courier"
             android:layout_width="0dp"
             android:layout_height="@dimen/img_thumb"
-            android:src="@drawable/ic_14_google"
+            app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_gravity="left"/>

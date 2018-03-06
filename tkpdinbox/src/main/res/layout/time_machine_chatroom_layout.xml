@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_history_icon" />
+            app:srcCompat="@drawable/ic_history_icon" />
 
         <TextView
             android:id="@+id/time_machine_text"

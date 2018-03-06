@@ -22,7 +22,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_vs"
-            android:src="@drawable/ic_add_black_48dp"
+            app:srcCompat="@drawable/ic_add_black_48dp"
             android:visibility="gone"
             tools:visibility="gone"/>
 
@@ -48,6 +48,6 @@
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:padding="@dimen/margin_vs"
-        android:src="@drawable/ic_send_grey_transparent"/>
+        app:srcCompat="@drawable/ic_send_grey_transparent"/>
 
 </LinearLayout>

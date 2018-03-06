@@ -25,5 +25,5 @@
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_gravity="right|center"
         android:tint="@color/tkpd_main_green"
-        android:src="@drawable/checked_thin"/>
+        app:srcCompat="@drawable/checked_thin"/>
 </LinearLayout>

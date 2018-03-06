@@ -14,7 +14,7 @@
                 </shape>
             </item>
             <item>
-                <bitmap android:gravity="center|right"  android:src="@drawable/spinner_arrow_16" />
+                <bitmap android:gravity="center|right"  app:srcCompat="@drawable/spinner_arrow_16" />
             </item>
         </layer-list>
     </item>

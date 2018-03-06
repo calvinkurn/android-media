@@ -19,5 +19,5 @@
         android:layout_width="@dimen/image_width_xxs"
         android:layout_height="@dimen/image_width_xxs"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_rating"/>
+        app:srcCompat="@drawable/ic_rating"/>
 </LinearLayout>

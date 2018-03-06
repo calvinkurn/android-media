@@ -104,7 +104,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_attach" />
+                app:srcCompat="@drawable/ic_attach" />
 
             <ImageView
                 android:id="@+id/image_picker"
@@ -113,7 +113,7 @@
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/add_url"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_image_picker" />
+                app:srcCompat="@drawable/ic_image_picker" />
 
             <ImageView
                 android:id="@+id/maximize"
@@ -122,7 +122,7 @@
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/image_picker"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_maximize"
+                app:srcCompat="@drawable/ic_maximize"
                 android:visibility="gone" />
 
             <ImageView
@@ -135,7 +135,7 @@
                 android:padding="@dimen/padding_ms"
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_send_24dp_green" />
+                app:srcCompat="@drawable/ic_send_24dp_green" />
 
             <EditText
                 android:id="@+id/new_comment"

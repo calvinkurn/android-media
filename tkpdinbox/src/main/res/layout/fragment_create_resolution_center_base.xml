@@ -84,7 +84,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_med"
-                    android:src="@drawable/chevron_thin_right"/>
+                    app:srcCompat="@drawable/chevron_thin_right"/>
 
             </LinearLayout>
         </FrameLayout>
@@ -136,7 +136,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_med"
-                    android:src="@drawable/chevron_thin_right"/>
+                    app:srcCompat="@drawable/chevron_thin_right"/>
             </LinearLayout>
         </FrameLayout>
 
@@ -186,7 +186,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_med"
-                    android:src="@drawable/chevron_thin_right"/>
+                    app:srcCompat="@drawable/chevron_thin_right"/>
             </LinearLayout>
         </FrameLayout>
 

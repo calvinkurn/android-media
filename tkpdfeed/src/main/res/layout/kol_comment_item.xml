@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_vvvs"
             android:layout_toRightOf="@id/avatar"
-            android:src="@drawable/ic_kol_badge"/>
+            app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/comment"

@@ -50,7 +50,7 @@
                 android:layout_below="@+id/tv_preorder_label"
                 android:background="@drawable/overflow_selected"
                 android:padding="@dimen/padding_vs"
-                android:src="@drawable/ic_clear_24dp"
+                app:srcCompat="@drawable/ic_clear_24dp"
                 tools:ignore="ContentDescription"/>
 
             <ImageView
@@ -62,7 +62,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_toEndOf="@+id/btn_delete"
                 android:layout_toRightOf="@+id/btn_delete"
-                android:src="@drawable/loading_page"
+                app:srcCompat="@drawable/loading_page"
                 tools:background="@drawable/bg_label_preorder_gray"
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/loading_page"/>

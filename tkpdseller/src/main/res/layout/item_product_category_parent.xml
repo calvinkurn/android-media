@@ -17,7 +17,7 @@
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_weight="0"
-        android:src="@drawable/chevron_down" />
+        app:srcCompat="@drawable/chevron_down" />
 
     <ProgressBar
         android:id="@+id/category_picker_progress_bar"

@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="144dp"
         android:layout_height="108dp"
-        android:src="@drawable/ic_tokocash_activated"
+        app:srcCompat="@drawable/ic_tokocash_activated"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_med"/>
 

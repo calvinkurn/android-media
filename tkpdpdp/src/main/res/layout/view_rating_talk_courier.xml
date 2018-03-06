@@ -33,7 +33,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:contentDescription="@string/image_product_desc"
-                    android:src="@drawable/ic_star_five" />
+                    app:srcCompat="@drawable/ic_star_five" />
             </LinearLayout>
 
             <TextView
@@ -70,7 +70,7 @@
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/icon_discussion_pesan_green" />
+                app:srcCompat="@drawable/icon_discussion_pesan_green" />
 
 
             <TextView
@@ -108,7 +108,7 @@
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/icon_kurir_green" />
+                app:srcCompat="@drawable/icon_kurir_green" />
 
 
             <TextView

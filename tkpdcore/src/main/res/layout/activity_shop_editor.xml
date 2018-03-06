@@ -149,7 +149,7 @@
                         android:layout_width="@dimen/icon_size"
                         android:layout_height="@dimen/icon_size"
                         android:padding="5dp"
-                        android:src="@drawable/icon_closed" />
+                        app:srcCompat="@drawable/icon_closed" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -178,7 +178,7 @@
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
                                 android:padding="2dp"
-                                android:src="@drawable/icon_time_grey" />
+                                app:srcCompat="@drawable/icon_time_grey" />
 
                             <RelativeLayout
                                 android:layout_width="wrap_content"
@@ -208,7 +208,7 @@
                         android:layout_width="@dimen/icon_size"
                         android:layout_height="@dimen/icon_size"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_edit_pencil" />
+                        app:srcCompat="@drawable/ic_edit_pencil" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -242,7 +242,7 @@
                         android:layout_width="@dimen/icon_size"
                         android:layout_height="@dimen/icon_size"
                         android:visibility="gone"
-                        android:src="@drawable/ic_shop_gold" />
+                        app:srcCompat="@drawable/ic_shop_gold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

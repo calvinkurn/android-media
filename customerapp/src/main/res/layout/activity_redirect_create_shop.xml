@@ -29,7 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
         android:layout_below="@id/textview1"
-        android:src="@drawable/ic_icon_title_seller_app"
+        app:srcCompat="@drawable/ic_icon_title_seller_app"
         />
 
     <TextView
@@ -75,6 +75,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="23dp"
         android:padding="@dimen/padding_med"
-        android:src="@drawable/ic_icon_redirect_seller_app"
+        app:srcCompat="@drawable/ic_icon_redirect_seller_app"
         />
 </RelativeLayout>

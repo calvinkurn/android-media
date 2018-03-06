@@ -12,6 +12,6 @@
         android:layout_marginRight="@dimen/margin_vs"
         android:padding="2dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/addproduct" />
+        app:srcCompat="@drawable/addproduct" />
 
 </RelativeLayout>

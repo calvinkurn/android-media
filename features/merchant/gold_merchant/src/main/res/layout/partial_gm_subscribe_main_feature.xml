@@ -22,7 +22,7 @@
                 android:id="@+id/image_gm_subscribe_main_feature"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:src="@drawable/ic_gmsubscribe_feature_badge"
+                app:srcCompat="@drawable/ic_gmsubscribe_feature_badge"
                 android:layout_gravity="center"
                 />
 

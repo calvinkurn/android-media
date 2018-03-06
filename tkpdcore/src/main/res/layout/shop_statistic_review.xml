@@ -105,7 +105,7 @@
                             android:layout_width="10dp"
                             android:layout_height="10dp"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/chevron_down" />
+                            app:srcCompat="@drawable/chevron_down" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -169,7 +169,7 @@
                             android:layout_width="10dp"
                             android:layout_height="10dp"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/chevron_down" />
+                            app:srcCompat="@drawable/chevron_down" />
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
@@ -200,7 +200,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_wishlist_orange"/>
+                        app:srcCompat="@drawable/ic_wishlist_orange"/>
 
                     <TextView
                         android:id="@+id/five_star_count_tv"
@@ -244,7 +244,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_wishlist_orange"/>
+                        app:srcCompat="@drawable/ic_wishlist_orange"/>
 
                     <TextView
                         android:id="@+id/four_star_count_tv"
@@ -288,7 +288,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_wishlist_orange"/>
+                        app:srcCompat="@drawable/ic_wishlist_orange"/>
 
                     <TextView
                         android:id="@+id/three_star_count_tv"
@@ -332,7 +332,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s" 
-                        android:src="@drawable/ic_wishlist_orange"/>
+                        app:srcCompat="@drawable/ic_wishlist_orange"/>
 
                     <TextView
                         android:id="@+id/two_star_count_tv"
@@ -376,7 +376,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_wishlist_orange"/>
+                        app:srcCompat="@drawable/ic_wishlist_orange"/>
 
                     <TextView
                         android:id="@+id/one_star_count_tv"

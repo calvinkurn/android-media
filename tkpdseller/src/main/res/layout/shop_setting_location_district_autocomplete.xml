@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:src="@drawable/ic_location_district_pinpoin"
+        app:srcCompat="@drawable/ic_location_district_pinpoin"
         android:layout_margin="15dp"/>
 
     <TextView

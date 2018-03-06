@@ -12,7 +12,7 @@
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_gmsubscribe_gold_badge"/>
+        app:srcCompat="@drawable/ic_gmsubscribe_gold_badge"/>
 
     <TextView
         android:layout_marginBottom="2dp"
@@ -43,7 +43,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/background_gmsubscribe_home_illustration_house"
+        app:srcCompat="@drawable/background_gmsubscribe_home_illustration_house"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"/>
 

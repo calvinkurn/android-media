@@ -22,7 +22,7 @@
         android:layout_alignBottom="@+id/user_avatar"
         android:layout_alignEnd="@+id/user_avatar"
         android:layout_alignRight="@+id/user_avatar"
-        android:src="@drawable/dot_notification"
+        app:srcCompat="@drawable/dot_notification"
         android:visibility="gone"
         tools:visibility="visible"/>
 

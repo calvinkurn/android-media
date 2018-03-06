@@ -51,7 +51,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:src="@drawable/page_2"
+            app:srcCompat="@drawable/page_2"
             android:tint="@color/digital_voucher"
             tools:ignore="ContentDescription"/>
 

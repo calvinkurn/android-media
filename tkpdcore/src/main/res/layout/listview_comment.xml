@@ -69,7 +69,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_new_action_overflow_black" />
+                    app:srcCompat="@drawable/ic_new_action_overflow_black" />
             </LinearLayout>
 
 
@@ -101,7 +101,7 @@
                         android:id="@+id/rep_icon"
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_smile_active"/>
+                        app:srcCompat="@drawable/ic_icon_repsis_smile_active"/>
                     <TextView
                         android:id="@+id/rep_rating"
                         android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
         <!-- android:layout_width="@dimen/med_dp" -->
         <!-- android:layout_height="@dimen/med_dp" -->
         <!-- android:layout_marginRight="@dimen/margin_small" -->
-        <!-- android:src="@drawable/ic_action_overflow_black" -->
+        <!-- app:srcCompat="@drawable/ic_action_overflow_black" -->
         <!-- android:layout_alignParentRight="true" -->
         <!-- android:layout_alignParentBottom="true"  /> -->
 

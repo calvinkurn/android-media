@@ -52,7 +52,7 @@
                 android:layout_width="@dimen/med_dp"
                 android:layout_height="@dimen/med_dp"
                 android:layout_marginRight="@dimen/margin_vs"
-                android:src="@drawable/remove"
+                app:srcCompat="@drawable/remove"
                 android:visibility="gone" />
 
             <TextView
@@ -172,7 +172,7 @@
             android:layout_below="@+id/insert_dropshipper"
             android:layout_toRightOf="@+id/ref_number"
             android:background="@drawable/overflow_selected"
-            android:src="@drawable/ic_barcode" />
+            app:srcCompat="@drawable/ic_barcode" />
 
         <ImageView
             android:id="@+id/cancel_but"
@@ -181,7 +181,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/insert_dropshipper"
             android:background="@drawable/overflow_selected"
-            android:src="@drawable/navigation_cancel" />
+            app:srcCompat="@drawable/navigation_cancel" />
     </RelativeLayout>
 
     <LinearLayout
@@ -257,7 +257,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_new_action_overflow_black" />
+                    app:srcCompat="@drawable/ic_new_action_overflow_black" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -417,7 +417,7 @@
                 android:layout_width="@dimen/med_dp"
                 android:layout_height="@dimen/med_dp"
                 android:layout_marginRight="@dimen/margin_vs"
-                android:src="@drawable/remove"
+                app:srcCompat="@drawable/remove"
                 android:visibility="gone" />
 
             <TextView

@@ -94,7 +94,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_gmsubscribe_product_item_selected" />
+        app:srcCompat="@drawable/ic_gmsubscribe_product_item_selected" />
 
 
 </RelativeLayout>

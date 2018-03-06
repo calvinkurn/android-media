@@ -18,7 +18,7 @@
             android:layout_height="@dimen/img_thumb_m"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginStart="@dimen/margin_vs"
-            android:src="@drawable/ic_icon_tokocash_header" />
+            app:srcCompat="@drawable/ic_icon_tokocash_header" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
-                android:src="@drawable/ic_icon_tokocash_header" />
+                app:srcCompat="@drawable/ic_icon_tokocash_header" />
 
             <TextView
                 android:layout_width="wrap_content"

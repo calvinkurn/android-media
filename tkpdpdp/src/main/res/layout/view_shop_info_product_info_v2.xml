@@ -59,7 +59,7 @@
                         android:id="@+id/iv_gold_shop"
                         android:layout_width="@dimen/large_dp"
                         android:layout_height="@dimen/large_dp"
-                        android:src="@drawable/ic_shop_gold"
+                        app:srcCompat="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
@@ -67,7 +67,7 @@
                         android:id="@id/iv_official"
                         android:layout_width="@dimen/large_dp"
                         android:layout_height="@dimen/large_dp"
-                        android:src="@drawable/ic_badge_official"
+                        app:srcCompat="@drawable/ic_badge_official"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
@@ -145,7 +145,7 @@
                     android:layout_height="18dp"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/ic_icon_location_grey_pdp" />
+                    app:srcCompat="@drawable/ic_icon_location_grey_pdp" />
 
                 <TextView
                     android:id="@id/tv_location"
@@ -171,7 +171,7 @@
                     android:layout_height="18dp"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/icon_time_grey" />
+                    app:srcCompat="@drawable/icon_time_grey" />
 
                 <TextView
                     android:id="@+id/last_online_textview"

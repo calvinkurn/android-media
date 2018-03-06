@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_large"
-            android:src="@drawable/ic_referral_tokocash" />
+            app:srcCompat="@drawable/ic_referral_tokocash" />
 
         <TextView
             android:id="@+id/tv_app_share_desc"

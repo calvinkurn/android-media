@@ -13,7 +13,7 @@
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_marginRight="@dimen/margin_small"
-        android:src="@drawable/ic_order_widget" />
+        app:srcCompat="@drawable/ic_order_widget" />
 
     <TextView
         style="@style/TextView.Small.WhitePrimary"

@@ -30,6 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_med"
-        android:src="@drawable/icon_close_white" />
+        app:srcCompat="@drawable/icon_close_white" />
 
 </RelativeLayout>

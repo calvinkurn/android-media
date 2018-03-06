@@ -62,6 +62,6 @@
         android:layout_height="@dimen/med_dp"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
-        android:src="@drawable/remove"
+        app:srcCompat="@drawable/remove"
         android:layout_weight="0.1" />
 </LinearLayout>

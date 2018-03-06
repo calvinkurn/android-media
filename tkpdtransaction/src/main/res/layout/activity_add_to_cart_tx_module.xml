@@ -50,7 +50,7 @@
                         android:id="@id/iv_pic"
                         android:layout_width="@dimen/img_thumb_m"
                         android:layout_height="@dimen/img_thumb_m"
-                        android:src="@drawable/ic_image_avatar_boy"
+                        app:srcCompat="@drawable/ic_image_avatar_boy"
                         tools:ignore="ContentDescription" />
 
                     <LinearLayout
@@ -220,7 +220,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="@dimen/margin_vvs"
                                     android:layout_marginStart="@dimen/margin_vvs"
-                                    android:src="@drawable/info_icon"
+                                    app:srcCompat="@drawable/info_icon"
                                     android:visibility="gone" />
 
                             </LinearLayout>
@@ -389,7 +389,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:src="@drawable/ic_icon_market_toped"
+                            app:srcCompat="@drawable/ic_icon_market_toped"
                             tools:ignore="ContentDescription"/>
 
                         <EditText

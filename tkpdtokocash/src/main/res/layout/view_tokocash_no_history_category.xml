@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/margin_med"
-            android:src="@drawable/ic_tokocash_no_history_category" />
+            app:srcCompat="@drawable/ic_tokocash_no_history_category" />
 
         <TextView
             android:id="@+id/text_empty_page"

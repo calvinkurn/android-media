@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_kupon"/>
+            app:srcCompat="@drawable/ic_kupon"/>
 
         <TextView
             android:id="@+id/promo_activation_title"

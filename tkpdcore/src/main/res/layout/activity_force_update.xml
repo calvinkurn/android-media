@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_med"
         android:gravity="center"
-        android:src="@drawable/ic_new_logo" />
+        app:srcCompat="@drawable/ic_new_logo" />
 
     <TextView
         android:id="@+id/update_but"

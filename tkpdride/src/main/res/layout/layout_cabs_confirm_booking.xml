@@ -57,7 +57,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:background="@drawable/shape_bg_cab_img"
                 android:padding="6dp"
-                android:src="@drawable/cabs_uber_ic"
+                app:srcCompat="@drawable/cabs_uber_ic"
                 android:visibility="visible" />
 
             <TextView
@@ -132,7 +132,7 @@
                         android:id="@+id/img_payment_method"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_tokocash_icon" />
+                        app:srcCompat="@drawable/ic_tokocash_icon" />
 
                     <TextView
                         android:id="@+id/tv_payment_method"

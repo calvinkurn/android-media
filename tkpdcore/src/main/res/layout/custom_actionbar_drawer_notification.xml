@@ -16,7 +16,7 @@
         android:paddingBottom="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
-        android:src="@drawable/ic_new_drawer" />
+        app:srcCompat="@drawable/ic_new_drawer" />
 
     <TextView
         android:id="@+id/toggle_count_notif"
