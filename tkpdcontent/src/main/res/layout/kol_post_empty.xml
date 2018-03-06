@@ -4,9 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/new_margin_big" android:paddingStart="@dimen/new_margin_big"
-    android:paddingEnd="@dimen/new_margin_big" android:paddingRight="@dimen/new_margin_big"
-    android:background="@drawable/shadow_bottom"
     android:id="@+id/partial_empty_feed">
 
     <View
@@ -22,7 +19,9 @@
         android:src="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/new_margin_sm"/>
+        android:layout_marginTop="@dimen/new_margin_sm"
+        android:layout_marginLeft="@dimen/new_margin_big" android:layout_marginStart="@dimen/new_margin_big"
+        android:layout_marginRight="@dimen/new_margin_big" android:layout_marginEnd="@dimen/new_margin_big"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,6 +33,8 @@
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_small"
-        android:layout_marginBottom="@dimen/new_margin_sm"/>
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_marginLeft="@dimen/new_margin_big" android:layout_marginStart="@dimen/new_margin_big"
+        android:layout_marginRight="@dimen/new_margin_big" android:layout_marginEnd="@dimen/new_margin_big"/>/>
 
 </LinearLayout>
