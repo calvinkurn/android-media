@@ -1,25 +1,8 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.fabric'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
-apply plugin: 'com.apollographql.android'
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
-
-def getTkpdCacheApi() {
-    return project(':tkpdcacheapi')
-}
-
-def getTkpdAbstraction() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
-}
 
 buildscript {
     repositories {
@@ -32,58 +15,6 @@ buildscript {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'com.google.gms:google-services:3.0.0'
-    }
-}
-
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'core'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-
-
-repositories {
-    flatDir {
-        dirs 'libs'
     }
 }
 
@@ -104,8 +35,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile getTkpdCacheApi()
-    compile getTkpdAbstraction()
+    compile project(rootProject.ext.libraries.cacheApi)
+    compile project(rootProject.ext.libraries.abstraction)
 
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore
@@ -198,6 +129,8 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+    compile rootProject.ext.apolloDependencies.apolloRxSupport
+    compile rootProject.ext.apolloDependencies.apolloRx2Support
 
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
@@ -208,55 +141,3 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25.0.0'
-    useLibrary 'org.apache.http.legacy'
-    sourceSets {
-
-        packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-        }
-
-        main {
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
-            aidl.srcDirs = ['src/main/java']
-            renderscript.srcDirs = ['src/main/java']
-            res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets']
-        }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
-    }
-
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    signingConfigs {
-        debug {
-            storeFile file("debug.keystore")
-        }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }
-
-}
