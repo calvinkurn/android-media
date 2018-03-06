@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="6dp"
-    android:clipToPadding="false"
-    app:cardCornerRadius="20dp">
+    app:cardCornerRadius="@dimen/widget_bottom_action_radius"
+    app:cardElevation="@dimen/widget_bottom_action_elevation"
+    app:cardUseCompatPadding="true">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
@@ -19,10 +19,10 @@
             android:id="@+id/linear_layout_button_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="100dp"
             android:clickable="true"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:minHeight="@dimen/image_width_s"
+            android:minWidth="@dimen/layout_bav_width_min"
             android:paddingLeft="@dimen/padding_vs"
             android:paddingRight="@dimen/padding_vs">
 
@@ -46,7 +46,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:visibility="visible" />
         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -64,10 +64,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
+            android:minWidth="@dimen/layout_bav_width_min"
             android:paddingLeft="@dimen/padding_vs"
             android:paddingRight="@dimen/padding_vs"
             android:visibility="gone"
@@ -93,7 +93,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:visibility="visible" />
         </android.support.v7.widget.LinearLayoutCompat>
     </android.support.v7.widget.LinearLayoutCompat>

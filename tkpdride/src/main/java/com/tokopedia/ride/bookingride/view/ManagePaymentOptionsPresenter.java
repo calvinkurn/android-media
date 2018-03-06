@@ -231,11 +231,11 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
             public void onNext(TokoCashModel tokoCashModel) {
                 if (tokoCashModel != null
                         && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null
-                        && tokoCashModel.getTokoCashData().getLink() == 1) {
-                    CommonUtils.dumper("ManagePaymentOptionsPresenter :: tokocash balance == " + tokoCashModel.getTokoCashData().getBalance());
+                        && tokoCashModel.getData() != null
+                        && tokoCashModel.getData().getLink() == 1) {
+                    CommonUtils.dumper("ManagePaymentOptionsPresenter :: tokocash balance == " + tokoCashModel.getData().getBalance());
 
-                    tokoCashBalance = tokoCashModel.getTokoCashData().getBalance();
+                    tokoCashBalance = tokoCashModel.getData().getBalance();
 
                     //show tokocash balance
                     showTokoCashBalance(tokoCashBalance);

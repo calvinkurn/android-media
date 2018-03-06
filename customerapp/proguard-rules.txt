@@ -325,3 +325,9 @@
 -keep public class android.support.design.internal.BottomNavigationMenuView { *; }
 -keep public class android.support.design.internal.BottomNavigationPresenter { *; }
 -keep public class android.support.design.internal.BottomNavigationItemView { *; }
+
+
+-dontwarn android.net.http.**
+-dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor

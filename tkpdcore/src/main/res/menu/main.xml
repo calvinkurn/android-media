@@ -6,6 +6,10 @@
         <!--android:icon="@drawable/ic_new_action_search"-->
         <!--app:showAsAction="always"-->
         <!--android:title="Search"/>-->
+    <item android:id="@+id/action_barcode_scan"
+        android:icon="@drawable/ic_qr_scanner_white"
+        app:showAsAction="always"
+        android:title="@string/scan_qr"></item>
     <item
         android:id="@+id/action_cart"
         android:icon="@drawable/ic_new_action_cart"

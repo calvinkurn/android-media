@@ -25,6 +25,8 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
     private static final String STATIC_VALUE_HOMEPAGE_PRODUCT_IMPRESSION = "product recommendation impression";
     private static final String STATIC_VALUE_HOMEPAGE = "homepage";
     private static final String STATIC_VALUE_HOMEPAGE_PRODUCT_CLICK = "product recommendation click";
+    private static final String STATIC_FORMAT_RECOMMENDATION = "/ - p%d - %s - %s";
+    private static final String STATIC_VALUE_YOUR_RECOMMENDATION = "rekomendasi untuk anda";
 
     private String title;
     protected ArrayList<InspirationProductViewModel> listProduct;
@@ -104,7 +106,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                             "brand", "none / other",
                             "category", "none / other",
                             "variant", "none / other",
-                            "list", String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                            "list", String.format(STATIC_FORMAT_RECOMMENDATION, getPositionFeedCard(), STATIC_VALUE_YOUR_RECOMMENDATION, viewModel.getRecommedationType()),
                             "position", i + 1
                     )
             );
@@ -132,11 +134,11 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
         return DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_CLICK,
                 EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
                 EVENT_ACTION, STATIC_VALUE_HOMEPAGE_PRODUCT_CLICK,
-                EVENT_LABEL, String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                EVENT_LABEL, String.format("%s - %s", STATIC_VALUE_YOUR_RECOMMENDATION, getListProduct().get(adapterPosition).getRecommedationType()),
                 EVENT_ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel())),
+                                "actionField", DataLayer.mapOf("list", String.format(STATIC_FORMAT_RECOMMENDATION, getPositionFeedCard(), STATIC_VALUE_YOUR_RECOMMENDATION, getListProduct().get(adapterPosition).getRecommedationType())),
                                 "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", getListProduct().get(adapterPosition).getName(),
@@ -145,7 +147,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                                                 "brand", "none / other",
                                                 "category", "none / other",
                                                 "variant", "none / other",
-                                                "list", String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                                                "list", String.format(STATIC_FORMAT_RECOMMENDATION, getPositionFeedCard(), STATIC_VALUE_YOUR_RECOMMENDATION, getListProduct().get(adapterPosition).getRecommedationType()),
                                                 "position", adapterPosition + 1
                                         )
                                 )
