@@ -18,7 +18,12 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -41,8 +46,6 @@ import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.customview.CustomContentBottomAction;
 import com.tokopedia.shop.product.view.customview.CustomContentBottomActionView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
