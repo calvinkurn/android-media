@@ -1046,7 +1046,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                     }
                     priceSimulationView.updateVariant(generateVariantString());
-                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null) {
+                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null && productVariant != null) {
                         productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
