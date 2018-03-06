@@ -1066,4 +1066,14 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getInboxChannelsIntent(Context context) {
         return null;
     }
+
+    @Override
+    public Fragment getChannelFragment(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public String getChannelFragmentTag() {
+        return "";
+    }
 }

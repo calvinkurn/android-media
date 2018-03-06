@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.inboxchat.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -151,10 +150,12 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     private List<IndicatorItem> getIndicatorList() {
         List<IndicatorItem> list = new ArrayList<>();
-        list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
-                .ic_indicator_topchat, true));
-        list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
-                .ic_indicator_channel, false));
+        if (!GlobalConfig.isSellerApp()) {
+            list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
+                    .ic_indicator_topchat, true));
+            list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
+                    .ic_indicator_channel, false));
+        }
         return list;
     }
 
