@@ -206,6 +206,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
+        mTvTotalPayment.setText("-");
         mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
     }
 
@@ -303,15 +304,19 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-
+        for (Object item : mShipmentDataList) {
+            if (item instanceof CartPromoSuggestion) {
+                mShipmentDataList.remove(item);
+            }
+        }
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
             Intent intent = ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(),
-                            "", true);
+                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(), "", true);
 
             startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }

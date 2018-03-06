@@ -37,7 +37,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private static final int ITEM_VIEW_PROMO =
             R.layout.holder_item_cart_promo;
     private static final int ITEM_VIEW_PROMO_SUGGESTION =
-            R.layout.holder_item_cart_potential_promo;
+            R.layout.view_item_promo_suggestion;
     private static final int ITEM_VIEW_RECIPIENT_ADDRESS =
             R.layout.view_item_shipment_recipient_address;
     private static final int ITEM_VIEW_SHIPMENT_COST =
@@ -55,73 +55,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public SingleAddressShipmentAdapter(ActionListener actionListener) {
         mShipmentDataList = new ArrayList<>();
         mActionListener = actionListener;
-    }
-
-    public void changeDataSet(List<Object> shipmentDataList) {
-        mShipmentDataList = shipmentDataList;
-        initVariable();
-    }
-
-    public void setPickupPoint(Store store) {
-        if (mRecipientAddress != null) {
-            mRecipientAddress.setStore(store);
-        }
-    }
-
-    public void unSetPickupPoint() {
-        mRecipientAddress.setStore(null);
-    }
-
-    public void updatePromo(double promo) {
-        // TODO update promo price here
-        mShipmentCost.setPromoPrice(promo);
-    }
-
-    public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
-        int counter = 0;
-
-        mShipmentCost.setShippingFee(0);
-        mShipmentCost.setInsuranceFee(0);
-
-        for (Object item : mShipmentDataList) {
-            if (item instanceof CartSellerItemModel) {
-                CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;
-
-                if (counter == position) {
-                    CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
-                    boolean isUseInsurance = shipmentDetailData.getUseInsurance() != null
-                            && shipmentDetailData.getUseInsurance();
-
-                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
-                    cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
-                            + courierItemData.getAdditionalPrice());
-                    if (isUseInsurance) {
-                        cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
-                    }
-
-                    cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
-                            + cartSellerItemModel.getShippingFee()
-                            + cartSellerItemModel.getInsuranceFee());
-                }
-
-                mShipmentCost.setShippingFee(mShipmentCost.getShippingFee()
-                        + cartSellerItemModel.getShippingFee());
-                mShipmentCost.setInsuranceFee(mShipmentCost.getInsuranceFee()
-                        + cartSellerItemModel.getInsuranceFee());
-            }
-
-            counter++;
-        }
-    }
-
-    private void initVariable() {
-        for (Object item : mShipmentDataList) {
-            if (item instanceof RecipientAddressModel) {
-                mRecipientAddress = (RecipientAddressModel) item;
-            } else if (item instanceof ShipmentCostModel) {
-                mShipmentCost = (ShipmentCostModel) item;
-            }
-        }
     }
 
     @Override
@@ -213,6 +146,84 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
 
+    }
+
+    public void changeDataSet(List<Object> shipmentDataList) {
+        mShipmentDataList = shipmentDataList;
+        initVariable();
+    }
+
+    public void setPickupPoint(Store store) {
+        if (mRecipientAddress != null) {
+            mRecipientAddress.setStore(store);
+        }
+    }
+
+    public void unSetPickupPoint() {
+        mRecipientAddress.setStore(null);
+    }
+
+    public void updatePromo(double promo) {
+        // TODO update promo price here
+        mShipmentCost.setPromoPrice(promo);
+    }
+
+    public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
+        int counter = 0;
+
+        mShipmentCost.setShippingFee(0);
+        mShipmentCost.setInsuranceFee(0);
+
+        for (Object item : mShipmentDataList) {
+            if (item instanceof CartSellerItemModel) {
+                CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;
+
+                if (counter == position) {
+                    CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+                    boolean isUseInsurance = shipmentDetailData.getUseInsurance() != null
+                            && shipmentDetailData.getUseInsurance();
+
+                    cartSellerItemModel.setSelectedShipmentDetailData(shipmentDetailData);
+                    cartSellerItemModel.setShippingFee(courierItemData.getDeliveryPrice()
+                            + courierItemData.getAdditionalPrice());
+                    if (isUseInsurance) {
+                        cartSellerItemModel.setInsuranceFee(courierItemData.getInsurancePrice());
+                    }
+
+                    cartSellerItemModel.setTotalPrice(cartSellerItemModel.getTotalItemPrice()
+                            + cartSellerItemModel.getShippingFee()
+                            + cartSellerItemModel.getInsuranceFee());
+                }
+
+                mShipmentCost.setShippingFee(mShipmentCost.getShippingFee()
+                        + cartSellerItemModel.getShippingFee());
+                mShipmentCost.setInsuranceFee(mShipmentCost.getInsuranceFee()
+                        + cartSellerItemModel.getInsuranceFee());
+            }
+
+            counter++;
+        }
+
+        mShipmentCost.setTotalPrice(calculateTotalPrice(mShipmentCost));
+        mActionListener.onTotalPaymentChange(mShipmentCost);
+    }
+
+    private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
+        return shipmentCost.getShippingFee() == 0 ?
+                0 : shipmentCost.getTotalItemPrice()
+                + shipmentCost.getInsuranceFee()
+                + shipmentCost.getShippingFee()
+                - shipmentCost.getPromoPrice();
+    }
+
+    private void initVariable() {
+        for (Object item : mShipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                mRecipientAddress = (RecipientAddressModel) item;
+            } else if (item instanceof ShipmentCostModel) {
+                mShipmentCost = (ShipmentCostModel) item;
+            }
+        }
     }
 
 }
