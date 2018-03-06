@@ -21,9 +21,22 @@
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
     </style>
 
-    <style name="TextLabelSmallGrey">
+    <style name="TextSmall">
         <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+
+    <style name="TextSmallGrey" parent="TextSmall">
         <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+
+    <style name="TextMediumBlack" parent="TextMedium">
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
 </resources>
