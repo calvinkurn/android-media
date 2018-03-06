@@ -318,15 +318,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             senderName = itemView.findViewById(R.id.sender_name);
 
-            productImage = itemView.findViewById(R.id.iv_product_image_container);
+            productImage = itemView.findViewById(R.id.iv_product_image);
 
-            productName = itemView.findViewById(R.id.tv_shipping_product_name);
+            productName = itemView.findViewById(R.id.tv_product_name);
 
-            productPrice = itemView.findViewById(R.id.tv_shipped_product_price);
+            productPrice = itemView.findViewById(R.id.tv_product_price);
 
             productWeight = itemView.findViewById(R.id.tv_product_weight);
 
-            productQty = itemView.findViewById(R.id.tv_total_product_item);
+            productQty = itemView.findViewById(R.id.tv_product_total_item);
 
             notesToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
 
@@ -360,11 +360,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
 
-            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_text);
+            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_label);
 
-            tvPoSign = itemView.findViewById(R.id.tv_po_sign);
+            tvPoSign = itemView.findViewById(R.id.tv_pre_order);
 
-            tvCashbackText = itemView.findViewById(R.id.tv_cashback_text);
+            tvCashbackText = itemView.findViewById(R.id.tv_cashback);
 
             tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
 
@@ -465,8 +465,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private long calculateTotalProductCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
-            if(isShipmentDataInitiated(i))
-            totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
+            if (isShipmentDataInitiated(i))
+                totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
         }
         return totalProductPrice;
     }
@@ -557,7 +557,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             }
 
             @Override
-            public void disableVoucherDisount() {
+            public void disableVoucherDiscount() {
                 priceSummaryData.setSuggestionVisible(true);
                 notifyDataSetChanged();
             }

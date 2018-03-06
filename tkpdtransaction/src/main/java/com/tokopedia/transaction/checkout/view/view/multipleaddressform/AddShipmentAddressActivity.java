@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.REQUEST_CODE;
-import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_ONLY_ADDRESS_SELECTION;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST;
 
 /**
  * Created by kris on 1/25/18. Tokopedia
@@ -38,7 +38,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private static final String PRODUCT_DATA_EXTRAS = "PRODUCT_DATA_EXTRAS";
     private static final String ADDRESS_DATA_EXTRAS = "ADDRESS_DATA_EXTRAS";
     private static final String MODE_EXTRA = "MODE_EXTRAS";
-    public static final String ADDRESS_DATA_RESULT = "ADDRESS_DATA_RESULT";
+    public static final String ADDRESS_DATA_RESULT = "ADDRESxS_DATA_RESULT";
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
 
@@ -146,7 +146,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         addressReceiverName.setText(itemData.getAddressReceiverName());
         address.setText(itemData.getAddressStreet()
                 + ", " + itemData.getAddressCityName()
-                + ", " +itemData.getAddressProvinceName()
+                + ", " + itemData.getAddressProvinceName()
                 + ", " + itemData.getRecipientPhoneNumber());
         addressLayout.setOnClickListener(onAddressLayoutClickedListener());
         chooseAddressButton = findViewById(R.id.choose_address_button);
@@ -267,7 +267,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private void setQuantityButtonAvailability(CharSequence charSequence,
                                                ImageView decreaseButton,
                                                ImageView increaseButton) {
-        if(charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) == 0) {
+        if (charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) == 0) {
             decreaseButton.setClickable(false);
             decreaseButton.setEnabled(false);
             increaseButton.setClickable(false);
@@ -295,7 +295,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private void openAddressSelectionPage() {
         Intent intent = CartAddressChoiceActivity.createInstance(
                 AddShipmentAddressActivity.this,
-                TYPE_REQUEST_ONLY_ADDRESS_SELECTION, presenter.getEditableModel()
+                TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST
         );
         startActivityForResult(intent, REQUEST_CODE);
     }
@@ -381,7 +381,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE) {
             presenter.setEditableModel((RecipientAddressModel) data
                     .getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA));
             showAddressLayout();
@@ -390,7 +390,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private String checkNotesAvailability(boolean notesFieldShown, EditText notesEditText) {
-        if(notesFieldShown)
+        if (notesFieldShown)
             return notesEditText.getText().toString();
         else return "";
     }

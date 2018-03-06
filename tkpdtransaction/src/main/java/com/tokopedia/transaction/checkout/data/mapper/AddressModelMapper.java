@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
@@ -31,6 +33,10 @@ public class AddressModelMapper {
         recipientAddressModel.setAddressPostalCode(addressModel.getPostalCode());
         recipientAddressModel.setRecipientName(addressModel.getReceiverName());
         recipientAddressModel.setRecipientPhoneNumber(addressModel.getReceiverPhone());
+        recipientAddressModel.setLatitude(!TextUtils.isEmpty(addressModel.getLatitude()) ?
+                Double.parseDouble(addressModel.getLatitude()) : null);
+        recipientAddressModel.setLongitude(!TextUtils.isEmpty(addressModel.getLongitude()) ?
+                Double.parseDouble(addressModel.getLongitude()) : null);
 
         return recipientAddressModel;
     }

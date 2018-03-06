@@ -15,6 +15,7 @@ public class ShipmentItemData implements Parcelable {
     private String singlePriceRange;
     private String multiplePriceRange;
     private String deliveryTimeRange;
+    private boolean lessThanADayDelivery;
     private List<CourierItemData> courierItemData;
     private boolean selected;
 
@@ -29,6 +30,7 @@ public class ShipmentItemData implements Parcelable {
         multiplePriceRange = in.readString();
         courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
         selected = in.readByte() != 0;
+        lessThanADayDelivery = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentItemData> CREATOR = new Creator<ShipmentItemData>() {
@@ -99,6 +101,14 @@ public class ShipmentItemData implements Parcelable {
         this.multiplePriceRange = multiplePriceRange;
     }
 
+    public boolean isLessThanADayDelivery() {
+        return lessThanADayDelivery;
+    }
+
+    public void setLessThanADayDelivery(boolean lessThanADayDelivery) {
+        this.lessThanADayDelivery = lessThanADayDelivery;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -113,5 +123,6 @@ public class ShipmentItemData implements Parcelable {
         dest.writeString(deliveryTimeRange);
         dest.writeTypedList(courierItemData);
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (lessThanADayDelivery ? 1 : 0));
     }
 }

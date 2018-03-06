@@ -17,6 +17,15 @@ public class CartListData implements Parcelable {
     private List<CartItemData> cartItemDataList = new ArrayList<>();
     private CartPromoSuggestion cartPromoSuggestion;
     private boolean promoCouponActive;
+    private CartTickerErrorData cartTickerErrorData;
+
+    public CartTickerErrorData getCartTickerErrorData() {
+        return cartTickerErrorData;
+    }
+
+    public void setCartTickerErrorData(CartTickerErrorData cartTickerErrorData) {
+        this.cartTickerErrorData = cartTickerErrorData;
+    }
 
     public boolean isPromoCouponActive() {
         return promoCouponActive;
@@ -73,6 +82,7 @@ public class CartListData implements Parcelable {
         dest.writeTypedList(this.cartItemDataList);
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.cartTickerErrorData, flags);
     }
 
     protected CartListData(Parcel in) {
@@ -81,6 +91,7 @@ public class CartListData implements Parcelable {
         this.cartItemDataList = in.createTypedArrayList(CartItemData.CREATOR);
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
+        this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
     }
 
     public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {

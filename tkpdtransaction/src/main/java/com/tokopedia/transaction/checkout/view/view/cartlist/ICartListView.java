@@ -4,6 +4,7 @@ import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 
@@ -88,4 +89,5 @@ public interface ICartListView extends IBaseView {
 
     void renderLoadGetCartDataFinish();
 
+    void renderCartTickerError(CartTickerErrorData cartTickerErrorData);
 }

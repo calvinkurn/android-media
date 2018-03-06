@@ -14,6 +14,9 @@ public class CourierItemData implements Parcelable {
     private String estimatedDayDelivery;
     private String estimatedHourDelivery;
     private String deliverySchedule;
+    private String defaultEtd;
+    private int minEtd;
+    private int maxEtd;
     private int deliveryPrice;
     private int insurancePrice;
     private int additionalPrice;
@@ -34,8 +37,11 @@ public class CourierItemData implements Parcelable {
         shipperProductId = in.readInt();
         name = in.readString();
         estimatedDayDelivery = in.readString();
-        estimatedHourDelivery= in.readString();
+        estimatedHourDelivery = in.readString();
         deliverySchedule = in.readString();
+        defaultEtd = in.readString();
+        minEtd = in.readInt();
+        maxEtd = in.readInt();
         deliveryPrice = in.readInt();
         insurancePrice = in.readInt();
         additionalPrice = in.readInt();
@@ -197,6 +203,30 @@ public class CourierItemData implements Parcelable {
         this.allowDropshiper = allowDropshiper;
     }
 
+    public int getMinEtd() {
+        return minEtd;
+    }
+
+    public void setMinEtd(int minEtd) {
+        this.minEtd = minEtd;
+    }
+
+    public int getMaxEtd() {
+        return maxEtd;
+    }
+
+    public void setMaxEtd(int maxEtd) {
+        this.maxEtd = maxEtd;
+    }
+
+    public String getDefaultEtd() {
+        return defaultEtd;
+    }
+
+    public void setDefaultEtd(String defaultEtd) {
+        this.defaultEtd = defaultEtd;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -210,6 +240,9 @@ public class CourierItemData implements Parcelable {
         dest.writeString(estimatedDayDelivery);
         dest.writeString(estimatedHourDelivery);
         dest.writeString(deliverySchedule);
+        dest.writeString(defaultEtd);
+        dest.writeInt(minEtd);
+        dest.writeInt(maxEtd);
         dest.writeInt(deliveryPrice);
         dest.writeInt(insurancePrice);
         dest.writeInt(additionalPrice);

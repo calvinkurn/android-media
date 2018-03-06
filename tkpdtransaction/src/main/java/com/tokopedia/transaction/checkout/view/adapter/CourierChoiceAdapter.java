@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,17 +71,25 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             holder.tvDeliverySchedule.setVisibility(View.GONE);
         }
 
-        if (courierItemData.getEstimatedDayDelivery() != null) {
-            String estimatedDelivery = courierItemData.getEstimatedDayDelivery() + " hari kerja*";
+        if (!TextUtils.isEmpty(courierItemData.getEstimatedDayDelivery())) {
+            String estimatedDelivery = "";
+            if (courierItemData.isUsePinPoint()) {
+                estimatedDelivery += holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery);
+            }
+            estimatedDelivery += courierItemData.getEstimatedDayDelivery() +
+                    holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_day_with_asterisk);
             holder.tvDeliveryTimeRange.setText(estimatedDelivery);
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
-        } else if (courierItemData.getEstimatedHourDelivery() != null) {
-            String estimatedDelivery = courierItemData.getEstimatedHourDelivery() + "*";
+        } else if (!TextUtils.isEmpty(courierItemData.getEstimatedHourDelivery())) {
+            String estimatedDelivery = holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery) +
+                    courierItemData.getEstimatedHourDelivery() +
+                    holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_hour_with_asterisk);
             holder.tvDeliveryTimeRange.setText(estimatedDelivery);
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
         } else {
             holder.tvDeliveryTimeRange.setVisibility(View.GONE);
         }
+
         renderTypeface(holder, courierItemData);
 
         holder.itemView.setOnClickListener(getItemClickListener(courierItemData, position));

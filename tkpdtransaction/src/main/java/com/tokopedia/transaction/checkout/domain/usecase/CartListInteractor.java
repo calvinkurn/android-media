@@ -9,6 +9,7 @@ import com.tokopedia.transaction.checkout.data.entity.response.shippingaddressfo
 import com.tokopedia.transaction.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.data.exception.ResponseCartApiErrorException;
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
+import com.tokopedia.transaction.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
@@ -79,6 +80,48 @@ public class CartListInteractor implements ICartListInteractor {
                             @Override
                             public DeleteCartData call(DeleteCartDataResponse deleteCartDataResponse) {
                                 return cartMapper.convertToDeleteCartData(deleteCartDataResponse);
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void deleteCartAndRefreshCartList(Subscriber<DeleteAndRefreshCartListData> subscriber,
+                                             final TKPDMapParam<String, String> paramDelete,
+                                             final TKPDMapParam<String, String> paramGetCartList) {
+        compositeSubscription.add(
+                Observable.just(new DeleteAndRefreshCartListData())
+                        .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                            @Override
+                            public Observable<DeleteAndRefreshCartListData> call(final DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                                return cartRepository.deleteCartData(paramDelete).map(new Func1<DeleteCartDataResponse, DeleteAndRefreshCartListData>() {
+                                    @Override
+                                    public DeleteAndRefreshCartListData call(DeleteCartDataResponse deleteCartDataResponse) {
+                                        deleteAndRefreshCartListData.setDeleteCartData(
+                                                cartMapper.convertToDeleteCartData(deleteCartDataResponse)
+                                        );
+                                        return deleteAndRefreshCartListData;
+                                    }
+                                });
+                            }
+                        })
+                        .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                            @Override
+                            public Observable<DeleteAndRefreshCartListData> call(final DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                                return cartRepository.getCartList(paramGetCartList)
+                                        .map(new Func1<CartDataListResponse, DeleteAndRefreshCartListData>() {
+                                            @Override
+                                            public DeleteAndRefreshCartListData call(CartDataListResponse cartDataListResponse) {
+                                                deleteAndRefreshCartListData.setCartListData(
+                                                        cartMapper.convertToCartItemDataList(cartDataListResponse)
+                                                );
+                                                return deleteAndRefreshCartListData;
+                                            }
+                                        });
                             }
                         })
                         .subscribeOn(Schedulers.newThread())

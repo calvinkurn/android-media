@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,17 +11,30 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.view.di.component.CartShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerCartShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.module.CartShipmentModule;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
+
+import javax.inject.Inject;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
+public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity,
+        ICartShipmentActionListener {
     public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
 
@@ -35,6 +50,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestionData;
     private PromoCodeCartListData promoCodeCartListData;
+
+    @Inject
+    ICartShipmentPresenter cartShipmentPresenter;
+    @Inject
+    CompositeSubscription compositeSubscription;
+
 
     public static Intent createInstanceSingleAddress(Context context,
                                                      CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -73,9 +94,17 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         cartPromoSuggestionData = extras.getParcelable(EXTRA_CART_PROMO_SUGGESTION);
     }
 
+
+    private void initInjector() {
+        CartShipmentComponent component = DaggerCartShipmentComponent.builder()
+                .cartShipmentModule(new CartShipmentModule(this))
+                .build();
+        component.inject(this);
+    }
+
     @Override
     protected void initialPresenter() {
-
+        initInjector();
     }
 
     @Override
@@ -130,6 +159,41 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
+    public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
+        paymentPassData.setTransactionId(checkoutData.getTransactionId());
+        paymentPassData.setPaymentId(checkoutData.getPaymentId());
+        paymentPassData.setCallbackSuccessUrl(checkoutData.getCallbackSuccessUrl());
+        paymentPassData.setCallbackFailedUrl(checkoutData.getCallbackFailedUrl());
+        paymentPassData.setQueryString(checkoutData.getQueryString());
+        navigateToActivityRequest
+                (TopPayActivity.createInstance(this, paymentPassData),
+                        TopPayActivity.REQUEST_CODE
+                );
+    }
+
+    @Override
+    public void renderErrorCheckoutCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpCheckoutCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckoutCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckoutCart(String message) {
+
+    }
+
+    @Override
     public void closeWithResult(int resultCode, @Nullable Intent intent) {
         if (intent == null) setResult(resultCode);
         else setResult(resultCode, intent);
@@ -158,5 +222,65 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                 });
 
         dialog.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
+    public void showProgressLoading() {
+
+    }
+
+    @Override
+    public void hideProgressLoading() {
+
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(int resId) {
+        return null;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+        return null;
+    }
+
+    @Override
+    public void closeView() {
+
+    }
+
+    @Override
+    public void checkoutCart(CheckoutRequest checkoutRequest) {
+        cartShipmentPresenter.processCheckout(checkoutRequest);
     }
 }

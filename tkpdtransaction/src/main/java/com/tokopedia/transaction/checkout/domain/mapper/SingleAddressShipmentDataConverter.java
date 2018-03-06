@@ -13,9 +13,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Shop
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,11 +28,12 @@ import javax.inject.Inject;
  *         Aghny A. Putra on 08/02/18.
  */
 
-public class SingleAddressShipmentDataConverter extends ConverterData<CartShipmentAddressFormData,
-        CartSingleAddressData> {
+public class SingleAddressShipmentDataConverter
+        extends ConverterData<CartShipmentAddressFormData, List<Object>> {
 
     private static final int FIRST_ELEMENT = 0;
     private static final int PRIME_ADDRESS = 2;
+
     private UserAddress userAddress;
     private String keroToken;
     private String keroUnixTime;
@@ -43,7 +43,9 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
     }
 
     @Override
-    public CartSingleAddressData convert(CartShipmentAddressFormData cartItemDataList) {
+    public List<Object> convert(CartShipmentAddressFormData cartItemDataList) {
+        List<Object> shipmentDataList = new ArrayList<>();
+
         keroToken = cartItemDataList.getKeroToken();
         keroUnixTime = String.valueOf(cartItemDataList.getKeroUnixTime());
 
@@ -54,14 +56,13 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
         RecipientAddressModel recipientAddressModel = convertFromUserAddress(userAddress);
         List<CartSellerItemModel> cartSellerItemModels = convertFromGroupShopList(groupShops);
-        CartPayableDetailModel cartPayableDetailModel = getTotalPayableDetail(cartSellerItemModels);
+        ShipmentCostModel shipmentCostModel = getTotalPayableDetail(cartSellerItemModels);
 
-        CartSingleAddressData cartSingleAddressData = new CartSingleAddressData();
-        cartSingleAddressData.setRecipientAddressModel(recipientAddressModel);
-        cartSingleAddressData.setCartSellerItemModelList(cartSellerItemModels);
-        cartSingleAddressData.setCartPayableDetailModel(cartPayableDetailModel);
+        shipmentDataList.add(recipientAddressModel);
+        shipmentDataList.addAll(cartSellerItemModels);
+        shipmentDataList.add(shipmentCostModel);
 
-        return cartSingleAddressData;
+        return shipmentDataList;
     }
 
     private List<CartSellerItemModel> convertFromGroupShopList(List<GroupShop> groupShops) {
@@ -86,9 +87,12 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         sellerItemModel.setCartItemModels(cartItemModels);
 
         for (CartItemModel cartItemModel : cartItemModels) {
-            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice() + cartItemModel.getPrice());
-            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight() + cartItemModel.getWeight());
-            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
+            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice()
+                    + (cartItemModel.getPrice() * cartItemModel.getQuantity()));
+            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight()
+                    + cartItemModel.getWeight() * cartItemModel.getQuantity());
+            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity()
+                    + cartItemModel.getQuantity());
         }
 
         sellerItemModel.setTotalPrice(sellerItemModel.getTotalItemPrice());
@@ -117,6 +121,7 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+        cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
 
         return cartItemModel;
     }
@@ -141,19 +146,24 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
         recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
         recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         recipientAddress.setAddressStreet(userAddress.getAddress());
         recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
+        recipientAddress.setLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+                Double.parseDouble(userAddress.getLatitude()) : null);
+        recipientAddress.setLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+                Double.parseDouble(userAddress.getLongitude()) : null);
 
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
 
         return recipientAddress;
     }
 
-    private CartPayableDetailModel getTotalPayableDetail(List<CartSellerItemModel> cartSellerItemModels) {
-        CartPayableDetailModel cartPayable = new CartPayableDetailModel();
+    private ShipmentCostModel getTotalPayableDetail(List<CartSellerItemModel> cartSellerItemModels) {
+        ShipmentCostModel cartPayable = new ShipmentCostModel();
 
         for (CartSellerItemModel itemModel : cartSellerItemModels) {
             cartPayable.setTotalItem(cartPayable.getTotalItem() + itemModel.getTotalQuantity());

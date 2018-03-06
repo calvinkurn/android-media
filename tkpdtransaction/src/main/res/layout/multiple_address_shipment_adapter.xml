@@ -42,7 +42,7 @@
         android:layout_height="1dp"
         android:background="@color/grey_300" />
 
-    <include layout="@layout/item_product_detail" />
+    <include layout="@layout/item_cart_product" />
 
     <LinearLayout
         android:id="@+id/address_layout"

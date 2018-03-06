@@ -25,6 +25,7 @@ public class CartItemModel implements Parcelable {
     private String imageUrl;
 
     private String cashback;
+    private String freeReturnLogo;
 
     private boolean isCashback;
     private boolean isPreOrder;
@@ -60,6 +61,14 @@ public class CartItemModel implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFreeReturnLogo() {
+        return freeReturnLogo;
+    }
+
+    public void setFreeReturnLogo(String freeReturnLogo) {
+        this.freeReturnLogo = freeReturnLogo;
     }
 
     public double getPrice() {
@@ -158,6 +167,9 @@ public class CartItemModel implements Parcelable {
         isFreeReturn = freeReturn;
     }
 
+    public CartItemModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -178,12 +190,10 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.noteToSeller);
         dest.writeString(this.imageUrl);
         dest.writeString(this.cashback);
+        dest.writeString(this.freeReturnLogo);
         dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
-    }
-
-    public CartItemModel() {
     }
 
     protected CartItemModel(Parcel in) {
@@ -200,6 +210,7 @@ public class CartItemModel implements Parcelable {
         this.noteToSeller = in.readString();
         this.imageUrl = in.readString();
         this.cashback = in.readString();
+        this.freeReturnLogo = in.readString();
         this.isCashback = in.readByte() != 0;
         this.isPreOrder = in.readByte() != 0;
         this.isFreeReturn = in.readByte() != 0;
@@ -216,5 +227,4 @@ public class CartItemModel implements Parcelable {
             return new CartItemModel[size];
         }
     };
-
 }
