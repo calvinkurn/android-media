@@ -182,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:drawableLeft="@drawable/ic_place_black_24dp"
+            android:drawableLeft="@drawable/ic_place_grey_24dp"
             android:gravity="center_vertical"
             android:minHeight="25dp"
             android:textColor="@color/black_38"

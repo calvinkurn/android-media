@@ -152,7 +152,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_place_black_24dp"
+                    android:drawableLeft="@drawable/ic_place_grey_24dp"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/text_size_xsmall"
                     android:fontFamily="sans-serif"
