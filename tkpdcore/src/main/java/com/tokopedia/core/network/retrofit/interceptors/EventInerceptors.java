@@ -2,7 +2,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
