@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="140dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/margin_small"
     android:background="@drawable/cards_feed_rounded"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small"
-    >
+    android:padding="@dimen/padding_small">
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/avatar"
