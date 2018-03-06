@@ -86,7 +86,7 @@
                 app:backgroundColor="@color/black"
                 app:cornerSize="5"
                 app:customText="Daftar dengan Email"
-                app:iconButton="@drawable/ic_register_icon"
+                app:iconButton="@drawable/ic_email"
                 app:textColor="@color/black_70" />
 
             <com.tokopedia.core.customView.LoginTextView

@@ -250,6 +250,10 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
