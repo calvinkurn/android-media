@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_padding_small"
+    android:layout_marginTop="@dimen/margin_padding_small"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_padding_medium">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:id="@+id/img_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:scaleType="centerCrop" />
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/text_view_display_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="@dimen/margin_default"
+                android:layout_marginTop="@dimen/margin_default"
+                android:background="@drawable/rounded_rectange_transparent"
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/margin_padding_small"
+                android:paddingLeft="@dimen/circle_indicator_height"
+                android:paddingRight="@dimen/circle_indicator_height"
+                android:paddingTop="@dimen/margin_padding_small"
+                android:text="@string/_350_u0020_ticket_u0020_sold"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/font_small"
+                android:textStyle="normal"
+                android:visibility="visible" />
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_padding_medium">
+
+            <TextView
+                android:id="@+id/event_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="The 90's Festival"
+                android:textColor="@color/grey_150"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold" />
+
+            <!--<TextView-->
+            <!--android:id="@+id/btn_bookticket"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignBottom="@+id/linearLayout2"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:background="@drawable/rounded_filled_theme_bttn_orange"-->
+            <!--android:paddingBottom="@dimen/padding_vs"-->
+            <!--android:paddingLeft="@dimen/padding_med"-->
+            <!--android:paddingRight="@dimen/padding_med"-->
+            <!--android:paddingTop="@dimen/padding_vs"-->
+            <!--android:text="Beli Ticket"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/font_small" />-->
+            <TextView
+                android:id="@+id/tv_event_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/textView3"
+                android:text="Rp 552.00"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/linearLayout2"
+                android:layout_below="@+id/event_title"
+                android:text="Mulai dari harga:"
+                android:textColor="@color/grey_500"
+                android:textSize="@dimen/textsize_tiny"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:id="@+id/place_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout2"
+                android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
+                android:layout_marginTop="@dimen/keyline_1_minus_8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_small_location"
+                    android:layout_width="@dimen/margin_default"
+                    android:layout_height="@dimen/margin_default"
+                    android:background="@drawable/ic_placeholder"
+                    android:scaleType="centerCrop"
+                    android:tint="@color/grey" />
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/margin_default"
+                    android:paddingLeft="@dimen/margin_padding_small"
+                    android:paddingRight="@dimen/margin_default"
+                    android:paddingStart="@dimen/margin_padding_small"
+                    android:text="25 Nov 2017 Pukul"
+                    android:textColor="@color/grey_500"
+                    android:textSize="@dimen/font_micro"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/event_title"
+                android:layout_marginTop="@dimen/keyline_1_minus_8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_small_time"
+                    android:layout_width="@dimen/margin_default"
+                    android:layout_height="@dimen/margin_default"
+                    android:background="@drawable/ic_time"
+                    android:scaleType="centerCrop"
+                    android:tint="@color/grey" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/margin_default"
+                    android:paddingLeft="@dimen/margin_padding_small"
+                    android:paddingRight="@dimen/margin_default"
+                    android:paddingStart="@dimen/margin_padding_small"
+                    android:text="25 Nov 2017 Pukul"
+                    android:textColor="@color/grey_500"
+                    android:textSize="@dimen/font_micro"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_thin"
+        android:background="?android:attr/listDivider" />
+</LinearLayout>

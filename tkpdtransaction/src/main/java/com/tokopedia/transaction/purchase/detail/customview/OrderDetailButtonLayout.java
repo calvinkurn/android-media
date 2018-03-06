@@ -346,7 +346,10 @@ public class OrderDetailButtonLayout extends LinearLayout{
             button.setVisibility(VISIBLE);
             button.setText(R.string.button_order_detail_confirm_shipping_alternative);
             button.setOnClickListener(onConfirmShipping(context, presenter, data));
-        } else {
+        } else if(Integer.parseInt(data.getOrderCode()) >= 500 &&
+                changeCourierButtonVisibility != OrderDetailTypeDef.HIDE_BUTTON) {
+            button.setVisibility(GONE);
+        }else {
             button.setVisibility(VISIBLE);
             button.setOnClickListener(onChangeCourier(context, presenter, data));
         }

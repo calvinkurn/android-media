@@ -327,6 +327,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel, adapterPosition);
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }
+    }
+
     private void actionFetchFlightSearchData() {
         setUpProgress();
         if (getAdapter().getItemCount() == 0) {
@@ -651,8 +659,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel);
+    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel, adapterPosition);
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);

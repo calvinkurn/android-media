@@ -5,6 +5,7 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel;
  */
 
 public class InspirationProductViewModel {
+    private String recommedationType;
     private String productId;
     private String name;
     private String price;
@@ -14,7 +15,7 @@ public class InspirationProductViewModel {
     private String priceInt;
 
     public InspirationProductViewModel(String productId, String name, String price, String
-            imageSource, String url, int page, String priceInt) {
+            imageSource, String url, int page, String priceInt, String recommendationType) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -22,6 +23,7 @@ public class InspirationProductViewModel {
         this.url = url;
         this.page = page;
         this.priceInt = priceInt;
+        this.recommedationType = recommendationType;
     }
 
     public String getProductId() {
@@ -74,5 +76,13 @@ public class InspirationProductViewModel {
 
     public void setPriceInt(String priceInt) {
         this.priceInt = priceInt;
+    }
+
+    public String getRecommedationType() {
+        return recommedationType;
+    }
+
+    public void setRecommedationType(String recommedationType) {
+        this.recommedationType = recommedationType;
     }
 }
