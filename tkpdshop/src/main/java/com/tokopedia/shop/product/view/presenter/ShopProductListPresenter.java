@@ -135,6 +135,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         return shopProductRequestModel;
     }
 
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
     @Override
     public void detachView() {
         super.detachView();

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -64,6 +65,13 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
         return shopReviewFragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shopId = getArguments().getString(SHOP_ID, "");
+        shopDomain = getArguments().getString(SHOP_DOMAIN, "");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,10 +81,10 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(SHOP_ID, "");
-        shopDomain = getArguments().getString(SHOP_DOMAIN, "");
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.clearItemDecoration();
     }
 
     @Override

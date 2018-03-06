@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
@@ -16,20 +17,19 @@ import com.tokopedia.core.shopinfo.limited.model.ShopTalkLimited;
 
 public class ShopTalkLimitedAdapter extends ShopTalkAdapter {
 
-    public static ShopTalkLimitedAdapter createInstance(Context context, ShopTalkAdapter.ActionShopTalkListener listener) {
-        return new ShopTalkLimitedAdapter(context, listener);
-    }
+    private View.OnClickListener showMoreListener;
 
-    public ShopTalkLimitedAdapter(Context context, ActionShopTalkListener listener) {
+    public ShopTalkLimitedAdapter(Context context, ActionShopTalkListener listener, View.OnClickListener showMoreListener) {
         super(context, listener);
+        this.showMoreListener = showMoreListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case ShopTalkLimited.TYPE:
-                return new ViewHolder2(LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_shop_talk_see_more, viewGroup, false));
+                return new ShowMoreViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.item_shop_talk_see_more, viewGroup, false), showMoreListener);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -52,22 +52,20 @@ public class ShopTalkLimitedAdapter extends ShopTalkAdapter {
         if (isLastItemPosition(position) && (list.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
-            if(position >= 0 && position < list.size() && list.get(position) instanceof ShopTalkLimited){
+            if (position >= 0 && position < list.size() && list.get(position) instanceof ShopTalkLimited) {
                 return ShopTalkLimited.TYPE;
-            }else{
+            } else {
                 return VIEW_TALK;
             }
         }
     }
 
-    public class ViewHolder2 extends RecyclerView.ViewHolder{
+    public class ShowMoreViewHolder extends RecyclerView.ViewHolder {
 
-        private final View shopTalkButtonSeeMore;
-
-        public ViewHolder2(View itemView) {
+        public ShowMoreViewHolder(View itemView, View.OnClickListener showMoreListener) {
             super(itemView);
-
-            shopTalkButtonSeeMore = itemView.findViewById(R.id.shop_talk_button_see_more);
+            Button showCompleteDiscussionButton = itemView.findViewById(R.id.button_show_complete_discussion);
+            showCompleteDiscussionButton.setOnClickListener(showMoreListener);
         }
     }
 }

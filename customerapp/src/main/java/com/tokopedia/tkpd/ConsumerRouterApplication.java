@@ -70,6 +70,8 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -145,6 +147,7 @@ import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWa
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -206,7 +209,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter {
+        DiscoveryRouter, RideModuleRouter, ShopModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1331,6 +1334,54 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+    }
+
+    @Override
+    public Fragment getShopTalkFragment() {
+        return ShopTalkLimitedFragment.createInstance();
+    }
+
+    @Override
+    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.SHOP_TYPE)
+                .setName(getString(R.string.message_share_shop))
+                .setTextContent(shareLabel)
+                .setUri(shopUrl)
+                .setId(shopId)
+                .build();
+        startActivity(ShareActivity.createIntent(context, shareData));
+    }
+
+    @Override
+    public void goToManageShop(Context context) {
+        context.startActivity(getIntentManageShop(context));
+    }
+
+    @Override
+    public void goToAddProduct(Context context) {
+        if(context != null && context instanceof Activity){
+            ProductAddActivity.start((Activity) context);
+        }
+    }
+
+    @Override
+    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
+        if (getSession().isLoggedIn()) {
+            UnifyTracking.eventShopSendChat();
+            Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
+            startActivity(intent);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("login", true);
+            Intent  intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+            ((Activity)context).startActivityForResult(intent, 100);
+        }
     }
 
     @Override
