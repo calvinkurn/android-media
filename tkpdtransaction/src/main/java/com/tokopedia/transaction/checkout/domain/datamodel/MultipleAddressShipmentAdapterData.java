@@ -8,6 +8,8 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 public class MultipleAddressShipmentAdapterData {
 
+    private int productId;
+
     private String senderName;
 
     private String productImageUrl;
@@ -37,6 +39,14 @@ public class MultipleAddressShipmentAdapterData {
     private long subTotal;
 
     private long productPriceNumber;
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
     public String getSenderName() {
         return senderName;

@@ -1,5 +1,9 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -22,9 +26,30 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     }
 
     @Override
-    public void sendData(List<MultipleAddressShipmentAdapterData> shipmentData,
-                         MultipleAddressPriceSummaryData priceData) {
+    public CheckoutRequest generateCheckoutRequest(List<MultipleAddressShipmentAdapterData> shipmentData,
+                                                   MultipleAddressPriceSummaryData priceData) {
+        CheckoutRequest.Builder checkoutRequest = new CheckoutRequest.Builder();
+        List<DataCheckoutRequest> dataCheckoutRequests = new ArrayList<>();
+        for(int i = 0; i < shipmentData.size(); i++) {
+            DataCheckoutRequest.Builder checkoutData = new DataCheckoutRequest.Builder();
+            List<ShopProductCheckoutRequest> shopCheckoutRequests = new ArrayList<>();
+            ShopProductCheckoutRequest.Builder shopCheckoutRequest =
+                    new ShopProductCheckoutRequest.Builder();
 
+            List<ProductDataCheckoutRequest> productDataCheckoutRequests = new ArrayList<>();
+            ProductDataCheckoutRequest.Builder productDataCheckoutRequest =
+                    new ProductDataCheckoutRequest.Builder();
+            productDataCheckoutRequests.add(productDataCheckoutRequest
+                    .productId(shipmentData.get(i).getProductId()).build());
+
+                    
+            /*shopCheckoutRequest.productData(productDataCheckoutRequests).shippingInfo()*/
+            /*checkoutData.addressId(Integer
+                    .parseInt(shipmentData.get(i).getItemData().getAddressId()))
+                    .shopProducts().build();*/
+        }
+        checkoutRequest.data(dataCheckoutRequests).build();
+        return null;
     }
 
     @Override
@@ -40,6 +65,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
+                    adapterData.setProductId(currentProduct.getProductId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
                     adapterData.setProductImageUrl(currentProduct.getProductImageSrc200Square());
