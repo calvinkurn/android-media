@@ -13,6 +13,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ExifInterface;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -86,10 +87,10 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
         Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(resId)
+                .load(ContextCompat.getDrawable(imageview.getContext(), resId))
+                .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
                 .dontAnimate()
-                .error(resId)
+                .error(ContextCompat.getDrawable(imageview.getContext(), resId))
                 .into(imageview);
     }
 
