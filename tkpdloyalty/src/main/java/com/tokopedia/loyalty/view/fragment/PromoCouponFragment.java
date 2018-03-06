@@ -143,7 +143,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void renderCouponListDataResult(List<CouponData> couponData) {
         refreshHandler.finishRefresh();
-        adapter = new CouponListAdapter(getActivity(), couponData, this);
+        adapter = new CouponListAdapter(couponData, this);
         couponListRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
