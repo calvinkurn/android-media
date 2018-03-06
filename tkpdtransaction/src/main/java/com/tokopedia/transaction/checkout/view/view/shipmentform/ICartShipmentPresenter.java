@@ -9,4 +9,7 @@ import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 public interface ICartShipmentPresenter {
 
     void processCheckout(CheckoutRequest checkoutRequest);
+
+    void processVerifyPayment(String transactionId);
+
 }

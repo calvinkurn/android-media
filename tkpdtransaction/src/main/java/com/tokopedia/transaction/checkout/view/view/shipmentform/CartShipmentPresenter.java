@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.transaction.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -22,16 +24,18 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
 
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
+    private final GetThanksToppayUseCase getThanksToppayUseCase;
     private final ICartShipmentActivity cartShipmentActivity;
 
     @Inject
     public CartShipmentPresenter(CompositeSubscription compositeSubscription,
                                  CheckoutUseCase checkoutUseCase,
+                                 GetThanksToppayUseCase getThanksToppayUseCase,
                                  ICartShipmentActivity cartShipmentActivity) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
+        this.getThanksToppayUseCase = getThanksToppayUseCase;
         this.cartShipmentActivity = cartShipmentActivity;
-
     }
 
     @Override
@@ -45,6 +49,39 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(getSubscriberCheckoutCart())
         );
+    }
+
+    @Override
+    public void processVerifyPayment(String transactionId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetThanksToppayUseCase.PARAM_TRANSACTION_ID, transactionId);
+        compositeSubscription.add(
+                getThanksToppayUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(getSubscriberThanksTopPay())
+        );
+    }
+
+    @NonNull
+    private Subscriber<ThanksTopPayData> getSubscriberThanksTopPay() {
+        return new Subscriber<ThanksTopPayData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ThanksTopPayData thanksTopPayData) {
+
+            }
+        };
     }
 
     @NonNull

@@ -1,10 +1,16 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
+import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
+import com.tokopedia.transaction.checkout.data.repository.ITopPayRepository;
+import com.tokopedia.transaction.checkout.data.repository.TopPayRepository;
 import com.tokopedia.transaction.checkout.domain.mapper.CheckoutMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.IMapperUtil;
+import com.tokopedia.transaction.checkout.domain.mapper.ITopPayMapper;
+import com.tokopedia.transaction.checkout.domain.mapper.TopPayMapper;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.transaction.checkout.view.di.scope.CartShipmentActivityScope;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentPresenter;
@@ -42,15 +48,40 @@ public class CartShipmentModule {
 
     @Provides
     @CartShipmentActivityScope
+    ITopPayMapper provideITopPayMapper() {
+        return new TopPayMapper();
+    }
+
+    @Provides
+    @CartShipmentActivityScope
+    TXActService provideTXActService() {
+        return new TXActService();
+    }
+
+    @Provides
+    @CartShipmentActivityScope
+    ITopPayRepository provideITopPayRepository(TXActService txActService) {
+        return new TopPayRepository(txActService);
+    }
+
+    @Provides
+    @CartShipmentActivityScope
     CheckoutUseCase provideCheckoutUseCase(ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
         return new CheckoutUseCase(cartRepository, checkoutMapper);
     }
 
     @Provides
     @CartShipmentActivityScope
+    GetThanksToppayUseCase provideGetThanksToppayUseCase(ITopPayRepository topPayRepository, ITopPayMapper topPayMapper) {
+        return new GetThanksToppayUseCase(topPayRepository, topPayMapper);
+    }
+
+    @Provides
+    @CartShipmentActivityScope
     ICartShipmentPresenter provideICartShipmentPresenter(CheckoutUseCase checkoutUseCase,
+                                                         GetThanksToppayUseCase getThanksToppayUseCase,
                                                          CompositeSubscription compositeSubscription) {
-        return new CartShipmentPresenter(compositeSubscription, checkoutUseCase, viewListener);
+        return new CartShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase, viewListener);
     }
 
 }

@@ -132,7 +132,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                 //TODO Change Later
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeCartListData, cartPromoSuggestionData
                         )).commit();
             }
         }
@@ -190,6 +190,31 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void renderErrorTimeoutConnectionCheckoutCart(String message) {
+
+    }
+
+    @Override
+    public void renderThanksTopPaySuccess(String message) {
+        finish();
+    }
+
+    @Override
+    public void renderErrorThanksTopPaySuccess(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpThanksTopPaySuccess(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionThanksTopPaySuccess(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionThanksTopPaySuccess(String message) {
 
     }
 
@@ -282,5 +307,11 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     public void checkoutCart(CheckoutRequest checkoutRequest) {
         cartShipmentPresenter.processCheckout(checkoutRequest);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
     }
 }
