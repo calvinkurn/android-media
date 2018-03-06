@@ -42,7 +42,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             productDataCheckoutRequests.add(productDataCheckoutRequest
                     .productId(shipmentData.get(i).getProductId()).build());
 
-                    
+
             /*shopCheckoutRequest.productData(productDataCheckoutRequests).shippingInfo()*/
             /*checkoutData.addressId(Integer
                     .parseInt(shipmentData.get(i).getItemData().getAddressId()))
