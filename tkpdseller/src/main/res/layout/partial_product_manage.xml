@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="LinearLayout"
-    tools:orientation="vertical">
+    tools:orientation="vertical"
+    tools:parentTag="LinearLayout">
 
     <LinearLayout
         style="@style/LabelLayout"
@@ -23,13 +23,15 @@
         android:id="@+id/view_group_product_manage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:divider="@drawable/line_divider"
+        android:orientation="vertical"
         android:showDividers="beginning|middle|end">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/spinner_text_view_stock_status"
                 style="@style/LabelLayout"
@@ -41,8 +43,8 @@
             <com.tokopedia.design.text.CounterInputView
                 android:id="@+id/counter_input_view_stock_total"
                 style="@style/LabelLayout"
-                app:counter_min="1"
-                app:counter_hint="@string/product_label_stock_total" />
+                app:counter_hint="@string/product_label_stock_total"
+                app:counter_min="1" />
         </LinearLayout>
 
         <com.tokopedia.seller.common.widget.LabelView
@@ -50,11 +52,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
             app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
             app:content_max_lines="5"
-            app:title="@string/product_variant_label_title" />
+            app:title="@string/product_variant_label_title"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:orientation="horizontal">
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/text_input_layout_sku"
+                style="@style/HintTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:hint="@string/product_add_sku_hint"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/product_max_character_sku">
+
+                <EditText
+                    android:id="@+id/edit_text_sku"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:digits="@string/product_add_sku_allowed_character"
+                    android:hint="@string/product_add_sku_hint"
+                    android:maxLength="@integer/product_max_character_sku"
+                    android:maxLines="1" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <FrameLayout
+                android:id="@+id/info_icon_add_product_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/margin_med"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:foregroundGravity="center"
+                android:paddingLeft="@dimen/padding_vs"
+                android:paddingStart="@dimen/padding_vs">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/info_icon_add_product"
+                    android:layout_width="@dimen/image_medal_size"
+                    android:layout_height="@dimen/image_medal_size"
+                    android:layout_gravity="end"
+                    android:foregroundGravity="center_vertical|right"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_info" />
+            </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -31,12 +31,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/spinner_text_view_condition"
                 style="@style/LabelLayout"
                 app:spinner_entries="@array/product_condition_entries"
                 app:spinner_hint="@string/product_label_condition"
                 app:spinner_values="@array/product_condition_values" />
+
             <LinearLayout
                 style="@style/LabelLayout"
                 android:baselineAligned="true"
@@ -47,15 +49,15 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:hint="@string/product_label_product_description"
                     app:counterEnabled="true"
-                    app:counterMaxLength="@integer/product_max_character_description"
-                    android:hint="@string/product_label_product_description">
+                    app:counterMaxLength="@integer/product_max_character_description">
 
                     <EditText
                         android:id="@+id/edit_text_description"
                         style="@style/EditText"
-                        android:hint="@string/product_label_enter_product_description"
                         android:layout_width="match_parent"
+                        android:hint="@string/product_label_enter_product_description"
                         android:inputType="textMultiLine"
                         android:maxLength="@integer/product_max_character_description" />
 
@@ -67,18 +69,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginTop="@dimen/margin_med"
-                    android:paddingLeft="@dimen/padding_vs"
-                    android:paddingStart="@dimen/padding_vs"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:foregroundGravity="center">
+                    android:foregroundGravity="center"
+                    android:paddingLeft="@dimen/padding_vs"
+                    android:paddingStart="@dimen/padding_vs">
+
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/info_icon_add_product"
                         android:layout_width="@dimen/image_medal_size"
                         android:layout_height="@dimen/image_medal_size"
-                        android:scaleType="fitXY"
                         android:layout_gravity="end"
                         android:foregroundGravity="center_vertical|right"
-                        android:src="@drawable/ic_info"/>
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_info" />
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>
@@ -87,11 +90,11 @@
             android:id="@+id/label_add_video_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:visibility="visible"
             android:visibility="gone"
             app:content="@string/product_etalase_picker_add_etalase_add_button_dialog"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/product_label_video" />
+            app:title="@string/product_label_video"
+            tools:visibility="visible" />
 
     </LinearLayout>
 
