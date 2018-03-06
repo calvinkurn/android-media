@@ -64,7 +64,8 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                         kolPostViewModel.getContentId(),
                         TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? "-" :
                                 kolPostViewModel.getContentLink(),
-                        Integer.valueOf(view.getUserSession().getUserId())
+                        Integer.valueOf(!TextUtils.isEmpty(view.getUserSession().getUserId()) ?
+                                        view.getUserSession().getUserId() : "0")
                 ));
 
 
