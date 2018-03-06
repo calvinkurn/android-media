@@ -26,7 +26,6 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
@@ -66,6 +65,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     private MultipleAddressShipmentAdapter shipmentAdapter;
     private PromoCodeAppliedData promoCodeAppliedData;
+    private ICartShipmentActivity cartShipmentActivity;
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                               PromoCodeAppliedData promoCodeAppliedData,
@@ -264,6 +264,12 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setQuantity(3);
         data.setTotalProductPrice(10000);
         return new MultipleAddressPriceSummaryData();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 
     @Override

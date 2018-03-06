@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transaction.R;
@@ -34,8 +35,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity,
-        ICartShipmentActionListener {
+public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity{
     public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
 
@@ -308,6 +308,11 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     public void checkoutCart(CheckoutRequest checkoutRequest) {
         cartShipmentPresenter.processCheckout(checkoutRequest);
+    }
+
+    @Override
+    public void checkPromoCodeShipment(CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
+
     }
 
     @Override

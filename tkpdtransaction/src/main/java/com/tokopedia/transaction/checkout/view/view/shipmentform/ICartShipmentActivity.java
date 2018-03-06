@@ -3,7 +3,9 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transaction.base.IBaseView;
+import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
 
 /**
@@ -12,6 +14,9 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.Checkout
 
 public interface ICartShipmentActivity extends IBaseView {
 
+    void checkoutCart(CheckoutRequest checkoutRequest);
+
+    void checkPromoCodeShipment(CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest);
 
     void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
