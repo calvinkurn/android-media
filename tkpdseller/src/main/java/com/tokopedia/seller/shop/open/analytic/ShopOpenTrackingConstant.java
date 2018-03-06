@@ -19,15 +19,18 @@ public class ShopOpenTrackingConstant {
     //action
     public static String OPEN_SHOP_SUCCESS = "click open shop success";
     public static String OPEN_SHOP_ERROR = "click open shop error ";
+    public static String OPEN_SHOP_ERROR_WITH_DATA = "click open shop error with data";
     public static String OPEN_SHOP_ERROR_DOMAIN = "domain error";
     public static String OPEN_SHOP_ERROR_NAME = "name error";
     public static String OPEN_SHOP_CLICK_NEXT_STEP = "click next step";
     public static String OPEN_SHOP_CLICK_NEXT_STEP_SUCCESS = "click next step success";
     public static String OPEN_SHOP_CLICK_NEXT_STEP_ERROR = "click next step error";
+    public static String OPEN_SHOP_CLICK_NEXT_STEP_ERROR_WITH_DATA = "click next step error with data";
     public static String OPEN_SHOP_CLICK_CARGO_SERVICES = "click cargo service rules";
     public static String OPEN_SHOP_CLICK_LEARN_MORE = "click learn more";
     public static String OPEN_SHOP_CLICK_ADD_PRODUCT = "click add product";
     public static String OPEN_SHOP_CLICK_MY_SHOP_PAGE = "click my shop page";
     public static String OPEN_SHOP_CLICK_ADDRESS_LIST = "click address list";
     public static String OPEN_SHOP_CLICK_PINPOINT_LOCATION = "click pinpoint location";
+    public static String OPEN_SHOP_CLICK_DELETE_PINPOINT_LOCATION = "click delete pinpoint location";
 }

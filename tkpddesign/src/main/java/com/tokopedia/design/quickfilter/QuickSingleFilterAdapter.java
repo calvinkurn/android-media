@@ -12,7 +12,7 @@ import com.tokopedia.design.R;
 
 public class QuickSingleFilterAdapter extends BaseQuickSingleFilterAdapter<ItemFilterViewHolder> {
 
-    private QuickSingleFilterListener actionListener;
+    protected QuickSingleFilterListener actionListener;
 
     public QuickSingleFilterAdapter(QuickSingleFilterListener actionListener) {
         this.actionListener = actionListener;
@@ -20,14 +20,13 @@ public class QuickSingleFilterAdapter extends BaseQuickSingleFilterAdapter<ItemF
 
     @Override
     public ItemFilterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_quick_filter_view, parent, false);
-        return new ItemFilterViewHolder(view, parent.getContext(), actionListener);
+        return new ItemFilterViewHolder(view, actionListener);
     }
 
     @Override
     public void onBindViewHolder(ItemFilterViewHolder holder, int position) {
-        ((ItemFilterViewHolder) holder).renderItemViewHolder(filterList.get(position));
+        holder.renderItemViewHolder(filterList.get(position));
     }
 }

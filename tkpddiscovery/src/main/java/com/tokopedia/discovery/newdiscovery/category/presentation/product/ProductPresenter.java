@@ -6,11 +6,8 @@ import android.os.Bundle;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
@@ -86,7 +83,6 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
     private void launchLoginActivity(String productId) {
         Bundle extras = new Bundle();
-        extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productId);
         viewListener.launchLoginActivity(extras);
     }
@@ -112,15 +108,16 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        if(isViewAttached()) {
-            requestParams.putString(BrowseApi.SC, getView().getDepartmentId());
-        }
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
 
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
+        if (isViewAttached()) {
+            requestParams.putString(BrowseApi.SC, getView().getDepartmentId());
+
+            if (getView().getSelectedSort() != null) {
+                requestParams.putAll(getView().getSelectedSort());
+            }
+            if (getView().getSelectedFilter() != null) {
+                requestParams.putAll(getView().getSelectedFilter());
+            }
         }
         return requestParams;
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
-import java.util.Map;
+import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.util.BranchSdkUtils;
 
 /**
  * Created by okasurya on 12/8/17.
@@ -8,12 +9,29 @@ import java.util.Map;
 
 public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
+    public static final String PURCHASE = "purchase";
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String PAYMENT_ID = "payment_id";
+    public static final String PAYMENT_STATUS = "payment_status";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String SHOP_ID = "shop_id";
+    public static final String LOGISTIC_TYPE = "logistic_type";
+    public static final String ECOMMERCE = "ecommerce";
 
-    public static void marketplace(Map<String, Object> data) {
-        getGTMEngine().event(TRANSACTION, data);
+    public static final String USER_ID = "userId";
+
+    public static void marketplace(Purchase purchase) {
+        BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
+        getGTMEngine().eventPurchaseMarketplace(purchase);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine().clearEnhanceEcommerce();
     }
 
-    public static void digital(Map<String, Object> data) {
-        getGTMEngine().event(TRANSACTION, data);
+    public static void digital(Purchase purchase) {
+        BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_DIGITAL);
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventPurchaseDigital(purchase);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
     }
 }

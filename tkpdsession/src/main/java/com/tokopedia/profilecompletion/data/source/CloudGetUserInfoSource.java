@@ -2,7 +2,7 @@ package com.tokopedia.profilecompletion.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -49,8 +49,8 @@ public class CloudGetUserInfoSource {
                             ().getPhone());
                     sessionHandler.setTempLoginName(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getFullName());
-                } else {
-
+                    sessionHandler.setTempLoginEmail(getUserInfoDomainModel
+                            .getGetUserInfoDomainData().getEmail());
                 }
             }
         };

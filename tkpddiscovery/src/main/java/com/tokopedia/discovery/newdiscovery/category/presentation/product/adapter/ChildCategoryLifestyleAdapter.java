@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
@@ -32,8 +34,11 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
     private final RevampCategoryAdapter.CategoryListener listener;
     private List<ChildCategoryModel> listCategory;
     private Context context;
+    private String headerName;
 
-    public ChildCategoryLifestyleAdapter(RevampCategoryAdapter.CategoryListener listener) {
+    public ChildCategoryLifestyleAdapter(RevampCategoryAdapter.CategoryListener listener,
+                                         String headerName) {
+        this.headerName = headerName;
         this.listener = listener;
         this.listCategory = new ArrayList<>();
     }
@@ -48,7 +53,7 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         setupAttrCardView(holder, position);
         final ChildCategoryModel model = listCategory.get(position);
         holder.title.setText(model.getCategoryName().toUpperCase());
@@ -59,6 +64,16 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<Object> list = new ArrayList<>();
+                list.add(
+                        DataLayer.mapOf(
+                                "id", model.getCategoryId(),
+                                "name", String.format("category %s - subcategory banner", headerName.toLowerCase()),
+                                "position", String.valueOf(position + 1),
+                                "creative", model.getCategoryName()
+                        )
+                );
+                TrackingUtils.eventCategoryLifestyleClick(model.getCategoryUrl(), list);
                 listener.onCategoryRevampClick(model);
             }
         });

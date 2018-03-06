@@ -69,11 +69,12 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
-        FilterSearchAdapterTypeFactory.OnFlightSearchListener{
+        FilterSearchAdapterTypeFactory.OnFlightSearchListener {
 
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
@@ -81,6 +82,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
+    private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
+    private static final int PADDING_SEARCH_LIST = 60;
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
@@ -95,6 +98,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
     private boolean inFilterMode = false;
+
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -204,6 +208,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     protected void setUpSwipeRefresh(View view) {
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setSwipeDistance();
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -230,8 +235,34 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    protected boolean isReturning() {
+    @Override
+    public boolean isReturning() {
         return false;
+    }
+
+    @Override
+    public FlightSearchPassDataViewModel getFlightSearchPassData() {
+        return flightSearchPassDataViewModel;
+    }
+
+    @Override
+    public void setFlightSearchPassData(FlightSearchPassDataViewModel flightSearchPassData) {
+        this.flightSearchPassDataViewModel = flightSearchPassData;
+    }
+
+    @Override
+    public void showDepartureDateMaxTwoYears(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showDepartureDateShouldAtLeastToday(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showReturnDateShouldGreaterOrEqual(int resId) {
+        showMessageErrorInSnackBar(resId);
     }
 
     @CallSuper
@@ -290,12 +321,22 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel);
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }
+    }
+
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel, adapterPosition);
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
         }
     }
 
     private void actionFetchFlightSearchData() {
+        setUpProgress();
         if (getAdapter().getItemCount() == 0) {
             showLoading();
         }
@@ -417,12 +458,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
                         String selectedId = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED);
                         if (!TextUtils.isEmpty(selectedId)) {
-                            onFlightSearchFragmentListener.selectFlight(selectedId);
+                            onSelectedFromDetail(selectedId);
                         }
                     }
                     break;
             }
         }
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
+        onFlightSearchFragmentListener.selectFlight(selectedId);
     }
 
     @Override
@@ -454,13 +499,26 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             if (progress < MAX_PROGRESS) {
                 getAdapter().showLoading();
             } else {
+                RecyclerView recyclerView = getRecyclerView(getView());
+                recyclerView.setPadding(
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN
+                );
                 getAdapter().addElement(getEmptyDataViewModel());
             }
         } else {
+            float scale = getResources().getDisplayMetrics().density;
+            RecyclerView recyclerView = getRecyclerView(getView());
+            recyclerView.setPadding(
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+            );
             getAdapter().addElement(flightSearchViewModelList);
         }
-
-
     }
 
     @Override
@@ -536,9 +594,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
         // we retrieve from cache, because there is possibility the filter/sort will be different
         reloadDataFromCache();
-        if (filterAndSortBottomAction.getVisibility() == View.GONE && progress >= MAX_PROGRESS) {
-            filterAndSortBottomAction.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -574,6 +629,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void showGetListError(Throwable t) {
         this.addToolbarElevation();
+        progressBar.setVisibility(View.GONE);
         super.showGetListError(t);
     }
 
@@ -603,7 +659,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
+    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel, adapterPosition);
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);
@@ -633,7 +690,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                onSuccessDateChanged(year, month, dayOfMonth);
+                flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker = datePickerDialog.getDatePicker();
@@ -647,34 +704,20 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             String dateDepStr = flightSearchPassDataViewModel.getDate(false);
             Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
             datePicker.setMinDate(dateDep.getTime());
+            datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
         } else {
             Date dateNow = FlightDateUtil.getCurrentDate();
             datePicker.setMinDate(dateNow.getTime());
 
             boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
             if (!isOneWay) {
-                String dateArrStr = flightSearchPassDataViewModel.getDate(true);
-                Date dateArr = FlightDateUtil.stringToDate(dateArrStr);
-                datePicker.setMaxDate(dateArr.getTime());
+                String dateReturnStr = flightSearchPassDataViewModel.getDate(true);
+                Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                datePicker.setMaxDate(dateReturn.getTime());
+            } else {
+                datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
             }
         }
-    }
-
-    private void onSuccessDateChanged(int year, int month, int dayOfMonth) {
-        Calendar calendar = FlightDateUtil.getCurrentCalendar();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DATE, dayOfMonth);
-        Date dateToSet = calendar.getTime();
-
-        String dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT);
-
-        if (isReturning()) {
-            flightSearchPassDataViewModel.setReturnDate(dateString);
-        } else {
-            flightSearchPassDataViewModel.setDepartureDate(dateString);
-        }
-        flightSearchPresenter.deleteFlightCache(isReturning());
     }
 
     @Override
@@ -741,10 +784,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return emptyResultViewModel;
     }
 
+    @SuppressWarnings("Range")
+    private void showMessageErrorInSnackBar(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
+    }
+
     @Override
     protected boolean isLoadMoreEnabledByDefault() {
         return false;
     }
+
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);

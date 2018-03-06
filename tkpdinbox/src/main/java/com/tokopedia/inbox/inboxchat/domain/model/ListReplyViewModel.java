@@ -6,6 +6,7 @@ import android.text.Spanned;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 
 import java.util.Calendar;
 
@@ -22,6 +23,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private String replyTime;
     private int fraudStatus;
     private String readTime;
+    private Attachment attachment;
     private int attachmentId;
     private int oldMsgId;
     private boolean showTime;
@@ -176,5 +178,13 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setOldMessageTitle(String oldMessageTitle) {
         this.oldMessageTitle = oldMessageTitle;
+    }
+
+    public Attachment getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 }

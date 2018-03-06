@@ -10,11 +10,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
@@ -36,7 +34,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
         this.kolViewListener = kolViewListener;
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
-        this.data = new KolRecommendationViewModel("", "", list);
+        this.data = new KolRecommendationViewModel("", "", "", list);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -102,7 +100,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
                         TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
                                 .getKolClickTracking(list,
-                                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))
+                                        Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))
                                 ));
 
                         kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
@@ -135,7 +133,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.avatar, data.getListRecommend().get(position).getImageUrl());
+        ImageHandler.loadImageCircle2(holder.avatar.getContext(), holder.avatar, data.getListRecommend().get(position).getImageUrl());
         holder.name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
         holder.label.setText(data.getListRecommend().get(position).getLabel());
 
@@ -145,17 +143,18 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     private void setFollowing(ViewHolder holder, int position) {
         if (data.getListRecommend().get(position).isFollowed()) {
-            holder.followButton.setText(MainApplication.getAppContext().getString(R.string.following));
-            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(MainApplication
-                    .getAppContext(), R.drawable.btn_share_transaparent));
-            holder.followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+            holder.followButton.setText(holder.followButton.getContext().getString(R.string.following));
+            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(
+                    holder.followButton.getContext()
+                    , R.drawable.btn_share_transaparent));
+            holder.followButton.setTextColor(MethodChecker.getColor(holder.followButton.getContext(), R
                     .color.tkpd_main_green));
         } else {
-            holder.followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+            holder.followButton.setTextColor(MethodChecker.getColor(holder.followButton.getContext(), R
                     .color.white));
-            holder.followButton.setText(MainApplication.getAppContext().getString(R.string.action_follow_english));
-            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(MainApplication
-                    .getAppContext(), R.drawable.green_button_rounded_unify));
+            holder.followButton.setText(holder.followButton.getContext().getString(R.string.action_follow_english));
+            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(
+                    holder.followButton.getContext(), R.drawable.green_button_rounded_unify));
         }
     }
 

@@ -311,3 +311,23 @@
 -dontwarn com.crashlytics.android.answers.shim.**
 -dontwarn com.nimbusds.jwt.SignedJWT
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
+
+-dontwarn com.appsflyer.**
+-keep public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
+-keep public class com.google.android.gms.iid.InstanceID {
+    public *;
+}
+
+-keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
+-keep public class android.support.design.widget.BottomNavigationView { *; }
+-keep public class android.support.design.internal.BottomNavigationMenuView { *; }
+-keep public class android.support.design.internal.BottomNavigationPresenter { *; }
+-keep public class android.support.design.internal.BottomNavigationItemView { *; }
+
+
+-dontwarn android.net.http.**
+-dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor

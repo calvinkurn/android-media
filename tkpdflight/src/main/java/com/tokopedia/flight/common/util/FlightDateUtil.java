@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.util;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -19,7 +21,9 @@ public class FlightDateUtil {
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
+    public static final String DEFAULT_VIEW_TIME_FORMAT = "dd MMM yyyy, HH:mm";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    public static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("GMT+7");
     public static final String FORMAT_DATE_API_DETAIL = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
@@ -29,12 +33,16 @@ public class FlightDateUtil {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
     }
 
+    public static String formatDateByUsersTimezone(String currentFormat, String newFormat, String dateString) {
+        TimeZone timeZone = TimeZone.getDefault();
+        return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE, DEFAULT_TIMEZONE, timeZone);
+    }
+
     public static String formatToUi(String dateStr) {
         return formatDate(DEFAULT_FORMAT, DEFAULT_VIEW_FORMAT, dateStr);
     }
 
     public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale) {
-
         try {
             DateFormat fromFormat = new SimpleDateFormat(currentFormat, locale);
             fromFormat.setLenient(false);
@@ -42,7 +50,29 @@ public class FlightDateUtil {
             toFormat.setLenient(false);
             Date date = fromFormat.parse(dateString);
             return toFormat.format(date);
-        } catch (Exception e) {
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return dateString;
+        }
+
+    }
+
+    public static String formatDate(String currentFormat,
+                                    String newFormat,
+                                    String dateString,
+                                    Locale locale,
+                                    TimeZone fromTimeZone,
+                                    TimeZone toTimezone) {
+        try {
+            DateFormat fromFormat = new SimpleDateFormat(currentFormat, locale);
+            fromFormat.setTimeZone(fromTimeZone);
+            fromFormat.setLenient(false);
+            DateFormat toFormat = new SimpleDateFormat(newFormat, locale);
+            toFormat.setLenient(false);
+            toFormat.setTimeZone(toTimezone);
+            Date date = fromFormat.parse(dateString);
+            return toFormat.format(date);
+        } catch (ParseException e) {
             e.printStackTrace();
             return dateString;
         }

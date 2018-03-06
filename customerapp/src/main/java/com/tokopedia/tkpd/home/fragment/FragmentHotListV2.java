@@ -34,7 +34,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.HotListAdapter;
 
 import org.parceler.Parcels;
@@ -44,6 +43,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.tokopedia.tkpd.R;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -59,18 +60,18 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @BindView(R.id.hot_product)
     RecyclerView recyclerView;
-    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_HOTLIST;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_HOTLIST;
     }
 
     private Unbinder unbinder;
+
+    boolean hasLoadedOnce = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,9 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main, container, false);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.hot_product);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         hotList.subscribe();
-        unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         setListener();
         return parentView;
@@ -111,7 +113,6 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         hotList.unSubscribe();
     }
 
@@ -119,10 +120,12 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     public void onResume() {
         super.onResume();
         Log.d(TAG, FragmentHotListV2.class.getSimpleName() + " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
-        if(hotList.isAfterRotate()) {
-            hotList.initDataAfterRotate();
-        }else {
-            hotList.initData();
+        if (getUserVisibleHint() && hotList != null) {
+            if(hotList.isAfterRotate()) {
+                hotList.initDataAfterRotate();
+            }else {
+                hotList.initData();
+            }
         }
     }
 
@@ -220,6 +223,11 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent();
+
+            if (!hasLoadedOnce && hotList != null) {
+                hotList.initData();
+                hasLoadedOnce = true;
+            }
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

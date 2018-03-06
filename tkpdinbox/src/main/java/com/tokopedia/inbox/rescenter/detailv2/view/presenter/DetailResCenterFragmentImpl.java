@@ -6,14 +6,13 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUs
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
-import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.
-        GetResCenterDetailV2Subscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailV2Subscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
@@ -32,7 +31,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
     private final CancelResolutionUseCase cancelResolutionUseCase;
     private final AskHelpResolutionUseCase askHelpResolutionUseCase;
-    private final FinishReturSolutionUseCase finishReturSolutionUseCase;
+    private final FinishResolutionUseCase finishResolutionUseCase;
     private final AcceptAdminSolutionUseCase acceptAdminSolutionUseCase;
     private final AcceptSolutionUseCase acceptSolutionUseCase;
     private final InputAddressUseCase inputAddressUseCase;
@@ -45,7 +44,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
                                        TrackAwbReturProductUseCase trackAwbReturProductUseCase,
                                        CancelResolutionUseCase cancelResolutionUseCase,
                                        AskHelpResolutionUseCase askHelpResolutionUseCase,
-                                       FinishReturSolutionUseCase finishReturSolutionUseCase,
+                                       FinishResolutionUseCase finishResolutionUseCase,
                                        AcceptAdminSolutionUseCase acceptAdminSolutionUseCase,
                                        AcceptSolutionUseCase acceptSolutionUseCase,
                                        InputAddressUseCase inputAddressUseCase,
@@ -56,7 +55,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         this.trackAwbReturProductUseCase = trackAwbReturProductUseCase;
         this.cancelResolutionUseCase = cancelResolutionUseCase;
         this.askHelpResolutionUseCase = askHelpResolutionUseCase;
-        this.finishReturSolutionUseCase = finishReturSolutionUseCase;
+        this.finishResolutionUseCase = finishResolutionUseCase;
         this.acceptAdminSolutionUseCase = acceptAdminSolutionUseCase;
         this.acceptSolutionUseCase = acceptSolutionUseCase;
         this.inputAddressUseCase = inputAddressUseCase;
@@ -85,7 +84,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void finishReturProduct() {
         fragmentView.showLoadingDialog(true);
-        finishReturSolutionUseCase.execute(getFinishReturSolutionParam(),
+        finishResolutionUseCase.execute(getFinishReturSolutionParam(),
                 new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_FINISH));
     }
 
@@ -224,7 +223,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         trackAwbReturProductUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
-        finishReturSolutionUseCase.unsubscribe();
+        finishResolutionUseCase.unsubscribe();
         acceptAdminSolutionUseCase.unsubscribe();
         acceptSolutionUseCase.unsubscribe();
         inputAddressUseCase.unsubscribe();

@@ -12,6 +12,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by ricoharisin on 8/23/16.
@@ -19,30 +21,62 @@ import java.io.IOException;
 public class AnalyticsLog {
     private static AndroidLogger instance;
     private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
+    private static final String TOKEN_LOG_NOTIFIER_NOTP = "44ec54a0-bcc2-437e-a061-9c7b3e124165";
 
     public static void logForceLogout(String url) {
-        AnalyticsLog.log("Force Logout! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                + " Last Access Url: " + url
-                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
-                + " App Code : " + GlobalConfig.VERSION_CODE
-                + " Android Version : " + Build.VERSION.RELEASE
-                + " Android Model : " + android.os.Build.MODEL
-                + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+        String baseUrl = getBaseUrl(url);
+
+        AnalyticsLog.log("ErrorType=Force Logout!"
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
 
         );
     }
 
     public static void logNetworkError(String url, int errorCode) {
-        AnalyticsLog.log("Error Network! "
-                + " Error Code: " + errorCode
-                + " User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                + " URL: " + url
-                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
-                + " App Code : " + GlobalConfig.VERSION_CODE
-                + " Android Version : " + Build.VERSION.RELEASE
-                + " Android Model : " + android.os.Build.MODEL
-                + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+        String baseUrl = getBaseUrl(url);
+
+        AnalyticsLog.log("ErrorType=Error Network! "
+                + " ErrorCode=" + errorCode
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
+
+
         );
+    }
+
+
+    private static String getBaseUrl(String url) {
+        try {
+            URL stringUrl = new URL(url);
+            return stringUrl.getProtocol() + "://" + stringUrl.getHost() + stringUrl
+                    .getPath();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return url;
+        }
+    }
+
+    private static String isStaging(String baseUrl) {
+        return baseUrl.contains("staging") ? "Staging" : "Production";
     }
 
     public static void logNotification(String notificationId, String notificationCode) {
@@ -55,10 +89,38 @@ public class AnalyticsLog {
         }
     }
 
+    private static AndroidLogger mInstance = null;
+    private static AndroidLogger getAndroidNOTPLogger() {
+        try {
+            if(mInstance == null) {
+                mInstance = AndroidLogger.createInstance(
+                        MainApplication.getAppContext(),
+                        false,
+                        true,
+                        false,
+                        null,
+                        0,
+                        TOKEN_LOG_NOTIFIER_NOTP,
+                        true);
+            }
+            return mInstance;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public static void printNOTPLog(String msg) {
+        getAndroidNOTPLogger().log(msg + " - Phone Number:-" + SessionHandler.getPhoneNumber()
+                + " - LoginID - " + SessionHandler.getLoginID(MainApplication.getAppContext()));
+    }
     private static void log(String message) {
-        AndroidLogger logger = getAndroidLogger();
-        if (logger != null) {
-            logger.log(message);
+        try {
+            AndroidLogger logger = getAndroidLogger();
+            if (logger != null) {
+                logger.log(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

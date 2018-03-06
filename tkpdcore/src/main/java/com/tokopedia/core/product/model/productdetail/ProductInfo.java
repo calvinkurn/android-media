@@ -114,6 +114,10 @@ public class ProductInfo implements Parcelable {
     @Expose
     private Integer productPriceUnformatted;
 
+    @SerializedName("has_variant")
+    @Expose
+    private Boolean hasVariant = false;
+
 
     public ProductInfo() {
     }
@@ -358,6 +362,14 @@ public class ProductInfo implements Parcelable {
         this.productPriceUnformatted = productPriceUnformatted;
     }
 
+    public Boolean getHasVariant() {
+        return hasVariant != null ? hasVariant : false;
+    }
+
+    public void setHasVariant(Boolean hasVariant) {
+        this.hasVariant = hasVariant;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -392,6 +404,8 @@ public class ProductInfo implements Parcelable {
         installmentMinPercentage = in.readString();
         installmentMinPrice = in.readString();
         productPriceUnformatted = in.readByte() == 0x00 ? null : in.readInt();
+        byte hasVariantVal = in.readByte();
+        hasVariant = hasVariantVal == 0x02 ? null : hasVariantVal != 0x00;
     }
 
     @Override
@@ -453,6 +467,11 @@ public class ProductInfo implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(productPriceUnformatted);
+        }
+        if (hasVariant == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasVariant ? 0x01 : 0x00));
         }
     }
 

@@ -3,13 +3,11 @@ package com.tokopedia.ride.bookingride.view;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
-import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public interface RideHomeMapContract {
 
         void moveMapToLocation(double latitude, double longitude);
 
-        void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress);
+        void renderDefaultPickupLocation(double latitude, double longitude, String title, String sourceAddress);
 
         void onMapDragStarted();
 

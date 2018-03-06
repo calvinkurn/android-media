@@ -25,7 +25,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -157,6 +156,34 @@ public class TrackingUtils extends TrackingConfig {
             sendMoEngageLoginEvent(wrapper);
         }
     }
+
+    public static void setMoEUserAttributesLogin(String userId,
+                                                 String fullName,
+                                                 String emailAddress,
+                                                 String phoneNumber,
+                                                 boolean isGoldMerchant,
+                                                 String shopName,
+                                                 String shopId,
+                                                 boolean isSeller,
+                                                 String method) {
+
+        CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                .setCustomerId(userId)
+                .setFullName(fullName)
+                .setEmailAddress(emailAddress)
+                .setPhoneNumber(normalizePhoneNumber(phoneNumber))
+                .setGoldMerchant(isGoldMerchant)
+                .setShopName(shopName)
+                .setShopId(shopId)
+                .setSeller(isSeller)
+                .setFirstName(getFirstName(fullName))
+                .setMethod(method)
+                .build();
+
+        getMoEngine().setUserData(wrapper, "LOGIN");
+        sendMoEngageLoginEvent(wrapper);
+    }
+
 
     public static void eventMoEngageLogoutUser() {
         getMoEngine().logoutEvent();
@@ -532,9 +559,22 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
+    public static void sendMoEngageReferralScreenOpen(String screenName) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
+    }
+
+    public static void sendMoEngageReferralShareEvent(String channel) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CHANNEL, channel);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
+    }
+
     public static void fragmentBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
+                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
         } else if (tag.equals(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
@@ -664,6 +704,7 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+
     }
 
     public static void eventImpressionPromoList(List<Object> list, String promoName) {
@@ -677,5 +718,13 @@ public class TrackingUtils extends TrackingConfig {
     }
 
 
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
+    }
 }
 

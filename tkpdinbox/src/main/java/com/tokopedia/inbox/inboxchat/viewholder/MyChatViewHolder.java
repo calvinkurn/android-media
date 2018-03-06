@@ -1,27 +1,25 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
 import java.util.Date;
 
@@ -32,6 +30,7 @@ import java.util.Date;
 public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
     View view;
+    View progressBarSendImage;
     TextView message;
     TextView hour;
     TextView date;
@@ -39,11 +38,14 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     private TextView name;
     private TextView label;
     private TextView dot;
+    private ImageView attachment;
+    private ImageView action;
     ChatRoomContract.View viewListener;
     private static final String ROLE_USER = "User";
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.message_item_mine;
+    public static final int LAYOUT = R.layout.chat_mine;
+    private AttachmentChatHelper attachmentChatHelper;
 
     public MyChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
@@ -55,11 +57,18 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
+        attachment = itemView.findViewById(R.id.image);
+        action = itemView.findViewById(R.id.left_action);
+        progressBarSendImage = itemView.findViewById(R.id.progress_bar);
+        attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
     }
 
     @Override
-    public void bind(MyChatViewModel element) {
+    public void bind(final MyChatViewModel element) {
+
+        action.setVisibility(View.GONE);
+        progressBarSendImage.setVisibility(View.GONE);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,10 +94,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         try {
             long myTime = Long.parseLong(element.getReplyTime());
             time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
+            date.setText(time);
+            date.setVisibility(View.VISIBLE);
         }catch (NumberFormatException e){
             time = element.getReplyTime();
+            date.setVisibility(View.GONE);
         }
-        date.setText(time);
+
 
         if (element.isShowTime()) {
             date.setVisibility(View.VISIBLE);
@@ -145,7 +157,15 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
-        element.getSenderId();
+        String fullTime;
+        try {
+            fullTime = ChatTimeConverter.formatFullTime(Long.parseLong(element.getReplyTime()));
+        }catch (NumberFormatException e){
+            fullTime = "";
+        }
+
+        attachmentChatHelper.parse(element, attachment, message, action, element, viewListener
+                , element.isDummy(), element.isRetry(), hour, progressBarSendImage, chatStatus, fullTime);
 
     }
 
@@ -165,5 +185,9 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         }
 
         return spannableString;
+    }
+
+    public void onViewRecycled() {
+        Glide.clear(attachment);
     }
 }

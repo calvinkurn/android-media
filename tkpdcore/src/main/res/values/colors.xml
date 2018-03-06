@@ -98,6 +98,7 @@
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
+    <color name="grey_hint_full">#ffe0e0e0</color>
 
     <!--COLOR NEW ONBOARDING-->
     <color name="green_nob">#42b549</color>
@@ -118,9 +119,18 @@
     <color name="light_green">#f3fef3</color>
 
     <color name="black_tooltip">#96000000</color>
+    <color name="green_variant_choosed">#f3fef3</color>
     <color name="red_1">#ea1706</color>
     <color name="yellow_1">#ffb03b</color>
 
     <color name="yellow_background">#fffcd3</color>
     <color name="yellow_border">#efe9a1</color>
+
+
+    <color name="red_template">#fdebec</color>
+    <color name="green_template">#f3fef3</color>
+    <color name="clicked_green">#8ad4efd5</color>
+    <color name="add_template_disabled">#26000000</color>
+
+
 </resources>

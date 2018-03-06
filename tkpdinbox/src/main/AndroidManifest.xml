@@ -130,10 +130,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".rescenter.inboxv2.view.activity.ResoInboxActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.inboxv2.view.activity.InboxFilterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".rescenter.detailv2.view.activity.DetailResChatActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".rescenter.detailv2.view.activity.NextActionActivity"
             android:label="@string/title_activity_rescenter_discussion"
@@ -142,6 +150,10 @@
         <activity
             android:name=".rescenter.detailv2.view.activity.TrackShippingActivity"
             android:label="@string/title_track_shipping"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+<activity
+            android:name=".inboxchat.activity.ChatMarketingThumbnailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -159,6 +171,12 @@
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity android:name=".inboxchat.activity.TemplateChatActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".inboxchat.activity.EditTemplateChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

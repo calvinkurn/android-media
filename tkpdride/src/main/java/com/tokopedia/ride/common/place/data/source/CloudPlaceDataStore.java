@@ -1,5 +1,6 @@
 package com.tokopedia.ride.common.place.data.source;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.place.data.PlaceDataStore;
 import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
@@ -27,5 +28,10 @@ public class CloudPlaceDataStore implements PlaceDataStore {
     @Override
     public Observable<DistanceMatrixEntity> getDistanceMarix(String output, TKPDMapParam<String, Object> param) {
         return this.placeApi.getDistanceMatrix(output, param);
+    }
+
+    @Override
+    public Observable<JsonObject> getAddressFromGoogleAPI(String key, String address) {
+        return this.placeApi.getAddressFromGoogleAPI(key, address);
     }
 }

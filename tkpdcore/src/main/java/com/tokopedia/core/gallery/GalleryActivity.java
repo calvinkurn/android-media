@@ -1,23 +1,17 @@
 package com.tokopedia.core.gallery;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -26,14 +20,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 
 import javax.annotation.Nonnull;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
         .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
@@ -208,10 +198,7 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     @Override
     public void onSelectedImage(MediaItem item) {
         if (compressToTkpd) {
-            String fileNameToMove = FileUtils.generateUniqueFileName();
-            File photo = FileUtils.writeImageToTkpdPath(
-                    FileUtils.compressImage(item.getRealPath(), DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                    fileNameToMove);
+            File photo = FileUtils.writeImageToTkpdPath(item.getRealPath());
             if (photo != null) {
                 finishWithPathFile(photo.getAbsolutePath());
             }

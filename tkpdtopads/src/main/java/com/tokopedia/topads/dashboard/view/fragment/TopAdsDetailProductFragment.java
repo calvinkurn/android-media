@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -24,6 +26,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditProductMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
@@ -36,6 +39,9 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPres
 
 public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<TopAdsDetailProductPresenter, ProductAd> {
 
+    private boolean isEnoughDeposit;
+    private boolean isDismissToTopUp;
+
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
         void startShowCase();
@@ -46,11 +52,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     private TopAdsDetailProductFragmentListener listener;
 
-    public static Fragment createInstance(ProductAd productAd, String adId) {
+    public static Fragment createInstance(ProductAd productAd, String adId, boolean isEnoughDeposit) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putBoolean(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -70,6 +77,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
 
         initNameAndLabelView();
+    }
+
+    @Override
+    protected void setupArguments(Bundle bundle) {
+        super.setupArguments(bundle);
+        isEnoughDeposit = bundle.getBoolean(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
     }
 
     protected void initNameAndLabelView() {
@@ -93,7 +106,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsManagementService(new SessionHandler(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
@@ -145,7 +158,55 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public void onAdLoaded(ProductAd ad) {
         super.onAdLoaded(ad);
-        if (listener!= null) {
+        if(!isEnoughDeposit){
+            final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+
+            bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                    .BottomSheetFieldBuilder()
+                    .setTitle(getString(R.string.promo_not_active))
+                    .setBody(getString(R.string.promo_not_active_body))
+                    .setCloseButton(getString(R.string.promo_not_active_add_top_ads_credit))
+                    .build());
+
+            bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetView.dismiss();
+
+                    Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                    TopAdsDetailProductFragment.this.startActivity(intent);
+
+                    isDismissToTopUp = true;
+                }
+            });
+
+            bottomSheetView.setBtnOpsiOnClick(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetView.dismiss();
+
+                    isDismissToTopUp = false;
+                }
+            });
+
+            bottomSheetView.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if(isDismissToTopUp)
+                        return;
+
+                    if (listener != null) {
+                        listener.startShowCase();
+                    }
+                }
+            });
+
+            bottomSheetView.show();
+
+            isEnoughDeposit = true;
+            return;
+        }
+        if (listener != null) {
             listener.startShowCase();
         }
     }

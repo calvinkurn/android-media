@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -38,12 +37,13 @@ public class SortProductActivity extends TActivity {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
+    public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
 
     RecyclerView recyclerView;
     View buttonClose;
     private TextView topBarTitle;
     private ListAdapter adapter;
-    public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";
+    public static final String SORT_ACTION_INTENT = "com.tokopedia.core" + ".SORT";
     private static final String TAG = SortProductActivity.class.getSimpleName();
     private ArrayList<Sort> data;
     private String selectedKey;
@@ -81,11 +81,12 @@ public class SortProductActivity extends TActivity {
         generateSelectedKeyValue((HashMap<String, String>) getIntent().getSerializableExtra(EXTRA_SELECTED_SORT));
         adapter = new ListAdapter(data, selectedKey, selectedValue, new OnItemClickListener() {
             @Override
-            public void onItemClicked(String sort, String ob) {
+            public void onItemClicked(String sort, String ob, String label) {
                 Intent intent = new Intent();
                 HashMap<String, String> params = new HashMap<>();
                 params.put(sort, ob);
                 intent.putExtra(EXTRA_SELECTED_SORT, params);
+                intent.putExtra(EXTRA_SELECTED_NAME, label);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -171,8 +172,9 @@ public class SortProductActivity extends TActivity {
                 public void onClick(View v) {
                     selectedKey = sortList.get(holder.getAdapterPosition()).getKey();
                     selectedValue = sortList.get(holder.getAdapterPosition()).getValue();
+                    String selectedName = sortList.get(holder.getAdapterPosition()).getName();
 
-                    clickListener.onItemClicked(selectedKey, selectedValue);
+                    clickListener.onItemClicked(selectedKey, selectedValue, selectedName);
 
                     notifyDataSetChanged();
                 }
@@ -198,7 +200,9 @@ public class SortProductActivity extends TActivity {
             public void onClick(View v) {
                 TextView textView = (TextView) v;
                 textView.setSelected(true);
-                clickListener.onItemClicked(sortList.get(getAdapterPosition()).getKey(), sortList.get(getAdapterPosition()).getValue());
+                clickListener.onItemClicked(sortList.get(getAdapterPosition()).getKey(),
+                        sortList.get(getAdapterPosition()).getValue(),
+                        sortList.get(getAdapterPosition()).getName());
                 notifyDataSetChanged();
             }
 
@@ -207,6 +211,6 @@ public class SortProductActivity extends TActivity {
     }
 
     private interface OnItemClickListener {
-        void onItemClicked(String sort, String ob);
+        void onItemClicked(String sort, String ob, String label);
     }
 }

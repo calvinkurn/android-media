@@ -58,6 +58,7 @@ public class CategoryHeaderMapper implements Func1<Response<CategoryHadesModel>,
                 childCategoryModel.setCategoryId(child.getId());
                 childCategoryModel.setCategoryImageUrl(child.getThumbnailImage());
                 childCategoryModel.setCategoryName(child.getName());
+                childCategoryModel.setCategoryUrl(child.getUrl());
                 categoryModelList.add(childCategoryModel);
             }
         }

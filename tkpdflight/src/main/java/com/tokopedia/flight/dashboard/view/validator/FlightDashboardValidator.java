@@ -37,7 +37,7 @@ public class FlightDashboardValidator {
         return removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getDepartureDate())).compareTo(removeTime(now.getTime())) >= 0;
     }
 
-    public boolean validateArrivalDateShouldGreaterOrEqualDeparture(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateReturnDateShouldGreaterOrEqualDeparture(FlightDashboardViewModel currentDashboardViewModel) {
         return currentDashboardViewModel.isOneWay() || removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getReturnDate())).compareTo(removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getDepartureDate()))) >= 0;
     }
 

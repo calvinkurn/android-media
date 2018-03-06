@@ -26,10 +26,10 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
@@ -331,6 +331,9 @@ public class ProductFragment extends SearchSectionFragment
                         switchLayoutType();
                         return true;
                     case 3:
+                        String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();
+                        String currentRootCategoryId = productViewModel.getCategoryHeaderModel().getRootCategoryId();
+                        UnifyTracking.eventBottomCategoryNavigation(currentRootCategoryId, currentCategoryId);
                         Intent intent = CategoryNavigationActivity.createInstance(getActivity(), productViewModel.getCategoryHeaderModel().getDepartementId());
                         startActivityForResult(intent, CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
                         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
@@ -449,7 +452,8 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }

@@ -50,10 +50,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/padding_med"
-                    android:paddingEnd="@dimen/padding_small"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingLeft="@dimen/padding_16"
+                    android:paddingRight="@dimen/padding_16"
+                    android:paddingStart="@dimen/padding_16"
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
@@ -82,8 +82,8 @@
                     <TextView
                         style="@style/TextView.Micro"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/margin_16"
+                        android:layout_marginRight="@dimen/margin_16"
                         android:layout_marginTop="@dimen/margin_med"
                         android:background="@drawable/bg_stroke_dash_green_flight"
                         android:padding="@dimen/padding_small"
@@ -92,7 +92,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_med">
+                        android:padding="@dimen/padding_16">
 
                         <TextView
                             style="@style/TextView.TitleBig.Bold"
@@ -115,9 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/padding_small" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -131,7 +129,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_med">
+                        android:padding="@dimen/padding_16">
 
                         <TextView
                             style="@style/TextView.TitleBig.Bold"
@@ -154,9 +152,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -168,16 +166,15 @@
 
                     <TextView
                         style="@style/TextView.TitleBig.Bold"
-                        android:padding="@dimen/padding_med"
+                        android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_passenger_data" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view_data_passenger"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
+                        android:paddingBottom="@dimen/padding_small"
                         android:paddingLeft="@dimen/padding_med"
                         android:paddingRight="@dimen/padding_med" />
                 </LinearLayout>
@@ -199,7 +196,7 @@
 
                     <TextView
                         style="@style/TextView.TitleBig.Bold"
-                        android:padding="@dimen/padding_med"
+                        android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_detail_price" />
 
                     <android.support.v7.widget.RecyclerView
@@ -207,28 +204,106 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16" />
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:id="@+id/voucher_applied_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingEnd="@dimen/padding_16"
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16"
+                        android:paddingStart="@dimen/padding_16"
+                        android:paddingTop="@dimen/padding_med">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@drawable/bg_line_separator" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_med">
+
+                            <TextView
+                                style="@style/TextView.Small"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/total_price"
+                                android:layout_toStartOf="@+id/total_price"
+                                android:text="@string/flight_label_price_total" />
+
+                            <TextView
+                                android:id="@+id/total_price"
+                                style="@style/TextView.Small"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                tools:text="Rp. 500.0000" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            tools:visibility="visible">
+
+                            <TextView
+                                style="@style/TextView.Small"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/tv_discount_voucher"
+                                android:text="@string/flight_review_diskon_voucher_label" />
+
+                            <TextView
+                                android:id="@+id/tv_discount_voucher"
+                                style="@style/TextView.Small"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                tools:text="Rp. 500.0000" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginEnd="@dimen/margin_med"
+                        android:layout_marginLeft="@dimen/margin_med"
+                        android:layout_marginRight="@dimen/margin_med"
+                        android:layout_marginStart="@dimen/margin_med"
+                        android:layout_marginTop="@dimen/margin_med"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:orientation="horizontal"
                         android:padding="@dimen/padding_med">
 
-                        <TextView
-                            style="@style/TextView.Small.Bold"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@+id/total_price"
-                            android:text="@string/flight_label_price_total" />
+                        <android.support.v7.widget.AppCompatTextView
+                            style="@style/TextView.Title.Bold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/flight_booking_total_price_label" />
 
-                        <TextView
-                            android:id="@+id/total_price"
-                            style="@style/TextView.TitleBig.Bold"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            tools:text="Rp. 500.0000" />
-                    </RelativeLayout>
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_total_final_price"
+                            style="@style/TextView.Title.Bold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            tools:text="Rp45.846.900" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout

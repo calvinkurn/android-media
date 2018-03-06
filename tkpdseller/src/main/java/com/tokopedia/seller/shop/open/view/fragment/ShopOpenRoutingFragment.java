@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenCheckDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
-import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
 
@@ -81,7 +81,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     public void onErrorCheckReserveDomain(Throwable t) {
         showLoading(false);
         Crashlytics.logException(t);
-        String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         if (!TextUtils.isEmpty(errorMessage)) {
             tvMessageRetry.setText(errorMessage);
         }

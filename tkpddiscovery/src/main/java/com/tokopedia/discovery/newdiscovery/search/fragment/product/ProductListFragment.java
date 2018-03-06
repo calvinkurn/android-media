@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -22,10 +24,10 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -38,6 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.type
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -268,6 +271,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public boolean isEvenPage() {
+        return adapter.isEvenPage();
+    }
+
+    @Override
     public int getStartFrom() {
         return adapter.getStartFrom();
     }
@@ -279,7 +287,19 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
+        sendProductImpressionTrackingEvent(list);
         adapter.appendItems(list);
+    }
+
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        List<Object> dataLayerList = new ArrayList<>();
+        for(Visitable object : list) {
+            if (object instanceof ProductItem) {
+                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+            }
+        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override
@@ -314,6 +334,7 @@ public class ProductListFragment extends SearchSectionFragment
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
+                    adapter.setStartFrom(startRow);
                     loadMoreProduct(startRow);
                 }
             }).showRetrySnackbar();
@@ -392,6 +413,7 @@ public class ProductListFragment extends SearchSectionFragment
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
+                        adapter.isGuidedSearch(topAdsRecyclerAdapter.getOriginalPosition(position)) ||
                         topAdsRecyclerAdapter.isLoading(position) ||
                         topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
                     return spanCount;
@@ -414,6 +436,17 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         getDynamicFilter();
+        getGuidedSearch();
+    }
+
+    private void getGuidedSearch() {
+        String query = productViewModel.getQuery();
+        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionCurrentKeyword())) {
+            query = productViewModel.getSuggestionModel().getSuggestionCurrentKeyword();
+        }
+        if (!TextUtils.isEmpty(query)) {
+            presenter.loadGuidedSearch(query);
+        }
     }
 
     @Override
@@ -456,7 +489,18 @@ public class ProductListFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+        sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private void sendItemClickTrackingEvent(ProductItem item) {
+        String userId = SessionHandler.isV4Login(getContext()) ?
+                SessionHandler.getLoginID(getContext()) : "";
+
+        SearchTracking.trackEventClickSearchResultProduct(
+                item.getProductAsObjectDataLayer(userId),
+                productViewModel.getQuery()
+        );
     }
 
     @Override
@@ -477,6 +521,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onSearchGuideClicked(String keyword) {
+        performNewProductSearch(keyword, true);
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
     }
@@ -490,6 +539,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, true);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -504,6 +554,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, false);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -512,7 +563,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = ((DiscoveryRouter)MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
@@ -555,6 +607,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void reloadData() {
+        if (!adapter.hasGuidedSearch()) {
+            getGuidedSearch();
+        }
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -674,6 +729,16 @@ public class ProductListFragment extends SearchSectionFragment
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void addGuidedSearch() {
+        adapter.addGuidedSearch();
+    }
+
+    @Override
+    public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
+        adapter.setGuidedSearch(guidedSearchViewModel);
     }
 
     @Override

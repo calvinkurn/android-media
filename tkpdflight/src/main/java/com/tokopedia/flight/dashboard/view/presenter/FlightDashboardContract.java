@@ -42,11 +42,17 @@ public interface FlightDashboardContract {
 
         void showDepartureDateShouldAtLeastToday(@StringRes int resID);
 
-        void showArrivalDateShouldGreaterOrEqual(@StringRes int resId);
+        void showDepartureDateMaxTwoYears(@StringRes int resID);
+
+        void showReturnDateShouldGreaterOrEqual(@StringRes int resId);
+
+        void showReturnDateMaxTwoYears(@StringRes int resId);
 
         void showPassengerAtLeastOneAdult(@StringRes int resId);
 
         void showFlightClassPassengerIsEmpty(@StringRes int resId);
+
+        void showApplinkErrorMessage(@StringRes int resId);
 
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
 
@@ -59,6 +65,20 @@ public interface FlightDashboardContract {
         void renderBannerView(List<BannerDetail> bannerList);
 
         void hideBannerView();
+
+        String getScreenName();
+
+        boolean isFromApplink();
+
+        String getTripArguments();
+
+        String getAdultPassengerArguments();
+
+        String getChildPassengerArguments();
+
+        String getInfantPassengerArguments();
+
+        String getClassArguments();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -93,5 +113,8 @@ public interface FlightDashboardContract {
 
         void onLoginResultReceived();
 
+        void onBannerItemClick(int position, BannerDetail bannerDetail);
+
+        void actionOnPromoScrolled(int position, BannerDetail bannerData);
     }
 }

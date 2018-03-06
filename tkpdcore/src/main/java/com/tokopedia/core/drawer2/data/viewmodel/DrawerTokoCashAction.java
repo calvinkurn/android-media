@@ -15,23 +15,6 @@ public class DrawerTokoCashAction implements Parcelable {
     public DrawerTokoCashAction() {
     }
 
-    protected DrawerTokoCashAction(Parcel in) {
-        text = in.readString();
-        redirectUrl = in.readString();
-    }
-
-    public static final Creator<DrawerTokoCashAction> CREATOR = new Creator<DrawerTokoCashAction>() {
-        @Override
-        public DrawerTokoCashAction createFromParcel(Parcel in) {
-            return new DrawerTokoCashAction(in);
-        }
-
-        @Override
-        public DrawerTokoCashAction[] newArray(int size) {
-            return new DrawerTokoCashAction[size];
-        }
-    };
-
     public String getText() {
         return text;
     }
@@ -55,7 +38,24 @@ public class DrawerTokoCashAction implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(text);
-        dest.writeString(redirectUrl);
+        dest.writeString(this.text);
+        dest.writeString(this.redirectUrl);
     }
+
+    protected DrawerTokoCashAction(Parcel in) {
+        this.text = in.readString();
+        this.redirectUrl = in.readString();
+    }
+
+    public static final Creator<DrawerTokoCashAction> CREATOR = new Creator<DrawerTokoCashAction>() {
+        @Override
+        public DrawerTokoCashAction createFromParcel(Parcel source) {
+            return new DrawerTokoCashAction(source);
+        }
+
+        @Override
+        public DrawerTokoCashAction[] newArray(int size) {
+            return new DrawerTokoCashAction[size];
+        }
+    };
 }
