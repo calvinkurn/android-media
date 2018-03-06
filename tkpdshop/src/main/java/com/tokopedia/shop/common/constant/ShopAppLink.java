@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.constant.TkpdAppLink;
  */
 
 public class ShopAppLink extends TkpdAppLink {
+
     public static final String SHOP = "tokopedia://shop/{shop_id}";
     public static final String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     public static final String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";

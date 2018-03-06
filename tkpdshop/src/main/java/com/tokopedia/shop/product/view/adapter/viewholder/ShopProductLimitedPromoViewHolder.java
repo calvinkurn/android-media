@@ -1,5 +1,7 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.webkit.WebView;
@@ -7,6 +9,7 @@ import android.webkit.WebViewClient;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 
 /**
@@ -43,11 +46,15 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            promoViewHolderListener.promoClicked(url);
+            Uri uri = Uri.parse(url);
+            if (uri.getScheme().equals(ShopProductOfficialStoreUtils.TOKOPEDIA_HOST) || uri.getScheme().startsWith("http")){
+                promoViewHolderListener.promoClicked(url);
+            }else if(url.contains("shop-static")){
+                view.loadUrl(url);
+            }
             return true;
         }
     }
-
     public interface PromoViewHolderListener {
 
         void promoClicked(String url);

@@ -82,14 +82,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String sortId;
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
+    private String page;
 
-    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String etalaseName) {
+    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String etalaseName, String sort, String page) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_ID, shopId);
         bundle.putString(ShopProductListActivity.KEYWORD_EXTRAS, keyword);
         bundle.putString(ShopProductListFragment.ETALASE_ID, etalaseId);
         bundle.putString(ShopProductListFragment.ETALASE_NAME, etalaseName);
+        bundle.putString(ShopProductListActivity.SORT, sort);
+        bundle.putString(ShopProductListActivity.PAGE, page);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -120,6 +123,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         keyword = getArguments().getString(ShopProductListActivity.KEYWORD_EXTRAS);
         etalaseId = getArguments().getString(ShopProductListFragment.ETALASE_ID);
         etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
+        page = getArguments().getString(ShopProductListActivity.PAGE, null);
+        sortName = getArguments().getString(ShopProductListActivity.SORT, Integer.toString(Integer.MIN_VALUE));
         shopProductListPresenter.attachView(this);
     }
 
@@ -254,6 +259,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
+        if(this.page != null){
+            page = Integer.valueOf(this.page);
+        }
         shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
     }
 

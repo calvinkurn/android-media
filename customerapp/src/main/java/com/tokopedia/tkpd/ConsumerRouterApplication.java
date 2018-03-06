@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -1368,6 +1369,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if(context != null && context instanceof Activity){
             ProductAddActivity.start((Activity) context);
         }
+    }
+
+    @Override
+    public void goToWebview(String url) {
+        Intent intent = new Intent(this, BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
+        startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetailById(Context activity, String productId) {
+        startActivity(ProductInfoActivity.createInstance(activity, productId));
     }
 
     @Override
