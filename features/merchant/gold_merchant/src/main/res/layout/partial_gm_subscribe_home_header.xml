@@ -1,10 +1,10 @@
-<RelativeLayout
-    android:id="@+id/header_gm_subscribe_home"
+<RelativeLayout android:id="@+id/header_gm_subscribe_home"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/background_gmsubscribe_home_main_header"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/icon_gold_merchant"
