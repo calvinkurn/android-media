@@ -1,6 +1,8 @@
 package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
@@ -111,6 +114,9 @@ public class PartialUserShopView extends BaseCustomView {
             }else{
                 favouriteButton.setVisibility(GONE);
             }
+            tvShopName.setOnClickListener(new ClickShopInfo(model));
+            ivShopProfile.setOnClickListener(new ClickShopInfo(model));
+            llRating.setOnClickListener(new ClickShopInfo(model));
         } else {
             this.setVisibility(GONE);
         }
@@ -151,6 +157,28 @@ public class PartialUserShopView extends BaseCustomView {
                     });
         }
     }
+
+    private class ClickShopInfo implements  OnClickListener{
+
+        private final TopProfileViewModel data;
+
+        ClickShopInfo(TopProfileViewModel model){
+            data = model;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getContext(), ShopInfoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("shop_id", String.valueOf(data.getShopId()));
+            bundle.putString("shop_name", data.getShopName());
+            bundle.putString("shop_avatar", data.getShopLogo());
+            bundle.putInt("shop_favorite", data.isFavorite() ? 1 : 0);
+            intent.putExtras(bundle);
+            getContext().startActivity(intent);
+        }
+    }
+
 
     public void reverseFavorite() {
         if (isShopFavorite) {
