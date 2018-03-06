@@ -57,11 +57,11 @@ public class EventDetailsViewModelMapper {
             int size = source.getSchedules().size();
             List<SchedulesViewModel> schedules = new ArrayList<>(size);
             for (ScheduleDomain item : source.getSchedules()) {
-                SchedulesViewModel s = new SchedulesViewModel();
-                s.setaDdress(item.getAddressDetail().getAddress());
-                s.setStartDate(item.getSchedule().getStartDate());
-                s.setEndDate(item.getSchedule().getEndDate());
-                s.setCityName(item.getSchedule().getTitle());
+                SchedulesViewModel schedulesViewModel = new SchedulesViewModel();
+                schedulesViewModel.setaDdress(item.getAddressDetail().getAddress());
+                schedulesViewModel.setStartDate(item.getSchedule().getStartDate());
+                schedulesViewModel.setEndDate(item.getSchedule().getEndDate());
+                schedulesViewModel.setCityName(item.getSchedule().getTitle());
                 String timerange;
                 if (source.getMinStartDate() > 0) {
                     if (item.getSchedule().getStartDate() == item.getSchedule().getEndDate()) {
@@ -73,58 +73,59 @@ public class EventDetailsViewModelMapper {
                 } else {
                     timerange = "";
                 }
-                s.setTimeRange(timerange);
+                schedulesViewModel.setTimeRange(timerange);
 
-                if (item.getGroups() != null) {
-                    if (item.getGroups().get(0).getPackages() != null) {
-                        int numOfPkgs = item.getGroups().get(0).getPackages().size();
-                        List<PackageViewModel> packageViewModels = new ArrayList<>(numOfPkgs);
-                        List<Package> packages = item.getGroups().get(0).getPackages();
-                        for (int j = 0; j < packages.size(); j++) {
-                            PackageViewModel pVM = new PackageViewModel();
-                            Package p = packages.get(j);
-                            pVM.setId(p.getId());
-                            pVM.setProductId(p.getProductId());
-                            pVM.setProductGroupId(p.getProductGroupId());
-                            pVM.setProductScheduleId(p.getProductScheduleId());
-                            pVM.setProviderScheduleId(p.getProviderScheduleId());
-                            pVM.setDescription(p.getDescription());
-                            pVM.setDisplayName(p.getDisplayName());
-                            pVM.setAvailable(p.getAvailable());
-                            pVM.setBooked(p.getBooked());
-                            pVM.setTnc(p.getTnc());
-                            pVM.setCommission(p.getCommission());
-                            pVM.setCommissionType(p.getCommissionType());
-                            pVM.setMaxQty(p.getMaxQty());
-                            pVM.setMinQty(p.getMinQty());
-                            pVM.setMrp(p.getMrp());
-                            pVM.setProviderStatus(p.getProviderStatus());
-                            pVM.setDisplayName(p.getDisplayName());
-                            pVM.setSalesPrice(p.getSalesPrice());
-                            pVM.setSold(p.getSold());
-                            pVM.setConvenienceFee(p.getConvenienceFee());
-                            pVM.setTimeRange(timerange);
-                            pVM.setThumbnailApp(target.getThumbnailApp());
-                            pVM.setAddress(s.getaDdress());
-                            pVM.setFetchSectionUrl(p.getFetchSectionUrl());
-                            try {
-                                pVM.setForms(target.getForms());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            pVM.setCategoryId(source.getCategoryId());
-                            pVM.setTitle(source.getTitle());
-                            packageViewModels.add(pVM);
+                if (item.getGroups() != null
+                        && !item.getGroups().isEmpty()
+                        && item.getGroups().get(0) != null
+                        && item.getGroups().get(0).getPackages() != null
+                        ) {
+                    int numOfPkgs = item.getGroups().get(0).getPackages().size();
+                    List<PackageViewModel> packageViewModels = new ArrayList<>(numOfPkgs);
+                    List<Package> packages = item.getGroups().get(0).getPackages();
+                    for (int j = 0; j < packages.size(); j++) {
+                        PackageViewModel packageViewModel = new PackageViewModel();
+                        Package aPackage = packages.get(j);
+                        packageViewModel.setId(aPackage.getId());
+                        packageViewModel.setProductId(aPackage.getProductId());
+                        packageViewModel.setProductGroupId(aPackage.getProductGroupId());
+                        packageViewModel.setProductScheduleId(aPackage.getProductScheduleId());
+                        packageViewModel.setProviderScheduleId(aPackage.getProviderScheduleId());
+                        packageViewModel.setDescription(aPackage.getDescription());
+                        packageViewModel.setDisplayName(aPackage.getDisplayName());
+                        packageViewModel.setAvailable(aPackage.getAvailable());
+                        packageViewModel.setBooked(aPackage.getBooked());
+                        packageViewModel.setTnc(aPackage.getTnc());
+                        packageViewModel.setCommission(aPackage.getCommission());
+                        packageViewModel.setCommissionType(aPackage.getCommissionType());
+                        packageViewModel.setMaxQty(aPackage.getMaxQty());
+                        packageViewModel.setMinQty(aPackage.getMinQty());
+                        packageViewModel.setMrp(aPackage.getMrp());
+                        packageViewModel.setProviderStatus(aPackage.getProviderStatus());
+                        packageViewModel.setDisplayName(aPackage.getDisplayName());
+                        packageViewModel.setSalesPrice(aPackage.getSalesPrice());
+                        packageViewModel.setSold(aPackage.getSold());
+                        packageViewModel.setConvenienceFee(aPackage.getConvenienceFee());
+                        packageViewModel.setTimeRange(timerange);
+                        packageViewModel.setThumbnailApp(target.getThumbnailApp());
+                        packageViewModel.setAddress(schedulesViewModel.getaDdress());
+                        packageViewModel.setFetchSectionUrl(aPackage.getFetchSectionUrl());
+                        try {
+                            packageViewModel.setForms(target.getForms());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                        s.setPackages(packageViewModels);
+                        packageViewModel.setCategoryId(source.getCategoryId());
+                        packageViewModel.setTitle(source.getTitle());
+                        packageViewModels.add(packageViewModel);
                     }
+
+                    schedulesViewModel.setPackages(packageViewModels);
                 }
-                schedules.add(s);
-
             }
-            target.setSchedulesViewModels(schedules);
-        }
-    }
+            schedules.add(schedulesViewModel);
 
+        }
+        target.setSchedulesViewModels(schedules);
+    }
 }
