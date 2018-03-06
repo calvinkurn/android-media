@@ -25,7 +25,6 @@ public class CampaignAppEventTracking implements AppEventTracking {
     interface Action {
         String EventShakeDevice = "%s - shake device - %s";
         String EventScanQRCode = "scan qr code -  %s";
-
         String EventClickTopNav = "click top nav";
 
     }
