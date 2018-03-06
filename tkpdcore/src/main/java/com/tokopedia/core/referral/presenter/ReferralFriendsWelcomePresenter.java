@@ -29,25 +29,30 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     private String owner = "";
     private final String CODE_KEY = "code";
     private final String OWNER_KEY = "owner";
+    private SessionHandler sessionHandler;
 
     public ReferralFriendsWelcomePresenter(FriendsWelcomeView view) {
         this.view = view;
-
+        sessionHandler = new SessionHandler(view.getActivity());
     }
 
     @Override
     public void initialize() {
-        if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
-            String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
-            owner = view.getActivity().getIntent().getExtras().getString(OWNER_KEY);
+        if(sessionHandler.isV4Login()) {
+            if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
+                String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
+                owner = view.getActivity().getIntent().getExtras().getString(OWNER_KEY);
 
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
-            if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
-                view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
-                view.closeView();
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
+                if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
+                    view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
+                    view.closeView();
+                }
+                BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
+                view.renderReferralCode(code);
             }
-            BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
-            view.renderReferralCode(code);
+        }else{
+            view.closeView();
         }
     }
 
