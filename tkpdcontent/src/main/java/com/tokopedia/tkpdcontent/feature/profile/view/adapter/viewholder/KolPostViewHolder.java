@@ -266,7 +266,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                 element.getContentId(),
                 TextUtils.isEmpty(element.getContentLink()) ? "-" :
                         element.getContentLink(),
-                Integer.valueOf(viewListener.getUserSession().getUserId())
+                Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
+                        viewListener.getUserSession().getUserId() : "0")
         ));
         viewListener.getAbstractionRouter()
                 .getAnalyticTracker()
