@@ -125,20 +125,26 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:textColor="@color/medium_green"
+                android:text="@string/new_message" />
+
+            <Space
+                android:layout_width="@dimen/space_mini"
+                android:layout_height="match_parent" />
+
             <ImageView
                 android:layout_width="@dimen/arrow_size"
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/ic_arrow_up_green"/>
+                android:srcCompat="@drawable/ic_arrow_up_green"
+                android:rotation="180"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="@string/new_message"
-                android:textColor="@color/medium_green"
-                android:textSize="@dimen/font_micro"/>
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
