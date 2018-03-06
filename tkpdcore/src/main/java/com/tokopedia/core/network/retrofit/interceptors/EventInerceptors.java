@@ -80,7 +80,6 @@ public class EventInerceptors extends TkpdAuthInterceptor {
     }
 
     private void handleError(String bodyResponse, String errorMessage) throws IOException {
-        Log.d("Naveen", " Response is " + bodyResponse + " \n" + "Error Message is " + errorMessage);
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
             Intent intent = new Intent();
             intent.setAction(BaseActivity.FORCE_LOGOUT);
