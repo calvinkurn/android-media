@@ -20,7 +20,7 @@ import com.tokopedia.posapp.product.productlist.domain.usecase.GetEtalaseCacheUs
 import com.tokopedia.posapp.cache.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.bank.domain.usecase.StoreBankUsecase;
 import com.tokopedia.posapp.cache.domain.usecase.StoreEtalaseCacheUseCase;
-import com.tokopedia.posapp.cache.domain.usecase.StoreProductCacheUseCase;
+import com.tokopedia.posapp.etalase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.cache.view.Cache;
 
 import java.util.List;

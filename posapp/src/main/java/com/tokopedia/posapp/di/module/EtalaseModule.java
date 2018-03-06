@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
-import com.tokopedia.posapp.cache.data.mapper.GetEtalaseMapper;
+import com.tokopedia.posapp.etalase.GetEtalaseMapper;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;

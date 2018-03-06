@@ -1,9 +1,7 @@
-package com.tokopedia.posapp.cache.data.mapper;
+package com.tokopedia.posapp.etalase;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.posapp.cache.data.pojo.etalase.EtalaseItemResponse;
-import com.tokopedia.posapp.cache.data.pojo.etalase.EtalaseResponse;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.ArrayList;

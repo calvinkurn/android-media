@@ -1,9 +1,9 @@
 package com.tokopedia.posapp.cache.data.factory;
 
-import com.tokopedia.posapp.cache.data.mapper.GetEtalaseMapper;
+import com.tokopedia.posapp.etalase.GetEtalaseMapper;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
-import com.tokopedia.posapp.cache.data.source.cloud.EtalaseCloudSource;
-import com.tokopedia.posapp.etalase.EtalaseLocalSource;
+import com.tokopedia.posapp.etalase.EtalaseCloudSource;
+import com.tokopedia.posapp.cache.data.source.local.EtalaseLocalSource;
 
 /**
  * Created by okasurya on 9/25/17.

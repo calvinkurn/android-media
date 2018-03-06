@@ -14,7 +14,7 @@ import com.tokopedia.posapp.product.ProductRepositoryImpl;
 import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.di.scope.ProductScope;
 import com.tokopedia.posapp.product.productdetail.domain.usecase.GetProductUseCase;
-import com.tokopedia.posapp.cache.domain.usecase.StoreProductCacheUseCase;
+import com.tokopedia.posapp.etalase.StoreProductCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.cache.data.pojo.etalase;
+package com.tokopedia.posapp.etalase;
 
 import com.google.gson.annotations.SerializedName;
 

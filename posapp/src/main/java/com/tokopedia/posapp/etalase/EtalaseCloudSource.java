@@ -1,7 +1,7 @@
-package com.tokopedia.posapp.cache.data.source.cloud;
+package com.tokopedia.posapp.etalase;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.cache.data.mapper.GetEtalaseMapper;
+import com.tokopedia.posapp.etalase.GetEtalaseMapper;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
