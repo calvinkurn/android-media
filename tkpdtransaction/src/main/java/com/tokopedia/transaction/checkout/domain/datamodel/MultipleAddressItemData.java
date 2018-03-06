@@ -3,11 +3,13 @@ package com.tokopedia.transaction.checkout.domain.datamodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+
 /**
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressItemData implements Parcelable{
+public class MultipleAddressItemData implements Parcelable {
 
     private int cartPosition;
 
@@ -15,9 +17,13 @@ public class MultipleAddressItemData implements Parcelable{
 
     private String cartId = "";
 
+    private int addressStatus;
+
     private String productId = "";
 
     private String productWeight = "";
+
+    private int productRawWeight;
 
     private String productQty = "";
 
@@ -45,6 +51,12 @@ public class MultipleAddressItemData implements Parcelable{
 
     private String destinationDistrictName = "";
 
+    private String tokenPickup = "";
+
+    private String unixTime = "";
+
+    private Store store;
+
     private int maxQuantity;
 
     private int minQuantity;
@@ -56,6 +68,7 @@ public class MultipleAddressItemData implements Parcelable{
         cartPosition = in.readInt();
         addressPosition = in.readInt();
         cartId = in.readString();
+        addressStatus = in.readInt();
         productId = in.readString();
         productWeight = in.readString();
         productQty = in.readString();
@@ -71,8 +84,12 @@ public class MultipleAddressItemData implements Parcelable{
         recipientPhoneNumber = in.readString();
         destinationDistrictId = in.readString();
         destinationDistrictName = in.readString();
+        tokenPickup = in.readString();
+        unixTime = in.readString();
+        store = in.readParcelable(Store.class.getClassLoader());
         maxQuantity = in.readInt();
         minQuantity = in.readInt();
+        productRawWeight = in.readInt();
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
@@ -109,6 +126,14 @@ public class MultipleAddressItemData implements Parcelable{
 
     public void setCartId(String cartId) {
         this.cartId = cartId;
+    }
+
+    public int getAddressStatus() {
+        return addressStatus;
+    }
+
+    public void setAddressStatus(int addressStatus) {
+        this.addressStatus = addressStatus;
     }
 
     public String getProductId() {
@@ -231,6 +256,30 @@ public class MultipleAddressItemData implements Parcelable{
         this.destinationDistrictName = destinationDistrictName;
     }
 
+    public String getTokenPickup() {
+        return tokenPickup;
+    }
+
+    public void setTokenPickup(String tokenPickup) {
+        this.tokenPickup = tokenPickup;
+    }
+
+    public String getUnixTime() {
+        return unixTime;
+    }
+
+    public void setUnixTime(String unixTime) {
+        this.unixTime = unixTime;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
     public int getMaxQuantity() {
         return maxQuantity;
     }
@@ -247,6 +296,14 @@ public class MultipleAddressItemData implements Parcelable{
         this.minQuantity = minQuantity;
     }
 
+    public int getProductRawWeight() {
+        return productRawWeight;
+    }
+
+    public void setProductRawWeight(int productRawWeight) {
+        this.productRawWeight = productRawWeight;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -257,6 +314,7 @@ public class MultipleAddressItemData implements Parcelable{
         parcel.writeInt(cartPosition);
         parcel.writeInt(addressPosition);
         parcel.writeString(cartId);
+        parcel.writeInt(addressStatus);
         parcel.writeString(productId);
         parcel.writeString(productWeight);
         parcel.writeString(productQty);
@@ -272,7 +330,11 @@ public class MultipleAddressItemData implements Parcelable{
         parcel.writeString(recipientPhoneNumber);
         parcel.writeString(destinationDistrictId);
         parcel.writeString(destinationDistrictName);
+        parcel.writeString(tokenPickup);
+        parcel.writeString(unixTime);
+        parcel.writeParcelable(store, i);
         parcel.writeInt(maxQuantity);
         parcel.writeInt(minQuantity);
+        parcel.writeInt(productRawWeight);
     }
 }

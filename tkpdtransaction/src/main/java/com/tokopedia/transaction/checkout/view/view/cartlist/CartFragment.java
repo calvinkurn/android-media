@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -46,6 +47,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
@@ -100,7 +102,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private OnPassingCartDataListener mDataPasserListener;
     private CartListData cartListData;
-    private PromoCodeCartListData promoCodeCartListData;
+    private PromoCodeAppliedData promoCodeAppliedData;
 
     @Override
     public void onAttach(Activity activity) {
@@ -336,7 +338,9 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void showToastMessage(String message) {
-
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -430,39 +434,35 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
-                    getActivity(),
-                    shipmentAddressFormData,
-                    this.promoCodeCartListData,
+                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         } else {
             Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                    getActivity(),
-                    shipmentAddressFormData,
-                    this.promoCodeCartListData,
+                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
@@ -472,22 +472,22 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -499,52 +499,56 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
-        this.promoCodeCartListData = promoCodeCartListData;
+        this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                .promoCode(promoCodeCartListData.getDataVoucher().getCode())
+                .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
+                .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
+                .build();
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-        cartItemPromoHolderData.setPromoVoucherType(promoCodeCartListData.getDataVoucher().getCode(),
-                promoCodeCartListData.getDataVoucher().getMessageSuccess(),
-                promoCodeCartListData.getDataVoucher().getCashbackVoucherAmount());
+        cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
+                promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
         cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
     }
 
     @Override
     public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -627,7 +631,9 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void showToastMessageRed(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -726,7 +732,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
                     long voucherDiscountAmount = bundle.getLong(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
-
+                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                            .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                            .promoCode(voucherCode)
+                            .description(voucherMessage)
+                            .amount((int) voucherDiscountAmount)
+                            .build();
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
@@ -743,7 +754,13 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
                     long couponDiscountAmount = bundle.getLong(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
-
+                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                            .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                            .promoCode(couponCode)
+                            .couponTitle(couponTitle)
+                            .description(couponMessage)
+                            .amount((int) couponDiscountAmount)
+                            .build();
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoCouponType(couponTitle, couponCode, couponMessage, couponDiscountAmount);
 

@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 
 import java.util.List;
 
@@ -14,4 +15,7 @@ public interface IMultipleAddressShipmentPresenter {
     void sendData(List<MultipleAddressShipmentAdapterData> shipmentData,
                   MultipleAddressPriceSummaryData priceData);
 
+    List<MultipleAddressShipmentAdapterData> initiateAdapterData(
+            CartShipmentAddressFormData dataFromWebService
+    );
 }

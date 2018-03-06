@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,22 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             holder.tvPriceRange.setVisibility(View.GONE);
         }
 
-        holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
+        if (!TextUtils.isEmpty(shipmentItemData.getDeliveryTimeRange())) {
+            if (shipmentItemData.isLessThanADayDelivery()) {
+                String deliveryHour = holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery) +
+                        shipmentItemData.getDeliveryTimeRange() +
+                        holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_hour);
+                holder.tvDeliveryTimeRange.setText(deliveryHour);
+            } else {
+                String deliveryDay = shipmentItemData.getDeliveryTimeRange() +
+                        holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_day);
+                holder.tvDeliveryTimeRange.setText(deliveryDay);
+            }
+            holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDeliveryTimeRange.setVisibility(View.INVISIBLE);
+        }
+
         holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
 
         if (shipmentItemData.isSelected()) {

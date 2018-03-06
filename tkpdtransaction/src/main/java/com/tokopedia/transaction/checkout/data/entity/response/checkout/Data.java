@@ -23,6 +23,9 @@ public class Data {
     @SerializedName("parameter")
     @Expose
     private Parameter parameter;
+    @SerializedName("query_string")
+    @Expose
+    private String queryString;
 
     public List<ProductList> getProductList() {
         return productList;
@@ -38,5 +41,9 @@ public class Data {
 
     public Parameter getParameter() {
         return parameter;
+    }
+
+    public String getQueryString() {
+        return queryString;
     }
 }

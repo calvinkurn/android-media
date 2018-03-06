@@ -175,6 +175,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductFcancelPartial(product.getProductFcancelPartial() == 1);
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
+                                if (!mapperUtil.isEmpty(product.getFreeReturns())) {
+                                    productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
+                                }
 
                                 if (!mapperUtil.isEmpty(product.getProductShipment())) {
                                     List<ProductShipment> productShipmentListResult = new ArrayList<>();

@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:inputType="number"
-                        android:selectAllOnFocus="true" />
+                         />
 
                     <ImageView
                         android:id="@+id/increase_quantity"

@@ -20,9 +20,9 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
@@ -43,8 +43,8 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
-import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SINGLE_ADDRESS_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
@@ -84,12 +84,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     ICartShipmentActivity cartShipmentActivityListener;
 
     private List<Object> mShipmentDataList;
-    private PromoCodeCartListData promoCodeAppliedData;
-
+    private PromoCodeAppliedData promoCodeAppliedData;
     private List<Data> mPromoRequestData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                            PromoCodeCartListData promoCodeCartListData,
+                                                            PromoCodeAppliedData promoCodeCartListData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
@@ -161,7 +160,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void initialListener(Activity activity) {
-
+        cartShipmentActivityListener = (ICartShipmentActivity) activity;
     }
 
     /**
@@ -280,13 +279,15 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel) {
+    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
+                                 RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData;
         if (cartSellerItemModel.getSelectedShipmentDetailData() != null) {
             shipmentDetailData = cartSellerItemModel.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel,
+                    recipientAddressModel);
         }
 
         Intent intent = ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData,
@@ -388,8 +389,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                     Intent intent = new Intent();
-//                    intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-//                            mShipmentDataList.getRecipientAddressModel());
+                    for (Object object : mShipmentDataList) {
+                        if (object instanceof RecipientAddressModel) {
+                            intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                                    (RecipientAddressModel) object);
+                        }
+                    }
                     cartShipmentActivityListener.closeWithResult(
                             CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                     break;
@@ -409,7 +414,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
+                    int position = data.getIntExtra(EXTRA_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
 

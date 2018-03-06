@@ -16,8 +16,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 
@@ -147,16 +149,19 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
     }
 
-    public void bindViewHolder(CartSellerItemModel cartSellerItem) {
+    public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
+                               ShipmentCostModel shipmentCostModel,
+                               RecipientAddressModel recipientAddressModel) {
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
 
-        List<CartItemModel> cartItemModelList = new ArrayList<>(cartSellerItem.getCartItemModels());
+        List<CartItemModel> cartItemModelList = new ArrayList<>(cartSellerItemModel.getCartItemModels());
 
         bindFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         bindOtherCartItems(cartItemModelList);
-        bindCostDetail(cartSellerItem);
-        bindChooseCourier(cartSellerItem, cartSellerItem.getSelectedShipmentDetailData());
+        bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
+                recipientAddressModel);
+        bindCostDetail(cartSellerItemModel);
     }
 
     private void bindFirstCartItem(CartItemModel cartItemModel) {
@@ -192,14 +197,15 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         initInnerRecyclerView(cartItemModelList);
     }
 
-    private void bindChooseCourier(CartSellerItemModel cartSellerItem,
-                                   ShipmentDetailData shipmentDetailData) {
+    private void bindChooseCourier(CartSellerItemModel cartSellerItemModel,
+                                   ShipmentDetailData shipmentDetailData,
+                                   RecipientAddressModel recipientAddressModel) {
         mTvChooseCourierButton.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItem));
+                cartSellerItemModel, recipientAddressModel));
         mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItem));
+                cartSellerItemModel, recipientAddressModel));
         mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItem));
+                cartSellerItemModel, recipientAddressModel));
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
@@ -296,11 +302,12 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener selectShippingOptionListener(final int position,
-                                                              final CartSellerItemModel cartSellerItem) {
+                                                              final CartSellerItemModel cartSellerItemModel,
+                                                              final RecipientAddressModel recipientAddressModel) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActionListener.onChooseShipment(position, cartSellerItem);
+                mActionListener.onChooseShipment(position, cartSellerItemModel, recipientAddressModel);
             }
         };
     }

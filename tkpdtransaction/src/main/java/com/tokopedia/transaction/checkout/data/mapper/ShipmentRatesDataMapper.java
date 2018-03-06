@@ -1,14 +1,21 @@
 package com.tokopedia.transaction.checkout.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Attribute;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Product;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -16,15 +23,28 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Irfan Khoirul on 20/02/18.
  */
 
 public class ShipmentRatesDataMapper {
 
-    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel) {
+    private static final int DAY_IN_SECONDS = 86400;
+    private static final int HOUR_IN_SECONDS = 3600;
+
+    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel,
+                                                    RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        shipmentDetailData.setShipmentCartData(cartSellerItemModel.getShipmentCartData());
+        ShipmentCartData shipmentCartData = cartSellerItemModel.getShipmentCartData();
+        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+        shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
+        shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
+        shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
+        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+        shipmentDetailData.setShipmentCartData(shipmentCartData);
+        shipmentDetailData.setTotalQuantity(cartSellerItemModel.getTotalQuantity());
         return shipmentDetailData;
     }
 
@@ -33,6 +53,101 @@ public class ShipmentRatesDataMapper {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
         shipmentDetailData.setShipmentCartData(multipleAddressShipmentAdapterData.getShipmentCartData());
         return shipmentDetailData;
+    }
+
+    public ShipmentCartData getShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                UserAddress userAddress, GroupShop groupShop,
+                                                MultipleAddressShipmentAdapterData adapterData) {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
+        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
+
+        return shipmentCartData;
+    }
+
+    public ShipmentCartData getShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                UserAddress userAddress, GroupShop groupShop,
+                                                CartSellerItemModel cartSellerItemModel) {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue(((Double) cartSellerItemModel.getTotalPrice()).intValue());
+        shipmentCartData.setWeight(cartSellerItemModel.getTotalWeight());
+
+        return shipmentCartData;
+    }
+
+    private void initializeShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                            UserAddress userAddress, GroupShop groupShop,
+                                            ShipmentCartData shipmentCartData) {
+        shipmentCartData.setToken(cartShipmentAddressFormData.getKeroToken());
+        shipmentCartData.setUt(String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()));
+        shipmentCartData.setDestinationAddress(userAddress.getAddress());
+        shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
+        shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+                Double.parseDouble(userAddress.getLatitude()) : null);
+        shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+                Double.parseDouble(userAddress.getLongitude()) : null);
+        shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
+        shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
+        shipmentCartData.setOriginLatitude(!TextUtils.isEmpty(groupShop.getShop().getLatitude()) ?
+                Double.parseDouble(groupShop.getShop().getLatitude()) : null);
+        shipmentCartData.setOriginLongitude(!TextUtils.isEmpty(groupShop.getShop().getLongitude()) ?
+                Double.parseDouble(groupShop.getShop().getLongitude()) : null);
+        shipmentCartData.setOriginPostalCode(groupShop.getShop().getPostalCode());
+        shipmentCartData.setCategoryIds(getCategoryIds(groupShop.getProducts()));
+        shipmentCartData.setProductInsurance(isForceInsurance(groupShop.getProducts()) ? 1 : 0);
+        shipmentCartData.setShopShipments(groupShop.getShopShipments());
+        String shippingNames = getShippingNames(groupShop.getShopShipments());
+        shipmentCartData.setShippingNames(shippingNames);
+        String shippingServices = getShippingServices(groupShop.getShopShipments());
+        shipmentCartData.setShippingServices(shippingServices);
+        shipmentCartData.setInsurance(1);
+        shipmentCartData.setDeliveryPriceTotal(0);
+    }
+
+    private String getCategoryIds(List<com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product> products) {
+        List<Integer> categoryIds = new ArrayList<>();
+        for (int i = 0; i < products.size(); i++) {
+            int categoryId = products.get(i).getProductCatId();
+            if (!categoryIds.contains(categoryId)) {
+                categoryIds.add(categoryId);
+            }
+        }
+        return TextUtils.join(",", categoryIds);
+    }
+
+    private boolean isForceInsurance(List<com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product> products) {
+        for (com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product product : products) {
+            if (product.isProductFinsurance()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getShippingNames(List<ShopShipment> shopShipments) {
+        List<String> shippingNames = new ArrayList<>();
+        for (int i = 0; i < shopShipments.size(); i++) {
+            String shippingName = shopShipments.get(i).getShipCode();
+            if (!shippingNames.contains(shippingName)) {
+                shippingNames.add(shippingName);
+            }
+        }
+        return TextUtils.join(",", shippingNames);
+    }
+
+    private String getShippingServices(List<ShopShipment> shopShipments) {
+        List<String> shippingServices = new ArrayList<>();
+        for (int i = 0; i < shopShipments.size(); i++) {
+            for (int j = 0; j < shopShipments.get(i).getShipProds().size(); j++) {
+                String shippingService = shopShipments.get(i).getShipProds().get(j).getShipGroupName();
+                if (!shippingServices.contains(shippingService)) {
+                    shippingServices.add(shippingService);
+                }
+            }
+        }
+        return TextUtils.join(",", shippingServices);
     }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,
@@ -83,9 +198,7 @@ public class ShipmentRatesDataMapper {
         shipmentItemData.setServiceId(attribute.getServiceId());
         shipmentItemData.setType(WordUtils.capitalize(attribute.getShipperName()));
         getPriceRange(shipmentItemData, attribute);
-
-        // No data
-//        shipmentItemData.setDeliveryTimeRange();
+        getEstimatedDeliveryTimeRange(shipmentItemData);
 
         return shipmentItemData;
     }
@@ -125,6 +238,75 @@ public class ShipmentRatesDataMapper {
         }
     }
 
+    private void getEstimatedDeliveryTimeRange(ShipmentItemData shipmentItemData) {
+        int minEtd;
+        int maxEtd;
+        if (shipmentItemData.getCourierItemData().size() > 0) {
+            minEtd = shipmentItemData.getCourierItemData().get(0).getMinEtd();
+            maxEtd = shipmentItemData.getCourierItemData().get(0).getMaxEtd();
+            if (shipmentItemData.getCourierItemData().size() > 1) {
+                for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                    if (courierItemData.getMinEtd() != 0) {
+                        minEtd = courierItemData.getMinEtd();
+                        break;
+                    }
+                }
+                if (minEtd == 0) {
+                    shipmentItemData.setDeliveryTimeRange(
+                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
+                } else {
+                    for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
+                            if (courierItemData.getMinEtd() < minEtd) {
+                                minEtd = courierItemData.getMinEtd();
+                            }
+                        }
+                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
+                            if (courierItemData.getMaxEtd() > maxEtd) {
+                                maxEtd = courierItemData.getMaxEtd();
+                            }
+                        }
+                    }
+                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
+                }
+            } else {
+                if (minEtd == 0) {
+                    shipmentItemData.setDeliveryTimeRange(
+                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
+                } else {
+                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, null, minEtd, maxEtd));
+                }
+            }
+        }
+    }
+
+    private String formatEtd(@Nullable ShipmentItemData shipmentItemData, @Nullable Product product,
+                             int minEtd, int maxEtd) {
+        String deliveryTimeRange = "";
+        if (minEtd != 0 && maxEtd != 0) {
+            if (minEtd != maxEtd) {
+                if (minEtd >= DAY_IN_SECONDS) {
+                    deliveryTimeRange = minEtd / DAY_IN_SECONDS + "-" + maxEtd / DAY_IN_SECONDS;
+                    if (shipmentItemData != null) {
+                        shipmentItemData.setLessThanADayDelivery(false);
+                    }
+                } else {
+                    deliveryTimeRange = String.valueOf(maxEtd / HOUR_IN_SECONDS);
+                    if (shipmentItemData != null) {
+                        shipmentItemData.setLessThanADayDelivery(true);
+                    }
+                }
+            } else {
+                if (minEtd >= DAY_IN_SECONDS) {
+                    deliveryTimeRange = String.valueOf(minEtd / DAY_IN_SECONDS);
+                } else {
+                    deliveryTimeRange = String.valueOf(minEtd / HOUR_IN_SECONDS);
+                }
+            }
+        }
+        return deliveryTimeRange;
+    }
+
     private List<CourierItemData> getCourierItemDataList(List<Product> products) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
         for (Product product : products) {
@@ -146,10 +328,29 @@ public class ShipmentRatesDataMapper {
         courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
         courierItemData.setDeliveryPrice(product.getPrice());
+        courierItemData.setDefaultEtd(product.getEtd());
+        courierItemData.setMinEtd(product.getMinEtd());
+        courierItemData.setMaxEtd(product.getMaxEtd());
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
-            courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
+                    courierItemData.getMaxEtd());
+            if (courierItemData.getMaxEtd() < DAY_IN_SECONDS) {
+                if (!TextUtils.isEmpty(formattedEtd)) {
+                    courierItemData.setEstimatedHourDelivery(formattedEtd);
+                } else {
+                    courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+                }
+            } else {
+                courierItemData.setEstimatedDayDelivery(formattedEtd);
+            }
         } else {
-            courierItemData.setEstimatedDayDelivery(product.getEtd());
+            String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
+                    courierItemData.getMaxEtd());
+            if (!TextUtils.isEmpty(formattedEtd)) {
+                courierItemData.setEstimatedDayDelivery(formattedEtd);
+            } else {
+                courierItemData.setEstimatedDayDelivery(product.getEtd());
+            }
         }
         courierItemData.setSelected(false);
 

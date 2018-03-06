@@ -9,12 +9,31 @@ import android.os.Parcelable;
 
 public class CheckoutData implements Parcelable {
 
+    private boolean isError;
+    private String errorMessage;
+
     private String paymentId;
     private String queryString;
     private String redirectUrl;
     private String callbackSuccessUrl;
     private String callbackFailedUrl;
     private String transactionId;
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public String getPaymentId() {
         return paymentId;
@@ -65,6 +84,9 @@ public class CheckoutData implements Parcelable {
     }
 
 
+    public CheckoutData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -72,6 +94,8 @@ public class CheckoutData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeString(this.paymentId);
         dest.writeString(this.queryString);
         dest.writeString(this.redirectUrl);
@@ -80,10 +104,9 @@ public class CheckoutData implements Parcelable {
         dest.writeString(this.transactionId);
     }
 
-    public CheckoutData() {
-    }
-
     protected CheckoutData(Parcel in) {
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.paymentId = in.readString();
         this.queryString = in.readString();
         this.redirectUrl = in.readString();
@@ -92,7 +115,7 @@ public class CheckoutData implements Parcelable {
         this.transactionId = in.readString();
     }
 
-    public static final Parcelable.Creator<CheckoutData> CREATOR = new Parcelable.Creator<CheckoutData>() {
+    public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {
         @Override
         public CheckoutData createFromParcel(Parcel source) {
             return new CheckoutData(source);

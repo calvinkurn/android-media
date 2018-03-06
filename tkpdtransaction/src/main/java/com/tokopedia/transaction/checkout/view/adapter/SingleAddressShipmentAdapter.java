@@ -96,7 +96,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
         } else if (viewType == ITEM_VIEW_CART) {
-            ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data);
+            ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
+                    mShipmentCost, mRecipientAddress);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
         }
@@ -130,7 +131,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onAddOrChangeAddress();
 
-        void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel);
+        void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
+                              RecipientAddressModel recipientAddressModel);
 
         void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 

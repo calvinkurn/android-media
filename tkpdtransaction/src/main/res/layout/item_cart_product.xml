@@ -92,7 +92,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_free_return"
+                tools:src="@drawable/ic_free_return"
                 tools:ignore="ContentDescription" />
 
             <TextView
