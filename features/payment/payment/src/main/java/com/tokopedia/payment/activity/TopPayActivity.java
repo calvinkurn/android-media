@@ -126,7 +126,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
         WebSettings webSettings = scroogeWebView.getSettings();
 
-        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.id.app_android), BuildConfig.VERSION_NAME);
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
         webSettings.setUserAgentString(userAgent);
 
         webSettings.setJavaScriptEnabled(true);
