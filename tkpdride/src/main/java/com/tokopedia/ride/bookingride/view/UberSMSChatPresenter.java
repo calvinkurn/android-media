@@ -80,7 +80,6 @@ public class UberSMSChatPresenter extends BaseDaggerPresenter<UberSMSChatContrac
                         if (smsBundle != null) {
                             Object[] pdus = (Object[]) smsBundle.get("pdus");
                             if (pdus == null) {
-                                // Display some error to the user
                                 return;
                             }
                             SmsMessage[] messages = new SmsMessage[pdus.length];
