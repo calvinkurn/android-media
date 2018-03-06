@@ -69,7 +69,8 @@ public class ShareLayout {
     }
 
     private void initVar(Context context) {
-        urlLink = "https://tokopedia.com/groupchat/{channel_url}";
+        String link = "https://tokopedia.com/groupchat/{channel_url}";
+        urlLink = link.replace("{channel_url}", urlLink);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         appGrid.setLayoutManager(layoutManager);
         list = new ArrayList<>();

@@ -299,7 +299,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             shareLayout.show();
             return true;
         } else if (item.getItemId() == R.id.action_info) {
-            channelInfoDialog.setContentView(createBottomSheetView(viewModel
+            boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+            channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
                     .getChannelInfoViewModel().getChannelViewModel()));
             channelInfoDialog.show();
             return true;
@@ -398,7 +399,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     }
 
-    private View createBottomSheetView(final ChannelViewModel channelViewModel) {
+    private View createBottomSheetView(boolean hasValidPoll, final ChannelViewModel channelViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
         TextView actionButton = view.findViewById(R.id.action_button);
@@ -416,8 +417,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 analytics.eventClickJoin();
             }
         });
-        if (viewModel.getChannelInfoViewModel().isHasPoll())
+        if (hasValidPoll)
             actionButton.setText(R.string.lets_vote);
+        else
+            actionButton.setText(R.string.lets_chat);
 
         participant.setText(TextFormatter.format(channelViewModel.getParticipant()));
         name.setText(channelViewModel.getAdminName());
@@ -597,7 +600,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
         channelUrl = channelInfoViewModel.getChannelUrl();
-        channelInfoDialog.setContentView(createBottomSheetView(channelInfoViewModel.getChannelViewModel()));
+        channelInfoDialog.setContentView(createBottomSheetView(checkPollValid(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel()), channelInfoViewModel.getChannelViewModel()));
     }
 
     void setVisibilityHeader(int visible) {
@@ -619,16 +622,20 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         }
                     });
             snackBar.show();
-        } else if (hasPoll
-                && voteInfoViewModel != null
-                && voteInfoViewModel.getStartTime() != 0
-                && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
-                && voteInfoViewModel.getEndTime() > System.currentTimeMillis() / 1000L) {
+        } else if (checkPollValid(hasPoll, voteInfoViewModel)) {
             showVoteLayout(voteInfoViewModel);
         } else {
             hideVoteLayout();
         }
+    }
+
+    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel){
+        return (hasPoll
+                && voteInfoViewModel != null
+                && voteInfoViewModel.getStartTime() != 0
+                && voteInfoViewModel.getEndTime() != 0
+                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
+                && voteInfoViewModel.getEndTime() > System.currentTimeMillis() / 1000L);
     }
 
     @Override
