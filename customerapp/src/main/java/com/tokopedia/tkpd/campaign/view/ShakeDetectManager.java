@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -30,8 +31,13 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     ShakeDetector sd;
     private Context mContext;
     public static String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
+
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
+
+    public static final int MESSAGE_ENABLE_SHAKE = 1;
+    public static final int MESSAGE_DISABLE_SHAKE = 2;
+    private boolean  isShakeShakeEnable = true;
 
     private ShakeDetectManager(Context context) {
         mContext = context;
@@ -58,11 +64,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
 
-    /*
-TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
- */
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
+        return isShakeShakeEnable && remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
 
     }
 
@@ -70,22 +73,45 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
         return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
 
     }
-    /*
-    TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
-     */
+
+
     @Override
     public void hearShake() {
+        if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
+            mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
+        }
 
         if (isShakeShakeEnable() && !isAppIsInBackground(mContext)) {
+            mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
+            Intent intent = null;
             if (!isAudioShakeEnable()) {
-                mContext.startActivity(ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext));
-                mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
-            } else {
-                mContext.startActivity(ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext));
+                intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext);
+            } else if(false) { // feature under development
+                intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
+            }
+            if(intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mContext.startActivity(intent);
                 mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
             }
         }
     }
+
+    Handler mShakeEnabler = new Handler() {
+        public void handleMessage(Message m) {
+           switch (m.what) {
+               case MESSAGE_ENABLE_SHAKE:
+                   isShakeShakeEnable = true;
+                   break;
+               case MESSAGE_DISABLE_SHAKE:
+                   isShakeShakeEnable = false;
+                   break;
+           }
+        }
+    };
+
 
     public void deinit() {
         mContext.unregisterReceiver(receiver);
@@ -99,10 +125,11 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                 if (intent.getStringExtra("data") != null) {
                     Uri uri = Uri.parse("" + intent.getStringExtra("data"));
                     intent1.setData(uri);
+                    isShakeShakeEnable = false;
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            context.startActivity(intent1);
+                            mContext.startActivity(intent1);
                         }
                     }, 500);
                 }
