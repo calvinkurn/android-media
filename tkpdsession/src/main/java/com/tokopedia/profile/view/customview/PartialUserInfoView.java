@@ -20,7 +20,6 @@ import com.tokopedia.session.R;
 
 public class PartialUserInfoView extends BaseCustomView {
 
-    private TextView tvSubtitle;
     private View partialUserStatus;
     private TextView tvReputationSummaryScore;
     private TextView tvReputationPositiveScore;
@@ -42,7 +41,8 @@ public class PartialUserInfoView extends BaseCustomView {
         init();
     }
 
-    public PartialUserInfoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PartialUserInfoView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -74,7 +74,6 @@ public class PartialUserInfoView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_user_info, this);
-        tvSubtitle = view.findViewById(R.id.tv_subtitle_user_info);
         partialUserStatus = view.findViewById(R.id.rl_partial_status);
         tvReputationPositiveScore = view.findViewById(R.id.tv_reputation_positive_score);
         tvReputationNegativeScore = view.findViewById(R.id.tv_reputation_negative_score);
@@ -84,7 +83,8 @@ public class PartialUserInfoView extends BaseCustomView {
         userReputationLayout = view.findViewById(R.id.ll_reputation_title);
 
         statusBottomSheetView = new BottomSheetView(getContext());
-        statusBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
+        statusBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen
+                .new_text_size_input));
         statusBottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getContext().getString(R.string.title_user_information_status))
@@ -93,7 +93,8 @@ public class PartialUserInfoView extends BaseCustomView {
                 .build());
 
         reputationBottomSheetView = new BottomSheetView(getContext());
-        reputationBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
+        reputationBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen
+                .new_text_size_input));
         reputationBottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getContext().getString(R.string.title_user_information_reputation))
@@ -102,15 +103,14 @@ public class PartialUserInfoView extends BaseCustomView {
                 .build());
     }
 
-    public void renderData(TopProfileViewModel model){
+    public void renderData(TopProfileViewModel model) {
         this.setVisibility(VISIBLE);
 
-        tvSubtitle.setVisibility(model.getIsUser() ? VISIBLE : GONE);
-
-        partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ? VISIBLE : GONE);
+        partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ?
+                VISIBLE : GONE);
 
         tvReputationSummaryScore.setVisibility(VISIBLE);
-        String summary =  model.getSummaryScore() + "%";
+        String summary = model.getSummaryScore() + "%";
         tvReputationSummaryScore.setText(summary);
 
         tvReputationPositiveScore.setVisibility(VISIBLE);
