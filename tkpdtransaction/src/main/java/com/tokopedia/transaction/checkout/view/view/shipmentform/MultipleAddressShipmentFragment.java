@@ -40,6 +40,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
@@ -177,16 +178,16 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     }
 
     @Override
-    public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
+    public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
         ShipmentDetailData shipmentDetailData;
-        if (shipmentAdapter.getShipmentDetailData() != null) {
-            shipmentDetailData = shipmentAdapter.getShipmentDetailData();
+        if (addressAdapterData.getSelectedShipmentDetailData() != null) {
+            shipmentDetailData = addressAdapterData.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
             shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(addressAdapterData);
         }
-        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
-                REQUEST_CODE_SHIPMENT_DETAIL);
+        startActivityForResult(ShipmentDetailActivity.createInstance(
+                getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override
@@ -269,14 +270,15 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
             switch (requestCode) {
                 case REQUEST_CHOOSE_PICKUP_POINT:
                     Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
-                    int position = data.getIntExtra(INTENT_DATA_POSITION, 0);
-                    shipmentAdapter.setPickupPoint(pickupBooth, position);
-                    shipmentAdapter.notifyItemChanged(position);
+                    int pickupPointPosition = data.getIntExtra(INTENT_DATA_POSITION, 0);
+                    shipmentAdapter.setPickupPoint(pickupBooth, pickupPointPosition);
+                    shipmentAdapter.notifyItemChanged(pickupPointPosition);
                     totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    shipmentAdapter.setShipmentDetailData(shipmentDetailData);
+                    int shipmentPosition = data.getIntExtra(EXTRA_POSITION, 0);
+                    shipmentAdapter.setShipmentDetailData(shipmentPosition, shipmentDetailData);
                     shipmentAdapter.notifyDataSetChanged();
                     totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
