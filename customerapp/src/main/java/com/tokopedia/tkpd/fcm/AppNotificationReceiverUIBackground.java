@@ -28,6 +28,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -74,34 +75,21 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isAllowedNotification(bundle)) {
-                    mFCMCacheManager.setCache();
-                    //TODO this function for divide the new and old flow(that still supported)
-                    // next if complete new plz to delete
-                    if (isSupportedApplinkNotification(bundle)) {
-                        handleApplinkNotification(bundle);
-                    } else {
-                        if (isDedicatedNotification(bundle)) {
-                            handleDedicatedNotification(bundle);
-                        } else {
-                            prepareAndExecutePromoNotification(bundle);
-                        }
-                    }
+    public void notifyReceiverBackgroundMessage(Bundle bundle) {
+        if (isAllowedNotification(bundle)) {
+            mFCMCacheManager.setCache();
+            //TODO this function for divide the new and old flow(that still supported)
+            // next if complete new plz to delete
+            if (isSupportedApplinkNotification(bundle)) {
+                handleApplinkNotification(bundle);
+            } else {
+                if (isDedicatedNotification(bundle)) {
+                    handleDedicatedNotification(bundle);
+                } else {
+                    prepareAndExecutePromoNotification(bundle);
                 }
-                return true;
             }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        }
     }
 
     private boolean isAllowedNotification(Bundle data) {
@@ -114,8 +102,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.isV4Login(mContext)
-                    && SessionHandler.getLoginID(mContext).equals(
+            if (SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
             ) {
                 resetNotificationStatus(data);
@@ -180,9 +167,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
                     if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                         if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof NotificationReceivedListener) {
-                            NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                            listener.onGetNotif(data);
+                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                            ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
                         } else {
                             String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                             String fullname = data

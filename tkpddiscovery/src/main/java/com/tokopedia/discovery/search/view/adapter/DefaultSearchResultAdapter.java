@@ -6,7 +6,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
@@ -132,7 +130,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
                     break;
                 case "recent_search":
                     label.setVisibility(View.GONE);
-                    icon.setImageResource(R.drawable.ic_close);
+                    icon.setImageResource(R.drawable.ic_close_default);
                     break;
                 default:
                     icon.setImageResource(R.drawable.ic_diagonal_arrow);
