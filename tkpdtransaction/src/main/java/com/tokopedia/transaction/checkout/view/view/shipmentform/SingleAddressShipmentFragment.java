@@ -86,6 +86,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private List<Object> mShipmentDataList;
     private PromoCodeCartListData promoCodeAppliedData;
 
+    private List<Data> mPromoRequestData;
+
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                             PromoCodeCartListData promoCodeCartListData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
@@ -363,7 +365,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onFinishChoosingShipment(List<Data> data) {
-
+        mPromoRequestData = data;
     }
 
     @Override
@@ -417,10 +419,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         }
     }
 
-    public void checkPromoCodeFinal(String promoCode, List<Data> data) {
-
-    }
-
     private void updateSelectedAddress(RecipientAddressModel recipientAddress) {
         for (Object item : mShipmentDataList) {
             if (item instanceof RecipientAddressModel) {
@@ -428,6 +426,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 break;
             }
         }
+    }
+
+    public boolean checkPromoCodeFinal(String promoCode) {
+        if (mPromoRequestData == null) {
+            return false;
+        }
+
+        return true;
     }
 
 }
