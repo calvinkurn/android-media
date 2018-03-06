@@ -16,6 +16,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
@@ -49,8 +50,8 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
     public void bindObject(final ProductVariantDashboardNewViewModel model) {
         Context context = imageView.getContext();
         ProductVariantOptionChild childLvl1Model = model.getProductVariantOptionChildLv1();
-        List<ProductPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
-        ProductPictureViewModel pictureViewModel = null;
+        List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+        VariantPictureViewModel pictureViewModel = null;
         if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
             pictureViewModel = productPictureViewModelList.get(0);
         }

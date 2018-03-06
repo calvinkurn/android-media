@@ -26,6 +26,7 @@ import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 
@@ -128,8 +129,8 @@ public class ProductVariantDetailLeafFragment extends Fragment {
         } else {
             frameImage.setVisibility(View.VISIBLE);
 
-            List<ProductPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
-            ProductPictureViewModel pictureViewModel = null;
+            List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+            VariantPictureViewModel pictureViewModel = null;
             if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
                 pictureViewModel = productPictureViewModelList.get(0);
             }

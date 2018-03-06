@@ -15,6 +15,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
@@ -154,22 +155,34 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
             ProductVariantOption productVariantOption = productVariantOptionList.get(i);
 
             //we get the original to get the pvo id and original images (in case we edit, so we do not lose the original attribute)
-            int index = hashMapValueToIndex.get(productVariantOption.getValue());
-            ProductVariantOptionChild originalProductOptionChild =
-                    productVariantOptionParent.getProductVariantOptionChild().get(index);
-            int originalPvo = 0;
-            List<ProductPictureViewModel> originalPictureList = null;
-            if (originalProductOptionChild!= null) {
-                originalPvo = originalProductOptionChild.getPvo();
-                originalPictureList = originalProductOptionChild.getProductPictureViewModelList();
+            Integer index = hashMapValueToIndex.get(productVariantOption.getValue());
+            ProductVariantOptionChild productVariantOptionChild = null;
+            if (index != null) {
+                ProductVariantOptionChild originalProductOptionChild =
+                        productVariantOptionParent.getProductVariantOptionChild().get(index);
+
+                int originalPvo = 0;
+                List<VariantPictureViewModel> originalPictureList = null;
+                if (originalProductOptionChild != null) {
+                    originalPvo = originalProductOptionChild.getPvo();
+                    originalPictureList = originalProductOptionChild.getProductPictureViewModelList();
+                }
+                productVariantOptionChild =
+                        new ProductVariantOptionChild(
+                                originalPvo,
+                                productVariantOption.getValueId(),
+                                productVariantOption.getValue(),
+                                productVariantOption.getHexCode(),
+                                originalPictureList);
+            } else {
+                productVariantOptionChild =
+                        new ProductVariantOptionChild(
+                                0,
+                                productVariantOption.getValueId(),
+                                productVariantOption.getValue(),
+                                productVariantOption.getHexCode(),
+                                null);
             }
-            ProductVariantOptionChild productVariantOptionChild =
-                    new ProductVariantOptionChild(
-                            originalPvo,
-                            productVariantOption.getValueId(),
-                            productVariantOption.getValue(),
-                            productVariantOption.getHexCode(),
-                            originalPictureList);
             productVariantOptionChildList.add(productVariantOptionChild);
         }
         productVariantOptionParent.setProductVariantOptionChild(productVariantOptionChildList);

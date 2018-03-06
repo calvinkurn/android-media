@@ -23,6 +23,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailLevel1ListAdapter;
@@ -88,11 +89,9 @@ public class ProductVariantDetailLevel1ListFragment extends Fragment
 
         ivVariant = view.findViewById(R.id.image_view);
 
-
-
         ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
-        List<ProductPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
-        ProductPictureViewModel pictureViewModel = null;
+        List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+        VariantPictureViewModel pictureViewModel = null;
         if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
             pictureViewModel = productPictureViewModelList.get(0);
         }

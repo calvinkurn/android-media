@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 
 import java.util.List;
 
@@ -30,14 +31,14 @@ public class ProductVariantOptionChild implements Parcelable{
 
     @SerializedName("image")
     @Expose
-    private List<ProductPictureViewModel> productPictureViewModelList;
+    private List<VariantPictureViewModel> productPictureViewModelList;
 
     @SerializedName("hex")
     @Expose
     private String hex; // ex; "#bf00ff"
 
     public ProductVariantOptionChild(int pvo, int vuv, String value, String hex,
-                                     List<ProductPictureViewModel> productPictureViewModelList){
+                                     List<VariantPictureViewModel> productPictureViewModelList){
         this.pvo = pvo;
         this.vuv = vuv;
         this.value = value;
@@ -81,11 +82,11 @@ public class ProductVariantOptionChild implements Parcelable{
         this.value = value;
     }
 
-    public List<ProductPictureViewModel> getProductPictureViewModelList() {
+    public List<VariantPictureViewModel> getProductPictureViewModelList() {
         return productPictureViewModelList;
     }
 
-    public void setProductPictureViewModelList(List<ProductPictureViewModel> productPictureViewModelList) {
+    public void setProductPictureViewModelList(List<VariantPictureViewModel> productPictureViewModelList) {
         this.productPictureViewModelList = productPictureViewModelList;
     }
 
@@ -120,7 +121,7 @@ public class ProductVariantOptionChild implements Parcelable{
         this.vuv = in.readInt();
         this.tId = in.readInt();
         this.value = in.readString();
-        this.productPictureViewModelList = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
+        this.productPictureViewModelList = in.createTypedArrayList(VariantPictureViewModel.CREATOR);
         this.hex = in.readString();
     }
 
