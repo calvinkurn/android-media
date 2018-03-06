@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
@@ -23,33 +25,61 @@ import static android.content.Context.SENSOR_SERVICE;
  * Created by sandeepgoyal on 20/02/18.
  */
 
-public class ShakeDetectManager implements ShakeDetector.Listener{
-    private static ShakeDetectManager shakeDetectManager ;//= new ShakeDetectManager();
+public class ShakeDetectManager implements ShakeDetector.Listener {
+    private static ShakeDetectManager shakeDetectManager;//= new ShakeDetectManager();
     ShakeDetector sd;
     private Context mContext;
     public static String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
+    public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
+    public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
+
     private ShakeDetectManager(Context context) {
         mContext = context;
     }
 
     public static ShakeDetectManager getShakeDetectManager(Context context) {
-        if(shakeDetectManager == null) {
+        if (shakeDetectManager == null) {
             shakeDetectManager = new ShakeDetectManager(context);
         }
         return shakeDetectManager;
     }
+
+    private RemoteConfig remoteConfig;
 
     public void init() {
         sd = new ShakeDetector();
         sd.registerListener(this);
         SensorManager sensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
         sd.start(sensorManager);
+        initRemoteConfig();
+    }
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(mContext);
     }
 
+
+    /*
+TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+ */
+    private boolean isShakeShakeEnable() {
+        // add here different conditions
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,false);
+
+    }
+
+    private boolean isAudioShakeEnable() {
+        // add here different conditions
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
+
+    }
+    /*
+    TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+     */
     @Override
     public void hearShake() {
-        if(!isAppIsInBackground(mContext)) {
-            if (false) {
+
+        if (isShakeShakeEnable() && !isAppIsInBackground(mContext)) {
+            if (!isAudioShakeEnable()) {
                 mContext.startActivity(ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext));
                 mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
             } else {
@@ -66,9 +96,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            if(intent.getBooleanExtra("isSuccess",false)) {
+            if (intent.getBooleanExtra("isSuccess", false)) {
                 final Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                if(intent.getStringExtra("data") !=null) {
+                if (intent.getStringExtra("data") != null) {
                     Uri uri = Uri.parse("" + intent.getStringExtra("data"));
                     intent1.setData(uri);
                     new Handler().postDelayed(new Runnable() {
@@ -83,9 +113,16 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
         }
     };
 
+    public static String sTopActivity = null;
+
     private boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        ComponentName componentInfo = taskInfo.get(0).topActivity;
+        if(!componentInfo.getClassName().contains("ShakeDetectCampaignActivity")) {
+            sTopActivity = componentInfo.getClassName().substring(componentInfo.getClassName().lastIndexOf(".")+1);
+        }
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
             for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
@@ -98,13 +135,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
                 }
             }
         } else {
-            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-            ComponentName componentInfo = taskInfo.get(0).topActivity;
             if (componentInfo.getPackageName().equals(context.getPackageName())) {
                 isInBackground = false;
             }
         }
-
         return isInBackground;
     }
 
