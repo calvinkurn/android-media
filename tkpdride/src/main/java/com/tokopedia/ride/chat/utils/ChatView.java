@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
@@ -50,11 +51,11 @@ public class ChatView extends RelativeLayout {
     private int inputTextSize, inputTextColor, inputHintColor;
 
 
-    private Drawable sendButtonIcon, buttonDrawable;
-    private TypedArray attributes, textAppearanceAttributes;
+    private Drawable buttonDrawable;
+    private TypedArray attributes /*textAppearanceAttributes*/;
     private Context context;
     private int id = 0;
-    private int sendButtonBackgroundTint, sendButtonIconTint;
+//    private int  sendButtonIconTint;
 
 
     ChatView(Context context) {
@@ -100,7 +101,7 @@ public class ChatView extends RelativeLayout {
         getChatViewBackgroundColor();
         getAttributesForInputFrame();
         getAttributesForInputText();
-        getAttributesForSendButton();
+        /*getAttributesForSendButton();*/
         getUseEditorAction();
         attributes.recycle();
     }
@@ -123,7 +124,6 @@ public class ChatView extends RelativeLayout {
         setChatViewBackground();
         setInputFrameAttributes();
         setInputTextAttributes();
-        setSendButtonAttributes();
         setUseEditorAction();
     }
 
@@ -145,37 +145,25 @@ public class ChatView extends RelativeLayout {
 
     private void getAttributesForInputText() {
         setInputTextDefaults();
-        if (hasStyleResourceSet()) {
+        /*if (hasStyleResourceSet()) {
             setTextAppearanceAttributes();
-            setInputTextSize();
+            *//*setInputTextSize();
             setInputTextColor();
-            setInputHintColor();
-            textAppearanceAttributes.recycle();
-        }
-        overrideTextStylesIfSetIndividually();
+            setInputHintColor();*//*
+//            textAppearanceAttributes.recycle();
+        }*/
+        /*overrideTextStylesIfSetIndividually();*/
     }
 
-    private void setTextAppearanceAttributes() {
+    /*private void setTextAppearanceAttributes() {
         final int textAppearanceId = attributes.getResourceId(R.styleable.ChatView_inputTextAppearance, 0);
-        textAppearanceAttributes = getContext().obtainStyledAttributes(textAppearanceId, R.styleable.ChatViewInputTextAppearance);
-    }
+//        textAppearanceAttributes = getContext().obtainStyledAttributes(textAppearanceId, R.styleable.ChatViewInputTextAppearance);
+    }*/
 
     private void setInputTextAttributes() {
         inputEditText.setTextColor(inputTextColor);
         inputEditText.setHintTextColor(inputHintColor);
         inputEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputTextSize);
-    }
-
-    private void getAttributesForSendButton() {
-        sendButtonBackgroundTint = attributes.getColor(R.styleable.ChatView_sendBtnBackgroundTint, -1);
-        sendButtonIconTint = attributes.getColor(R.styleable.ChatView_sendBtnIconTint, Color.WHITE);
-
-        sendButtonIcon = attributes.getDrawable(R.styleable.ChatView_sendBtnIcon);
-    }
-
-    private void setSendButtonAttributes() {
-        actionButton.setColorNormal(sendButtonBackgroundTint);
-        actionButton.setIconDrawable(sendButtonIcon);
     }
 
     private void getUseEditorAction() {
@@ -190,9 +178,9 @@ public class ChatView extends RelativeLayout {
         }
     }
 
-    private boolean hasStyleResourceSet() {
+    /*private boolean hasStyleResourceSet() {
         return attributes.hasValue(R.styleable.ChatView_inputTextAppearance);
-    }
+    }*/
 
     private void setInputTextDefaults() {
         inputTextSize = context.getResources().getDimensionPixelSize(R.dimen.default_input_text_size);
@@ -200,7 +188,7 @@ public class ChatView extends RelativeLayout {
         inputHintColor = ContextCompat.getColor(context, R.color.main_color_gray);
     }
 
-    private void setInputTextSize() {
+    /*private void setInputTextSize() {
         if (textAppearanceAttributes.hasValue(R.styleable.ChatView_inputTextSize)) {
             inputTextSize = attributes.getDimensionPixelSize(R.styleable.ChatView_inputTextSize, inputTextSize);
         }
@@ -216,13 +204,13 @@ public class ChatView extends RelativeLayout {
         if (textAppearanceAttributes.hasValue(R.styleable.ChatView_inputHintColor)) {
             inputHintColor = attributes.getColor(R.styleable.ChatView_inputHintColor, inputHintColor);
         }
-    }
+    }*/
 
-    private void overrideTextStylesIfSetIndividually() {
+    /*private void overrideTextStylesIfSetIndividually() {
         inputTextSize = (int) attributes.getDimension(R.styleable.ChatView_inputTextSize, inputTextSize);
         inputTextColor = attributes.getColor(R.styleable.ChatView_inputTextColor, inputTextColor);
         inputHintColor = attributes.getColor(R.styleable.ChatView_inputHintColor, inputHintColor);
-    }
+    }*/
 
     private void setupEditorAction() {
         inputEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
