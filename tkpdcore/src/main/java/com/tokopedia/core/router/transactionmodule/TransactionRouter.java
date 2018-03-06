@@ -21,4 +21,6 @@ public interface TransactionRouter {
     Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
 }

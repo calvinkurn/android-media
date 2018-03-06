@@ -14,4 +14,6 @@ public interface FeedModuleRouter {
     Intent getLoginIntent(Context context);
 
     AnalyticTracker getAnalyticTracker();
+
+    Intent getShopPageIntent(Context context, String shopId);
 }

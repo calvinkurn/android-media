@@ -24,7 +24,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -512,9 +512,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void openShop() {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(apiModelData.getDetail().getResolutionShop().getShopId(), "");
-        intent.putExtras(bundle);
+        Intent intent = ((TkpdInboxRouter) getActivity()).getShopPageIntent(getActivity(), String.valueOf(apiModelData.getDetail().getResolutionShop().getShopId()));
         startActivity(intent);
     }
 

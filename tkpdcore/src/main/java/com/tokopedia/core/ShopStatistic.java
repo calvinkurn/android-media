@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
 import com.tokopedia.core.util.MethodChecker;
 
@@ -144,7 +144,7 @@ public class ShopStatistic extends TActivity {
 			JSONObject Result = new JSONObject(getIntent().getExtras().getString("shop_info"));
 			JSONObject responseSpeed = Result.getJSONObject("speed");
 			JSONObject ShopInfo = new JSONObject(Result.getString("shop_info"));
-			JSONObject ShopStats = new JSONObject(Result.getString("shop_stats"));
+			final JSONObject ShopStats = new JSONObject(Result.getString("shop_stats"));
 			JSONObject OwnerInfo = new JSONObject(Result.getString("owner_info"));
 
 			switch(responseSpeed.getString("badge")){
@@ -205,8 +205,7 @@ public class ShopStatistic extends TActivity {
 			OnClickListener ToReview = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(ShopStatistic.this, ShopInfoActivity.class);
-					intent.putExtras(ShopInfoActivity.createBundle(ShopId, ""));
+					Intent intent = ((TkpdCoreRouter) ShopStatistic.this.getApplication()).getShopPageIntent(ShopStatistic.this, sessionHandler.getShopID());
 					startActivity(intent);
 				}
 			};
