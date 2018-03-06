@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -337,7 +338,9 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void showToastMessage(String message) {
-
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -431,22 +434,22 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -469,22 +472,22 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionToShipmentForm(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -496,22 +499,22 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -530,22 +533,22 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-
+        showToastMessageRed(message);
     }
 
     @Override
@@ -628,7 +631,9 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void showToastMessageRed(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
