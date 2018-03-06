@@ -52,22 +52,18 @@ public class FavoriteAdapterTypeFactory
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder creatViewHolder;
-        switch (type) {
-            case WishlistViewHolder.LAYOUT:
-                creatViewHolder = new WishlistViewHolder(parent);
-                break;
-            case TopAdsShopViewHolder.LAYOUT:
-                creatViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
-                break;
-            case FavoriteShopViewHolder.LAYOUT:
-                creatViewHolder = new FavoriteShopViewHolder(parent);
-                break;
-            case EmptyWishslistHolder.LAYOUT:
-                creatViewHolder = new EmptyWishslistHolder(parent);
-                break;
-            default:
-                creatViewHolder = super.createViewHolder(parent, type);
+        if (type == WishlistViewHolder.LAYOUT) {
+            creatViewHolder = new WishlistViewHolder(parent);
+        } else if (type == TopAdsShopViewHolder.LAYOUT) {
+            creatViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
+        } else if (type == FavoriteShopViewHolder.LAYOUT) {
+            creatViewHolder = new FavoriteShopViewHolder(parent);
+        } else if (type == EmptyWishslistHolder.LAYOUT) {
+            creatViewHolder = new EmptyWishslistHolder(parent);
+        } else {
+            creatViewHolder = super.createViewHolder(parent, type);
         }
+
         return creatViewHolder;
     }
 }

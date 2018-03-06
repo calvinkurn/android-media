@@ -178,6 +178,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                         HomePageTracking.AJUKAN_INI_ITU_CLICK,
                         data.getName()
                 );
+            case TYPE_JUAL:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.JUAL_INI_ITU_CLICK,
+                        data.getName()
+                );
                 break;
         }
     }
@@ -235,9 +240,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
+                HomePageTracking.eventClickOpenShop();
                 onGoToCreateShop();
             }
         } else {
+            HomePageTracking.eventClickOpenShop();
             onGoToLogin();
         }
     }

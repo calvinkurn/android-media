@@ -132,5 +132,5 @@ dependencies {
 
 
     compile 'at.blogc:expandabletextview:1.0.5'
-    compile project(path: ':tkpdpayment')
+    compile project(rootProject.ext.features.payment)
 }
