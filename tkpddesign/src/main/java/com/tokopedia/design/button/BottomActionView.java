@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 
@@ -67,7 +66,7 @@ public class BottomActionView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_bottom_action_view, this);
+        View view = inflate(getContext(), getLayout(), this);
         linearLayoutButton1 = view.findViewById(R.id.linear_layout_button_1);
         icon1ImageView = (ImageView) linearLayoutButton1.findViewById(R.id.image_view_icon_1);
         TextView label1textView = (TextView) linearLayoutButton1.findViewById(R.id.text_view_label_1);
@@ -111,6 +110,10 @@ public class BottomActionView extends BaseCustomView {
         }
         invalidate();
         requestLayout();
+    }
+
+    protected int getLayout() {
+        return R.layout.widget_bottom_action_view;
     }
 
     public void setSecondImageDrawable(@DrawableRes int secondImageDrawable) {
