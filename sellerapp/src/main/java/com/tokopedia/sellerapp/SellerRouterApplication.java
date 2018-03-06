@@ -1056,4 +1056,14 @@ public abstract class SellerRouterApplication extends MainApplication
             }
         };
     }
+
+    @Override
+    public Intent getGroupChatIntent(Context context, String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxChannelsIntent(Context context) {
+        return null;
+    }
 }

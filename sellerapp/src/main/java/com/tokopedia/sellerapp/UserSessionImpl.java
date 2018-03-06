@@ -61,4 +61,9 @@ public class UserSessionImpl implements UserSession {
     public String getName() {
         return sessionHandler.getLoginName();
     }
+
+    @Override
+    public String getProfilePicture() {
+        return sessionHandler.getProfilePicture();
+    }
 }
