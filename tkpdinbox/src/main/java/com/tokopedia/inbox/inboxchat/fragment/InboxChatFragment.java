@@ -550,9 +550,11 @@ public class InboxChatFragment extends BaseDaggerFragment
             UnifyTracking.eventTopChatSearch(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                     TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
                     TopChatTrackingEventLabel.Name.INBOX_CHAT);
+            if(getActivity() instanceof InboxChatActivity){
+                ((InboxChatActivity)getActivity()).hideIndicators();
+            }
         } else {
             onSearchReset();
-
         }
         dropKeyboard();
     }
@@ -567,6 +569,9 @@ public class InboxChatFragment extends BaseDaggerFragment
         refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
         setHasOptionsMenu(true);
+        if(getActivity() instanceof InboxChatActivity){
+            ((InboxChatActivity)getActivity()).showIndicators();
+        }
     }
 
     @Override

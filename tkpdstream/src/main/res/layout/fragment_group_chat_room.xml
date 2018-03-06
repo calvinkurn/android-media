@@ -142,7 +142,7 @@
                 android:layout_width="@dimen/arrow_size"
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
-                android:srcCompat="@drawable/ic_arrow_up_green"
+                android:src="@drawable/ic_arrow_up_green"
                 android:rotation="180"/>
 
         </LinearLayout>
