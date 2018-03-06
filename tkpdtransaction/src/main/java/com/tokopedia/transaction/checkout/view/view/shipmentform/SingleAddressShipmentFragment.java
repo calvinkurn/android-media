@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
@@ -120,14 +121,17 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void onFirstTimeLaunched() {
+
     }
 
     @Override
     public void onSaveState(Bundle state) {
+
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
+
     }
 
     /**
@@ -145,6 +149,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void initialPresenter() {
+
     }
 
     /**
@@ -154,6 +159,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void initialListener(Activity activity) {
+
     }
 
     /**
@@ -185,9 +191,16 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
         mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+    }
 
+    /**
+     * set listener atau attribute si view. misalkan texView.setText("blablalba");
+     */
+    @Override
+    protected void setViewListener() {
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
+
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -199,15 +212,16 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             }
         });
 
-        mSingleAddressShipmentPresenter.attachView(this);
-    }
+        mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-    /**
-     * set listener atau attribute si view. misalkan texView.setText("blablalba");
-     */
-    @Override
-    protected void setViewListener() {
+            }
+        });
+
         mTvTotalPayment.setText("-");
+
+        mSingleAddressShipmentPresenter.attachView(this);
         mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
     }
 
@@ -224,6 +238,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setActionVar() {
+
     }
 
     @Override
@@ -347,6 +362,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onFinishChoosingShipment(List<Data> data) {
+
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.cartShipmentActivityListener = (ICartShipmentActivity) activity;
@@ -395,6 +415,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     break;
             }
         }
+    }
+
+    public void checkPromoCodeFinal(String promoCode, List<Data> data) {
 
     }
 
