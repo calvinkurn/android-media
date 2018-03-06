@@ -4,6 +4,8 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -251,6 +253,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (s.length() < 3) {
+                    setWrapperError(wrapper, getString(R.string.error_minimal_name));
                 } else if (RegisterUtil.checkRegexNameLocal(name.getText().toString())) {
                     setWrapperError(wrapper, getString(R.string.error_illegal_character));
                 } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
@@ -282,7 +286,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperError(wrapper, getString(R.string.error_invalid_password));
+                    setWrapperError(wrapper, getString(R.string.error_minimal_password));
                 }
 
                 checkIsValidForm();
@@ -309,7 +313,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
-                    setWrapperError(wrapper, getString(R.string.error_invalid_email));
+                    setWrapperError(wrapper, getString(R.string.wrong_email_format));
                 }
 
                 checkIsValidForm();
@@ -396,6 +400,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
+                } else if (s.length() < 3) {
+                    setWrapperError(wrapper, getString(R.string.error_minimal_phone));
                 } else if (!RegisterUtil.isValidPhoneNumber(
                         phone.getText().toString().replace("-", ""))) {
                     setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
@@ -645,23 +651,45 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public void showInfo() {
         dismissLoadingProgress();
-        TextView view = (TextView) redirectView.findViewById(R.id.body);
-        final String emailString = email.getText().toString();
-        String text = getString(R.string.account_registered_body, emailString);
-        String part = getString(R.string.account_registered_body_part);
-        Spannable spannable = getSpannable(text, part);
-        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
-                , text.indexOf(emailString) + emailString.length()
-                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        view.setText(spannable, TextView.BufferType.SPANNABLE);
-        view.setOnClickListener(new View.OnClickListener() {
+//        TextView view = (TextView) redirectView.findViewById(R.id.body);
+//        final String emailString = email.getText().toString();
+//        String text = getString(R.string.account_registered_body, emailString);
+//        String part = getString(R.string.account_registered_body_part);
+//        Spannable spannable = getSpannable(text, part);
+//        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
+//                , text.indexOf(emailString) + emailString.length()
+//                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        view.setText(spannable, TextView.BufferType.SPANNABLE);
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
+//            }
+//        });
+//        redirectView.setVisibility(View.VISIBLE);
+//        container.setVisibility(View.GONE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.email_already_registered));
+        builder.setMessage(String.format(getResources().getString(R.string.email_already_registered_info), getEmail().getText().toString()));
+        builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
+            public void onClick(DialogInterface dialog, int i) {
+                //go to login
             }
         });
-        redirectView.setVisibility(View.VISIBLE);
-        container.setVisibility(View.GONE);
+        builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 
     @Override

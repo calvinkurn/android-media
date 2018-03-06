@@ -99,8 +99,8 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 app:backgroundColor="@color/black"
                 app:cornerSize="5"
-                app:customText="Daftar dengan Nomor Telepon"
-                app:iconButton="@drawable/ic_register_icon"
+                app:customText="@string/register_with_phone_number"
+                app:iconButton="@drawable/ic_phone"
                 app:textColor="@color/black_70" />
 
 

@@ -152,7 +152,11 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
-        bottomInfo.setLinkTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
+                "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
+                " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
+
+        bottomInfo.setText(MethodChecker.fromHtml(joinString));
         bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
@@ -257,7 +261,9 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 
     @Override
@@ -280,7 +286,9 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 
     @Override

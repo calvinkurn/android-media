@@ -73,7 +73,7 @@
         android:id="@+id/botton_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_11"
         android:textStyle="normal"
         android:textColor="@color/black_38"
         android:layout_gravity="center"

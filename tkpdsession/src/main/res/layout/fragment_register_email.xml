@@ -33,8 +33,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title_email"
+                    android:inputType="textCapWords"
                     style="@style/HintTextInputLayout"
-                    android:layout_marginBottom="@dimen/margin_med"
                     >
 
                     <AutoCompleteTextView
@@ -49,12 +49,26 @@
                         android:textColor="@color/black_70"/>
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginLeft="@dimen/margin_vvs"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@string/send_verif_to_email"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="normal"
+                    />
+
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/HintTextInputLayout"
                     android:hint="@string/title_full_name"
+                    android:inputType="textCapWords"
                     android:layout_marginBottom="@dimen/margin_med">
 
                     <EditText
@@ -97,9 +111,9 @@
                     android:layout_marginLeft="@dimen/margin_vvs"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
-                    android:text="@string/make_sure_phone_is_active"
+                    android:text="@string/phone_example"
                     android:textColor="@color/black_38"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_12"
                     android:textStyle="normal"
                     />
 
@@ -134,7 +148,7 @@
                     android:lineSpacingExtra="6sp"
                     android:text="@string/minimal_6_character"
                     android:textColor="@color/black_38"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_12"
                     />
 
                 <TextView

@@ -134,6 +134,8 @@
     <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
     <string name="phone_number_already_registered">Nomor Ponsel Sudah Terdaftar</string>
+    <string name="email_already_registered">Nomor Ponsel Sudah Terdaftar</string>
+    <string name="email_already_registered_info">Masuk dengan email %1$s?</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="login">Masuk</string>
@@ -164,6 +166,12 @@
     <string name="change_phone_text">Setelah pengajuan Anda berhasil dan diterima, Saldo Tokopedia Anda <b>tidak dapat digunakan untuk bertransaksi selama 3x24 jam.</b></string>
 
     <string name="make_sure_phone_is_active">Pastikan nomor ponsel  Anda aktif untuk keamanan dan kemudahan transaksi.</string>
+    <string name="phone_example">Contoh: 08XXXXXXXXX</string>
+    <string name="wrong_email_format">Format email salah</string>
+    <string name="send_verif_to_email">Kami akan mengirimkan kode melalui email</string>
+    <string name="error_minimal_name">Nama lengkap terlalu pendek, minimal 3 karakter</string>
+    <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimal 8 angka</string>
+    <string name="error_minimal_password">Kata sandi terlalu pendek, minimal 6 karakter</string>
     <string name="minimal_6_character">Minimal 6 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
@@ -182,7 +190,7 @@
     <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimal 8 angka</string>
     <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
     <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
-    <string name="phone_number_already_registered_info">Masuk dengan nomor %1$s</string>
+    <string name="phone_number_already_registered_info">Masuk dengan nomor %1$s?</string>
     <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
     <string name="phone_number_already_registered_no">Ubah</string>
     <string name="phone_number_already_registered_yes">Masuk</string>
