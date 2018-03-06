@@ -140,6 +140,24 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                 List<ProductVariantOptionSubmit> productVariantOptionSubmitList =
                         productVariantUnitSubmit.getProductVariantOptionSubmitList();
                 List<ProductVariantOptionChild> productVariantOptionChildList = new ArrayList<>();
+                if (productVariantOptionSubmitList!= null) {
+                    for (int j = 0, sizej = productVariantOptionSubmitList.size(); j< sizej ; j++) {
+                        ProductVariantOptionSubmit productVariantOptionSubmit = productVariantOptionSubmitList.get(j);
+
+//                        ProductVariantOptionChild productVariantOptionChild = new ProductVariantOptionChild(
+//                                0,
+//                                productVariantOptionSubmit.getVariantUnitValueId(),
+//                                0,
+//                                productVariantOptionSubmit.
+//                        )
+//                        productVariantOptionSubmit.getVariantUnitValueId();
+//                        productVariantOptionSubmit.getCustomText();
+//                        productVariantOptionSubmit.getTemporaryId();
+//                        productVariantOptionSubmit.getPictureItemList();
+
+                    }
+                }
+
                 //TODO map List<ProductVariantOptionSubmit> to OptionChild, then add to productVariantOptionParent
                 productVariantOptionParentList.add(productVariantOptionParent);
             }
