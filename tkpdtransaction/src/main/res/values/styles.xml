@@ -21,21 +21,51 @@
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
     </style>
 
+
+
     <style name="TextSmall">
         <item name="android:textSize">12sp</item>
-        <item name="android:lineSpacingExtra">4sp</item>
     </style>
 
-    <style name="TextSmallGrey" parent="TextSmall">
+    <style name="TextSmallNormal" parent="TextSmall">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextSmallNormalBlack38" parent="TextSmallNormal">
         <item name="android:textColor">@color/black_38</item>
     </style>
 
-    <style name="TextMedium">
-        <item name="android:textSize">14sp</item>
-        <item name="android:lineSpacingExtra">4sp</item>
+    <style name="TextSmallNormalBlack70" parent="TextSmallNormal">
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
-    <style name="TextMediumBlack" parent="TextMedium">
+    <style name="TextSmallMedium" parent="TextSmall">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextSmallMediumBlack38" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextSmallMediumBlack70" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+
+
+    <style name="TextMid">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextMidNormal" parent="TextMid">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextMidMedium" parent="TextMid">
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextMidNormalBlack70" parent="TextMidNormal">
         <item name="android:textColor">@color/black_70</item>
     </style>
 

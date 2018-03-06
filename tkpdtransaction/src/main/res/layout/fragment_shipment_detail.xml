@@ -67,12 +67,13 @@
                 android:paddingTop="16dp">
 
                 <TextView
-                    style="@style/TextSmallGrey"
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="@dimen/new_margin_med"
                     android:layout_marginRight="@dimen/new_margin_med"
+                    android:lineSpacingExtra="4sp"
                     android:text="@string/label_shipment_type" />
 
                 <LinearLayout
@@ -108,22 +109,24 @@
                     android:background="@color/grey_300" />
 
                 <TextView
-                    style="@style/TextSmallGrey"
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="@dimen/new_margin_med"
                     android:layout_marginRight="@dimen/new_margin_med"
                     android:layout_marginTop="@dimen/margin_ms"
+                    android:lineSpacingExtra="4sp"
                     android:text="@string/label_choose_courier" />
 
                 <TextView
-                    style="@style/TextSmallGrey"
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="@dimen/new_margin_med"
                     android:layout_marginRight="@dimen/new_margin_med"
+                    android:lineSpacingExtra="4sp"
                     android:text="@string/label_arrival_probability" />
 
                 <android.support.v7.widget.RecyclerView
@@ -148,7 +151,7 @@
                 android:paddingTop="16dp">
 
                 <TextView
-                    style="@style/TextSmallGrey"
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/new_margin_med"
