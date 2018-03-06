@@ -27,71 +27,27 @@
         android:orientation="vertical"
         android:showDividers="beginning|middle|end">
 
-        <LinearLayout
+        <com.tokopedia.design.text.SpinnerTextView
+            android:id="@+id/spinner_text_view_condition"
+            style="@style/LabelLayout"
+            app:spinner_entries="@array/product_condition_entries"
+            app:spinner_hint="@string/product_label_condition"
+            app:spinner_values="@array/product_condition_values" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.tokopedia.design.text.SpinnerTextView
-                android:id="@+id/spinner_text_view_condition"
-                style="@style/LabelLayout"
-                app:spinner_entries="@array/product_condition_entries"
-                app:spinner_hint="@string/product_label_condition"
-                app:spinner_values="@array/product_condition_values" />
-
-            <LinearLayout
-                style="@style/LabelLayout"
-                android:baselineAligned="true"
-                android:orientation="horizontal">
-
-                <com.tokopedia.design.text.TkpdHintTextInputLayout
-                    android:id="@+id/text_input_layout_description"
-                    style="@style/HintTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:hint="@string/product_label_product_description"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="@integer/product_max_character_description">
-
-                    <EditText
-                        android:id="@+id/edit_text_description"
-                        style="@style/EditText"
-                        android:layout_width="match_parent"
-                        android:hint="@string/product_label_enter_product_description"
-                        android:inputType="textMultiLine"
-                        android:maxLength="@integer/product_max_character_description" />
-
-                </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-                <FrameLayout
-                    android:id="@+id/info_icon_add_product_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="@dimen/margin_med"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:foregroundGravity="center"
-                    android:paddingLeft="@dimen/padding_vs"
-                    android:paddingStart="@dimen/padding_vs">
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/info_icon_add_product"
-                        android:layout_width="@dimen/image_medal_size"
-                        android:layout_height="@dimen/image_medal_size"
-                        android:layout_gravity="end"
-                        android:foregroundGravity="center_vertical|right"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_info" />
-                </FrameLayout>
-            </LinearLayout>
-        </LinearLayout>
+            app:content="@string/label_add"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/product_label_product_description" />
 
         <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_add_video_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:content="@string/product_etalase_picker_add_etalase_add_button_dialog"
+            app:content="@string/label_add"
             app:content_color="@color/tkpd_main_green"
             app:title="@string/product_label_video"
             tools:visibility="visible" />

@@ -34,7 +34,7 @@
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
     <string name="product_add_sku_allowed_character">123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
-    <string name="product_label_enter_product_description">Tulis Deskripsi Produk</string>
+    <string name="product_label_enter_product_description">Tulis dengan lenkap dan jelas deskripsi produk anda</string>
     <string name="product_label_save_and_add">Simpan dan Tambah</string>
     <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
@@ -45,7 +45,6 @@
     <string name="product_upload_product_image">Upload Gambar Produk</string>
 
     <string name="product_etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
-    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
     <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
     <string name="product_etalase_picker_add_etalase_name_hint">Nama Etalase</string>
     <string name="product_etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>

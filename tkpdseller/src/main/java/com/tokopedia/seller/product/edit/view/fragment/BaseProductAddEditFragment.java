@@ -38,17 +38,17 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductDeliveryInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDescriptionViewHolder;
-import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductInfoViewHolder;
+import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductPriceViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
@@ -57,7 +57,6 @@ import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -66,6 +65,7 @@ import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 @RuntimePermissions
-public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
+public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         extends BaseDaggerFragment
         implements ProductAddView,
         ProductScoreViewHolder.Listener, ProductDeliveryInfoViewHolder.Listener,
@@ -127,7 +127,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         void successSaveDraftToDBWhenBackpressed();
     }
 
-    protected abstract @ProductStatus int getStatusUpload();
+    protected abstract @ProductStatus
+    int getStatusUpload();
 
     public abstract boolean isNeedGetCategoryRecommendation();
 
@@ -153,7 +154,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         productDescriptionViewHolder = new ProductDescriptionViewHolder(view.findViewById(R.id.view_group_product_description), this);
         productDeliveryInfoViewHolder = new ProductDeliveryInfoViewHolder(view.findViewById(R.id.view_group_product_delivery), this);
         shareLabelSwitch = view.findViewById(R.id.label_switch_share);
-        
+
         presenter.attachView(this);
         presenter.getShopInfo();
 
@@ -266,7 +267,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
             @Override
             public void clickEditImagePathFromCamera(int position) {
                 GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), BaseProductAddEditFragment.this, position,
-                        true, 1,true);
+                        true, 1, true);
             }
 
             @Override
@@ -320,7 +321,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
             public void clickRemoveImage(int positions) {
                 ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
                 ImageSelectModel imageSelectModel = imagesSelectView.getSelectedImage();
-                if (imageSelectModel!= null) {
+                if (imageSelectModel != null) {
                     String path = imageSelectModel.getUriOrPath();
                     if (!TextUtils.isEmpty(path) && !isEdittingDraft()) {
                         FileUtils.deleteAllCacheTkpdFile(path);
@@ -331,15 +332,15 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         });
     }
 
-    private boolean isEdittingDraft(){
+    private boolean isEdittingDraft() {
         return isEditStatus() && getProductDraftId() > 0;
     }
 
-    public boolean isAddStatus(){
+    public boolean isAddStatus() {
         return getStatusUpload() == ProductStatus.ADD;
     }
 
-    public boolean isEditStatus(){
+    public boolean isEditStatus() {
         return getStatusUpload() == ProductStatus.EDIT;
     }
 
@@ -359,7 +360,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         }
     }
 
-    private void clearFocus(){
+    private void clearFocus() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -384,13 +385,13 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public void goToCamera(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
-                true, remainingEmptySlot,true);
+                true, remainingEmptySlot, true);
 
     }
 
     @Override
-    public final void startInfoAddProduct() {
-        startActivity(new Intent(getActivity(), ProductAddInfoActivity.class));
+    public void goToProductDescriptionPicker(String description) {
+        ProductAddDescriptionPickerActivity.start(this, ProductDescriptionViewHolder.REQUEST_CODE_GET_DESCRIPTION, description);
     }
 
     @Override
@@ -476,7 +477,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                 listener.startUploadProduct(productId);
             }
         } else {
-            if (listener!= null) {
+            if (listener != null) {
                 listener.successSaveDraftToDBWhenBackpressed();
             }
         }
@@ -585,6 +586,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     /**
      * when category changed, or category has been fetched
+     *
      * @param categoryId
      */
     public final void onCategoryLoaded(long categoryId) {
@@ -616,13 +618,13 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         productInfoViewHolder.processCategory(stringArray);
     }
 
-    public void deleteNotUsedTkpdCacheImage(){
+    public void deleteNotUsedTkpdCacheImage() {
         ArrayList<ImageSelectModel> imageSelectModelArrayList = productImageViewHolder.getImagesSelectView().getImageList();
         if (imageSelectModelArrayList == null || imageSelectModelArrayList.size() == 0) {
             return;
         }
         ArrayList<String> uriArrayList = new ArrayList<>();
-        for (int i = 0, sizei = imageSelectModelArrayList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = imageSelectModelArrayList.size(); i < sizei; i++) {
             uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
         }
         FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
@@ -656,26 +658,26 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
     private void sendAnalyticsAdd(ProductViewModel viewModel) {
-        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+        List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
-        for (String labelAnalytics : listLabelAnalytics){
-            if(isAddStatus()) {
+        for (String labelAnalytics : listLabelAnalytics) {
+            if (isAddStatus()) {
                 UnifyTracking.eventAddProductAdd(labelAnalytics);
-            } else if(isEditStatus()){
+            } else if (isEditStatus()) {
                 UnifyTracking.eventAddProductEdit(labelAnalytics);
             }
         }
     }
 
     private void sendAnalyticsAddMore(ProductViewModel viewModel) {
-        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+        List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
-        for (String labelAnalytics : listLabelAnalytics){
-            if(isAddStatus()) {
+        for (String labelAnalytics : listLabelAnalytics) {
+            if (isAddStatus()) {
                 UnifyTracking.eventAddProductAddMore(labelAnalytics);
             }
         }
@@ -731,16 +733,16 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.AppCompatAlertDialogStyle);
         builder.setTitle(R.string.add_product_title_alert_dialog_dollar);
-        if(showDialogSaveDraftOnBack() ){
+        if (showDialogSaveDraftOnBack()) {
             builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(message)));
-        }else{
+        } else {
             builder.setMessage(message);
         }
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 UnifyTracking.eventClickYesGoldMerchantAddProduct();
-                if(showDialogSaveDraftOnBack()){
+                if (showDialogSaveDraftOnBack()) {
                     saveDraft(false);
                 }
                 goToGoldMerchantPage();
@@ -757,7 +759,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         alert.show();
     }
 
-    public boolean showDialogSaveDraftOnBack(){
+    public boolean showDialogSaveDraftOnBack() {
         return true;
     }
 
@@ -781,7 +783,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public void onImageResolutionChanged(long maxSize) {
-        valueIndicatorScoreModel.setImageResolution((int)maxSize);
+        valueIndicatorScoreModel.setImageResolution((int) maxSize);
         updateProductScoring();
     }
 

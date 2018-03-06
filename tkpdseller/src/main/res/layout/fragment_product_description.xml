@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/tkpd_bg_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linear_layout_tips"
+        style="@style/LabelLayout"
+        android:background="@color/grey_550">
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/margin_sm">
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/text_input_layout_description"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/product_label_product_description"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/product_max_character_description">
+
+            <EditText
+                android:id="@+id/edit_text_description"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:gravity="top"
+                android:hint="@string/product_label_enter_product_description"
+                android:inputType="textMultiLine"
+                android:maxLength="@integer/product_max_character_description" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+    </LinearLayout>
+</LinearLayout>
