@@ -36,6 +36,7 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
@@ -486,6 +487,18 @@ public abstract class SellerRouterApplication extends MainApplication
         bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToWebview(String url) {
+        Intent intent = new Intent(this, BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
+        startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetailById(Context activity, String productId) {
+        startActivity(ProductInfoActivity.createInstance(activity, productId));
     }
 
     @Override
