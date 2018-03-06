@@ -117,7 +117,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().renderProductList(productsList);
                         getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
-                        //renderNearbyCarsAroundSource(productEstimates);
                     }
                 }
             }
@@ -179,7 +178,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().showProductList();
                             getView().renderProductList(productsList);
                             getView().showFareListHeader();
-                            //renderNearbyCarsAroundSource(productEstimates);
                         }
                         getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);

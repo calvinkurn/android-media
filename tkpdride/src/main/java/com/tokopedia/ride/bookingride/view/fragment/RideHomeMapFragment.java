@@ -97,11 +97,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private final int ETA_RADIUS_RATIO_METERS = 150;
     private final int DEFAULT_ETA_SECONDS = 150;
-    private int MAX_CABS_COUNT = 2;
-    private int MAX_MOTO_COUNT = 1;
+    private final int MAX_CABS_COUNT = 2;
+    private final int MAX_MOTO_COUNT = 1;
     private boolean showUberMoto = false;
     private boolean showUberCab = true;
-    private int FIXED_RADIUS_METERS = 100;
+    private final int FIXED_RADIUS_METERS = 100;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -375,19 +375,19 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             int radius;
             showUberCab = false;
             showUberMoto = false;
-            int min = productEstimates.get(0).getTimesEstimate().getEstimate(), estimate;
+            int seconds = productEstimates.get(0).getTimesEstimate().getEstimate(), estimate;
             for (ProductEstimate productEstimate : productEstimates) {
                 if (RideUtils.isUberMoto(productEstimate.getProduct().getDisplayName())) {
                     showUberMoto = true;
                 } else {
                     showUberCab = true;
                     estimate = productEstimate.getTimesEstimate() != null ? productEstimate.getTimesEstimate().getEstimate() : DEFAULT_ETA_SECONDS;
-                    if (estimate < min) {
-                        min = estimate;
+                    if (estimate < seconds) {
+                        seconds = estimate;
                     }
                 }
             }
-            radius = FIXED_RADIUS_METERS + (ETA_RADIUS_RATIO_METERS * min / 60);
+            radius = FIXED_RADIUS_METERS + (ETA_RADIUS_RATIO_METERS * seconds / 60);
             if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
                 double latitude = googleMap.getCameraPosition().target.latitude;
                 double longitude = googleMap.getCameraPosition().target.longitude;
