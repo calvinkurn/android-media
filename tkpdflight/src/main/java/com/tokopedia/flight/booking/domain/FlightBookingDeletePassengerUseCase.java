@@ -17,6 +17,8 @@ import rx.functions.Func1;
 
 public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String>> {
     private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
+    private static final String PARAM_IDEMPOTENCY = "PARAM_IDEMPOTENCY";
+    private static final String DEFAULT_PARAM = "";
     private FlightRepository flightRepository;
 
     @Inject
@@ -25,12 +27,15 @@ public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String
     }
 
     @Override
-    public Observable<Response<String>> createObservable(RequestParams requestParams) {
+    public Observable<Response<String>> createObservable(final RequestParams requestParams) {
         return createRequest(requestParams)
                 .flatMap(new Func1<DeletePassengerRequest, Observable<Response<String>>>() {
                     @Override
                     public Observable<Response<String>> call(DeletePassengerRequest deletePassengerRequest) {
-                        return flightRepository.deletePassenger(deletePassengerRequest);
+                        return flightRepository.deletePassenger(
+                                deletePassengerRequest,
+                                requestParams.getString(PARAM_IDEMPOTENCY, DEFAULT_PARAM)
+                        );
                     }
                 });
     }
@@ -41,9 +46,10 @@ public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String
         return Observable.just(request);
     }
 
-    public RequestParams generateRequest(String passengerId) {
+    public RequestParams generateRequest(String passengerId, String idempotencyKey) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_PASSENGER_ID, passengerId);
+        requestParams.putString(PARAM_IDEMPOTENCY, idempotencyKey);
         return requestParams;
     }
 }

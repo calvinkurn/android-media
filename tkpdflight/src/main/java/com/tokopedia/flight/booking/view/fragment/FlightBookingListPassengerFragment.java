@@ -33,20 +33,24 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingListPassengerContract.View {
 
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int IS_SELECTING = 1;
     public static final int IS_NOT_SELECTING = 0;
 
     private String selectedPassengerId;
+    private String requestId;
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
     FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
     TextView txtNewPassenger;
 
-    public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger) {
+    public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
+                                                                    String requestId) {
         FlightBookingListPassengerFragment flightBookingListPassengerFragment = new FlightBookingListPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SELECTED_PASSENGER, selectedPassenger);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         flightBookingListPassengerFragment.setArguments(bundle);
         return flightBookingListPassengerFragment;
     }
@@ -58,6 +62,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
+        requestId = getArguments().getString(EXTRA_REQUEST_ID);
         selectedPassengerId = (selectedPassenger.getPassengerId() != null) ? selectedPassenger.getPassengerId() : "";
         flightBookingPassengerViewModelList = new ArrayList<>();
     }
@@ -163,6 +168,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public void showPassengerSelectedError(String passengerType) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), String.format(getString(R.string.flight_booking_list_passenger_selected_error), passengerType));
+    }
+
+    @Override
+    public String getRequestId() {
+        return requestId;
     }
 
     private void onSelectNewPassenger() {

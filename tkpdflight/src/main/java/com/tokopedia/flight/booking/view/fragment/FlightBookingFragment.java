@@ -353,7 +353,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines, String departureDate) {
+    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel,
+                                              boolean isAirAsiaAirlines, String departureDate,
+                                              String requestId) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         getActivity(),
@@ -363,7 +365,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         flightBookingCartData.getLuggageViewModels(),
                         flightBookingCartData.getMealViewModels(),
                         isAirAsiaAirlines,
-                        departureDate
+                        departureDate,
+                        requestId
                 ),
                 REQUEST_CODE_PASSENGER
         );

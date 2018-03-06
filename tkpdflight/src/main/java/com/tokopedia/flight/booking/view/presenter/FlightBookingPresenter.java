@@ -390,8 +390,19 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate) {
-        getView().navigateToPassengerInfoDetail(viewModel, isMandatoryDoB(), departureDate);
+    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel,
+                                               String departureDate) {
+        String requestId;
+        if (getView().getReturnTripId() != null && getView().getReturnTripId().length() > 0) {
+            requestId = getView().getIdEmpotencyKey(
+                    getView().getDepartureTripId() + "_" + getView().getReturnTripId()
+            );
+        } else {
+            requestId = getView().getIdEmpotencyKey(
+                    getView().getDepartureTripId()
+            );
+        }
+        getView().navigateToPassengerInfoDetail(viewModel, isMandatoryDoB(), departureDate, requestId);
     }
 
     @Override

@@ -92,7 +92,9 @@ public interface FlightBookingContract {
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 
-        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
+        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel,
+                                           boolean isAirAsiaAirline, String departureDate,
+                                           String requestId);
 
         Observable<ProfileInfo> getProfileObservable();
 

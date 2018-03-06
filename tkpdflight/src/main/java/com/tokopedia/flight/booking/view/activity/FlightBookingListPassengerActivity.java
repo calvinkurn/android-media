@@ -25,16 +25,21 @@ import java.util.List;
 
 public class FlightBookingListPassengerActivity extends BaseFlightActivity implements HasComponent<FlightBookingComponent> {
 
-    public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected) {
+    public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected,
+                                      String requestId) {
         Intent intent = new Intent(context, FlightBookingListPassengerActivity.class);
         intent.putExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER, selected);
+        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_REQUEST_ID, requestId);
         return intent;
     }
     @Override
     protected Fragment getNewFragment() {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getIntent()
                 .getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
-        return FlightBookingListPassengerFragment.createInstance(flightBookingPassengerViewModel);
+        String requestId = getIntent().getStringExtra(
+                FlightBookingListPassengerFragment.EXTRA_REQUEST_ID);
+        return FlightBookingListPassengerFragment.createInstance(flightBookingPassengerViewModel,
+                requestId);
     }
 
     @Override

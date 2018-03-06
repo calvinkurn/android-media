@@ -28,8 +28,8 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -93,6 +93,8 @@ public interface FlightApi {
     @GET(FlightUrl.FLIGHT_PASSENGER_SAVED)
     Observable<Response<FlightDataResponse<List<SavedPassengerEntity>>>> getSavedPassengerData();
 
-    @DELETE(FlightUrl.FLIGHT_PASSENGER_SAVED)
-    Observable<Response<String>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request);
+    @Headers({"Content-Type: application/json"})
+    @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
+    Observable<Response<String>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
+                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
 }

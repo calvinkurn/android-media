@@ -30,6 +30,8 @@ public interface FlightBookingListPassengerContract {
         void showPassengerSelectedError(String passengerType);
 
         String getString(int resId);
+
+        String getRequestId();
     }
 
     interface Presenter {

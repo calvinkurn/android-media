@@ -57,6 +57,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
     public static final String EXTRA_AIR_ASIA = "EXTRA_AIR_ASIA";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
     private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
@@ -87,6 +88,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private boolean isAirAsiaAirlines = false;
     private String departureDate;
     private String selectedPassengerId;
+    private String requestId;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -98,7 +100,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                                              boolean isAirAsiaAirlines,
-                                                             String departureDate) {
+                                                             String departureDate,
+                                                             String requestId) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -108,6 +111,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -118,7 +122,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                                              boolean isAirAsiaAirlines,
-                                                             String departureDate) {
+                                                             String departureDate,
+                                                             String requestId) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -127,6 +132,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -139,6 +145,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealViewModels = getArguments().getParcelableArrayList(EXTRA_MEALS);
         isAirAsiaAirlines = getArguments().getBoolean(EXTRA_AIR_ASIA);
         departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
+        requestId = getArguments().getString(EXTRA_REQUEST_ID);
         selectedPassengerId = (viewModel.getPassengerId() != null) ? viewModel.getPassengerId() : "";
     }
 
@@ -559,7 +566,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
-        Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(), selected);
+        Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
+                selected, requestId);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 

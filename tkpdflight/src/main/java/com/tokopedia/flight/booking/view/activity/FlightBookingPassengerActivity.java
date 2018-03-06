@@ -26,6 +26,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
     public static final String EXTRA_IS_AIRASIA = "EXTRA_IS_AIRASIA";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private FlightBookingPassengerViewModel viewModel;
     FlightBookingPassengerFragment flightBookingPassengerFragment;
 
@@ -36,7 +37,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                                           List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                           List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                           boolean isAirAsiaAirlines,
-                                          String departureDate) {
+                                          String departureDate,
+                                          String requestId) {
         Intent intent = new Intent(activity, FlightBookingPassengerActivity.class);
         intent.putExtra(EXTRA_DEPARTURE, departureId);
         intent.putExtra(EXTRA_RETURN, returnId);
@@ -45,6 +47,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
         intent.putParcelableArrayListExtra(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         intent.putParcelableArrayListExtra(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
         intent.putExtra(EXTRA_IS_AIRASIA, isAirAsiaAirlines);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
     }
 
@@ -52,12 +55,14 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                                           String departureId,
                                           FlightBookingPassengerViewModel viewModel,
                                           List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                          List<FlightBookingAmenityMetaViewModel> mealViewModels) {
+                                          List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                          String requestId) {
         Intent intent = new Intent(activity, FlightBookingPassengerActivity.class);
         intent.putExtra(EXTRA_DEPARTURE, departureId);
         intent.putExtra(EXTRA_PASSENGER, viewModel);
         intent.putParcelableArrayListExtra(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         intent.putParcelableArrayListExtra(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
     }
 
@@ -79,7 +84,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     getIntent().getStringExtra(EXTRA_RETURN),
                     viewModel, luggageViewModels, mealViewModels,
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
-                    getIntent().getStringExtra(EXTRA_DEPARTURE_DATE)
+                    getIntent().getStringExtra(EXTRA_DEPARTURE_DATE),
+                    getIntent().getStringExtra(EXTRA_REQUEST_ID)
             );
         } else {
             flightBookingPassengerFragment =  FlightBookingPassengerFragment.newInstance(
@@ -88,7 +94,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     luggageViewModels,
                     mealViewModels,
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
-                    getIntent().getStringExtra(EXTRA_DEPARTURE_DATE)
+                    getIntent().getStringExtra(EXTRA_DEPARTURE_DATE),
+                    getIntent().getStringExtra(EXTRA_REQUEST_ID)
             );
         }
         return flightBookingPassengerFragment;
