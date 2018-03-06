@@ -54,7 +54,8 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
                 channelPojo.getModeratorThumbUrl() != null ? channelPojo.getModeratorThumbUrl() : "",
                 channelPojo.getTitle() != null? channelPojo.getTitle() : "",
                 channelPojo.getDescription() != null ? channelPojo.getDescription() : "",
-                channelPojo.getTotalParticipantsOnline()
+                channelPojo.getTotalParticipantsOnline(),
+                channelPojo.getChannelUrl()
         );
     }
 }

@@ -451,8 +451,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.logoutChannel(mChannel);
-
     }
 
     @Override
@@ -497,6 +495,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onDestroy() {
         presenter.detachView();
+        presenter.logoutChannel(mChannel);
+
         super.onDestroy();
     }
 
@@ -791,20 +791,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserEntered(UserActionViewModel userActionViewModel) {
+    public void onUserEntered(UserActionViewModel userActionViewModel, int participantCount) {
 
-        if (!userActionViewModel.getUserId().equals(userSession.getUserId())) {
-            viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
-            setToolbarParticipantCount();
-        }
+        viewModel.setTotalParticipant(participantCount);
+        setToolbarParticipantCount();
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
         scrollToBottomWhenPossible();
     }
 
     @Override
-    public void onUserExited(UserActionViewModel userActionViewModel) {
-        viewModel.setTotalParticipant(viewModel.getTotalParticipant() - 1);
+    public void onUserExited(UserActionViewModel userActionViewModel, int participantCount) {
+        viewModel.setTotalParticipant(participantCount);
         setToolbarParticipantCount();
 //        adapter.addAction(userActionViewModel);
 //        adapter.notifyItemInserted(0);

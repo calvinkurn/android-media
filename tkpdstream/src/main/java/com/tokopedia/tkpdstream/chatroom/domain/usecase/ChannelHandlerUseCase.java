@@ -36,9 +36,9 @@ public class ChannelHandlerUseCase {
 
         void onMessageUpdated(Visitable map);
 
-        void onUserEntered(UserActionViewModel userActionViewModel);
+        void onUserEntered(UserActionViewModel userActionViewModel, int participantCount);
 
-        void onUserExited(UserActionViewModel userActionViewModel);
+        void onUserExited(UserActionViewModel userActionViewModel, int participantCount);
 
         void onUserKicked();
     }
@@ -84,14 +84,14 @@ public class ChannelHandlerUseCase {
             @Override
             public void onUserEntered(OpenChannel channel, User user) {
                 if (channel.getUrl().equals(mChannelUrl)) {
-                    listener.onUserEntered(userMapper.mapUserEnter(user));
+                    listener.onUserEntered(userMapper.mapUserEnter(user), channel.getParticipantCount());
                 }
             }
 
             @Override
             public void onUserExited(OpenChannel channel, User user) {
                 if (channel.getUrl().equals(mChannelUrl)) {
-                    listener.onUserExited(userMapper.mapUserExit(user));
+                    listener.onUserExited(userMapper.mapUserExit(user), channel.getParticipantCount());
                 }
             }
         });

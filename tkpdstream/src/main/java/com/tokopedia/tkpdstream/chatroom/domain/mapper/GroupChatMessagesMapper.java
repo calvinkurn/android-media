@@ -85,11 +85,11 @@ public class GroupChatMessagesMapper {
             case VoteAnnouncementViewModel.POLLING_CANCEL:
             case VoteAnnouncementViewModel.POLLING_UPDATE:
                 return mapToPollingViewModel(message,
-                        message.getData());
+                        message.getData().replace("\\\"", "\""));
             case ChatViewModel.ADMIN_MESSAGE:
                 return mapToAdminChat(message);
             case ImageViewModel.ADMIN_ANNOUNCEMENT:
-                return mapToAdminImageChat(message, message.getData());
+                return mapToAdminImageChat(message, message.getData().replace("\\\"", "\""));
             default:
                 return mapToUserChat(message);
         }
@@ -169,7 +169,6 @@ public class GroupChatMessagesMapper {
 
     private VoteInfoViewModel mappingToVoteInfoViewModel(ActivePollPojo activePollPojo) {
         if (hasPoll(activePollPojo)) {
-
             return new VoteInfoViewModel(
                     String.valueOf(activePollPojo.getPollId()),
                     activePollPojo.getQuestion(),
@@ -206,15 +205,16 @@ public class GroupChatMessagesMapper {
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
-                        statisticOptionPojo.getPercentage(),
+                        String.valueOf(Math.floor(statisticOptionPojo.getPercentage())),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             } else if (optionType.equalsIgnoreCase(OPTION_IMAGE)) {
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
+
                         statisticOptionPojo.getOption(),
                         optionPojo.getImageOption().trim(),
-                        statisticOptionPojo.getPercentage(),
+                        String.valueOf(Math.floor(statisticOptionPojo.getPercentage())),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             }

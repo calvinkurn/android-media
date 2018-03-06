@@ -92,7 +92,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
-                        statisticOptionPojo.getPercentage(),
+                        String.valueOf( Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             } else if (optionType.equalsIgnoreCase(OPTION_IMAGE)) {
@@ -100,7 +100,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
                         optionPojo.getImageOption().trim(),
-                        statisticOptionPojo.getPercentage(),
+                        String.valueOf( Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             }
