@@ -164,4 +164,8 @@
         <key>app_show_referral_button</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>mainapp_native_promo_list</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

@@ -18,6 +18,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
@@ -50,6 +51,9 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         WrongProductPriceWeightEditable editable = getArguments()
                 .getParcelable(EDITABLE_EXTRA);
+        WrongProductPriceWeightEditable originalEditable = new WrongProductPriceWeightEditable(
+                editable
+        );
         View view = inflater.inflate(R.layout.order_reject_price_weight_edit_page, container, false);
         ViewGroup mainContainer = view.findViewById(R.id.main_container);
         TextView orderDetailProductName = view.findViewById(R.id.order_detail_product_name);
@@ -66,7 +70,11 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         priceEditText.setText(editable.getProductPriceUnformatted());
         weightEditText.setText(editable.getProductWeightUnformatted());
         rejectOrderConfirmButton.setOnClickListener(onConfirmButtonClickedListener(
-                editable, priceEditText, weightEditText, currencySpinner, weightSpinner
+                editable,
+                originalEditable,
+                priceEditText, weightEditText,
+                currencySpinner,
+                weightSpinner
         ));
         mainContainer.setOnClickListener(null);
         currencySpinner.setAdapter(SimpleSpinnerAdapter.createAdapter(getActivity(), listOfCurrency()));
@@ -74,7 +82,7 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         currencySpinner.setOnItemSelectedListener(onCurrencyChoosen(editable));
         weightSpinner.setOnItemSelectedListener(onWeightChoosen(editable));
         currencySpinner.setSelection(editable.getCurrencyMode() - SPINNER_MODE_OFFSET);
-        weightSpinner.setSelection(editable.getWeightMode() - SPINNER_MODE_OFFSET );
+        weightSpinner.setSelection(0);
         return view;
     }
 
@@ -84,11 +92,14 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
     }
 
 
-    private View.OnClickListener onConfirmButtonClickedListener(final WrongProductPriceWeightEditable editable,
-                                                                final EditText priceEditText,
-                                                                final EditText weightEditText,
-                                                                final Spinner priceSpinner,
-                                                                final Spinner weightSpinner) {
+    private View.OnClickListener onConfirmButtonClickedListener(
+            final WrongProductPriceWeightEditable editable,
+            final WrongProductPriceWeightEditable originalModel,
+            final EditText priceEditText,
+            final EditText weightEditText,
+            final Spinner priceSpinner,
+            final Spinner weightSpinner
+    ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,9 +119,9 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
                 );
 
                 editable.setProductWeight(
-                        weightSpinner.getSelectedItem()
+                        weightEditText.getText().toString()
                                 + " "
-                                + weightEditText.getText().toString());
+                                + weightSpinner.getSelectedItem());
                 editable.setProductPriceUnformatted(priceEditText.getText().toString());
                 editable.setProductWeightUnformatted(weightEditText.getText().toString());
                 editable.setWeightMode(
@@ -120,9 +131,16 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
                         weightSpinner.getSelectedItemPosition() + SPINNER_MODE_OFFSET
                 );
 
-                getTargetFragment().onActivityResult(
-                        FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE,
-                        Activity.RESULT_OK, new Intent());
+                if(editable.equals(originalModel)) {
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(),
+                            getString(R.string.error_no_change_price_weight)
+                    );
+                } else {
+                    getTargetFragment().onActivityResult(
+                            FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE,
+                            Activity.RESULT_OK, new Intent());
+                }
             }
         };
     }
