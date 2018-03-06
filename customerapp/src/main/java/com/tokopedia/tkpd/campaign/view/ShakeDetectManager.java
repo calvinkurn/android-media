@@ -62,13 +62,11 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
  */
     private boolean isShakeShakeEnable() {
-        // add here different conditions
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,false);
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
 
     }
 
     private boolean isAudioShakeEnable() {
-        // add here different conditions
         return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
 
     }
