@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 
 /**
@@ -28,6 +29,8 @@ public interface IShipmentDetailView extends CustomerView {
     void showPinPointChooserMap(ShipmentDetailData shipmentDetailData);
 
     void showPinPointMap(ShipmentDetailData shipmentDetailData);
+
+    void renderSelectedCourier(CourierItemData courierItemData);
 
     Activity getActivity();
 

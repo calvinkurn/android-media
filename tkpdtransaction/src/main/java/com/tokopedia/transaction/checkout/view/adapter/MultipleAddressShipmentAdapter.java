@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,6 +16,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
@@ -43,8 +43,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
-    private ShipmentDetailData shipmentDetailData;
-
     private MultipleAddressPriceSummaryData priceSummaryData;
 
     private MultipleAddressShipmentAdapterListener listener;
@@ -57,12 +55,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         this.listener = listener;
     }
 
-    public ShipmentDetailData getShipmentDetailData() {
-        return shipmentDetailData;
-    }
-
-    public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
-        this.shipmentDetailData = shipmentDetailData;
+    public void setShipmentDetailData(int position, ShipmentDetailData shipmentDetailData) {
+        this.addressDataList.get(position - HEADER_SIZE).setSelectedShipmentDetailData(shipmentDetailData);
     }
 
     @Override
@@ -183,14 +177,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                 + ", " + itemData.getAddressProvinceName());
         itemViewHolder.phoneNumber.setText(itemData.getRecipientPhoneNumber());
         itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
-        itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data));
-        itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
-        if (shipmentDetailData != null &&
-                shipmentDetailData.getSelectedCourier() != null) {
+        itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data, position));
+        itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data, position));
+        if (data.getSelectedShipmentDetailData() != null &&
+                data.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             itemViewHolder.chooseCourierButton.setVisibility(View.GONE);
-            itemViewHolder.tvSelectedShipment.setText(shipmentDetailData.getSelectedCourier().getName());
+            itemViewHolder.tvSelectedShipment.setText(
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getName());
             itemViewHolder.tvSelectedShipment.setVisibility(View.VISIBLE);
             itemViewHolder.ivChevronShipmentOption.setVisibility(View.VISIBLE);
         } else {
@@ -202,11 +197,12 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 //        renderPickupPoint(itemViewHolder, data);
     }
 
-    private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data) {
+    private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data,
+                                                               final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onChooseShipment(data);
+                listener.onChooseShipment(data, position);
             }
         };
     }
@@ -328,7 +324,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             productQty = itemView.findViewById(R.id.tv_product_total_item);
 
-            notesToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
+            notesToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
 
             notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
@@ -472,15 +468,20 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private boolean isShipmentDataInitiated(int i) {
-        return addressDataList.get(i).getShipmentCartData() != null;
+        return addressDataList.get(i).getSelectedShipmentDetailData() != null
+                ||
+                addressDataList.get(i)
+                        .getSelectedShipmentDetailData()
+                        .getShipmentCartData() != null;
     }
 
     private long calculateTotalShippingCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalProductPrice = totalProductPrice + addressDataList.get(i)
-                        .getShipmentCartData().getDeliveryPriceTotal();
+                totalProductPrice = totalProductPrice +
+                        getGeneratedShipmentCartData(addressDataList.get(i))
+                        .getDeliveryPriceTotal();
             }
         }
         return totalProductPrice;
@@ -490,8 +491,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         long totalInsuranceCost = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalInsuranceCost = totalInsuranceCost + addressDataList.get(i)
-                        .getShipmentCartData().getInsurancePrice();
+                totalInsuranceCost = totalInsuranceCost +
+                        getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice();
             }
         }
         return totalInsuranceCost;
@@ -501,8 +502,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         long totalAdditionalFee = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalAdditionalFee = totalAdditionalFee + addressDataList.get(i)
-                        .getShipmentCartData().getAdditionalFee();
+                totalAdditionalFee = totalAdditionalFee +
+                        getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
             }
         }
         return totalAdditionalFee;
@@ -518,8 +519,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        if (data.getShipmentCartData() != null)
-            return data.getProductPriceNumber() + data.getShipmentCartData()
+        if (getGeneratedShipmentCartData(data) != null)
+            return data.getProductPriceNumber() + getGeneratedShipmentCartData(data)
                     .getDeliveryPriceTotal();
         else return 0;
     }
@@ -529,13 +530,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         else return View.GONE;
     }
 
+    private ShipmentCartData getGeneratedShipmentCartData(MultipleAddressShipmentAdapterData data) {
+        return data.getSelectedShipmentDetailData().getShipmentCartData();
+    }
+
     private View.OnClickListener onChooseCourierClicked(
-            final MultipleAddressShipmentAdapterData data
+            final MultipleAddressShipmentAdapterData data, final int position
     ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onChooseShipment(data);
+                listener.onChooseShipment(data, position);
             }
         };
     }
@@ -580,7 +585,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                 List<MultipleAddressShipmentAdapterData> addressDataList,
                 MultipleAddressPriceSummaryData summaryData);
 
-        void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData);
+        void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 
         void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 

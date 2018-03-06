@@ -2,11 +2,15 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ShippingInfoCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -19,7 +23,7 @@ import java.util.List;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter{
+public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter {
 
     public MultipleAddressShipmentPresenter() {
 
@@ -30,26 +34,57 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                                                    MultipleAddressPriceSummaryData priceData) {
         CheckoutRequest.Builder checkoutRequest = new CheckoutRequest.Builder();
         List<DataCheckoutRequest> dataCheckoutRequests = new ArrayList<>();
-        for(int i = 0; i < shipmentData.size(); i++) {
+        for (int i = 0; i < shipmentData.size(); i++) {
+            MultipleAddressShipmentAdapterData currentShipmentAdapterData = shipmentData.get(i);
+            ShipmentDetailData currentShipmentDetailData = currentShipmentAdapterData
+                    .getSelectedShipmentDetailData();
+
             DataCheckoutRequest.Builder checkoutData = new DataCheckoutRequest.Builder();
-            List<ShopProductCheckoutRequest> shopCheckoutRequests = new ArrayList<>();
-            ShopProductCheckoutRequest.Builder shopCheckoutRequest =
-                    new ShopProductCheckoutRequest.Builder();
 
             List<ProductDataCheckoutRequest> productDataCheckoutRequests = new ArrayList<>();
             ProductDataCheckoutRequest.Builder productDataCheckoutRequest =
                     new ProductDataCheckoutRequest.Builder();
             productDataCheckoutRequests.add(productDataCheckoutRequest
-                    .productId(shipmentData.get(i).getProductId()).build());
+                    .productId(currentShipmentAdapterData.getProductId()).build());
 
+            ShopProductCheckoutRequest.Builder shopCheckoutBuilder;
+            shopCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
+                    .productData(productDataCheckoutRequests)
+                    .shippingInfo(setShippingInfoRequest(currentShipmentDetailData));
+            if (currentShipmentDetailData.getUseDropshipper())
+                shopCheckoutBuilder
+                        .dropshipData(setDropshipDataCheckoutRequest(currentShipmentDetailData));
 
-            /*shopCheckoutRequest.productData(productDataCheckoutRequests).shippingInfo()*/
-            /*checkoutData.addressId(Integer
+            shopCheckoutBuilder
+                    .fcancelPartial(switchValue(currentShipmentDetailData.getUsePartialOrder()));
+            shopCheckoutBuilder
+                    .finsurance(switchValue(currentShipmentDetailData.getUseInsurance()));
+            shopCheckoutBuilder
+                    .isDropship(switchValue(currentShipmentDetailData.getUseDropshipper()));
+            shopCheckoutBuilder.shopId(currentShipmentAdapterData.getStore().getId());
+
+            List<ShopProductCheckoutRequest> shopCheckoutRequests = new ArrayList<>();
+            shopCheckoutRequests.add(shopCheckoutBuilder.build());
+
+            checkoutData.addressId(Integer
                     .parseInt(shipmentData.get(i).getItemData().getAddressId()))
-                    .shopProducts().build();*/
+                    .shopProducts(shopCheckoutRequests).build();
+            dataCheckoutRequests.add(checkoutData.build());
         }
-        checkoutRequest.data(dataCheckoutRequests).build();
-        return null;
+        return checkoutRequest.data(dataCheckoutRequests).build();
+    }
+
+    private DropshipDataCheckoutRequest setDropshipDataCheckoutRequest(ShipmentDetailData data) {
+        return new DropshipDataCheckoutRequest.Builder()
+                .name(data.getDropshipperName())
+                .telpNo(data.getDropshipperPhone()).build();
+    }
+
+    private ShippingInfoCheckoutRequest setShippingInfoRequest(ShipmentDetailData data) {
+        return new ShippingInfoCheckoutRequest.Builder()
+                .shippingId(data.getSelectedCourier().getShipperId())
+                .spId(data.getSelectedShipment().getServiceId())
+                .build();
     }
 
     @Override
@@ -61,7 +96,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             for (int shopIndex = 0; shopIndex < groupShopList.size(); shopIndex++) {
                 GroupShop currentGroupShop = groupShopList.get(shopIndex);
                 List<Product> productList = currentGroupShop.getProducts();
-                for(int productIndex = 0; productIndex < productList.size(); productIndex++) {
+                for (int productIndex = 0; productIndex < productList.size(); productIndex++) {
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
@@ -75,6 +110,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
                     addressItemData.setProductWeight(currentProduct.getProductWeightFmt());
+                    addressItemData.setProductRawWeight(currentProduct.getProductWeight());
                     addressItemData.setProductNotes(currentProduct.getProductNotes());
                     addressItemData.setProductQty(
                             String.valueOf(currentProduct.getProductQuantity())
@@ -97,11 +133,19 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     addressItemData.setAddressCountryName(currentAddress.getUserAddress()
                             .getCountry());
                     adapterData.setItemData(addressItemData);
+                    adapterData.setShipmentCartData(new ShipmentRatesDataMapper()
+                            .getShipmentCartData(data, currentAddress.getUserAddress(),
+                                    currentGroupShop, adapterData));
                     adapterDataList.add(adapterData);
                 }
             }
         }
         return adapterDataList;
+    }
+
+    private int switchValue(boolean isTrue) {
+        if (isTrue) return 1;
+        else return 0;
     }
 
 }
