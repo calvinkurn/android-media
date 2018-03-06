@@ -19,11 +19,17 @@ public interface FlightBookingListPassengerContract {
 
         FlightBookingPassengerViewModel getCurrentPassenger();
 
+        void setCurrentPassanger(FlightBookingPassengerViewModel selectedPassenger);
+
         String getSalutationString(int resId);
 
         void onSelectPassengerSuccess(FlightBookingPassengerViewModel selectedPassenger);
 
         String getSelectedPassengerId();
+
+        void showPassengerSelectedError(String passengerType);
+
+        String getString(int resId);
     }
 
     interface Presenter {
@@ -34,5 +40,7 @@ public interface FlightBookingListPassengerContract {
         void selectPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
         void onDestroyView();
+
+        void deletePassenger(String passengerId);
     }
 }

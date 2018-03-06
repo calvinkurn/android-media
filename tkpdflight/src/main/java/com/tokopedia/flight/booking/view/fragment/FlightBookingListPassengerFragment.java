@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
@@ -98,19 +100,8 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     }
 
     @Override
-    public boolean isItemChecked(FlightBookingPassengerViewModel selectedItem) {
-        return presenter.isPassengerSame(selectedItem);
-    }
-
-    @Override
-    public void resetItemCheck() {
-
-    }
-
-    @Override
     public void onItemClicked(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
-        selectedPassenger = flightBookingPassengerViewModel;
-        presenter.selectPassenger(selectedPassenger);
+        presenter.selectPassenger(flightBookingPassengerViewModel);
     }
 
     @Override
@@ -143,6 +134,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     }
 
     @Override
+    public void setCurrentPassanger(FlightBookingPassengerViewModel selectedPassenger) {
+        this.selectedPassenger = selectedPassenger;
+    }
+
+    @Override
     public String getSalutationString(int resId) {
         return getString(resId);
     }
@@ -164,7 +160,17 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         return selectedPassengerId;
     }
 
+    @Override
+    public void showPassengerSelectedError(String passengerType) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), String.format(getString(R.string.flight_booking_list_passenger_selected_error), passengerType));
+    }
+
     private void onSelectNewPassenger() {
         presenter.selectPassenger(null);
+    }
+
+    @Override
+    public void deletePassenger(String passengerId) {
+        presenter.deletePassenger(passengerId);
     }
 }

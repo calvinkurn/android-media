@@ -333,4 +333,5 @@
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
     <string name="pilih_penumpang_title">Pilih Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
+    <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
 </resources>

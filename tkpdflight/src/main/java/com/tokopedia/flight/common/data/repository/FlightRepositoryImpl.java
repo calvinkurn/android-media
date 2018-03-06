@@ -11,6 +11,7 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.FlightPassengerDataListSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -344,5 +346,10 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<Boolean> deleteAllListPassenger() {
         return flightPassengerDataListSource.deleteAllListPassenger();
+    }
+
+    @Override
+    public Observable<Response<String>> deletePassenger(DeletePassengerRequest request) {
+        return flightPassengerDataListSource.deletePassenger(request);
     }
 }

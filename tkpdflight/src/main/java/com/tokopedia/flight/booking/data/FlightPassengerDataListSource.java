@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.flight.booking.data.cache.FlightPassengerDataListCacheSource;
 import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloudSource;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.db.FlightPassengerDataListDBSource;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -56,6 +58,10 @@ public class FlightPassengerDataListSource extends DataListSource<SavedPassenger
 
     public Observable<Boolean> deleteAllListPassenger() {
         return flightPassengerDataListDBSource.deleteAll();
+    }
+
+    public Observable<Response<String>> deletePassenger(DeletePassengerRequest deletePassengerRequest) {
+        return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest);
     }
 
     private Observable<List<FlightPassengerDB>> getPassengerListFromCloud() {

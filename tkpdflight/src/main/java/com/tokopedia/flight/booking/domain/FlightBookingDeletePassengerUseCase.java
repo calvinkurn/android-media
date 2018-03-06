@@ -1,0 +1,49 @@
+package com.tokopedia.flight.booking.domain;
+
+import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * @author by furqan on 05/03/18.
+ */
+
+public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String>> {
+    private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
+    private FlightRepository flightRepository;
+
+    @Inject
+    public FlightBookingDeletePassengerUseCase(FlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
+    }
+
+    @Override
+    public Observable<Response<String>> createObservable(RequestParams requestParams) {
+        return createRequest(requestParams)
+                .flatMap(new Func1<DeletePassengerRequest, Observable<Response<String>>>() {
+                    @Override
+                    public Observable<Response<String>> call(DeletePassengerRequest deletePassengerRequest) {
+                        return flightRepository.deletePassenger(deletePassengerRequest);
+                    }
+                });
+    }
+
+    private Observable<DeletePassengerRequest> createRequest(RequestParams requestParams) {
+        DeletePassengerRequest request = new DeletePassengerRequest();
+        request.setId(requestParams.getString(PARAM_PASSENGER_ID, ""));
+        return Observable.just(request);
+    }
+
+    public RequestParams generateRequest(String passengerId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PASSENGER_ID, passengerId);
+        return requestParams;
+    }
+}

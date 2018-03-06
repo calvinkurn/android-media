@@ -1,7 +1,9 @@
 package com.tokopedia.flight.booking.data.cloud;
 
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 
@@ -35,5 +37,9 @@ public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource
                         return Observable.just(flightDataResponseResponse.body().getData());
                     }
                 });
+    }
+
+    public Observable<Response<String>> deletePassenger(DeletePassengerRequest request) {
+        return this.flightApi.deleteSavedPassengerData(new DataRequest<>(request));
     }
 }

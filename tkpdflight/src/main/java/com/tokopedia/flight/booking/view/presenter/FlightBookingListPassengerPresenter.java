@@ -2,6 +2,9 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
+import com.tokopedia.flight.booking.domain.FlightBookingDeletePassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
@@ -14,6 +17,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,6 +40,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase;
     private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
+    private FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase;
+    private FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
 
     private static int TWELVE_YEARS = 12;
     private static int TWO_YEARS = 2;
@@ -45,9 +51,13 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     @Inject
     public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase,
-                                               FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase) {
+                                               FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase,
+                                               FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase,
+                                               FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase) {
         this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
         this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
+        this.flightBookingDeletePassengerUseCase = flightBookingDeletePassengerUseCase;
+        this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -93,10 +103,26 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     @Override
     public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
-        if (selectedPassenger != null) {
-            onSelectPassenger(selectedPassenger);
+        if (getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
+            if (selectedPassenger != null) {
+                onSelectPassenger(selectedPassenger);
+            } else {
+                onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
+            }
         } else {
-            onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
+            String passengerType = "";
+            switch (getView().getCurrentPassenger().getType()) {
+                case FlightBookingPassenger.ADULT:
+                    passengerType = getView().getString(R.string.select_passenger_adult_title);
+                    break;
+                case FlightBookingPassenger.CHILDREN:
+                    passengerType = getView().getString(R.string.select_passenger_children_title);
+                    break;
+                case FlightBookingPassenger.INFANT:
+                    passengerType = getView().getString(R.string.select_passenger_infant_title);
+                    break;
+            }
+            getView().showPassengerSelectedError(passengerType);
         }
     }
 
@@ -105,6 +131,51 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
+    }
+
+    @Override
+    public void deletePassenger(String passengerId) {
+        flightBookingDeletePassengerUseCase.execute(
+                flightBookingDeletePassengerUseCase.generateRequest(passengerId),
+                new Subscriber<Response<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Response<String> response) {
+                        clearDatabase();
+                    }
+                }
+        );
+    }
+
+    private void clearDatabase() {
+        flightBookingDeleteAllPassengerListUseCase.execute(
+                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        getSavedPassengerList();
+                    }
+                }
+        );
     }
 
     private void getSavedPassengerList() {
@@ -174,6 +245,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
                             @Override
                             public void onNext(Boolean aBoolean) {
+                                getView().setCurrentPassanger(flightBookingPassengerViewModel);
                                 getView().onSelectPassengerSuccess(flightBookingPassengerViewModel);
                             }
                         })
@@ -237,14 +309,19 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         if (birthdate != null) {
             Date now = FlightDateUtil.getCurrentDate();
             Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = now.getTime() - birth.getTime();
+            long diff = birth.getTime() - now.getTime();
+            if (diff < 0) {
+                diff *= -1;
+            }
             long year = (1000 * 60 * 60 * 24 * 365);
+            long twelveYear = TWELVE_YEARS * year;
+            long twoYear = TWO_YEARS * year;
 
-            if (diff > (TWELVE_YEARS * year)) {
+            if (diff > twelveYear) {
                 return ADULT;
-            } else if (diff > (TWO_YEARS * year)) {
+            } else if (diff > twoYear) {
                 return CHILDREN;
-            } else if (diff < (TWO_YEARS * year)) {
+            } else if (diff < twoYear) {
                 return INFANT;
             }
         }

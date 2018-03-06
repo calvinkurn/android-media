@@ -24,8 +24,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     public static int LAYOUT = R.layout.item_flight_booking_saved_passenger;
 
     public interface ListenerCheckedSavedPassenger {
-        boolean isItemChecked(FlightBookingPassengerViewModel selectedItem);
-        void resetItemCheck();
+        void deletePassenger(String passengerId);
     }
 
     private ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
@@ -34,7 +33,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     private TextView txtPassengerName;
     private ImageView imgPassengerType, imgEdit, imgDelete;
 
-    public FlightBookingListPassengerViewHolder(View itemView, ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
+    public FlightBookingListPassengerViewHolder(View itemView, final ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         super(itemView);
         txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
         imgPassengerType = itemView.findViewById(R.id.image_passenger_type);
@@ -45,7 +44,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     }
 
     @Override
-    public void bind(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+    public void bind(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
 
         txtPassengerName.setText(String.format(
                 "%d. %s. %s %s",
@@ -55,6 +54,14 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
 
-        imgPassengerType.setImageDrawable(VectorDrawableCompat.create(context.getResources(), flightBookingPassengerViewModel.getPassengerDrawable(), context.getTheme()));
+        imgPassengerType.setImageDrawable(VectorDrawableCompat.create(context.getResources(),
+                flightBookingPassengerViewModel.getPassengerDrawable(), context.getTheme()));
+
+        imgDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listenerCheckedSavedPassenger.deletePassenger(flightBookingPassengerViewModel.getPassengerId());
+            }
+        });
     }
 }
