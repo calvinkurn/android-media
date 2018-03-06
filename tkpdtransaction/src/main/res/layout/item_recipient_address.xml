@@ -15,13 +15,12 @@
 
         <TextView
             android:id="@+id/tv_address_name"
+            style="@style/TextLabelSmallGrey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginEnd="@dimen/margin_ms"
             android:layout_marginRight="@dimen/margin_ms"
-            android:textColor="@color/black_38"
-            android:textSize="12sp"
             tools:ignore="SmallSp"
             tools:text="Alamat Kantor" />
 
