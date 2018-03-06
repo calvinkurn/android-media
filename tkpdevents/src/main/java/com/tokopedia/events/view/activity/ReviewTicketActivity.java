@@ -225,7 +225,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
-        if (timerange.length() == 0) {
+        if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
         } else {
             setHolder(R.drawable.ic_time, timerange, timeHolder);
@@ -391,6 +391,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
+        mPresenter.updateEmail(tvEmailID.getText().toString());
+        mPresenter.updateNumber(tvTelephone.getText().toString());
         mPresenter.proceedToPayment();
     }
 
@@ -403,6 +405,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     void updateEmail() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!tvEmailID.isEnabled()) {
+            tvTelephone.setEnabled(false);
+            tvTelephone.setTextIsSelectable(false);
+            tvTelephone.setFocusable(false);
+            tvTelephone.setInputType(InputType.TYPE_NULL);
             tvEmailID.setEnabled(true);
             tvEmailID.setTextIsSelectable(true);
             tvEmailID.setFocusable(true);
@@ -428,6 +434,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     void updateNumber() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!tvTelephone.isEnabled()) {
+            tvEmailID.setEnabled(false);
+            tvEmailID.setTextIsSelectable(false);
+            tvEmailID.setFocusable(false);
+            tvEmailID.setInputType(InputType.TYPE_NULL);
             tvTelephone.setEnabled(true);
             tvTelephone.setTextIsSelectable(true);
             tvTelephone.setSelection(tvTelephone.getText().length());

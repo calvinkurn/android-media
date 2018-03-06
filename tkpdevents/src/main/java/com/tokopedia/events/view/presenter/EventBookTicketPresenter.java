@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -57,6 +56,7 @@ public class EventBookTicketPresenter
     private List<SchedulesViewModel> schedulesList;
     private PostValidateShowUseCase postValidateShowUseCase;
     private String eventTitle;
+    private String selectedPackageDate;
     private int hasSeatLayout;
     private FragmentAddTickets mChildFragment;
     private int px;
@@ -93,6 +93,8 @@ public class EventBookTicketPresenter
         hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         generateLocationDateModels();
         getView().renderFromDetails(dataModel);
+        if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
@@ -180,6 +182,7 @@ public class EventBookTicketPresenter
     @Override
     public void payTicketsClick(String title) {
         eventTitle = title;
+        selectedPackageViewModel.setTimeRange(selectedPackageDate);
         ValidateShow validateShow = new ValidateShow();
         validateShow.setQuantity(selectedPackageViewModel.getSelectedQuantity());
         validateShow.setGroupId(selectedPackageViewModel.getProductGroupId());
@@ -293,7 +296,10 @@ public class EventBookTicketPresenter
     }
 
     public void onClickLocationDate(LocationDateModel model, int index) {
-        getView().setLocationDate(model.getmLocation(), model.getDate(), dataModel.getSchedulesViewModels().get(index));
+        SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
+        getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
+        if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
     }
 
@@ -302,7 +308,10 @@ public class EventBookTicketPresenter
         for (SchedulesViewModel viewModel : dataModel.getSchedulesViewModels()) {
             LocationDateModel model = new LocationDateModel();
             model.setmLocation(viewModel.getCityName());
-            model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+            if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+            else
+                model.setDate("");
             locationDateModels.add(model);
         }
     }

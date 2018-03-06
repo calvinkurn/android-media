@@ -141,6 +141,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
             @Override
             public void onCompleted() {
                 Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                mSelectedSeatViewModel.setQuantity(quantity);
+                selectedpkgViewModel.setSelectedQuantity(quantity);
                 reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
                 reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
                 getView().navigateToActivityRequest(reviewTicketIntent, 100);
