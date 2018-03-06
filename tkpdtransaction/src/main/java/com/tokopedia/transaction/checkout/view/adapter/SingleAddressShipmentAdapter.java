@@ -173,7 +173,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         mShipmentCost.setShippingFee(0);
         mShipmentCost.setInsuranceFee(0);
-
         for (Object item : mShipmentDataList) {
             if (item instanceof CartSellerItemModel) {
                 CartSellerItemModel cartSellerItemModel = (CartSellerItemModel) item;

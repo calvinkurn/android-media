@@ -4,17 +4,13 @@
     android:id="@+id/rl_promo_suggestion_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp"
+    android:layout_margin="12dp"
     android:background="@color/white">
 
     <ImageView android:id="@+id/iv_close_banner"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_margin="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="10dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         tools:ignore="ContentDescription"
@@ -25,16 +21,12 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/iv_close_banner"
         android:layout_toStartOf="@id/iv_close_banner"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp">
+        android:layout_margin="12dp">
 
         <ImageView android:id="@+id/iv_image_shipping_car"
             android:layout_width="54dp"
             android:layout_height="26dp"
-            android:layout_marginTop="16dp"
+            android:layout_centerVertical="true"
             tools:ignore="ContentDescription"
             android:src="@drawable/ic_shipping_car"
             android:visibility="gone" />
@@ -44,9 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_image_shipping_car"
             android:layout_toEndOf="@id/iv_image_shipping_car"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:textSize="11sp"
             tools:ignore="SmallSp"
             android:text="Potensi mendapatkan Gratis Ongkir sebesar"/>
@@ -57,13 +46,10 @@
             android:layout_toRightOf="@id/iv_image_shipping_car"
             android:layout_toEndOf="@id/iv_image_shipping_car"
             android:layout_below="@id/tv_text_promo_suggestion_description"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:textColor="@color/black_70"
             android:textSize="11sp"
             tools:ignore="SmallSp"
             android:text="Rp35.000."/>
 
     </RelativeLayout>
-
 </RelativeLayout>

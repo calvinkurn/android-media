@@ -37,6 +37,7 @@ import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -207,7 +208,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     protected void setViewListener() {
         mTvTotalPayment.setText("-");
-        mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
+        mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
     }
 
     /**
@@ -304,12 +305,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-        for (Object item : mShipmentDataList) {
-            if (item instanceof CartPromoSuggestion) {
-                mShipmentDataList.remove(item);
+        ListIterator<Object> iterator = mShipmentDataList.listIterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() instanceof CartPromoSuggestion) {
+                iterator.remove();
             }
         }
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+        mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
     }
 
     @Override
@@ -359,7 +361,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                             CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
 
                     updateSelectedAddress(selectedAddress);
-                    mSingleAddressShipmentPresenter.getCartShipmentData(mShipmentDataList);
+                    mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
                     break;
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
