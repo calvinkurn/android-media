@@ -26,6 +26,7 @@ import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSe
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -144,14 +145,18 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     private ProductVariantOptionParent collectListDataFromView() {
         // get data from cache and map to the original source
-        //TODO to increase perfomance, don't use getOriginalProductOptionChild loop. use hashmap instead.
         List<ProductVariantOption> productVariantOptionList = getCacheFragment().getItemList();
         List<ProductVariantOptionChild> productVariantOptionChildList = new ArrayList<>();
+
+        HashMap<String, Integer> hashMapValueToIndex = new HashMap<>();
+        createMap(productVariantOptionParent.getProductVariantOptionChild(), hashMapValueToIndex);
         for (int i = 0, sizei = productVariantOptionList.size(); i < sizei; i++) {
             ProductVariantOption productVariantOption = productVariantOptionList.get(i);
 
             //we get the original to get the pvo id and original images (in case we edit, so we do not lose the original attribute)
-            ProductVariantOptionChild originalProductOptionChild = getOriginalProductOptionChild(productVariantOption.getValue());
+            int index = hashMapValueToIndex.get(productVariantOption.getValue());
+            ProductVariantOptionChild originalProductOptionChild =
+                    productVariantOptionParent.getProductVariantOptionChild().get(index);
             int originalPvo = 0;
             List<ProductPictureViewModel> originalPictureList = null;
             if (originalProductOptionChild!= null) {
@@ -171,18 +176,11 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         return productVariantOptionParent;
     }
 
-    /**
-     * get original selection nbased on value
-     * for example: "Merah" -> pvo:1002, image:...
-     */
-    private ProductVariantOptionChild getOriginalProductOptionChild(String value) {
-        List<ProductVariantOptionChild> productVariantOptionChildList = productVariantOptionParent.getProductVariantOptionChild();
+    private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList,
+                           HashMap<String, Integer> hashMapValueToIndex){
         for (int i = 0, sizei = productVariantOptionChildList.size(); i< sizei; i++) {
-            if (value.equalsIgnoreCase(productVariantOptionChildList.get(i).getValue())) {
-                return productVariantOptionChildList.get(i);
-            }
+            hashMapValueToIndex.put(productVariantOptionChildList.get(i).getValue(), i);
         }
-        return null;
     }
 
     @Override

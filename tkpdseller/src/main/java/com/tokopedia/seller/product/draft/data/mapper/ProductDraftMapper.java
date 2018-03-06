@@ -20,6 +20,13 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewMode
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -89,10 +96,60 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 //        domainModel.setServerId(draftModel.getServerId());
         productViewModel.setProductId(draftModel.getProductId());
         productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
-        //todo hendry map old draft model to new draft model variant
-//        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
-//        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
+
+        productViewModel.setProductVariant(mapProductDraftOldVersion(draftModel));
         return productViewModel;
+    }
+
+    private ProductVariantViewModel mapProductDraftOldVersion(ProductDraftModel draftModel) {
+        ProductVariantDataSubmit productVariantDataSubmit = draftModel.getProductVariantDataSubmit();
+        ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
+
+        String level1 = "";
+        String level2 = "";
+        String variantStringSelection = draftModel.getVariantStringSelection();
+        if (variantStringSelection.contains(" ")) { // means it is not "Pilih"
+            String[] variantDimensionSplit = variantStringSelection.split("\n");
+
+            if (variantDimensionSplit.length >= 1) {
+                String[] dimen1Split = variantDimensionSplit[0].split(" ",2);
+                if (dimen1Split.length > 1) {
+                    level1 = dimen1Split[1];
+                }
+            }
+            if (variantDimensionSplit.length >= 2) {
+                String[] dimen2Split = variantDimensionSplit[1].split(" ",2);
+                if (dimen2Split.length > 1) {
+                    level2 = dimen2Split[1];
+                }
+            }
+        }
+
+        List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
+        if (productVariantUnitSubmitList != null && productVariantUnitSubmitList.size() > 0) {
+            List<ProductVariantOptionParent> productVariantOptionParentList = new ArrayList<>();
+            for (int i = 0, sizei = productVariantUnitSubmitList.size(); i<sizei; i++) {
+                ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
+
+                ProductVariantOptionParent productVariantOptionParent = new ProductVariantOptionParent();
+                productVariantOptionParent.setPosition(productVariantUnitSubmit.getPosition());
+                productVariantOptionParent.setV((int)productVariantUnitSubmit.getVariantId());
+                productVariantOptionParent.setVu((int)productVariantUnitSubmit.getVariantUnitId());
+                productVariantOptionParent.setName(level1);
+
+                List<ProductVariantOptionSubmit> productVariantOptionSubmitList =
+                        productVariantUnitSubmit.getProductVariantOptionSubmitList();
+                List<ProductVariantOptionChild> productVariantOptionChildList = new ArrayList<>();
+                //TODO map List<ProductVariantOptionSubmit> to OptionChild, then add to productVariantOptionParent
+                productVariantOptionParentList.add(productVariantOptionParent);
+            }
+            productVariantViewModel.setVariantOptionParent(productVariantOptionParentList);
+        }
+
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = new ArrayList<>();
+        //TODO map the combination model to the new structure.
+        productVariantViewModel.setProductVariant(productVariantCombinationViewModelList);
+        return productVariantViewModel;
     }
 
     private ProductPreOrderViewModel generateProductPreorder(ProductDraftModel draftModel) {

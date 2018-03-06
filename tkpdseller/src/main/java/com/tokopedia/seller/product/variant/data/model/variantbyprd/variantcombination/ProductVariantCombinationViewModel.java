@@ -38,8 +38,8 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     private transient String level1String;
     private transient String level2String;
 
-    public ProductVariantCombinationViewModel(double priceVar, int stock, String sku, String level1String, String level2String) {
-        this.st = ACTIVE_STATUS;
+    public ProductVariantCombinationViewModel(boolean isStatusActive, double priceVar, int stock, String sku, String level1String, String level2String) {
+        setActive(isStatusActive);
         this.priceVar = priceVar;
         this.stock = stock;
         this.sku = sku;
@@ -51,8 +51,8 @@ public class ProductVariantCombinationViewModel implements Parcelable{
         return st == ACTIVE_STATUS;
     }
 
-    public boolean hasStock(){
-        return st == ACTIVE_STATUS || stock > 0;
+    public boolean alwaysAvailable(){
+        return st == ACTIVE_STATUS && stock == 0;
     }
 
     public int getSt() {

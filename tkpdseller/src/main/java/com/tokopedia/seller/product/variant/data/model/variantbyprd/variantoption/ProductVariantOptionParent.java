@@ -29,7 +29,6 @@ public class ProductVariantOptionParent implements Parcelable{
     @Expose
     private List<ProductVariantOptionChild> productVariantOptionChild;
 
-    //TODO from catalog
     @SerializedName("name")
     @Expose
     private String name; // ex; warna
