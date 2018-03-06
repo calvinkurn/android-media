@@ -77,7 +77,10 @@ public class LocationDateListAdapter extends RecyclerView.Adapter<RecyclerView.V
             this.valueItem = value;
             this.mPosition = position;
             tvLocation.setText(valueItem.getmLocation());
-            tvDayTime.setText(valueItem.getDate());
+            if (value.getDate() != null && value.getDate().length() > 1)
+                tvDayTime.setText(valueItem.getDate());
+            else
+                tvDayTime.setVisibility(View.GONE);
         }
 
         @OnClick(R2.id.location_date_item)

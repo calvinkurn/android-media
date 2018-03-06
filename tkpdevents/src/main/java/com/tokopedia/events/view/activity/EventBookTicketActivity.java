@@ -130,7 +130,10 @@ public class EventBookTicketActivity
             tvUbahJadwal.setVisibility(View.GONE);
         }
         tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-        tvDate.setText(Utils.convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+        if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
+            tvDate.setText(Utils.convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+        else
+            tvDate.setVisibility(View.GONE);
         setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
     }
 
@@ -205,7 +208,12 @@ public class EventBookTicketActivity
     @Override
     public void setLocationDate(String location, String date, SchedulesViewModel datas) {
         tvLocation.setText(location);
-        tvDate.setText(date);
+        if (date != null && date.length() > 1) {
+            tvDate.setText(date);
+            tvDate.setVisibility(View.VISIBLE);
+        } else {
+            tvDate.setVisibility(View.GONE);
+        }
         setFragmentData(datas);
         if (locationFragment != null)
             locationFragment.dismiss();

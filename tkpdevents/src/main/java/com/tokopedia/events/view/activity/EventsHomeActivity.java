@@ -154,11 +154,6 @@ public class EventsHomeActivity extends TActivity
     }
 
     @Override
-    public int getBannerPosition() {
-        return mBannnerPos;
-    }
-
-    @Override
     public View getRootView() {
         return mainContent;
     }

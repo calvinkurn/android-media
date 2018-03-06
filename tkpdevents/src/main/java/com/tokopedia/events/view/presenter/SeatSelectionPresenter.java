@@ -9,6 +9,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -64,29 +65,40 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     public void getProfile() {
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
+        getView().showProgressBar();
+        if (!SessionHandler.isV4Login(getView().getActivity())) {
+            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                    getLoginIntent(getView().getActivity());
+            getView().navigateToActivityRequest(intent, 1099);
+        } else {
+            profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase", "ON ERROR");
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().getActivity().startActivity(intent);
-            }
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.d("ProfileUseCase", "ON ERROR");
+                    throwable.printStackTrace();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getProfile();
+                                }
+                            });
+                }
 
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                number = profileModel.getProfileData().getUserInfo().getUserPhone();
-                getView().hideProgressBar();
-            }
-        });
+                @Override
+                public void onNext(ProfileModel model) {
+                    profileModel = model;
+                    email = profileModel.getProfileData().getUserInfo().getUserEmail();
+                    number = profileModel.getProfileData().getUserInfo().getUserPhone();
+                    getView().hideProgressBar();
+                }
+            });
+        }
     }
 
     @Override
@@ -117,6 +129,18 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode) {
+        if (requestCode == 1099) {
+            if (SessionHandler.isV4Login(getView().getActivity())) {
+                getProfile();
+            } else {
+                getView().hideProgressBar();
+                getView().showMessage("Failed to Login, Please try again");
+            }
+        }
+    }
+
     public void setTicketPrice(int numOfTickets) {
         quantity = numOfTickets;
         getView().setTicketPrice(numOfTickets);
@@ -141,6 +165,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
             @Override
             public void onCompleted() {
                 Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                mSelectedSeatViewModel.setQuantity(quantity);
+                selectedpkgViewModel.setSelectedQuantity(quantity);
                 reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
                 reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
                 getView().navigateToActivityRequest(reviewTicketIntent, 100);
@@ -221,7 +247,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         address.setName("");
         address.setCity("");
         address.setEmail(this.email);
-        address.setMobileNumber(this.number);
+        address.setMobile(this.number);
         address.setLatitude("");
         address.setLongitude("");
         meta.setEntityAddress(address);

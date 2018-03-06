@@ -83,10 +83,6 @@ public class SelectedSeatViewModel implements Parcelable {
         this.areaId = areaId;
     }
 
-
-    public SelectedSeatViewModel() {
-
-    }
     @Override
     public int describeContents() {
         return 0;
@@ -94,8 +90,8 @@ public class SelectedSeatViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.quantity);
-        dest.writeValue(this.price);
+        dest.writeInt(this.quantity);
+        dest.writeInt(this.price);
         dest.writeStringList(this.areaCodes);
         dest.writeStringList(this.seatIds);
         dest.writeStringList(this.seatRowIds);
@@ -103,10 +99,12 @@ public class SelectedSeatViewModel implements Parcelable {
         dest.writeString(this.areaId);
     }
 
+    public SelectedSeatViewModel() {
+    }
 
-    protected  SelectedSeatViewModel(Parcel in) {
-        this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.price = (Integer) in.readValue(Integer.class.getClassLoader());
+    protected SelectedSeatViewModel(Parcel in) {
+        this.quantity = in.readInt();
+        this.price = in.readInt();
         this.areaCodes = in.createStringArrayList();
         this.seatIds = in.createStringArrayList();
         this.seatRowIds = in.createStringArrayList();
@@ -114,7 +112,7 @@ public class SelectedSeatViewModel implements Parcelable {
         this.areaId = in.readString();
     }
 
-    public static final Creator<SelectedSeatViewModel> CREATOR = new Creator<SelectedSeatViewModel>() {
+    public static final Parcelable.Creator<SelectedSeatViewModel> CREATOR = new Parcelable.Creator<SelectedSeatViewModel>() {
         @Override
         public SelectedSeatViewModel createFromParcel(Parcel source) {
             return new SelectedSeatViewModel(source);

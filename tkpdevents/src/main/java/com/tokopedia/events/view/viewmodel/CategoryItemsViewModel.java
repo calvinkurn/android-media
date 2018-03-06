@@ -9,10 +9,10 @@ import android.os.Parcelable;
 
 public class CategoryItemsViewModel implements Parcelable {
 
-    private Integer id;
-    private Integer parentId;
-    private Integer categoryId;
-    private Integer providerId;
+    private int id;
+    private int parentId;
+    private int categoryId;
+    private int providerId;
     private String childCategoryIds;
     private String cityIds;
     private String providerProductId;
@@ -42,31 +42,31 @@ public class CategoryItemsViewModel implements Parcelable {
     private String displayTags;
     private String promotionText;
     private String autocode;
-    private Integer convenienceFee;
-    private Integer mrp;
-    private Integer salesPrice;
-    private Integer seatChartTypeId;
-    private Integer hasSeatLayout;
-    private Integer form;
-    private Integer priority;
-    private Integer quantity;
-    private Integer soldQuantity;
-    private Integer sellRate;
-    private Integer thumbsUp;
-    private Integer thumbsDown;
-    private Integer rating;
-    private Integer isFeatured;
-    private Integer isPromo;
-    private Integer isFoodAvailable;
-    private Integer isSearchable;
-    private Integer isTop;
-    private Integer usePdf;
-    private Integer status;
-    private Integer redirect;
-    private Integer minStartDate;
-    private Integer maxEndDate;
-    private Integer saleStartDate;
-    private Integer saleEndDate;
+    private int convenienceFee;
+    private int mrp;
+    private int salesPrice;
+    private int seatChartTypeId;
+    private int hasSeatLayout;
+    private int form;
+    private int priority;
+    private int quantity;
+    private int soldQuantity;
+    private int sellRate;
+    private int thumbsUp;
+    private int thumbsDown;
+    private int rating;
+    private int isFeatured;
+    private int isPromo;
+    private int isFoodAvailable;
+    private int isSearchable;
+    private int isTop;
+    private int usePdf;
+    private int status;
+    private int redirect;
+    private int minStartDate;
+    private int maxEndDate;
+    private int saleStartDate;
+    private int saleEndDate;
     private String customLabels;
     private String minStartTime;
     private String maxEndTime;
@@ -80,35 +80,35 @@ public class CategoryItemsViewModel implements Parcelable {
     public CategoryItemsViewModel() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getParentId() {
+    public int getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(int parentId) {
         this.parentId = parentId;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
-    public Integer getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(Integer providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 
@@ -344,203 +344,203 @@ public class CategoryItemsViewModel implements Parcelable {
         this.autocode = autocode;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSeatChartTypeId() {
+    public int getSeatChartTypeId() {
         return seatChartTypeId;
     }
 
-    public void setSeatChartTypeId(Integer seatChartTypeId) {
+    public void setSeatChartTypeId(int seatChartTypeId) {
         this.seatChartTypeId = seatChartTypeId;
     }
 
-    public Integer getHasSeatLayout() {
+    public int getHasSeatLayout() {
         return hasSeatLayout;
     }
 
-    public void setHasSeatLayout(Integer hasSeatLayout) {
+    public void setHasSeatLayout(int hasSeatLayout) {
         this.hasSeatLayout = hasSeatLayout;
     }
 
-    public Integer getForm() {
+    public int getForm() {
         return form;
     }
 
-    public void setForm(Integer form) {
+    public void setForm(int form) {
         this.form = form;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Integer getSoldQuantity() {
+    public int getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
+    public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
-    public Integer getSellRate() {
+    public int getSellRate() {
         return sellRate;
     }
 
-    public void setSellRate(Integer sellRate) {
+    public void setSellRate(int sellRate) {
         this.sellRate = sellRate;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Integer getIsFeatured() {
+    public int getIsFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
+    public void setIsFeatured(int isFeatured) {
         this.isFeatured = isFeatured;
     }
 
-    public Integer getIsPromo() {
+    public int getIsPromo() {
         return isPromo;
     }
 
-    public void setIsPromo(Integer isPromo) {
+    public void setIsPromo(int isPromo) {
         this.isPromo = isPromo;
     }
 
-    public Integer getIsFoodAvailable() {
+    public int getIsFoodAvailable() {
         return isFoodAvailable;
     }
 
-    public void setIsFoodAvailable(Integer isFoodAvailable) {
+    public void setIsFoodAvailable(int isFoodAvailable) {
         this.isFoodAvailable = isFoodAvailable;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getIsTop() {
+    public int getIsTop() {
         return isTop;
     }
 
-    public void setIsTop(Integer isTop) {
+    public void setIsTop(int isTop) {
         this.isTop = isTop;
     }
 
-    public Integer getUsePdf() {
+    public int getUsePdf() {
         return usePdf;
     }
 
-    public void setUsePdf(Integer usePdf) {
+    public void setUsePdf(int usePdf) {
         this.usePdf = usePdf;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getRedirect() {
+    public int getRedirect() {
         return redirect;
     }
 
-    public void setRedirect(Integer redirect) {
+    public void setRedirect(int redirect) {
         this.redirect = redirect;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
-    public Integer getSaleStartDate() {
+    public int getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Integer saleStartDate) {
+    public void setSaleStartDate(int saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
-    public Integer getSaleEndDate() {
+    public int getSaleEndDate() {
         return saleEndDate;
     }
 
-    public void setSaleEndDate(Integer saleEndDate) {
+    public void setSaleEndDate(int saleEndDate) {
         this.saleEndDate = saleEndDate;
     }
 
@@ -624,10 +624,10 @@ public class CategoryItemsViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.parentId);
-        dest.writeValue(this.categoryId);
-        dest.writeValue(this.providerId);
+        dest.writeInt(this.id);
+        dest.writeInt(this.parentId);
+        dest.writeInt(this.categoryId);
+        dest.writeInt(this.providerId);
         dest.writeString(this.childCategoryIds);
         dest.writeString(this.cityIds);
         dest.writeString(this.providerProductId);
@@ -657,31 +657,31 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeString(this.displayTags);
         dest.writeString(this.promotionText);
         dest.writeString(this.autocode);
-        dest.writeValue(this.convenienceFee);
-        dest.writeValue(this.mrp);
-        dest.writeValue(this.salesPrice);
-        dest.writeValue(this.seatChartTypeId);
-        dest.writeValue(this.hasSeatLayout);
-        dest.writeValue(this.form);
-        dest.writeValue(this.priority);
-        dest.writeValue(this.quantity);
-        dest.writeValue(this.soldQuantity);
-        dest.writeValue(this.sellRate);
-        dest.writeValue(this.thumbsUp);
-        dest.writeValue(this.thumbsDown);
-        dest.writeValue(this.rating);
-        dest.writeValue(this.isFeatured);
-        dest.writeValue(this.isPromo);
-        dest.writeValue(this.isFoodAvailable);
-        dest.writeValue(this.isSearchable);
-        dest.writeValue(this.isTop);
-        dest.writeValue(this.usePdf);
-        dest.writeValue(this.status);
-        dest.writeValue(this.redirect);
-        dest.writeValue(this.minStartDate);
-        dest.writeValue(this.maxEndDate);
-        dest.writeValue(this.saleStartDate);
-        dest.writeValue(this.saleEndDate);
+        dest.writeInt(this.convenienceFee);
+        dest.writeInt(this.mrp);
+        dest.writeInt(this.salesPrice);
+        dest.writeInt(this.seatChartTypeId);
+        dest.writeInt(this.hasSeatLayout);
+        dest.writeInt(this.form);
+        dest.writeInt(this.priority);
+        dest.writeInt(this.quantity);
+        dest.writeInt(this.soldQuantity);
+        dest.writeInt(this.sellRate);
+        dest.writeInt(this.thumbsUp);
+        dest.writeInt(this.thumbsDown);
+        dest.writeInt(this.rating);
+        dest.writeInt(this.isFeatured);
+        dest.writeInt(this.isPromo);
+        dest.writeInt(this.isFoodAvailable);
+        dest.writeInt(this.isSearchable);
+        dest.writeInt(this.isTop);
+        dest.writeInt(this.usePdf);
+        dest.writeInt(this.status);
+        dest.writeInt(this.redirect);
+        dest.writeInt(this.minStartDate);
+        dest.writeInt(this.maxEndDate);
+        dest.writeInt(this.saleStartDate);
+        dest.writeInt(this.saleEndDate);
         dest.writeString(this.customLabels);
         dest.writeString(this.minStartTime);
         dest.writeString(this.maxEndTime);
@@ -690,14 +690,14 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
         //dest.writeParcelable(this.schedules, flags);
-        //dest.writeParcelable(this.forms, flags);
+        //sdest.writeParcelable(this.forms, flags);
     }
 
     protected CategoryItemsViewModel(Parcel in) {
-        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.parentId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.providerId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.id = in.readInt();
+        this.parentId = in.readInt();
+        this.categoryId = in.readInt();
+        this.providerId = in.readInt();
         this.childCategoryIds = in.readString();
         this.cityIds = in.readString();
         this.providerProductId = in.readString();
@@ -727,31 +727,31 @@ public class CategoryItemsViewModel implements Parcelable {
         this.displayTags = in.readString();
         this.promotionText = in.readString();
         this.autocode = in.readString();
-        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.seatChartTypeId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.hasSeatLayout = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.form = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.soldQuantity = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.sellRate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.thumbsUp = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.thumbsDown = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isFeatured = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isPromo = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isSearchable = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isTop = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.usePdf = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.redirect = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.minStartDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.maxEndDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.saleStartDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.saleEndDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.convenienceFee = in.readInt();
+        this.mrp = in.readInt();
+        this.salesPrice = in.readInt();
+        this.seatChartTypeId = in.readInt();
+        this.hasSeatLayout = in.readInt();
+        this.form = in.readInt();
+        this.priority = in.readInt();
+        this.quantity = in.readInt();
+        this.soldQuantity = in.readInt();
+        this.sellRate = in.readInt();
+        this.thumbsUp = in.readInt();
+        this.thumbsDown = in.readInt();
+        this.rating = in.readInt();
+        this.isFeatured = in.readInt();
+        this.isPromo = in.readInt();
+        this.isFoodAvailable = in.readInt();
+        this.isSearchable = in.readInt();
+        this.isTop = in.readInt();
+        this.usePdf = in.readInt();
+        this.status = in.readInt();
+        this.redirect = in.readInt();
+        this.minStartDate = in.readInt();
+        this.maxEndDate = in.readInt();
+        this.saleStartDate = in.readInt();
+        this.saleEndDate = in.readInt();
         this.customLabels = in.readString();
         this.minStartTime = in.readString();
         this.maxEndTime = in.readString();
@@ -759,8 +759,8 @@ public class CategoryItemsViewModel implements Parcelable {
         this.saleEndTime = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();
-       // this.schedules = in.readParcelable(Object.class.getClassLoader());
-       // this.forms = in.readParcelable(Object.class.getClassLoader());
+//        this.schedules = in.readParcelable(Object.class.getClassLoader());
+//        this.forms = in.readParcelable(Object.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Parcelable.Creator<CategoryItemsViewModel>() {

@@ -191,7 +191,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         String dateRange = "";
 
         if (homedata.getMinStartDate() > 0) {
-            if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
+            if (homedata.getMinStartDate() == homedata.getMaxEndDate()) {
                 dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
             } else {
                 dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
@@ -249,7 +249,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             timeView.setVisibility(View.GONE);
 
         setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, data.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
+        setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
         textViewTitle.setText(data.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
@@ -272,7 +272,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
         }
 
-//            seatingLayoutCard.setVisibility(View.GONE);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 
