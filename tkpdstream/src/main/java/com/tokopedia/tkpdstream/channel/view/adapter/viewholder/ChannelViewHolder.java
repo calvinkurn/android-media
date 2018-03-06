@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.common.util.TextFormatter;
 
 /**
  * @author by StevenFredian on 13/02/18.
@@ -44,7 +45,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel>{
     @Override
     public void bind(ChannelViewModel element) {
 
-        participant.setText(String.valueOf(element.getParticipant()));
+        participant.setText(TextFormatter.format(element.getParticipant()));
         name.setText(element.getAdminName());
         title.setText(element.getTitle());
         subtitle.setText(element.getDescription());

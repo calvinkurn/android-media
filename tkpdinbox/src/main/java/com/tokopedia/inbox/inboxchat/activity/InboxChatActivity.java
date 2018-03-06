@@ -295,15 +295,8 @@ public class InboxChatActivity extends DrawerPresenterActivity
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                    RecyclerView.State state) {
 
-            if (parent.getChildAdapterPosition(view) != 0) {
-                outRect.left = space / 2;
-            } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
-                outRect.right = space / 2;
-            } else {
-                outRect.right = space / 2;
-                outRect.left = space / 2;
-            }
-
+            outRect.right = space / 2;
+            outRect.left = space / 2;
         }
     }
 }

@@ -32,6 +32,7 @@ import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 
 import javax.inject.Inject;
 
@@ -47,6 +48,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     ChannelPresenter presenter;
+
+    @Inject
+    StreamAnalytics analytics;
 
     UserSession userSession;
 
@@ -77,7 +81,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        analytics.eventClickInboxChat();
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         if (userSession != null && !userSession.isLoggedIn()) {
             startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
@@ -202,6 +206,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     private void goToChannel(ChannelViewModel channelViewModel) {
+        analytics.eventClickGroupChatList(channelViewModel.getId());
         startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(), channelViewModel),
                 REQUEST_OPEN_GROUPCHAT);
     }

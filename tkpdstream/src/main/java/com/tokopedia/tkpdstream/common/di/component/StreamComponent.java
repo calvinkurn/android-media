@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.common.di.component;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
@@ -26,5 +27,7 @@ public interface StreamComponent {
     Retrofit.Builder retrofitBuilder();
 
     void inject(BaseStreamActivity baseChatActivity);
+
+    AnalyticTracker provideAnalyticTracker();
 
 }

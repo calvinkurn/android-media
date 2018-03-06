@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -196,5 +197,20 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 cacheApiWhiteListDomains,
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
+    }
+
+    @Override
+    public Intent getGroupChatIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Fragment getChannelFragment(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public String getChannelFragmentTag() {
+        return null;
     }
 }
