@@ -52,6 +52,7 @@
         android:layout_toStartOf="@+id/image_passenger_edit"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
+        android:padding="@dimen/padding_vvs"
         app:srcCompat="@drawable/ic_flight_delete" />
 
     <ImageView
@@ -62,6 +63,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_vs"
+        android:padding="@dimen/padding_vvs"
         app:srcCompat="@drawable/ic_flight_edit" />
 
 </RelativeLayout>

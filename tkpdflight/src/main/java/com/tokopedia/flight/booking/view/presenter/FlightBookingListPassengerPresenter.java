@@ -104,7 +104,9 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     @Override
     public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
-        if (getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
+        if (getView().getCurrentPassenger() != null &&
+                selectedPassenger != null &&
+                getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
             if (selectedPassenger != null) {
                 onSelectPassenger(selectedPassenger);
             } else {

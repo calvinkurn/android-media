@@ -57,4 +57,9 @@ public class FlightBookingListPassengerActivity extends BaseFlightActivity imple
         }
         throw new RuntimeException("Application must implement FlightModuleRouter");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
 }

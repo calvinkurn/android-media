@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -44,6 +45,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
     TextView txtNewPassenger;
+    LinearLayout container;
 
     public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
                                                                     String requestId) {
@@ -72,6 +74,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_booking_list_passenger, container, false);
         txtNewPassenger = view.findViewById(R.id.txt_new_passenger);
+        this.container = view.findViewById(R.id.container);
         txtNewPassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +133,13 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void renderPassengerList() {
+        hideContainer();
+        super.isLoadingInitialData = true;
         renderList(flightBookingPassengerViewModelList);
+
+        if (!super.isLoadingInitialData) {
+            showContainer();
+        }
     }
 
     @Override
@@ -183,4 +192,14 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void deletePassenger(String passengerId) {
         presenter.deletePassenger(passengerId);
     }
+
+    private void showContainer() {
+        container.setVisibility(View.VISIBLE);
+    }
+
+    private void hideContainer() {
+        container.setVisibility(View.GONE);
+    }
+
+
 }
