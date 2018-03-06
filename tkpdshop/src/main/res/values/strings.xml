@@ -60,6 +60,18 @@
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
     <string name="shop_info_label_share">Bagikan</string>
     <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
+    <string name="speed_content_desc">
+        nilai rata-rata kecepatan toko dalam memproses pesanan terhitung sejak pesanan masuk sampai penjual memberikan
+        paket ke logistik
+    </string>
+    <string name="product_quality_content_tv_desc">
+        nilai rata-rata dari seluruh penilaian kualitas produk pada toko yang diberikan oleh pembeli
+    </string>
+    <string name="shop_reputation_desc">Nilai toko yang diberikan pembeli</string>
+    <string name="dashboard_x_points">%1$s poin</string>
+    <string name="shop_reputation_label">Reputasi Toko</string>
+    <string name="product_quality_label">Kualitas Produk</string>
+    <string name="shop_speed_label">"Kecepatan Toko"</string>
 
 
 </resources>

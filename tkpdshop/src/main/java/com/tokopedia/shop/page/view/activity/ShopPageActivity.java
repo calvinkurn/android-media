@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -41,6 +42,8 @@ import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.product.view.customview.CustomContentBottomAction;
+import com.tokopedia.shop.product.view.customview.CustomContentBottomActionView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
 import javax.inject.Inject;
@@ -108,6 +111,14 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private String shopUrl;
     private String shopLocation;
     private String shopAvatar;
+    private int speedLevel;
+    private String speedLevelDescription;
+    private long ratingStar;
+    private String qualityAverage;
+    private String qualityCountTotal;
+    private int set;
+    private int level;
+    private String shopReputationScore;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -247,7 +258,21 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         reputationDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.reputation_shop_bottom_sheet, null);
+                ShopReputationView shopReputationView = speedContentBottomSheet.findViewById(R.id.shop_reputation_view);
+                TextView reputationDesc = speedContentBottomSheet.findViewById(R.id.shop_reputation_desc);
 
+                shopReputationView.setValue(set, level, shopReputationScore);
+
+                reputationDesc.setText(getString(R.string.dashboard_x_points, shopReputationScore));
+
+                CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
+                bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
+                bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.shop_reputation_label))
+                        .build());
+                bottomSheetView.show();
             }
         });
         totalProductDetailView.setOnClickListener(new View.OnClickListener() {
@@ -259,13 +284,42 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.product_quality_bottom_sheet, null);
+                RatingBar qualityRatingBar = speedContentBottomSheet.findViewById(R.id.rating_bar_product_quality);
+                qualityRatingBar.setRating(ratingStar);
+                qualityRatingBar.setMax(MAX_RATING_STAR);
 
+                TextView speedView = speedContentBottomSheet.findViewById(R.id.product_quality_value);
+                speedView.setText(qualityAverage);
+
+                TextView qualityCountTotalTextView = speedContentBottomSheet.findViewById(R.id.product_quality_desc);
+                qualityCountTotalTextView.setText(qualityCountTotal);
+
+                CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
+                bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
+                bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.product_quality_label))
+                        .build());
+                bottomSheetView.show();
             }
         });
         reputationSpeedDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.speed_content_bottom_sheet, null);
+                AppCompatImageView imageViewSpeed = speedContentBottomSheet.findViewById(R.id.image_view_speed_content);
+                imageViewSpeed.setImageResource(getReputationSpeedIcon(speedLevel));
+                TextView speedView = speedContentBottomSheet.findViewById(R.id.speed_content_tv_desc);
+                speedView.setText(speedLevelDescription);
 
+                CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
+                bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
+                bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.shop_speed_label))
+                        .build());
+                bottomSheetView.show();
             }
         });
         buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {
@@ -468,12 +522,18 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         locationImageView.setImageResource(R.drawable.ic_info_location_grey);
         shopInfoLocationTextView.setText(shopInfo.getInfo().getShopLocation());
 
-        int set = (int) shopInfo.getStats().getShopBadgeLevel().getSet();
-        int level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
-        shopReputationView.setValue(set, level, shopInfo.getStats().getShopReputationScore());
+        set = (int) shopInfo.getStats().getShopBadgeLevel().getSet();
+        level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
+        shopReputationScore = shopInfo.getStats().getShopReputationScore();
+        shopReputationView.setValue(set, level, shopReputationScore);
 
-        qualityValueTextView.setText(shopInfo.getRatings().getQuality().getAverage());
-        qualityRatingBar.setRating(shopInfo.getRatings().getQuality().getRatingStar());
+        qualityCountTotal = shopInfo.getRatings().getQuality().getCountTotal();
+        qualityAverage = shopInfo.getRatings().getQuality().getAverage();
+        qualityValueTextView.setText(qualityAverage);
+
+        ratingStar = shopInfo.getRatings().getQuality().getRatingStar();
+        qualityRatingBar.setRating(ratingStar);
+
         qualityRatingBar.setMax(MAX_RATING_STAR);
     }
 
@@ -497,8 +557,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     public void updateReputationSpeed(ReputationSpeed reputationSpeed) {
-        speedImageView.setImageResource(getReputationSpeedIcon(reputationSpeed.getRecent1Month().getSpeedLevel()));
-        speedValueTextView.setText(reputationSpeed.getRecent1Month().getSpeedLevelDescription());
+        this.speedLevel = reputationSpeed.getRecent1Month().getSpeedLevel();
+        this.speedLevelDescription = reputationSpeed.getRecent1Month().getSpeedLevelDescription();
+
+        speedImageView.setImageResource(getReputationSpeedIcon(speedLevel));
+        speedValueTextView.setText(speedLevelDescription);
     }
 
     @Override
