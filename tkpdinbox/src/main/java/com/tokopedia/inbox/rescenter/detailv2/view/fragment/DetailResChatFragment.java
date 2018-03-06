@@ -133,6 +133,7 @@ public class DetailResChatFragment
     private ImageView ivNextStepStatic;
     private GlowingView glowingView;
     private FrameLayout ffChat;
+    private ConversationDomain conversationDomain;
 
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
@@ -316,6 +317,7 @@ public class DetailResChatFragment
 
         fabChat.hide();
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setStackFromEnd(true);
         rvChat.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
@@ -379,12 +381,16 @@ public class DetailResChatFragment
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        attachmentAdapter.getList().remove(position);
-                        if (attachmentAdapter.getList().size() == 0) {
-                            rvAttachment.setVisibility(View.GONE);
-                            initActionButton(detailResChatDomain.getButton());
+                        if (attachmentAdapter.isClickable) {
+                            if (attachmentAdapter.getList().get(position) != null) {
+                                attachmentAdapter.getList().remove(position);
+                            }
+                            if (attachmentAdapter.getList().size() == 0) {
+                                rvAttachment.setVisibility(View.GONE);
+                                initActionButton(detailResChatDomain.getButton());
+                            }
+                            attachmentAdapter.notifyItemRemoved(position);
                         }
-                        attachmentAdapter.notifyDataSetChanged();
                     }
                 };
             }
@@ -470,7 +476,7 @@ public class DetailResChatFragment
         }
 
         chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
-        chatAdapter.notifyDataSetChanged();
+        chatAdapter.notifyItemInserted(chatAdapter.getItemCount() - 1);
         scrollChatToBottom(false);
     }
 
@@ -479,41 +485,47 @@ public class DetailResChatFragment
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 null,
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
         return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + " WIB", "");
+    }
+
+    private ConversationCreateTimeDomain getDummySendingMessage() {
+        return new ConversationCreateTimeDomain(context.getResources().getString(R.string.string_sending_message), "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
@@ -972,9 +984,11 @@ public class DetailResChatFragment
 
     @Override
     public void successReplyDiscussion(DiscussionItemViewModel discussionItemViewModel) {
+        rvAttachment.setVisibility(View.GONE);
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
-        rvAttachment.setVisibility(View.GONE);
+        conversationDomain.setCreateTime(getConversationCreateTime());
+        chatAdapter.replaceLastItem(new ChatRightViewModel(null, null, conversationDomain));
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
         enableIvSend();
@@ -1254,12 +1268,18 @@ public class DetailResChatFragment
     public void enableIvSend() {
         ivSend.setClickable(true);
         ivSend.setEnabled(true);
+        etChat.setClickable(true);
+        etChat.setEnabled(true);
+        attachmentAdapter.isClickable = true;
     }
 
     @Override
     public void disableIvSend() {
         ivSend.setClickable(false);
         ivSend.setEnabled(false);
+        etChat.setClickable(false);
+        etChat.setEnabled(false);
+        attachmentAdapter.isClickable = false;
     }
 
     @Override

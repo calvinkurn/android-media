@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
@@ -149,7 +150,8 @@ public class RideUtils {
             }
         } else {
             try {
-                Intent shortcutIntent = new Intent(context, RideHomeActivity.class);
+
+                Intent shortcutIntent = ((TkpdCoreRouter) context.getApplicationContext()).getSplashScreenIntent(context);
                 shortcutIntent.putExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT, "true");
 
                 Intent addIntent = new Intent();

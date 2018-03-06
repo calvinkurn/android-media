@@ -30,7 +30,7 @@ public class LayoutRows implements Parcelable {
     @SerializedName("categoryLabel")
     private String categoryLabel = "";
     @SerializedName("score")
-    private int score;
+    private String score;
 
     protected LayoutRows(Parcel in) {
         id = in.readInt();
@@ -41,7 +41,7 @@ public class LayoutRows implements Parcelable {
         type = in.readString();
         categoryId = in.readInt();
         categoryLabel = in.readString();
-        score = in.readInt();
+        score = in.readString();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LayoutRows implements Parcelable {
         dest.writeString(type);
         dest.writeInt(categoryId);
         dest.writeString(categoryLabel);
-        dest.writeInt(score);
+        dest.writeString(score);
     }
 
     @Override
@@ -138,11 +138,11 @@ public class LayoutRows implements Parcelable {
         this.categoryLabel = categoryLabel;
     }
 
-    public int getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(String score) {
         this.score = score;
     }
 
@@ -156,7 +156,7 @@ public class LayoutRows implements Parcelable {
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "id", getId(),
+                                                "id", String.valueOf(getId()),
                                                 "name", customName,
                                                 "creative", getName(),
                                                 "position", String.valueOf(position)

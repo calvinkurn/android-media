@@ -106,7 +106,10 @@ public class ConfirmShippingActivity extends TActivity
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
-        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
+        if(!editableModel.getShipmentName().isEmpty())
+            courierName.setText(
+                    editableModel.getShipmentName() + " " + editableModel.getPackageName()
+            );
     }
 
     private boolean isChangeCourierMode(int orderCode) {
@@ -117,22 +120,34 @@ public class ConfirmShippingActivity extends TActivity
 
     private void initateData(OrderDetailData orderDetailData) {
         editableModel = new OrderDetailShipmentModel();
+        if(getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CONFIRM_SHIPMENT_MODE) {
+            editableModel.setShipmentId(orderDetailData.getShipmentId());
+            editableModel.setPackageId(orderDetailData.getShipmentServiceId());
+            editableModel.setShipmentName(orderDetailData.getShipmentName());
+            editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        } else {
+            editableModel.setShipmentName("");
+            editableModel.setPackageName("");
+        }
         editableModel.setOrderId(orderDetailData.getOrderId());
-        editableModel.setShipmentId(orderDetailData.getShipmentId());
-        editableModel.setPackageId(orderDetailData.getShipmentServiceId());
-        editableModel.setShipmentName(orderDetailData.getShipmentName());
-        editableModel.setPackageName(orderDetailData.getShipmentServiceName());
         editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));
     }
 
     @Override
     public void receiveShipmentData(ListCourierViewModel model) {
-        CourierSelectionFragment courierSelectionFragment = CourierSelectionFragment.
-                createInstance(model);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
-                .commit();
+        if(model.getCourierViewModelList().size() == 0) {
+            NetworkErrorHelper.showSnackbar(
+                    ConfirmShippingActivity.this,
+                    getString(R.string.error_no_courier_available)
+            );
+        } else {
+            CourierSelectionFragment courierSelectionFragment = CourierSelectionFragment.
+                    createInstance(model);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -200,9 +215,17 @@ public class ConfirmShippingActivity extends TActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editableModel.setShippingRef(barcodeEditText.getText().toString());
-                presenter.onProcessCourier(ConfirmShippingActivity.this, editableModel,
-                        isChangeCourierMode(editableModel.getOrderStatusCode()));
+                if(editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
+                    NetworkErrorHelper.showSnackbar(
+                            ConfirmShippingActivity.this,
+                            getString(R.string.error_no_courier_chosen)
+                    );
+                } else {
+                    editableModel.setShippingRef(barcodeEditText.getText().toString());
+                    presenter.onProcessCourier(
+                            ConfirmShippingActivity.this, editableModel,
+                            isChangeCourierMode(editableModel.getOrderStatusCode()));
+                }
             }
         };
     }

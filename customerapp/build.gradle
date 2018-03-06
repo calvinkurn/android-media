@@ -32,7 +32,7 @@ def getAPKArchiveFolder(variant) {
 
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 
 def allowDistribution() {
@@ -40,6 +40,10 @@ def allowDistribution() {
         return "true";
     }
     return "false";
+}
+
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -75,6 +79,8 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
@@ -90,12 +96,13 @@ android {
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25'
+    buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
         packagingOptions {
             exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/rxjava.properties'
         }
 
         main {
@@ -125,17 +132,23 @@ android {
 
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -208,6 +221,7 @@ android {
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
     productFlavors {
@@ -231,65 +245,32 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile(rootProject.ext.tkpdDependencies.inbox) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.discovery) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.transaction) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.seller) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.session) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.feed) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.ride) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.digital) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.reactNative) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile (rootProject.ext.tkpdDependencies.core)
-    //compile project(':tkpdcore')
-    compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
-    compile project(':tkpdseller')
-    compile project(':tkpdsession')
-    compile project(':tkpdinbox')
-    compile project(':tkpdride')
-    compile project(':tkpddigital')
-    compile project(':tkpdpdp')
-    compile project(':tkpdfeed')
-    compile project(':tkpdreactnative')
-    compile project(':tkpdloyalty')
-    compile project(':tkpdreputation')
-    compile project(':tkpdtokocash')
-    compile project(':tkpdflight')
-    compile project(':tkpdhome')
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.discovery)
+    compile project(rootProject.ext.features.transaction)
+    compile project(rootProject.ext.features.seller)
+    compile project(rootProject.ext.features.session)
+    compile project(rootProject.ext.features.inbox)
+    compile project(rootProject.ext.features.ride)
+    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.productDetail)
+    compile project(rootProject.ext.features.feed)
+    compile project(rootProject.ext.features.event)
+    compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.reputation)
+    compile project(rootProject.ext.features.tokoCash)
+    compile project(rootProject.ext.features.flight)
+    compile project(rootProject.ext.features.home)
+    compile project(rootProject.ext.libraries.reactNative)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile 'junit:junit:4.12'
+    testCompile rootProject.ext.testDependencies.junit
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -298,7 +279,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile 'com.android.support:multidex:1.0.1'
+    compile rootProject.ext.miscDependencies.multiDex
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

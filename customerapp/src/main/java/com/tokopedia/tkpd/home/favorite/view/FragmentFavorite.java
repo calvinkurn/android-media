@@ -59,16 +59,10 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private static final long DURATION_ANIMATOR = 1000;
 
-    @BindView(R.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R.id.main_content)
     RelativeLayout mainContent;
-
-    @BindView(R.id.partial_empty_wishlist)
     View wishlistNotLoggedIn;
 
     @Inject
@@ -98,7 +92,11 @@ public class FragmentFavorite extends BaseDaggerFragment
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.index_favorite_recycler_view);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
+        mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
+        wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
 
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();
@@ -114,7 +112,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         favoritePresenter.detachView();
     }
 
@@ -386,14 +383,5 @@ public class FragmentFavorite extends BaseDaggerFragment
                 }
             }
         }
-    }
-
-    @OnClick(R.id.login_button)
-    public void onLoginButtonClick() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        startActivity(intent);
-
-        String label = String.format("%s %s", AppEventTracking.EventLabel.FAVORITE, AppEventTracking.EventLabel.TAB);
-        UnifyTracking.eventHomeTab(AppEventTracking.Action.LOGIN_NOW, label);
     }
 }

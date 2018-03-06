@@ -21,7 +21,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -219,6 +218,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onBackPressed() {
