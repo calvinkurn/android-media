@@ -1,6 +1,7 @@
 package com.tokopedia.ride.chat.utils;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
@@ -187,6 +188,12 @@ public class ChatView extends RelativeLayout {
     public void setSendActionButton(boolean flag) {
         actionButton.setEnabled(flag);
         actionButton.setClickable(flag);
+
+        if (flag) {
+            actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+        } else {
+            actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.button_form_grey)));
+        }
     }
 
     private void setButtonClickListeners() {
