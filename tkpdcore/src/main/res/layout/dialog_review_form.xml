@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:ignore="DisableBaselineAlignment" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="DisableBaselineAlignment">
 
     <LinearLayout
         android:id="@+id/main_view"

@@ -21,7 +21,7 @@
     <item android:right="4dp">
         <bitmap
             android:gravity="end"
-            app:srcCompat="@drawable/arrow_drop_down"></bitmap>
+            android:src="@drawable/arrow_drop_down"></bitmap>
 
     </item>
 
