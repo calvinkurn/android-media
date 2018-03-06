@@ -80,9 +80,6 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
         ShakeShakeAudioCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-
-
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -94,6 +91,3 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
         return null;
     }
 }
-
-
-

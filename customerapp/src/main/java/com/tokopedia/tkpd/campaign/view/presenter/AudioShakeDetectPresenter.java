@@ -41,6 +41,8 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
 
 
     PostAudioDataUseCase postShakeDetectUseCase;
+    private static final int AUDIO_RECORD_LENGTH = 10000;
+    private static final int VIBRATION_PERIOD = 500;
 
 
     @Inject
@@ -69,7 +71,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
             public void run() {
                 recorder.stopRecording();
             }
-        }, 10000);
+        }, AUDIO_RECORD_LENGTH);
     }
 
 
@@ -102,12 +104,10 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-
                 intent.putExtra("isSuccess",false);
                 getView().sendBroadcast(intent);
-                v.vibrate(500);
+                v.vibrate(VIBRATION_PERIOD);
                 getView().finish();
             }
 
@@ -118,8 +118,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
                 intent.putExtra("isSuccess",true);
                 intent.putExtra("data",s.getUrl());
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
-                v.vibrate(500);
+                v.vibrate(VIBRATION_PERIOD);
                 getView().sendBroadcast(intent);
 
                 //Open next activity based upon the result from server

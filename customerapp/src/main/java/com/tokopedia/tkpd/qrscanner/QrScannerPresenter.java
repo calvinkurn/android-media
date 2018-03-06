@@ -184,7 +184,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         return false;
     }
 
-
     private void getInfoQrWallet(final String qrcode) {
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();

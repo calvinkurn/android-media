@@ -623,9 +623,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
 
         registerBroadcastHockeyApp();
-
-
-
     }
 
     @Override
