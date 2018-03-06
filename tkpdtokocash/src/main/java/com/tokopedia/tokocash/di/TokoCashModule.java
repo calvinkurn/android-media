@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
 import com.tokopedia.tokocash.accountsetting.domain.GetOAuthInfoTokoCashUseCase;
 import com.tokopedia.tokocash.accountsetting.domain.PostUnlinkTokoCashUseCase;
@@ -18,7 +19,6 @@ import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.MoveToSaldoUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
-import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.api.WalletApi;
 import com.tokopedia.tokocash.network.api.WalletUrl;
@@ -92,11 +92,12 @@ public class TokoCashModule {
 
     @Provides
     @OkHttpWalletQualifier
-    OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, AbstractionRouter abstractionRouter,
-                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession, Gson gson) {
+    OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, AbstractionRouter abstractionRouter, Gson gson,
+                                           WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession) {
         return new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
-                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, abstractionRouter, walletTokenRefresh, walletUserSession, gson))
+                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, abstractionRouter, gson,
+                        walletTokenRefresh, walletUserSession))
                 .build();
     }
 

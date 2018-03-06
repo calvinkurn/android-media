@@ -68,15 +68,24 @@ public class TopUpTokoCashView extends FrameLayout {
     }
 
     public void renderDataTopUp(CategoryData categoryData, Operator operatorSelected) {
+        renderDataTopUp(categoryData, operatorSelected, null);
+    }
+
+    public void renderDataTopUp(CategoryData categoryData, Operator operatorSelected, Product selectedProduct) {
+        if (selectedProduct != null) {
+            this.productSelected = selectedProduct;
+        }
         this.categoryData = categoryData;
         this.operatorSelected = operatorSelected;
         digitalProductChooserView.setActionListener(getActionListener(operatorSelected.getRule().getProductText()));
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
                 operatorSelected.getDefaultProductId());
-        digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
+        digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText().equals("") ?
+                getContext().getString(R.string.title_topup_tokocash) : operatorSelected.getRule().getProductText());
         title.setText(categoryData.getTitleText());
         instantCheckoutCheckbox.setVisibility(categoryData.isInstantCheckout() ? VISIBLE : GONE);
-        btnTopUp.setText(operatorSelected.getRule().getButtonText());
+        btnTopUp.setText(operatorSelected.getRule().getButtonText().equals("") ?
+                getContext().getString(R.string.label_btn_buy_digital) : operatorSelected.getRule().getButtonText());
     }
 
     public void renderUpdateDataSelected(Product data) {
@@ -92,7 +101,7 @@ public class TopUpTokoCashView extends FrameLayout {
 
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product data, boolean resetClientNumber) {
-
+                productSelected = data;
             }
 
             @Override

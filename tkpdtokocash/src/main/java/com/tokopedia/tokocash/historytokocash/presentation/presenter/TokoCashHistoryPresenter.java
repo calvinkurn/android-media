@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
@@ -62,11 +61,7 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
                     @Override
                     public void onError(Throwable e) {
                         getView().hideLoading();
-                        if (e instanceof ResponseDataNullException) {
-                            getView().renderEmptyPage("Empty data list");
-                        } else {
-                            errorFirstTimeNetworkHandler(e);
-                        }
+                        getView().renderEmptyPage(e);
                     }
 
                     @Override
@@ -99,7 +94,7 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        errorNetworkHandler(e);
+                        getView().renderErrorMessage(e);
                     }
 
                     @Override

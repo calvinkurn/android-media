@@ -20,15 +20,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.quickfilter.QuickFilterAdapter;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.di.TokoCashComponent;
-import com.tokopedia.tokocash.historytokocash.data.mapper.FilterHistoryTokoCashMapper;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.DetailTransactionActivity;
@@ -64,11 +65,14 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     private static final String EXTRA_SELECTION_PERIOD = "EXTRA_SELECTION_PERIOD";
     private static final String EXTRA_SELECTION_TYPE = "EXTRA_SELECTION_TYPE";
     private static final String STATE_DATA_UPDATED = "state_data_updated";
+    private static final String STATE_DATA_START_DATE = "state_data_start_date";
+    private static final String STATE_DATA_END_DATE = "state_data_end_date";
+    private static final String STATE_DATA_FILTER_TYPE = "state_data_filter_type";
     private static final String STATE_SAVED = "saved";
 
     private LinearLayout layoutDate;
     private TextView tvDate;
-    private RecyclerView filterHistoryRecyclerView;
+    private QuickSingleFilterView quickSingleFilterHistory;
     private RecyclerView historyListRecyclerView;
     private RelativeLayout viewEmptyNoHistory;
     private LinearLayout mainContent;
@@ -88,7 +92,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     private boolean isLoadMore;
     private long startDate;
     private long endDate;
-    private QuickFilterAdapter adapterFilter;
     private HistoryTokoCashAdapter adapterHistory;
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
@@ -99,8 +102,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
 
     @Inject
     TokoCashHistoryPresenter presenter;
-    @Inject
-    FilterHistoryTokoCashMapper headerMapper;
 
     public static HistoryTokoCashFragment newInstance() {
         HistoryTokoCashFragment fragment = new HistoryTokoCashFragment();
@@ -113,7 +114,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         View view = inflater.inflate(R.layout.activity_history_tokocash, container, false);
         layoutDate = view.findViewById(R.id.date_label_view);
         tvDate = view.findViewById(R.id.text_view_date);
-        filterHistoryRecyclerView = view.findViewById(R.id.filter_history_tokocash);
+        quickSingleFilterHistory = view.findViewById(R.id.filter_history_tokocash);
         historyListRecyclerView = view.findViewById(R.id.history_tokocash);
         viewEmptyNoHistory = view.findViewById(R.id.view_empty_no_history);
         mainContent = view.findViewById(R.id.main_content);
@@ -140,13 +141,20 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_DATA_UPDATED, stateDataAfterFilter);
+        outState.putString(STATE_DATA_START_DATE, startDateFormatted);
+        outState.putString(STATE_DATA_END_DATE, endDateFormatted);
+        outState.putString(STATE_DATA_FILTER_TYPE, typeFilterSelected);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             this.stateDataAfterFilter = savedInstanceState.getString(STATE_DATA_UPDATED);
+            this.startDateFormatted = savedInstanceState.getString(STATE_DATA_START_DATE);
+            this.endDateFormatted = savedInstanceState.getString(STATE_DATA_END_DATE);
+            this.typeFilterSelected = savedInstanceState.getString(STATE_DATA_FILTER_TYPE);
+        }
     }
 
     @Override
@@ -160,7 +168,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
 
     private void initVar(View view) {
         initialRangeDateFilter();
-        initialFilterRecyclerView();
         initialHistoryRecyclerView();
 
         refreshHandler = new RefreshHandler(getActivity(), view,
@@ -224,6 +231,8 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
             startCalendar.add(Calendar.DATE, -29);
             startDate = startCalendar.getTimeInMillis();
             endDate = endCalendar.getTimeInMillis();
+            startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
+            endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
             String getFormattedDatePicker =
                     ((TokoCashRouter) application)
                             .getRangeDateFormatted(getActivity(), startDate, endDate);
@@ -231,13 +240,30 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         }
     }
 
-    private void initialFilterRecyclerView() {
-        filterHistoryRecyclerView.setHasFixedSize(true);
-        filterHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-        adapterFilter = new QuickFilterAdapter();
-        filterHistoryRecyclerView.setAdapter(adapterFilter);
+    private void initialFilterRecyclerView(List<HeaderHistory> filterList) {
+        quickSingleFilterHistory.renderFilter(setQuickFilterItems(filterList));
+        quickSingleFilterHistory.setListener(new QuickSingleFilterView.ActionListener() {
+            @Override
+            public void selectFilter(String typeFilter) {
+                typeFilterSelected = typeFilter;
+                presenter.getInitHistoryTokoCash();
+            }
+        });
     }
+
+    private List<QuickFilterItem> setQuickFilterItems(List<HeaderHistory> filterList) {
+        List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+        for (int i = 0; i < filterList.size(); i++) {
+            QuickFilterItem quickFilterItem = new QuickFilterItem();
+            quickFilterItem.setName(filterList.get(i).getName());
+            quickFilterItem.setType(filterList.get(i).getType());
+            quickFilterItem.setSelected(filterList.get(i).isSelected());
+            quickFilterItem.setColorBorder(R.color.tkpd_main_green);
+            quickFilterItemList.add(quickFilterItem);
+        }
+        return quickFilterItemList;
+    }
+
 
     private void initialHistoryRecyclerView() {
         adapterHistory = new HistoryTokoCashAdapter(new ArrayList<ItemHistory>());
@@ -289,47 +315,18 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     public void renderDataTokoCashHistory(TokoCashHistoryData tokoCashHistoryData, boolean firstTimeLoad) {
         mainContent.setVisibility(View.VISIBLE);
         layoutDate.setVisibility(View.VISIBLE);
-        filterHistoryRecyclerView.setVisibility(View.VISIBLE);
+        quickSingleFilterHistory.setVisibility(View.VISIBLE);
         historyListRecyclerView.setVisibility(View.VISIBLE);
         viewEmptyNoHistory.setVisibility(View.GONE);
 
         refreshHandler.finishRefresh();
-        adapterFilter.setListener(getFilterTokoCashListener());
-        adapterFilter.addQuickFilterItems(headerMapper.transform(
-                removeTypeAllOnHeader(tokoCashHistoryData.getHeaderHistory())));
+        initialFilterRecyclerView(tokoCashHistoryData.getHeaderHistory());
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {
             adapterHistory.addItemHistoryList(tokoCashHistoryData.getItemHistoryList());
         } else if (isLoadMore) {
             adapterHistory.addItemHistoryListLoadMore(tokoCashHistoryData.getItemHistoryList());
         }
-    }
-
-    @NonNull
-    private List<HeaderHistory> removeTypeAllOnHeader(List<HeaderHistory> filterList) {
-        for (int i = filterList.size() - 1; i > -1; i--) {
-            if (filterList.get(i).getType().equals(ALL_TRANSACTION_TYPE)) {
-                filterList.remove(filterList.get(i));
-            }
-        }
-        return filterList;
-    }
-
-    @NonNull
-    private QuickFilterAdapter.ActionListener getFilterTokoCashListener() {
-        return new QuickFilterAdapter.ActionListener() {
-            @Override
-            public void clearFilter() {
-                typeFilterSelected = "";
-                refreshHandler.startRefresh();
-            }
-
-            @Override
-            public void selectFilter(String typeFilter) {
-                typeFilterSelected = typeFilter;
-                presenter.getInitHistoryTokoCash();
-            }
-        };
     }
 
     @NonNull
@@ -345,7 +342,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     @Override
     public void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList) {
         layoutDate.setVisibility(View.VISIBLE);
-        filterHistoryRecyclerView.setVisibility(View.VISIBLE);
+        quickSingleFilterHistory.setVisibility(View.VISIBLE);
         historyListRecyclerView.setVisibility(View.GONE);
         viewEmptyNoHistory.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.GONE);
@@ -369,9 +366,10 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     }
 
     @Override
-    public void renderErrorMessage(String message) {
+    public void renderErrorMessage(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), throwable);
         if (messageSnackbar == null) {
-            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     presenter.getHistoryLoadMore();
@@ -382,7 +380,8 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     }
 
     @Override
-    public void renderEmptyPage(String message) {
+    public void renderEmptyPage(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), throwable);
         NetworkErrorHelper.showEmptyState(
                 getActivity(), rootView, message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -434,9 +433,9 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
 
                 startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
                 endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
-                refreshHandler.startRefresh();
             }
         }
+        refreshHandler.startRefresh();
     }
 
     @Override

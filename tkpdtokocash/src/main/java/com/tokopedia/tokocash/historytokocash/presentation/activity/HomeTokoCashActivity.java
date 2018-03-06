@@ -99,20 +99,6 @@ public class HomeTokoCashActivity extends BaseSimpleActivity implements HomeToko
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-//            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-//                if (resultCode == Activity.RESULT_OK && data != null)
-//                    topUpTokoCashView.renderUpdateDataSelected(
-//                            (Product) data.getParcelableExtra(
-//                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA));
-//                break;
-//            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-//                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-//                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-//                    if (!TextUtils.isEmpty(message)) {
-//                        showToastMessage(message);
-//                    }
-//                }
-//                break;
             case AccountSettingActivity.REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK && data != null &&
                         data.hasExtra(AccountSettingActivity.KEY_INTENT_RESULT)) {
@@ -122,7 +108,6 @@ public class HomeTokoCashActivity extends BaseSimpleActivity implements HomeToko
                 break;
         }
     }
-
 
     @Override
     public void setTitle(String title) {

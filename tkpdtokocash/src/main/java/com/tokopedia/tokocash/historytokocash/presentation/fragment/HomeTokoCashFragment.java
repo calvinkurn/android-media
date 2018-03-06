@@ -77,9 +77,11 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         bottomSheetTokoCashView = new BottomSheetView(getActivity());
         presenter.processGetBalanceTokoCash();
 
-        if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
-            getChildFragmentManager().beginTransaction().replace(R.id.topup_tokocash_layout,
-                    ((TokoCashRouter) getActivity().getApplication()).getTopupTokoCashFragment()).commit();
+        if (savedInstanceState == null) {
+            if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+                getChildFragmentManager().beginTransaction().add(R.id.topup_tokocash_layout,
+                        ((TokoCashRouter) getActivity().getApplication()).getTopupTokoCashFragment()).commit();
+            }
         }
     }
 

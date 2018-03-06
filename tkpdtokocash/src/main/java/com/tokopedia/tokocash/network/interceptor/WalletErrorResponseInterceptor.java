@@ -7,8 +7,8 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.tokocash.network.WalletTokenRefresh;
 import com.tokopedia.tokocash.WalletUserSession;
+import com.tokopedia.tokocash.network.WalletTokenRefresh;
 
 import java.io.IOException;
 
@@ -29,19 +29,18 @@ public class WalletErrorResponseInterceptor implements Interceptor {
 
     private Class<? extends BaseResponseError> responseErrorClass;
     private AbstractionRouter abstractionRouter;
-    private WalletTokenRefresh walletTokenRefresh;
-    private WalletUserSession walletUserSession;
     private Gson gson;
     private BaseResponseError responseError;
+    private WalletTokenRefresh walletTokenRefresh;
+    private WalletUserSession walletUserSession;
 
     public WalletErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass,
-                                          AbstractionRouter abstractionRouter,
-                                          WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
-                                          Gson gson) {
+                                          AbstractionRouter abstractionRouter, Gson gson, WalletTokenRefresh walletTokenRefresh,
+                                          WalletUserSession walletUserSession) {
         this.abstractionRouter = abstractionRouter;
+        this.responseErrorClass = responseErrorClass;
         this.walletTokenRefresh = walletTokenRefresh;
         this.walletUserSession = walletUserSession;
-        this.responseErrorClass = responseErrorClass;
         this.gson = gson;
     }
 
@@ -49,13 +48,12 @@ public class WalletErrorResponseInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Response response = chain.proceed(chain.request());
 
-        if (isUnauthorizeWalletToken(chain, response)) {
+        if (isUnauthorizeWalletToken(response)) {
             walletTokenRefresh.refreshToken();
             Request newRequestWallet = reCreateRequestWithNewAccessToken(chain);
             Response responseNew = chain.proceed(newRequestWallet);
-            if (isUnauthorizeWalletToken(chain, responseNew)) {
-                abstractionRouter.showForceLogoutDialog();
-                abstractionRouter.sendForceLogoutAnalytics(response.request().url().toString());
+            if (isUnauthorizeWalletToken(responseNew)) {
+                throw responseError.createException();
             }
             return responseNew;
         }
@@ -89,21 +87,15 @@ public class WalletErrorResponseInterceptor implements Interceptor {
         }
     }
 
-    private boolean isUnauthorizeWalletToken(Chain chain, Response response) {
-        Request.Builder newRequest = chain.request().newBuilder();
-        final Request finalRequest = newRequest.build();
+    private boolean isUnauthorizeWalletToken(Response response) {
         try {
             String responseString = response.peekBody(512).string();
-            return response.code() == 401 || responseString.toLowerCase().contains("invalid_request")
-                    && finalRequest.header(AUTHORIZATION).contains(BEARER);
+            return (responseString.toLowerCase().contains("invalid token") ||
+                    responseString.toLowerCase().contains("Invalid token"));
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private boolean isTokoCashInactivate(Response response) {
-        return response.code() == 402;
     }
 
     private Request reCreateRequestWithNewAccessToken(Chain chain) {
@@ -111,5 +103,4 @@ public class WalletErrorResponseInterceptor implements Interceptor {
                 .header(AUTHORIZATION, BEARER + " " + walletUserSession.getTokenWallet())
                 .build();
     }
-
 }

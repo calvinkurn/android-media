@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -40,11 +41,18 @@ import java.util.List;
 
 public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTokoCashContract.View {
 
+    private static final String SAVED_CATEGORY_DATA = "saved_category_data";
+    private static final String SAVED_PRODUCT_DATA = "saved_product_data";
+
     private TopUpTokoCashView topUpTokoCashView;
     private TopupTokoCashPresenter presenter;
+    private ProgressBar progressBar;
 
     private String categoryId;
     private String operatorId;
+    private CategoryData categoryData;
+    private Product selectedProduct;
+
 
     public static TopupTokoCashFragment newInstance() {
         TopupTokoCashFragment fragment = new TopupTokoCashFragment();
@@ -56,6 +64,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_topup_tokocash, container, false);
         topUpTokoCashView = view.findViewById(R.id.topup_layout);
+        progressBar = view.findViewById(R.id.progress_bar_topup);
         return view;
     }
 
@@ -78,7 +87,15 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         );
 
         presenter = new TopupTokoCashPresenter(getCategoryByIdUseCase, this);
-        presenter.processGetDataProductTokoCash();
+
+        if (savedInstanceState == null) {
+            showLoading();
+            presenter.processGetDataProductTokoCash();
+        } else {
+            this.categoryData = savedInstanceState.getParcelable(SAVED_CATEGORY_DATA);
+            this.selectedProduct = savedInstanceState.getParcelable(SAVED_PRODUCT_DATA);
+            renderProductTokoCash(categoryData);
+        }
     }
 
     @Override
@@ -93,6 +110,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
     @Override
     public void renderProductTokoCash(CategoryData categoryData) {
+        hideLoading();
+        this.categoryData = categoryData;
         Operator operatorSelected = null;
         for (Operator operator : categoryData.getOperatorList()) {
             if (operator.getOperatorId().equalsIgnoreCase(categoryData.getDefaultOperatorId())) {
@@ -101,7 +120,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         }
         categoryId = categoryData.getCategoryId();
         operatorId = operatorSelected.getOperatorId();
-        topUpTokoCashView.renderDataTopUp(categoryData, operatorSelected);
+        topUpTokoCashView.renderDataTopUp(categoryData, operatorSelected, selectedProduct);
         topUpTokoCashView.setListener(getActionListenerTopUpView());
     }
 
@@ -124,10 +143,23 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         };
     }
 
+    private void showLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            topUpTokoCashView.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideLoading() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+            topUpTokoCashView.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void showErrorLoadProductTokoCash(Throwable throwable) {
-
+        hideLoading();
     }
 
     @Override
@@ -151,14 +183,33 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_CATEGORY_DATA, categoryData);
+        outState.putParcelable(SAVED_PRODUCT_DATA, selectedProduct);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            this.categoryData = savedInstanceState.getParcelable(SAVED_CATEGORY_DATA);
+            this.selectedProduct = savedInstanceState.getParcelable(SAVED_PRODUCT_DATA);
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (resultCode == Activity.RESULT_OK && data != null)
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    selectedProduct = data.getParcelableExtra(
+                            DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA);
+                    renderProductTokoCash(categoryData);
                     topUpTokoCashView.renderUpdateDataSelected(
-                            (Product) data.getParcelableExtra(
-                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA));
+                            selectedProduct);
+                }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {

@@ -1178,16 +1178,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendErrorNetworkAnalytics(String url, int errorCode) {
-        AnalyticsLog.logNetworkError(url, errorCode);
-    }
-
-    @Override
-    public void sendForceLogoutAnalytics(String url) {
-        AnalyticsLog.logForceLogout(url);
-    }
-
-    @Override
     public AnalyticTracker getAnalyticTracker() {
         return new AnalyticTracker() {
             @Override

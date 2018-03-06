@@ -122,10 +122,7 @@
 
             <Button
                 android:id="@+id/bantuan_btn"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_login_height"
-                android:background="@drawable/history_white_border_grey"
-                android:minHeight="0dp"
+                style="@style/Button.Submit.White.Border"
                 android:text="Bantuan"
                 android:textAllCaps="false"
                 android:textColor="@color/black_38"

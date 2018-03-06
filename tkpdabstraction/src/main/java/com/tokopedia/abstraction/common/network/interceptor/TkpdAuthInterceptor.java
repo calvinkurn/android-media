@@ -97,7 +97,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             Response response1 = chain.proceed(newest);
             if (isUnauthorized(newest, response1)) {
                 showForceLogoutDialog();
-                sendForceLogoutAnalytics(response.request().url().toString());
             }
             return response1;
         }
@@ -108,7 +107,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    private void checkResponse(String string, Response response) {
+    protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
@@ -116,8 +115,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             showForceLogoutDialog();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerError(response);
-            sendErrorNetworkAnalytics(response.request().url().toString(),
-                    response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
@@ -306,14 +303,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     @Deprecated
     protected void showServerError(Response response) {
         abstractionRouter.showServerError(response);
-    }
-
-    protected void sendErrorNetworkAnalytics(String url, int errorCode) {
-        abstractionRouter.sendErrorNetworkAnalytics(url, errorCode);
-    }
-
-    private void sendForceLogoutAnalytics(String url) {
-        abstractionRouter.sendForceLogoutAnalytics(url);
     }
 
     protected Boolean isNeedRelogin(Response response) {

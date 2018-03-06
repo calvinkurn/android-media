@@ -11,15 +11,10 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by nabillasabbaha on 10/12/17.
@@ -39,7 +34,6 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
                                  UserSession userSession, WalletUserSession walletUserSession) {
         super(context, abstractionRouter, userSession);
         this.walletUserSession = walletUserSession;
-        maxRetryAttempt = 0;
     }
 
     @Override
@@ -55,15 +49,6 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
             header.put(AUTHORIZATION, BEARER + " " + walletUserSession.getTokenWallet());
             header.put(HEADER_DEVICE, DEVICE + GlobalConfig.VERSION_NAME);
             return header;
-        }
-    }
-
-    @Override
-    protected Response getResponse(Chain chain, Request request) throws IOException {
-        try {
-            return chain.proceed(request);
-        } catch (Error e) {
-            throw new UnknownHostException("tidak ada koneksi internet");
         }
     }
 

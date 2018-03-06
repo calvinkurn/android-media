@@ -163,4 +163,6 @@
     <string name="label_no_signal">No signal</string>
     <string name="label_no_service">No service</string>
 
+    <string name="title_topup_tokocash">Nominal Top Up</string>
+
 </resources>

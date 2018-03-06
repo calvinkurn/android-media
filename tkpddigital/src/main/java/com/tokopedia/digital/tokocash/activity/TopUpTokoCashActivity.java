@@ -64,6 +64,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by nabillasabbaha on 8/18/17.
  */
+@Deprecated
 public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
