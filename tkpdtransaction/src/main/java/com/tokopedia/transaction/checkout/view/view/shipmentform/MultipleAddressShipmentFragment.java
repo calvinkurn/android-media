@@ -25,11 +25,11 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipmentComponent;
-import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -53,6 +53,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
+    public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
@@ -63,19 +64,19 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     private TextView totalPayment;
 
     private MultipleAddressShipmentAdapter shipmentAdapter;
+    private PromoCodeAppliedData promoCodeAppliedData;
+    private ICartShipmentActivity cartShipmentActivity;
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                              PromoCodeAppliedData promoCodeAppliedData,
                                                               CartPromoSuggestion cartPromoSuggestionData) {
         MultipleAddressShipmentFragment fragment = new MultipleAddressShipmentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
+        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public static MultipleAddressShipmentFragment newInstance() {
-        return new MultipleAddressShipmentFragment();
     }
 
     @Override
@@ -87,6 +88,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         initInjector();
+        promoCodeAppliedData = getArguments().getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
         totalPayment = view.findViewById(R.id.total_payment_text_view);
         ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
@@ -95,7 +97,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         shipmentAdapter = new MultipleAddressShipmentAdapter(
                 presenter.initiateAdapterData(
                         (CartShipmentAddressFormData) getArguments()
-                        .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
+                                .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
                 ), new MultipleAddressPriceSummaryData(),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
@@ -262,6 +264,12 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setQuantity(3);
         data.setTotalProductPrice(10000);
         return new MultipleAddressPriceSummaryData();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 
     @Override

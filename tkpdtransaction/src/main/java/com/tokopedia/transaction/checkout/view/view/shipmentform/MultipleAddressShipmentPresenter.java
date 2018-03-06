@@ -43,7 +43,9 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     Product currentProduct = productList.get(productIndex);
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
+                    adapterData.setProductImageUrl(currentProduct.getProductImageSrc200Square());
                     adapterData.setProductPrice(String.valueOf(currentProduct.getProductPrice()));
+                    adapterData.setSenderName(currentGroupShop.getShop().getShopName());
                     MultipleAddressItemData addressItemData = new MultipleAddressItemData();
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
@@ -56,10 +58,17 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     addressItemData.setAddressId(
                             String.valueOf(currentAddress.getUserAddress().getAddressId())
                     );
+                    addressItemData.setAddressTitle(currentAddress.getUserAddress()
+                            .getAddressName());
+                    addressItemData.setAddressReceiverName(currentAddress.getUserAddress()
+                            .getReceiverName());
                     addressItemData.setAddressStreet(currentAddress.getUserAddress().getAddress());
                     addressItemData.setAddressCityName(currentAddress.getUserAddress().getCityName());
                     addressItemData.setAddressProvinceName(
                             currentAddress.getUserAddress().getProvinceName()
+                    );
+                    addressItemData.setRecipientPhoneNumber(
+                            currentAddress.getUserAddress().getPhone()
                     );
                     addressItemData.setAddressCountryName(currentAddress.getUserAddress()
                             .getCountry());

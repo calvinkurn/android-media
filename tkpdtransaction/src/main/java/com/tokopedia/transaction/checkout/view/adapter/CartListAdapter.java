@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -81,8 +82,12 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final CartItemHolder holderView = (CartItemHolder) holder;
             final CartItemHolderData data = (CartItemHolderData) cartItemHolderDataList.get(position);
 
-            holderView.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
-            holderView.tvProductName.setText(data.getCartItemData().getOriginData().getProductName());
+            holderView.tvShopName.setText(
+                    Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
+            );
+            holderView.tvProductName.setText(
+                    Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
+            );
             holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
             holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
             String quantity = String.valueOf(data.getCartItemData().getUpdatedData().getQuantity());
@@ -91,12 +96,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (quantity.length() > 0) {
                 holderView.etQty.setSelection(quantity.length());
             }
-
             ImageHandler.loadImageRounded2(
                     holderView.itemView.getContext(), holderView.ivProductImage,
                     data.getCartItemData().getOriginData().getProductImage()
             );
-
             holderView.etRemark.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -136,9 +139,17 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             holderView.tvShopName.setOnClickListener(getOnClickShopItemListener(position, data));
 
-            holderView.tvInfoRFreeReturn.setVisibility(
-                    data.getCartItemData().getOriginData().isFreeReturn() ? View.VISIBLE : View.GONE
-            );
+            if (data.getCartItemData().getOriginData().isFreeReturn()) {
+                holderView.tvInfoRFreeReturn.setVisibility(View.VISIBLE);
+                holderView.ivIconFreeReturn.setVisibility(View.VISIBLE);
+                ImageHandler.loadImageRounded2(
+                        holderView.itemView.getContext(), holderView.ivIconFreeReturn,
+                        data.getCartItemData().getOriginData().getFreeReturnLogo()
+                );
+            } else {
+                holderView.tvInfoRFreeReturn.setVisibility(View.GONE);
+                holderView.ivIconFreeReturn.setVisibility(View.GONE);
+            }
 
             holderView.tvInfoPreOrder.setVisibility(
                     data.getCartItemData().getOriginData().isPreOrder() ? View.VISIBLE : View.GONE
@@ -211,7 +222,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (getItemViewType(position) == TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionHolder holderView = (CartPromoSuggestionHolder) holder;
             final CartPromoSuggestion data = (CartPromoSuggestion) cartItemHolderDataList.get(position);
-            holderView.tvDesc.setText(data.getText());
+            holderView.tvDesc.setText(Html.fromHtml(data.getText()));
             holderView.tvAction.setText(data.getCta());
             holderView.tvAction.setTextColor(Color.parseColor(data.getCtaColor()));
 
@@ -301,18 +312,9 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void renderErrorFormItemValidation(CartItemHolderData data, CartItemHolder holderView, int position) {
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
-//            holderView.errorContainer.setVisibility(View.GONE);
-//            holderView.tvError.setVisibility(View.GONE);
-//            holderView.tvErrorDetail.setVisibility(View.GONE);
-
             holderView.tvErrorFormValidation.setText("");
             holderView.tvErrorFormValidation.setVisibility(View.GONE);
         } else {
-//            holderView.errorContainer.setVisibility(View.VISIBLE);
-//            holderView.tvError.setVisibility(View.VISIBLE);
-//            holderView.tvErrorDetail.setVisibility(View.GONE);
-//            holderView.tvError.setText(data.getErrorFormItemValidationMessage());
-
             holderView.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
             holderView.tvErrorFormValidation.setVisibility(View.VISIBLE);
         }
@@ -505,6 +507,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private AppCompatEditText etQty;
         private ImageView btnQtyPlus;
         private ImageView btnQtyMinus;
+        private ImageView ivIconFreeReturn;
         private TextView tvInfoRFreeReturn;
         private TextView tvInfoPreOrder;
         private TextView tvInfoCashBack;
@@ -513,7 +516,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private ImageView btnDelete;
         private ImageView ivWishlistBadge;
         private TextView tvErrorFormValidation;
-
         private LinearLayout errorContainer;
         private TextView tvError;
         private TextView tvErrorDetail;
@@ -530,6 +532,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.etQty = itemView.findViewById(R.id.et_qty);
             this.btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus);
             this.btnQtyMinus = itemView.findViewById(R.id.btn_qty_min);
+            this.ivIconFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
             this.tvInfoRFreeReturn = itemView.findViewById(R.id.tv_info_free_return);
             this.tvInfoPreOrder = itemView.findViewById(R.id.tv_info_preorder);
             this.tvInfoCashBack = itemView.findViewById(R.id.tv_info_cashback);

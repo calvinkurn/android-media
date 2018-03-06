@@ -83,12 +83,17 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
                         @Override
                         public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
-                            VoucherViewModel viewModel = new VoucherViewModel();
-                            viewModel.setAmount(checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount());
-                            viewModel.setMessage(checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess());
-                            viewModel.setCode(checkPromoCodeCartListResult.getDataVoucher().getCode());
-                            view.hideProgressLoading();
-                            view.checkVoucherSuccessfull(viewModel);
+                            if (checkPromoCodeCartListResult.isError()) {
+                                view.onPromoCodeError(checkPromoCodeCartListResult.getErrorMessage());
+                            } else {
+                                VoucherViewModel viewModel = new VoucherViewModel();
+                                viewModel.setAmount(checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount());
+                                viewModel.setMessage(checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess());
+                                viewModel.setCode(checkPromoCodeCartListResult.getDataVoucher().getCode());
+                                view.hideProgressLoading();
+                                view.checkVoucherSuccessfull(viewModel);
+                            }
+
                         }
                     }
             );
@@ -123,12 +128,16 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
                         @Override
                         public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-                            VoucherViewModel viewModel = new VoucherViewModel();
-                            viewModel.setAmount(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherAmountIdr());
-                            viewModel.setMessage(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
-                            viewModel.setCode(voucherCode);
-                            view.hideProgressLoading();
-                            view.checkVoucherSuccessfull(viewModel);
+                            if (checkPromoCodeCartShipmentResult.isError()) {
+                                view.onPromoCodeError(checkPromoCodeCartShipmentResult.getErrorMessage());
+                            } else {
+                                VoucherViewModel viewModel = new VoucherViewModel();
+                                viewModel.setAmount(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherAmountIdr());
+                                viewModel.setMessage(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
+                                viewModel.setCode(voucherCode);
+                                view.hideProgressLoading();
+                                view.checkVoucherSuccessfull(viewModel);
+                            }
                         }
                     }
             );

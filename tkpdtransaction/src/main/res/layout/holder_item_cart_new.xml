@@ -119,19 +119,25 @@
                     android:layout_below="@id/tv_product_price"
                     android:layout_marginTop="4dp">
 
+                    <ImageView
+                        android:id="@+id/iv_free_return_icon"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        tools:src="@drawable/ic_badge_free_return"/>
+
                     <TextView
                         android:id="@+id/tv_info_free_return"
                         style="@style/TextSmallNormal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_badge_free_return"
-                        android:drawablePadding="@dimen/padding_vvs"
-                        android:drawableStart="@drawable/ic_badge_free_return"
+                        android:fontFamily="sans-serif"
                         android:paddingEnd="8dp"
                         android:paddingLeft="0dp"
                         android:paddingRight="8dp"
-                        android:paddingStart="0dp"
-                        android:text="Free Returns" />
+                        android:paddingStart="8dp"
+                        android:text="Free Returns"
+                        android:textSize="12sp"
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/tv_info_preorder"

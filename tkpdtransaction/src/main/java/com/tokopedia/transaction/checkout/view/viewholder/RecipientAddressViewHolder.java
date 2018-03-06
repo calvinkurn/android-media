@@ -25,6 +25,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvRecipientPhone;
     private TextView mTvAddOrChangeAddress;
     private PickupPointLayout mPickupPointLayout;
+    private TextView mTvChangeAddress;
 
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
 
@@ -39,41 +40,43 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         mTvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
         mPickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+        mTvChangeAddress = itemView.findViewById(R.id.tv_change_address);
 
         mActionListener = actionListener;
     }
 
-    public void bindViewHolder(RecipientAddressModel recipientAddressModel) {
-        mTvAddressStatus.setVisibility(recipientAddressModel.getAddressStatus() == PRIME_ADDRESS ?
+    public void bindViewHolder(RecipientAddressModel recipientAddress) {
+        mTvAddressStatus.setVisibility(recipientAddress.getAddressStatus() == PRIME_ADDRESS ?
                 View.VISIBLE : View.GONE);
-        mTvAddressName.setText(recipientAddressModel.getAddressName());
-        mTvRecipientName.setText(recipientAddressModel.getRecipientName());
-        mTvRecipientAddress.setText(getFullAddress(recipientAddressModel));
-        mTvRecipientPhone.setText(recipientAddressModel.getRecipientPhoneNumber());
+        mTvAddressName.setText(recipientAddress.getAddressName());
+        mTvRecipientName.setText(recipientAddress.getRecipientName());
+        mTvRecipientAddress.setText(getFullAddress(recipientAddress));
+        mTvRecipientPhone.setText(recipientAddress.getRecipientPhoneNumber());
 
         mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
 
-        renderPickupPoint(mPickupPointLayout, recipientAddressModel);
+        renderPickupPoint(mPickupPointLayout, recipientAddress);
+        mTvChangeAddress.setVisibility(View.GONE);
     }
 
-    private String getFullAddress(RecipientAddressModel recipientAddressModel) {
-        return recipientAddressModel.getAddressStreet() + ", "
-                + recipientAddressModel.getDestinationDistrictName() + ", "
-                + recipientAddressModel.getAddressCityName() + ", "
-                + recipientAddressModel.getAddressProvinceName();
+    private String getFullAddress(RecipientAddressModel recipientAddress) {
+        return recipientAddress.getAddressStreet() + ", "
+                + recipientAddress.getDestinationDistrictName() + ", "
+                + recipientAddress.getAddressCityName() + ", "
+                + recipientAddress.getAddressProvinceName();
     }
 
     private void renderPickupPoint(PickupPointLayout pickupPointLayout,
-                                   final RecipientAddressModel recipientAddressModel) {
+                                   final RecipientAddressModel recipientAddress) {
 
-        pickupPointLayout.setListener(pickupPointListener(recipientAddressModel));
+        pickupPointLayout.setListener(pickupPointListener(recipientAddress));
 
-        if (recipientAddressModel.getStore() == null) {
+        if (recipientAddress.getStore() == null) {
             pickupPointLayout.unSetData(pickupPointLayout.getContext());
             pickupPointLayout.enableChooserButton(pickupPointLayout.getContext());
         } else {
             pickupPointLayout.setData(pickupPointLayout.getContext(),
-                    recipientAddressModel.getStore());
+                    recipientAddress.getStore());
         }
 
     }
@@ -88,22 +91,22 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     private PickupPointLayout.ViewListener pickupPointListener(
-            final RecipientAddressModel recipientAddressModel) {
+            final RecipientAddressModel recipientAddress) {
 
         return new PickupPointLayout.ViewListener() {
             @Override
             public void onChoosePickupPoint() {
-                mActionListener.onChoosePickupPoint(recipientAddressModel);
+                mActionListener.onChoosePickupPoint(recipientAddress);
             }
 
             @Override
             public void onClearPickupPoint(Store oldStore) {
-                mActionListener.onClearPickupPoint(recipientAddressModel);
+                mActionListener.onClearPickupPoint(recipientAddress);
             }
 
             @Override
             public void onEditPickupPoint(Store oldStore) {
-                mActionListener.onEditPickupPoint(recipientAddressModel);
+                mActionListener.onEditPickupPoint(recipientAddress);
             }
         };
     }
