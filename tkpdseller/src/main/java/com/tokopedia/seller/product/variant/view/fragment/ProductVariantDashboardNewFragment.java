@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.util.SparseIntArray;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -56,15 +57,16 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private ProductVariantViewModel productVariantViewModel;
     private RecyclerView recyclerView;
     private List<ProductVariantDashboardNewViewModel> productVariantDashboardNewViewModelList;
-    private @CurrencyTypeDef
-    int currencyType;
+
     private HashMap<Pair<String, String>, Integer> mapCombination;
     private Parcelable recyclerViewState;
+
+    private @CurrencyTypeDef
+    int currencyType;
     private int defaultPrice;
 
     @StockTypeDef
     private int defaultStockType;
-
     private boolean isOfficialStore;
 
     public static ProductVariantDashboardNewFragment newInstance() {
@@ -360,8 +362,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                         newProductVariantCombinationViewModelList.add(productVariantCombinationViewModelList.get(combinationIndex));
                     } else {
                         newProductVariantCombinationViewModelList.add(new ProductVariantCombinationViewModel(
-                                0, // TODO setup default price for generated variant
-                                0, // TODO setup default stock for generated variant
+                                isDefaultStockStatusActive(),
+                                defaultPrice,
+                                getDefaultStock(),
                                 "",
                                 productVariantOptionChildLevel1List.get(i).getValue(),
                                 productVariantOptionChildLevel2List.get(j).getValue()
@@ -375,8 +378,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                     newProductVariantCombinationViewModelList.add(productVariantCombinationViewModelList.get(combinationIndex));
                 } else {
                     newProductVariantCombinationViewModelList.add(new ProductVariantCombinationViewModel(
-                            0, // TODO setup default price for generated variant
-                            0, // TODO setup default stock for generated variant
+                            isDefaultStockStatusActive(),
+                            defaultPrice,
+                            getDefaultStock(),
                             "",
                             productVariantOptionChildLevel1List.get(i).getValue(),
                             ""
@@ -388,6 +392,14 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
         initVariantLabel();
         updateVariantItemListView();
+    }
+
+    private boolean isDefaultStockStatusActive(){
+        return defaultStockType == StockTypeDef.TYPE_ACTIVE || defaultStockType == StockTypeDef.TYPE_ACTIVE_LIMITED;
+    }
+
+    private int getDefaultStock(){
+        return (defaultStockType == StockTypeDef.TYPE_ACTIVE_LIMITED)? 1 : 0;
     }
 
     private void createCombinationMap(List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
@@ -473,9 +485,11 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         if (productVariantOptionChildListLv1 == null) {
             return;
         }
-        //TODO use map to change this double loop to single loop.
+
         List<ProductVariantOptionChild> productVariantOptionChildListLv2LookUp =
                 productVariantViewModel.getProductVariantOptionChild(1);
+        SparseIntArray mapPvoToIndex = new SparseIntArray();
+        createMap(productVariantOptionChildListLv2LookUp, mapPvoToIndex);
         // loop for level 1: ex: red, blue, purple
         for (int i = 0, sizei = productVariantOptionChildListLv1.size(); i < sizei; i++) {
             ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel =
@@ -483,9 +497,20 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             List<ProductVariantCombinationViewModel> productVariant = productVariantViewModel.getProductVariant();
             for (int j = 0, sizej = productVariant.size(); j < sizej; j++) {
                 productVariantDashboardNewViewModel.addCombinationModelIfAligned(productVariant.get(j),
-                        productVariantOptionChildListLv2LookUp);
+                        productVariantOptionChildListLv2LookUp, mapPvoToIndex);
             }
             productVariantDashboardNewViewModelList.add(productVariantDashboardNewViewModel);
+        }
+    }
+
+    private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList, SparseIntArray mapPvoToIndex){
+        if (productVariantOptionChildList!= null && productVariantOptionChildList.size() > 0) {
+            for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
+                ProductVariantOptionChild productVariantOptionChildLv2 = productVariantOptionChildList.get(i);
+                int tIdOrPvo = productVariantOptionChildLv2.gettId() > 0 ? productVariantOptionChildLv2.gettId():
+                        productVariantOptionChildLv2.getPvo();
+                mapPvoToIndex.put(tIdOrPvo, i);
+            }
         }
     }
 

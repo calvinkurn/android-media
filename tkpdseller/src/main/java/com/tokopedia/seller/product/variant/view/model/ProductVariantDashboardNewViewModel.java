@@ -4,6 +4,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
@@ -31,29 +32,25 @@ public class ProductVariantDashboardNewViewModel implements ItemType, Parcelable
     }
 
     public void addCombinationModelIfAligned(@NonNull ProductVariantCombinationViewModel productVariantCombinationViewModel,
-                                             @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp){
+                                             @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp,
+                                             SparseIntArray mapPvoToIndex){
         List<Integer> optionIntegerList = productVariantCombinationViewModel.getOpt();
         if (optionIntegerList != null && optionIntegerList.size() != 0) {
             int level1IdOrPvo = productVariantOptionChildLv1.gettId() > 0 ? productVariantOptionChildLv1.gettId():
                     productVariantOptionChildLv1.getPvo();
-            if (productVariantCombinationViewModel.getOpt().contains(level1IdOrPvo)){
+            if (level1IdOrPvo == productVariantCombinationViewModel.getOpt().get(0)){
 
                 // add the string name to the model
                 // example: from "opt": [23495,23497] to [Level 1 = "Merah"; Level 2 = "XL"]
                 productVariantCombinationViewModel.setLevel1String(productVariantOptionChildLv1.getValue());
                 // lookup level 2 to get the string name
                 if (productVariantOptionChildLv2LookUp != null && productVariantCombinationViewModel.getOpt().size() >= 2) {
-                    for (int i = 0, sizei = productVariantOptionChildLv2LookUp.size(); i < sizei; i++) {
-                        ProductVariantOptionChild productVariantOptionChildLv2 = productVariantOptionChildLv2LookUp.get(i);
-                        if (productVariantOptionChildLv2.getPvo() == productVariantCombinationViewModel.getOpt().get(1)) {
-                            productVariantCombinationViewModel.setLevel2String(productVariantOptionChildLv2.getValue());
-                        }
-                    }
+                    int index = mapPvoToIndex.get(productVariantCombinationViewModel.getOpt().get(1));
+                    productVariantCombinationViewModel.setLevel2String(productVariantOptionChildLv2LookUp.get(index).getValue());
                 }
                 this.productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
             }
-        } else {
-            //TODO check logic for this.
+        } else { // do not have the List of integer, so we use the string value instead.
             if (productVariantCombinationViewModel.getLevel1String().equalsIgnoreCase(productVariantOptionChildLv1.getValue())) {
                 this.productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
             }

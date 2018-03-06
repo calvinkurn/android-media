@@ -24,10 +24,9 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json, long draftProductId, boolean isUploading, String shopId){
+    public Observable<Long> saveDraft(String json, boolean isUploading, String shopId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
-        productDraftDataBase.setId(draftProductId);
         productDraftDataBase.setUploading(isUploading);
         productDraftDataBase.setShopId(shopId);
         productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);

@@ -17,8 +17,7 @@ public class ProductCategoryViewModel implements Parcelable{
     @SerializedName("category_full_name")
     @Expose
     private String categoryFullName;
-    //TODO remove alternate, it is typo from server
-    @SerializedName(value="category_full_title", alternate={"category_full_titile"})
+    @SerializedName("category_full_title")
     @Expose
     private String categoryFullTitle;
 
