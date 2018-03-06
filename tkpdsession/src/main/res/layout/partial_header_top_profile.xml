@@ -153,7 +153,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:weightSum="3"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:gravity="center">
@@ -229,7 +228,7 @@
             android:id="@+id/followers_separator"
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
-            android:background="@color/grey_300" />
+            android:background="@color/grey_300"/>
 
         <LinearLayout
             android:id="@+id/favorite_shop_layout"
