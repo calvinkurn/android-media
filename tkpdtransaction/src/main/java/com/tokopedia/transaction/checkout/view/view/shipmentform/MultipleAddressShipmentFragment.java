@@ -25,6 +25,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
@@ -64,22 +65,18 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     private TextView totalPayment;
 
     private MultipleAddressShipmentAdapter shipmentAdapter;
-    private PromoCodeCartListData promoCodeAppliedData;
+    private PromoCodeAppliedData promoCodeAppliedData;
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                              PromoCodeCartListData promoCodeCartListData,
+                                                              PromoCodeAppliedData promoCodeAppliedData,
                                                               CartPromoSuggestion cartPromoSuggestionData) {
         MultipleAddressShipmentFragment fragment = new MultipleAddressShipmentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
-        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
+        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public static MultipleAddressShipmentFragment newInstance() {
-        return new MultipleAddressShipmentFragment();
     }
 
     @Override

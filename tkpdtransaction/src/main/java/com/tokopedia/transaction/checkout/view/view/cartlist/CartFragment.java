@@ -46,6 +46,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
@@ -100,7 +101,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private OnPassingCartDataListener mDataPasserListener;
     private CartListData cartListData;
-    private PromoCodeCartListData promoCodeCartListData;
+    private PromoCodeAppliedData promoCodeAppliedData;
 
     @Override
     public void onAttach(Activity activity) {
@@ -452,17 +453,13 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
-                    getActivity(),
-                    shipmentAddressFormData,
-                    this.promoCodeCartListData,
+                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         } else {
             Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                    getActivity(),
-                    shipmentAddressFormData,
-                    this.promoCodeCartListData,
+                    getActivity(), shipmentAddressFormData, this.promoCodeAppliedData,
                     this.cartListData.getCartPromoSuggestion()
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
@@ -519,11 +516,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
-        this.promoCodeCartListData = promoCodeCartListData;
+        this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                .promoCode(promoCodeCartListData.getDataVoucher().getCode())
+                .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
+                .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
+                .build();
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-        cartItemPromoHolderData.setPromoVoucherType(promoCodeCartListData.getDataVoucher().getCode(),
-                promoCodeCartListData.getDataVoucher().getMessageSuccess(),
-                promoCodeCartListData.getDataVoucher().getCashbackVoucherAmount());
+        cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
+                promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
         cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
     }
 
@@ -726,7 +727,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
                     long voucherDiscountAmount = bundle.getLong(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
-
+                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                            .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                            .promoCode(voucherCode)
+                            .description(voucherMessage)
+                            .amount((int) voucherDiscountAmount)
+                            .build();
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
@@ -743,7 +749,13 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
                     long couponDiscountAmount = bundle.getLong(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
-
+                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                            .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                            .promoCode(couponCode)
+                            .couponTitle(couponTitle)
+                            .description(couponMessage)
+                            .amount((int) couponDiscountAmount)
+                            .build();
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoCouponType(couponTitle, couponCode, couponMessage, couponDiscountAmount);
 

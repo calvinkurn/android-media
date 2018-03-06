@@ -19,6 +19,7 @@ import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.view.di.component.CartShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerCartShipmentComponent;
@@ -49,7 +50,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     private int typeAddressShipment;
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestionData;
-    private PromoCodeCartListData promoCodeCartListData;
+    private PromoCodeAppliedData promoCodeAppliedData;
 
     @Inject
     ICartShipmentPresenter cartShipmentPresenter;
@@ -59,7 +60,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     public static Intent createInstanceSingleAddress(Context context,
                                                      CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                     PromoCodeCartListData promoCodeCartListData,
+                                                     PromoCodeAppliedData promoCodeCartListData,
                                                      CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
@@ -71,7 +72,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     public static Intent createInstanceMultipleAddress(Context context,
                                                        CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                       PromoCodeCartListData promoCodeCartListData,
+                                                       PromoCodeAppliedData promoCodeCartListData,
                                                        CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
@@ -88,7 +89,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        promoCodeCartListData = extras.getParcelable(EXTRA_PROMO_CODE_APPLIED_DATA);
+        promoCodeAppliedData = extras.getParcelable(EXTRA_PROMO_CODE_APPLIED_DATA);
         typeAddressShipment = extras.getInt(EXTRA_ADDRESS_SHIPMENT_TYPE);
         cartShipmentAddressFormData = extras.getParcelable(EXTRA_SHIPMENT_FORM_DATA);
         cartPromoSuggestionData = extras.getParcelable(EXTRA_CART_PROMO_SUGGESTION);
@@ -126,13 +127,13 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         SingleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, promoCodeCartListData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                         )).commit();
             } else {
                 //TODO Change Later
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, promoCodeCartListData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                         )).commit();
             }
         }
