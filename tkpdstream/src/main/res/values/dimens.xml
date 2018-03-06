@@ -28,4 +28,6 @@
     <dimen name="font_label">10sp</dimen>
     <dimen name="vote_icon_size">13dp</dimen>
     <dimen name="margin_vote_chat">44dp</dimen>
+    <dimen name="label_new_chat_width">120dp</dimen>
+    <dimen name="arrow_size">14dp</dimen>
 </resources>

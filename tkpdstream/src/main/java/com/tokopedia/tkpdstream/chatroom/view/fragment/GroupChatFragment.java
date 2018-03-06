@@ -122,6 +122,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
     private ProgressBarWithTimer progressBarWithTimer;
+    private View chatNotificationView;
 
     private OpenChannel mChannel;
     private PreviousMessageListQuery mPrevMessageListQuery;
@@ -208,6 +209,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         divider = view.findViewById(R.id.view);
         loading = view.findViewById(R.id.loading);
         main = view.findViewById(R.id.main_content);
+        chatNotificationView = view.findViewById(R.id.layout_new_chat);
+        chatNotificationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollToBottom();
+            }
+        });
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -403,6 +411,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 channelInfoDialog.dismiss();
             }
         });
+        if(viewModel.getChannelInfoViewModel().isHasPoll())
         actionButton.setText(R.string.lets_vote);
 
         participant.setText(String.valueOf(channelViewModel.getParticipant()));
@@ -519,6 +528,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void resetNewMessageCounter() {
         newMessageCounter = 0;
+        chatNotificationView.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -710,8 +721,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
-        //TODO : Implement this later
-        Log.d("NISNIS", "showNewMessageReceived " + newMessageCounter);
+        chatNotificationView.setVisibility(View.VISIBLE);
     }
 
     @Override

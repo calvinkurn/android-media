@@ -152,9 +152,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private List<IndicatorItem> getIndicatorList() {
         List<IndicatorItem> list = new ArrayList<>();
         list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
-                .ic_done_24dp, true));
+                .ic_indicator_topchat, true));
         list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
-                .ic_done_24dp, false));
+                .ic_indicator_channel, false));
         return list;
     }
 
