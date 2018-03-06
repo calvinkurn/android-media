@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -97,7 +98,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
-    private static final String RESULT_MESSAGE = "result_message";
+    private static final int REQUEST_LOGIN = 101;
 
     @Inject
     GroupChatPresenter presenter;
@@ -126,6 +127,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
     private ProgressBarWithTimer progressBarWithTimer;
+    private View chatNotificationView;
 
     private OpenChannel mChannel;
     private PreviousMessageListQuery mPrevMessageListQuery;
@@ -181,6 +183,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
 
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getLoginIntent
+                            (getActivity()), REQUEST_LOGIN);
+        }
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Nullable
@@ -207,8 +215,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         divider = view.findViewById(R.id.view);
         loading = view.findViewById(R.id.loading);
         main = view.findViewById(R.id.main_content);
+        chatNotificationView = view.findViewById(R.id.layout_new_chat);
+        chatNotificationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollToBottom();
+            }
+        });
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
 
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
         setupToolbar();
         prepareView();
         return view;
@@ -274,6 +299,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             shareLayout.show();
             return true;
         } else if (item.getItemId() == R.id.action_info) {
+            channelInfoDialog.setContentView(createBottomSheetView(viewModel
+                    .getChannelInfoViewModel().getChannelViewModel()));
             channelInfoDialog.show();
             return true;
         } else {
@@ -332,14 +359,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                        (replyEditText.getText().toString(),
-                                userSession.getUserId(),
-                                userSession.getName(),
-                                userSession.getProfilePicture(),
-                                false);
-                adapter.addDummyReply(pendingChatViewModel);
-                presenter.sendReply(pendingChatViewModel, mChannel);
+                if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
+                    PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                            (replyEditText.getText().toString(),
+                                    userSession.getUserId(),
+                                    userSession.getName(),
+                                    userSession.getProfilePicture(),
+                                    false);
+                    adapter.addDummyReply(pendingChatViewModel);
+                    presenter.sendReply(pendingChatViewModel, mChannel);
+                }
             }
         });
 
@@ -387,7 +416,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 analytics.eventClickJoin();
             }
         });
-        actionButton.setText(R.string.lets_vote);
+        if (viewModel.getChannelInfoViewModel().isHasPoll())
+            actionButton.setText(R.string.lets_vote);
 
         participant.setText(TextFormatter.format(channelViewModel.getParticipant()));
         name.setText(channelViewModel.getAdminName());
@@ -409,7 +439,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void initData() {
-        callbackManager = CallbackManager.Factory.create();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -490,18 +519,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         presenter.setHandler(viewModel.getChannelUrl(), this);
 
-        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
-        channelInfoDialog.show();
+        if (getArguments() != null & getArguments().getBoolean(GroupChatActivity
+                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+            channelInfoDialog.show();
+        }
 
     }
 
@@ -512,6 +533,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void resetNewMessageCounter() {
         newMessageCounter = 0;
+        chatNotificationView.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -705,8 +728,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
-        //TODO : Implement this later
-        Log.d("NISNIS", "showNewMessageReceived " + newMessageCounter);
+        chatNotificationView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -913,7 +935,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_CANCELED) {
+            Intent intent = ((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getHomeIntent(getActivity());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.removeEmptyState(getView());
+            initData();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public void showLoading() {

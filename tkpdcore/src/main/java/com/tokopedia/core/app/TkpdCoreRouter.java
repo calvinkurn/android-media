@@ -160,5 +160,8 @@ public interface TkpdCoreRouter {
     Intent getLoginFacebookIntent(Context context);
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
-    Intent getGroupChatIntent(Context context);
+
+    Intent getGroupChatIntent(Context context, String channelUrl);
+
+    Intent getInboxChannelsIntent(Context context);
 }

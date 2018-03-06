@@ -73,6 +73,12 @@ public class ShareLayout {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         appGrid.setLayoutManager(layoutManager);
         list = new ArrayList<>();
+        this.dialog.findViewById(R.id.close_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+            }
+        });
     }
 
     public void setShareModel(ShareData shareModel) {
@@ -87,47 +93,27 @@ public class ShareLayout {
     protected void setShareList() {
 
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_g), activity.getString(R.string.share_gplus), shareGoogle()));
+                R.drawable.ic_btn_g), activity.getString(R.string.share_gplus), shareGoogle(activity.getString(R.string.share_gplus))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_fb), activity.getString(R.string.share_fb), shareFb()));
+                R.drawable.ic_btn_fb), activity.getString(R.string.share_fb), shareFb(activity.getString(R.string.share_fb))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_twitter), activity.getString(R.string.share_twitter), shareTwitter()));
+                R.drawable.ic_btn_twitter), activity.getString(R.string.share_twitter), shareTwitter(activity.getString(R.string.share_twitter))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_line), activity.getString(R.string.share_line), shareLine()));
+                R.drawable.ic_btn_line), activity.getString(R.string.share_line), shareLine(activity.getString(R.string.share_line))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_wa), activity.getString(R.string.share_wa), shareWhatsapp()));
+                R.drawable.ic_btn_wa), activity.getString(R.string.share_wa), shareWhatsapp(activity.getString(R.string.share_wa))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_sms), activity.getString(R.string.share_sms), shareSMS()));
+                R.drawable.ic_btn_sms), activity.getString(R.string.share_sms), shareSMS(activity.getString(R.string.share_sms))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_copy), activity.getString(R.string.share_copy), shareCopyLink()));
+                R.drawable.ic_btn_copy), activity.getString(R.string.share_copy), shareCopyLink(activity.getString(R.string.share_copy))));
         list.add(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_btn_other), activity.getString(R.string.share_others), shareOthers()));
+                R.drawable.ic_btn_other), activity.getString(R.string.share_others), shareOthers(activity.getString(R.string.share_others))));
         adapter.setList(list);
     }
 
-//    private String getTrackingLabel(String method) {
-//        if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
-//            //shareModel.getId() has the exacly same value with shareModel.getPageRowNumber()
-//            //It is not the id it is PageRowNumber
-//            return shareModel.getId()
-//                    + " "
-//                    + FeedTrackingEventLabel.Click.SHARE
-//                    + " "
-//                    + FeedTrackingEventLabel.PAGE_FEED
-//                    + " / "
-//                    + method;
-//        } else if (fragmentV4 != null && fragmentV4 instanceof FeedPlusDetailFragment) {
-//            return shareModel.getId()
-//                    + " "
-//                    + FeedTrackingEventLabel.Click.SHARE
-//                    + " "
-//                    + FeedTrackingEventLabel.PAGE_PRODUCT_LIST
-//                    + " / "
-//                    + method;
-//        } else return "";
-//    }
 
-    private View.OnClickListener shareOthers() {
+
+    private View.OnClickListener shareOthers(final String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,23 +122,23 @@ public class ShareLayout {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, urlLink);
                 sendIntent.setType("text/plain");
                 activity.startActivity(sendIntent);
-                analytics.eventClickShareChannel(null);
+                analytics.eventClickShareChannel(string);
             }
         };
     }
 
-    private View.OnClickListener shareSMS() {
+    private View.OnClickListener shareSMS(final String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent smsIntent = MethodChecker.getSmsIntent(activity, urlLink);
                 activity.startActivity(smsIntent);
-                analytics.eventClickShareChannel(null);
+                analytics.eventClickShareChannel(string);
             }
         };
     }
 
-    private View.OnClickListener shareTwitter() {
+    private View.OnClickListener shareTwitter(String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,7 +147,7 @@ public class ShareLayout {
         };
     }
 
-    private View.OnClickListener shareWhatsapp() {
+    private View.OnClickListener shareWhatsapp(String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,7 +166,7 @@ public class ShareLayout {
 
         try {
             activity.startActivity(intent);
-            analytics.eventClickShareChannel(null);
+            analytics.eventClickShareChannel(appName);
         } catch (android.content.ActivityNotFoundException ex) {
 
             Toast.makeText(activity,
@@ -190,7 +176,7 @@ public class ShareLayout {
 
     }
 
-    private View.OnClickListener shareLine() {
+    private View.OnClickListener shareLine(String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,12 +185,12 @@ public class ShareLayout {
         };
     }
 
-    private View.OnClickListener shareGoogle() {
+    private View.OnClickListener shareGoogle(final String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                analytics.eventClickShareChannel(null);
+                analytics.eventClickShareChannel(string);
                 PlusShare.Builder builder = new PlusShare.Builder(activity);
 
                 builder.setType("text/plain");
@@ -228,7 +214,7 @@ public class ShareLayout {
     private void setListener() {
     }
 
-    protected View.OnClickListener shareCopyLink() {
+    protected View.OnClickListener shareCopyLink(String string) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,7 +227,7 @@ public class ShareLayout {
         };
     }
 
-    protected View.OnClickListener shareFb() {
+    protected View.OnClickListener shareFb(final String string) {
 
         return new View.OnClickListener() {
             @Override
@@ -297,7 +283,7 @@ public class ShareLayout {
                         }
                         ShareLinkContent linkContent = linkBuilder.build();
                         shareDialog.show(linkContent);
-                        analytics.eventClickShareChannel(null);
+                        analytics.eventClickShareChannel(string);
                     }
                 }
             }

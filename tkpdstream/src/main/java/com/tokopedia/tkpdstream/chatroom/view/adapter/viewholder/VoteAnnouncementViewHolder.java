@@ -1,11 +1,15 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
@@ -58,13 +62,23 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     }
 
     private void setVoteFinished(VoteAnnouncementViewModel element) {
-//        MethodChecker.setImageDrawable(context, voteIcon, R.drawable.ic_vote_inactive);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
+        } else {
+            voteIcon.setImageResource(R.drawable.ic_vote_inactive);
+        }
+
         voteTitle.setText(R.string.title_poll_finished);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.black_54));
     }
 
     private void setVoteStarted(VoteAnnouncementViewModel element) {
-//        MethodChecker.setImageDrawable(context, voteIcon, R.drawable.ic_vote);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote);
+        } else {
+            voteIcon.setImageResource(R.drawable.ic_vote);
+        }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));
     }

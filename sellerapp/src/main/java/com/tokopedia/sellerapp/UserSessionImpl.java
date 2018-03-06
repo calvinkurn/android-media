@@ -69,9 +69,6 @@ public class UserSessionImpl implements UserSession {
 
     @Override
     public String getProfilePicture() {
-        ProfileModel profileModel = CacheUtil.convertStringToModel(new GlobalCacheManager().getValueString(ProfileSourceFactory.KEY_PROFILE_DATA),
-                new TypeToken<ProfileModel>() {
-                }.getType());
-        return profileModel.getProfileData().getUserInfo().getUserImage();
+        return sessionHandler.getProfilePicture();
     }
 }

@@ -46,4 +46,6 @@ public interface TkpdInboxRouter {
     Fragment getChannelFragment(Bundle bundle);
 
     String getChannelFragmentTag();
+
+    Intent getLoginIntent(Context context);
 }

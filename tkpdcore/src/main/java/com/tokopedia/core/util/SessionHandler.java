@@ -79,6 +79,7 @@ public class SessionHandler {
     private static final String SHOP_NAME = "SHOP_NAME";
     private static final String TEMP_EMAIL = "TEMP_EMAIL";
     private static final String EMAIL = "EMAIL";
+    private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
 
     private Context context;
     private String email;
@@ -699,6 +700,18 @@ public class SessionHandler {
 
     public String getTempLoginSession() {
        return getTempLoginSession(context);
+    }
+
+    public String getProfilePicture() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(PROFILE_PICTURE, "");
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(PROFILE_PICTURE, profilePicture);
+        editor.apply();
     }
 
     public interface onLogoutListener {

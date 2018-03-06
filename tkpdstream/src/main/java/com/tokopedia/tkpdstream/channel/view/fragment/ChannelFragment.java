@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.channel.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,12 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
@@ -30,9 +34,6 @@ import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -43,12 +44,15 @@ import javax.inject.Inject;
 public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelTypeFactory> implements ChannelContract.View {
 
     private static final int REQUEST_OPEN_GROUPCHAT = 111;
+    private static final int REQUEST_LOGIN = 101;
 
     @Inject
     ChannelPresenter presenter;
 
     @Inject
     StreamAnalytics analytics;
+
+    UserSession userSession;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -78,6 +82,12 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         analytics.eventClickInboxChat();
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getLoginIntent
+                            (getActivity()), REQUEST_LOGIN);
+        }
     }
 
     @Nullable
@@ -215,6 +225,17 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
             } else {
                 NetworkErrorHelper.showSnackbar(getActivity());
             }
+        } else if (requestCode == REQUEST_LOGIN
+                && resultCode == Activity.RESULT_CANCELED) {
+            Intent intent = ((StreamModuleRouter) getActivity().getApplicationContext())
+                    .getHomeIntent(getActivity());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.removeEmptyState(getView());
+            loadInitialData();
         }
     }
 

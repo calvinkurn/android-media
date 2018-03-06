@@ -48,13 +48,17 @@ public class DeepLinkChecker {
     public static final int PELUANG = 16;
     public static final int DISCOVERY_PAGE = 17;
     public static final int FLIGHT = 18;
+    public static final int GROUPCHAT = 19;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
+    private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int getDeepLinkType(String url) {
+    public static int
+
+    getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();
@@ -67,6 +71,8 @@ public class DeepLinkChecker {
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;
+            else if (isGroupChat(linkSegment))
+                return GROUPCHAT;
             else if (isExcludedUrl(uriData))
                 return OTHER;
             else if (isFlight(linkSegment))
@@ -108,6 +114,10 @@ public class DeepLinkChecker {
             e.printStackTrace();
             return OTHER;
         }
+    }
+
+    private static boolean isGroupChat(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(GROUPCHAT_SEGMENT);
     }
 
     private static boolean isFlight(List<String> linkSegment) {
