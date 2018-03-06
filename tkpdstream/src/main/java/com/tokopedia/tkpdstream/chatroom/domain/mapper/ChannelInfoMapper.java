@@ -113,8 +113,14 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
     private ChannelViewModel mapToChannelDesc(Channel pojo) {
 
-        return new ChannelViewModel(String.valueOf(pojo.getChannelId()), pojo.getModeratorName()
-                , pojo.getCoverUrl(), pojo.getModeratorProfileUrl(), pojo.getTitle(), pojo.getDescription(), pojo.getTotalParticipantsOnline());
+        return new ChannelViewModel(String.valueOf(pojo.getChannelId()),
+                pojo.getModeratorName()
+                , pojo.getCoverUrl(),
+                pojo.getModeratorProfileUrl(),
+                pojo.getTitle(),
+                pojo.getDescription(),
+                pojo.getTotalParticipantsOnline(),
+                pojo.getChannelUrl());
     }
 
     private int checkIfSelected(boolean isAnswered, boolean isSelected) {

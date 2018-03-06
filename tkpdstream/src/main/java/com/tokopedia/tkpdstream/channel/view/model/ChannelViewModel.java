@@ -12,6 +12,7 @@ import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFact
 
 public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactory> {
 
+    private String channelUrl;
     private String id;
     private String adminName;
     private String image;
@@ -29,7 +30,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     }
 
     public ChannelViewModel(String id, String adminName, String image, String adminPicture,
-                            String title, String description, int participant) {
+                            String title, String description, int participant, String channelUrl) {
         this.id = id;
         this.adminName = adminName;
         this.image = image;
@@ -37,6 +38,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.title = title;
         this.description = description;
         this.participant = participant;
+        this.channelUrl = channelUrl;
     }
 
     public String getId() {
@@ -85,6 +87,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         dest.writeString(this.title);
         dest.writeString(this.description);
         dest.writeInt(this.participant);
+        dest.writeString(this.channelUrl);
+
     }
 
     protected ChannelViewModel(Parcel in) {
@@ -95,6 +99,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.title = in.readString();
         this.description = in.readString();
         this.participant = in.readInt();
+        this.channelUrl = in.readString();
+
     }
 
     public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
@@ -108,5 +114,9 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
             return new ChannelViewModel[size];
         }
     };
+
+    public String getChannelUrl() {
+        return channelUrl;
+    }
 }
 

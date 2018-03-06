@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -13,16 +12,12 @@ import android.support.v7.widget.Toolbar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
-
-import javax.inject.Inject;
 
 /**
  * @author by nisie on 2/6/18.
@@ -80,9 +75,8 @@ public class GroupChatActivity extends BaseEmptyActivity {
     public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         intent.putExtra(EXTRA_CHANNEL_INFO, channelViewModel);
-        intent.putExtra(EXTRA_CHANNEL_UUID, channelViewModel.getId());
+        intent.putExtra(EXTRA_CHANNEL_UUID, channelViewModel.getChannelUrl());
         intent.putExtra(EXTRA_SHOW_BOTTOM_DIALOG, false);
-
         return intent;
     }
 
