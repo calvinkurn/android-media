@@ -120,9 +120,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
     public static final int ONBOARDING_REQUEST = 101;
     public static final int WISHLIST_REQUEST = 202;
-
-    public static final int SHAKE_SHAKE_REQUEST = 301;
-
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
     public static final String TAG = ParentIndexHome.class.getSimpleName();
     public static final String messageTAG = TAG + " : ";
@@ -214,6 +211,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
 
+        //Initialize shake detect manager for shake shake campaign
         ShakeDetectManager.getShakeDetectManager(this).init();
 
         if (arg0 != null) {
@@ -481,7 +479,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
-
     private void setupViewPager() {
         adapter.addFragment(HomeFragment.newInstance(), getString(R.string.title_categories));
         adapter.addFragment(new FeedPlusFragment(), getString(R.string.title_index_prod_shop));
@@ -636,10 +633,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
-       // sd.unregisterListener(this);
-        //sd.stop();
-
-
     }
 
     @Override
