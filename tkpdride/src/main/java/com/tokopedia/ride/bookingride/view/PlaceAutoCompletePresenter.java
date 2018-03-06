@@ -524,35 +524,28 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         getView().showGoogleLabel();
         ArrayList<Visitable> addr = new ArrayList<>();
 
-        Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
-            @Override
-            public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel, PlaceAutoCompeleteViewModel t1) {
+        if (isNearbyPlaces) {
 
-                if (placeAutoCompeleteViewModel != null &&
-                        placeAutoCompeleteViewModel.getDistance() != null &&
-                        t1 != null &&
-                        t1.getDistance() != null) {
+            Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
+                @Override
+                public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel, PlaceAutoCompeleteViewModel t1) {
+
+                    if (placeAutoCompeleteViewModel != null &&
+                            placeAutoCompeleteViewModel.getDistance() != null &&
+                            t1 != null &&
+                            t1.getDistance() != null) {
 
 
-                    String distance1 = placeAutoCompeleteViewModel.getDistance().replaceAll("[A-Za-z, ]", "");
-                    String distance2 = t1.getDistance().replaceAll("[A-Za-z, ]", "");
+                        Integer distance1 = placeAutoCompeleteViewModel.getDistanceValue();
+                        Integer distance2 = t1.getDistanceValue();
 
-                    float distance1Float = Float.parseFloat(distance1);
-                    float distance2Float = Float.parseFloat(distance2);
+                        return distance1 - distance2;
+                    } else
+                        return 0;
+                }
+            });
 
-                    if (distance1.contains(".")) {
-                        distance1Float *= 1000;
-                    }
-
-                    if (distance2.contains(".")) {
-                        distance2Float *= 1000;
-                    }
-
-                    return (int) (distance1Float - distance2Float);
-                } else
-                    return 0;
-            }
-        });
+        }
 
         addr.addAll(addresses);
         getView().showListPlaces();
@@ -679,9 +672,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
                             if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
                                 String distance = element.getDistance().getText();
+                                Integer value = element.getDistance().getValue();
 
                                 if (addresses.size() > index) {
                                     addresses.get(index).setDistance(distance);
+                                    addresses.get(index).setDistanceValue(value);
                                 }
                             }
                             index++;
