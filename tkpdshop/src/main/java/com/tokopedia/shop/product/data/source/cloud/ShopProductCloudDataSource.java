@@ -31,6 +31,6 @@ public class ShopProductCloudDataSource {
         if (shopProductRequestModel.isShopClosed()) {
             baseUrl = ShopCommonUrl.BASE_URL;
         }
-        return shopApi.getShopProductList(baseUrl +  ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
+        return shopApi.getShopProductList(baseUrl + ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
     }
 }
