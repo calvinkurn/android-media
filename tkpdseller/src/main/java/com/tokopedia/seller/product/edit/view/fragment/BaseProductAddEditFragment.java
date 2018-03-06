@@ -32,6 +32,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
+import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -95,13 +96,13 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public static final String SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model";
 
     protected ProductScoreViewHolder productScoreViewHolder;
-
     protected ProductInfoViewHolder productInfoViewHolder;
     protected ProductImageViewHolder productImageViewHolder;
     protected ProductPriceViewHolder productPriceViewHolder;
     protected ProductManageViewHolder productManageViewHolder;
     protected ProductDescriptionViewHolder productDescriptionViewHolder;
     protected ProductDeliveryInfoViewHolder productDeliveryInfoViewHolder;
+    private LabelSwitch shareLabelSwitch;
 
     protected ValueIndicatorScoreModel valueIndicatorScoreModel;
 
@@ -144,15 +145,15 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
 
+        productScoreViewHolder = new ProductScoreViewHolder(view.findViewById(R.id.relative_layout_product_scoring), this);
         productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info), this);
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image), this);
         productPriceViewHolder = new ProductPriceViewHolder(view.findViewById(R.id.view_group_product_price), this);
         productManageViewHolder = new ProductManageViewHolder(view.findViewById(R.id.view_group_product_manage), this);
         productDescriptionViewHolder = new ProductDescriptionViewHolder(view.findViewById(R.id.view_group_product_description), this);
         productDeliveryInfoViewHolder = new ProductDeliveryInfoViewHolder(view.findViewById(R.id.view_group_product_delivery), this);
-
-        productScoreViewHolder = new ProductScoreViewHolder(view.findViewById(R.id.relative_layout_product_scoring), this);
-
+        shareLabelSwitch = view.findViewById(R.id.label_switch_share);
+        
         presenter.attachView(this);
         presenter.getShopInfo();
 
@@ -469,7 +470,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public void onSuccessStoreProductToDraft(long productId, boolean isUploading) {
         if (isUploading) {
             CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
-            if (productDeliveryInfoViewHolder.isShare()) {
+            if (isShare()) {
                 listener.startUploadProductWithShare(productId);
             } else {
                 listener.startUploadProduct(productId);
@@ -559,7 +560,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public void onSuccessStoreProductAndAddToDraft(Long productId) {
         CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
-        if (productDeliveryInfoViewHolder.isShare()) {
+        if (isShare()) {
             listener.startUploadProductAndAddWithShare(productId);
         } else {
             listener.startUploadProductAndAdd(productId);
@@ -635,6 +636,10 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         presenter.saveDraft(viewModel, isUploading);
     }
 
+    public boolean isShare() {
+        return shareLabelSwitch.isChecked();
+    }
+
     @CallSuper
     protected ProductViewModel collectDataFromView() {
         if (currentProductViewModel == null) {
@@ -653,7 +658,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     private void sendAnalyticsAdd(ProductViewModel viewModel) {
         List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                productDeliveryInfoViewHolder.isShare()
+                isShare()
         );
         for (String labelAnalytics : listLabelAnalytics){
             if(isAddStatus()) {
@@ -667,7 +672,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     private void sendAnalyticsAddMore(ProductViewModel viewModel) {
         List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                productDeliveryInfoViewHolder.isShare()
+                isShare()
         );
         for (String labelAnalytics : listLabelAnalytics){
             if(isAddStatus()) {

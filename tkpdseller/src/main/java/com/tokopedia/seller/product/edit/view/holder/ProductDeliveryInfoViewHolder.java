@@ -10,17 +10,14 @@ import android.widget.CompoundButton;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.expandable.BaseExpandableOption;
-import com.tokopedia.expandable.ExpandableOptionSwitch;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
-import com.tokopedia.design.text.SpinnerCounterInputView;
-import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 /**
@@ -28,13 +25,6 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
  */
 
 public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
-
-    public static final int INACTIVE_PREORDER = 0;
-    public static final int PREORDER_STATUS_ACTIVE = 1;
-
-    private ExpandableOptionSwitch preOrderExpandableOptionSwitch;
-    private SpinnerCounterInputView preOrderSpinnerCounterInputView;
-    private LabelSwitch shareLabelSwitch;
     private Listener listener;
 
     private SpinnerCounterInputView weightSpinnerCounterInputView;
@@ -43,40 +33,9 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     private LabelSwitch freeReturnsSwitch;
 
     public ProductDeliveryInfoViewHolder(View view, Listener listener) {
-        preOrderExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_pre_order);
-        preOrderSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_pre_order);
-        shareLabelSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_share);
-
-        preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
-            @Override
-            public void onExpandViewChange(boolean isExpand) {
-                if (!isExpand) {
-                    preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                }
-            }
-        });
-        preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText()) {
-            @Override
-            public void onNumberChanged(double number) {
-                if (isPreOrderValid()) {
-                    preOrderSpinnerCounterInputView.setCounterError(null);
-                }
-            }
-        });
-        preOrderSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                preOrderSpinnerCounterInputView.setCounterError(null);
-            }
-        });
-
-
-        weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
-
-        insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
-        freeReturnsSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_free_return);
-
+        weightSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_weight);
+        insuranceSpinnerTextView = view.findViewById(R.id.spinner_text_view_insurance);
+        freeReturnsSwitch = view.findViewById(R.id.label_switch_free_return);
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
             public void onNumberChanged(double number) {
@@ -105,19 +64,12 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
 
     @Override
     public void renderData(ProductViewModel model) {
-        setWeightUnit((int)model.getProductWeightUnit());
+        setWeightUnit((int) model.getProductWeightUnit());
         if (model.getProductWeight() > 0) {
-            setWeightValue((int)model.getProductWeight());
+            setWeightValue((int) model.getProductWeight());
         }
         setInsurance(model.isProductMustInsurance());
         setFreeReturn(model.isProductFreeReturn());
-        if (model.getProductPreorder() != null && model.getProductPreorder().getPreorderProcessTime() > 0) {
-            expandPreOrder(true);
-            setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
-            setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
-        } else {
-            expandPreOrder(false);
-        }
     }
 
     @Override
@@ -126,7 +78,6 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         model.setProductWeight(getWeightValue());
         model.setProductMustInsurance(isMustInsurance());
         model.setProductFreeReturn(isFreeReturns());
-        model.setProductPreorder(getPreOrder());
     }
 
     public void setListener(Listener listener) {
@@ -158,79 +109,14 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         weightSpinnerCounterInputView.setCounterValue(value);
     }
 
-    public void expandPreOrder(boolean expand) {
-        preOrderExpandableOptionSwitch.setExpand(expand);
-    }
-
-    public int getPreOrderUnit() {
-        if (preOrderExpandableOptionSwitch.isExpanded()) {
-            return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
-        } else {
-            return INACTIVE_PREORDER;
-        }
-    }
-
-    public ProductPreOrderViewModel getPreOrder() {
-        ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
-        if(getPreOrderValue() > 0) {
-            productPreorderViewModel.setPreorderStatus(PREORDER_STATUS_ACTIVE);
-            productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());
-            productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
-        }else{
-            productPreorderViewModel.setPreorderStatus(INACTIVE_PREORDER);
-        }
-        return productPreorderViewModel;
-    }
-
-    public void setPreOrderUnit(int unit) {
-        preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
-    }
-
-    public int getPreOrderValue() {
-        if (preOrderExpandableOptionSwitch.isExpanded()) {
-            return (int) preOrderSpinnerCounterInputView.getCounterValue();
-        } else {
-            return INACTIVE_PREORDER;
-        }
-    }
-
-    public void setPreOrderValue(int value) {
-        preOrderSpinnerCounterInputView.setCounterValue(value);
-    }
-
-    public boolean isShare() {
-        return shareLabelSwitch.isChecked();
-    }
-
-    private boolean isPreOrderValid() {
-        if (!preOrderExpandableOptionSwitch.isExpanded()) {
-            return true;
-        }
-        String minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_day));
-        String maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_day));
-        if (preOrderSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_pre_order_value_week))) {
-            minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_week));
-            maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_week));
-        }
-        double minValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPreOrderString));
-        double maxValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPreOrderString));
-        if (minValue > getPreOrderValue() || getPreOrderValue() > maxValue) {
-            preOrderSpinnerCounterInputView.setCounterError(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_error_product_pre_order_not_valid, minPreOrderString, maxPreOrderString));
-            preOrderSpinnerCounterInputView.clearFocus();
-            preOrderSpinnerCounterInputView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
     public boolean isFreeReturns() {
         return getFreeReturns() == FreeReturnTypeDef.TYPE_ACTIVE;
     }
 
     public void setFreeReturn(boolean isFreeReturn) {
-        if(isFreeReturn) {
+        if (isFreeReturn) {
             freeReturnsSwitch.setChecked(true);
-        }else{
+        } else {
             freeReturnsSwitch.setChecked(false);
         }
     }
@@ -240,9 +126,9 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     }
 
     public void setInsurance(boolean isMustInsurance) {
-        if(isMustInsurance) {
+        if (isMustInsurance) {
             insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_YES));
-        }else{
+        } else {
             insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_OPTIONAL));
         }
     }
@@ -276,10 +162,6 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         if (!isWeightValid()) {
             weightSpinnerCounterInputView.requestFocus();
             UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
-            return false;
-        }
-        if (!isPreOrderValid()) {
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
             return false;
         }
         return true;

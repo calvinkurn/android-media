@@ -7,21 +7,28 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.expandable.BaseExpandableOption;
+import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -36,8 +43,13 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     public static final int REQUEST_CODE_GET_VIDEO = 1;
 
+    public static final int INACTIVE_PREORDER = 0;
+    public static final int PREORDER_STATUS_ACTIVE = 1;
+
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
+    private ExpandableOptionSwitch preOrderExpandableOptionSwitch;
+    private SpinnerCounterInputView preOrderSpinnerCounterInputView;
 
     private Listener listener;
 
@@ -50,11 +62,9 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     private SpinnerTextView conditionSpinnerTextView;
 
     public ProductDescriptionViewHolder(View view, Listener listener) {
-
-        conditionSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_condition);
-
         videoIdList = new ArrayList<>();
-        descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
+        conditionSpinnerTextView = view.findViewById(R.id.spinner_text_view_condition);
+        descriptionEditText = view.findViewById(R.id.edit_text_description);
         FrameLayout infoIconProductDescription = view.findViewById(R.id.info_icon_add_product_container);
         infoIconProductDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +95,31 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             }
         });
 
+        preOrderExpandableOptionSwitch = view.findViewById(R.id.expandable_option_switch_pre_order);
+        preOrderSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_pre_order);
+        preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
+            @Override
+            public void onExpandViewChange(boolean isExpand) {
+                if (!isExpand) {
+                    preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                }
+            }
+        });
+        preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText()) {
+            @Override
+            public void onNumberChanged(double number) {
+                if (isPreOrderValid()) {
+                    preOrderSpinnerCounterInputView.setCounterError(null);
+                }
+            }
+        });
+        preOrderSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                preOrderSpinnerCounterInputView.setCounterError(null);
+            }
+        });
 
         setListener(listener);
 
@@ -92,12 +127,19 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     @Override
     public void renderData(ProductViewModel model) {
-        setCondition((int)model.getProductCondition());
+        setCondition((int) model.getProductCondition());
         if (!TextUtils.isEmpty(model.getProductDescription())) {
             setDescription(model.getProductDescription());
         }
         if (model.getProductVideo() != null) {
             setVideoIdList(convertToListString(model.getProductVideo()));
+        }
+        if (model.getProductPreorder() != null && model.getProductPreorder().getPreorderProcessTime() > 0) {
+            expandPreOrder(true);
+            setPreOrderUnit((int) model.getProductPreorder().getPreorderTimeUnit());
+            setPreOrderValue((int) model.getProductPreorder().getPreorderProcessTime());
+        } else {
+            expandPreOrder(false);
         }
     }
 
@@ -106,11 +148,12 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         model.setProductCondition(getCondition());
         model.setProductDescription(getDescription());
         model.setProductVideo(getVideoList());
+        model.setProductPreorder(getPreOrder());
     }
 
     private List<String> convertToListString(List<ProductVideoViewModel> productVideo) {
         List<String> productVideos = new ArrayList<>();
-        for(ProductVideoViewModel productVideoViewModel : productVideo){
+        for (ProductVideoViewModel productVideoViewModel : productVideo) {
             productVideos.add(productVideoViewModel.getUrl());
         }
         return productVideos;
@@ -182,7 +225,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     public List<ProductVideoViewModel> getVideoList() {
         List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
-        for(String videoId : getVideoIdList()) {
+        for (String videoId : getVideoIdList()) {
             ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(videoId);
             productVideoViewModelList.add(productVideoViewModel);
         }
@@ -194,8 +237,73 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         setLabelViewText(videoIdList);
     }
 
+    public void expandPreOrder(boolean expand) {
+        preOrderExpandableOptionSwitch.setExpand(expand);
+    }
+
+    public int getPreOrderUnit() {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
+            return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
+        } else {
+            return INACTIVE_PREORDER;
+        }
+    }
+
+    public ProductPreOrderViewModel getPreOrder() {
+        ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
+        if (getPreOrderValue() > 0) {
+            productPreorderViewModel.setPreorderStatus(PREORDER_STATUS_ACTIVE);
+            productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());
+            productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
+        } else {
+            productPreorderViewModel.setPreorderStatus(INACTIVE_PREORDER);
+        }
+        return productPreorderViewModel;
+    }
+
+    public void setPreOrderUnit(int unit) {
+        preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public int getPreOrderValue() {
+        if (preOrderExpandableOptionSwitch.isExpanded()) {
+            return (int) preOrderSpinnerCounterInputView.getCounterValue();
+        } else {
+            return INACTIVE_PREORDER;
+        }
+    }
+
+    public void setPreOrderValue(int value) {
+        preOrderSpinnerCounterInputView.setCounterValue(value);
+    }
+
+    private boolean isPreOrderValid() {
+        if (!preOrderExpandableOptionSwitch.isExpanded()) {
+            return true;
+        }
+        String minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_day));
+        String maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_day));
+        if (preOrderSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_pre_order_value_week))) {
+            minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_week));
+            maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_week));
+        }
+        double minValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPreOrderString));
+        double maxValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPreOrderString));
+        if (minValue > getPreOrderValue() || getPreOrderValue() > maxValue) {
+            preOrderSpinnerCounterInputView.setCounterError(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_error_product_pre_order_not_valid, minPreOrderString, maxPreOrderString));
+            preOrderSpinnerCounterInputView.clearFocus();
+            preOrderSpinnerCounterInputView.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean isDataValid() {
+        if (!isPreOrderValid()) {
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            return false;
+        }
         return true;
     }
 
