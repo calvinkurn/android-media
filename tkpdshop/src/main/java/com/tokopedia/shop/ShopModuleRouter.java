@@ -13,8 +13,6 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
-    boolean isMyOwnShop(String shopId);
-
     void goToManageShop(Context context);
 
     void goToAddProduct(Context context);
@@ -23,5 +21,5 @@ public interface ShopModuleRouter {
 
     void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
 
-    void goToProductDetailFromShop(Context context, String productUrl);
+    void goToProductDetail(Context context, String productUrl);
 }

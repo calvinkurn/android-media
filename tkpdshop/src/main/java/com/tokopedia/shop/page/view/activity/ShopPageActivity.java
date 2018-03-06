@@ -247,7 +247,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         reputationDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
+
             }
         });
         totalProductDetailView.setOnClickListener(new View.OnClickListener() {
@@ -259,13 +259,13 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
+
             }
         });
         reputationSpeedDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopProductListActivity.createIntent(ShopPageActivity.this, shopId));
+
             }
         });
         buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {

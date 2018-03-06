@@ -18,13 +18,16 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
+    private final ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final View.OnClickListener showMoreProductOnClickListener;
     private final ShopProductClickedListener shopProductClickedListener;
     private final View.OnClickListener showMoreEtalaseOnClickListener;
 
-    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnClickListener,
+    public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
+                                                View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener) {
+        this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.showMoreEtalaseOnClickListener = showMoreEtalaseOnClickListener;
@@ -45,7 +48,7 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
-            return new ShopProductLimitedPromoViewHolder(parent);
+            return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
             return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {

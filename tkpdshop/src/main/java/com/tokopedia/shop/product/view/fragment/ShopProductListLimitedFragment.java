@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,14 +20,18 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,7 +40,7 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductListLimitedView, ShopProductClickedListener {
+        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
 
     private ProgressDialog progressDialog;
 
@@ -43,6 +48,14 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
+            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+        }
+    }
 
     @Nullable
     @Override
@@ -66,13 +79,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void loadData(int i) {
-        displayProduct(shopId, null);
+
     }
 
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(new View.OnClickListener() {
+        return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
@@ -125,10 +138,15 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        if (TextUtils.isEmpty(text))
-            return;
+    public void promoClicked(String url) {
+        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url);
+    }
 
+    @Override
+    public void onSearchSubmitted(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
         startActivity(ShopProductListActivity.createIntent(
                 getActivity(),
                 shopId,
@@ -153,8 +171,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public ShopModuleRouter getShopModuleRouter() {
-        return shopModuleRouter;
+    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
     @Override
@@ -185,13 +203,5 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void hideLoading() {
         progressDialog.dismiss();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
-            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
-        }
     }
 }
