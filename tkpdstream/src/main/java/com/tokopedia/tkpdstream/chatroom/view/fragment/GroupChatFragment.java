@@ -294,6 +294,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             shareLayout.show();
             return true;
         } else if (item.getItemId() == R.id.action_info) {
+            channelInfoDialog.setContentView(createBottomSheetView(viewModel
+                    .getChannelInfoViewModel().getChannelViewModel()));
             channelInfoDialog.show();
             return true;
         } else {
@@ -356,14 +358,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                        (replyEditText.getText().toString(),
-                                userSession.getUserId(),
-                                userSession.getName(),
-                                userSession.getProfilePicture(),
-                                false);
-                adapter.addDummyReply(pendingChatViewModel);
-                presenter.sendReply(pendingChatViewModel, mChannel);
+                if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
+                    PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                            (replyEditText.getText().toString(),
+                                    userSession.getUserId(),
+                                    userSession.getName(),
+                                    userSession.getProfilePicture(),
+                                    false);
+                    adapter.addDummyReply(pendingChatViewModel);
+                    presenter.sendReply(pendingChatViewModel, mChannel);
+                }
             }
         });
 
@@ -411,8 +415,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 channelInfoDialog.dismiss();
             }
         });
-        if(viewModel.getChannelInfoViewModel().isHasPoll())
-        actionButton.setText(R.string.lets_vote);
+        if (viewModel.getChannelInfoViewModel().isHasPoll())
+            actionButton.setText(R.string.lets_vote);
 
         participant.setText(String.valueOf(channelViewModel.getParticipant()));
         name.setText(channelViewModel.getAdminName());

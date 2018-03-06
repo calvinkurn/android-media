@@ -67,6 +67,10 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return adminPicture;
     }
 
+    public void setParticipant(int participant) {
+        this.participant = participant;
+    }
+
     @Override
     public int describeContents() {
         return 0;

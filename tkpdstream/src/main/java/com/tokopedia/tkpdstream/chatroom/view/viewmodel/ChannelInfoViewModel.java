@@ -11,7 +11,6 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 public class ChannelInfoViewModel {
     private String title;
-    private int totalParticipantsOnline;
     private String channelUrl;
     private String bannerUrl;
     private boolean hasPoll;
@@ -20,12 +19,12 @@ public class ChannelInfoViewModel {
     private VoteInfoViewModel voteInfoViewModel;
     private ChannelViewModel channelViewModel;
 
-    public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, int
-            totalParticipantsOnline, boolean hasPoll, @Nullable VoteInfoViewModel voteInfoViewModel, ChannelViewModel channelViewModel) {
+    public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
+                                @Nullable VoteInfoViewModel voteInfoViewModel,
+                                ChannelViewModel channelViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
-        this.totalParticipantsOnline = totalParticipantsOnline;
         this.hasPoll = hasPoll;
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
@@ -44,11 +43,13 @@ public class ChannelInfoViewModel {
     }
 
     public int getTotalParticipantsOnline() {
-        return totalParticipantsOnline;
+        return channelViewModel != null ? channelViewModel.getParticipant() : 0;
     }
 
     public void setTotalParticipant(int totalParticipant) {
-        this.totalParticipantsOnline = totalParticipant;
+        if (channelViewModel != null) {
+            channelViewModel.setParticipant(totalParticipant);
+        }
     }
 
     public void setHasPoll(boolean hasPoll) {

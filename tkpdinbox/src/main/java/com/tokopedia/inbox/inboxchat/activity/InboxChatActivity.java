@@ -273,6 +273,16 @@ public class InboxChatActivity extends DrawerPresenterActivity
         return intent;
     }
 
+    public void hideIndicators() {
+        indicator.setVisibility(View.GONE);
+    }
+
+    public void showIndicators() {
+        if (!GlobalConfig.isSellerApp()) {
+            indicator.setVisibility(View.VISIBLE);
+        }
+    }
+
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
         private int space;

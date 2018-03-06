@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -56,6 +57,7 @@ public class GroupChatActivity extends BaseEmptyActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             TransparentStatusBarHelper.assistActivity(this);
         }
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     private void initView() {

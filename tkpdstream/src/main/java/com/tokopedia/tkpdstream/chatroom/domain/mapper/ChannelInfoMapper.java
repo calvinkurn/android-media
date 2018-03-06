@@ -42,7 +42,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getCoverUrl(),
                 pojo.getChannel().getTitle(),
-                pojo.getChannel().getTotalParticipantsOnline(),
                 hasPoll(pojo.getChannel().getActivePolls()),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()));

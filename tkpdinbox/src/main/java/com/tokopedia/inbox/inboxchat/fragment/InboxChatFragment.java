@@ -174,6 +174,9 @@ public class InboxChatFragment extends BaseDaggerFragment
                 getActivity().getMenuInflater().inflate(presenter.getMenuID(), menu);
                 isMultiActionEnabled = true;
                 presenter.setInActionMode(true);
+                if(getActivity() instanceof InboxChatActivity){
+                    ((InboxChatActivity)getActivity()).hideIndicators();
+                }
                 return true;
             }
 
@@ -202,6 +205,9 @@ public class InboxChatFragment extends BaseDaggerFragment
                 isMultiActionEnabled = false;
                 presenter.setInActionMode(false);
                 enableActions();
+                if(getActivity() instanceof InboxChatActivity){
+                    ((InboxChatActivity)getActivity()).showIndicators();
+                }
             }
         };
     }
