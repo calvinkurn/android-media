@@ -231,7 +231,11 @@ public class ChatView extends RelativeLayout {
     public void addMessage(ChatMessage chatMessage) {
         chatViewListAdapter.addMessage(chatMessage);
         chatViewListAdapter.notifyDataSetChanged();
+    }
 
+    public void clearMessages() {
+        chatViewListAdapter.clearMessages();
+        chatViewListAdapter.notifyDataSetChanged();
     }
 
     public void addMessages(ArrayList<ChatMessage> messages) {

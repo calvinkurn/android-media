@@ -13,19 +13,20 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:paddingBottom="@dimen/padding_ms"
-        android:paddingTop="@dimen/padding_ms"
         android:stackFromBottom="false"
         android:transcriptMode="alwaysScroll" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/margin_small_sm"
+        android:layout_margin="@dimen/margin_ms"
+        android:elevation="1dp"
         android:src="@drawable/ic_send_white_24dp"
+        app:elevation="1dp"
         app:layout_anchorGravity="bottom|right|end" />
 
 
@@ -36,9 +37,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="@dimen/margin_small_sm"
-        android:layout_marginLeft="@dimen/margin_small_sm"
-        android:layout_marginStart="@dimen/margin_small_sm"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms"
         android:layout_toLeftOf="@id/sendButton"
         android:layout_toStartOf="@id/sendButton"
         android:descendantFocusability="beforeDescendants"
