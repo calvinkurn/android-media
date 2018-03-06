@@ -4,27 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:divider="@drawable/bg_line_separator"
-    android:showDividers="middle">
+    android:orientation="vertical">
 
-    <com.tokopedia.seller.common.widget.LabelView
-        android:id="@+id/label_view_variant_level_one"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:content_color="@color/tkpd_main_green"
-        app:content="@string/product_label_choose"/>
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning|middle|end"
+        android:orientation="vertical">
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_variant_level_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:content_color="@color/tkpd_main_green"
+            app:content="@string/product_label_choose"/>
 
-    <com.tokopedia.seller.common.widget.LabelView
-        android:id="@+id/label_view_variant_level_two"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:content_color="@color/tkpd_main_green"
-        app:content="@string/product_label_choose"/>
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_variant_level_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:content_color="@color/tkpd_main_green"
+            app:content="@string/product_label_choose"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

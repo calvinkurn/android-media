@@ -158,7 +158,6 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager.notify(TAG, notificationId, notification);
     }
 
-    //TODO no need to send bundle, only need the String action to refresh page
     public void sendSuccessBroadcast(ProductViewModel productViewModel) {
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();

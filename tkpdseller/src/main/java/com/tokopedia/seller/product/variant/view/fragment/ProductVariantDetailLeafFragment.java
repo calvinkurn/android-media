@@ -3,21 +3,15 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -25,10 +19,11 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
 
 import java.util.List;
 
@@ -36,7 +31,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDetailLeafFragment extends Fragment {
+public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
@@ -45,8 +40,8 @@ public class ProductVariantDetailLeafFragment extends Fragment {
     private @CurrencyTypeDef
     int currencyType;
     private CurrencyTextWatcher currencyTextWatcher;
-    private ImageView ivVariant;
-    private View frameImage;
+
+    private VariantImageView variantImageView;
 
     public interface OnProductVariantDetailLeafFragmentListener {
         void onSubmitVariant();
@@ -59,10 +54,47 @@ public class ProductVariantDetailLeafFragment extends Fragment {
         int getCurrencyTypeDef();
 
         ProductVariantOptionChild getProductVariantChild();
+
+        boolean needRetainImage();
+
+        void onImageChanged();
+
+        double getDefaultPrice();
+
+        @StockTypeDef
+        int getStockType();
+
+        boolean isOfficialStore();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
         return new ProductVariantDetailLeafFragment();
+    }
+
+    @Override
+    public boolean needRetainImage() {
+        return listener.needRetainImage();
+    }
+
+    @Override
+    public ProductVariantOptionChild getProductVariantOptionChild() {
+        return listener.getProductVariantChild();
+    }
+
+    @Override
+    public void refreshVariantImage() {
+        refreshInitialVariantImage();
+        listener.onImageChanged();
+    }
+
+    public void refreshInitialVariantImage() {
+        ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
+        List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+        VariantPictureViewModel pictureViewModel = null;
+        if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
+            pictureViewModel = productPictureViewModelList.get(0);
+        }
+        variantImageView.setImage(pictureViewModel, childLvl1Model.getHex());
     }
 
     @SuppressWarnings("unchecked")
@@ -103,7 +135,7 @@ public class ProductVariantDetailLeafFragment extends Fragment {
         priceEditText.addTextChangedListener(currencyTextWatcher);
         priceEditText.setText(
                 CurrencyFormatUtil.convertPriceValue(productVariantCombinationViewModel.getPriceVar(),
-                currencyType == CurrencyTypeDef.TYPE_USD));
+                        currencyType == CurrencyTypeDef.TYPE_USD));
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
@@ -120,37 +152,25 @@ public class ProductVariantDetailLeafFragment extends Fragment {
         labelSwitchStatus.setChecked(productVariantCombinationViewModel.isActive());
         setStockLabel(productVariantCombinationViewModel.isActive());
 
-        frameImage = view.findViewById(R.id.frame_image);
-        ivVariant = view.findViewById(R.id.image_view);
+//        frameImage = view.findViewById(R.id.frame_image);
+//        ivVariant = view.findViewById(R.id.image_view);
+        variantImageView = view.findViewById(R.id.variant_image_view);
 
         ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
         if (childLvl1Model == null) {
-            frameImage.setVisibility(View.GONE);
+            variantImageView.setVisibility(View.GONE);
         } else {
-            frameImage.setVisibility(View.VISIBLE);
-
-            List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
-            VariantPictureViewModel pictureViewModel = null;
-            if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
-                pictureViewModel = productPictureViewModelList.get(0);
-            }
-
-            if (pictureViewModel != null && !TextUtils.isEmpty(pictureViewModel.getUrlOriginal())) {
-                ivVariant.setBackgroundColor(Color.TRANSPARENT);
-                ImageHandler.LoadImage(ivVariant, pictureViewModel.getUrlOriginal());
-            } else if (!TextUtils.isEmpty(childLvl1Model.getHex())) {
-                ivVariant.setBackgroundColor(Color.parseColor(childLvl1Model.getHex()));
-                ivVariant.setImageDrawable(null);
-            } else {
-                ivVariant.setBackgroundColor(Color.LTGRAY);
-                ivVariant.setImageDrawable(null);
-            }
-
-            ivVariant.setOnClickListener(new View.OnClickListener() {
+            variantImageView.setVisibility(View.VISIBLE);
+            refreshVariantImage();
+            variantImageView.setOnImageClickListener(new VariantImageView.OnImageClickListener() {
                 @Override
-                public void onClick(View v) {
-                    //TODO change image
-                    Toast.makeText(ivVariant.getContext(), "Test", Toast.LENGTH_LONG).show();
+                public void onImageVariantClicked() {
+                    if (getProductVariantOptionChild().getProductPictureViewModelList() == null ||
+                            getProductVariantOptionChild().getProductPictureViewModelList().size() == 0) {
+                        showAddImageDialog();
+                    } else {
+                        showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0));
+                    }
                 }
             });
         }
@@ -166,7 +186,7 @@ public class ProductVariantDetailLeafFragment extends Fragment {
         return view;
     }
 
-    private void setStockLabel(boolean isChecked){
+    private void setStockLabel(boolean isChecked) {
         if (isChecked) {
             labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
         } else {

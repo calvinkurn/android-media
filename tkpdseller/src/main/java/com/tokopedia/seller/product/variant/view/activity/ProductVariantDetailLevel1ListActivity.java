@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
@@ -28,6 +29,10 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     public static final String EXTRA_PRODUCT_VARIANT_LV1_NAME = "var_lv1_nm";
     public static final String EXTRA_PRODUCT_VARIANT_LV2_NAME = "var_lv2_nm";
     public static final String EXTRA_CURRENCY_TYPE = "curr_type";
+    public static final String EXTRA_NEED_RETAIN_IMG = "need_retain_img";
+    public static final String EXTRA_DEFAULT_PRICE = "prc";
+    public static final String EXTRA_STOCK_TYPE = "stock_typ";
+    public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
 
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
 
@@ -43,23 +48,38 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     int currencyType;
 
     private boolean needRefreshData;
+    private boolean needRetainImage;
+
+    private double defaultPrice;
+    private @StockTypeDef int stockType;
+    private boolean isOfficialStore;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel,
                              String variantLv1Name, String variantLv2Name,
-                             @CurrencyTypeDef int currencyType) {
-        Intent intent = getIntent(context, productVariantDashboardNewViewModel, variantLv1Name, variantLv2Name, currencyType);
+                             @CurrencyTypeDef int currencyType, double defaultPrice,
+                             @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage) {
+        Intent intent = getIntent(context, productVariantDashboardNewViewModel, variantLv1Name, variantLv2Name, currencyType,
+                defaultPrice, stockType, isOfficialStore,
+                needRetainImage);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
                                    ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel,
-                                   String variantLv1Name, String variantLv2Name, @CurrencyTypeDef int currencyType) {
+                                   String variantLv1Name, String variantLv2Name, @CurrencyTypeDef int currencyType,
+                                   double defaultPrice,
+                                   @StockTypeDef int stockType, boolean isOfficialStore,
+                                   boolean needRetainImage) {
         Intent intent = new Intent(context, ProductVariantDetailLevel1ListActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardNewViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME, variantLv1Name);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV2_NAME, variantLv2Name);
         intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
+        intent.putExtra(EXTRA_NEED_RETAIN_IMG, needRetainImage);
+        intent.putExtra(EXTRA_DEFAULT_PRICE, defaultPrice);
+        intent.putExtra(EXTRA_STOCK_TYPE, stockType);
+        intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
         return intent;
     }
 
@@ -75,6 +95,11 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
         varLv1name = intent.getStringExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME);
         varLv2name = intent.getStringExtra(EXTRA_PRODUCT_VARIANT_LV2_NAME);
         currencyType = intent.getIntExtra(EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
+        needRetainImage = intent.getBooleanExtra(EXTRA_NEED_RETAIN_IMG, false);
+
+        defaultPrice = intent.getDoubleExtra(EXTRA_DEFAULT_PRICE, 0);
+        stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
+        isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
 
         super.onCreate(savedInstanceState);
 
@@ -97,6 +122,16 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     public ProductVariantOptionChild getProductVariantChild(){
         return productVariantDashboardNewViewModel.getProductVariantOptionChildLv1();
+    }
+
+    @Override
+    public boolean needRetainImage() {
+        return needRetainImage;
+    }
+
+    @Override
+    public void onImageChanged() {
+        hasLeafChanged = true;
     }
 
     @Override
@@ -137,6 +172,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
                 this.productVariantDashboardNewViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
                 this.hasLeafChanged = true;
                 needRefreshData = true;
+                // no need to change image, because leaf cannot change image
             }
         }
     }
@@ -154,7 +190,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     public void goToLeaf(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
         ProductVariantDetailLevelLeafActivity.start(this, productVariantCombinationViewModel,null,
-                varLv2name, currencyType);
+                varLv2name, currencyType, defaultPrice,stockType, isOfficialStore, needRetainImage);
     }
 
     @Override

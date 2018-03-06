@@ -1,24 +1,46 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseIntArray;
 import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditVariantDialogFragment;
+import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
+import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
+import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
+import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -40,6 +62,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
@@ -48,7 +74,7 @@ import static com.tokopedia.seller.product.variant.view.activity.ProductVariantD
  */
 
 public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardNewViewModel>
-        implements ProductVariantMainView {
+        implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener {
 
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
@@ -68,6 +94,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     @StockTypeDef
     private int defaultStockType;
     private boolean isOfficialStore;
+    private boolean needRetainImage;
 
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
@@ -90,6 +117,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         defaultPrice = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
         isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, false);
+        needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, false);
 
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
@@ -254,7 +282,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     @Override
     protected BaseListAdapter<ProductVariantDashboardNewViewModel> getNewAdapter() {
-        return new ProductVariantDashboardNewAdapter(currencyType);
+        return new ProductVariantDashboardNewAdapter(currencyType, this);
     }
 
     @Override
@@ -268,13 +296,15 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             ProductVariantDetailLevel1ListActivity.start(getContext(), this, productVariantDashboardNewViewModel,
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     productVariantViewModel.getVariantOptionParent(2).getName(),
-                    currencyType);
+                    currencyType, defaultPrice, defaultStockType, isOfficialStore,
+                    needRetainImage);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList().get(0),
                     productVariantDashboardNewViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
-                    currencyType);
+                    currencyType, defaultPrice, defaultStockType, isOfficialStore,
+                    needRetainImage);
         }
     }
 
@@ -424,25 +454,40 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     @SuppressWarnings("unchecked")
     private void onActivityResultFromLeaf(Intent data) {
         if (ProductVariantDetailLevelLeafActivity.EXTRA_ACTION_SUBMIT.equals(data.getAction())) {
+            ProductVariantOptionChild productVariantOptionChild = null;
+            if (data.hasExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_OPTION_CHILD)) {
+                productVariantOptionChild = data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
+            }
             onActivityResultFromDetailLeafUpdateList((ProductVariantCombinationViewModel)
-                    data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_LEAF_DATA));
+                    data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_LEAF_DATA),
+                    productVariantOptionChild);
         }
     }
 
     private void onActivityResultFromDetailUpdateList(ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel) {
         // update from dashboardviewmodel back to the variantview model
         String lv1Value = productVariantDashboardNewViewModel.getProductVariantOptionChildLv1().getValue();
+        //for image
+        productVariantViewModel.replaceVariantOptionChildFor(1,
+                productVariantDashboardNewViewModel.getProductVariantOptionChildLv1());
+        // for combination data list
         productVariantViewModel.replaceSelectedVariantFor(lv1Value,
                 productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList());
-        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-        generateToDashboardViewModel();
-        adapter.clearData();
-        onSearchLoaded(this.productVariantDashboardNewViewModelList, this.productVariantDashboardNewViewModelList.size());
+        refreshData();
     }
 
-    private void onActivityResultFromDetailLeafUpdateList(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
+    private void onActivityResultFromDetailLeafUpdateList(ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                                                          ProductVariantOptionChild productVariantOptionChild) {
         // update from dashboardviewmodel back to the variantview model
         productVariantViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
+        // to replace image
+        if (productVariantOptionChild!= null) {
+            productVariantViewModel.replaceVariantOptionChildFor(1, productVariantOptionChild);
+        }
+        refreshData();
+    }
+
+    private void refreshData(){
         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
         adapter.clearData();
@@ -467,6 +512,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             return;
         }
         generateToDashboardViewModel();
+        adapter.clearData();
         recyclerView.setVisibility(View.VISIBLE);
         onSearchLoaded(productVariantDashboardNewViewModelList, productVariantDashboardNewViewModelList.size());
     }
@@ -514,6 +560,14 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
     }
 
+    @Override
+    public void onImageViewVariantClicked(ProductVariantDashboardNewViewModel model,
+                                          VariantPictureViewModel pictureViewModel,
+                                          int position) {
+        onItemClicked(model);
+    }
+
+
     public ProductVariantViewModel getProductVariantViewModel() {
         return productVariantViewModel;
     }
@@ -528,4 +582,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
     }
+
+
 }

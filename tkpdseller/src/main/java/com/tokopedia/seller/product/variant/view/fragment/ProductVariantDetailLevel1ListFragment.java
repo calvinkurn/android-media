@@ -22,12 +22,14 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailLevel1ListAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
+import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
 
 import java.util.List;
 
@@ -35,14 +37,15 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDetailLevel1ListFragment extends Fragment
+public class ProductVariantDetailLevel1ListFragment extends BaseVariantImageFragment
         implements ProductVariantDetailLevel1ListAdapter.OnProductVariantDetailLevel1ListAdapterListener {
 
     private OnProductVariantDataManageFragmentListener listener;
 
     private ProductVariantDetailLevel1ListAdapter productVariantDetailLevel1ListAdapter;
 
-    private ImageView ivVariant;
+//    private ImageView ivVariant;
+    private VariantImageView variantImageView;
 
     public interface OnProductVariantDataManageFragmentListener {
         void onSubmitVariant();
@@ -52,10 +55,39 @@ public class ProductVariantDetailLevel1ListFragment extends Fragment
         void goToLeaf(ProductVariantCombinationViewModel productVariantCombinationViewModel);
         @CurrencyTypeDef int getCurrencyType();
         ProductVariantOptionChild getProductVariantChild();
+        boolean needRetainImage();
+        void onImageChanged();
     }
 
     public static ProductVariantDetailLevel1ListFragment newInstance() {
         return new ProductVariantDetailLevel1ListFragment();
+    }
+
+    @Override
+    public boolean needRetainImage() {
+        return listener.needRetainImage();
+    }
+
+    @Override
+    public ProductVariantOptionChild getProductVariantOptionChild() {
+        return listener.getProductVariantChild();
+    }
+
+    @Override
+    public void refreshVariantImage() {
+        refreshInitialVariantImage();
+        listener.onImageChanged();
+    }
+
+    private void refreshInitialVariantImage(){
+        ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
+        List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
+        VariantPictureViewModel pictureViewModel = null;
+        if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
+            pictureViewModel = productPictureViewModelList.get(0);
+        }
+
+        variantImageView.setImage(pictureViewModel, childLvl1Model.getHex());
     }
 
     @SuppressWarnings("unchecked")
@@ -87,31 +119,18 @@ public class ProductVariantDetailLevel1ListFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
-        ivVariant = view.findViewById(R.id.image_view);
+        variantImageView = view.findViewById(R.id.variant_image_view);
+        refreshInitialVariantImage();
 
-        ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
-        List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
-        VariantPictureViewModel pictureViewModel = null;
-        if (productPictureViewModelList != null && productPictureViewModelList.size() > 0) {
-            pictureViewModel = productPictureViewModelList.get(0);
-        }
-
-        if (pictureViewModel != null && !TextUtils.isEmpty(pictureViewModel.getUrlOriginal())) {
-            ivVariant.setBackgroundColor(Color.TRANSPARENT);
-            ImageHandler.LoadImage(ivVariant, pictureViewModel.getUrlOriginal());
-        } else if (!TextUtils.isEmpty(childLvl1Model.getHex())) {
-            ivVariant.setBackgroundColor(Color.parseColor(childLvl1Model.getHex()));
-            ivVariant.setImageDrawable(null);
-        } else {
-            ivVariant.setBackgroundColor(Color.LTGRAY);
-            ivVariant.setImageDrawable(null);
-        }
-
-        ivVariant.setOnClickListener(new View.OnClickListener() {
+        variantImageView.setOnImageClickListener(new VariantImageView.OnImageClickListener() {
             @Override
-            public void onClick(View v) {
-                //TODO change image
-                Toast.makeText(ivVariant.getContext(), "Test", Toast.LENGTH_LONG).show();
+            public void onImageVariantClicked() {
+                if (getProductVariantOptionChild().getProductPictureViewModelList() == null ||
+                        getProductVariantOptionChild().getProductPictureViewModelList().size() == 0) {
+                    showAddImageDialog();
+                } else {
+                    showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0));
+                }
             }
         });
 

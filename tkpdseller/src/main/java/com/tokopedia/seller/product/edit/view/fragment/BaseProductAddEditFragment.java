@@ -194,6 +194,9 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     protected void saveAndAddDraft() {
         ProductViewModel viewModel = collectDataFromView();
         sendAnalyticsAddMore(viewModel);
+        if (viewModel.getProductVariant()!= null) {
+            viewModel.getProductVariant().generateTid();
+        }
         presenter.saveDraftAndAdd(viewModel);
     }
 
@@ -418,7 +421,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                 productPriceViewHolder.getCurrencyType(),
                 productPriceViewHolder.getPriceValue(),
                 productManageViewHolder.getViewStatusStock(),
-                productPriceViewHolder.isOfficialStore());
+                productPriceViewHolder.isOfficialStore(),
+                isEdittingDraft());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -631,6 +635,9 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         ProductViewModel viewModel = collectDataFromView();
         if (isUploading) {
             sendAnalyticsAdd(viewModel);
+        }
+        if (viewModel.getProductVariant()!= null) {
+            viewModel.getProductVariant().generateTid();
         }
         presenter.saveDraft(viewModel, isUploading);
     }

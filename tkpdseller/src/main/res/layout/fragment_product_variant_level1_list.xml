@@ -19,26 +19,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             style="@style/LabelLayout">
-            <FrameLayout
-                android:id="@+id/frame_image"
+
+            <com.tokopedia.seller.product.variant.view.widget.VariantImageView
+                android:id="@+id/variant_image_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_rect_stroke_lighter_gray"
-                android:padding="@dimen/margin_vvs"
-                android:layout_marginRight="@dimen/padding_ms"
-                android:layout_marginEnd="@dimen/padding_ms">
+                android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:id="@+id/image_view"
-                    android:layout_width="@dimen/image_width_xl"
-                    android:layout_height="@dimen/image_width_xl"
-                    tools:src="@mipmap/ic_launcher"/>
-
-                <View
-                    android:layout_width="@dimen/image_width_xl"
-                    android:layout_height="@dimen/image_width_xl"
-                    android:background="@drawable/bg_rect_stroke_gray_dashed" />
-            </FrameLayout>
             <com.tokopedia.seller.common.widget.VerticalLabelView
                 android:id="@+id/lv_title"
                 android:layout_width="match_parent"
