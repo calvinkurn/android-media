@@ -306,4 +306,10 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public View getRootView() {
         return mainContent;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 }
