@@ -405,6 +405,34 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         setupRecyclerView();
     }
 
+    @Override
+    public void renderSelectedCourier(CourierItemData courierItemData){
+        setText(tvDeliveryFeeTotal, currencyId.format(
+                presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
+        setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
+        if (courierItemData.isUsePinPoint()) {
+            showPinPointMap(presenter.getShipmentDetailData());
+        }
+        renderInsuranceView(courierItemData);
+        renderAdditionalPriceView(courierItemData);
+        renderDropshipperView(courierItemData);
+        renderPartialOrderView();
+        updateFeesGroupLayout();
+        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
+            switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());
+            if (presenter.getShipmentDetailData().getUseDropshipper()) {
+                etShipperName.setText(presenter.getShipmentDetailData().getDropshipperName());
+                etShipperPhone.setText(presenter.getShipmentDetailData().getDropshipperPhone());
+            }
+        }
+        if (presenter.getShipmentDetailData().getUseInsurance() != null) {
+            switchInsurance.setChecked(presenter.getShipmentDetailData().getUseInsurance());
+        }
+        if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
+            switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
+        }
+    }
+
     private void formatInsuranceTncView() {
         String formatText = getString(R.string.text_tos_agreement);
         String messageTosAgreement = getString(R.string.message_tos_agreement);
@@ -629,6 +657,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         setText(tvDeliveryFeeTotal, null);
     }
 
+    private void resetSwitch() {
+        presenter.getShipmentDetailData().setUseDropshipper(null);
+        presenter.getShipmentDetailData().setUseInsurance(null);
+        presenter.getShipmentDetailData().setUsePartialOrder(null);
+        presenter.getShipmentDetailData().setDropshipperName(null);
+        presenter.getShipmentDetailData().setDropshipperPhone(null);
+    }
+
     @OnClick(R2.id.bt_choose_pinpoint)
     void onChoosePinPoint() {
         setupPinPointMap();
@@ -812,40 +848,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
     }
 
-    private void resetSwitch() {
-        presenter.getShipmentDetailData().setUseDropshipper(null);
-        presenter.getShipmentDetailData().setUseInsurance(null);
-        presenter.getShipmentDetailData().setUsePartialOrder(null);
-        presenter.getShipmentDetailData().setDropshipperName(null);
-        presenter.getShipmentDetailData().setDropshipperPhone(null);
-    }
-
     @Override
     public void onSelectedCourierItemLoaded(CourierItemData courierItemData) {
-        setText(tvDeliveryFeeTotal, currencyId.format(
-                presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
-        setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
-        if (courierItemData.isUsePinPoint()) {
-            showPinPointMap(presenter.getShipmentDetailData());
-        }
-        renderInsuranceView(courierItemData);
-        renderAdditionalPriceView(courierItemData);
-        renderDropshipperView(courierItemData);
-        renderPartialOrderView();
-        updateFeesGroupLayout();
-        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
-            switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());
-            if (presenter.getShipmentDetailData().getUseDropshipper()) {
-                etShipperName.setText(presenter.getShipmentDetailData().getDropshipperName());
-                etShipperPhone.setText(presenter.getShipmentDetailData().getDropshipperPhone());
-            }
-        }
-        if (presenter.getShipmentDetailData().getUseInsurance() != null) {
-            switchInsurance.setChecked(presenter.getShipmentDetailData().getUseInsurance());
-        }
-        if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
-            switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
-        }
+        renderSelectedCourier(courierItemData);
     }
 
     @Override
