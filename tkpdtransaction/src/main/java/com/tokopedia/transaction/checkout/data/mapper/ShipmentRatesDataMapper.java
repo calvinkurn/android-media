@@ -12,7 +12,6 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.ShopShipment;
@@ -60,6 +59,27 @@ public class ShipmentRatesDataMapper {
                                                 UserAddress userAddress, GroupShop groupShop,
                                                 MultipleAddressShipmentAdapterData adapterData) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
+        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
+
+        return shipmentCartData;
+    }
+
+    public ShipmentCartData getShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                UserAddress userAddress, GroupShop groupShop,
+                                                CartSellerItemModel cartSellerItemModel) {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
+        shipmentCartData.setOrderValue(((Double) cartSellerItemModel.getTotalPrice()).intValue());
+        shipmentCartData.setWeight(cartSellerItemModel.getTotalWeight());
+
+        return shipmentCartData;
+    }
+
+    private void initializeShipmentCartData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                            UserAddress userAddress, GroupShop groupShop,
+                                            ShipmentCartData shipmentCartData) {
         shipmentCartData.setToken(cartShipmentAddressFormData.getKeroToken());
         shipmentCartData.setUt(String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()));
         shipmentCartData.setDestinationAddress(userAddress.getAddress());
@@ -82,12 +102,8 @@ public class ShipmentRatesDataMapper {
         shipmentCartData.setShippingNames(shippingNames);
         String shippingServices = getShippingServices(groupShop.getShopShipments());
         shipmentCartData.setShippingServices(shippingServices);
-        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
-        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
         shipmentCartData.setInsurance(1);
         shipmentCartData.setDeliveryPriceTotal(0);
-
-        return shipmentCartData;
     }
 
     private String getCategoryIds(List<com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product> products) {
