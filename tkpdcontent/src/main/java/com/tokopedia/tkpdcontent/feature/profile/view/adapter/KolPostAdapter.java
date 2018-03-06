@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolPostTypeFactory;
@@ -26,6 +27,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private final KolPostTypeFactory typeFactory;
     private EmptyKolPostViewModel emptyModel;
     private LoadingModel loadingModel;
+    private ErrorNetworkModel errorNetworkModel;
 
     @Inject
     public KolPostAdapter(KolPostTypeFactory typeFactory) {
@@ -33,6 +35,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list = new ArrayList<>();
         this.emptyModel = new EmptyKolPostViewModel();
         this.loadingModel = new LoadingModel();
+        this.errorNetworkModel = new ErrorNetworkModel();
     }
 
     @Override
@@ -104,5 +107,20 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public boolean isLoading() {
         return this.list.contains(loadingModel);
+    }
+
+    public void showErrorNetwork(String errorMessage,
+                                 ErrorNetworkModel.OnRetryListener onRetryListener) {
+        errorNetworkModel.setErrorMessage(errorMessage);
+        errorNetworkModel.setOnRetryListener(onRetryListener);
+        this.list.add(errorNetworkModel);
+        notifyDataSetChanged();
+    }
+
+    public void removeErrorNetwork() {
+        errorNetworkModel.setErrorMessage("");
+        errorNetworkModel.setOnRetryListener(null);
+        this.list.remove(errorNetworkModel);
+        notifyDataSetChanged();
     }
 }

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -46,7 +47,6 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     KolPostAdapter adapter;
     @Inject
     UserSession userSession;
-    private View mainView;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
 
@@ -99,7 +99,6 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void initView(View view) {
-        mainView = view.findViewById(R.id.main_view);
         kolRecyclerView = view.findViewById(R.id.kol_rv);
 
         if (kolRecyclerView.getItemAnimator() instanceof SimpleItemAnimator) {
@@ -159,6 +158,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void showLoading() {
+        adapter.removeErrorNetwork();
         adapter.removeEmpty();
         adapter.showLoading();
     }
@@ -175,18 +175,18 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onEmptyKolPost() {
+        adapter.removeErrorNetwork();
         adapter.removeLoading();
         adapter.showEmpty();
     }
 
     @Override
     public void onErrorGetProfileData(String message) {
-        NetworkErrorHelper.showEmptyState(getContext(), mainView,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getKolPost(userId);
-                    }
+        adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getKolPost(userId);
+            }
         });
     }
 
