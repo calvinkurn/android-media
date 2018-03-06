@@ -43,7 +43,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
         }
     }
 
