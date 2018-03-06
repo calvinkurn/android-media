@@ -323,7 +323,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             productQty = itemView.findViewById(R.id.tv_product_total_item);
 
-            notesToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
+            notesToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
 
             notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
