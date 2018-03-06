@@ -73,6 +73,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onCancelled() {
+                if(view == null) return;
                 view.onCanceled();
                 view.hideLoading();
                 execute = false;

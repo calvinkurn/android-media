@@ -40,6 +40,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
     private static final String PARAM_DEFAULT_VALUE = "";
     private static final int PARAM_DEFAULT_VALUE_INT = 0;
     private static final String PARAM_CART_TYPE = "add_cart";
+    private static final int DEFAULT_DEVICE_ID = 5;
     private FlightRepository flightRepository;
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
 
@@ -65,7 +66,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
         FlightCartRequest request = new FlightCartRequest();
         request.setType(PARAM_CART_TYPE);
         CartAttributesRequest attributesRequest = new CartAttributesRequest();
-        attributesRequest.setDid(4);
+        attributesRequest.setDid(DEFAULT_DEVICE_ID);
         attributesRequest.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         attributesRequest.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
         FlightRequest flightRequest = new FlightRequest();
