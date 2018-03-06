@@ -32,9 +32,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:gravity="top"
                 app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
                 app:contentInsetRight="0dp"
                 app:contentInsetStart="0dp"
-                app:contentInsetLeft="0dp"
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin">
 
@@ -72,6 +72,9 @@
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/title_kol_space"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:fontFamily="sans-serif"
                         android:gravity="center"
                         android:lineSpacingExtra="2sp"
@@ -80,9 +83,6 @@
                         android:textSize="@dimen/text_size_14"
                         android:textStyle="normal"
                         android:visibility="gone"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
                         tools:text="@string/follow_with_plus" />
                 </LinearLayout>
 
@@ -114,6 +114,7 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         android:gravity="center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -131,6 +132,7 @@
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone">
 
         <ImageView
