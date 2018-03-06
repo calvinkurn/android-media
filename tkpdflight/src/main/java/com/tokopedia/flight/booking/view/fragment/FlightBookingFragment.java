@@ -194,9 +194,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
-        sameAsContactContainer.setOnClickListener(getCheckboxClickListener());
-
-        sameAsContactCheckbox.setOnClickListener(getCheckboxClickListener());
+//        sameAsContactContainer.setOnClickListener(getCheckboxClickListener());
+//
+//        sameAsContactCheckbox.setOnClickListener(getCheckboxClickListener());
 
         initializePassengerInfo();
         initializePriceList();
@@ -673,15 +673,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 
-    private View.OnClickListener getCheckboxClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.toggleSameAsContactCheckbox();
-                presenter.onSameAsContactClicked(true);
-            }
-        };
-    }
+//    private View.OnClickListener getCheckboxClickListener() {
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                presenter.toggleSameAsContactCheckbox();
+//                presenter.onSameAsContactClicked(true);
+//            }
+//        };
+//    }
 
     private void hideSameAsContactContainer() {
         sameAsContactContainer.setVisibility(View.GONE);

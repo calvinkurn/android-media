@@ -171,10 +171,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         );
 
 
-        if (validatePassengerData()) {
-            toggleSameAsContactCheckbox();
-            onPassengerResultReceived(getPassengerViewModelFromContact());
-        }
+//        if (validatePassengerData()) {
+//            toggleSameAsContactCheckbox();
+//            onPassengerResultReceived(getPassengerViewModelFromContact());
+//        }
 
     }
 
