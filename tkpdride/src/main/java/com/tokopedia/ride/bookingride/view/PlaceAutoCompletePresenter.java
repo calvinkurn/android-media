@@ -65,6 +65,8 @@ import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -521,6 +523,37 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses, boolean isNearbyPlaces) {
         getView().showGoogleLabel();
         ArrayList<Visitable> addr = new ArrayList<>();
+
+        Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
+            @Override
+            public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel, PlaceAutoCompeleteViewModel t1) {
+
+                if (placeAutoCompeleteViewModel != null &&
+                        placeAutoCompeleteViewModel.getDistance() != null &&
+                        t1 != null &&
+                        t1.getDistance() != null) {
+
+
+                    String distance1 = placeAutoCompeleteViewModel.getDistance().replaceAll("[A-Za-z, ]", "");
+                    String distance2 = t1.getDistance().replaceAll("[A-Za-z, ]", "");
+
+                    float distance1Float = Float.parseFloat(distance1);
+                    float distance2Float = Float.parseFloat(distance2);
+
+                    if (distance1.contains(".")) {
+                        distance1Float *= 1000;
+                    }
+
+                    if (distance2.contains(".")) {
+                        distance2Float *= 1000;
+                    }
+
+                    return (int) (distance1Float - distance2Float);
+                } else
+                    return 0;
+            }
+        });
+
         addr.addAll(addresses);
         getView().showListPlaces();
         getView().renderPlacesList(addr);
