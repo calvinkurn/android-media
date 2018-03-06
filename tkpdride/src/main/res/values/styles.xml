@@ -53,13 +53,5 @@
         <item name="inputUseEditorAction">false</item>
         <item name="backgroundColor">@color/white</item>
 
-        <!--<item name="inputTextSize">@dimen/default_input_text_size</item>
-        <item name="inputTextColor">@color/black</item>
-        <item name="inputHintColor">@color/main_color_gray</item>-->
-
-        <!--<item name="sendBtnElevation">4dp</item>-->
-        <!--<item name="sendBtnIcon">@drawable/ic_send_white_24dp</item>
-        <item name="sendBtnIconTint">@color/white</item>
-        <item name="sendBtnBackgroundTint">?attr/colorAccent</item>-->
     </style>
 </resources>

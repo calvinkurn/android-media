@@ -24,6 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/margin_small_sm"
         android:src="@drawable/ic_send_white_24dp"
         app:layout_anchorGravity="bottom|right|end" />
 

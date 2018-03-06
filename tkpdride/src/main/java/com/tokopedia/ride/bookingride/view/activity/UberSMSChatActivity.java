@@ -302,8 +302,8 @@ public class UberSMSChatActivity extends BaseActivity {
         try {
             SmsManager smsManager = SmsManager.getDefault();
 
-            smsManager.sendTextMessage(phoneNo, null, msg, PendingIntent.getBroadcast(
-                    this, 0, new Intent(SMS_SENT_ACTION).putExtra(MESSAGE_ID, id), 0),
+            smsManager.sendTextMessage(phoneNo, null, msg,
+                    PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT_ACTION).putExtra(MESSAGE_ID, id), 0),
 
                     PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED_ACTION).putExtra(MESSAGE_ID, id), 0));
 
