@@ -45,7 +45,7 @@ public class ReactNativeHostFactory {
 
             @Override
             public boolean getUseDeveloperSupport() {
-                return false;
+                return GlobalConfig.DEBUG;
             }
 
             @Override
@@ -59,7 +59,7 @@ public class ReactNativeHostFactory {
         return new ReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
-                return false;
+                return true;
             }
 
             @Override
@@ -83,13 +83,13 @@ public class ReactNativeHostFactory {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),
-                new CodePush(getCodePushDeploymentKey(), application, false)
+                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
         );
     }
 
     @NonNull
     private static String getCodePushDeploymentKey() {
-        if (false) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             return ReactConst.CODE_PUSH_DEPLOYMENT_KEY_STAGING;
         }else {
             return ReactConst.CODE_PUSH_DEPLOYMENT_KEY;
