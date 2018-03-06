@@ -44,36 +44,17 @@
 
         <com.tokopedia.seller.common.widget.LabelSwitch
             android:id="@+id/label_switch_free_return"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             style="@style/LabelLayout"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:ls_title="@string/product_label_free_returns" />
+            app:ls_title="@string/product_label_free_returns"
+            tools:visibility="visible" />
 
-        <com.tokopedia.expandable.ExpandableOptionSwitch
-            android:id="@+id/expandable_option_switch_pre_order"
-            style="@style/LabelLayout"
-            app:eo_checked="false"
-            app:eo_theme="@style/ExpandableStyle"
-            app:eo_title="@string/product_label_preorder">
-
-            <com.tokopedia.design.text.SpinnerCounterInputView
-                android:id="@+id/spinner_counter_input_view_pre_order"
-                style="@style/LabelLayout.InnerExpandable"
-                app:spinner_decimal_entries="@array/product_pre_order_entries"
-                app:spinner_decimal_hint="@string/product_label_time_process"
-                app:spinner_decimal_spinner_width="100dp"
-                app:spinner_decimal_values="@array/product_pre_order_values" />
-
-        </com.tokopedia.expandable.ExpandableOptionSwitch>
-
-        <com.tokopedia.seller.common.widget.LabelSwitch
-            android:id="@+id/label_switch_share"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/LabelLayout"
-            app:ls_title="@string/product_label_share" />
     </LinearLayout>
+
+    <com.tokopedia.seller.common.widget.LabelSwitch
+        android:id="@+id/label_switch_share"
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:ls_title="@string/product_label_share" />
 
 </merge>
