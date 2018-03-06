@@ -75,6 +75,12 @@ public class UberSMSChatActivity extends BaseActivity {
     public static final String SMS_SENT_ACTION = "SMS_SENT_ACTION";
     public static final String SMS_DELIVERED_ACTION = "SMS_DELIVERED_ACTION";
 
+    private final String ID = "id";
+    private final String ADDRESS = "address";
+    private final String PERSON = "person";
+    private final String BODY = "body";
+    private final String DATE = "date";
+    private final String TYPE = "type";
 
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, UberSMSChatActivity.class);
@@ -375,9 +381,7 @@ public class UberSMSChatActivity extends BaseActivity {
     }
 
     public void readInboxSMS() {
-
-        String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
-
+        String[] projection = new String[]{ID, ADDRESS, PERSON, BODY, DATE, TYPE};
         try {
             Cursor cur = getContentResolver().query(Uri.parse(INBOX_URI), projection, "address='" + phoneNo + "'", null, "date asc");
             if (cur != null && cur.moveToFirst()) {
@@ -385,19 +389,15 @@ public class UberSMSChatActivity extends BaseActivity {
                 int index_Address = cur.getColumnIndex("address");
                 int index_Body = cur.getColumnIndex("body");
                 int index_Date = cur.getColumnIndex("date");
-
                 do {
                     ChatMessage chatMessage = new ChatMessage();
-
                     String strAddress = cur.getString(index_Address);
                     String strBody = cur.getString(index_Body);
                     long longDate = cur.getLong(index_Date);
-
                     chatMessage.setMessage(strBody);
                     chatMessage.setTimestamp(longDate);
                     chatMessage.setType(ChatMessage.Type.RECEIVED);
                     receivedMessagesArrayList.add(chatMessage);
-
                 } while (cur.moveToNext());
 
                 if (!cur.isClosed()) {
@@ -411,9 +411,7 @@ public class UberSMSChatActivity extends BaseActivity {
     }
 
     private void readSentSMS() {
-
-        String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
-
+        String[] projection = new String[]{ID, ADDRESS, PERSON, BODY, DATE, TYPE};
         try {
             Cursor cur = getContentResolver().query(Uri.parse(SENT_URI), projection, "address='" + phoneNo + "'", null, "date asc");
             if (cur != null && cur.moveToFirst()) {
@@ -428,7 +426,6 @@ public class UberSMSChatActivity extends BaseActivity {
                     chatMessage.setMessage(strbody);
                     chatMessage.setTimestamp(longDate);
                     chatMessage.setType(ChatMessage.Type.SENT);
-                    // TODO: 2/21/18 need to check
                     chatMessage.setDeliveryStatus(ChatMessage.DeliveryStatus.DELIVER_SUCCESS);
 
                     sentMessagesArrayList.add(chatMessage);
@@ -446,15 +443,12 @@ public class UberSMSChatActivity extends BaseActivity {
     }
 
     private void mergeSMS() {
-
         int receiveSMSCount = receivedMessagesArrayList.size();
         int sentSMSCount = sentMessagesArrayList.size();
-
         int i = 0, j = 0;
         chatArrayList.clear();
 
         while (i < receiveSMSCount && j < sentSMSCount) {
-
             if (receivedMessagesArrayList.get(i).getTimestamp() < sentMessagesArrayList.get(j).getTimestamp()) {
                 chatArrayList.add(receivedMessagesArrayList.get(i));
                 i++;
@@ -471,7 +465,5 @@ public class UberSMSChatActivity extends BaseActivity {
             chatArrayList.add(sentMessagesArrayList.get(k));
 
         chatView.addMessages(chatArrayList);
-
     }
-
 }
