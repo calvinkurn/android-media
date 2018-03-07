@@ -49,14 +49,6 @@ public class TopProfileViewModel {
 
     }
 
-    public Boolean getIsUser() {
-        return this.isUser;
-    }
-
-    public void setIsUser(boolean isUser) {
-        this.isUser = isUser;
-    }
-
     public int getUserId() {
         return userId;
     }
@@ -325,7 +317,7 @@ public class TopProfileViewModel {
         return isUser;
     }
 
-    public void setUser(boolean user) {
+    public void setIsUser(boolean user) {
         isUser = user;
     }
 }

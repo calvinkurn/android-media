@@ -23,7 +23,7 @@ public class ProfileReputation {
     private int negative;
     @SerializedName("percentage")
     @Expose
-    private int percentage;
+    private float percentage;
 
     public boolean isActive() {
         return active;
@@ -57,7 +57,7 @@ public class ProfileReputation {
         this.negative = negative;
     }
 
-    public int getPercentage() {
+    public float getPercentage() {
         return percentage;
     }
 
