@@ -109,6 +109,6 @@ public class TopProfileDataMapper
         if (x == (long) x)
             return String.valueOf((long) x);
         else
-            return String.format("%s", x);
+            return String.valueOf(x);
     }
 }
