@@ -62,7 +62,7 @@ public class BranchSdkUtils {
 
     public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
-        if (isBranchUrlActivated(activity, data.getType())) {
+        if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
             LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
             branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {

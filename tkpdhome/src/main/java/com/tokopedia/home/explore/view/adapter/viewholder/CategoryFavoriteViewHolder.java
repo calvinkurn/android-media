@@ -103,7 +103,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, final int position) {
             final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
-            ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
+            ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

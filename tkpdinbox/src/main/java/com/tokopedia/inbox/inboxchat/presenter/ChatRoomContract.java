@@ -122,6 +122,8 @@ public class ChatRoomContract {
         void setUploadingMode(boolean b);
 
         void scrollToBottomWithCheck();
+
+        void setHeaderModel(String nameHeader, String imageHeader);
     }
 
     interface Presenter extends CustomerPresenter<View>{
