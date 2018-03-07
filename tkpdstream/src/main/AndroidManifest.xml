@@ -11,6 +11,7 @@
         <activity
             android:name=".chatroom.view.activity.GroupChatActivity"
             android:label="@string/activity_channel"
+            android:resizeableActivity="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>

@@ -242,9 +242,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void setupToolbar() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View
-                    .SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
         }
 
@@ -627,7 +628,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         }
     }
 
-    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel){
+    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
         return (hasPoll
                 && voteInfoViewModel != null
                 && voteInfoViewModel.getStartTime() != 0
