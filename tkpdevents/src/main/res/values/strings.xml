@@ -24,6 +24,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
+    <string name="select_max_ticket">Silahkan pilih %1$d tiket</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
     <string name="some_info">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan untuk pembelian tiket dengan atas nama di atas.</string>
     <string name="cek_kode">Cek Kode</string>

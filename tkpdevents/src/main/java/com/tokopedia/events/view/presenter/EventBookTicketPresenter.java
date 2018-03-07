@@ -152,7 +152,6 @@ public class EventBookTicketPresenter
                 getProfile();
             } else {
                 getView().hideProgressBar();
-                getView().showMessage("Failed to Login, Please try again");
             }
         }
     }

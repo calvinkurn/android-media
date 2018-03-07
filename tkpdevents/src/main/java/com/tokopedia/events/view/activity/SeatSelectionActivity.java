@@ -297,7 +297,9 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
             }
             mPresenter.verifySeatSelection(selectedSeatViewModel);
         } else {
-            Toast.makeText(this, "Please Select " + maxTickets + " Seats", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, String.format(getString(R.string.select_max_ticket), maxTickets),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -310,6 +312,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        mPresenter.onActivityResult(requestCode);
     }
 }

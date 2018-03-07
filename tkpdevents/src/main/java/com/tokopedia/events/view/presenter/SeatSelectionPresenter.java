@@ -10,6 +10,7 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -136,7 +137,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                 getProfile();
             } else {
                 getView().hideProgressBar();
-                getView().showMessage("Failed to Login, Please try again");
             }
         }
     }
@@ -208,6 +208,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         EntityPackageItem packageItem = new EntityPackageItem();
         packageItem.setPackageId(packageViewModel.getId());
         packageItem.setAreaCode(mSelectedSeatViewModel.getAreaCodes());
+        packageItem.setAreaId(mSelectedSeatViewModel.getAreaId());
+        packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
+        packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
         packageItem.setDescription("");
         packageItem.setQuantity(quantity);
         packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
