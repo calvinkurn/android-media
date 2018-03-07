@@ -1,6 +1,5 @@
 package com.tokopedia.shop;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
@@ -27,4 +26,6 @@ public interface ShopModuleRouter {
     void goToWebview(String url);
 
     void goToProductDetailById(Context activity, String productId);
+
+    void goToProfileShop(Context context, String userId);
 }

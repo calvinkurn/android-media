@@ -70,6 +70,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
@@ -259,6 +260,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             flightConsumerComponent = daggerFlightBuilder.build();
         }
         return flightConsumerComponent;
+    }
+
+    @Override
+    public void goToProfileShop(Context context, String userId) {
+        context.startActivity(
+                PeopleInfoNoDrawerActivity.createInstance(context, userId)
+        );
     }
 
     private void initializeDagger() {
