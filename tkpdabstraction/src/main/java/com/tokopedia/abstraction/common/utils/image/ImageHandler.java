@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -537,15 +538,15 @@ public class ImageHandler {
     }
 
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
-//        if (context != null) {
-//            Glide.with(context)
-//                    .load(imageUrl)
-//                    .override(80,80)
-//                    .centerCrop()
-//                    .into(imageView);
-//        }
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .override(80,80)
+                    .centerCrop()
+                    .into(imageView);
+        }
 
-        if (context != null) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide
                     .with(context)
                     .load(imageUrl)
