@@ -1,9 +1,7 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
 apply plugin: 'com.apollographql.android'
 
 buildscript {
@@ -13,93 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
-    }
-}
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
-
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
-def getTopAdsSdk() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
-}
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.feed'
-            artifactId 'feed'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.2"
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -107,8 +18,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile getTkpdCore()
-    compile getTopAdsSdk()
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.topAdsSdk)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
