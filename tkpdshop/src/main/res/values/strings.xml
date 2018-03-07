@@ -77,6 +77,10 @@
     <string name="speed_shop_not_available">Belum Tersedia (1 bulan terakhir)</string>
     <string name="reputation_point_format">%1$s%% poin</string>
     <string name="speed_shop_not_available_format">%1$s%%  (1 bulan terakhir)</string>
+    <string name="shop_note_title">Catatan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="choose_etalase_label">Pilih Etalase</string>
 
 
 </resources>

@@ -27,28 +27,28 @@
         <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
             android:exported="true"
-            android:label="Catatan"
+            android:label="@string/shop_note_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".product.view.activity.ShopProductListActivity"
             android:exported="true"
-            android:label="Produk"
+            android:label="@string/shop_product_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".sort.view.activity.ShopProductSortActivity"
             android:exported="true"
-            android:label="Urutkan"
+            android:label="@string/shop_sort_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".etalase.view.activity.ShopEtalaseActivity"
             android:exported="true"
-            android:label="Pilih Etalase"
+            android:label="@string/choose_etalase_label"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
