@@ -13,8 +13,8 @@
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/main"
-        android:layout_alignRight="@+id/main"
+        android:layout_alignEnd="@+id/attach_product_chat_container"
+        android:layout_alignRight="@+id/attach_product_chat_container"
         android:layout_below="@+id/date"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
@@ -133,7 +133,7 @@
         android:layout_toLeftOf="@id/attach_product_chat_container"
         android:layout_toStartOf="@id/attach_product_chat_container"
         android:visibility="visible"
-        android:src="@drawable/ic_error_to_send"/>
+        app:srcCompat="@drawable/ic_error_to_send"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
