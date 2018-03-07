@@ -64,7 +64,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     private @CurrencyTypeDef
     int currencyType;
-    private int defaultPrice;
+    private double defaultPrice;
 
     @StockTypeDef
     private int defaultStockType;
@@ -89,7 +89,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             productVariantByCatModelList = getProductVariantByCatModelListFromJson();
         }
         currencyType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
-        defaultPrice = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
+        defaultPrice = activityIntent.getDoubleExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
         isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, false);
         needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, false);
@@ -226,7 +226,8 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     }
 
     private void setLabelVariantLevel1() {
-        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(1) == null) {
+        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(1) == null
+                || !productVariantViewModel.getVariantOptionParent(1).hasProductVariantOptionChild()) {
             variantLevelOneLabelView.resetContentText();
         } else {
             ProductVariantOptionParent optionLv1 = productVariantViewModel.getVariantOptionParent(1);
@@ -236,7 +237,8 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     }
 
     private void setLabelVariantLevel2() {
-        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(2) == null) {
+        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(2) == null
+                || !productVariantViewModel.getVariantOptionParent(2).hasProductVariantOptionChild()) {
             variantLevelTwoLabelView.resetContentText();
             // if level 1 is chosen, set enabled to true
             if (productVariantViewModel != null) {

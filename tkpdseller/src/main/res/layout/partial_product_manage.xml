@@ -34,7 +34,7 @@
                 style="@style/LabelLayout"
                 app:spinner_entries="@array/product_stock_status_entries"
                 app:spinner_hint="@string/product_label_status"
-                app:spinner_selection_index="1"
+                app:spinner_selection_index="0"
                 app:spinner_values="@array/product_stock_status_values" />
 
             <com.tokopedia.design.text.CounterInputView

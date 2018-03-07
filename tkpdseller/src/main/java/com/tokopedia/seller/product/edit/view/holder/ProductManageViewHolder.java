@@ -42,21 +42,17 @@ public class ProductManageViewHolder extends ProductViewHolder {
     private Listener listener;
 
     public ProductManageViewHolder(View view, Listener listener) {
+        setListener(listener);
+
         stockStatusSpinnerTextView = view.findViewById(R.id.spinner_text_view_stock_status);
         stockTotalCounterInputView = view.findViewById(R.id.counter_input_view_stock_total);
         stockStatusSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
             @Override
             public void onItemChanged(int position, String entry, String value) {
-                if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value)) || value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
-                    stockTotalCounterInputView.setVisibility(View.GONE);
-                    ProductManageViewHolder.this.listener.onTotalStockUpdated(0);
-                } else {
-                    stockTotalCounterInputView.setVisibility(View.VISIBLE);
-                    stockTotalCounterInputView.setValue(1);
-                    ProductManageViewHolder.this.listener.onTotalStockUpdated((int) stockTotalCounterInputView.getDoubleValue());
-                }
+                onStockSpinnerValueChanged(value);
             }
         });
+        onStockSpinnerValueChanged(stockStatusSpinnerTextView.getSpinnerValue());
 
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText()) {
             @Override
@@ -78,7 +74,17 @@ public class ProductManageViewHolder extends ProductViewHolder {
         });
 
         skuEditText = view.findViewById(R.id.edit_text_sku);
-        setListener(listener);
+    }
+
+    private void onStockSpinnerValueChanged(String value){
+        if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value)) || value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
+            stockTotalCounterInputView.setVisibility(View.GONE);
+            ProductManageViewHolder.this.listener.onTotalStockUpdated(0);
+        } else {
+            stockTotalCounterInputView.setVisibility(View.VISIBLE);
+            stockTotalCounterInputView.setValue(1);
+            ProductManageViewHolder.this.listener.onTotalStockUpdated((int) stockTotalCounterInputView.getDoubleValue());
+        }
     }
 
     public void setListener(Listener listener) {
