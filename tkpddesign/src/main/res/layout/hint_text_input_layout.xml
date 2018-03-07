@@ -17,6 +17,8 @@
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/text_input_margin_offset"
+        android:layout_marginRight="@dimen/text_input_margin_offset"
         android:layout_marginTop="-8dp"
         android:layout_marginBottom="-6dp">
         <!-- will be infalted programmatically -->

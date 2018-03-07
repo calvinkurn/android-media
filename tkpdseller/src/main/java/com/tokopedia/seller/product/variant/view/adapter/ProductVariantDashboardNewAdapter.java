@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNe
 public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVariantDashboardNewViewModel> {
 
     private int currencyType;
+    private String level2String;
 
     private OnProductVariantDashboardNewAdapterListener onProductVariantDashboardNewAdapterListener;
     public interface OnProductVariantDashboardNewAdapterListener{
@@ -38,10 +39,15 @@ public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVa
             case ProductVariantDashboardNewViewModel.TYPE:
                 return new ProductVariantDashboardNewViewHolder(getLayoutView(parent,
                         R.layout.item_product_variant_manage_new),
-                        currencyType, onProductVariantDashboardNewAdapterListener
+                        currencyType, onProductVariantDashboardNewAdapterListener,
+                        level2String
                         );
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
+    }
+
+    public void setLevel2String(String level2String) {
+        this.level2String = level2String;
     }
 }

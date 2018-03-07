@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -29,7 +30,9 @@
                 <com.tokopedia.seller.product.variant.view.widget.VariantImageView
                     android:id="@+id/variant_image_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_ms"
+                    android:layout_marginEnd="@dimen/padding_ms"/>
 
                 <com.tokopedia.seller.common.widget.VerticalLabelView
                     android:id="@+id/lv_title"
@@ -60,10 +63,13 @@
                     app:counter_min="1" />
 
                 <TextView
+                    android:id="@+id/tv_variant_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/activity_horizontal_margin"
                     style="@style/TextView.Micro"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     android:text="@string/stock_variant_info"/>
 
             </LinearLayout>

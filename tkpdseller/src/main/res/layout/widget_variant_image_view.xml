@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:id="@+id/frame_image"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/image_width_variant"
+    android:layout_height="@dimen/image_width_variant"
     android:background="@drawable/bg_rect_stroke_lighter_gray"
-    android:padding="@dimen/margin_vvs"
-    android:layout_marginRight="@dimen/padding_ms"
-    android:layout_marginEnd="@dimen/padding_ms"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_vvs"
         tools:src="@mipmap/ic_launcher"/>
 
     <View
-        android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_vvs"
         android:background="@drawable/bg_rect_stroke_gray_dashed" />
+
+    <TextView
+        android:id="@+id/tv_empty_stock"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_width_xs"
+        android:text="@string/product_variant_stock_empty"
+        android:background="@color/tkpd_yellow_status"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        style="@style/TextView.Micro"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </FrameLayout>

@@ -216,16 +216,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.variant.view.activity.ProductVariantDashboardActivity"
-            android:label="@string/product_variant_label_title"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".product.variant.view.activity.ProductVariantDetailActivity"
-            android:label="@string/product_variant_label_title"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".product.variant.view.activity.ProductVariantDashboardNewActivity"
             android:exported="true"
             android:label="@string/product_variant_label_title"
@@ -244,11 +234,6 @@
         <activity
             android:name=".product.variant.view.activity.ProductVariantDetailLevelLeafActivity"
             android:label="@string/product_variant_detail_label_title"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".product.variant.view.activity.ProductVariantPickerActivity"
-            android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
 
         <activity

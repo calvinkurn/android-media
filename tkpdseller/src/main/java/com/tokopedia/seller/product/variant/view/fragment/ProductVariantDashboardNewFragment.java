@@ -71,6 +71,8 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private boolean isOfficialStore;
     private boolean needRetainImage;
 
+    private ProductVariantDashboardNewAdapter productVariantDashboardNewAdapter;
+
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
         ProductVariantDashboardNewFragment fragment = new ProductVariantDashboardNewFragment();
@@ -83,11 +85,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         super.onCreate(savedInstanceState);
         Intent activityIntent = getActivity().getIntent();
 
-        if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST)) {
-            productVariantByCatModelList = activityIntent.getParcelableArrayListExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
-        } else { // TODO remove this, only for test
-            productVariantByCatModelList = getProductVariantByCatModelListFromJson();
-        }
+        productVariantByCatModelList = activityIntent.getParcelableArrayListExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
         currencyType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
         defaultPrice = activityIntent.getDoubleExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, 0);
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
@@ -95,66 +93,11 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, false);
 
         if (savedInstanceState == null) {
-            if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
-            } else { //TODO this is just test, remove this after finish testing
-                productVariantViewModel = getProductVariantByPrdModelFromJson();
-            }
+            productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
         } else {
             productVariantViewModel = savedInstanceState.getParcelable(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
         }
     }
-
-    //TODO, remove this. just for test
-    public ArrayList<ProductVariantByCatModel> getProductVariantByCatModelListFromJson() {
-        String jsonString = loadJSONFromAsset();
-        Type type = new TypeToken<ArrayList<ProductVariantByCatModel>>() {
-        }.getType();
-        return new Gson().fromJson(jsonString, type);
-    }
-
-    //TODO, remove this. just for test
-    public ProductVariantViewModel getProductVariantByPrdModelFromJson() {
-        String jsonString = loadJSONFromAsset2();
-        Type type = new TypeToken<ProductVariantViewModel>() {
-        }.getType();
-        return new Gson().fromJson(jsonString, type);
-    }
-
-    //TODO, remove this. just for test
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getContext().getAssets().open("test_variant_by_cat.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    //TODO, remove this. just for test
-    public String loadJSONFromAsset2() {
-        String json = null;
-        try {
-            InputStream is = getContext().getAssets().open("test_variant_by_prd_empty.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
 
     @Override
     protected int getFragmentLayout() {
@@ -173,7 +116,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initVariantLabel();
-//        updateVariantUnitView();
         updateVariantItemListView();
     }
 
@@ -259,7 +201,8 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     @Override
     protected BaseListAdapter<ProductVariantDashboardNewViewModel> getNewAdapter() {
-        return new ProductVariantDashboardNewAdapter(currencyType, this);
+        productVariantDashboardNewAdapter = new ProductVariantDashboardNewAdapter(currencyType, this);
+        return productVariantDashboardNewAdapter;
     }
 
     @Override
@@ -273,14 +216,14 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             ProductVariantDetailLevel1ListActivity.start(getContext(), this, productVariantDashboardNewViewModel,
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     productVariantViewModel.getVariantOptionParent(2).getName(),
-                    currencyType, defaultPrice, defaultStockType, isOfficialStore,
+                    currencyType, defaultStockType, isOfficialStore,
                     needRetainImage);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList().get(0),
                     productVariantDashboardNewViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
-                    currencyType, defaultPrice, defaultStockType, isOfficialStore,
+                    currencyType, defaultStockType, isOfficialStore,
                     needRetainImage);
         }
     }
@@ -444,7 +387,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private void onActivityResultFromDetailUpdateList(ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel) {
         // update from dashboardviewmodel back to the variantview model
         String lv1Value = productVariantDashboardNewViewModel.getProductVariantOptionChildLv1().getValue();
-        //for image
+        // for image
         productVariantViewModel.replaceVariantOptionChildFor(1,
                 productVariantDashboardNewViewModel.getProductVariantOptionChildLv1());
         // for combination data list
@@ -467,6 +410,11 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private void refreshData(){
         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
+        if (productVariantViewModel!= null && productVariantViewModel.getVariantOptionParent(2)!= null) {
+            productVariantDashboardNewAdapter.setLevel2String(productVariantViewModel.getVariantOptionParent(2).getName());
+        } else {
+            productVariantDashboardNewAdapter.setLevel2String(null);
+        }
         adapter.clearData();
         onSearchLoaded(this.productVariantDashboardNewViewModelList, this.productVariantDashboardNewViewModelList.size());
     }
@@ -480,9 +428,6 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
     }
 
-    /**
-     * Update variant item list view
-     */
     private void updateVariantItemListView() {
         if (productVariantViewModel == null || !productVariantViewModel.hasSelectedVariant()) {
             recyclerView.setVisibility(View.GONE);
