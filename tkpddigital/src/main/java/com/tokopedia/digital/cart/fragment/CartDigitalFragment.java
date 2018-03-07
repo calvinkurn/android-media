@@ -392,6 +392,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.isInstantCheckout()
         );
 
+        presenter.autoApplyCouponIfAvailable(passData.getCategoryId());
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
@@ -829,6 +830,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
     }
 
     public interface ActionListener {

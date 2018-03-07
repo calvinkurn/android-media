@@ -41,6 +41,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -611,7 +612,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
 
         UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
-
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);

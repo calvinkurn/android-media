@@ -1,13 +1,17 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
@@ -22,6 +26,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @LayoutRes
     public static final int LAYOUT = R.layout.item_flight_airline_filter;
 
+    Context context;
     ImageView ivLogo;
     TextView tvTitle;
     TextView tvDesc;
@@ -29,6 +34,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
 
     public FlightFilterAirlineViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
         super(itemView, checkableInteractionListener);
+        this.context = itemView.getContext();
         ivLogo = (ImageView) itemView.findViewById(R.id.iv_logo);
         tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         tvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
@@ -38,7 +44,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @Override
     public void bind(AirlineStat airlineStat) {
         super.bind(airlineStat);
-        ImageHandler.loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), R.drawable.ic_airline_default);
+        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), R.drawable.ic_airline_default);
         tvTitle.setText(airlineStat.getAirlineDB().getName());
         tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
         itemView.setOnClickListener(this);
@@ -53,4 +59,22 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     public void onClick(View v) {
         toggle();
     }
+
+    private void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(VectorDrawableCompat.create(context.getResources(), resId, context.getTheme()))
+                    .dontAnimate()
+                    .error(resId)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(VectorDrawableCompat.create(context.getResources(), resId, context.getTheme()))
+                    .error(resId)
+                    .into(imageview);
+        }
+    }
 }
+

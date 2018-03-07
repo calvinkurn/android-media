@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -332,7 +333,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().setUploadingMode(false);
-                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable,getView().getActivity()), list.get(0));
+                String error = ErrorHandler.getErrorMessage(throwable,getView().getActivity());
+                if(throwable instanceof MessageErrorException){
+                    error = throwable.getLocalizedMessage();
+                }
+                getView().onErrorUploadImages(error, list.get(0));
             }
 
             @Override

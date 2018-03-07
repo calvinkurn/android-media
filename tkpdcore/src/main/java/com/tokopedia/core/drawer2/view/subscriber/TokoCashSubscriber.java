@@ -34,7 +34,7 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
         if (tokoCashModel.isSuccess()) {
             viewListener.onGetTokoCash(
                     TokoCashUtil.convertToViewModel(
-                            tokoCashModel.getTokoCashData()));
+                            tokoCashModel.getData()));
         } else {
             viewListener.onErrorGetTokoCash(
                     viewListener.getString(R.string.default_request_error_unknown));

@@ -488,7 +488,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         for (ProductImage productImage : productData.getProductImages()) {
             arrayList.add(productImage.getImageSrc());
         }
-        if (productData.getInfo().getHasVariant() && productVariant!=null && productVariant.getChildren()!=null) {
+        if (productData.getInfo() != null && productData.getInfo().getHasVariant()
+                && productVariant!=null && productVariant.getChildren()!=null) {
             for (Child child: productVariant.getChildren()) {
                 if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
                    arrayList.add(child.getPicture().getOriginal());
@@ -968,7 +969,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
         Log.d(TAG, "onRestoreState");
-        presenter.processStateData(savedInstanceState);
+        presenter.processStateData(savedInstanceState,getActivity());
     }
 
     @Override
@@ -1039,7 +1040,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
-                if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                if (data!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                     variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
                     if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
@@ -1229,7 +1230,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductCampaign() {
-        headerInfoView.renderProductCampaign(productData.getCampaign());
+        if (headerInfoView != null && productData != null) {
+            headerInfoView.renderProductCampaign(productData.getCampaign());
+        }
     }
 
     @Override

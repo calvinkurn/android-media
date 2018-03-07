@@ -1053,5 +1053,22 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+        String SHOP_TYPE = "shopType";
+    }
+
+    interface ShopType {
+        String REGULAR = "regular";
+        String OFFICIAL_STORE = "official_store";
+        String GOLD_MERCHANT = "gold_merchant";
+    }
+
+    interface EventBranch {
+        String EVENT_LOGIN="login";
+        String EVENT_REGISTER="sign_up";
+    }
+
+    interface Branch {
+        String EMAIL="email";
+        String PHONE="phone";
     }
 }

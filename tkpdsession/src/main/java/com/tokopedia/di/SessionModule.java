@@ -254,9 +254,8 @@ SessionModule {
     @SessionScope
     @Provides
     VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper,
-                                                 SessionHandler sessionHandler) {
-        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper, sessionHandler);
+                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
+        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper);
     }
 
     @SessionScope
