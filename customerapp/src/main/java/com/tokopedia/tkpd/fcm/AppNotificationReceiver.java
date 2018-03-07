@@ -38,6 +38,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         if (bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
             bundle.putString(Constants.KEY_ORIGIN, Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
-        mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
+        mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
     }
 }
