@@ -164,7 +164,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void prepareView() {
-        countdownText.setOnClickListener(null);
         if (!isCountdownFinished()) {
             startTimer();
         } else {
@@ -341,6 +340,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void startTimer() {
+        countdownText.setOnClickListener(null);
         if (isCountdownFinished()) {
             cacheHandler.putBoolean(HAS_TIMER, true);
             cacheHandler.setExpire(COUNTDOWN_LENGTH);
