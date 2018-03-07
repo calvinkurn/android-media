@@ -16,6 +16,8 @@ public class InboxAnalytics {
     private interface Category {
         String RESOLUTION_CENTER = "resolution center";
         String RESOLUTION_CENTER_CHAT = "resolution chat";
+        String RESOLUTION_DETAIL = "resolution detail";
+        String RESOLUTION_PRODUCT_COMPLAIN = "resolution detail";
     }
 
     interface ResoDimension {
@@ -492,7 +494,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickChatBox(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_PRODUCT_COMPLAIN,
                 Action.CLICK_BACK_ARROW_CHATBOX_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -501,7 +503,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionAcceptSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_ACCEPT_SOLUTION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -510,7 +512,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionFinishComplaint(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_FINISH_COMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -519,7 +521,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionRecomplaint(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_RECOMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -528,7 +530,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionCancelComplaint(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_CANCEL_COMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -537,7 +539,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionChangeSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_CHANGE_SOLUTION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -546,7 +548,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionAppealSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_APPEAL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -555,7 +557,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionAskHelp(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_ASK_HELP,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -564,7 +566,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionInputAddress(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_INPUT_ADDRESS,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -573,7 +575,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailImpressionInputAwb(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER_VIEW,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.IMPRESSION_INPUT_AWB,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -582,7 +584,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAcceptSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_ACCEPT_SOLUTION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -591,7 +593,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickCancelComplaint(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_CANCEL_COMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -600,7 +602,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickEditSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_CHANGE_SOLUTION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -609,7 +611,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAskHelp(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_ASK_HELP,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -618,7 +620,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickInputAddress(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_INPUT_ADDRESS,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -627,7 +629,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickInputAwb(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_INPUT_AWB,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -636,7 +638,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickRecomplaint(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RECOMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -645,7 +647,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickFinish(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_FINISH_COMPLAINT,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -654,7 +656,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAddAWB(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_ADD_NEW_AWB_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -663,7 +665,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickFreeReturn(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_FREE_RETURN_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -672,7 +674,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickCopyInvoice(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_COPY_INVOICE_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -681,7 +683,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickTrack(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_TRACK_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -690,7 +692,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickSeeAllResoHistory(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_SEE_RESO_HISTORY_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -699,7 +701,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAskHelpButton(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_ASK_HELP_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -708,7 +710,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAppealSolution(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_APPEAL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -717,7 +719,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickNextAction(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_NEXT_ACTION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -726,7 +728,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAddressHistory(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_SEE_ADDRESS_HISTORY_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -735,7 +737,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickAWBHistory(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_SEE_AWB_HISTORY_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -744,7 +746,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickEditSolutionView(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_EDIT_SOLUTION_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -753,7 +755,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoDetailClickBuyerName(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_BUYER_NAME_DETAIL,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -762,7 +764,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoClickDetailBack(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_ARROW_BACK,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
@@ -771,7 +773,7 @@ public class InboxAnalytics {
     public static EventTracking eventResoClickDiscussion(String resolutionId) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
-                Category.RESOLUTION_CENTER,
+                Category.RESOLUTION_DETAIL,
                 Action.CLICK_RESO_DISCUSSION,
                 ""
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
