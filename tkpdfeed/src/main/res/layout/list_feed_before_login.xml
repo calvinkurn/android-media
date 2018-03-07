@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/img_height"
-        android:src="@drawable/ic_general"
+        app:srcCompat="@drawable/ic_general"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_sm"/>
