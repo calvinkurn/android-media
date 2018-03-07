@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -71,6 +72,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private TextView mTvSelectPaymentMethod;
     private LinearLayout mLlTotalPaymentLayout;
     private TextView mTvTotalPayment;
+    private CardView mCvBottomLayout;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
@@ -192,6 +194,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
         mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+        mCvBottomLayout = view.findViewById(R.id.bottom_layout);
     }
 
     /**
@@ -216,11 +219,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                cartShipmentActivityListener.checkoutCart();
             }
         });
 
         mTvTotalPayment.setText("-");
+        mCvBottomLayout.setVisibility(View.VISIBLE);
 
         mSingleAddressShipmentPresenter.attachView(this);
         mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
