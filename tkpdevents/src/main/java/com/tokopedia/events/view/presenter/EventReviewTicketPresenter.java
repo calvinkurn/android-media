@@ -185,15 +185,17 @@ public class EventReviewTicketPresenter
             packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
             packageItem.setQuantity(selectedSeatViewModel.getQuantity());
             packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
+            packageItem.setAreaId(selectedSeatViewModel.getAreaId());
         } else {
             packageItem.setAreaCode(new ArrayList<String>());
             packageItem.setSeatId(new ArrayList<String>());
+            packageItem.setAreaId("");
             packageItem.setSeatRowId(new ArrayList<String>());
             packageItem.setSeatPhysicalRowId(new ArrayList<String>());
             packageItem.setQuantity(packageViewModel.getSelectedQuantity());
             packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
         }
-        packageItem.setDescription("");
+        packageItem.setDescription(packageViewModel.getDescription());
 
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
@@ -225,7 +227,7 @@ public class EventReviewTicketPresenter
         meta.setEntityPassengers(passengerItems);
         EntityAddress address = new EntityAddress();
         address.setAddress("");
-        address.setName("");
+        address.setName(profileModel.getProfileData().getUserInfo().getUserName());
         address.setCity("");
         address.setEmail(this.email);
         address.setMobile(this.number);
@@ -276,8 +278,8 @@ public class EventReviewTicketPresenter
     public void verifyCart() {
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
-        params.putObject("checkoutdata",convertPackageToCartItem(checkoutData));
-        params.putBoolean("ispromocodecase",!isPromoCodeCase);
+        params.putObject("checkoutdata", convertPackageToCartItem(checkoutData));
+        params.putBoolean("ispromocodecase", !isPromoCodeCase);
         postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
@@ -308,7 +310,7 @@ public class EventReviewTicketPresenter
                         getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                     } else {
                         paymentparams = RequestParams.create();
-                        paymentparams.putObject("verfiedcart",verifyCartResponse.getCart());
+                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();
                     }
                 } else {

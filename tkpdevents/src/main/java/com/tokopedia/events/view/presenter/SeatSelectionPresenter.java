@@ -208,6 +208,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         EntityPackageItem packageItem = new EntityPackageItem();
         packageItem.setPackageId(packageViewModel.getId());
         packageItem.setAreaCode(mSelectedSeatViewModel.getAreaCodes());
+        packageItem.setAreaId(mSelectedSeatViewModel.getAreaId());
+        packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
+        packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
         packageItem.setDescription("");
         packageItem.setQuantity(quantity);
         packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());

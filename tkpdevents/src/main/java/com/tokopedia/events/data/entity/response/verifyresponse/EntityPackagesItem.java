@@ -1,7 +1,5 @@
 package com.tokopedia.events.data.entity.response.verifyresponse;
 
-import android.os.Parcel;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,9 +10,15 @@ public class EntityPackagesItem {
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("area_code")
+    @Expose
+    private List<String> areaCode = null;
     @SerializedName("barcode")
     @Expose
     private List<String> barcode = null;
+    @SerializedName("area_id")
+    @Expose
+    private String areaId;
     @SerializedName("base_price")
     @Expose
     private int basePrice;
@@ -66,12 +70,18 @@ public class EntityPackagesItem {
     @SerializedName("product_id")
     @Expose
     private int productId;
+    @SerializedName("provider_group_id")
+    @Expose
+    private String providerGroupId;
     @SerializedName("provider_invoice_code")
     @Expose
     private String providerInvoiceCode;
     @SerializedName("provider_invoice_indentifier")
     @Expose
     private String providerInvoiceIndentifier;
+    @SerializedName("provider_order_id")
+    @Expose
+    private String providerOrderId;
     @SerializedName("provider_schedule_id")
     @Expose
     private String providerScheduleId;
@@ -87,6 +97,15 @@ public class EntityPackagesItem {
     @SerializedName("schedule_id")
     @Expose
     private int scheduleId;
+    @SerializedName("seat_ids")
+    @Expose
+    private List<String> seatIds = null;
+    @SerializedName("seat_physical_row_ids")
+    @Expose
+    private List<String> seatPhysicalRowIds = null;
+    @SerializedName("seat_row_ids")
+    @Expose
+    private List<String> seatRowIds = null;
     @SerializedName("show_date")
     @Expose
     private String showDate;
@@ -102,6 +121,9 @@ public class EntityPackagesItem {
     @SerializedName("venue_detail")
     @Expose
     private String venueDetail;
+    @SerializedName("vouchers")
+    @Expose
+    private Object vouchers;
 
     public String getAddress() {
         return address;
@@ -111,12 +133,28 @@ public class EntityPackagesItem {
         this.address = address;
     }
 
+    public List<String> getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(List<String> areaCode) {
+        this.areaCode = areaCode;
+    }
+
     public List<String> getBarcode() {
         return barcode;
     }
 
     public void setBarcode(List<String> barcode) {
         this.barcode = barcode;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
     }
 
     public int getBasePrice() {
@@ -255,6 +293,14 @@ public class EntityPackagesItem {
         this.productId = productId;
     }
 
+    public String getProviderGroupId() {
+        return providerGroupId;
+    }
+
+    public void setProviderGroupId(String providerGroupId) {
+        this.providerGroupId = providerGroupId;
+    }
+
     public String getProviderInvoiceCode() {
         return providerInvoiceCode;
     }
@@ -269,6 +315,14 @@ public class EntityPackagesItem {
 
     public void setProviderInvoiceIndentifier(String providerInvoiceIndentifier) {
         this.providerInvoiceIndentifier = providerInvoiceIndentifier;
+    }
+
+    public String getProviderOrderId() {
+        return providerOrderId;
+    }
+
+    public void setProviderOrderId(String providerOrderId) {
+        this.providerOrderId = providerOrderId;
     }
 
     public String getProviderScheduleId() {
@@ -311,6 +365,30 @@ public class EntityPackagesItem {
         this.scheduleId = scheduleId;
     }
 
+    public List<String> getSeatIds() {
+        return seatIds;
+    }
+
+    public void setSeatIds(List<String> seatIds) {
+        this.seatIds = seatIds;
+    }
+
+    public List<String> getSeatPhysicalRowIds() {
+        return seatPhysicalRowIds;
+    }
+
+    public void setSeatPhysicalRowIds(List<String> seatPhysicalRowIds) {
+        this.seatPhysicalRowIds = seatPhysicalRowIds;
+    }
+
+    public List<String> getSeatRowIds() {
+        return seatRowIds;
+    }
+
+    public void setSeatRowIds(List<String> seatRowIds) {
+        this.seatRowIds = seatRowIds;
+    }
+
     public String getShowDate() {
         return showDate;
     }
@@ -351,41 +429,12 @@ public class EntityPackagesItem {
         this.venueDetail = venueDetail;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(address);
-        dest.writeList(barcode);
-        dest.writeValue(basePrice);
-        dest.writeValue(city);
-        dest.writeValue(commision);
-        dest.writeValue(commisionType);
-        dest.writeValue(description);
-        dest.writeValue(dimension);
-        dest.writeValue(displayName);
-        dest.writeValue(errorMessage);
-        dest.writeValue(groupId);
-        dest.writeValue(groupName);
-        dest.writeValue(invoiceExpiry);
-        dest.writeValue(invoiceStatus);
-        dest.writeValue(packageId);
-        dest.writeValue(packagePrice);
-        dest.writeValue(paymentType);
-        dest.writeValue(pricePerSeat);
-        dest.writeValue(productId);
-        dest.writeValue(providerInvoiceCode);
-        dest.writeValue(providerInvoiceIndentifier);
-        dest.writeValue(providerScheduleId);
-        dest.writeValue(providerTicketId);
-        dest.writeValue(providerUnhashTicketId);
-        dest.writeValue(quantity);
-        dest.writeValue(scheduleId);
-        dest.writeValue(showDate);
-        dest.writeValue(tkpInvoiceId);
-        dest.writeValue(tkpInvoiceItemId);
-        dest.writeValue(totalTicketCount);
-        dest.writeValue(venueDetail);
+    public Object getVouchers() {
+        return vouchers;
     }
 
-    public int describeContents() {
-        return 0;
+    public void setVouchers(Object vouchers) {
+        this.vouchers = vouchers;
     }
+
 }
