@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.place.data.source.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 
 import java.util.Map;
 
@@ -26,4 +27,8 @@ public interface PlaceApi {
     //@GET("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo")
     @GET("https://maps.googleapis.com/maps/api/geocode/json")
     Observable<JsonObject> getAddressFromGoogleAPI(@Query("key") String key, @Query("address") String address);
+
+
+    @GET("https://roads.googleapis.com/v1/nearestRoads")
+    Observable<NearbyRoads> getNearbyRoadsFromGoogleAPI(@Query("points") String points, @Query("key") String key);
 }
