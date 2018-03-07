@@ -232,10 +232,6 @@ public class ProductManageViewHolder extends ProductViewHolder {
         model.setProductStock(getTotalStock());
         model.setProductStatus(getStatusStock());
         model.setProductSku(getSkuText());
-        ProductVariantViewModel productVariantViewModel = model.getProductVariant();
-        if (productVariantViewModel != null) {
-            productVariantViewModel.generateTid();
-        }
     }
 
     @Override

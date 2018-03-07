@@ -24,6 +24,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
@@ -50,7 +51,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
         ProductViewModel productViewModel;
         //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
-        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL){
+        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL) {
             productViewModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
@@ -102,7 +103,13 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     }
 
     private ProductVariantViewModel mapProductDraftOldVersion(ProductDraftModel draftModel) {
+        if (draftModel == null) {
+            return null;
+        }
         ProductVariantDataSubmit productVariantDataSubmit = draftModel.getProductVariantDataSubmit();
+        if (productVariantDataSubmit == null) {
+            return null;
+        }
         ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
 
         String level1 = "";
@@ -112,13 +119,13 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             String[] variantDimensionSplit = variantStringSelection.split("\n");
 
             if (variantDimensionSplit.length >= 1) {
-                String[] dimen1Split = variantDimensionSplit[0].split(" ",2);
+                String[] dimen1Split = variantDimensionSplit[0].split(" ", 2);
                 if (dimen1Split.length > 1) {
                     level1 = dimen1Split[1];
                 }
             }
             if (variantDimensionSplit.length >= 2) {
-                String[] dimen2Split = variantDimensionSplit[1].split(" ",2);
+                String[] dimen2Split = variantDimensionSplit[1].split(" ", 2);
                 if (dimen2Split.length > 1) {
                     level2 = dimen2Split[1];
                 }
@@ -128,50 +135,69 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         List<ProductVariantUnitSubmit> productVariantUnitSubmitList = productVariantDataSubmit.getProductVariantUnitSubmitList();
         if (productVariantUnitSubmitList != null && productVariantUnitSubmitList.size() > 0) {
             List<ProductVariantOptionParent> productVariantOptionParentList = new ArrayList<>();
-            for (int i = 0, sizei = productVariantUnitSubmitList.size(); i<sizei; i++) {
+            for (int i = 0, sizei = productVariantUnitSubmitList.size(); i < sizei; i++) {
                 ProductVariantUnitSubmit productVariantUnitSubmit = productVariantUnitSubmitList.get(i);
 
                 ProductVariantOptionParent productVariantOptionParent = new ProductVariantOptionParent();
                 productVariantOptionParent.setPosition(productVariantUnitSubmit.getPosition());
-                productVariantOptionParent.setV((int)productVariantUnitSubmit.getVariantId());
-                productVariantOptionParent.setVu((int)productVariantUnitSubmit.getVariantUnitId());
-                productVariantOptionParent.setName(level1);
+                productVariantOptionParent.setV((int) productVariantUnitSubmit.getVariantId());
+                productVariantOptionParent.setVu((int) productVariantUnitSubmit.getVariantUnitId());
+                if (i == 0) {
+                    productVariantOptionParent.setName(level1);
+                } else {
+                    productVariantOptionParent.setName(level2);
+                }
 
                 List<ProductVariantOptionSubmit> productVariantOptionSubmitList =
                         productVariantUnitSubmit.getProductVariantOptionSubmitList();
                 List<ProductVariantOptionChild> productVariantOptionChildList = new ArrayList<>();
-                if (productVariantOptionSubmitList!= null) {
-                    for (int j = 0, sizej = productVariantOptionSubmitList.size(); j< sizej ; j++) {
+                if (productVariantOptionSubmitList != null) {
+                    for (int j = 0, sizej = productVariantOptionSubmitList.size(); j < sizej; j++) {
                         ProductVariantOptionSubmit productVariantOptionSubmit = productVariantOptionSubmitList.get(j);
 
-//                        ProductVariantOptionChild productVariantOptionChild = new ProductVariantOptionChild(
-//                                0,
-//                                productVariantOptionSubmit.getVariantUnitValueId(),
-//                                0,
-//                                productVariantOptionSubmit.
-//                        )
-//                        productVariantOptionSubmit.getVariantUnitValueId();
-//                        productVariantOptionSubmit.getCustomText();
-//                        productVariantOptionSubmit.getTemporaryId();
-//                        productVariantOptionSubmit.getPictureItemList();
-
+                        ProductVariantOptionChild productVariantOptionChild = new ProductVariantOptionChild(
+                                0,
+                                (int) (productVariantOptionSubmit.getVariantUnitValueId()),
+                                productVariantOptionSubmit.getCustomText(),
+                                "",
+                                null
+                        );
+                        productVariantOptionChild.settId((int) productVariantOptionSubmit.getTemporaryId());
+                        productVariantOptionChildList.add(productVariantOptionChild);
                     }
                 }
-
-                //TODO map List<ProductVariantOptionSubmit> to OptionChild, then add to productVariantOptionParent
+                productVariantOptionParent.setProductVariantOptionChild(productVariantOptionChildList);
                 productVariantOptionParentList.add(productVariantOptionParent);
             }
             productVariantViewModel.setVariantOptionParent(productVariantOptionParentList);
         }
 
         List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = new ArrayList<>();
-        //TODO map the combination model to the new structure.
+        if (productVariantDataSubmit.getProductVariantCombinationSubmitList() != null &&
+                productVariantDataSubmit.getProductVariantCombinationSubmitList().size() > 0) {
+            List<ProductVariantCombinationSubmit> productVariantCombinationSubmitList =
+                    productVariantDataSubmit.getProductVariantCombinationSubmitList();
+            for (int i = 0, sizei = productVariantCombinationSubmitList.size(); i < sizei; i++) {
+                ProductVariantCombinationSubmit productVariantCombinationSubmit = productVariantCombinationSubmitList.get(i);
+                if (productVariantCombinationSubmit == null) {
+                    continue;
+                }
+                ProductVariantCombinationViewModel productVariantCombinationViewModel = new ProductVariantCombinationViewModel();
+                productVariantCombinationViewModel.setActive(productVariantCombinationSubmit.getStatus() == 1);
+                List<Integer> integerList = new ArrayList<>();
+                for (int j = 0, sizej = productVariantCombinationSubmit.getOptionList().size(); j < sizej; j++) {
+                    integerList.add((int)(long) productVariantCombinationSubmit.getOptionList().get(j));
+                }
+                productVariantCombinationViewModel.setOpt(integerList);
+                productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
+            }
+        }
         productVariantViewModel.setProductVariant(productVariantCombinationViewModelList);
         return productVariantViewModel;
     }
 
     private ProductPreOrderViewModel generateProductPreorder(ProductDraftModel draftModel) {
-        ProductPreOrderViewModel productPreorderViewModel= new ProductPreOrderViewModel();
+        ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
         productPreorderViewModel.setPreorderProcessTime(draftModel.getPoProcessValue());
         productPreorderViewModel.setPreorderTimeUnit(draftModel.getPoProcessType());
         return productPreorderViewModel;
@@ -206,7 +232,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
     private List<ProductVideoViewModel> mapToProductVideo(List<String> productVideos) {
         List<ProductVideoViewModel> productVideoViewModels = new ArrayList<>();
-        for(String url : productVideos){
+        for (String url : productVideos) {
             ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
             productVideoViewModels.add(productVideoViewModel);
         }
@@ -221,7 +247,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             domainModel.setMinQty(draftModel.getQtyMin());
             domainModels.add(domainModel);
         }
-        return domainModels.size() == 0? null: domainModels;
+        return domainModels.size() == 0 ? null : domainModels;
     }
 
     private List<ProductPictureViewModel> mapPhotosDraftToProductViewModel(List<ImageProductInputDraftModel> photos) {
@@ -242,7 +268,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             productPictureViewModel.setX(Long.parseLong(resultUploadedViewModel.getW()));
             productPictureViewModel.setFilePath(resultUploadedViewModel.getFilePath());
             productPictureViewModel.setFileName(resultUploadedViewModel.getFileName());
-        }catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return productPictureViewModel;

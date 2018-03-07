@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
@@ -24,12 +25,14 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     public static final String EXTRA_PRODUCT_VARIANT_OPTION_CHILD = "opt_child";
     public static final String EXTRA_PRODUCT_VARIANT_NAME = "var_name";
     public static final String EXTRA_CURRENCY_TYPE = "curr_type";
-//    public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
-//    public static final String EXTRA_VARIANT_VALUE_LIST = "var_lst";
-//    public static final String EXTRA_SELECTED_VARIANT_ID_LIST = "sel_var_id_lst";
+    public static final String EXTRA_NEED_RETAIN_IMAGE = "need_retain_img";
+    public static final String EXTRA_DEFAULT_PRICE = "prc";
+    public static final String EXTRA_STOCK_TYPE = "stock_typ";
+    public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
 
-    //    public static final String EXTRA_ACTION_DELETE = "del";
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
+
+    public static final String SAVED_HAS_LEAF_CHANGED = "svd_leaf_chg";
 
     public static final int VARIANT_EDIT_LEAF_REQUEST_CODE = 906;
 
@@ -38,32 +41,49 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     ProductVariantOptionChild productVariantOptionChild;
 
     private @CurrencyTypeDef int currencyType;
+    private boolean needRetainImage;
+    private boolean imageChanged;
+    private double defaultPrice;
+    private @StockTypeDef int stockType;
+    private boolean isOfficialStore;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
-                             String variantName, @CurrencyTypeDef int currencyType){
-        Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild, variantName, currencyType);
+                             String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                             @StockTypeDef int stockType, boolean isOfficialStore,
+                             boolean needRetainImage){
+        Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild,
+                variantName, currencyType, defaultPrice, stockType, isOfficialStore, needRetainImage);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static void start(Activity activity,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
-                             String variantName, @CurrencyTypeDef int currencyType){
-        Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild, variantName, currencyType);
+                             String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                             @StockTypeDef int stockType, boolean isOfficialStore,
+                             boolean needRetainImage){
+        Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild,
+                variantName, currencyType, defaultPrice, stockType, isOfficialStore, needRetainImage);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
                                    ProductVariantCombinationViewModel productVariantCombinationViewModel,
                                    ProductVariantOptionChild productVariantOptionChild,
-                                   String variantName, @CurrencyTypeDef int currencyType){
+                                   String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                                   @StockTypeDef int stockType, boolean isOfficialStore,
+                                   boolean needRetainImage){
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_NAME, variantName);
         intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
+        intent.putExtra(EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
+        intent.putExtra(EXTRA_DEFAULT_PRICE, defaultPrice);
+        intent.putExtra(EXTRA_STOCK_TYPE, stockType);
+        intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
         return intent;
     }
 
@@ -77,10 +97,16 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
 
         if (savedInstanceState == null) {
             productVariantCombinationViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA);
+            productVariantOptionChild = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
         } else {
             productVariantCombinationViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_LEAF_DATA);
+            productVariantOptionChild = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
+            imageChanged = savedInstanceState.getBoolean(SAVED_HAS_LEAF_CHANGED, false);
         }
-        productVariantOptionChild = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
+        needRetainImage = intent.getBooleanExtra(EXTRA_NEED_RETAIN_IMAGE, false);
+        defaultPrice = intent.getDoubleExtra(EXTRA_DEFAULT_PRICE, 0);
+        stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
+        isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
     }
 
     @Override
@@ -91,6 +117,30 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     @Override
     public int getCurrencyTypeDef() {
         return currencyType;
+    }
+
+    public boolean needRetainImage() {
+        return needRetainImage;
+    }
+
+    @Override
+    public void onImageChanged() {
+        imageChanged = true;
+    }
+
+    @Override
+    public double getDefaultPrice() {
+        return defaultPrice;
+    }
+
+    @Override
+    public int getStockType() {
+        return stockType;
+    }
+
+    @Override
+    public boolean isOfficialStore() {
+        return isOfficialStore;
     }
 
     @Override
@@ -107,67 +157,18 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     public void onSubmitVariant() {
         Intent intent = new Intent(EXTRA_ACTION_SUBMIT);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
+        if (imageChanged) {
+            intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
+        }
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
-//    @Override
-//    public void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds) {
-//        Intent intent = new Intent(EXTRA_ACTION_SUBMIT);
-//        //TODO set productVariantViewModel from view
-////        intent.putExtra(EXTRA_VARIANT_OPTION_ID, variantLevel1Id);
-////        intent.putExtra(EXTRA_VARIANT_HAS_STOCK, isVariantHasStock);
-////        intent.putExtra(EXTRA_VARIANT_VALUE_LIST,(ArrayList) selectedVariantValueIds);
-//        intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardNewViewModel);
-//        setResult(Activity.RESULT_OK, intent);
-//        finish();
-//    }
 
     @Override
     protected Fragment getNewFragment() {
         return ProductVariantDetailLeafFragment.newInstance();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_product_variant_data, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.action_delete) {
-//            showDeleteDialog();
-//            return true;
-//        } else {
-//            return super.onOptionsItemSelected(item);
-//        }
-//    }
-
-//    private void showDeleteDialog(){
-//        AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-//                .setMessage(MethodChecker.fromHtml(getString(R.string.delete_this_variant, variantName)))
-//                .setPositiveButton(getString(R.string.action_delete), new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        onDeleteVariant();
-//                    }
-//                }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface arg0, int arg1) {
-//                        // no op
-//                    }
-//                }).create();
-//        dialog.show();
-//    }
-
-//    public void onDeleteVariant() {
-//        Intent intent = new Intent(EXTRA_ACTION_DELETE);
-//        intent.putExtra(EXTRA_VARIANT_OPTION_ID, variantLevel1Id);
-//        setResult(Activity.RESULT_OK, intent);
-//        finish();
-//    }
-
 
     @Override
     protected boolean isToolbarWhite() {
@@ -178,5 +179,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
+        outState.putParcelable(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
+        outState.putBoolean(SAVED_HAS_LEAF_CHANGED, imageChanged);
     }
 }
