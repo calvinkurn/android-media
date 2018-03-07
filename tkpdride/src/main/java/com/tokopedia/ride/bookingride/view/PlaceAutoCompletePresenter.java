@@ -527,15 +527,16 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (isNearbyPlaces) {
             Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
                 @Override
-                public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel, PlaceAutoCompeleteViewModel t1) {
+                public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel1, PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel2) {
 
-                    if (placeAutoCompeleteViewModel != null &&
-                            placeAutoCompeleteViewModel.getDistance() != null &&
-                            t1 != null &&
-                            t1.getDistance() != null) {
-                        return placeAutoCompeleteViewModel.getDistanceValue() - t1.getDistanceValue();
-                    } else
+                    if (placeAutoCompeleteViewModel1 != null &&
+                            placeAutoCompeleteViewModel1.getDistance() != null &&
+                            placeAutoCompeleteViewModel2 != null &&
+                            placeAutoCompeleteViewModel2.getDistance() != null) {
+                        return placeAutoCompeleteViewModel1.getDistanceValue() - placeAutoCompeleteViewModel2.getDistanceValue();
+                    } else {
                         return 0;
+                    }
                 }
             });
         }
