@@ -117,9 +117,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     @Override
     public void renderData(ProductViewModel model) {
         setCondition((int) model.getProductCondition());
-        if (!TextUtils.isEmpty(model.getProductDescription())) {
-            setDescription(model.getProductDescription());
-        }
+        setDescription(model.getProductDescription());
         if (model.getProductVideo() != null) {
             setVideoIdList(convertToListString(model.getProductVideo()));
         }
@@ -175,11 +173,12 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     }
 
     public void setDescription(String description) {
-        this.description = description.trim();
-        if (TextUtils.isEmpty(description.trim())) {
+        this.description = description == null ? "" :
+                description.trim();
+        if (TextUtils.isEmpty(this.description)) {
             descriptionLabelView.setContent(descriptionLabelView.getContext().getString(R.string.label_add));
         } else {
-            descriptionLabelView.setContent(description);
+            descriptionLabelView.setContent(this.description);
         }
     }
 

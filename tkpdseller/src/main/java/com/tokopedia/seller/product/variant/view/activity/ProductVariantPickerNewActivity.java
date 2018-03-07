@@ -191,6 +191,9 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList,
                            HashMap<String, Integer> hashMapValueToIndex){
+        if (productVariantOptionChildList == null) {
+            return;
+        }
         for (int i = 0, sizei = productVariantOptionChildList.size(); i< sizei; i++) {
             hashMapValueToIndex.put(productVariantOptionChildList.get(i).getValue(), i);
         }

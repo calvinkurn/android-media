@@ -6,15 +6,20 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
@@ -42,6 +47,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     private CurrencyTextWatcher currencyTextWatcher;
 
     private VariantImageView variantImageView;
+    private CounterInputView counterInputViewStock;
+    private EditText etSku;
 
     public interface OnProductVariantDetailLeafFragmentListener {
         void onSubmitVariant();
@@ -111,6 +118,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         View view = inflater.inflate(R.layout.fragment_product_variant_detail_leaf, container, false);
         VerticalLabelView lvTitle = view.findViewById(R.id.lv_title);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
+        counterInputViewStock = view.findViewById(R.id.counter_input_view_stock_total);
+        etSku = view.findViewById(R.id.edit_text_sku);
         View buttonSave = view.findViewById(R.id.button_save);
 
         SpinnerCounterInputView spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
@@ -140,20 +149,39 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
 
+        if (isStockLimited()) {
+            counterInputViewStock.setVisibility(View.VISIBLE);
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+            counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String sString = StringUtils.omitNonNumeric(s.toString());
+                    int stock = Integer.parseInt(sString);
+                    if (productVariantCombinationViewModel.getStock() == stock) {
+                        return;
+                    }
+                    productVariantCombinationViewModel.setStock(stock);
+                    if (stock == 0) {
+                        labelSwitchStatus.setChecked(false);
+                    } else {
+                        labelSwitchStatus.setChecked(true);
+                    }
+                }
+            });
+        } else {
+            counterInputViewStock.setVisibility(View.GONE);
+        }
+
         labelSwitchStatus.setListenerValue(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setStockLabel(isChecked);
-                productVariantCombinationViewModel.setActive(isChecked);
-                //TODO set stock value
+                onLabelSwitchStatusChanged(isChecked);
             }
         });
 
         labelSwitchStatus.setChecked(productVariantCombinationViewModel.isActive());
-        setStockLabel(productVariantCombinationViewModel.isActive());
+        onLabelSwitchStatusChanged(productVariantCombinationViewModel.isActive());
 
-//        frameImage = view.findViewById(R.id.frame_image);
-//        ivVariant = view.findViewById(R.id.image_view);
         variantImageView = view.findViewById(R.id.variant_image_view);
 
         ProductVariantOptionChild childLvl1Model = listener.getProductVariantChild();
@@ -179,11 +207,34 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             @Override
             public void onClick(View v) {
                 // TODO check validation before submit
+
+                String sku = etSku.getText().toString();
+                listener.getProductVariantCombinationViewModel().setSku(sku);
                 listener.onSubmitVariant();
             }
         });
         view.requestFocus();
         return view;
+    }
+
+    private void onLabelSwitchStatusChanged(boolean isChecked) {
+        setStockLabel(isChecked);
+        productVariantCombinationViewModel.setActive(isChecked);
+
+        // counter input for stock only visible for stock limited only
+        if (isStockLimited()) {
+            if (isChecked) {
+                counterInputViewStock.setValue(1);
+                counterInputViewStock.setEnabled(true);
+            } else {
+                counterInputViewStock.setValue(0);
+                counterInputViewStock.setEnabled(false);
+            }
+        }
+    }
+
+    private boolean isStockLimited() {
+        return listener.getStockType() == StockTypeDef.TYPE_ACTIVE_LIMITED;
     }
 
     private void setStockLabel(boolean isChecked) {
