@@ -67,6 +67,11 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     @Override
     public void setSelectedShipment(ShipmentItemData selectedShipment) {
         selectedShipment.setSelected(true);
+        if (selectedShipment.getCourierItemData().size() == 1) {
+            CourierItemData courier = selectedShipment.getCourierItemData().get(0);
+            courier.setSelected(true);
+            getView().selectCourier(courier);
+        }
         shipmentDetailData.setSelectedShipment(selectedShipment);
         setCourierList(selectedShipment.getCourierItemData());
     }

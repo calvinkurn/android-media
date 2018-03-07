@@ -32,6 +32,8 @@ public interface IShipmentDetailView extends CustomerView {
 
     void renderSelectedCourier(CourierItemData courierItemData);
 
+    void selectCourier(CourierItemData courierItemData);
+
     Activity getActivity();
 
 }
