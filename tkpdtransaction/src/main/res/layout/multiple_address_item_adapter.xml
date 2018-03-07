@@ -17,14 +17,11 @@
 
         <TextView
             android:id="@+id/shipping_index"
+            style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="3sp"
-            android:text="Pengiriman #"
-            android:textColor="@color/black_70"
-            android:textSize="14sp"
-            android:textStyle="normal" />
+            android:text="Pengiriman #" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -101,18 +98,16 @@
             android:layout_weight="1">
 
             <TextView
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Berat : "
-                android:textColor="@color/black_38"
-                android:textSize="12sp" />
+                android:text="Berat : " />
 
             <TextView
                 android:id="@+id/product_weight"
+                style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black_70"
-                android:textSize="12sp"
                 tools:text="3 Kg" />
 
         </LinearLayout>
@@ -124,43 +119,35 @@
             android:gravity="end">
 
             <TextView
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jumlah : "
-                android:textColor="@color/black_38"
-                android:textSize="12sp" />
+                android:text="Jumlah : " />
 
             <TextView
                 android:id="@+id/product_qty"
+                style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/black_70"
-                android:textSize="12sp" />
+                android:text="1" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <TextView
+        style="@style/TextSmallNormalBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
-        android:fontFamily="sans-serif"
-        android:text="Catatan untuk penjual (optional)"
-        android:textColor="@color/black_38"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+        android:text="Catatan untuk penjual (optional)" />
 
     <TextView
         android:id="@+id/notes_for_seller"
+        style="@style/TextSmallNormalBlack70"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
         android:hint="Tidak ada catatan"
-        android:textColor="@color/black_70"
-        android:textSize="12sp"
-        android:textStyle="normal"
         tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya" />
 
     <include
@@ -173,7 +160,7 @@
     <View
         android:id="@+id/border_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
         android:background="@color/grey_300"
