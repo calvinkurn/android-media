@@ -172,7 +172,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(imageview);
         }
     }
@@ -296,7 +296,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .dontAnimate()
                 .into(imageview);
     }

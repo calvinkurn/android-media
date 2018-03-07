@@ -182,7 +182,7 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
 
