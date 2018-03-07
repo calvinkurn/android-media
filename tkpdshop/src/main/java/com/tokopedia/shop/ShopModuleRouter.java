@@ -1,6 +1,7 @@
 package com.tokopedia.shop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 /**
@@ -28,4 +29,6 @@ public interface ShopModuleRouter {
     void goToProductDetailById(Context activity, String productId);
 
     void goToProfileShop(Context context, String userId);
+
+    Intent getLoginIntent(Context context);
 }
