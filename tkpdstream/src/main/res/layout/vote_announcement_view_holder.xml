@@ -50,34 +50,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_header"
-        android:layout_toRightOf="@id/avatar"
-        android:layout_toEndOf="@id/avatar"
-        android:padding="@dimen/space_average"
         android:layout_marginLeft="@dimen/space_small"
         android:layout_marginStart="@dimen/space_small"
-        android:background="@drawable/chat_vote_background">
+        android:layout_marginTop="@dimen/space_mini"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:background="@drawable/chat_vote_background"
+        android:maxWidth="@dimen/max_size_bubble"
+        android:paddingRight="@dimen/space_average"
+        android:paddingLeft="@dimen/space_average"
+        android:paddingTop="@dimen/space_med"
+        android:paddingBottom="@dimen/space_med"
+        >
 
         <ImageView
             android:id="@+id/vote_icon"
             android:layout_width="@dimen/vote_icon_size"
             android:layout_height="@dimen/vote_icon_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/space_micro"
             app:srcCompat="@drawable/ic_vote_inactive" />
 
         <TextView
             android:id="@+id/vote_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/new_margin_small"
-            android:layout_marginStart="@dimen/new_margin_small"
+            android:layout_marginStart="@dimen/space_mini"
+            android:layout_marginLeft="@dimen/space_mini"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_micro"
             android:textStyle="normal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/vote_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="VOTE TELAH BERAKHIR" />
@@ -86,20 +87,15 @@
             android:id="@+id/vote_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/max_size_bubble"
-            android:layout_marginTop="@dimen/new_margin_small"
+            android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
             android:textColor="@color/black_70"
             android:textSize="@dimen/font_small"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vote_title"
-            app:layout_constraintVertical_weight="1"
-            tools:text="Menurut Toppers, siapa ya yang akan jadi pemain MVP di Piala Dunia Tahun Ini?" />
+            tools:text="Menurut topper, siapakah yang akan menang?" />
     </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

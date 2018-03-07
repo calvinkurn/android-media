@@ -2,9 +2,7 @@ package com.tokopedia.tkpdstream.chatroom.domain.source;
 
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.ChannelInfoMapper;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

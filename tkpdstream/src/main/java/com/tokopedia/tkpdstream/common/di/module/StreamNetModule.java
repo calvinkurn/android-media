@@ -12,8 +12,6 @@ import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 import com.tokopedia.tkpdstream.common.network.StreamErrorInterceptor;
 import com.tokopedia.tkpdstream.common.network.StreamErrorResponse;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
