@@ -413,6 +413,37 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
+    public void selectCourier(CourierItemData courierItemData) {
+        if (presenter.getSelectedCourier() == null ||
+                presenter.getSelectedCourier().getShipperProductId() !=
+                        courierItemData.getShipperProductId()) {
+            resetView();
+            resetSwitch();
+            presenter.setSelectedCourier(courierItemData);
+            presenter.getShipmentDetailData().getShipmentCartData()
+                    .setInsurancePrice(courierItemData.getInsurancePrice());
+            presenter.getShipmentDetailData().getShipmentCartData()
+                    .setAdditionalFee(courierItemData.getAdditionalPrice());
+            presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
+                    courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
+            setText(tvDeliveryFeeTotal, currencyId.format(
+                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
+            setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
+            if (courierItemData.isUsePinPoint()) {
+                renderShipmentWithMap(presenter.getShipmentDetailData());
+            } else {
+                renderShipmentWithoutMap(presenter.getShipmentDetailData());
+            }
+            switchInsurance.setChecked(false);
+            renderInsuranceView(courierItemData);
+            renderAdditionalPriceView(courierItemData);
+            renderDropshipperView(courierItemData);
+            renderPartialOrderView();
+            updateFeesGroupLayout();
+        }
+    }
+
+    @Override
     public void renderSelectedCourier(CourierItemData courierItemData){
         setText(tvDeliveryFeeTotal, currencyId.format(
                 presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
@@ -826,33 +857,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
-        if (presenter.getSelectedCourier() == null ||
-                presenter.getSelectedCourier().getShipperProductId() !=
-                        courierItemData.getShipperProductId()) {
-            resetView();
-            resetSwitch();
-            presenter.setSelectedCourier(courierItemData);
-            presenter.getShipmentDetailData().getShipmentCartData()
-                    .setInsurancePrice(courierItemData.getInsurancePrice());
-            presenter.getShipmentDetailData().getShipmentCartData()
-                    .setAdditionalFee(courierItemData.getAdditionalPrice());
-            presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                    courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
-            setText(tvDeliveryFeeTotal, currencyId.format(
-                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
-            setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
-            if (courierItemData.isUsePinPoint()) {
-                renderShipmentWithMap(presenter.getShipmentDetailData());
-            } else {
-                renderShipmentWithoutMap(presenter.getShipmentDetailData());
-            }
-            switchInsurance.setChecked(false);
-            renderInsuranceView(courierItemData);
-            renderAdditionalPriceView(courierItemData);
-            renderDropshipperView(courierItemData);
-            renderPartialOrderView();
-            updateFeesGroupLayout();
-        }
+        selectCourier(courierItemData);
     }
 
     @Override
