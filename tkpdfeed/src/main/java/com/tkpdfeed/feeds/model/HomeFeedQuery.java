@@ -1,4 +1,4 @@
-package com.tkpdfeed.feeds.model;
+package com.tkpdfeed.feeds;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
@@ -7,8 +7,12 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.tkpdfeed.feeds.type.CustomType;
-
 import java.io.IOException;
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -228,8 +232,8 @@ public final class HomeFeedQuery implements Query<HomeFeedQuery.Data, HomeFeedQu
     @Override
     public String toString() {
       return "Data{"
-              + "feed=" + feed
-              + "}";
+        + "feed=" + feed
+        + "}";
     }
 
     @Override
