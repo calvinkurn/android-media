@@ -96,9 +96,8 @@ public class SingleAddressShipmentDataConverter
         sellerItemModel.setTotalItemPrice(totalItemPrice);
         sellerItemModel.setTotalQuantity(totalQuantity);
         sellerItemModel.setTotalWeight(totalWeight);
-        sellerItemModel.setShipmentCartData(
-                new ShipmentRatesDataMapper().getShipmentCartData(
-                        cartItemDataList, userAddress, groupShop, sellerItemModel));
+        sellerItemModel.setShipmentCartData(new ShipmentRatesDataMapper()
+                .getShipmentCartData(cartItemDataList, userAddress, groupShop, sellerItemModel));
 
         sellerItemModel.setInsuranceFee(fobject.isFinsurance());
         sellerItemModel.setIsFcancelPartial(fobject.isFcancelPartial());
@@ -110,7 +109,7 @@ public class SingleAddressShipmentDataConverter
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(String.valueOf(product.getProductId()));
+        cartItemModel.setId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -242,7 +241,7 @@ public class SingleAddressShipmentDataConverter
 
         cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
         cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setId(cartItemData.getOriginData().getProductId());
+        cartItemModel.setId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
         cartItemModel.setName(cartItemData.getOriginData().getProductName());
 
         cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());

@@ -10,7 +10,7 @@ public class CartItemModel implements Parcelable {
 
     private String shopId;
     private String shopName;
-    private String id;
+    private int id;
     private String name;
     private double price;
     private int currency;
@@ -50,11 +50,11 @@ public class CartItemModel implements Parcelable {
         this.shopName = shopName;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -195,7 +195,7 @@ public class CartItemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeString(this.id);
+        dest.writeInt(this.id);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
         dest.writeInt(this.currency);
@@ -220,7 +220,7 @@ public class CartItemModel implements Parcelable {
     protected CartItemModel(Parcel in) {
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.id = in.readString();
+        this.id = in.readInt();
         this.name = in.readString();
         this.price = in.readDouble();
         this.currency = in.readInt();

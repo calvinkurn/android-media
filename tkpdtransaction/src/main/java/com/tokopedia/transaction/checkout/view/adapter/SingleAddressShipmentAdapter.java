@@ -324,7 +324,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
-                .productId(Integer.parseInt(cartItem.getId()))
+                .productId(cartItem.getId())
                 .build();
     }
 
@@ -349,7 +349,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private ProductData convertToProductData(CartItemModel cartItem) {
         return new ProductData.Builder()
-                .productId(Integer.parseInt(cartItem.getId()))
+                .productId(cartItem.getId())
                 .productNotes(cartItem.getNoteToSeller())
                 .productQuantity(cartItem.getQuantity())
                 .build();
