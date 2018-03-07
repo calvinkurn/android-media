@@ -31,6 +31,9 @@ public class CartItemModel implements Parcelable {
     private boolean isPreOrder;
     private boolean isFreeReturn;
 
+    private boolean fInsurance;
+    private boolean fCancelPartial;
+
     public String getShopId() {
         return shopId;
     }
@@ -61,14 +64,6 @@ public class CartItemModel implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFreeReturnLogo() {
-        return freeReturnLogo;
-    }
-
-    public void setFreeReturnLogo(String freeReturnLogo) {
-        this.freeReturnLogo = freeReturnLogo;
     }
 
     public double getPrice() {
@@ -143,6 +138,14 @@ public class CartItemModel implements Parcelable {
         this.cashback = cashback;
     }
 
+    public String getFreeReturnLogo() {
+        return freeReturnLogo;
+    }
+
+    public void setFreeReturnLogo(String freeReturnLogo) {
+        this.freeReturnLogo = freeReturnLogo;
+    }
+
     public boolean isCashback() {
         return isCashback;
     }
@@ -167,7 +170,20 @@ public class CartItemModel implements Parcelable {
         isFreeReturn = freeReturn;
     }
 
-    public CartItemModel() {
+    public boolean isfInsurance() {
+        return fInsurance;
+    }
+
+    public void setfInsurance(boolean fInsurance) {
+        this.fInsurance = fInsurance;
+    }
+
+    public boolean isfCancelPartial() {
+        return fCancelPartial;
+    }
+
+    public void setfCancelPartial(boolean fCancelPartial) {
+        this.fCancelPartial = fCancelPartial;
     }
 
     @Override
@@ -194,6 +210,11 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.fInsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.fCancelPartial ? (byte) 1 : (byte) 0);
+    }
+
+    public CartItemModel() {
     }
 
     protected CartItemModel(Parcel in) {
@@ -214,6 +235,8 @@ public class CartItemModel implements Parcelable {
         this.isCashback = in.readByte() != 0;
         this.isPreOrder = in.readByte() != 0;
         this.isFreeReturn = in.readByte() != 0;
+        this.fInsurance = in.readByte() != 0;
+        this.fCancelPartial = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
@@ -227,4 +250,5 @@ public class CartItemModel implements Parcelable {
             return new CartItemModel[size];
         }
     };
+
 }

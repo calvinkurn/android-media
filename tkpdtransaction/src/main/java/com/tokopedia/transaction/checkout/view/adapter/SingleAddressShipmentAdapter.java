@@ -262,15 +262,20 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for shipment
         ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
+                .isPreorder()
+                .finsurance()
                 .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
-                .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()));
+                .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
+                .fcancelPartial()
+                .isDropship(0);
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
-            shopProductCheckoutBuilder.dropshipData(new DropshipDataCheckoutRequest.Builder()
+            shopProductCheckoutBuilder.isDropship(1)
+                    .dropshipData(new DropshipDataCheckoutRequest.Builder()
                     .name(shipmentDetailData.getDropshipperName())
                     .telpNo(shipmentDetailData.getDropshipperPhone())
                     .build());
