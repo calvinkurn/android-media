@@ -115,6 +115,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
+    private static final long MILIS_TO_SECOND = 1000;
     @Inject
     ChatRoomPresenter presenter;
 
@@ -253,7 +254,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             case RESEND:
                                 adapter.remove(attachment);
                                 ImageUpload model = new ImageUpload();
-                                model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
+                                model.setImageId(String.valueOf(System.currentTimeMillis() /
+                                        MILIS_TO_SECOND));
                                 model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
                                 MyChatViewModel temp = addDummyAttachImage(model);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
