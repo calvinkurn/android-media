@@ -15,4 +15,3 @@ public class EventEntityUnitTest {
         assertEquals(4, 2 + 2);
     }
 }
-
