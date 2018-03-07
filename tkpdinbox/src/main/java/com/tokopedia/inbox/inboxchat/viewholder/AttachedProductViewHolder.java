@@ -240,7 +240,9 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
     }
 
     public void onViewRecycled() {
-          Glide.clear(thumbnailsImage);
+        if(thumbnailsImage != null) {
+            Glide.clear(thumbnailsImage);
+        }
     }
 
 
