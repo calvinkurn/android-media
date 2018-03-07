@@ -8,6 +8,10 @@
         <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
     </style>
 
+    <style name="Theme.White.PopupTransparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
         <item name="android:background">@android:color/white</item>
         <item name="actionModeBackground">@android:color/white</item>
