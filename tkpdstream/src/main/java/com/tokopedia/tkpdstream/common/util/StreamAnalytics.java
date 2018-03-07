@@ -43,11 +43,11 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickVote(String type, String channelUrl) {
+    public void eventClickVote(String type, String channelName) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VOTE,
-                type+" - "+channelUrl
+                type+" - "+channelName
         );
     }
 
@@ -59,11 +59,11 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickShareChannel(String channelType, String channelUrl) {
+    public void eventClickShareChannel(String channelType, String channelName) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_SHARE,
                 EVENT_CATEGORY_SHARE,
                 EVENT_ACTION_SHARE_CHANNEL,
-                channelType+" - "+channelUrl
+                channelType+" - "+channelName
         );
     }
 

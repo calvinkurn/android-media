@@ -293,7 +293,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (shareLayout == null) {
                 shareLayout = new ShareLayout(
                         GroupChatFragment.this,
-                        callbackManager, channelUrl, analytics);
+                        callbackManager, channelUrl, toolbar.getTitle().toString(), analytics);
             }
             shareLayout.setShareModel(shareData);
             shareLayout.show();
@@ -674,7 +674,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         presenter.sendVote(viewModel.getPollId(), voted, element);
 
-        analytics.eventClickVote(element.getType(), element.getUrl());
+        analytics.eventClickVote(element.getType(), toolbar.getTitle().toString());
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ShareLayout {
 
     private String urlLink, channelUrl;
 
-    public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager, String channelUrl, StreamAnalytics analytics) {
+    public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager, String channelUrl, String channelName, StreamAnalytics analytics) {
         this.fragment = null;
         this.fragmentV4 = fragment;
         this.activity = fragment.getActivity();
@@ -61,6 +61,7 @@ public class ShareLayout {
         this.dialog.setContentView(R.layout.share_groupchat_dialog);
         appGrid = this.dialog.findViewById(R.id.grid);
         this.channelUrl = channelUrl;
+        this.channelName = channelName;
         this.analytics = analytics;
         initVar(fragment.getActivity());
         initAdapter();
@@ -123,7 +124,7 @@ public class ShareLayout {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, urlLink);
                 sendIntent.setType("text/plain");
                 activity.startActivity(sendIntent);
-                analytics.eventClickShareChannel(channelType, channelUrl);
+                analytics.eventClickShareChannel(channelType, channelName);
             }
         };
     }
@@ -134,7 +135,7 @@ public class ShareLayout {
             public void onClick(View v) {
                 Intent smsIntent = MethodChecker.getSmsIntent(activity, urlLink);
                 activity.startActivity(smsIntent);
-                analytics.eventClickShareChannel(channelType, channelUrl);
+                analytics.eventClickShareChannel(channelType, channelName);
             }
         };
     }
@@ -167,7 +168,7 @@ public class ShareLayout {
 
         try {
             activity.startActivity(intent);
-            analytics.eventClickShareChannel(channelType, channelUrl);
+            analytics.eventClickShareChannel(channelType, channelName);
         } catch (android.content.ActivityNotFoundException ex) {
 
             Toast.makeText(activity,
@@ -191,7 +192,7 @@ public class ShareLayout {
             @Override
             public void onClick(View v) {
 
-                analytics.eventClickShareChannel(channelType, channelUrl);
+                analytics.eventClickShareChannel(channelType, channelName);
                 PlusShare.Builder builder = new PlusShare.Builder(activity);
 
                 builder.setType("text/plain");
@@ -224,7 +225,7 @@ public class ShareLayout {
                 ClipData clip = ClipData.newPlainText("Tokopedia", urlLink);
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-                analytics.eventClickShareChannel(channelType, channelUrl);
+                analytics.eventClickShareChannel(channelType, channelName);
             }
         };
     }
@@ -285,7 +286,7 @@ public class ShareLayout {
                         }
                         ShareLinkContent linkContent = linkBuilder.build();
                         shareDialog.show(linkContent);
-                        analytics.eventClickShareChannel(channelType, channelUrl);
+                        analytics.eventClickShareChannel(channelType, channelName);
                     }
                 }
             }
