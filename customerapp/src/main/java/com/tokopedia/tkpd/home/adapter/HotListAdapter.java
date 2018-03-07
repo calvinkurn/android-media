@@ -18,7 +18,6 @@ import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,22 +31,17 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
-        @BindView(R.id.hotprod_name)
         TextView mNameOfProduct;
-        @BindView(R.id.hotprod_price)
         TextView mPrice;
-        @BindView(R.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mImageofProduct = (ImageView) itemView.findViewById(R.id.hotprod_img);
+            mNameOfProduct = (TextView) itemView.findViewById(R.id.hotprod_name);
+            mPrice = (TextView) itemView.findViewById(R.id.hotprod_price);
+            cardView = (CardView) itemView.findViewById(R.id.hot_list_cardview_listproduct);
         }
 
         public Context getContext() {
