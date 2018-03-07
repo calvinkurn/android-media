@@ -1092,7 +1092,7 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        startActivity(ShareActivity.createIntent(context, shareData));
+        context.startActivity(ShareActivity.createIntent(context, shareData));
     }
 
     @Override
