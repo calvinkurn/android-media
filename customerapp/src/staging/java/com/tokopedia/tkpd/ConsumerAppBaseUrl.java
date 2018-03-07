@@ -30,7 +30,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static final String BASE_DIGITAL_WEBSITE_DOMAIN = "https://pulsa-staging.tokopedia.com/";
     public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay-staging.tokopedia.com";
-    public static final String GRAPHQL_DOMAIN = "https://8-feature-m-staging.tokopedia.com/graphql";
+    public static final String GRAPHQL_DOMAIN = "https://2-feature-m-staging.tokopedia.com/graphql";
     public static final String SCROOGE_DOMAIN = "https://pay-staging.tokopedia.com/";
     public static final String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay-staging.tokopedia.id/";
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
@@ -39,5 +39,8 @@ public class ConsumerAppBaseUrl {
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
+    public static final String EVENT_DOMAIN = "https://booking-staging.tokopedia.com/";
     public static final String TOKOPOINT_API_DOMAIN = "https://gw-staging.tokopedia.com/tokopoints/api/";
+    public static final String TOKO_CAMPAIGN_URL = "https://booking-staging.tokopedia.com/trigger/v1/api/";
+    public static final String HOME_DATA_BASE_URL = "https://gql-staging.tokopedia.com/";
 }

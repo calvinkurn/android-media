@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selectable_background_tokopedia"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_med"
+        android:paddingBottom="@dimen/padding_16"
+        android:paddingTop="@dimen/padding_16"
         app:lv_show_arrow="true" />
 
     <View
@@ -24,8 +24,8 @@
         android:id="@+id/passenger_detail_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_small">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,11 +36,11 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_passenger_name"
+                style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vvs"
                 android:layout_weight="1"
-                style="@style/TextView.Small.Bold"
                 tools:text="Nona Aisyah Sarasvati" />
 
             <android.support.v7.widget.RecyclerView

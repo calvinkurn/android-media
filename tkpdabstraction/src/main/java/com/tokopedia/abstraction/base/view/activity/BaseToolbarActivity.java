@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.MenuTintUtils;
+import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
 
 /**
  * Created by nathan on 7/11/17.
@@ -43,7 +43,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
         }
     }
 

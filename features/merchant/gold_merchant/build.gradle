@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+apt {
+    arguments {
+        targetModuleName 'TkpdGM'
+    }
+}
+
+dependencies {
+
+    compile project(rootProject.ext.features.seller)
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile rootProject.ext.testDependencies.junit
+}

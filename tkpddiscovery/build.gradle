@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'com.apollographql.android'
@@ -104,6 +106,7 @@ android {
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
@@ -113,10 +116,10 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile getTkpdCore()
-    compile getTopAdsSdk()
-    compile getTkpdPdp()
-    compile getTkpdDesign()
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.topAdsSdk)
+    compile project(rootProject.ext.features.productDetail)
+    compile project(rootProject.ext.libraries.design)
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

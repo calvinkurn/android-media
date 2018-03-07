@@ -1,12 +1,11 @@
 package com.tokopedia.tokocash.di;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tokocash.apiservice.WalletService;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
+import com.tokopedia.tokocash.qrpayment.data.repository.BalanceRepository;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
@@ -26,48 +25,33 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     WalletService provideWalletService() {
         return new WalletService(SessionHandler.getAccessTokenTokoCash());
     }
 
     @Provides
-    @TokoCashScope
-    GetHistoryDataUseCase provideGetHistoryDataUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       WalletRepository walletRepository) {
-        return new GetHistoryDataUseCase(threadExecutor, postExecutionThread, walletRepository);
+    GetHistoryDataUseCase provideGetHistoryDataUseCase(WalletRepository walletRepository) {
+        return new GetHistoryDataUseCase(walletRepository);
+    }
+
+    @Provides
+    GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(WalletRepository walletRepository) {
+        return new GetReasonHelpDataUseCase(walletRepository);
+    }
+
+    @Provides
+    GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(QrPaymentRepository qrPaymentRepository) {
+        return new GetInfoQrTokoCashUseCase(qrPaymentRepository);
     }
 
     @Provides
     @TokoCashScope
-    GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             WalletRepository walletRepository) {
-        return new GetReasonHelpDataUseCase(threadExecutor, postExecutionThread, walletRepository);
+    PostQrPaymentUseCase providePostQrPaymentUseCase(QrPaymentRepository qrPaymentRepository) {
+        return new PostQrPaymentUseCase(qrPaymentRepository);
     }
 
     @Provides
-    @TokoCashScope
-    GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             QrPaymentRepository qrPaymentRepository) {
-        return new GetInfoQrTokoCashUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    PostQrPaymentUseCase providePostQrPaymentUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     QrPaymentRepository qrPaymentRepository) {
-        return new PostQrPaymentUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(ThreadExecutor threadExecutor,
-                                                          PostExecutionThread postExecutionThread,
-                                                          QrPaymentRepository qrPaymentRepository) {
-        return new GetBalanceTokoCashUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
+    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(BalanceRepository balanceRepository) {
+        return new GetBalanceTokoCashUseCase(balanceRepository);
     }
 }

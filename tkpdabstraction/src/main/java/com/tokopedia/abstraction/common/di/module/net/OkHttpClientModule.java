@@ -1,20 +1,17 @@
 package com.tokopedia.abstraction.common.di.module.net;
 
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
-import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
-import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 
 /**
- * @author  ricoharisin on 3/23/17.
+ * @author ricoharisin on 3/23/17.
  */
 
-@Module(includes={InterceptorModule.class})
+@Module(includes = {InterceptorModule.class})
 public class OkHttpClientModule {
 
     @ApplicationScope
@@ -29,16 +26,4 @@ public class OkHttpClientModule {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
     }
 
-    @ApplicationScope
-    @Provides
-    public OkHttpClient.Builder provideOkHttpClientBuilder(TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                           DebugInterceptor debugInterceptor) {
-
-        return new TkpdOkHttpBuilder(new OkHttpClient.Builder())
-                .setOkHttpRetryPolicy(okHttpRetryPolicy)
-                .addInterceptor(debugInterceptor)
-                .addInterceptor(tkpdBaseInterceptor)
-                .getBuilder();
-    }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -62,6 +63,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
                 discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
                 break;
             case DISCOVERY_URL_SEARCH:
+                ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
                 ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult, imageSearch);
                 model.setSearchParameter(searchParameter);
                 model.setForceSearch(forceSearch);

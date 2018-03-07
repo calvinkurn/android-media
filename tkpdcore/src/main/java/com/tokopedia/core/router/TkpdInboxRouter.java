@@ -3,6 +3,8 @@ package com.tokopedia.core.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 
 /**
  * @author by nisie on 9/14/17.
@@ -35,4 +37,12 @@ public interface TkpdInboxRouter {
     Intent getTimeMachineIntent(Context context);
 
     Intent getInboxMessageIntent(Context context);
+
+    Intent getContactUsIntent(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
+
+    void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 }

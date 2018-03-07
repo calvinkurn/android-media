@@ -57,8 +57,8 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
             public void onClick(View v) {
                 UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
                 dialog.dismiss();
+                saveVersionCodeForState();
                 if(appRatingView.getRating() > 3) {
-                    saveVersionCodeForState();
                     openPlayStore();
                 }
             }
@@ -76,17 +76,28 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     }
 
     private void saveVersionCodeForState() {
-        cacheHandler.putInt(TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION, GlobalConfig.VERSION_CODE);
+        cacheHandler.putInt(getLocalKey(), GlobalConfig.VERSION_CODE);
         cacheHandler.applyEditor();
+    }
+
+    private String getLocalKey(){
+        return TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION;
+    }
+
+    private String getRemoteConfigKey(){
+        if (GlobalConfig.isSellerApp()) {
+            return TkpdCache.RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING;
+        } else {
+            return TkpdCache.RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
+        }
     }
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING, false)) {
-            Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION);
+        if (remoteConfig.getBoolean(getRemoteConfigKey(), false)) {
+            Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
             return appRatingVersion == null || appRatingVersion == -1;
         }
-
         return false;
     }
 

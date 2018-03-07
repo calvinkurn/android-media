@@ -82,7 +82,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_shop_open_location, container, false);
-        requestParams = RequestParams.EMPTY;
+        requestParams = RequestParams.create();
         requestParams.putAll((HashMap<String, String>) AuthUtil.generateParams(getActivity()));
         initView(root);
         return root;
@@ -156,28 +156,34 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         });
+      
+        ShopOpenStepperModel stepperModel = stepperListener.getStepperModel();
+        if (stepperModel != null) {
+            ResponseIsReserveDomain responseIsReserveDomain = stepperModel.getResponseIsReserveDomain();
+            if (responseIsReserveDomain!= null){
+                Shipment shipment = responseIsReserveDomain.getShipment();
+                UserData userData = responseIsReserveDomain.getUserData();
+                locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
 
-        if (stepperListener.getStepperModel() != null) {
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
+                if (shipment != null) {
+                    locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                  
+                  if(shipment.getPostal() != 0)
+                    locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
-            if (shipment != null) {
-                locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
-
-                GoogleLocationViewModel googleLocationViewModel
-                        = new GoogleLocationViewModel();
-                googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setLongitude(shipment.getLongitude());
-                googleLocationViewModel.setLatitude(shipment.getLatitude());
-                googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
+                    GoogleLocationViewModel googleLocationViewModel
+                            = new GoogleLocationViewModel();
+                    googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setLongitude(shipment.getLongitude());
+                    googleLocationViewModel.setLatitude(shipment.getLatitude());
+                    googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
 
-                locationMapViewHolder.setFromReserveDomain(true);
+                    locationMapViewHolder.setFromReserveDomain(true);
 
-                locationMapViewHolder.setLocationText(googleLocationViewModel);
+                    locationMapViewHolder.setLocationText(googleLocationViewModel);
+                }
             }
         }
     }

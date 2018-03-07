@@ -13,6 +13,7 @@ public class TopChatTrackingEventLabel {
         public static final String INBOX_CHAT = "inbox-chat";
         public static final String CHAT_DETAIL = "chat detail";
         public static final String UPDATE_TEMPLATE = "update template";
+        public static final String ADD_TEMPLATE = "add template";
     }
 
     public interface Name {

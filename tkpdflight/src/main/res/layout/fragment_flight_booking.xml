@@ -79,6 +79,7 @@
                     android:id="@+id/cwa_departure_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_with_action_main"
                     android:visibility="gone"
                     app:cmw_action="Detail"
                     tools:visibility="visible" />
@@ -87,6 +88,7 @@
                     android:id="@+id/cwa_return_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_with_action_main_no_top_border"
                     android:visibility="gone"
                     app:cmw_action="Detail"
                     tools:visibility="gone" />
@@ -102,7 +104,7 @@
                     android:layout_marginTop="@dimen/margin_med"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_large"
+                    android:paddingBottom="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
@@ -134,8 +136,7 @@
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_small"
-                    >
+                    android:paddingTop="@dimen/padding_small">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"

@@ -45,7 +45,7 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     @Override
     protected void onClickedNext() {
-        if(!isError()) {
+        if(!isPriceError()) {
             super.onClickedNext();
             if (detailAd != null) {
                 daggerPresenter.saveAd(detailAd);

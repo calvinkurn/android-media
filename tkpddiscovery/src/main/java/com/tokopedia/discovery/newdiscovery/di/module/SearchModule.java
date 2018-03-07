@@ -25,7 +25,7 @@ import dagger.Provides;
  */
 
 @SearchScope
-@Module(includes = {ProductModule.class, ImageSearchModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
+@Module(includes = {GuidedSearchModule.class, ProductModule.class, ImageSearchModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
 public class SearchModule {
 
     @SearchScope

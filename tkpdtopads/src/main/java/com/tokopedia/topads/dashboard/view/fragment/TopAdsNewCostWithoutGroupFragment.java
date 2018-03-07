@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,15 +12,18 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -32,6 +37,7 @@ import javax.inject.Inject;
  */
 
 public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<TopAdsCreatePromoWithoutGroupModel, TopAdsDetailGroupViewModel> implements TopAdsDetailEditView {
+    public static final String EXTRA_NEW_PRODUCT_ID = "EXTRA_NEW_PRODUCT_ID";
 
     @Inject
     TopAdsDetailNewProductPresenter topAdsDetailNewProductPresenter;
@@ -73,7 +79,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        if (!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperModel == null) {
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
@@ -103,8 +109,19 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         if (stepperListener != null) {
             trackingNewCostTopads();
             hideLoading();
+            setResultAdSaved(topAdsDetailAdViewModel);
             stepperListener.finishPage();
         }
+    }
+
+    private void setResultAdSaved(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        Intent intent = new Intent();
+        if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailShopViewModel){
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailShopViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
+            intent.putExtra(EXTRA_NEW_PRODUCT_ID, topAdsDetailAdViewModel.getId());
+        }
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     private void trackingNewCostTopads() {

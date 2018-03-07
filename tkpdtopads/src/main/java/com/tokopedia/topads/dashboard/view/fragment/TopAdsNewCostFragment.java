@@ -60,11 +60,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         populateDataFromFields();
     }
 
-    protected boolean isError() {
-        return (maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null) ||
-                (budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null);
-    }
-
     protected abstract V initiateDetailAd();
 
     @Override
@@ -167,6 +162,18 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+    }
+
+    protected boolean isPriceError() {
+        boolean maxPriceError = maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
+        if (maxPriceError) {
+            return true;
+        }
+        boolean budgetPerDayError = budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null;
+        if (budgetPerDayRadioButton.isChecked() && budgetPerDayError) {
+            return true;
+        }
+        return false;
     }
 
     protected void onPriceChanged(double number) {

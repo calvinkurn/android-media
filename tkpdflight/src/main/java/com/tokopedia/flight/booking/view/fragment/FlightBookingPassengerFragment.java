@@ -22,7 +22,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -253,6 +253,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setArrowVisible(true);
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -296,6 +297,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setArrowVisible(true);
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -315,7 +317,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public int getPassengerTitleId() {
-        switch (spTitle.getSpinnerPosition()){
+        switch (spTitle.getSpinnerPosition()) {
             case 0:
                 return FlightPassengerTitleType.TUAN;
             case 1:
@@ -418,6 +420,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         showMessageErrorInSnackBar(resId);
     }
 
+
+    @Override
+    public void showPassengerLastNameShouldSameWithFirstNameError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
     @Override
     public void hideKeyboard() {
         KeyboardHandler.hideSoftKeyboard(getActivity());
@@ -460,13 +468,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
+    public void showBirthdatePickerDialog(Date selectedDate, final Date minDate, final Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onBirthdateChange(year, month, dayOfMonth);
+                presenter.onBirthdateChange(year, month, dayOfMonth, minDate, maxDate);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -476,13 +484,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void showBirthdatePickerDialog(Date selectedDate, Date maxDate) {
+    public void showBirthdatePickerDialog(Date selectedDate, final Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                presenter.onBirthdateChange(year, month, dayOfMonth);
+                presenter.onBirthdateChange(year, month, dayOfMonth, maxDate);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();

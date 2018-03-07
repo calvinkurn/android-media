@@ -13,7 +13,6 @@ import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -98,10 +97,6 @@ public interface IGTMContainer {
 
     void eventTransaction(Purchase purchase);
 
-    GTMContainer eventBannerImpression(Promotion promotion);
-
-    GTMContainer eventBannerClick(Promotion promotion);
-
     void clearTransactionDataLayer(Purchase purchase);
 
     GTMContainer sendEvent(Map<String, Object> events);
@@ -129,6 +124,10 @@ public interface IGTMContainer {
 
     void clearEnhanceEcommerce();
 
+    void eventPurchaseMarketplace(Purchase purchase);
+
+    void eventPurchaseDigital(Purchase purchase);
+
     void eventImpressionPromoList(List<Object> list, String promoName);
 
     void eventClickPromoListItem(List<Object> list, String promoName);
@@ -136,4 +135,10 @@ public interface IGTMContainer {
     void eventImpressionCategoryLifestyle(List<Object> list);
 
     void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
+
+    void enhanceClickSearchResultProduct(Object object,
+                                         String keyword,
+                                         String actionField);
+
+    void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
 }

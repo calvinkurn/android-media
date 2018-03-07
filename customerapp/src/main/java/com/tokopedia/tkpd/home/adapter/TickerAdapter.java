@@ -57,18 +57,15 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.announcement_ticker_container)
         RelativeLayout announcementContainer;
-
-        @BindView(R.id.ticker_message)
         TextView message;
-
-        @BindView(R.id.btn_close)
         ImageView btnClose;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            announcementContainer = (RelativeLayout) itemView.findViewById(R.id.announcement_ticker_container);
+            message = (TextView) itemView.findViewById(R.id.ticker_message);
+            btnClose = (ImageView) itemView.findViewById(R.id.btn_close);
         }
     }
 

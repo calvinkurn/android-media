@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
@@ -81,6 +83,12 @@ public class SearchActivity extends DiscoveryActivity
         }
 
         intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
@@ -136,6 +144,11 @@ public class SearchActivity extends DiscoveryActivity
                     KeyboardHandler.showSoftKeyboard(SearchActivity.this);
                 }
             }, 200);
+        }
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventBeliLongClick();
         }
     }
 

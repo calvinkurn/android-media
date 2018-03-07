@@ -27,7 +27,7 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     @Override
     protected void onClickedNext() {
-        if(!isError()) {
+        if(!isPriceError()) {
             super.onClickedNext();
             trackerBudgetShop();
             if (stepperListener != null) {

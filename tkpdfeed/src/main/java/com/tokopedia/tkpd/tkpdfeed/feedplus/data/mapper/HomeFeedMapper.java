@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
+import com.google.gson.Gson;
 import com.tkpdfeed.feeds.HomeFeedQuery;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
@@ -22,6 +23,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDoma
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.ShopDomain;
+import com.tokopedia.topads.sdk.domain.model.Data;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,22 +55,39 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
         if (datumList != null) {
             for (int i = 0; i < datumList.size(); i++) {
                 HomeFeedQuery.Data.Datum datum = datumList.get(i);
+                if (datum.content() != null) {
 
-                List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
-                        .content().inspirasi());
+                    List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
+                            .content().inspirasi());
+                    List<Data> topAdsList = convertToTopadsDomain(datum.content().topads());
+                    ContentFeedDomain contentFeedDomain = createContentFeedDomain(
+                            datum.content(),
+                            inspirationDomains,
+                            topAdsList
+                    );
+                    SourceFeedDomain sourceFeedDomain =
+                            createSourceFeedDomain(datum.source());
 
-                ContentFeedDomain contentFeedDomain = createContentFeedDomain(
-                        datum.content(),
-                        inspirationDomains
-                );
-                SourceFeedDomain sourceFeedDomain =
-                        createSourceFeedDomain(datum.source());
-
-                dataFeedDomains.add(createDataFeedDomain(datum,
-                        contentFeedDomain, sourceFeedDomain));
+                    dataFeedDomains.add(createDataFeedDomain(datum,
+                            contentFeedDomain, sourceFeedDomain));
+                }
             }
         }
         return dataFeedDomains;
+    }
+
+    private List<Data> convertToTopadsDomain(List<HomeFeedQuery.Data.Topad> topads) {
+        List<Data> list = new ArrayList<>();
+        if(topads !=null){
+            for (HomeFeedQuery.Data.Topad topad : topads){
+                try {
+                    list.add(new Data(new JSONObject(new Gson().toJson(topad, HomeFeedQuery.Data.Topad.class))));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     private List<InspirationDomain> convertToInspirationDomain(List<HomeFeedQuery.Data.Inspirasi> inspirasi) {
@@ -108,7 +130,8 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
 
     private ContentFeedDomain
     createContentFeedDomain(HomeFeedQuery.Data.Content content,
-                            List<InspirationDomain> inspirationDomains) {
+                            List<InspirationDomain> inspirationDomains,
+                            List<Data> topAdsList) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 0,
@@ -117,6 +140,7 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
                 null,
                 null,
                 inspirationDomains,
+                topAdsList,
                 null,
                 null,
                 null,

@@ -66,6 +66,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static final String FROM_WIDGET_TAG = "from widget";
 
     public static final String EXTRA_STATE_TAB_POSITION = "tab";
+    public static final String EXTRA_QUERY = "query";
 
     public static final int TAB_POSITION_SELLING_OPPORTUNITY = 1;
     public final static int TAB_POSITION_SELLING_NEW_ORDER = 2;
@@ -135,6 +136,12 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static Intent createIntent(Context context, int tab) {
         return new Intent(context, ActivitySellingTransaction.class)
                 .putExtra(EXTRA_STATE_TAB_POSITION, tab);
+    }
+
+    public static Intent createIntent(Context context, int tab, String query) {
+        Intent intent = createIntent(context, tab);
+        intent.putExtra(EXTRA_QUERY, query);
+        return intent;
     }
 
     @Override
@@ -292,18 +299,17 @@ public class ActivitySellingTransaction extends TkpdActivity
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
-//        fragmentList.add(FragmentPeopleTxCenter.createInstance(FragmentPeopleTxCenter.SHOP));
-//        fragmentList.add(FragmentShopNewOrderV2.createInstance()); //TODO UNCOMMENT
         fragmentList.add(FragmentSellingTxCenter.createInstance(FragmentSellingTxCenter.SHOP));
-        fragmentList.add(OpportunityListFragment.newInstance());
+        String query = "";
+        if (getIntent().hasExtra(EXTRA_QUERY)) {
+            query = getIntent().getStringExtra(EXTRA_QUERY);
+        }
+        fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
         mViewPager.setOffscreenPageLimit(fragmentList.size());
-
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
     }
 
     private void setAdapter() {

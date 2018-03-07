@@ -32,7 +32,7 @@
         android:layout_gravity="center_vertical|end"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
-        android:src="@drawable/ic_arrow_right"
+        android:src="@drawable/ic_arrow_right_default"
         android:visibility="gone"
         tools:visibility="visible" />
 

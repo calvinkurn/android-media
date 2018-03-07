@@ -1,6 +1,8 @@
 package com.tokopedia.core.router.digitalmodule;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -27,6 +29,8 @@ public interface IDigitalModuleRouter {
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
 
+    BroadcastReceiver getBroadcastReceiverTokocashPending();
+
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle);
@@ -42,4 +46,6 @@ public interface IDigitalModuleRouter {
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
+
+    Intent getLoginIntent(Context context);
 }

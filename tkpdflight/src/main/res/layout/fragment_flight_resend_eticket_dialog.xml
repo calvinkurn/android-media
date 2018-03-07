@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_med"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med"
+    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.TitleBig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_resend_eticket_dialog_title" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:text="@string/flight_resend_eticket_dialog_description" />
+
+    <com.tokopedia.design.text.TkpdTextInputLayout
+        android:id="@+id/container_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        app:errorEnabled="true"
+        app:hintEnabled="false">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_resend_eticket_email"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/flight_resend_eticket_dialog_email_hint"
+            android:imeActionLabel="@string/label_done"
+            android:includeFontPadding="false"
+            android:inputType="textEmailAddress"
+            android:lines="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextView.Small"
+            android:textColor="@color/font_black_secondary_54" />
+
+    </com.tokopedia.design.text.TkpdTextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:gravity="end|right"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_resend_eticket_cancel"
+            style="@style/TextView.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@string/flight_resend_eticket_dialog_abort"
+            android:textColor="@color/font_black_secondary_54" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_resend_eticket_send"
+            style="@style/TextView.Small.Green.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@string/flight_resend_eticket_dialog_send" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -36,6 +38,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
     public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
     private ShowCaseDialog showCaseDialog;
+    private boolean isAdChanged;
 
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
@@ -46,6 +49,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context, extras.getString("ad_id", ""))
                             .setData(uri.build())
+                            .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
                     return TopAdsDashboardActivity.getCallingIntent(context)
@@ -55,6 +59,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context, extras.getString("ad_id", ""))
                         .setData(uri.build())
+                        .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                         .putExtras(extras);
             }
         } else {
@@ -76,11 +81,14 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         }else{
             ProductAd ad = null;
             String adId = null;
+            boolean isEnoughDeposit = false;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                isAdChanged = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+                isEnoughDeposit = getIntent().getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
             }
-            fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
+            fragment = TopAdsDetailProductFragment.createInstance(ad, adId, isEnoughDeposit);
             return fragment;
         }
     }
@@ -109,10 +117,11 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
 
     @Override
     public void onBackPressed() {
+
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
-            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+            if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
                 Intent intent = new Intent(this, TopAdsDashboardActivity.class);
@@ -121,6 +130,11 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             }
         } else {
             super.onBackPressed();
+
+            Intent intent = new Intent();
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, isAdChanged);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         }
     }
 

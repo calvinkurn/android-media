@@ -1,9 +1,11 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +27,10 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceFilter;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
@@ -59,6 +65,8 @@ import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +74,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -142,9 +152,24 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             .subscribe(new AutoCompletePlaceTextChanged())
             );
             getView().hideGoogleLabel();
-            getView().setActiveMarketplaceSource();
-            actionGetUserAddressesFromCache();
-            actionGetUserAddresses(false);
+
+            if (getView().isShowNearbyPlaces()) {
+                //show nearby places if location is enabled else show recent address
+                LocationManager manager = (LocationManager) getView().getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    getView().setActiveGooglePlaceSource();
+                    showNearbyPlaces();
+                } else {
+                    getView().setActiveMarketplaceSource();
+                    actionGetUserAddressesFromCache();
+                    actionGetUserAddresses(false);
+                }
+            } else {
+                getView().setActiveMarketplaceSource();
+                actionGetUserAddressesFromCache();
+                actionGetUserAddresses(false);
+            }
         }
     }
 
@@ -475,7 +500,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     if (e instanceof UnknownHostException) {
                         getView().showErrorNoInternetConnectionMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                     }
-                    renderPlaceList(new ArrayList<PlaceAutoCompeleteViewModel>());
+                    renderPlaceList(new ArrayList<PlaceAutoCompeleteViewModel>(), false);
                 }
             }
 
@@ -485,22 +510,44 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     if (!getView().isActiveGooglePlaceSource()) return;
 
                     if (mCurrentLocation == null || placeAutoCompeleteViewModels == null || placeAutoCompeleteViewModels.size() == 0) {
-                        renderPlaceList(placeAutoCompeleteViewModels);
+                        renderPlaceList(placeAutoCompeleteViewModels, false);
                     } else {
-                        getDistanceMatrixFromOrigin(placeAutoCompeleteViewModels);
+                        renderPlaceList(placeAutoCompeleteViewModels, false);
+                        getDistanceMatrixFromOrigin(placeAutoCompeleteViewModels, false);
                     }
                 }
             }
         });
     }
 
-    public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses) {
+    public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses, boolean isNearbyPlaces) {
         getView().showGoogleLabel();
         ArrayList<Visitable> addr = new ArrayList<>();
+
+        if (isNearbyPlaces) {
+            Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
+                @Override
+                public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel1, PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel2) {
+
+                    if (placeAutoCompeleteViewModel1 != null &&
+                            placeAutoCompeleteViewModel1.getDistance() != null &&
+                            placeAutoCompeleteViewModel2 != null &&
+                            placeAutoCompeleteViewModel2.getDistance() != null) {
+                        return placeAutoCompeleteViewModel1.getDistanceValue() - placeAutoCompeleteViewModel2.getDistanceValue();
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+        }
+
         addr.addAll(addresses);
+        getView().showListPlaces();
         getView().renderPlacesList(addr);
         getView().hideAutoCompleteLoadingCross();
-        getView().showClearButton();
+        if (!isNearbyPlaces) {
+            getView().showClearButton();
+        }
     }
 
     public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {
@@ -575,7 +622,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         }
     }
 
-    public void getDistanceMatrixFromOrigin(final List<PlaceAutoCompeleteViewModel> addresses) {
+    public void getDistanceMatrixFromOrigin(final List<PlaceAutoCompeleteViewModel> addresses, final boolean isNearbyPlaces) {
         if (mCurrentLocation == null || addresses == null || addresses.size() == 0) return;
 
         RequestParams requestParams = RequestParams.create();
@@ -586,7 +633,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
         String destinations = "";
         for (PlaceAutoCompeleteViewModel prediction : addresses) {
-            destinations += prediction.getAddress() + "|";
+            if (isNearbyPlaces) {
+                destinations += String.format("%s,%s", prediction.getLatitude(), prediction.getLongitude()) + "|";
+            } else {
+                destinations += prediction.getAddress() + "|";
+            }
         }
 
         requestParams.putString(GetDistanceMatrixUseCase.PARAM_DESTINATIONS, destinations);
@@ -602,7 +653,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    renderPlaceList(addresses);
+                    renderPlaceList(addresses, isNearbyPlaces);
                 }
             }
 
@@ -615,16 +666,18 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
                             if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
                                 String distance = element.getDistance().getText();
+                                Integer value = element.getDistance().getValue();
 
                                 if (addresses.size() > index) {
                                     addresses.get(index).setDistance(distance);
+                                    addresses.get(index).setDistanceValue(value);
                                 }
                             }
                             index++;
                         }
                     }
 
-                    renderPlaceList(addresses);
+                    renderPlaceList(addresses, isNearbyPlaces);
                 }
             }
         });
@@ -700,5 +753,73 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 }
             }
         });
+    }
+
+    @Override
+    public void showNearbyPlaces() {
+        getNearbyPlacesObservable(new PlaceFilter())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<PlaceLikelihoodBuffer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(PlaceLikelihoodBuffer placeLikelihoodBuffer) {
+                        if (isViewAttached() && !isUnsubscribed() && placeLikelihoodBuffer != null) {
+                            if (!getView().isActiveGooglePlaceSource()) return;
+                            compositeSubscription.clear();
+
+                            CommonUtils.dumper("Vishal showNearbyPlaces Status Code :: " + placeLikelihoodBuffer.getStatus().getStatusCode());
+                            CommonUtils.dumper("Vishal showNearbyPlaces Status Code :: " + placeLikelihoodBuffer.getStatus().getStatusMessage());
+
+                            ArrayList<PlaceAutoCompeleteViewModel> addresses = new ArrayList<>();
+                            for (PlaceLikelihood placeLikelihood : placeLikelihoodBuffer) {
+                                PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+
+                                Place place = placeLikelihood.getPlace();
+
+                                address.setAddress(String.valueOf(place.getAddress()));
+                                address.setTitle(String.valueOf(place.getName()));
+                                address.setAddressId(place.getId());
+                                address.setLatitude(place.getLatLng().latitude);
+                                address.setLongitude(place.getLatLng().longitude);
+                                address.setType(PlaceAutoCompeleteViewModel.TYPE.NEARBY_PLACE);
+                                addresses.add(address);
+                            }
+
+                            placeLikelihoodBuffer.release();
+
+                            //find distances and render
+                            if (addresses == null || addresses.size() == 0) {
+                                renderPlaceList(addresses, true);
+                            } else {
+                                renderPlaceList(addresses, true);
+                                getDistanceMatrixFromOrigin(addresses, true);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private Observable<PlaceLikelihoodBuffer> getNearbyPlacesObservable(@javax.annotation.Nullable final PlaceFilter placeFilter) {
+        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
+                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
+                    @Override
+                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
+                        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return Observable.empty();
+                        }
+
+                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+                    }
+                });
     }
 }

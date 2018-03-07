@@ -131,8 +131,6 @@ public class SuccessPaymentQRActivity extends TActivity {
         backToHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GlobalCacheManager cache = new GlobalCacheManager();
-                cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
                 onBackPressed();
             }
         });
@@ -140,6 +138,8 @@ public class SuccessPaymentQRActivity extends TActivity {
 
     @Override
     public void onBackPressed() {
+        GlobalCacheManager cache = new GlobalCacheManager();
+        cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
         Intent intent = new Intent();
         setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
         finish();

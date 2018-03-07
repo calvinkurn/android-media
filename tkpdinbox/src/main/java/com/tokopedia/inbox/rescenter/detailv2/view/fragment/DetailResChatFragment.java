@@ -25,7 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.PreviewProductImage;
@@ -34,6 +33,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
@@ -132,6 +132,7 @@ public class DetailResChatFragment
     private ImageView ivNextStepStatic;
     private GlowingView glowingView;
     private FrameLayout ffChat;
+    private ConversationDomain conversationDomain;
 
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
@@ -167,7 +168,7 @@ public class DetailResChatFragment
         return null;
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.actionCamera();
     }
@@ -176,7 +177,7 @@ public class DetailResChatFragment
     public void actionImagePicker() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
+                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
                     ImageUploadHandler.REQUEST_CODE_GALLERY
             );
         } else {
@@ -190,11 +191,12 @@ public class DetailResChatFragment
         DetailResChatFragmentPermissionsDispatcher.onRequestPermissionsResult(DetailResChatFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -224,20 +226,22 @@ public class DetailResChatFragment
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
@@ -266,7 +270,6 @@ public class DetailResChatFragment
     @Override
     public void onSaveState(Bundle state) {
         state.putString(DetailResChatActivity.PARAM_RESOLUTION_ID, resolutionId);
-
     }
 
     @Override
@@ -313,6 +316,7 @@ public class DetailResChatFragment
 
         fabChat.hide();
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setStackFromEnd(true);
         rvChat.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
@@ -375,12 +379,16 @@ public class DetailResChatFragment
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        attachmentAdapter.getList().remove(position);
-                        if (attachmentAdapter.getList().size() == 0) {
-                            rvAttachment.setVisibility(View.GONE);
-                            initActionButton(detailResChatDomain.getButton());
+                        if (attachmentAdapter.isClickable) {
+                            if (attachmentAdapter.getList().get(position) != null) {
+                                attachmentAdapter.getList().remove(position);
+                            }
+                            if (attachmentAdapter.getList().size() == 0) {
+                                rvAttachment.setVisibility(View.GONE);
+                                initActionButton(detailResChatDomain.getButton());
+                            }
+                            attachmentAdapter.notifyItemRemoved(position);
                         }
-                        attachmentAdapter.notifyDataSetChanged();
                     }
                 };
             }
@@ -464,7 +472,7 @@ public class DetailResChatFragment
         }
 
         chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
-        chatAdapter.notifyDataSetChanged();
+        chatAdapter.notifyItemInserted(chatAdapter.getItemCount() - 1);
         scrollChatToBottom(false);
     }
 
@@ -473,41 +481,47 @@ public class DetailResChatFragment
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 null,
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
         return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + " WIB", "");
+    }
+
+    private ConversationCreateTimeDomain getDummySendingMessage() {
+        return new ConversationCreateTimeDomain(context.getResources().getString(R.string.string_sending_message), "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
@@ -576,7 +590,7 @@ public class DetailResChatFragment
 
     @Override
     public void errorGetConversation(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.loadConversation(resolutionId);
@@ -596,7 +610,7 @@ public class DetailResChatFragment
     @Override
     public void errorGetConversationMore(String error) {
         if (resolutionId != null && lastConvId != null) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
@@ -895,9 +909,11 @@ public class DetailResChatFragment
 
     @Override
     public void successReplyDiscussion(DiscussionItemViewModel discussionItemViewModel) {
+        rvAttachment.setVisibility(View.GONE);
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
-        rvAttachment.setVisibility(View.GONE);
+        conversationDomain.setCreateTime(getConversationCreateTime());
+        chatAdapter.replaceLastItem(new ChatRightViewModel(null, null, conversationDomain));
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
         enableIvSend();
@@ -1173,12 +1189,18 @@ public class DetailResChatFragment
     public void enableIvSend() {
         ivSend.setClickable(true);
         ivSend.setEnabled(true);
+        etChat.setClickable(true);
+        etChat.setEnabled(true);
+        attachmentAdapter.isClickable = true;
     }
 
     @Override
     public void disableIvSend() {
         ivSend.setClickable(false);
         ivSend.setEnabled(false);
+        etChat.setClickable(false);
+        etChat.setEnabled(false);
+        attachmentAdapter.isClickable = false;
     }
 
     @Override
