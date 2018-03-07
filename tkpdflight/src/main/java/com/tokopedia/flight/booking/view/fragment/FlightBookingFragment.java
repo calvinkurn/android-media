@@ -120,7 +120,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         // Required empty public constructor
     }
 
-    public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
+    public static FlightBookingFragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
         FlightBookingFragment fragment = new FlightBookingFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel);
@@ -671,6 +671,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showContactEmailInvalidSymbolError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    public void onBackPressed() {
+        presenter.deleteAllPassengerList();
+    }
+
+    @Override
+    public void canGoBack() {
+        getActivity().finish();
     }
 
     @Override

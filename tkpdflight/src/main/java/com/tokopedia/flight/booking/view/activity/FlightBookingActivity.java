@@ -22,6 +22,8 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
 
+    private FlightBookingFragment flightBookingFragment;
+
     public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId) {
         Intent intent = new Intent(activity, FlightBookingActivity.class);
         intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
@@ -47,7 +49,8 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
         String departureId = getIntent().getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID);
         String arrivalId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
         FlightSearchPassDataViewModel searchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_SEARCH_DATA);
-        return FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, arrivalId);
+        flightBookingFragment = FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, arrivalId);
+        return flightBookingFragment;
     }
 
     @Override
@@ -58,5 +61,10 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
                     .build();
         }
         throw new RuntimeException("Application must implement FlightModuleRouter");
+    }
+
+    @Override
+    public void onBackPressed() {
+        flightBookingFragment.onBackPressed();
     }
 }
