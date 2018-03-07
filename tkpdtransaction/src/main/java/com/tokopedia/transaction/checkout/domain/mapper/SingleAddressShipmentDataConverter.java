@@ -80,6 +80,10 @@ public class SingleAddressShipmentDataConverter
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
+
+        // This is something that not well planned
+        Fobject fobject = levelUpStateFromItem(cartItemModels);
+
         sellerItemModel.setCartItemModels(cartItemModels);
 
         int totalQuantity = 0;
@@ -95,6 +99,10 @@ public class SingleAddressShipmentDataConverter
         sellerItemModel.setShipmentCartData(
                 new ShipmentRatesDataMapper().getShipmentCartData(
                         cartItemDataList, userAddress, groupShop, sellerItemModel));
+
+        sellerItemModel.setInsuranceFee(fobject.isFinsurance() ? 0 : 1);
+        sellerItemModel.setIsFcancelPartial(fobject.isFcancelPartial() ? 0 : 1);
+        sellerItemModel.setIsPreOrder(fobject.isPreOrder() ? 0 : 1);
 
         return sellerItemModel;
     }
@@ -247,6 +255,64 @@ public class SingleAddressShipmentDataConverter
         cartItemModel.setQuantity(cartItemData.getUpdatedData().getQuantity());
 
         return cartItemModel;
+    }
+
+    private Fobject levelUpStateFromItem(List<CartItemModel> cartItemList) {
+
+        boolean isPreOrder = false;
+        boolean isFcancelPartial = false;
+        boolean isFinsurance = false;
+
+        for (CartItemModel cartItem : cartItemList) {
+            if (cartItem.isPreOrder()) {
+                isPreOrder = true;
+            }
+            if (cartItem.isfInsurance()) {
+                isFcancelPartial = true;
+            }
+            if (cartItem.isfCancelPartial()) {
+                isFinsurance = true;
+            }
+        }
+
+        return new Fobject(isPreOrder, isFcancelPartial, isFinsurance);
+    }
+
+    private class Fobject {
+
+        private boolean isPreOrder;
+        private boolean isFcancelPartial;
+        private boolean isFinsurance;
+
+        Fobject(boolean isPreOrder, boolean isFcancelPartial, boolean isFinsurance) {
+            this.isPreOrder = isPreOrder;
+            this.isFcancelPartial = isFcancelPartial;
+            this.isFinsurance = isFinsurance;
+        }
+
+        public boolean isPreOrder() {
+            return isPreOrder;
+        }
+
+        public void setPreOrder(boolean preOrder) {
+            isPreOrder = preOrder;
+        }
+
+        public boolean isFcancelPartial() {
+            return isFcancelPartial;
+        }
+
+        public void setFcancelPartial(boolean fcancelPartial) {
+            isFcancelPartial = fcancelPartial;
+        }
+
+        public boolean isFinsurance() {
+            return isFinsurance;
+        }
+
+        public void setFinsurance(boolean finsurance) {
+            isFinsurance = finsurance;
+        }
     }
 
 }

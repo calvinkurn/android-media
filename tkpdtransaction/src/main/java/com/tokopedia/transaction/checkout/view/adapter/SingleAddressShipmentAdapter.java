@@ -262,14 +262,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for shipment
         ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder(0)
-                .finsurance(0)
+                .isPreorder(cartSellerItem.getIsPreOrder())
+                .finsurance(cartSellerItem.getIsFinsurance())
                 .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(0);
+                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
@@ -293,14 +293,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for promo request
         ShopProduct.Builder shopProductBuilder = new ShopProduct.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder(0)
-                .finsurance(0)
+                .isPreorder(cartSellerItem.getIsPreOrder())
+                .finsurance(cartSellerItem.getIsFinsurance())
                 .shippingInfo(new ShippingInfo.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductData(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(0);
+                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
