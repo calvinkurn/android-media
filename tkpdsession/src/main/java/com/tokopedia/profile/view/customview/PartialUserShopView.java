@@ -104,8 +104,8 @@ public class PartialUserShopView extends BaseCustomView {
             tvShopName.setText(model.getShopName());
             tvShopLocation.setText(model.getShopLocation());
             tvLastOnline.setText(model.getShopLastOnline());
-            favouriteButton.setVisibility(model.getIsUser() ? GONE : VISIBLE);
-            if (!model.getIsUser()) {
+            favouriteButton.setVisibility(model.isUser() ? GONE : VISIBLE);
+            if (!model.isUser()) {
                 favouriteButton.setVisibility(VISIBLE);
                 isShopFavorite = model.isFavorite();
                 updateFavoriteStatus(isShopFavorite);

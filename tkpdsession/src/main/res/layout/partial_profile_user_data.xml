@@ -158,8 +158,10 @@
                     android:drawablePadding="4dp"
                     android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="8.5dp"
-                    android:paddingRight="12.5dp"
+                    android:paddingLeft="6.5dp"
+                    android:paddingStart="6.5dp"
+                    android:paddingRight="8.5dp"
+                    android:paddingEnd="8.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
@@ -214,7 +216,7 @@
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_verified_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -226,7 +228,9 @@
                     android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
                     android:paddingLeft="6.5dp"
+                    android:paddingStart="6.5dp"
                     android:paddingRight="8.5dp"
+                    android:paddingEnd="8.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
