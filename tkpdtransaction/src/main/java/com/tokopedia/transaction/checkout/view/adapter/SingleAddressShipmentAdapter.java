@@ -262,23 +262,25 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for shipment
         ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder()
-                .finsurance()
+                .isPreorder(0)
+                .finsurance(0)
                 .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
-                .fcancelPartial()
-                .isDropship(0);
+                .fcancelPartial(0);
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
-            shopProductCheckoutBuilder.isDropship(1)
+            shopProductCheckoutBuilder
+                    .isDropship(1)
                     .dropshipData(new DropshipDataCheckoutRequest.Builder()
-                    .name(shipmentDetailData.getDropshipperName())
-                    .telpNo(shipmentDetailData.getDropshipperPhone())
-                    .build());
+                            .name(shipmentDetailData.getDropshipperName())
+                            .telpNo(shipmentDetailData.getDropshipperPhone())
+                            .build());
+        } else {
+            shopProductCheckoutBuilder.isDropship(0);
         }
 
         return shopProductCheckoutBuilder.build();
@@ -291,11 +293,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for promo request
         ShopProduct.Builder shopProductBuilder = new ShopProduct.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
+                .isPreorder(0)
+                .finsurance(0)
                 .shippingInfo(new ShippingInfo.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
-                .productData(convertToProductData(cartSellerItem.getCartItemModels()));
+                .productData(convertToProductData(cartSellerItem.getCartItemModels()))
+                .fcancelPartial(0);
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
