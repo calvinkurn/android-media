@@ -137,9 +137,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                 getProfile();
             } else {
                 getView().hideProgressBar();
-                String error = getView().getActivity().getString(R.string.error_connection) + " " +
-                        getView().getActivity().getString(R.string.title_retry);
-                getView().showMessage(error);
             }
         }
     }
