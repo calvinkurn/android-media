@@ -24,7 +24,7 @@ public interface Verification {
 
         void dismissLoadingProgress();
 
-        void onErrorNoAccountTokoCash();
+        void onErrorVerifyOtpCode(String error);
 
         boolean isCountdownFinished();
 

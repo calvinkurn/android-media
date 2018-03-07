@@ -1,5 +1,6 @@
 package com.tokopedia.otp.registerphonenumber.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -37,7 +38,6 @@ import com.tokopedia.otp.registerphonenumber.view.presenter.VerificationPresente
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -261,18 +261,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onSuccessVerifyOTP(VerifyOtpViewModel verifyOtpViewModel) {
         removeErrorOtp();
-
         resetCountDown();
-//        Intent intent = new Intent();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
-//                new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
-//                        viewModel.getPhoneNumber(),
-//                        verifyOtpTokoCashViewModel.getKey()));
-//        intent.putExtras(bundle);
-//        getActivity().setResult(Activity.RESULT_OK, intent);
-//        getActivity().finish();
-
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void resetCountDown() {
@@ -323,10 +314,18 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onErrorNoAccountTokoCash() {
-        startActivity(NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
-                viewModel.getPhoneNumber()));
-        getActivity().finish();
+    public void onErrorVerifyOtpCode(String error) {
+        inputOtp.setError(true);
+        inputOtp.setFocusableInTouchMode(true);
+        inputOtp.post(new Runnable() {
+            public void run() {
+                inputOtp.requestFocusFromTouch();
+                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                lManager.showSoftInput(inputOtp, 0);
+            }
+        });
+        errorImage.setVisibility(View.VISIBLE);
+        errorOtp.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tokopedia.otp.registerphonenumber.view.subscriber;
 
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.registerphonenumber.view.listener.Verification;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.VerifyOtpViewModel;
@@ -34,7 +35,7 @@ public class VerifyOtpSubscriber extends Subscriber<VerifyOtpViewModel> {
         if (verifyOtpViewModel.isSuccess())
             view.onSuccessVerifyOTP(verifyOtpViewModel);
         else {
-            view.onErrorNoAccountTokoCash();
+            view.onErrorVerifyOtpCode(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
 }

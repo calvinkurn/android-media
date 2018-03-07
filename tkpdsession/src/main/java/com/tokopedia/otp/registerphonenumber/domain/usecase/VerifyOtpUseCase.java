@@ -18,7 +18,10 @@ import rx.Observable;
 public class VerifyOtpUseCase extends UseCase<VerifyOtpViewModel> {
 
     private static final String PARAM_PHONE_NUMBER = "msisdn";
-    private static final String PARAM_OTP_CODE = "otp";
+    private static final String PARAM_OTP_CODE = "code";
+    protected static final String PARAM_OTP_TYPE = "otp_type";
+
+    public static final int OTP_TYPE_REGISTER_PHONE_NUMBER = 116;
 
     private final RegisterPhoneNumberOtpSource otpSource;
 
@@ -34,6 +37,7 @@ public class VerifyOtpUseCase extends UseCase<VerifyOtpViewModel> {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_PHONE_NUMBER, phoneNumber);
         params.putString(PARAM_OTP_CODE, otpCode);
+        params.putInt(PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER);
         return params;
     }
 

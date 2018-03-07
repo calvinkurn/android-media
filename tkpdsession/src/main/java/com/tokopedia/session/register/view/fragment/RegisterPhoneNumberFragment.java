@@ -45,9 +45,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         implements RegisterPhoneNumber.View {
 
     private static final int REQUEST_VERIFY_PHONE = 101;
-    private static final int REQUEST_CHOOSE_ACCOUNT = 102;
-    private static final int REQUEST_PHONE_NOT_CONNECTED = 103;
-    private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 104;
 
     EditText phoneNumber;
     TextView nextButton;
@@ -295,17 +292,17 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
-            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-                    .getListAccount().isEmpty()) {
-                goToChooseAccountPage(chooseTokoCashAccountViewModel);
-            } else {
-                goToNoTokocashAccountPage();
-            }
-        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
-                && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+//            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
+//            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+//                    .getListAccount().isEmpty()) {
+//                goToChooseAccountPage(chooseTokoCashAccountViewModel);
+//            } else {
+//                goToNoTokocashAccountPage();
+//            }
+//        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
+//                && resultCode == Activity.RESULT_OK) {
+//            getActivity().setResult(Activity.RESULT_OK);
+//            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
