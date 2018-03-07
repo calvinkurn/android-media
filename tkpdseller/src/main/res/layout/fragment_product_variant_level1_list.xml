@@ -23,7 +23,9 @@
             <com.tokopedia.seller.product.variant.view.widget.VariantImageView
                 android:id="@+id/variant_image_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_ms"
+                android:layout_marginEnd="@dimen/padding_ms"/>
 
             <com.tokopedia.seller.common.widget.VerticalLabelView
                 android:id="@+id/lv_title"

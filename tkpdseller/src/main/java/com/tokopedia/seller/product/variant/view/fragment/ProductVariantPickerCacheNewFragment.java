@@ -2,22 +2,14 @@ package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 
-import com.tokopedia.seller.base.view.adapter.BaseItemPickerCacheAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
-import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListAdapter;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListNewAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.

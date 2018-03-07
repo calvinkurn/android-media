@@ -26,7 +26,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     public static final String EXTRA_PRODUCT_VARIANT_NAME = "var_name";
     public static final String EXTRA_CURRENCY_TYPE = "curr_type";
     public static final String EXTRA_NEED_RETAIN_IMAGE = "need_retain_img";
-    public static final String EXTRA_DEFAULT_PRICE = "prc";
     public static final String EXTRA_STOCK_TYPE = "stock_typ";
     public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
 
@@ -43,36 +42,35 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     private @CurrencyTypeDef int currencyType;
     private boolean needRetainImage;
     private boolean imageChanged;
-    private double defaultPrice;
     private @StockTypeDef int stockType;
     private boolean isOfficialStore;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
-                             String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                             String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
                              boolean needRetainImage){
         Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, defaultPrice, stockType, isOfficialStore, needRetainImage);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static void start(Activity activity,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
-                             String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                             String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
                              boolean needRetainImage){
         Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, defaultPrice, stockType, isOfficialStore, needRetainImage);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
                                    ProductVariantCombinationViewModel productVariantCombinationViewModel,
                                    ProductVariantOptionChild productVariantOptionChild,
-                                   String variantName, @CurrencyTypeDef int currencyType, double defaultPrice,
+                                   String variantName, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
                                    boolean needRetainImage){
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
@@ -81,7 +79,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         intent.putExtra(EXTRA_PRODUCT_VARIANT_NAME, variantName);
         intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
         intent.putExtra(EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
-        intent.putExtra(EXTRA_DEFAULT_PRICE, defaultPrice);
         intent.putExtra(EXTRA_STOCK_TYPE, stockType);
         intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
         return intent;
@@ -104,7 +101,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
             imageChanged = savedInstanceState.getBoolean(SAVED_HAS_LEAF_CHANGED, false);
         }
         needRetainImage = intent.getBooleanExtra(EXTRA_NEED_RETAIN_IMAGE, false);
-        defaultPrice = intent.getDoubleExtra(EXTRA_DEFAULT_PRICE, 0);
         stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
     }
@@ -126,11 +122,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     @Override
     public void onImageChanged() {
         imageChanged = true;
-    }
-
-    @Override
-    public double getDefaultPrice() {
-        return defaultPrice;
     }
 
     @Override

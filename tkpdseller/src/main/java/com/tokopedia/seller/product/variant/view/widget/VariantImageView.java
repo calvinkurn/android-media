@@ -18,7 +18,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.BasePictureViewModel;
 
 import java.io.File;
@@ -34,7 +33,9 @@ public class VariantImageView extends FrameLayout {
     private BasePictureViewModel basePictureViewModel;
 
     private OnImageClickListener onImageClickListener;
-    public interface OnImageClickListener{
+    private View viewEmptyStock;
+
+    public interface OnImageClickListener {
         void onImageVariantClicked();
     }
 
@@ -80,24 +81,25 @@ public class VariantImageView extends FrameLayout {
         ivVariant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onImageClickListener!= null) {
+                if (onImageClickListener != null) {
                     onImageClickListener.onImageVariantClicked();
                 }
             }
         });
+        viewEmptyStock = view.findViewById(R.id.tv_empty_stock);
     }
 
-    public void setImage(BasePictureViewModel basePictureViewModel){
+    public void setImage(BasePictureViewModel basePictureViewModel) {
         setImage(basePictureViewModel, "");
     }
 
-    public void setImage(BasePictureViewModel basePictureViewModel, String defaultHexColor){
+    public void setImage(BasePictureViewModel basePictureViewModel, String defaultHexColor) {
         this.basePictureViewModel = basePictureViewModel;
-        if (basePictureViewModel!= null && !TextUtils.isEmpty(basePictureViewModel.getUriOrPath())) {
+        if (basePictureViewModel != null && !TextUtils.isEmpty(basePictureViewModel.getUriOrPath())) {
             ivVariant.setBackgroundColor(Color.TRANSPARENT);
             // ImageHandler.LoadImage(ivVariant, urlOrPath);
-            if (!TextUtils.isEmpty(basePictureViewModel.getId()) ) {
-                if ( basePictureViewModel.getX() != 0 && basePictureViewModel.getY()!= 0) {
+            if (!TextUtils.isEmpty(basePictureViewModel.getId())) {
+                if (basePictureViewModel.getX() != 0 && basePictureViewModel.getY() != 0) {
                     ImageHandler.loadImageFitCenter(getContext(), ivVariant,
                             basePictureViewModel.getUrlOriginal());
                 } else { // we want to load image, meanwhile also to know its width/height
@@ -136,7 +138,10 @@ public class VariantImageView extends FrameLayout {
             ivVariant.setBackgroundColor(Color.LTGRAY);
             ivVariant.setImageDrawable(null);
         }
+    }
 
+    public void setStockEmpty(boolean isEmpty) {
+        viewEmptyStock.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     public BasePictureViewModel getBasePictureViewModel() {

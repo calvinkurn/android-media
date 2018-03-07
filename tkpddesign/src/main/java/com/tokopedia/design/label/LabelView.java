@@ -85,23 +85,21 @@ public class LabelView extends BaseCustomView {
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);
-    }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         titleTextView.setText(titleText);
+        titleTextView.setTypeface(null, titleTextStyleValue);
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
+        titleTextView.setMinWidth(minTitleWidth);
+
         setContent(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
-        titleTextView.setTypeface(null, titleTextStyleValue);
-        setVisibleArrow(showArrow);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        titleTextView.setMinWidth(minTitleWidth);
-        invalidate();
-        requestLayout();
+
+        setVisibleArrow(showArrow);
+
+        setEnabled(super.isEnabled());
     }
 
     public void resetContentText() {

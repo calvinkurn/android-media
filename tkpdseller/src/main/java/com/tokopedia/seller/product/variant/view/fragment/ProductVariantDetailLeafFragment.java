@@ -7,13 +7,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -25,6 +27,7 @@ import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
@@ -49,6 +52,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     private VariantImageView variantImageView;
     private CounterInputView counterInputViewStock;
     private EditText etSku;
+    private TextView tvVariantStockInfo;
+    private SpinnerCounterInputView counterInputPrice;
 
     public interface OnProductVariantDetailLeafFragmentListener {
         void onSubmitVariant();
@@ -65,8 +70,6 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         boolean needRetainImage();
 
         void onImageChanged();
-
-        double getDefaultPrice();
 
         @StockTypeDef
         int getStockType();
@@ -120,15 +123,16 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
         counterInputViewStock = view.findViewById(R.id.counter_input_view_stock_total);
         etSku = view.findViewById(R.id.edit_text_sku);
+        tvVariantStockInfo = view.findViewById(R.id.tv_variant_info);
         View buttonSave = view.findViewById(R.id.button_save);
 
-        SpinnerCounterInputView spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
-        spinnerCounterInputView.getSpinnerTextView().setEnabled(false);
-        spinnerCounterInputView.getSpinnerTextView().setClickable(false);
-        spinnerCounterInputView.setSpinnerValue(String.valueOf(currencyType));
+        counterInputPrice = view.findViewById(R.id.spinner_counter_input_view_price);
+        counterInputPrice.getSpinnerTextView().setEnabled(false);
+        counterInputPrice.getSpinnerTextView().setClickable(false);
+        counterInputPrice.setSpinnerValue(String.valueOf(currencyType));
 
-        spinnerCounterInputView.removeDefaultTextWatcher();
-        EditText priceEditText = spinnerCounterInputView.getCounterEditText();
+        counterInputPrice.removeDefaultTextWatcher();
+        EditText priceEditText = counterInputPrice.getCounterEditText();
         priceEditText.removeTextChangedListener(currencyTextWatcher);
         currencyTextWatcher = new CurrencyTextWatcher(
                 priceEditText,
@@ -138,7 +142,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             @Override
             public void onNumberChanged(double v) {
                 productVariantCombinationViewModel.setPriceVar(v);
-                //TODO check validation. If any error, setError to edittext.
+                checkPriceValid(v);
             }
         });
         priceEditText.addTextChangedListener(currencyTextWatcher);
@@ -203,18 +207,40 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             });
         }
 
+        if (savedInstanceState == null) {
+            etSku.setText(productVariantCombinationViewModel.getSku());
+        }
+
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO check validation before submit
-
-                String sku = etSku.getText().toString();
-                listener.getProductVariantCombinationViewModel().setSku(sku);
-                listener.onSubmitVariant();
+                onButtonSaveClicked();
             }
         });
         view.requestFocus();
         return view;
+    }
+
+    private void onButtonSaveClicked(){
+        if (!checkPriceValid(counterInputPrice.getCounterValue())) {
+            CommonUtils.hideKeyboard(getActivity(), getView());
+            return;
+        }
+        String sku = etSku.getText().toString();
+        listener.getProductVariantCombinationViewModel().setSku(sku);
+
+        listener.onSubmitVariant();
+    }
+
+    private boolean checkPriceValid(double value) {
+        if (ViewUtils.isPriceValid(value, currencyType, listener.isOfficialStore())) {
+            counterInputPrice.setCounterError(null);
+            return true;
+        }
+        counterInputPrice.setCounterError(getContext().getString(R.string.product_error_product_price_not_valid,
+                ViewUtils.getMinPriceString(currencyType, listener.isOfficialStore()),
+                ViewUtils.getMaxPriceString(currencyType, listener.isOfficialStore())));
+        return false;
     }
 
     private void onLabelSwitchStatusChanged(boolean isChecked) {
@@ -229,6 +255,13 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             } else {
                 counterInputViewStock.setValue(0);
                 counterInputViewStock.setEnabled(false);
+            }
+        } else {
+            productVariantCombinationViewModel.setStock(0);
+            if (isChecked) {
+                tvVariantStockInfo.setVisibility(View.VISIBLE);
+            } else {
+                tvVariantStockInfo.setVisibility(View.GONE);
             }
         }
     }

@@ -27,20 +27,19 @@
             android:orientation="vertical"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
             android:divider="@drawable/line_divider"
             android:showDividers="middle">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/padding_ms"
                 android:paddingBottom="@dimen/padding_ms">
                 <LinearLayout
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_vertical">
+                    android:orientation="vertical">
                     <TextView
                         android:id="@+id/text_view_title"
                         style="@style/TextView.Title.Bold"
@@ -58,7 +57,9 @@
                 <com.tokopedia.seller.product.variant.view.widget.VariantImageView
                     android:id="@+id/variant_image_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_ms"
+                    android:layout_marginEnd="@dimen/padding_ms"/>
 
             </LinearLayout>
 
@@ -68,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_ms"
                 android:paddingBottom="@dimen/padding_ms"
-                app:lv_title_color="@color/colorGray"
+                app:lv_title_color="@color/font_black_disabled_38"
                 app:lv_title="@string/product_variant_price_label" />
 
             <com.tokopedia.design.label.LabelView
@@ -77,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_ms"
                 android:paddingBottom="@dimen/padding_ms"
-                app:lv_title_color="@color/colorGray"
+                app:lv_title_color="@color/font_black_disabled_38"
                 app:lv_title="@string/product_variant_stock_total_label" />
         </LinearLayout>
 

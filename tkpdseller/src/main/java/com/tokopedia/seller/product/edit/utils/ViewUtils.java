@@ -9,9 +9,12 @@ import android.view.View;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.exception.TomeException;
+import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
 import java.io.IOException;
@@ -23,6 +26,13 @@ import java.net.UnknownHostException;
  */
 
 public class ViewUtils {
+
+    private static final double MIN_IDR = 100;
+    private static final double MAX_IDR = 100000000;
+    private static final double MIN_USD = 1;
+    private static final double MAX_USD = 7500;
+    private static final double MAX_IDR_OS = 500000000;
+    private static final double MAX_USD_OS = 37000;
 
     public static String getErrorMessage(Throwable t) {
         String errorMessage = null;
@@ -46,9 +56,9 @@ public class ViewUtils {
             return ((ResponseV4ErrorException) t).getErrorList().get(0);
         } else if (t instanceof ResponseErrorException) {
             return getErrorMessage(t);
-        } else if(t instanceof TomeException) {
+        } else if (t instanceof TomeException) {
             return ((TomeException) t).getMessageError().get(0);
-        }else if (t instanceof UnknownHostException) {
+        } else if (t instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (t instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
@@ -59,6 +69,11 @@ public class ViewUtils {
         }
     }
 
+
+    /**
+     * Use isPriceValid instead for better performance
+     */
+    @Deprecated
     public static Pair<Double, Double> minMaxPrice(Context context, int currencyType, boolean isOfficialStore) {
         String spinnerValue = null;
         switch (currencyType) {
@@ -72,14 +87,14 @@ public class ViewUtils {
         }
         String minPriceString;
         String maxPriceString;
-        if(isOfficialStore) {
+        if (isOfficialStore) {
             minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
             maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp_official_store));
             if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
                 minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
                 maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd_official_store));
             }
-        }else{
+        } else {
             minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
             maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp_general));
             if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
@@ -90,6 +105,68 @@ public class ViewUtils {
         double minPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
         double maxPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
         return Pair.create(minPrice, maxPrice);
+    }
+
+    public static boolean isPriceValid(double price, @CurrencyTypeDef int currencyType, boolean isOfficialStore) {
+        double minPrice = getMinPrice(currencyType, isOfficialStore);
+        double maxPrice = getMaxPrice(currencyType, isOfficialStore);
+        return price >= minPrice && price <= maxPrice;
+    }
+
+    private static double getMinPrice(@CurrencyTypeDef int currencyType, boolean isOfficialStore) {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                return MIN_USD;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                return MIN_IDR;
+        }
+    }
+
+    public static String getMinPriceString(@CurrencyTypeDef int currencyType, boolean isOfficialStore) {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                return CurrencyFormatUtil.convertPriceValue(MIN_USD, true);
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                return CurrencyFormatUtil.convertPriceValue(MIN_IDR, false);
+        }
+    }
+
+    private static double getMaxPrice(@CurrencyTypeDef int currencyType, boolean isOfficialStore) {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                if (isOfficialStore) {
+                    return MAX_USD_OS;
+                } else {
+                    return MAX_USD;
+                }
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                if (isOfficialStore) {
+                    return MAX_IDR_OS;
+                } else {
+                    return MAX_IDR;
+                }
+        }
+    }
+
+    public static String getMaxPriceString(@CurrencyTypeDef int currencyType, boolean isOfficialStore) {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                if (isOfficialStore) {
+                    return CurrencyFormatUtil.convertPriceValue(MAX_USD_OS, true);
+                } else {
+                    return CurrencyFormatUtil.convertPriceValue(MAX_USD, true);
+                }
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                if (isOfficialStore) {
+                    return CurrencyFormatUtil.convertPriceValue(MAX_IDR_OS, false);
+                } else {
+                    return CurrencyFormatUtil.convertPriceValue(MAX_IDR, false);
+                }
+        }
     }
 
     public static Rect locateView(View v) {

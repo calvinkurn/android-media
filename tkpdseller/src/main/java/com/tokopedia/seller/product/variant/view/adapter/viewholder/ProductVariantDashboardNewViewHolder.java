@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.variant.view.adapter.viewholder;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,10 +33,13 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
     private @CurrencyTypeDef
     int currencyType;
 
+    private String level2String;
+
     private ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener listener;
 
     public ProductVariantDashboardNewViewHolder(View itemView, @CurrencyTypeDef int currencyType,
-                                                ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener onProductVariantDashboardNewViewHolderListener) {
+                                                ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener onProductVariantDashboardNewViewHolderListener,
+                                                String level2String) {
         super(itemView);
         variantImageView = itemView.findViewById(R.id.variant_image_view);
         titleTextView = itemView.findViewById(R.id.text_view_title);
@@ -43,6 +47,7 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
         lvStock = itemView.findViewById(R.id.label_view_variant_stock);
         tvSubtitle = itemView.findViewById(R.id.tv_subtitle);
         this.currencyType = currencyType;
+        this.level2String = level2String;
 
         this.listener = onProductVariantDashboardNewViewHolderListener;
     }
@@ -61,9 +66,9 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
         variantImageView.setOnImageClickListener(new VariantImageView.OnImageClickListener() {
             @Override
             public void onImageVariantClicked() {
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onImageViewVariantClicked(model, (VariantPictureViewModel)
-                            variantImageView.getBasePictureViewModel(),
+                                    variantImageView.getBasePictureViewModel(),
                             getAdapterPosition());
                 }
             }
@@ -111,14 +116,26 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
             for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
                 ProductVariantCombinationViewModel variantCombinationViewModel =
                         productVariantCombinationViewModelList.get(i);
-                if (i > 0) {
-                    stringBuilder.append(", ");
-                }
                 if (variantCombinationViewModel.getStock() > 0 || variantCombinationViewModel.isActive()) {
+                    if (stringBuilder.length() > 0) {
+                        stringBuilder.append(", ");
+                    }
                     stringBuilder.append(variantCombinationViewModel.getLevel2String());
                 }
             }
-            tvSubtitle.setText(stringBuilder.toString());
+            String activeVariantItemString = stringBuilder.toString();
+            if (TextUtils.isEmpty(activeVariantItemString)) {
+                variantImageView.setStockEmpty(true);
+                if (TextUtils.isEmpty(level2String)) {
+                    tvSubtitle.setText(null);
+                } else {
+                    String level2EmptyString = level2String + " " + context.getString(R.string.product_variant_stock_empty);
+                    tvSubtitle.setText(level2EmptyString);
+                }
+            } else {
+                variantImageView.setStockEmpty(false);
+                tvSubtitle.setText(activeVariantItemString);
+            }
         }
     }
 }
