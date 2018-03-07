@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_small"
-    android:paddingEnd="16dp"
-    android:paddingLeft="72dp"
-    android:paddingRight="16dp"
-    android:paddingStart="72dp">
+    android:paddingEnd="@dimen/chat_padding_small"
+    android:paddingLeft="@dimen/chat_padding_large"
+    android:paddingRight="@dimen/chat_padding_small"
+    android:paddingStart="@dimen/chat_padding_large">
 
     <ImageView
         android:id="@+id/retry_action"
@@ -35,13 +35,12 @@
         android:maxWidth="@dimen/chat_width"
         android:minWidth="@dimen/min_chat_width"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="@dimen/padding_ms">
 
         <TextView
             android:id="@+id/message_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dummy Text To check Data"
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
@@ -53,9 +52,10 @@
 
             <ImageView
                 android:id="@+id/sms_status"
-                android:layout_width="16dp"
-                android:layout_height="7dp"
+                android:layout_width="@dimen/chat_status_width"
+                android:layout_height="@dimen/chat_status_height"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/margin_vvs"
                 android:layout_marginRight="@dimen/margin_vvs"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_sms_delivered" />
@@ -65,7 +65,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|start"
-                android:text="10:00 am"
                 android:textColor="@color/grey_100"
                 android:textSize="@dimen/fontvvs" />
 

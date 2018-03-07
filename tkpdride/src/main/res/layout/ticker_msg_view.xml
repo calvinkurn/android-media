@@ -4,6 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="top|center_horizontal"
+    android:layout_marginBottom="@dimen/margin_vvs"
+    android:layout_marginTop="@dimen/margin_vvs"
     android:orientation="vertical"
     app:layout_anchorGravity="top|center_horizontal">
 

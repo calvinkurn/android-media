@@ -61,6 +61,7 @@ public class UberSMSChatActivity extends BaseActivity implements UberSMSChatCont
     private TextView driverNameTV;
     private Vehicle vehicleDetails;
     private Driver driverDetails;
+    public static final String SCREEN_UBER_SMS_CHAT = "uber sms chat";
 
     @Inject
     UberSMSChatPresenter presenter;
@@ -251,7 +252,7 @@ public class UberSMSChatActivity extends BaseActivity implements UberSMSChatCont
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_UBER_SMS_CHAT;
+        return SCREEN_UBER_SMS_CHAT;
     }
 
     @Override
