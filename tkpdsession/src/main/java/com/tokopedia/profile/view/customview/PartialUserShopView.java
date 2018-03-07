@@ -19,6 +19,7 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
@@ -101,7 +102,7 @@ public class PartialUserShopView extends BaseCustomView {
             ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
             switchOfficialStoreBadge(model.isOfficialShop());
             ImageHandler.LoadImage(ivReputationMedal, model.getShopBadge());
-            tvShopName.setText(model.getShopName());
+            tvShopName.setText(MethodChecker.fromHtml(model.getShopName()));
             tvShopLocation.setText(model.getShopLocation());
             tvLastOnline.setText(model.getShopLastOnline());
             favouriteButton.setVisibility(model.isUser() ? GONE : VISIBLE);

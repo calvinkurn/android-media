@@ -41,7 +41,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="@dimen/space_extra_sm"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/font_title"
                 android:textStyle="normal"
                 android:drawablePadding="@dimen/title_kol_space"
                 android:singleLine="true"
@@ -54,14 +54,14 @@
                 android:id="@+id/button_manage_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_white_enabled_border"
+                android:background="@drawable/background_button_border_gray"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/margin_small"
                 android:paddingBottom="@dimen/new_margin_small"
                 android:paddingTop="@dimen/new_margin_small"
                 android:visibility="gone"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="@dimen/action_icon_size"
@@ -125,8 +125,8 @@
         android:layout_marginBottom="@dimen/title_kol_space"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="@dimen/space_extra_med"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/new_text_size_small"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/new_text_size_input"
         tools:text="Footballer"
         tools:visibility="visible"
         android:visibility="gone"
@@ -141,7 +141,7 @@
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="@dimen/space_extra_xs"
         android:textColor="@color/black_54"
-        android:textSize="@dimen/new_text_size_small"
+        android:textSize="@dimen/new_text_size_input"
         tools:text="I am is an English former professional footballer. He played for Manchester United."
         tools:visibility="visible"
         android:visibility="gone"
@@ -174,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/new_text_size_input"
+                android:textSize="@dimen/font_title"
                 android:textStyle="normal"
                 tools:text="364" />
 
@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_xsmall"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="normal"
                 android:text="@string/following" />
         </LinearLayout>
@@ -210,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/new_text_size_input"
+                android:textSize="@dimen/font_title"
                 android:textStyle="normal"
                 tools:text="1M" />
 
@@ -219,7 +219,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_xsmall"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="normal"
                 android:text="@string/followers" />
         </LinearLayout>
@@ -247,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/new_text_size_input"
+                android:textSize="@dimen/font_title"
                 android:textStyle="normal"
                 tools:text="1.532" />
 
@@ -256,16 +256,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_xsmall"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="normal"
                 android:text="@string/favorite_shop" />
         </LinearLayout>
     </LinearLayout>
-    
-    <View
-        android:id="@+id/header_separator"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="@dimen/separator_size"
-        android:background="@color/grey_400"/>
 </LinearLayout>

@@ -34,4 +34,5 @@
     <color name="background_green_verified">#d4efd5</color>
 
     <color name="disabled_text">#42000000</color>
+    <color name="button_border_grey">#e0e0e0</color>
 </resources>
