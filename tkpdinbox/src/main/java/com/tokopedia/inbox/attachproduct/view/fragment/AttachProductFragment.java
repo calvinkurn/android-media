@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.inbox.attachproduct.di.AttachProductComponent;
@@ -65,6 +66,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         presenter.attachActivityContract(activityContract);
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,7 +113,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onSearchTextChanged(String text) {
-        loadInitialData();
+        if(text!=null && text.length()==0){
+            loadInitialData();
+        }
     }
 
     @Override
@@ -117,6 +125,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     protected void loadInitialData() {
+        adapter.clearAllElements();
         getRecyclerViewLayoutManager().scrollToPosition(0);
         super.loadInitialData();
     }
