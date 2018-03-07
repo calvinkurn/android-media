@@ -109,10 +109,10 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                 getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
             if (selectedPassenger != null) {
                 onSelectPassenger(selectedPassenger);
-            } else {
-                onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
             }
-        } else {
+        } else if (getView().getCurrentPassenger() != null &&
+                selectedPassenger != null &&
+                getView().getCurrentPassenger().getType() != selectedPassenger.getType()) {
             String passengerType = "";
             switch (getView().getCurrentPassenger().getType()) {
                 case FlightBookingPassenger.ADULT:
@@ -126,6 +126,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     break;
             }
             getView().showPassengerSelectedError(passengerType);
+        } else if (selectedPassenger == null) {
+            onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
         }
     }
 
@@ -141,7 +143,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         flightBookingDeletePassengerUseCase.execute(
                 flightBookingDeletePassengerUseCase.generateRequest(passengerId,
                         getView().getRequestId()),
-                new Subscriber<Response<String>>() {
+                new Subscriber<Response<Object>>() {
                     @Override
                     public void onCompleted() {
 
@@ -153,7 +155,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     }
 
                     @Override
-                    public void onNext(Response<String> response) {
+                    public void onNext(Response<Object> response) {
                         clearDatabase();
                     }
                 }
@@ -193,7 +195,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        getView().onGetListError(e);
+
                     }
 
                     @Override

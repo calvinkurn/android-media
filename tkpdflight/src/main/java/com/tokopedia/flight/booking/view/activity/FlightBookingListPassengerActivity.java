@@ -60,6 +60,6 @@ public class FlightBookingListPassengerActivity extends BaseFlightActivity imple
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        return true;
     }
 }

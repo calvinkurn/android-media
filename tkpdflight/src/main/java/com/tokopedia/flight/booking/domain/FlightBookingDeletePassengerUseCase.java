@@ -15,7 +15,7 @@ import rx.functions.Func1;
  * @author by furqan on 05/03/18.
  */
 
-public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String>> {
+public class FlightBookingDeletePassengerUseCase extends UseCase<Response<Object>> {
     private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
     private static final String PARAM_IDEMPOTENCY = "PARAM_IDEMPOTENCY";
     private static final String DEFAULT_PARAM = "";
@@ -27,11 +27,11 @@ public class FlightBookingDeletePassengerUseCase extends UseCase<Response<String
     }
 
     @Override
-    public Observable<Response<String>> createObservable(final RequestParams requestParams) {
+    public Observable<Response<Object>> createObservable(final RequestParams requestParams) {
         return createRequest(requestParams)
-                .flatMap(new Func1<DeletePassengerRequest, Observable<Response<String>>>() {
+                .flatMap(new Func1<DeletePassengerRequest, Observable<Response<Object>>>() {
                     @Override
-                    public Observable<Response<String>> call(DeletePassengerRequest deletePassengerRequest) {
+                    public Observable<Response<Object>> call(DeletePassengerRequest deletePassengerRequest) {
                         return flightRepository.deletePassenger(
                                 deletePassengerRequest,
                                 requestParams.getString(PARAM_IDEMPOTENCY, DEFAULT_PARAM)

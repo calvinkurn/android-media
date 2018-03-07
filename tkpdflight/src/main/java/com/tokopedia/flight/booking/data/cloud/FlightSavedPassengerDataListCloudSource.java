@@ -39,7 +39,7 @@ public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource
                 });
     }
 
-    public Observable<Response<String>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
+    public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return this.flightApi.deleteSavedPassengerData(new DataRequest<>(request), idempotencyKey);
     }
 }

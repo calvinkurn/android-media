@@ -7,18 +7,18 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 import java.util.ArrayList;
@@ -31,7 +31,8 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingListPassengerFragment extends BaseListFragment<FlightBookingPassengerViewModel, FlightBookingListPassengerAdapterTypeFactory>
-        implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingListPassengerContract.View {
+        implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingNewPassengerViewHolder.ListenerClickedNewPassenger,
+        FlightBookingListPassengerContract.View {
 
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
@@ -44,8 +45,6 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Inject
     FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
-    TextView txtNewPassenger;
-    LinearLayout container;
 
     public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
                                                                     String requestId) {
@@ -73,14 +72,6 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_booking_list_passenger, container, false);
-        txtNewPassenger = view.findViewById(R.id.txt_new_passenger);
-        this.container = view.findViewById(R.id.container);
-        txtNewPassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSelectNewPassenger();
-            }
-        });
         return view;
     }
 
@@ -88,7 +79,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.onViewCreated();
+//        presenter.onViewCreated();
     }
 
     @Override
@@ -114,11 +105,12 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void loadData(int page) {
+        renderPassengerList();
     }
 
     @Override
     protected FlightBookingListPassengerAdapterTypeFactory getAdapterTypeFactory() {
-        return new FlightBookingListPassengerAdapterTypeFactory(this);
+        return new FlightBookingListPassengerAdapterTypeFactory(this, this);
     }
 
     @Override
@@ -133,12 +125,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void renderPassengerList() {
-        hideContainer();
         super.isLoadingInitialData = true;
         renderList(flightBookingPassengerViewModelList);
 
-        if (!super.isLoadingInitialData) {
-            showContainer();
+        if (flightBookingPassengerViewModelList.size() > 0) {
+            addNewPassengerElement();
         }
     }
 
@@ -184,6 +175,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         return requestId;
     }
 
+    @Override
+    public void onGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+    }
+
     private void onSelectNewPassenger() {
         presenter.selectPassenger(null);
     }
@@ -193,13 +189,28 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         presenter.deletePassenger(passengerId);
     }
 
-    private void showContainer() {
-        container.setVisibility(View.VISIBLE);
+    private void addNewPassengerElement() {
+        getAdapter().addElement(new FlightBookingNewPassengerViewModel(
+                getString(R.string.flight_list_passenger_add_passenger_label)
+        ));
+
+        getAdapter().notifyDataSetChanged();
     }
 
-    private void hideContainer() {
-        container.setVisibility(View.GONE);
+    @Override
+    public View.OnClickListener onNewPassengerClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectNewPassenger();
+            }
+        };
     }
 
-
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        return new FlightBookingNewPassengerViewModel(
+                getString(R.string.flight_list_passenger_add_passenger_label)
+        );
+    }
 }

@@ -32,6 +32,8 @@ public interface FlightBookingListPassengerContract {
         String getString(int resId);
 
         String getRequestId();
+
+        void onGetListError(Throwable throwable);
     }
 
     interface Presenter {

@@ -60,7 +60,7 @@ public class FlightPassengerDataListSource extends DataListSource<SavedPassenger
         return flightPassengerDataListDBSource.deleteAll();
     }
 
-    public Observable<Response<String>> deletePassenger(DeletePassengerRequest deletePassengerRequest, String idempotencyKey) {
+    public Observable<Response<Object>> deletePassenger(DeletePassengerRequest deletePassengerRequest, String idempotencyKey) {
         return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest, idempotencyKey);
     }
 

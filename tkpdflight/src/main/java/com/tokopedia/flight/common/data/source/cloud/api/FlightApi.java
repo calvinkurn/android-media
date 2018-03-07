@@ -95,6 +95,6 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
-    Observable<Response<String>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
+    Observable<Response<Object>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
 }
