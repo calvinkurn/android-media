@@ -879,9 +879,9 @@ public class DetailResChatFragment
                                     });
                         }
                     });
+                    UnifyTracking.eventTracking(
+                            InboxAnalytics.eventResoChatImpressionGetSolution(resolutionId));
                 }
-                UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatImpressionGetSolution(resolutionId));
             }
 
             if (buttonDomain.getRecomplaint() == 1) {

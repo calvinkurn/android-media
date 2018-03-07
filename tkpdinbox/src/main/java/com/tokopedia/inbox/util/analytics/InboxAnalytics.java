@@ -58,6 +58,8 @@ public class InboxAnalytics {
         String CLICK_CHANGE_AWB_CHAT = "click edit resi on chatbox";
         String CLICK_TRACK_CHAT = "click lacak paket on chatbox";
         String CLICK_SAVE_INPUT_AWB_CHAT = "click simpan from masukkan no resi";
+        String CLICK_SAVE_SOLUTION_EDIT_REFUND = "click simpan from solusi refund from ubah solusi";
+        String CLICK_SAVE_SOLUTION_APPEAL_REFUND = "click simpan from solusi refund from naik banding";
         String CLICK_CANCEL_INPUT_AWB_CHAT = "click kembali from masukkan no resi";
         String CLICK_SAVE_EDIT_AWB_CHAT = "click simpan from edit resi";
         String CLICK_CANCEL_EDIT_AWB_CHAT = "click kembali from edit resi";
@@ -442,6 +444,24 @@ public class InboxAnalytics {
                 Event.EVENT_RESOLUTION_CENTER,
                 Category.RESOLUTION_CENTER_CHAT,
                 Action.CLICK_SOLUTION_EDIT_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoChatClickSolutionContinueEditDetailPage(String resolutionId, String solution) {
+        return new EventTracking(
+                Event.EVENT_RESOLUTION_CENTER,
+                Category.RESOLUTION_CENTER_CHAT,
+                Action.CLICK_SAVE_SOLUTION_EDIT_REFUND,
+                solution
+        ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoChatClickSolutionContinueAppealDetailPage(String resolutionId, String solution) {
+        return new EventTracking(
+                Event.EVENT_RESOLUTION_CENTER,
+                Category.RESOLUTION_CENTER_CHAT,
+                Action.CLICK_SAVE_SOLUTION_APPEAL_REFUND,
                 solution
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
     }

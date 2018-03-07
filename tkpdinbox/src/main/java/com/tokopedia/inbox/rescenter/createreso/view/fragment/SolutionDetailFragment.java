@@ -185,7 +185,19 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
             @Override
             public void onClick(View view) {
                 presenter.onContinueButtonClicked();
-                UnifyTracking.eventCreateResoStep2Continue();
+                if (editAppealSolutionModel == null) {
+                    UnifyTracking.eventCreateResoStep2Continue();
+                } else {
+                    if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickSolutionContinueEditDetailPage(
+                                        editAppealSolutionModel.resolutionId, editAppealSolutionModel.solutionName));
+                    } else {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickSolutionContinueAppealDetailPage(
+                                        editAppealSolutionModel.resolutionId, editAppealSolutionModel.solutionName));
+                    }
+                }
             }
         });
     }

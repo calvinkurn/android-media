@@ -106,13 +106,12 @@ public class ChooseAddressActivity extends BasePresenterActivity {
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
-            if (bundle.get(IS_RESOLUTION) != null && bundle.getBoolean(IS_RESOLUTION)) {
-                if (bundle.get(IS_RESO_CHAT) != null && !bundle.getBoolean(IS_RESO_CHAT)) {
-                    if (bundle.get(IS_EDIT_ADDRESS) != null && bundle.getBoolean(IS_EDIT_ADDRESS)) {
-                        UnifyTracking.eventResoDetailClickBackEditAddressPage(bundle.getString(RESOLUTION_ID));
-                    } else {
-                        UnifyTracking.eventResoDetailClickBackInputAddressPage(bundle.getString(RESOLUTION_ID));
-                    }
+            if (bundle.get(IS_RESOLUTION) != null && bundle.getBoolean(IS_RESOLUTION) &&
+                    bundle.get(IS_RESO_CHAT) != null && !bundle.getBoolean(IS_RESO_CHAT)) {
+                if (bundle.get(IS_EDIT_ADDRESS) != null && bundle.getBoolean(IS_EDIT_ADDRESS)) {
+                    UnifyTracking.eventResoDetailClickBackEditAddressPage(bundle.getString(RESOLUTION_ID));
+                } else {
+                    UnifyTracking.eventResoDetailClickBackInputAddressPage(bundle.getString(RESOLUTION_ID));
                 }
             }
         }
