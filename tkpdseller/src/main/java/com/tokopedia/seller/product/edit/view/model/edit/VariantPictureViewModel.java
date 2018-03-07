@@ -3,22 +3,31 @@ package com.tokopedia.seller.product.edit.view.model.edit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class VariantPictureViewModel extends BasePictureViewModel implements Parcelable{
+public class VariantPictureViewModel extends BasePictureViewModel implements Parcelable {
 
-    @SerializedName(value="v_pic_id", alternate={"id"})
+    @SerializedName(value = "v_pic_id", alternate = {"id"})
     @Expose
-    private String id;
+    private long id;
 
     public String getId() {
-        return id;
+        if (id <= 0) {
+            return "";
+        } else {
+            return String.valueOf(id);
+        }
     }
 
     public void setId(String id) {
-        this.id = id;
+        if (TextUtils.isEmpty(id)) {
+            this.id = 0;
+        } else {
+            this.id = Long.parseLong(id);
+        }
     }
 
     @Override
@@ -28,7 +37,7 @@ public class VariantPictureViewModel extends BasePictureViewModel implements Par
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeLong(this.id);
         dest.writeLong(this.status);
         dest.writeString(this.fileName);
         dest.writeString(this.filePath);
@@ -43,7 +52,7 @@ public class VariantPictureViewModel extends BasePictureViewModel implements Par
     }
 
     protected VariantPictureViewModel(Parcel in) {
-        this.id = in.readString();
+        this.id = in.readLong();
         this.status = in.readLong();
         this.fileName = in.readString();
         this.filePath = in.readString();

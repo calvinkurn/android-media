@@ -107,7 +107,6 @@ public class UploadProductImageUseCase extends UseCase<ProductViewModel> {
                     productPictureViewModel.setFileName(resultUploadedViewModel.getFileName());
                     productPictureViewModel.setX(Long.parseLong(resultUploadedViewModel.getW()));
                     productPictureViewModel.setY(Long.parseLong(resultUploadedViewModel.getH()));
-                    productPictureViewModel.setId(resultUploadedViewModel.getPId());
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
