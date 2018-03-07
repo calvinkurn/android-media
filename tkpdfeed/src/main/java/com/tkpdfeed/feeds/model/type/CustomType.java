@@ -1,4 +1,4 @@
-package com.tkpdfeed.feeds.model.type;
+package com.tkpdfeed.feeds.type;
 
 import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;

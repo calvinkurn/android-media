@@ -1,4 +1,4 @@
-package com.tkpdfeed.feeds.model;
+package com.tkpdfeed.feeds;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import com.tkpdfeed.feeds.model.type.CustomType;
+import com.tkpdfeed.feeds.type.CustomType;
 
 import java.io.IOException;
 import java.util.Collections;
