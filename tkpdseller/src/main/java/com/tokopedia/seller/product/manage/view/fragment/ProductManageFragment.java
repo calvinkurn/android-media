@@ -615,7 +615,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.getProductName());
-        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        if(productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)){
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads);
+        }else{
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        }
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog();
