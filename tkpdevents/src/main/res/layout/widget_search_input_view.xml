@@ -44,7 +44,7 @@
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_close" />
+            app:srcCompat="@drawable/ic_close_default" />
     </LinearLayout>
 
 </FrameLayout>

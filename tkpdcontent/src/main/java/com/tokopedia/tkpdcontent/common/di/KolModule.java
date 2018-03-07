@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdcontent.common.di;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.tkpdcontent.common.data.source.KolAuthInterceptor;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
 
@@ -24,12 +24,12 @@ public class KolModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                         httpLoggingInterceptor,
-                                            TkpdAuthInterceptor tkpdAuthInterceptor) {
+                                            KolAuthInterceptor kolAuthInterceptor) {
         return new OkHttpClient.Builder()
                 .readTimeout(1, TimeUnit.MINUTES)
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(kolAuthInterceptor)
                 .build();
     }
 

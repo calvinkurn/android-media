@@ -50,4 +50,13 @@ gradlew.bat
 node_modules/
 jsconfig.json
 
-true/
+# buck
+.buckconfig.local
+.buckd/
+.okbuck/
+.watchmanconfig
+buck-out/
+buckw
+BUCK
+.buckconfig
+.settings

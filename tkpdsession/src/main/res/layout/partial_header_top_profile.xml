@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
-    android:paddingTop="16dp"
+    android:paddingTop="@dimen/new_margin_med"
     android:background="@color/white"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
@@ -15,17 +15,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/new_margin_med"
         android:orientation="horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med">
 
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginEnd="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
             tools:src="@drawable/ic_set_profile" />
 
         <LinearLayout
@@ -39,11 +39,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:lineSpacingExtra="5sp"
+                android:lineSpacingExtra="@dimen/space_extra_sm"
                 android:textColor="@color/black_70"
-                android:textSize="14sp"
+                android:textSize="@dimen/font_small"
                 android:textStyle="normal"
-                android:drawablePadding="4dp"
+                android:drawablePadding="@dimen/title_kol_space"
                 android:singleLine="true"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -57,27 +57,27 @@
                 android:background="@drawable/bg_button_white_enabled_border"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:paddingBottom="@dimen/new_margin_small"
+                android:paddingTop="@dimen/new_margin_small"
                 android:visibility="gone"
                 tools:visibility="gone">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_width="@dimen/action_icon_size"
+                    android:layout_height="@dimen/action_icon_size"
+                    android:layout_marginEnd="@dimen/card_view_margin"
+                    android:layout_marginRight="@dimen/card_view_margin"
                     android:gravity="center_horizontal"
-                    android:src="@drawable/icon_setting" />
+                    app:srcCompat="@drawable/icon_setting" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:lineSpacingExtra="5sp"
+                    android:lineSpacingExtra="@dimen/space_extra_sm"
                     android:textColor="@color/black_54"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/new_text_size_small"
                     android:text="@string/manage_profile"/>
             </LinearLayout>
 
@@ -88,29 +88,29 @@
                 android:background="@drawable/bg_button_green_enabled"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:paddingBottom="@dimen/new_margin_small"
+                android:paddingTop="@dimen/new_margin_small"
                 android:visibility="gone"
                 tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/button_follow_image"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_width="@dimen/action_icon_size"
+                    android:layout_height="@dimen/action_icon_size"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
                     android:gravity="center_horizontal"
-                    android:src="@drawable/ic_new_action_plus" />
+                    app:srcCompat="@drawable/ic_new_action_plus" />
 
                 <TextView
                     android:id="@+id/button_follow_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:lineSpacingExtra="5sp"
+                    android:lineSpacingExtra="@dimen/space_extra_sm"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/new_text_size_small"
                     android:text="@string/follow"/>
             </LinearLayout>
 
@@ -122,40 +122,39 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/title_kol_space"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="7sp"
+        android:lineSpacingExtra="@dimen/space_extra_med"
         android:textColor="@color/black_54"
-        android:textSize="12sp"
+        android:textSize="@dimen/new_text_size_small"
         tools:text="Footballer"
         tools:visibility="visible"
         android:visibility="gone"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"/>
 
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/new_margin_med"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="4sp"
+        android:lineSpacingExtra="@dimen/space_extra_xs"
         android:textColor="@color/black_54"
-        android:textSize="12sp"
+        android:textSize="@dimen/new_text_size_small"
         tools:text="I am is an English former professional footballer. He played for Manchester United."
         tools:visibility="visible"
         android:visibility="gone"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/new_margin_sm"
         android:orientation="horizontal"
-        android:weightSum="3"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"
         android:gravity="center">
 
         <LinearLayout
@@ -175,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="14sp"
+                android:textSize="@dimen/new_text_size_input"
                 android:textStyle="normal"
                 tools:text="364" />
 
@@ -184,13 +183,13 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_xsmall"
                 android:textStyle="normal"
                 android:text="@string/following" />
         </LinearLayout>
 
         <View
-            android:layout_width="0.5dp"
+            android:layout_width="@dimen/separator_size"
             android:layout_height="match_parent"
             android:background="@color/grey_300"/>
 
@@ -211,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="14sp"
+                android:textSize="@dimen/new_text_size_input"
                 android:textStyle="normal"
                 tools:text="1M" />
 
@@ -220,16 +219,16 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_xsmall"
                 android:textStyle="normal"
                 android:text="@string/followers" />
         </LinearLayout>
 
         <View
             android:id="@+id/followers_separator"
-            android:layout_width="0.5dp"
+            android:layout_width="@dimen/separator_size"
             android:layout_height="match_parent"
-            android:background="@color/grey_300" />
+            android:background="@color/grey_300"/>
 
         <LinearLayout
             android:id="@+id/favorite_shop_layout"
@@ -248,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="14sp"
+                android:textSize="@dimen/new_text_size_input"
                 android:textStyle="normal"
                 tools:text="1.532" />
 
@@ -257,7 +256,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_38"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_xsmall"
                 android:textStyle="normal"
                 android:text="@string/favorite_shop" />
         </LinearLayout>
@@ -267,6 +266,6 @@
         android:id="@+id/header_separator"
         android:layout_width="match_parent"
         android:visibility="gone"
-        android:layout_height="0.5dp"
+        android:layout_height="@dimen/separator_size"
         android:background="@color/grey_400"/>
 </LinearLayout>

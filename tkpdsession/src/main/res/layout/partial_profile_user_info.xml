@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,7 +60,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/info_icon" />
+                    app:srcCompat="@drawable/info_icon" />
             </LinearLayout>
 
             <TextView
@@ -117,7 +118,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/info_icon" />
+                    app:srcCompat="@drawable/info_icon" />
             </LinearLayout>
 
             <RelativeLayout
@@ -147,7 +148,7 @@
                         android:id="@+id/iv_reputation_summary"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_reputation_positive" />
+                        app:srcCompat="@drawable/ic_reputation_positive" />
 
                     <TextView
                         android:id="@+id/tv_reputation_summary"
@@ -187,7 +188,7 @@
                             android:layout_height="20dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_reputation_positive" />
+                            app:srcCompat="@drawable/ic_reputation_positive" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -224,7 +225,7 @@
                             android:layout_height="20dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_reputation_netral" />
+                            app:srcCompat="@drawable/ic_reputation_netral" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -259,7 +260,7 @@
                             android:layout_height="20dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_reputation_negative" />
+                            app:srcCompat="@drawable/ic_reputation_negative" />
 
                         <TextView
                             android:layout_width="wrap_content"

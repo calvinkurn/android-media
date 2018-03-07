@@ -44,7 +44,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
 
-    private static final String DEVICE_ID = "4";
+    private static final String DEVICE_ID = "5";
     private static final String CATEGORY_ID = "27";
     private static final int MAX_PASSENGER_VALUE = 7;
     private static final int MAX_TWO_YEARS = 2;

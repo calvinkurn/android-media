@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/margin_small_header"
     android:background="@color/white"
     android:orientation="vertical"
@@ -64,7 +65,7 @@
                         android:layout_height="@dimen/large_dp"
                         android:layout_marginEnd="@dimen/margin_vs"
                         android:layout_marginRight="@dimen/margin_vs"
-                        android:src="@drawable/ic_shop_gold"
+                        app:srcCompat="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
@@ -74,7 +75,7 @@
                         android:layout_height="@dimen/large_dp"
                         android:layout_marginEnd="@dimen/margin_vs"
                         android:layout_marginRight="@dimen/margin_vs"
-                        android:src="@drawable/ic_badge_official"
+                        app:srcCompat="@drawable/ic_badge_official"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
@@ -142,7 +143,7 @@
                     android:layout_height="18dp"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/ic_location_grey" />
+                    app:srcCompat="@drawable/ic_location_grey" />
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -169,7 +170,7 @@
                     android:layout_height="18dp"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/icon_time_grey" />
+                    app:srcCompat="@drawable/icon_time_grey" />
 
                 <TextView
                     android:id="@+id/tv_last_online"
