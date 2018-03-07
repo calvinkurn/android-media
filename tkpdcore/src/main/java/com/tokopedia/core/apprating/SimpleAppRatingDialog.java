@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SimpleAppRatingDialog extends AppRatingDialog {
     private static final String HIDE_SIMPLE_APP_RATING = "HideSimpleAppRating";
+    private static final String DEFAULT_VALUE = "1";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
 
     public static void show(Activity activity) {
@@ -89,7 +90,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     private void hideDialog() {
         globalCacheManager.setCacheDuration(EXPIRED_TIME);
         globalCacheManager.setKey(HIDE_SIMPLE_APP_RATING);
-        globalCacheManager.setValue("1");
+        globalCacheManager.setValue(DEFAULT_VALUE);
         globalCacheManager.store();
     }
 

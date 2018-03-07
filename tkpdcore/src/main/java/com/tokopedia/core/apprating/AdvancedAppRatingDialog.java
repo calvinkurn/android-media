@@ -23,6 +23,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
     private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
     private static final String HIDE_ADVANCED_APP_RATING = "HideAdvancedAppRating";
+    private static final String DEFAULT_VALUE = "1";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
 
     private AlertDialog dialog;
@@ -84,7 +85,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     private void hideDialog() {
         globalCacheManager.setCacheDuration(EXPIRED_TIME);
         globalCacheManager.setKey(HIDE_ADVANCED_APP_RATING);
-        globalCacheManager.setValue("1");
+        globalCacheManager.setValue(DEFAULT_VALUE);
         globalCacheManager.store();
     }
 
