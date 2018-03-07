@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <ProgressBar
@@ -65,13 +66,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
+                    <com.tokopedia.design.textview.Edittext
                         android:id="@+id/ref_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/title_reference_number"
-                        android:drawableRight="@drawable/ic_select_awb"
-                        android:drawableEnd="@drawable/ic_select_awb"
+                        app:drawableRightCompat="@drawable/ic_select_awb"
                         android:maxLength="17"/>
 
                 </android.support.design.widget.TextInputLayout>

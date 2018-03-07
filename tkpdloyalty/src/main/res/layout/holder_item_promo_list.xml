@@ -82,15 +82,14 @@
                 app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/tv_label_code_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_code_promo"
                 android:layout_toRightOf="@id/iv_code_promo"
-                android:drawableEnd="@drawable/info_icon"
+                app:drawableRightCompat="@drawable/info_icon"
                 android:drawablePadding="@dimen/padding_vs"
-                android:drawableRight="@drawable/info_icon"
                 android:text="@string/label_promo_code_loyalty_module"
                 android:textColor="@color/grey_600"
                 android:textSize="12sp"/>

@@ -113,7 +113,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_med">
 
-            <EditText
+            <com.tokopedia.design.textview.Edittext
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/phone"
@@ -122,8 +122,7 @@
                 android:enabled="false"
                 android:inputType="phone"
                 android:textSize="@dimen/font_small"
-                android:drawableRight="@drawable/ic_check"
-                />
+                app:drawableRightCompat="@drawable/ic_check"/>
 
         </android.support.design.widget.TextInputLayout>
 

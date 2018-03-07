@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -12,11 +13,11 @@
         android:padding="10dp"
         android:orientation="horizontal">
 
-        <EditText
+        <com.tokopedia.design.textview.Edittext
             android:id="@+id/dynamic_filter_other_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableRight="@drawable/ic_search_black_24dp"
+            app:drawableRightCompat="@drawable/ic_search_black_24dp"
             android:drawableTint="@color/red_300"
             android:maxLines="1"
             android:imeOptions="actionSearch"

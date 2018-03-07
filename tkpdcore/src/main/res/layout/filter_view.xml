@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/cards_ui_flat"
     android:orientation="vertical">
 
@@ -18,12 +19,12 @@
             android:layout_height="0.5dp"
             android:background="#AAAAAA" />
 
-        <TextView
+        <com.tokopedia.design.textview.TextView
             android:id="@+id/filter_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableRight="@drawable/ic_expand_less_black_24dp"
+            app:drawableRightCompat="@drawable/ic_expand_less_black_24dp"
             android:gravity="center"
             android:padding="10dp"
             android:text="Filter"

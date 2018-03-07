@@ -91,16 +91,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/separator">
 
-        <TextView
+        <com.tokopedia.design.textview.TextView
             android:id="@+id/button_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:drawableEnd="@drawable/page_2"
+            app:drawableRightCompat="@drawable/page_2"
             android:drawablePadding="@dimen/margin_small"
-            android:drawableRight="@drawable/page_2"
             android:text="@string/lihat_detail"
             android:textColor="@color/tkpd_main_green"
             android:visibility="gone"

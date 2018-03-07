@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:padding="@dimen/padding_small" >
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:id="@+id/scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableRight="@drawable/ic_photography"
+        app:drawableRightCompat="@drawable/ic_photography"
         android:text="@string/title_reference_number"
         android:textColor="@color/label_color" />
 

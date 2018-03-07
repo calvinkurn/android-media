@@ -92,15 +92,14 @@
                 android:layout_height="wrap_content"
                 android:text="Rp 52.000" />
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/pending_cashback_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/small_dp"
                 android:layout_marginStart="@dimen/small_dp"
-                android:drawableEnd="@drawable/info_icon"
+                app:drawableRightCompat="@drawable/info_icon"
                 android:drawablePadding="@dimen/margin_vvs"
-                android:drawableRight="@drawable/info_icon"
                 android:gravity="center_vertical"
                 android:text="@string/pending_cashback_info"
                 android:textSize="@dimen/fontvvs" />
