@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraft
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.SubmitProductUseCase;
 import com.tokopedia.seller.product.edit.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -30,15 +31,18 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     private final SubmitProductUseCase uploadProductUseCase;
     private final DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private final UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
+    private final ProductUploadMapper addUploadMapper;
 
     public AddProductServicePresenterImpl(FetchDraftProductUseCase fetchDraftProductUseCase,
                                           SubmitProductUseCase uploadProductUseCase,
                                           DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
+                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                          ProductUploadMapper addUploadMapper) {
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
         this.uploadProductUseCase = uploadProductUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
+        this.addUploadMapper = addUploadMapper;
     }
 
     @Override
@@ -123,12 +127,13 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
         int count = 0;
         List<ProductPictureViewModel> productPictureViewModelList = productViewModel.getProductPictureViewModelList();
         if (productPictureViewModelList != null) {
-            for (ProductPictureViewModel productPictureViewModel: productPictureViewModelList) {
+            for (ProductPictureViewModel productPictureViewModel : productPictureViewModelList) {
                 if (TextUtils.isEmpty(productPictureViewModel.getId())) {
                     count++;
                 }
             }
         }
+        count += addUploadMapper.getVariantPictureViewModelList(productViewModel).size();
         return count;
     }
 }

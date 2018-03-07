@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class ProductVariantOptionChild implements Parcelable{
 
     @SerializedName("image")
     @Expose
-    private List<VariantPictureViewModel> productPictureViewModelList;
+    private List<VariantPictureViewModel> productPictureViewModelList = new ArrayList<>();
 
     @SerializedName("hex")
     @Expose

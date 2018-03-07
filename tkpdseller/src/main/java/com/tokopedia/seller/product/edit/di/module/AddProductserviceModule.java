@@ -55,8 +55,9 @@ public class AddProductserviceModule {
     AddProductServicePresenter provideAddProductServicePresenter(FetchDraftProductUseCase fetchDraftProductUseCase,
                                                                  SubmitProductUseCase uploadProductUseCase,
                                                                  DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                                                 UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
-        return new AddProductServicePresenterImpl(fetchDraftProductUseCase, uploadProductUseCase, deleteSingleDraftProductUseCase, updateUploadingDraftProductUseCase);
+                                                                 UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                                                 ProductUploadMapper productUploadMapper) {
+        return new AddProductServicePresenterImpl(fetchDraftProductUseCase, uploadProductUseCase, deleteSingleDraftProductUseCase, updateUploadingDraftProductUseCase, productUploadMapper);
     }
 
     @AddProductServiceScope
