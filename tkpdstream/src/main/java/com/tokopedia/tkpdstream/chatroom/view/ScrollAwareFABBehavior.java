@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by stevenfredian on 5/18/16.
+ * @author by stevenfredian on 5/18/16.
  */
 //DO NOT DELETE THIS CLASS IT'S USED IN XML LAYOUT
 public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {

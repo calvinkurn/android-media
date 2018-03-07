@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.channel.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.tkpdstream.R;
 
 /**
- * Created by StevenFredian on 14/02/18.
+ * @author by StevenFredian on 14/02/18.
  */
 
 public class VoteOptionBar extends FrameLayout{

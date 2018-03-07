@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.chatroom.di;
 
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.common.data.VoteApi;
-import com.tokopedia.tkpdstream.common.data.VoteUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
 import com.tokopedia.tkpdstream.common.di.qualifier.VoteQualifier;
 

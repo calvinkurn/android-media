@@ -1,10 +1,8 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

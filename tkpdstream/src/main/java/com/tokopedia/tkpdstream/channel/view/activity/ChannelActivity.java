@@ -3,10 +3,10 @@ package com.tokopedia.tkpdstream.channel.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
-import com.tokopedia.tkpdstream.common.BaseStreamActivity;
 
-public class ChannelActivity extends BaseStreamActivity {
+public class ChannelActivity extends BaseSimpleActivity {
 
     public static final int RESULT_ERROR_LOGIN = 101;
     public static final String RESULT_MESSAGE = "result_message";

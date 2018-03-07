@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.common;
 
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 

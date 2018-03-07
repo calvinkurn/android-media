@@ -65,7 +65,6 @@ public class ShareLayout {
         this.analytics = analytics;
         initVar(fragment.getActivity());
         initAdapter();
-        setListener();
         setShareList();
     }
 
@@ -112,8 +111,6 @@ public class ShareLayout {
                 R.drawable.ic_btn_other), activity.getString(R.string.share_others), shareOthers(activity.getString(R.string.share_others))));
         adapter.setList(list);
     }
-
-
 
     private View.OnClickListener shareOthers(final String channelType) {
         return new View.OnClickListener() {
@@ -211,9 +208,6 @@ public class ShareLayout {
                     activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
             }
         };
-    }
-
-    private void setListener() {
     }
 
     protected View.OnClickListener shareCopyLink(final String channelType) {

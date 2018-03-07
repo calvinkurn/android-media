@@ -87,7 +87,7 @@ public class StreamAnalytics {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
-                componentType+" "+componentName;
+                componentType+" "+componentName
         );
     }
 

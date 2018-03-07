@@ -3,7 +3,6 @@ package com.tokopedia.tkpdstream.vote.domain.source;
 import com.tokopedia.tkpdstream.common.data.VoteApi;
 import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 import com.tokopedia.tkpdstream.vote.domain.mapper.SendVoteMapper;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 
 import java.util.HashMap;
