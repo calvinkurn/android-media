@@ -1334,4 +1334,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             actionOpenGeneralWebView(activity, url);
         }
     }
+
+    @Override
+    public boolean isEnabledGroupChat() {
+//        return  remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
+        return false;
+    }
 }

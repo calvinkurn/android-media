@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,8 +22,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -30,6 +29,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
@@ -49,7 +49,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private static final int POSITION_GROUP_CHAT = 1;
 
     private static final String ACTIVE_INDICATOR_POSITION = "active";
-    private static final int REQUEST_LOGIN = 101;
     IndicatorAdapter indicatorAdapter;
     RecyclerView indicator;
 
@@ -69,11 +68,22 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         Intent destination;
 
-            destination = new Intent(context, InboxChatActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
+        destination = new Intent(context, InboxChatActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
 
         return destination;
+    }
+
+    @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
+    public static TaskStackBuilder getCallingTaskStack(Context context) {
+        Intent homeIntent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(channelListIntent);
+        return taskStackBuilder;
     }
 
     @Override
@@ -130,6 +140,13 @@ public class InboxChatActivity extends DrawerPresenterActivity
                 .HORIZONTAL, false));
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
+
+        if (getApplicationContext() instanceof TkpdInboxRouter
+                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat()) {
+            indicator.setVisibility(View.GONE);
+        } else {
+            indicator.setVisibility(View.VISIBLE);
+        }
 
         if (getIntent().getExtras() != null
                 && getIntent().getExtras().getInt(ACTIVE_INDICATOR_POSITION, -1) != -1) {

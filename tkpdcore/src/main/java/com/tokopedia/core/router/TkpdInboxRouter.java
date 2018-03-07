@@ -17,6 +17,8 @@ public interface TkpdInboxRouter {
     String PRODUCT = "product";
     String PROFILE = "profile";
 
+    String ENABLE_GROUPCHAT = "ENABLE_GROUPCHAT";
+
 
     Intent getAskBuyerIntent(Context context, String toUserId,
                              String customerName, String customSubject,
@@ -44,4 +46,6 @@ public interface TkpdInboxRouter {
     String getChannelFragmentTag();
 
     Intent getLoginIntent(Context context);
+
+    boolean isEnabledGroupChat();
 }
