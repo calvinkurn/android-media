@@ -621,9 +621,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionInputAwbNumberClick(boolean isFromButton) {
         if (isFromButton)
-            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAddAWB(resolutionID));
-        else
             UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickInputAwb(resolutionID));
+        else
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAddAWB(resolutionID));
         startActivityForResult(
                 InputShippingActivity.createNewPageIntentFromDetail(getActivity(), getResolutionID()),
                 REQUEST_INPUT_SHIPPING

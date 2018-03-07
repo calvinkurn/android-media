@@ -95,6 +95,7 @@ public class EditAppealSolutionModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isChatReso ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isEdit ? (byte) 1 : (byte) 0);
         dest.writeString(this.resolutionId);
         dest.writeByte(this.isSeller ? (byte) 1 : (byte) 0);
@@ -105,6 +106,7 @@ public class EditAppealSolutionModel implements Parcelable {
     }
 
     protected EditAppealSolutionModel(Parcel in) {
+        this.isChatReso = in.readByte() != 0;
         this.isEdit = in.readByte() != 0;
         this.resolutionId = in.readString();
         this.isSeller = in.readByte() != 0;

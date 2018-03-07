@@ -36,7 +36,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     public static Intent newBuyerEditInstance(Context context,
                                               String resolutionID,
-                                              Boolean isChatReso) {
+                                              boolean isChatReso) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
@@ -57,7 +57,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     public static Intent newSellerEditInstance(Context context,
                                                String resolutionID,
-                                               Boolean isChatReso) {
+                                               boolean isChatReso) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
@@ -173,6 +173,6 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     }
 
     public static boolean isEditFromChatReso(EditAppealSolutionModel model) {
-        return model.isEdit && model.isChatReso;
+        return model.isEdit() && model.isChatReso();
     }
 }
