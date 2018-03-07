@@ -3,9 +3,11 @@ package com.tokopedia.transaction.checkout.view.view.cartlist;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -665,30 +667,46 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
-                new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-                    @Override
-                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteCart(removedCartItem, false);
-                    }
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(
+                cartItemDataList,
+                emptyData,
+                getCallbackActionDialogRemoveCart());
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(dialog, CartRemoveItemDialog.DIALOG_FRAGMENT_TAG);
+        ft.commitAllowingStateLoss();
+    }
 
-                    @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteCart(removedCartItem, true);
-                    }
+    @NonNull
+    private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
+        return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
+            @Override
+            public void onDeleteSingleItemClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteCart(removedCartItem, false);
+            }
 
-                    @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
-                    }
+            @Override
+            public void onDeleteSingleItemWithWishListClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteCart(removedCartItem, true);
+            }
 
-                    @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
-                    }
-                });
+            @Override
+            public void onDeleteMultipleItemClicked(
+                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
+            }
 
-        dialog.show(getFragmentManager(), "dialog");
+            @Override
+            public void onDeleteMultipleItemWithWishListClicked(
+                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
+            }
+        };
     }
 
     public static CartFragment newInstance() {
@@ -783,6 +801,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                         CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
                 );
                 dPresenter.processToShipmentMultipleAddress(selectedAddress);
+            } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT) {
+                dPresenter.processResetAndRefreshCartData();
+            } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
+                dPresenter.processResetThenToShipmentForm();
             }
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
             if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
