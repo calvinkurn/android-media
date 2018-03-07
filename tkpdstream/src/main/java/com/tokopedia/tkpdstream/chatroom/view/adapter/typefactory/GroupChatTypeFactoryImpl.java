@@ -26,9 +26,11 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewMode
 public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements GroupChatTypeFactory {
 
     GroupChatContract.View.ImageViewHolderListener imageListener;
+    GroupChatContract.View.VoteAnnouncementViewHolderListener voteAnnouncementViewHolderListener;
 
     public GroupChatTypeFactoryImpl(GroupChatFragment fragment) {
         imageListener = fragment;
+        voteAnnouncementViewHolderListener = fragment;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
         } else if (type == ImageViewHolder.LAYOUT) {
             viewHolder = new ImageViewHolder(parent, imageListener);
         } else if (type == VoteAnnouncementViewHolder.LAYOUT) {
-            viewHolder = new VoteAnnouncementViewHolder(parent, imageListener);
+            viewHolder = new VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

@@ -22,7 +22,7 @@ public class StreamAnalytics {
     private String EVENT_ACTION_SHARE_CHANNEL = "click share channel";
     private String EVENT_ACTION_JOIN_VOTE_NOW = "click on join";
     private String EVENT_ACTION_CLICK_THUMBNAIL= "click on image thumbnail";
-    private String EVENT_ACTION_CLICK_VOTE_COMPONENT= "click on vote component";
+    private String EVENT_ACTION_CLICK_VOTE_COMPONENT= "click on component - ";
     private String EVENT_ACTION_CLICK_VOTE_EXPAND= "click on vote expand";
     private String EVENT_ACTION_CLICK_COMMUNITY_TAB= "click on community tab";
 
@@ -43,11 +43,11 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickVote(String type) {
+    public void eventClickVote(String type, String channelUrl) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VOTE,
-                type
+                type+" - "+channelUrl
         );
     }
 
@@ -59,11 +59,11 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickShareChannel(String channelType) {
+    public void eventClickShareChannel(String channelType, String channelUrl) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_SHARE,
                 EVENT_CATEGORY_SHARE,
                 EVENT_ACTION_SHARE_CHANNEL,
-                channelType
+                channelType+" - "+channelUrl
         );
     }
 
@@ -83,11 +83,11 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickVoteComponent() {
+    public void eventClickVoteComponent(String componentType, String componentName) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_VOTE_COMPONENT,
-                ""
+                EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
+                componentType+" "+componentName;
         );
     }
 

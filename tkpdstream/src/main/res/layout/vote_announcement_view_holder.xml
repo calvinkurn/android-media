@@ -55,6 +55,7 @@
         android:padding="@dimen/space_average"
         android:layout_marginLeft="@dimen/space_small"
         android:layout_marginStart="@dimen/space_small"
+        android:maxWidth="@dimen/max_size_bubble"
         android:background="@drawable/chat_vote_background">
 
         <ImageView
@@ -69,7 +70,7 @@
         <TextView
             android:id="@+id/vote_title"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginEnd="@dimen/new_margin_small"
             android:layout_marginStart="@dimen/new_margin_small"
             android:fontFamily="sans-serif-medium"
@@ -86,7 +87,6 @@
             android:id="@+id/vote_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/max_size_bubble"
             android:layout_marginTop="@dimen/new_margin_small"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"

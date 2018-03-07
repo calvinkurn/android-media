@@ -28,9 +28,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     TextView voteTitle;
     TextView voteQuestion;
     Context context;
-    private final GroupChatContract.View.ImageViewHolderListener listener;
+    private final GroupChatContract.View.VoteAnnouncementViewHolderListener listener;
 
-    public VoteAnnouncementViewHolder(View itemView, GroupChatContract.View.ImageViewHolderListener imageListener) {
+    public VoteAnnouncementViewHolder(View itemView, GroupChatContract.View.VoteAnnouncementViewHolderListener imageListener) {
         super(itemView);
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);
@@ -39,7 +39,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     }
 
     @Override
-    public void bind(VoteAnnouncementViewModel element) {
+    public void bind(final VoteAnnouncementViewModel element) {
         super.bind(element);
         switch (element.getVoteType()) {
             case VoteAnnouncementViewModel.POLLING_START:
@@ -56,7 +56,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onVoteComponentClicked();
+                listener.onVoteComponentClicked("vote", element.getMessage());
             }
         });
     }
