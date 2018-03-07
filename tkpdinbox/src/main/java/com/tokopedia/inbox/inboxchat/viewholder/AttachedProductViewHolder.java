@@ -45,6 +45,7 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
     TextView hour;
     TextView date;
     ImageView chatStatus;
+    private View chatBalloon;
     private TextView name;
     private TextView label;
     private TextView dot;
@@ -64,17 +65,15 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
         super(itemView);
         this.context = itemView.getContext();
         view = itemView;
-//        message = itemView.findViewById(R.id.message);
         hour = itemView.findViewById(R.id.hour);
         date = itemView.findViewById(R.id.date);
         chatStatus = itemView.findViewById(R.id.chat_status);
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
-//        attachment = itemView.findViewById(R.id.image);
         action = itemView.findViewById(R.id.left_action);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
-//        attachmentChatHelper = new AttachmentChatHelper();
+        chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
         this.viewListener = viewListener;
     }
 
@@ -127,16 +126,7 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
         if(destination instanceof TextView)
             ((TextView)destination).setText(value);
         else if(destination instanceof ImageView) {
-//            Glide.with(view.getContext())
-//                    .load(value)
-//                    .asBitmap()
-//                    .dontAnimate()
-//                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-//                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-//                    .into(getRoundedImageViewTarget((ImageView)destination,12.0f));
-//            ImageHandler.loadImageRounded2Target();
             ImageHandler.loadImageRounded2(destination.getContext(),(ImageView) destination,value);
-//            ImageHandler.loadImageAndCache(, value);
             this.thumbnailsImage = (ImageView) destination;
         }
     }
@@ -149,6 +139,12 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
             @Override
             public void onClick(View v) {
                 KeyboardHandler.DropKeyboard(itemView.getContext(), view);
+            }
+        });
+
+        chatBalloon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 if(productId != null && productName != null && productPrice != null){
                     viewListener.productClicked(productId,productName,productPrice,dateTimeInMilis);
                 }

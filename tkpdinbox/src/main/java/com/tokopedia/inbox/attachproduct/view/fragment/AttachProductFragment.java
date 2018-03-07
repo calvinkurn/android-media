@@ -201,7 +201,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
-        emptyResultViewModel.setDescription(getString(R.string.string_attach_product_empty_product));
+        emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
         emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
         if(activityContract.isSeller()) {
             emptyResultViewModel.setButtonTitleRes(R.string.string_attach_product_add_product_now);

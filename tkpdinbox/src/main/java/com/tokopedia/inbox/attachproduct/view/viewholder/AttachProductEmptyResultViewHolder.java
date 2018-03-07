@@ -13,6 +13,7 @@ public class AttachProductEmptyResultViewHolder extends EmptyResultViewHolder {
     public AttachProductEmptyResultViewHolder(View itemView) {
         super(itemView);
 //        this.emptyIconImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//        emptyTitleTextView.
     }
 
     public AttachProductEmptyResultViewHolder(View itemView, Callback callback) {
