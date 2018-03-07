@@ -8,8 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
-import com.tokopedia.transaction.checkout.view.util.PeopleAddressAuthUtil;
+import com.tokopedia.transaction.checkout.domain.usecase.GetPeopleAddressUseCase;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -35,12 +34,12 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     private static final String DEFAULT_QUERY = "";
     private static final int DEFAULT_PAGE = 1;
 
-    private GetDefaultAddressUseCase mGetDefaultAddressUseCase;
+    private GetPeopleAddressUseCase mGetPeopleAddressUseCase;
     private RecipientAddressModel mSelectedRecipientAddress;
 
     @Inject
-    public CartAddressChoicePresenter(GetDefaultAddressUseCase getDefaultAddressUseCase) {
-        mGetDefaultAddressUseCase = getDefaultAddressUseCase;
+    public CartAddressChoicePresenter(GetPeopleAddressUseCase getPeopleAddressUseCase) {
+        mGetPeopleAddressUseCase = getPeopleAddressUseCase;
     }
 
     @Override
@@ -51,14 +50,14 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public void detachView() {
         super.detachView();
-        mGetDefaultAddressUseCase.unsubscribe();
+        mGetPeopleAddressUseCase.unsubscribe();
     }
 
     @Override
     public void getAddressShortedList(Context context) {
         getView().showLoading();
-        mGetDefaultAddressUseCase.execute(
-                PeopleAddressAuthUtil.getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
+        mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
+                        .getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
                 new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {
@@ -116,16 +115,16 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     /**
      * Logic for creating short listed address
      *
-     * @param recipientAddressModels
+     * @param recipientAddressList
      * @return
      */
-    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressModels) {
+    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressList) {
         List<RecipientAddressModel> shortList = new ArrayList<>();
 
         if (mSelectedRecipientAddress == null) {
-            shortList.addAll(recipientAddressModels.subList(0, 2));
+            shortList.addAll(recipientAddressList.subList(0, 2));
         } else {
-            shortList.add(recipientAddressModels.get(0));
+            shortList.add(recipientAddressList.get(0));
             shortList.add(mSelectedRecipientAddress);
         }
 

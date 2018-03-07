@@ -1,9 +1,8 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
 import com.tokopedia.transaction.checkout.data.repository.PeopleAddressRepository;
-import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.di.qualifier.NonPaginatedAddressQualifier;
 import com.tokopedia.transaction.checkout.view.di.scope.CartAddressChoiceScope;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceFragment;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoicePresenter;
@@ -27,7 +26,7 @@ public class CartAddressChoiceModule {
 
     @Provides
     @CartAddressChoiceScope
-    CartAddressChoicePresenter provideCartAddressChoicePresenter(GetDefaultAddressUseCase getDefaultAddressUseCase) {
+    CartAddressChoicePresenter provideCartAddressChoicePresenter(GetPeopleAddressUseCase getDefaultAddressUseCase) {
         return new CartAddressChoicePresenter(getDefaultAddressUseCase);
     }
 
@@ -39,8 +38,8 @@ public class CartAddressChoiceModule {
 
     @Provides
     @CartAddressChoiceScope
-    GetDefaultAddressUseCase provideGetAddressListUseCase(@NonPaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
-        return new GetDefaultAddressUseCase(peopleAddressRepository);
+    GetPeopleAddressUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository) {
+        return new GetPeopleAddressUseCase(peopleAddressRepository);
     }
 
 }
