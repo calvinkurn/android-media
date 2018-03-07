@@ -20,9 +20,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:drawableEnd="@drawable/ic_arrow_right"
+        android:drawableEnd="@drawable/ic_arrow_right_default"
         android:drawablePadding="@dimen/padding_vs"
-        android:drawableRight="@drawable/ic_arrow_right"
+        android:drawableRight="@drawable/ic_arrow_right_default"
         android:gravity="right"
         android:textColor="@color/colorPrimary"
         tools:text="20 Kg - Rp0" />
