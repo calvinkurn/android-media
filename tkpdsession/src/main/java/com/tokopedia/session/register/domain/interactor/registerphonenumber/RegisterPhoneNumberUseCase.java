@@ -40,7 +40,7 @@ public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel
         return registerPhoneNumberSource.registerPhoneNumber(context, requestParams.getParameters());
     }
 
-    public static RequestParams getRegisterPhoneNumberRequestParams(String phoneNumber) {
+    public static RequestParams getParams(String phoneNumber) {
         RequestParams params = RequestParams.create();
         params.putString(PARAMS_PHONE_NUMBER, phoneNumber);
         params.putString(PARAMS_TPYE, PARAMS_TPYE_PHONE);

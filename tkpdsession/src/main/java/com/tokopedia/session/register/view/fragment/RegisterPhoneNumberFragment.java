@@ -22,14 +22,13 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 
@@ -133,7 +132,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     if (isValidNumber(v.getText().toString())) {
 //                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-                        presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
+                        presenter.checkPhoneNumber(phoneNumber.getText().toString());
                     }
                     handled = true;
                 }
@@ -145,7 +144,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
 //                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-                presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
+                presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });
 
@@ -193,14 +192,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 phoneNumber,
                 getListVerificationMethod()),
                 REQUEST_VERIFY_PHONE);
-    }
-
-    @Override
-    public void goToNoTokocashAccountPage() {
-        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
-                getActivity(),
-                phoneNumber.getText().toString()),
-                REQUEST_NO_TOKOCASH_ACCOUNT);
     }
 
     @Override
@@ -289,35 +280,36 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void doRegisterPhoneNumber() {
+        presenter.registerPhoneNumber(phoneNumber.getText().toString());
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
-//            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-//            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-//                    .getListAccount().isEmpty()) {
-//                goToChooseAccountPage(chooseTokoCashAccountViewModel);
-//            } else {
-//                goToNoTokocashAccountPage();
-//            }
-//        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
-//                && resultCode == Activity.RESULT_OK) {
-//            getActivity().setResult(Activity.RESULT_OK);
-//            getActivity().finish();
+            doRegisterPhoneNumber();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
-                data),
-                REQUEST_CHOOSE_ACCOUNT);
+    @Override
+    public void showSuccessRegisterPhoneNumber(RegisterPhoneNumberModel model) {
+        dismissLoading();
+        presenter.startAction(model.getRegisterPhoneNumberData());
     }
 
-    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
-        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
+    @Override
+    public void showErrorRegisterPhoneNumber(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                doRegisterPhoneNumber();
+            }
+        });
     }
+
 
     @Override
     public void onDestroy() {
@@ -336,5 +328,4 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(true);
     }
-
 }

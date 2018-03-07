@@ -1,7 +1,11 @@
 package com.tokopedia.session.register.view.viewlistener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
+import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
 
 /**
  * @author by yfsx on 26/2/18.
@@ -18,7 +22,7 @@ public interface RegisterPhoneNumber {
 
         void showConfirmationPhoneNumber(String phoneNumber);
 
-        void goToNoTokocashAccountPage();
+        void doRegisterPhoneNumber();
 
         void dismissLoading();
 
@@ -26,10 +30,20 @@ public interface RegisterPhoneNumber {
 
         void showAlreadyRegisteredDialog(String phoneNumber);
 
+        void showSuccessRegisterPhoneNumber(RegisterPhoneNumberModel model);
+
+        void showErrorRegisterPhoneNumber(String message);
+
+        Context getContext();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void registerWithPhoneNumber(String phoneNumber);
+        void checkPhoneNumber(String phoneNumber);
+
+        void registerPhoneNumber(String phoneNumber);
+
+        void startAction(RegisterPhoneNumberData viewModel);
     }
 }
