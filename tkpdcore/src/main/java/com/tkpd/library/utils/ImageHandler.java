@@ -85,13 +85,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
-    public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(ContextCompat.getDrawable(imageview.getContext(), resId))
-                .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
-                .dontAnimate()
-                .error(ContextCompat.getDrawable(imageview.getContext(), resId))
-                .into(imageview);
+    public static void loadImageWithIdWithoutPlaceholder(Context context, ImageView imageview, int resId) {
+        if (isContextValid(context)) {
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, resId))
+                    .placeholder(ContextCompat.getDrawable(context, resId))
+                    .dontAnimate()
+                    .error(ContextCompat.getDrawable(context, resId))
+                    .into(imageview);
+        }
     }
 
 
