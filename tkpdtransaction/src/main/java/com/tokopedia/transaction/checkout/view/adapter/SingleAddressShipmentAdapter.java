@@ -12,6 +12,11 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShippingInfo;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShopProduct;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ShippingInfoCheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -56,6 +61,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private RecipientAddressModel mRecipientAddress;
     private ShipmentCostModel mShipmentCost;
+
+    private RequestData mRequestData;
 
     @Inject
     public SingleAddressShipmentAdapter(ActionListener actionListener) {
@@ -154,7 +161,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
 
-        void onFinishChoosingShipment(List<Data> data);
+        void onFinishChoosingShipment(List<Data> data, List<DataCheckoutRequest> checkoutRequest);
 
     }
 
@@ -228,12 +235,73 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mActionListener.onTotalPaymentChange(mShipmentCost);
 
         if (isCourierComplete) {
-            List<ShopProduct> shopProductList = getShopProductList(cartSellerItemModels);
-            mActionListener.onFinishChoosingShipment(createShipmentData(shopProductList));
+            List<ShopProduct> shopProductList = getShopProductPromo(cartSellerItemModels);
+            List<Data> promoRequestData = createPromoRequestData(shopProductList);
+
+            List<ShopProductCheckoutRequest> shopProductCheckout = getShopProductCheckout(cartSellerItemModels);
+            List<DataCheckoutRequest> checkoutRequestData = createCheckoutRequestData(shopProductCheckout);
+
+            mActionListener.onFinishChoosingShipment(promoRequestData, checkoutRequestData);
         }
     }
 
-    private List<ShopProduct> getShopProductList(List<CartSellerItemModel> cartSellerItemModels) {
+    private List<ShopProductCheckoutRequest> getShopProductCheckout(List<CartSellerItemModel> cartSellerItemModels) {
+
+        List<ShopProductCheckoutRequest> shopProductCheckout = new ArrayList<>();
+
+        for (CartSellerItemModel cartSellerItem : cartSellerItemModels) {
+            ShipmentDetailData shipmentDetailData = cartSellerItem.getSelectedShipmentDetailData();
+            CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+
+            // Create shop product model for shipment
+            ShopProductCheckoutRequest.Builder shopProductBuilder = new ShopProductCheckoutRequest.Builder()
+                    .shopId(Integer.valueOf(cartSellerItem.getShopId()))
+                    .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
+                            .shippingId(courierItemData.getShipperId())
+                            .spId(courierItemData.getShipperProductId())
+                            .build())
+                    .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()));
+
+            if (shipmentDetailData.getUseDropshipper() != null
+                    && shipmentDetailData.getUseDropshipper()) {
+                shopProductBuilder.dropshipData(new DropshipDataCheckoutRequest.Builder()
+                        .name(shipmentDetailData.getDropshipperName())
+                        .telpNo(shipmentDetailData.getDropshipperPhone())
+                        .build());
+            }
+
+            shopProductCheckout.add(shopProductBuilder.build());
+        }
+
+        return shopProductCheckout;
+    }
+
+    private List<ProductDataCheckoutRequest> convertToProductDataCheckout(List<CartItemModel> cartItems) {
+        List<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
+        for (CartItemModel cartItem : cartItems) {
+            productDataList.add(convertToProductDataCheckout(cartItem));
+        }
+
+        return productDataList;
+    }
+
+    private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
+        return new ProductDataCheckoutRequest.Builder()
+                .productId(Integer.parseInt(cartItem.getId()))
+                .build();
+    }
+
+    private List<DataCheckoutRequest> createCheckoutRequestData(List<ShopProductCheckoutRequest> shopProducts) {
+        List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
+        checkoutRequestData.add(new DataCheckoutRequest.Builder()
+                .addressId(Integer.valueOf(mRecipientAddress.getId()))
+                .shopProducts(shopProducts)
+                .build());
+
+        return checkoutRequestData;
+    }
+
+    private List<ShopProduct> getShopProductPromo(List<CartSellerItemModel> cartSellerItemModels) {
         List<ShopProduct> shopProducts = new ArrayList<>();
 
         for (CartSellerItemModel cartSellerItem : cartSellerItemModels) {
@@ -280,14 +348,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 .build();
     }
 
-    private List<Data> createShipmentData(List<ShopProduct> shopProducts) {
-        List<Data> shipmentData = new ArrayList<>();
-        shipmentData.add(new Data.Builder()
+    private List<Data> createPromoRequestData(List<ShopProduct> shopProducts) {
+        List<Data> promoRequestData = new ArrayList<>();
+        promoRequestData.add(new Data.Builder()
                 .addressId(Integer.valueOf(mRecipientAddress.getId()))
                 .shopProducts(shopProducts)
                 .build());
 
-        return shipmentData;
+        return promoRequestData;
     }
 
     private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
@@ -306,6 +374,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 mShipmentCost = (ShipmentCostModel) item;
             }
         }
+    }
+
+    private class RequestData {
+
     }
 
 }
