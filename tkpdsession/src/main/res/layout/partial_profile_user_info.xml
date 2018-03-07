@@ -8,29 +8,47 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_activity"
-        android:layout_marginLeft="@dimen/space_med"
-        android:layout_marginStart="@dimen/space_med"
-        android:layout_marginTop="@dimen/space_med">
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med">
+
+        <LinearLayout
+            android:id="@+id/ll_title_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_title_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_sm"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_information"
             android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/font_small"
             android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_subtitle_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/subtitle_user_data"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/text_size_12"
+            android:visibility="gone"
+            android:textStyle="normal" />
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/rl_partial_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title_user_info"
-            android:layout_marginBottom="@dimen/space_med"
+            android:layout_below="@+id/ll_title_user_info"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -80,7 +98,7 @@
             <View
                 android:id="@+id/view_status_separator"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="0.5dp"
                 android:layout_below="@+id/tv_status_verified"
                 android:background="@color/separator_color" />
 

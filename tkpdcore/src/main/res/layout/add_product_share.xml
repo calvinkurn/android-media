@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/add_product_share_layout"
         android:layout_width="match_parent"
@@ -45,7 +46,7 @@
                     android:layout_width="@dimen/new_icon_size"
                     android:layout_height="@dimen/new_icon_size"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/facebook_square_blue" />
+                    app:srcCompat="@drawable/facebook_square_blue" />
 
                 <TextView
                     android:layout_toRightOf="@+id/add_product_facebook"
@@ -84,7 +85,7 @@
                     android:layout_width="@dimen/new_icon_size"
                     android:layout_height="@dimen/new_icon_size"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/twitter_square_blue" />
+                    app:srcCompat="@drawable/twitter_square_blue" />
 
                 <TextView
                     android:layout_toRightOf="@+id/add_product_twitter"

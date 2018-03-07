@@ -4,17 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="@dimen/new_margin_med"
+    android:layout_marginStart="@dimen/new_margin_med"
+    android:layout_marginBottom="@dimen/new_margin_med"
     android:layout_marginTop="@dimen/margin_small_header"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title_shop_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="8sp"
         android:text="@string/shop_info_title"
@@ -89,7 +91,7 @@
                         android:lines="1"
                         android:maxLines="1"
                         android:textColor="@color/font_black_primary_70"
-                        android:textSize="@dimen/font_large"
+                        android:textSize="@dimen/text_size_16"
                         tools:ignore="HardcodedText"
                         tools:text="Shop Name" />
                 </LinearLayout>
@@ -102,7 +104,7 @@
                     <ImageView
                         android:id="@+id/iv_medal"
                         android:layout_width="wrap_content"
-                        android:layout_height="16dp"
+                        android:layout_height="@dimen/new_margin_med"
                         android:layout_gravity="start"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:layout_weight="1"
@@ -141,8 +143,6 @@
                     android:id="@+id/icon_location"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
                     app:srcCompat="@drawable/ic_location_grey" />
 
                 <TextView
@@ -168,8 +168,6 @@
                     android:id="@+id/last_online_icon"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
                     app:srcCompat="@drawable/icon_time_grey" />
 
                 <TextView
@@ -206,10 +204,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:focusable="true"
                 android:orientation="horizontal"
                 android:padding="8dp">
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/favorite_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/img_height"
-        android:src="@drawable/ic_empty_state_cactus"
+        app:srcCompat="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_sm"/>

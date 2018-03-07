@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_speech_bubble_r90"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_small"
@@ -17,7 +18,7 @@
         <ImageView
             android:layout_width="@dimen/image_smiley_size"
             android:layout_height="@dimen/image_smiley_size"
-            android:src="@drawable/ic_smiley_positive" />
+            app:srcCompat="@drawable/ic_smiley_positive" />
 
         <TextView
             android:id="@+id/text_view_positive"
@@ -38,7 +39,7 @@
         <ImageView
             android:layout_width="@dimen/image_smiley_size"
             android:layout_height="@dimen/image_smiley_size"
-            android:src="@drawable/ic_smiley_neutral" />
+            app:srcCompat="@drawable/ic_smiley_neutral" />
 
         <TextView
             android:id="@+id/text_view_neutral"
@@ -57,7 +58,7 @@
         <ImageView
             android:layout_width="@dimen/image_smiley_size"
             android:layout_height="@dimen/image_smiley_size"
-            android:src="@drawable/ic_smiley_negative" />
+            app:srcCompat="@drawable/ic_smiley_negative" />
 
         <TextView
             android:id="@+id/text_view_negative"

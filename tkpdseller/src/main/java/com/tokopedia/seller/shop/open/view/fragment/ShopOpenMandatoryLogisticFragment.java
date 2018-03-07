@@ -28,6 +28,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.logistic.model.Courier;
@@ -328,7 +329,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
         NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), t));
     }

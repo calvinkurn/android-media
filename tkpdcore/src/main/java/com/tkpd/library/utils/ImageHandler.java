@@ -13,6 +13,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ExifInterface;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -84,13 +85,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
-    public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(resId)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+    public static void loadImageWithIdWithoutPlaceholder(Context context, ImageView imageview, int resId) {
+        if (isContextValid(context)) {
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, resId))
+                    .placeholder(ContextCompat.getDrawable(context, resId))
+                    .dontAnimate()
+                    .error(ContextCompat.getDrawable(context, resId))
+                    .into(imageview);
+        }
     }
 
 
@@ -169,7 +172,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(imageview);
         }
     }
@@ -293,7 +296,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .dontAnimate()
                 .into(imageview);
     }
