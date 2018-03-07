@@ -63,7 +63,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
                 discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
                 break;
             case DISCOVERY_URL_SEARCH:
-                ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
+//                ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult, imageSearch);
                 ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult, imageSearch);
                 model.setSearchParameter(searchParameter);
                 model.setForceSearch(forceSearch);

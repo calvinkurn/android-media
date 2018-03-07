@@ -76,7 +76,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
                         "unN3GIXParljB7J7rPrxD3I47NHhtY");
                 // add endpoint, no need to modify
                 DefaultProfile.addEndpoint("ap-southeast-1", "ap-southeast-1",
-                        "IDST", "idst.ap-southeast-1.aliyuncs.com");
+                        "IDST", "imagesearch.ap-southeast-1.aliyuncs.com");
 
                 DefaultAcsClient client = new DefaultAcsClient(profile);
 

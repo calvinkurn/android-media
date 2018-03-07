@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
@@ -11,10 +10,8 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.imagesearch.domain.usecase.ImageSearchResultActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 
 /**

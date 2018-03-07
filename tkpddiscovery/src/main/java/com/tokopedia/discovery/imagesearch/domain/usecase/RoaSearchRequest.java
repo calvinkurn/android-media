@@ -13,7 +13,7 @@ public class RoaSearchRequest extends RoaAcsRequest<RoaSearchResponse>
 
 	public RoaSearchRequest() {
         super("IDST", "2017-09-22", "RoaSearch");
-        setUriPattern("/bin/sp");
+        setUriPattern("/item/search");
         setMethod(MethodType.POST);
     }
 
