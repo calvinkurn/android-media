@@ -72,6 +72,7 @@
     <string name="shop_reputation_label">Reputasi Toko</string>
     <string name="product_quality_label">Kualitas Produk</string>
     <string name="shop_speed_label">"Kecepatan Toko"</string>
+    <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
 
 
 </resources>

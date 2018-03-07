@@ -269,6 +269,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
                 reputationDesc.setText(getString(R.string.dashboard_x_points, shopReputationScore));
 
+                if (TextUtils.isEmpty(shopReputationScore)) {
+                    reputationDesc.setText(R.string.reputation_value_not_appear);
+                } else {
+                    reputationDesc.setText(shopReputationScore);
+                }
+
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
@@ -314,7 +320,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 AppCompatImageView imageViewSpeed = speedContentBottomSheet.findViewById(R.id.image_view_speed_content);
                 imageViewSpeed.setImageResource(getReputationSpeedIcon(speedLevel));
                 TextView speedView = speedContentBottomSheet.findViewById(R.id.speed_content_tv_desc);
-                speedView.setText(speedLevelDescription);
+                if (TextUtils.isEmpty(speedLevelDescription)) {
+                    speedView.setText(R.string.reputation_value_not_appear);
+                } else {
+                    speedView.setText(speedLevelDescription);
+                }
 
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
