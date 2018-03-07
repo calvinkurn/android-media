@@ -50,7 +50,7 @@ public class ShareLayout {
     private ShareFeedAdapter adapter;
     private ArrayList<ShareItem> list;
 
-    private String urlLink, channelUrl;
+    private String urlLink, channelUrl, channelName;
 
     public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager, String channelUrl, String channelName, StreamAnalytics analytics) {
         this.fragment = null;
