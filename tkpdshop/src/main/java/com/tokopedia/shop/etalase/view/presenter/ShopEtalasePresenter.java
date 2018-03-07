@@ -1,7 +1,6 @@
 package com.tokopedia.shop.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
@@ -55,7 +54,7 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
             @Override
             public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
                 if (isViewAttached()) {
-                    getView().renderList(mergeListOther(pagingListOther), PagingListUtils.checkNextPage(pagingListOther));
+                    getView().renderList(mergeListOther(pagingListOther), false);
                 }
             }
         });

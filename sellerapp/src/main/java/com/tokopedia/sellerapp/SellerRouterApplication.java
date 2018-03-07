@@ -44,6 +44,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -499,6 +500,13 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetailById(Context activity, String productId) {
         startActivity(ProductInfoActivity.createInstance(activity, productId));
+    }
+
+    @Override
+    public void goToProfileShop(Context context, String userId) {
+        context.startActivity(
+                PeopleInfoNoDrawerActivity.createInstance(context, userId)
+        );
     }
 
     @Override
@@ -1092,7 +1100,7 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        startActivity(ShareActivity.createIntent(context, shareData));
+        context.startActivity(ShareActivity.createIntent(context, shareData));
     }
 
     @Override
@@ -1112,7 +1120,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat();
             Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
-            startActivity(intent);
+            context.startActivity(intent);
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
