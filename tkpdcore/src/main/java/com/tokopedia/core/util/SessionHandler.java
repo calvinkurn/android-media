@@ -542,7 +542,7 @@ public class SessionHandler {
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
         TrackingUtils.eventPushUserID();
-        Crashlytics.setUserIdentifier(u_id);
+        if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
 
@@ -554,7 +554,7 @@ public class SessionHandler {
             if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null) {
                 DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
                 dialogLogoutFragment.show(((AppCompatActivity) context).getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-                Crashlytics.setUserIdentifier("");
+                if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
             }
         }
 
