@@ -43,12 +43,7 @@
     <dimen name="kol_avatar">60dp</dimen>
     <dimen name="small_wishlist_kol">20dp</dimen>
 
-    <!--TopAds dimens-->
-    <dimen name="feed_ava">40dp</dimen>
     <dimen name="badge_size">15dp</dimen>
-    <dimen name="padding_item_decoration">3dp</dimen>
-    <dimen name="top_option_h">30dp</dimen>
-    <dimen name="top_promote_h">35dp</dimen>
     <dimen name="label_padding_left_right">5dp</dimen>
 
     <!-- partial empty feed -->
