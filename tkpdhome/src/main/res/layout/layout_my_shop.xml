@@ -72,12 +72,12 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:id="@+id/btn_ubah"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:background="@drawable/bg_setting_myshop_btn"
-        android:drawableLeft="@drawable/ic_menu_general_setting"
+        app:drawableLeftCompat="@drawable/ic_menu_general_setting"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/ubah"

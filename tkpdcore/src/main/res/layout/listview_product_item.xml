@@ -72,13 +72,13 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_icon_location_grey"
+                app:drawableLeftCompat="@drawable/ic_icon_location_grey"
                 android:gravity="center_vertical"
                 android:minHeight="25dp"
                 android:text="Jakarta"

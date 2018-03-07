@@ -153,12 +153,12 @@
 
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/verify_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
                 android:text="@string/truecaller_verif"
-                android:drawableLeft="@drawable/truecaller"
+                app:drawableLeftCompat="@drawable/truecaller"
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:padding="@dimen/padding_small"

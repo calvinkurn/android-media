@@ -65,10 +65,10 @@
                     />
             </RelativeLayout>
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/icon_magnifier"
+                app:drawableLeftCompat="@drawable/icon_magnifier"
                 android:drawablePadding="@dimen/padding_small"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="5dp"

@@ -59,33 +59,33 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:text="Ini alamatnya" />
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:id="@+id/location_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
-        android:drawableLeft="@drawable/ic_shop_phone"
+        app:drawableLeftCompat="@drawable/ic_shop_phone"
         android:drawablePadding="@dimen/margin_vs"
         android:gravity="center|left"
         android:text="Phone" />
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:id="@+id/location_fax"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
-        android:drawableLeft="@drawable/ic_shop_fax"
+        app:drawableLeftCompat="@drawable/ic_shop_fax"
         android:drawablePadding="@dimen/margin_vs"
         android:gravity="center|left"
         android:text="Fax" />
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:id="@+id/location_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:drawableLeft="@drawable/ic_shop_email"
         android:drawablePadding="@dimen/margin_vs"
+        app:drawableLeftCompat="@drawable/ic_shop_email"
         android:gravity="center|left"
         android:text="Email" />
 

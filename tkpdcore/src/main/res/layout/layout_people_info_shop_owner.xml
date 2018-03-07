@@ -49,14 +49,14 @@
             android:textColor="@color/black"
             android:textSize="@dimen/fontm" />
 
-        <TextView
+        <com.tokopedia.design.textview.TextView
             android:id="@+id/shop_loc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/shop_name"
             android:layout_toRightOf="@+id/shop_avatar"
             android:layout_marginLeft="@dimen/margin_small"
-            android:drawableLeft="@drawable/ic_address_2"
+            app:drawableLeftCompat="@drawable/ic_address_2"
             android:drawablePadding="@dimen/padding_vs"
             android:text="Jakarta"
             android:textColor="@color/label_color"

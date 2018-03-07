@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_small"
     android:background="@drawable/cards_ui_2"
     android:padding="@dimen/se_img_pad"
@@ -169,7 +170,7 @@
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.design.textview.TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
@@ -182,8 +183,7 @@
         android:padding="16dp"
         android:drawablePadding="16dp"
         android:background="@drawable/yellor_rounded_background"
-        android:drawableLeft="@drawable/ic_unify_icon_waktu_time_hourglass"
-        android:drawableStart="@drawable/ic_unify_icon_waktu_time_hourglass"
+        app:drawableLeftCompat="@drawable/ic_unify_icon_waktu_time_hourglass"
         android:id="@+id/check_email_info"
         android:visibility="gone"
         />

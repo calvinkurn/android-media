@@ -76,11 +76,10 @@
             android:gravity="end"
             android:padding="@dimen/padding_vs">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_pen_ico"
-                android:drawableStart="@drawable/ic_pen_ico"
+                app:drawableLeftCompat="@drawable/ic_pen_ico"
                 android:text="Ubah Harga Berat" />
 
         </LinearLayout>

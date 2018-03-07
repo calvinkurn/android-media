@@ -21,14 +21,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/text_balance_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:drawableLeft="@drawable/ic_tokocash_icon"
+                app:drawableLeftCompat="@drawable/ic_tokocash_icon"
                 android:drawablePadding="@dimen/padding_vs"
-                android:drawableStart="@drawable/ic_tokocash_icon"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_small"

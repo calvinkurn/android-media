@@ -74,13 +74,13 @@
                 android:textSize="13sp"
                 android:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/tvSurgeRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/cab_surge"
+                app:drawableLeftCompat="@drawable/cab_surge"
                 android:drawablePadding="5dp"
                 android:text="1x"
                 android:textColor="#25a8ed"

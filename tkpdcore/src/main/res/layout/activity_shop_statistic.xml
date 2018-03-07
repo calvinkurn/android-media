@@ -95,29 +95,27 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/title_lastol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:drawableLeft="@drawable/ic_stats_lastol"
-                    android:drawableStart="@drawable/ic_stats_lastol"
+                    app:drawableLeftCompat="@drawable/ic_stats_lastol"
                     android:drawablePadding="@dimen/padding_vs"
                     android:layout_toStartOf="@id/last_login"
                     android:layout_toLeftOf="@id/last_login"
                     android:text="@string/title_last_online"
                     android:textSize="@dimen/fonts" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/title_sold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title_lastol"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:drawableLeft="@drawable/ic_stats_sold"
-                    android:drawableStart="@drawable/ic_stats_sold"
+                    app:drawableLeftCompat="@drawable/ic_stats_sold"
                     android:drawablePadding="@dimen/padding_vs"
                     android:text="@string/title_sold_item"
                     android:textSize="@dimen/fonts" />
@@ -134,7 +132,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/title_fav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -142,8 +140,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@id/title_sold"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:drawableLeft="@drawable/ic_stats_fav"
-                    android:drawableStart="@drawable/ic_stats_fav"
+                    app:drawableLeftCompat="@drawable/ic_stats_fav"
                     android:drawablePadding="@dimen/padding_vs"
                     android:text="@string/title_favorited"
                     android:textSize="@dimen/fonts" />
@@ -163,7 +160,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/title_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -171,8 +168,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@id/title_fav"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:drawableLeft="@drawable/ic_stats_loc"
-                    android:drawableStart="@drawable/ic_stats_loc"
+                    app:drawableLeftCompat="@drawable/ic_stats_loc"
                     android:drawablePadding="@dimen/padding_vs"
                     android:text="@string/title_shop"
                     android:textSize="@dimen/fonts" />
@@ -188,7 +184,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/title_open_since"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -196,8 +192,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@id/title_shop"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:drawableLeft="@drawable/ic_stats_open"
-                    android:drawableStart="@drawable/ic_stats_open"
+                    app:drawableLeftCompat="@drawable/ic_stats_open"
                     android:drawablePadding="@dimen/padding_vs"
                     android:text="@string/title_open_since"
                     android:textSize="@dimen/fonts" />
@@ -450,37 +445,34 @@
                     android:text="@string/title_activity_fragment_shop_detail"
                     android:textSize="@dimen/fonts" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/detail_shop_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
-                    android:drawableLeft="@drawable/ic_shop_phone"
-                    android:drawableStart="@drawable/ic_shop_phone"
+                    app:drawableLeftCompat="@drawable/ic_shop_phone"
                     android:drawablePadding="5dp"
                     android:gravity="center|start"
                     android:text="@string/title_phone"
                     android:textSize="@dimen/fonts" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/detail_shop_fax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
-                    android:drawableLeft="@drawable/ic_shop_fax"
-                    android:drawableStart="@drawable/ic_shop_fax"
+                    app:drawableLeftCompat="@drawable/ic_shop_fax"
                     android:drawablePadding="5dp"
                     android:gravity="center|start"
                     android:text="@string/title_fax"
                     android:textSize="@dimen/fonts" />
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@id/detail_shop_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
-                    android:drawableLeft="@drawable/ic_shop_email"
-                    android:drawableStart="@drawable/ic_shop_email"
+                    app:drawableLeftCompat="@drawable/ic_shop_email"
                     android:drawablePadding="5dp"
                     android:gravity="center|start"
                     android:text="@string/title_email"

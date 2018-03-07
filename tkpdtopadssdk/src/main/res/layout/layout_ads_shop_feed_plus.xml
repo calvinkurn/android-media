@@ -97,11 +97,11 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
 
-        <TextView
+        <com.tokopedia.design.textview.TextView
             android:id="@+id/fav_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_add_black_24dp"
+            app:drawableLeftCompat="@drawable/ic_add_black_24dp"
             android:gravity="center"
             android:textColor="@color/white"/>
     </LinearLayout>

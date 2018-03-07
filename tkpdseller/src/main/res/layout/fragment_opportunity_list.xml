@@ -26,12 +26,12 @@
             android:background="@drawable/selectable_white_background"
             android:gravity="center">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/sort_but"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
                 android:layout_gravity="center"
-                android:drawableLeft="@drawable/ic_sort"
+                app:drawableLeftCompat="@drawable/ic_sort"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:text="@string/action_sort" />
@@ -47,10 +47,10 @@
 
             android:gravity="center">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
-                android:drawableLeft="@drawable/ic_filter_black"
+                app:drawableLeftCompat="@drawable/ic_filter_black"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:text="@string/filter" />

@@ -147,12 +147,12 @@
                 android:layout_marginTop="2dp"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@+id/location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_place_grey_24dp"
+                    app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/text_size_xsmall"
                     android:fontFamily="sans-serif"

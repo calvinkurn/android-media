@@ -15,11 +15,10 @@
         android:background="@color/white"
         android:padding="16dp">
 
-        <TextView
+        <com.tokopedia.design.textview.TextView
             android:id="@+id/textview_voucher"
             android:drawablePadding="@dimen/padding_ms"
-            android:drawableLeft="@drawable/ic_kupon"
-            android:drawableStart="@drawable/ic_kupon"
+            app:drawableLeftCompat="@drawable/ic_kupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
