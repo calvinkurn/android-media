@@ -17,8 +17,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
@@ -209,14 +211,10 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     CommonUtils.UniversalToast(getActivity(), getString(R.string.finish_contact_us));
                     getActivity().finish();
                     return true;
-                } else if (url.toString().contains(APPLINK_SCHEME)) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(url);
-                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                        startActivity(intent);
-                    } else {
-                        return false;
-                    }
+                } else if (url.toString().contains(APPLINK_SCHEME)
+                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new Bundle());
                     return true;
                 } else {
                     return false;
