@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -45,6 +46,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;

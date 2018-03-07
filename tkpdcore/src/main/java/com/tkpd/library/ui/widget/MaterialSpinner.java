@@ -7,11 +7,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListAdapter;
 
+import com.tokopedia.design.textview.Edittext;
+
 /**
  * Created by stevenfredian on 10/18/16.
  */
 
-public class MaterialSpinner<T> extends AppCompatEditText {
+public class MaterialSpinner<T> extends Edittext {
     CharSequence mHint;
 
     OnItemSelectedListener<T> onItemSelectedListener;

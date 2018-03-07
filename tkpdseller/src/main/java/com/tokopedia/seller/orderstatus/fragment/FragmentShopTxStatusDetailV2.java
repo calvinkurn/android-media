@@ -39,6 +39,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.OrderHistoryView;
@@ -519,7 +520,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                             + "\n"
                             + getActivity().getString(R.string.message_verification_timeout),
                     Toast.LENGTH_LONG).show();
-            Crashlytics.log(0,
+            if(!GlobalConfig.DEBUG) Crashlytics.log(0,
                     "NullPointerException "
                             + getActivity().getClass().getSimpleName(), e.toString());
             getActivity().finish();

@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/padding_small">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/padding_small">
 
     <include
         android:id="@+id/include_loading"
@@ -308,14 +309,13 @@
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
-                    <TextView
+                    <com.tokopedia.design.textview.TextView
                         android:id="@+id/check_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:background="@drawable/cards_ui_2"
-                        android:drawableEnd="@drawable/info_icon"
-                        android:drawableRight="@drawable/info_icon"
+                        app:drawableRightCompat="@drawable/info_icon"
                         android:gravity="center_vertical"
                         android:padding="@dimen/padding_small"
                         android:text="Nomor Rekening"

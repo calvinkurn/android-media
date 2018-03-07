@@ -19,6 +19,7 @@ import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -227,7 +228,7 @@ public class FCMCacheManager {
                 }
             }
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
+            if(!GlobalConfig.DEBUG) Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
                     "tkp_code:" + Integer.parseInt(data.getString(NOTIFICATION_CODE)) +
                             " size contentArray " + content.size() +
                             " size codeArray " + code.size() +

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginEnd="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
@@ -22,7 +23,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="12dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_gmsubscribe_gold_badge" />
+            app:srcCompat="@drawable/ic_gmsubscribe_gold_badge" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/response"
+<RelativeLayout android:id="@+id/response"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/cards_ui_2"
     android:padding="@dimen/padding_small"
-    android:visibility="gone">
+    android:visibility="gone"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/header"
@@ -45,7 +45,7 @@
                 android:layout_width="@dimen/img_thumb_m"
                 android:layout_height="@dimen/img_thumb_m"
                 android:layout_marginTop="@dimen/padding_small"
-                android:src="@drawable/ic_icon_repsis_speed_lambat" />
+                app:srcCompat="@drawable/ic_icon_repsis_speed_lambat" />
 
             <TextView
                 android:id="@+id/overall_response"
@@ -75,34 +75,34 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@+id/speed_fast"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_icon_repsis_speed_cepat"
+                    app:drawableLeftCompat="@drawable/ic_icon_repsis_speed_cepat"
                     android:text="@string/title_1_day"
                     android:gravity="center"
                     android:layout_gravity="center_vertical"
                     android:drawablePadding="@dimen/padding_vs"
                     />
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@+id/speed_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_icon_repsis_speed_sedang"
+                    app:drawableLeftCompat="@drawable/ic_icon_repsis_speed_sedang"
                     android:text="@string/title_2_day"
                     android:gravity="center"
                     android:layout_gravity="center_vertical"
                     android:drawablePadding="@dimen/padding_vs"
                     />
-                <TextView
+                <com.tokopedia.design.textview.TextView
                     android:id="@+id/speed_slow"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_icon_repsis_speed_lambat"
+                    app:drawableLeftCompat="@drawable/ic_icon_repsis_speed_lambat"
                     android:text="@string/title_3_day"
                     android:gravity="center"
                     android:layout_gravity="center_vertical"

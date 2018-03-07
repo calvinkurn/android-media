@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:orientation="horizontal">
 
@@ -18,7 +19,7 @@
             android:layout_width="@dimen/image_width_xl"
             android:layout_height="@dimen/image_width_xl"
             android:layout_gravity="center"
-            android:src="@drawable/tkpd_address_card" />
+            app:srcCompat="@drawable/tkpd_address_card" />
 
         <TextView
             android:id="@+id/tag_empty_product"
@@ -43,7 +44,7 @@
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xxs"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_lock_icon_again" />
+                app:srcCompat="@drawable/ic_lock_icon_again" />
 
             <TextView
                 style="@style/TextView.Micro.WhitePrimary"
@@ -94,7 +95,7 @@
                 android:layout_height="@dimen/image_width_xxs"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
-                android:src="@drawable/ic_featured_product" />
+                app:srcCompat="@drawable/ic_featured_product" />
 
             <TextView
                 android:id="@+id/text_view_variant"
@@ -141,7 +142,7 @@
                 android:id="@+id/image_view_free_return"
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xxs"
-                android:src="@drawable/ic_free_return" />
+                app:srcCompat="@drawable/ic_free_return" />
         </LinearLayout>
 
     </LinearLayout>
@@ -165,7 +166,7 @@
                 android:layout_height="@dimen/image_width_l"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/padding_vvvs"
-                android:src="@drawable/ic_more_vert_grey"
+                app:srcCompat="@drawable/ic_more_vert_grey"
                 tools:src="@drawable/ic_more_vert_grey" />
         </FrameLayout>
 

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_marginLeft="@dimen/margin_vs"
     android:paddingBottom="@dimen/padding_small">
@@ -13,7 +14,7 @@
         android:padding="2dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="@dimen/padding_small"
-        android:src="@drawable/addproduct" />
+        app:srcCompat="@drawable/addproduct" />
 
     <ImageView
         android:id="@+id/delete_but"
@@ -23,6 +24,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@id/image_upload"
-        android:src="@drawable/navigation_cancel" />
+        app:srcCompat="@drawable/navigation_cancel" />
 
 </RelativeLayout>

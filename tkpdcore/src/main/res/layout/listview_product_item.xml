@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -71,13 +72,13 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.design.textview.TextView
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_icon_location_grey"
+                app:drawableLeftCompat="@drawable/ic_icon_location_grey"
                 android:gravity="center_vertical"
                 android:minHeight="25dp"
                 android:text="Jakarta"
@@ -107,7 +108,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
                 android:padding="2dp"
-                android:src="@drawable/ic_action_delete" />
+                app:srcCompat="@drawable/ic_action_delete" />
 
             <TextView
                 android:id="@+id/buy_button"

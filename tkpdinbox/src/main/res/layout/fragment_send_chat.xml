@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/add_comment_area"
@@ -24,7 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_attach"/>
+            app:srcCompat="@drawable/ic_attach"/>
 
 
         <EditText
@@ -49,7 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:padding="@dimen/padding_small"
-            android:src="@drawable/ic_send_24dp_green"/>
+            app:srcCompat="@drawable/ic_send_24dp_green"/>
 
     </RelativeLayout>
 

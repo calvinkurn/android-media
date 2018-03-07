@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <android.support.v4.widget.NestedScrollView
@@ -63,12 +64,11 @@
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <com.tokopedia.design.textview.TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_icon_saldo"
+                            app:drawableLeftCompat="@drawable/ic_icon_saldo"
                             android:drawablePadding="9dp"
-                            android:drawableStart="@drawable/ic_icon_saldo"
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:text="@string/tokopedia_balance"
@@ -95,12 +95,11 @@
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <com.tokopedia.design.textview.TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_tokocash_icon"
+                            app:drawableLeftCompat="@drawable/ic_tokocash_icon"
                             android:drawablePadding="9dp"
-                            android:drawableStart="@drawable/ic_tokocash_icon"
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:text="@string/tokocash"
