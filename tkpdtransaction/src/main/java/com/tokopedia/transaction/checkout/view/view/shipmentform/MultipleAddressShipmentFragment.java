@@ -142,6 +142,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                                          MultipleAddressPriceSummaryData data) {
         presenter.generateCheckoutRequest(addressDataList, data);
         //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+
     }
 
     @Override

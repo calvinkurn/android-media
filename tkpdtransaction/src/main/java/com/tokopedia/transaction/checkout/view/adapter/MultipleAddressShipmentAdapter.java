@@ -156,7 +156,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private void bindItems(MultipleShippingAddressViewHolder holder, int position) {
         MultipleShippingAddressViewHolder itemViewHolder = holder;
         MultipleAddressShipmentAdapterData data = addressDataList.get(position - 1);
-        data.setSubTotal(calculateSubTotal(data));
+        data.setSubTotal(calculateSubTotal(data, position - 1));
         MultipleAddressItemData itemData = data.getItemData();
         itemViewHolder.senderName.setText(data.getSenderName());
         ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
@@ -469,7 +469,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private boolean isShipmentDataInitiated(int i) {
         return addressDataList.get(i).getSelectedShipmentDetailData() != null
-                ||
+                &&
                 addressDataList.get(i)
                         .getSelectedShipmentDetailData()
                         .getShipmentCartData() != null;
@@ -518,8 +518,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return quantity;
     }
 
-    private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        if (getGeneratedShipmentCartData(data) != null)
+    private long calculateSubTotal(MultipleAddressShipmentAdapterData data, int positon) {
+        if (isShipmentDataInitiated(positon))
             return data.getProductPriceNumber() + getGeneratedShipmentCartData(data)
                     .getDeliveryPriceTotal();
         else return 0;
