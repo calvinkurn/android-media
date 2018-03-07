@@ -27,7 +27,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Cart
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
+import com.tokopedia.transaction.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
@@ -84,7 +84,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
 
     @Inject
-    SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
+    CartShipmentAddressFormDataConverter mCartShipmentAddressFormDataConverter;
 
     ICartShipmentActivity cartShipmentActivityListener;
 
@@ -180,7 +180,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
 
-        mShipmentDataList = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
+        mShipmentDataList = mCartShipmentAddressFormDataConverter.convert(cartShipmentAddressFormData);
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
