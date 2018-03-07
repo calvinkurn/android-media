@@ -31,7 +31,7 @@
 		android:layout_marginBottom="@dimen/margin_small"
 		/>
 		
-		<com.tokopedia.design.textview.TextView
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_phone_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
     	android:visibility="gone"
 		/>
 		
-		<com.tokopedia.design.textview.TextView
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_fax_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 		android:visibility="gone"
 		/>
 		
-		<com.tokopedia.design.textview.TextView
+		<com.tokopedia.design.component.TextViewCompat
 		android:id="@+id/detail_shop_email_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"

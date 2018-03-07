@@ -2,18 +2,17 @@ package com.tkpd.library.ui.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListAdapter;
 
-import com.tokopedia.design.textview.Edittext;
+import com.tokopedia.design.component.EditTextCompat;
 
 /**
  * Created by stevenfredian on 10/18/16.
  */
 
-public class MaterialSpinner<T> extends Edittext {
+public class MaterialSpinner<T> extends EditTextCompat {
     CharSequence mHint;
 
     OnItemSelectedListener<T> onItemSelectedListener;

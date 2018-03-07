@@ -95,7 +95,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/title_lastol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:text="@string/title_last_online"
                     android:textSize="@dimen/fonts" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/title_sold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/title_fav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/title_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                     android:textSize="@dimen/fonts"
                     android:textStyle="bold" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/title_open_since"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -445,7 +445,7 @@
                     android:text="@string/title_activity_fragment_shop_detail"
                     android:textSize="@dimen/fonts" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/detail_shop_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -456,7 +456,7 @@
                     android:text="@string/title_phone"
                     android:textSize="@dimen/fonts" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/detail_shop_fax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -467,7 +467,7 @@
                     android:text="@string/title_fax"
                     android:textSize="@dimen/fonts" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/detail_shop_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -44,7 +44,7 @@
                     android:textSize="@dimen/font_medium"
                     tools:text="Pohon Terang" />
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/merchant_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

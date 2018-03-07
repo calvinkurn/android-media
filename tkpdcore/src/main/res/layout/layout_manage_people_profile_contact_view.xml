@@ -169,7 +169,7 @@
 
     </RelativeLayout>
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"

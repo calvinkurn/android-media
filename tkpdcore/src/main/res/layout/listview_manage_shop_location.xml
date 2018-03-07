@@ -59,7 +59,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:text="Ini alamatnya" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/location_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
         android:gravity="center|left"
         android:text="Phone" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/location_fax"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         android:gravity="center|left"
         android:text="Fax" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/location_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

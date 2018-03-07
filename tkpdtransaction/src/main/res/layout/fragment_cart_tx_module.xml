@@ -20,7 +20,7 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <Te
+        <TextView
             android:id="@+id/tv_ticker_gtm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

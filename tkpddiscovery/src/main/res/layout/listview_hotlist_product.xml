@@ -147,7 +147,7 @@
                 android:layout_marginTop="2dp"
                 android:orientation="horizontal">
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

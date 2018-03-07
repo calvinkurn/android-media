@@ -90,7 +90,7 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/fav_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

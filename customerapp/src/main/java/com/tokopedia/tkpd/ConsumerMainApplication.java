@@ -46,7 +46,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;

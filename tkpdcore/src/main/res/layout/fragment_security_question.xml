@@ -213,7 +213,7 @@
 
             </LinearLayout>
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/verify_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
