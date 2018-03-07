@@ -12,7 +12,7 @@ import java.util.List;
 public class TrainStationIslandEntity {
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
     @SerializedName("cities")
     @Expose
     private List<TrainCityEntity> cities;
@@ -20,7 +20,7 @@ public class TrainStationIslandEntity {
     @Expose
     private String name;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

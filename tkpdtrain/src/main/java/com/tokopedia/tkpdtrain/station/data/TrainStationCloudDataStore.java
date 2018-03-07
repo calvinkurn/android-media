@@ -4,6 +4,9 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
+import com.tokopedia.tkpdtrain.station.data.specification.NetworkSpecification;
+import com.tokopedia.tkpdtrain.station.data.specification.Specification;
+import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
 
 import java.util.List;
 
@@ -14,15 +17,15 @@ import rx.functions.Func1;
  * @author by alvarisi on 3/5/18.
  */
 
-public class TrainCloudDataStore {
+public class TrainStationCloudDataStore {
     private TrainApi trainApi;
 
-    public TrainCloudDataStore(TrainApi trainApi) {
+    public TrainStationCloudDataStore(TrainApi trainApi) {
         this.trainApi = trainApi;
     }
 
-    public Observable<List<TrainStationIslandEntity>> getStationsInIsland() {
-        return trainApi.stationsInIsland().map(new Func1<DataResponse<List<TrainStationIslandEntity>>, List<TrainStationIslandEntity>>() {
+    public Observable<List<TrainStationIslandEntity>> getDatas(Specification specification) {
+        return trainApi.stationsInIsland(((NetworkSpecification) specification).networkParam()).map(new Func1<DataResponse<List<TrainStationIslandEntity>>, List<TrainStationIslandEntity>>() {
             @Override
             public List<TrainStationIslandEntity> call(DataResponse<List<TrainStationIslandEntity>> listDataResponse) {
                 return listDataResponse.getData();
@@ -30,4 +33,7 @@ public class TrainCloudDataStore {
         });
     }
 
+    public Observable<TrainStationIslandEntity> getData(Specification specification) {
+        return null;
+    }
 }

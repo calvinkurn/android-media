@@ -1,7 +1,14 @@
 package com.tokopedia.tkpdtrain.common.data;
 
+
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
+import com.tokopedia.tkpdtrain.station.data.specification.TrainPopularStationSpecification;
+import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author  by alvarisi on 3/5/18.
@@ -16,5 +23,8 @@ public class TrainRepositoryImpl implements TrainRepository {
         this.trainStationDataStoreFactory = trainStationDataStoreFactory;
     }
 
-
+    @Override
+    public Observable<List<FlightStation>> getPopularStations() {
+        return trainStationDataStoreFactory.getStations(new TrainPopularStationSpecification());
+    }
 }

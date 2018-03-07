@@ -13,7 +13,7 @@ public class TrainStationEntity {
     private String id;
     @SerializedName("popularity_order")
     @Expose
-    private String popularityOrder;
+    private int popularityOrder;
     @SerializedName("display_name")
     @Expose
     private String displayName;
@@ -31,7 +31,7 @@ public class TrainStationEntity {
         return id;
     }
 
-    public String getPopularityOrder() {
+    public int getPopularityOrder() {
         return popularityOrder;
     }
 

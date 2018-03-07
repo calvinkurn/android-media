@@ -63,7 +63,7 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainRepository provideDataStoreFactory(TrainDataStoreFactory trainDataStoreFactory, TrainStationDataStoreFactory trainStationDataStoreFactory) {
+    public TrainRepository provideTrainRepository(TrainDataStoreFactory trainDataStoreFactory, TrainStationDataStoreFactory trainStationDataStoreFactory) {
         return new TrainRepositoryImpl(trainDataStoreFactory, trainStationDataStoreFactory);
     }
 }

@@ -47,6 +47,9 @@ dependencies {
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile rootProject.ext.supportLibDependencies.supportV4
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
