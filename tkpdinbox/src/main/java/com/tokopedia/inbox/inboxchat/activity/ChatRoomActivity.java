@@ -206,7 +206,8 @@ public class ChatRoomActivity extends BasePresenterActivity
     @Override
     public void onGetNotif(Bundle data) {
         ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-        something.restackList(data);
+        if(something != null)
+            something.restackList(data);
     }
 
     @Override
