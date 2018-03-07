@@ -3,13 +3,17 @@ package com.tokopedia.transaction.checkout.view.view.cartlist;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -100,7 +104,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private boolean mIsMenuVisible = true;
 
-    private OnPassingCartDataListener mDataPasserListener;
+    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -108,7 +112,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mDataPasserListener = (OnPassingCartDataListener) activity;
+            mDataPasserListener = (ActionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement OnPassingCartDataListener");
@@ -151,13 +155,23 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
      */
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.menu_cart_remove).setVisible(mIsMenuVisible);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_cart_remove) {
+            mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -397,7 +411,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         }
         cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartListData.getCartItemDataList());
 
         if (!mIsMenuVisible && !cartListData.getCartItemDataList().isEmpty()) {
             mIsMenuVisible = true;
@@ -429,7 +442,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
     }
 
     @Override
@@ -655,30 +667,46 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     void showDeleteCartItemDialog(List<CartItemData> cartItemDataList, List<CartItemData> emptyData) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
-                new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-                    @Override
-                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteCart(removedCartItem, false);
-                    }
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(
+                cartItemDataList,
+                emptyData,
+                getCallbackActionDialogRemoveCart());
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(dialog, CartRemoveItemDialog.DIALOG_FRAGMENT_TAG);
+        ft.commitAllowingStateLoss();
+    }
 
-                    @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteCart(removedCartItem, true);
-                    }
+    @NonNull
+    private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
+        return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
+            @Override
+            public void onDeleteSingleItemClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteCart(removedCartItem, false);
+            }
 
-                    @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
-                    }
+            @Override
+            public void onDeleteSingleItemWithWishListClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteCart(removedCartItem, true);
+            }
 
-                    @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
-                        dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
-                    }
-                });
+            @Override
+            public void onDeleteMultipleItemClicked(
+                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteAndRefreshCart(removedCartItems, false);
+            }
 
-        dialog.show(getFragmentManager(), "dialog");
+            @Override
+            public void onDeleteMultipleItemWithWishListClicked(
+                    List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems
+            ) {
+                dPresenter.processDeleteAndRefreshCart(removedCartItems, true);
+            }
+        };
     }
 
     public static CartFragment newInstance() {
@@ -723,72 +751,85 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
-                Bundle bundle = data.getExtras();
-                if (bundle != null) {
-                    String voucherCode = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
-                    String voucherMessage = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
-                    long voucherDiscountAmount = bundle.getLong(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
-                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
-                            .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
-                            .promoCode(voucherCode)
-                            .description(voucherMessage)
-                            .amount((int) voucherDiscountAmount)
-                            .build();
-                    CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-                    cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
-
-                    cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
-                }
-            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
-                Bundle bundle = data.getExtras();
-                if (bundle != null) {
-                    String couponTitle = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
-                    String couponMessage = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
-                    String couponCode = bundle.getString(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
-                    long couponDiscountAmount = bundle.getLong(
-                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
-                    this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
-                            .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
-                            .promoCode(couponCode)
-                            .couponTitle(couponTitle)
-                            .description(couponMessage)
-                            .amount((int) couponDiscountAmount)
-                            .build();
-                    CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
-                    cartItemPromoHolderData.setPromoCouponType(couponTitle, couponCode, couponMessage, couponDiscountAmount);
-
-                    cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
-                }
-            }
+            onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == CartShipmentActivity.REQUEST_CODE) {
-            if (resultCode == CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
-                RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                        CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
-                );
-                dPresenter.processToShipmentMultipleAddress(selectedAddress);
-            }
+            onResultFromRequestCodeCartShipment(resultCode, data);
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
-            if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
-                dPresenter.processToShipmentForm();
+            onResultFromRequestCodeMultipleAddressForm(resultCode);
+        }
+    }
+
+    private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
+        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING
+                || resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
+            dPresenter.processToShipmentForm();
+        }
+    }
+
+    private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
+        if (resultCode == CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
+            RecipientAddressModel selectedAddress = data.getParcelableExtra(
+                    CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
+            );
+            dPresenter.processToShipmentMultipleAddress(selectedAddress);
+        } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
+                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
+            dPresenter.processResetAndRefreshCartData();
+        }
+    }
+
+    private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String voucherCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                String voucherMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                long voucherDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(voucherCode)
+                        .description(voucherMessage)
+                        .amount((int) voucherDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+                cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
+
+                cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+            }
+        } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String couponTitle = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                String couponMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                String couponCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                long couponDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(couponCode)
+                        .couponTitle(couponTitle)
+                        .description(couponMessage)
+                        .amount((int) couponDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+                cartItemPromoHolderData.setPromoCouponType(
+                        couponTitle, couponCode, couponMessage, couponDiscountAmount
+                );
+
+                cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
             }
         }
     }
 
-    public interface OnPassingCartDataListener {
+    public interface ActionListener {
 
-        /**
-         * Pass data from cart fragment into its container activity
-         *
-         * @param cartItemData List of cart items
-         */
-        void onPassingCartData(List<CartItemData> cartItemData);
+        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
     }
 
 }

@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.domain.usecase;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.DeleteUpdateCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ResetAndRefreshCartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ResetAndShipmentFormCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateCartData;
@@ -42,4 +44,12 @@ public interface ICartListInteractor {
 
     void getShipmentForm(Subscriber<CartShipmentAddressFormData> subscriber,
                          TKPDMapParam<String, String> param);
+
+    void resetAndRefreshCartData(Subscriber<ResetAndRefreshCartListData> subscriber,
+                                 TKPDMapParam<String, String> paramReset,
+                                 TKPDMapParam<String, String> paramGetCart);
+
+    void resetAndShipmentFormData(Subscriber<ResetAndShipmentFormCartData> subscriber,
+                                  TKPDMapParam<String, String> paramReset,
+                                  TKPDMapParam<String, String> paramShipmentForm);
 }

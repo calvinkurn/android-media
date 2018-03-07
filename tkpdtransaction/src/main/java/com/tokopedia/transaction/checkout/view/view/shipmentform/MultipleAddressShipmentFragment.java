@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,10 +19,8 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -35,7 +34,6 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -112,51 +110,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         component.inject(this);
     }
 
-    private List<MultipleAddressShipmentAdapterData> dataList() {
-        List<MultipleAddressShipmentAdapterData> list = new ArrayList<>();
-        list.add(dummyData());
-        list.add(dummyData());
-        return list;
-    }
-
-    private MultipleAddressShipmentAdapterData dummyData() {
-        MultipleAddressShipmentAdapterData data = new MultipleAddressShipmentAdapterData();
-        data.setSenderName("Adidas");
-        data.setProductImageUrl("https://t00.deviantart.net/Qgvu_0dClD_BotaDpLBflGKcvbI=/300x200/filters:fixed_height(100,100):origin()/pre00/69b2/th/pre/f/2013/143/9/1/pusheen_the_cat_png_15_by_13taylorswiftlover13-d66chev.png");
-        data.setProductName("Kaos Adidas Camo Tongue Tee...White & Red, XS");
-        data.setProductPrice("Rp200.000");
-        data.setProductPriceNumber(200000);
-        data.setDestinationDistrictId("2283");
-        data.setDestinationDistrictName("Kelapa Gading");
-        data.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
-        data.setUnixTime("1515753331");
-        data.setItemData(dummyItemData());
-        data.setShipmentCartData(dummyShipmentCartData());
-        return data;
-    }
-
-    private MultipleAddressItemData dummyItemData() {
-        MultipleAddressItemData data = new MultipleAddressItemData();
-        data.setProductWeight("3Kg");
-        data.setProductQty("1");
-        data.setProductNotes("Saya pesan warna merah yah min.. jangan sampai salah\n" +
-                "kirim barangnya gan!");
-        data.setAddressTitle("Alamat Kantor");
-        data.setAddressReceiverName("Agus Maulana");
-        return data;
-    }
-
-    private ShipmentCartData dummyShipmentCartData() {
-        ShipmentCartData shipmentCartData = new ShipmentCartData();
-        shipmentCartData.setCategoryIds("4");
-        shipmentCartData.setInsurance(2000);
-        shipmentCartData.setWeight(500);
-        shipmentCartData.setInsurancePrice(5000);
-        shipmentCartData.setAdditionalFee(1000);
-        shipmentCartData.setDeliveryPriceTotal(50000);
-        return shipmentCartData;
-    }
-
     private void showCancelPickupBoothDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.label_dialog_title_cancel_pickup);
@@ -176,7 +129,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Override
     public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList,
                                          MultipleAddressPriceSummaryData data) {
-        presenter.sendData(addressDataList, data);
+        presenter.generateCheckoutRequest(addressDataList, data);
+        //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+
     }
 
     @Override

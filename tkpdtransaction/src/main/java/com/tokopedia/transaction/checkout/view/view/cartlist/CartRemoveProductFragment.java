@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -57,8 +58,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Inject
     RecyclerView.ItemDecoration itemDecoration;
 
-    private OnPassingCartDataListener mDataPasserListener;
-
     private int mCheckedCartItem = 0;
 
     private List<CartItemData> mCartItemDataList = new ArrayList<>();
@@ -71,17 +70,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
                 (ArrayList<? extends Parcelable>) cartItemDataList);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mDataPasserListener = (OnPassingCartDataListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
-                    " must implement OnPassingCartDataListener");
-        }
     }
 
     @Override
@@ -113,49 +101,25 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.menu_cart_remove).setVisible(false);
-    }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    /**
-     * instantiate presenter disini. sesuai dengan Type param di class
-     */
     @Override
     protected void initialPresenter() {
 
     }
 
-    /**
-     * Cast si activity ke listener atau bisa juga ini untuk context activity
-     *
-     * @param activity si activity yang punya fragment
-     */
     @Override
     protected void initialListener(Activity activity) {
 
     }
 
-    /**
-     * kalau memang argument tidak kosong. ini data argumentnya
-     *
-     * @param arguments argument nya
-     */
     @Override
     protected void setupArguments(Bundle arguments) {
         mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
-
         if (mCartItemDataList != null) {
             for (CartItemData cartItemData : mCartItemDataList) {
                 mCheckedCartItemList.add(new CheckedCartItemData(false, cartItemData));
@@ -180,8 +144,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void initView(View view) {
-        ButterKnife.bind(this, view);
-
         mRvCartRemoveProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartRemoveProduct.setAdapter(mCartRemoveProductAdapter);
         mRvCartRemoveProduct.addItemDecoration(itemDecoration);
@@ -292,56 +254,69 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     }
 
 
-    private void showDeleteCartItemDialog(final List<CartItemData> removedCartItemList, List<CartItemData> updatedCartItemList) {
-
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(removedCartItemList, updatedCartItemList,
-                new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-                    @Override
-                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, false);
-                    }
-
-                    @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, true);
-                    }
-
-                    @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
-                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, false);
-                    }
-
-                    @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
-                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, true);
-                    }
-                }
+    private void showDeleteCartItemDialog(
+            final List<CartItemData> removedCartItemList, List<CartItemData> updatedCartItemList
+    ) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(
+                removedCartItemList,
+                updatedCartItemList,
+                getCallbackActionDialogRemoveCart()
         );
 
         dialog.show(getFragmentManager(), "dialog");
     }
 
-    private void performDeleteCart(String message) {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+    @NonNull
+    private CartRemoveItemDialog.CartItemRemoveCallbackAction getCallbackActionDialogRemoveCart() {
+        return new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
+            @Override
+            public void onDeleteSingleItemClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItem
+            ) {
+                List<CartItemData> cartItemDataList
+                        = new ArrayList<>(Collections.singletonList(removedCartItem));
+                mCartRemoveProductPresenter.processDeleteCart(
+                        cartItemDataList, updatedCartItem, false
+                );
             }
 
+            @Override
+            public void onDeleteSingleItemWithWishListClicked(
+                    CartItemData removedCartItem, List<CartItemData> updatedCartItem
+            ) {
+                List<CartItemData> cartItemDataList
+                        = new ArrayList<>(Collections.singletonList(removedCartItem));
+                mCartRemoveProductPresenter.processDeleteCart(
+                        cartItemDataList, updatedCartItem, true
+                );
+            }
+
+            @Override
+            public void onDeleteMultipleItemClicked(
+                    List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem
+            ) {
+                mCartRemoveProductPresenter.processDeleteCart(
+                        removedCartItem, updatedCartItem, false
+                );
+            }
+
+            @Override
+            public void onDeleteMultipleItemWithWishListClicked(
+                    List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem
+            ) {
+                mCartRemoveProductPresenter.processDeleteCart(
+                        removedCartItem, updatedCartItem, true
+                );
+            }
+        };
+    }
+
+    private void performDeleteCart(String message) {
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked())
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
             mCartRemoveProductAdapter.notifyDataSetChanged();
         }
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
-
-    public interface OnPassingCartDataListener {
-
-        /**
-         * Pass data from cart fragment into its container activity
-         *
-         * @param cartItemData List of cart items
-         */
-        void onAfterRemovePassingCartData(List<CartItemData> cartItemData);
-    }
-
 }

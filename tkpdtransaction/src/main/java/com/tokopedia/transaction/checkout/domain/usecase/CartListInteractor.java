@@ -5,14 +5,18 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.data.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.data.exception.ResponseCartApiErrorException;
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.DeleteUpdateCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ResetAndRefreshCartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ResetAndShipmentFormCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -286,6 +290,127 @@ public class CartListInteractor implements ICartListInteractor {
                             @Override
                             public CartShipmentAddressFormData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
                                 return shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse);
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void resetAndRefreshCartData(Subscriber<ResetAndRefreshCartListData> subscriber,
+                                        final TKPDMapParam<String, String> paramReset,
+                                        final TKPDMapParam<String, String> paramGetCart) {
+        compositeSubscription.add(
+                Observable.just(new ResetAndRefreshCartListData())
+                        .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
+                            @Override
+                            public Observable<ResetAndRefreshCartListData> call(
+                                    final ResetAndRefreshCartListData resetAndRefreshCartListData
+                            ) {
+                                return cartRepository.resetCart(paramReset)
+                                        .map(new Func1<ResetCartDataResponse, ResetAndRefreshCartListData>() {
+                                            @Override
+                                            public ResetAndRefreshCartListData call(ResetCartDataResponse resetCartDataResponse) {
+                                                ResetCartData resetCartData = cartMapper.convertToResetCartData(resetCartDataResponse);
+                                                resetAndRefreshCartListData.setResetCartData(resetCartData);
+                                                if (!resetCartData.isSuccess()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_RESET_CART,
+                                                            0,
+                                                            ""
+                                                    );
+                                                }
+                                                return resetAndRefreshCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
+                            @Override
+                            public Observable<ResetAndRefreshCartListData> call(final ResetAndRefreshCartListData resetAndRefreshCartListData) {
+                                return cartRepository.getCartList(paramGetCart)
+                                        .map(new Func1<CartDataListResponse, ResetAndRefreshCartListData>() {
+                                            @Override
+                                            public ResetAndRefreshCartListData call(
+                                                    CartDataListResponse cartDataListResponse
+                                            ) {
+                                                CartListData cartListData = cartMapper.convertToCartItemDataList(
+                                                        cartDataListResponse
+                                                );
+                                                resetAndRefreshCartListData.setCartListData(cartListData);
+                                                return resetAndRefreshCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void resetAndShipmentFormData(Subscriber<ResetAndShipmentFormCartData> subscriber,
+                                         final TKPDMapParam<String, String> paramReset,
+                                         final TKPDMapParam<String, String> paramShipmentForm) {
+        compositeSubscription.add(
+                Observable.just(new ResetAndShipmentFormCartData())
+                        .flatMap(new Func1<ResetAndShipmentFormCartData, Observable<ResetAndShipmentFormCartData>>() {
+                            @Override
+                            public Observable<ResetAndShipmentFormCartData> call(
+                                    final ResetAndShipmentFormCartData resetAndRefreshCartListData
+                            ) {
+                                return cartRepository.resetCart(paramReset)
+                                        .map(new Func1<ResetCartDataResponse, ResetAndShipmentFormCartData>() {
+                                            @Override
+                                            public ResetAndShipmentFormCartData call(ResetCartDataResponse resetCartDataResponse) {
+                                                ResetCartData resetCartData = cartMapper.convertToResetCartData(resetCartDataResponse);
+                                                resetAndRefreshCartListData.setResetCartData(resetCartData);
+                                                if (!resetCartData.isSuccess()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_RESET_CART,
+                                                            0,
+                                                            ""
+                                                    );
+                                                }
+                                                return resetAndRefreshCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .flatMap(new Func1<ResetAndShipmentFormCartData, Observable<ResetAndShipmentFormCartData>>() {
+                            @Override
+                            public Observable<ResetAndShipmentFormCartData> call(
+                                    final ResetAndShipmentFormCartData resetAndShipmentFormCartData
+                            ) {
+                                return cartRepository.getShipmentAddressForm(paramShipmentForm)
+                                        .map(new Func1<ShipmentAddressFormDataResponse, ResetAndShipmentFormCartData>() {
+                                            @Override
+                                            public ResetAndShipmentFormCartData call(
+                                                    ShipmentAddressFormDataResponse shipmentAddressFormDataResponse
+                                            ) {
+                                                CartShipmentAddressFormData cartShipmentAddressFormData =
+                                                        shipmentMapper.convertToShipmentAddressFormData(
+                                                                shipmentAddressFormDataResponse
+                                                        );
+                                                resetAndShipmentFormCartData.setCartShipmentAddressFormData(
+                                                        cartShipmentAddressFormData
+                                                );
+                                                if (cartShipmentAddressFormData.isError()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT,
+                                                            cartShipmentAddressFormData.getErrorCode(),
+                                                            cartShipmentAddressFormData.getErrorMessage()
+                                                    );
+                                                }
+                                                return resetAndShipmentFormCartData;
+                                            }
+                                        });
+
                             }
                         })
                         .subscribeOn(Schedulers.newThread())

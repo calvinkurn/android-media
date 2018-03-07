@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +22,6 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.Checkout
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.view.di.component.CartShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.CartShipmentModule;
@@ -35,9 +35,11 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity{
+public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
     public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
+    public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
+    public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
@@ -228,7 +230,6 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void onBackPressed() {
-        // TODO add reset cart shipment dialog here
         showResetDialog();
     }
 
@@ -238,6 +239,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     @Override
                     public void onResetCartShipmentForm() {
+                        if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof SingleAddressShipmentFragment)
+                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
+                        else if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof MultipleAddressShipmentFragment)
+                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT);
                         finish();
                     }
 
@@ -246,8 +253,9 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     }
                 });
-
-        dialog.show(getFragmentManager(), "dialog");
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
+        ft.commitAllowingStateLoss();
     }
 
     @Override
