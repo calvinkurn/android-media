@@ -8,10 +8,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_activity"
-        android:layout_marginLeft="@dimen/space_med"
-        android:layout_marginStart="@dimen/space_med"
-        android:layout_marginTop="@dimen/space_med">
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med">
 
         <LinearLayout
             android:id="@+id/ll_title_user_info"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_title_user_info"
-            android:layout_marginBottom="@dimen/space_med"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:orientation="vertical"
             android:visibility="visible">
 
