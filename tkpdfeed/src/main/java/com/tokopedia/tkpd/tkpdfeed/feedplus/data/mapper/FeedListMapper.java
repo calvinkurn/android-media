@@ -1,8 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
 import com.google.gson.Gson;
-import com.tkpdfeed.feeds.FeedQuery;
-import com.tkpdfeed.feeds.HomeFeedQuery;
+import com.tkpdfeed.feeds.model.FeedQuery;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
