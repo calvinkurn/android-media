@@ -36,7 +36,7 @@ public class UberSMSChatPresenter extends BaseDaggerPresenter<UberSMSChatContrac
     private final String INBOX_URI = "content://sms/inbox";
     private final String SENT_URI = "content://sms/sent";
 
-    private final String ID = "id";
+    private final String ID = "_id";
     private final String ADDRESS = "address";
     private final String PERSON = "person";
     private final String BODY = "body";
