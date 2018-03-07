@@ -24,7 +24,6 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -35,7 +34,6 @@ import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.viewmodel.IndicatorItem;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,17 +66,12 @@ public class InboxChatActivity extends DrawerPresenterActivity
             homeIntent = HomeRouter.getHomeActivity(context);
         }
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         Intent destination;
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+
             destination = new Intent(context, InboxChatActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
-        } else {
-            destination = new Intent(context, InboxMessageActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-        }
+
         return destination;
     }
 
