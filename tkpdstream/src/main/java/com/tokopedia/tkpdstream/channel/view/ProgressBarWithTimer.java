@@ -5,18 +5,16 @@ import android.content.res.TypedArray;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 
 /**
- * Created by StevenFredian on 14/02/18.
+ * @author by StevenFredian on 14/02/18.
  */
 
 public class ProgressBarWithTimer extends FrameLayout {
@@ -51,13 +49,7 @@ public class ProgressBarWithTimer extends FrameLayout {
     private void init(AttributeSet attrs) {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ProgressBarWithTimer);
-        try {
-//            textValue = styledAttributes.getString(R.styleable.ProgressBarWithTimer_text);
-//            time = styledAttributes.getInt(R.styleable.ProgressBarWithTimer_time, 0);
-
-        } finally {
-            styledAttributes.recycle();
-        }
+        styledAttributes.recycle();
     }
 
     private String formatMilliSecondsToTime(long milliseconds) {

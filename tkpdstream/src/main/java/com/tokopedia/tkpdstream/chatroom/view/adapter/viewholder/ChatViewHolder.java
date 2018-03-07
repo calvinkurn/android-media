@@ -1,13 +1,9 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 
-import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;

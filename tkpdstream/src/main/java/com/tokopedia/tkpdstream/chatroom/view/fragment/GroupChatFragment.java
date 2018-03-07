@@ -95,7 +95,7 @@ import javax.inject.Inject;
 
 public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View,
         ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener,
-        ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener {
+        ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener, GroupChatContract.View.VoteAnnouncementViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
@@ -294,7 +294,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (shareLayout == null) {
                 shareLayout = new ShareLayout(
                         GroupChatFragment.this,
-                        callbackManager, channelUrl, analytics);
+                        callbackManager, channelUrl, toolbar.getTitle().toString(), analytics);
             }
             shareLayout.setShareModel(shareData);
             shareLayout.show();
@@ -672,7 +672,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         boolean voted = (votedView.getVisibility() == View.VISIBLE);
 
         presenter.sendVote(viewModel.getPollId(), voted, element);
-        analytics.eventClickVote(element.getType());
+
+        analytics.eventClickVote(element.getType(), toolbar.getTitle().toString());
     }
 
     @Override
@@ -979,9 +980,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onVoteComponentClicked() {
-        analytics.eventClickVoteComponent();
-        expand(voteBody);
-        arrow.animate().rotationBy(180f).start();
+    public void onVoteComponentClicked(String type, String name) {
+        analytics.eventClickVoteComponent(type, name);
+        if (voteBody.getVisibility() == View.GONE) {
+            expand(voteBody);
+            arrow.animate().rotationBy(180f).start();
+        }
     }
 }

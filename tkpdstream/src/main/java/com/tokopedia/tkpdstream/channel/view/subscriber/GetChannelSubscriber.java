@@ -7,7 +7,7 @@ import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import rx.Subscriber;
 
 /**
- * Created by StevenFredian on 13/02/18.
+ * @author by StevenFredian on 13/02/18.
  */
 
 public class GetChannelSubscriber extends Subscriber<ChannelListViewModel> {

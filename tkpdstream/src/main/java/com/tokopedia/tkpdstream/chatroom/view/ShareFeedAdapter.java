@@ -13,7 +13,7 @@ import com.tokopedia.tkpdstream.R;
 import java.util.ArrayList;
 
 /**
- * Created by stevenfredian on 2/21/17.
+ * @author by stevenfredian on 2/21/17.
  */
 
 public class ShareFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

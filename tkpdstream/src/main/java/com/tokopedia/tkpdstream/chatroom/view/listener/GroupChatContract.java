@@ -65,8 +65,10 @@ public interface GroupChatContract {
 
         interface ImageViewHolderListener {
             void onRedirectUrl(String url);
+        }
 
-            void onVoteComponentClicked();
+        interface VoteAnnouncementViewHolderListener {
+            void onVoteComponentClicked(String type, String name);
         }
     }
 

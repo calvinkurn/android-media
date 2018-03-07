@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
 /**
- * Created by Angga.Prasetiyo on 11/12/2015.
+ * @author by Angga.Prasetiyo on 11/12/2015.
  */
 public class ShareData implements Parcelable {
     public static final String TAG = ShareData.class.getSimpleName();

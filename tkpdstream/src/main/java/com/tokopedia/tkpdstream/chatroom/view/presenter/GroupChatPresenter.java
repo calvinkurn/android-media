@@ -21,7 +21,6 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 

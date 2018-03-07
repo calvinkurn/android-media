@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
-import android.content.Context;
-
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 
