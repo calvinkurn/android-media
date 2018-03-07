@@ -57,7 +57,6 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
         try {
             if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
-//                dataFromHome = inIntent.getParcelableExtra("homedata");
                 getView().renderFromHome(dataFromHome);
                 url = dataFromHome.getUrl();
             } else if (from == EventDetailsActivity.FROM_DEEPLINK) {

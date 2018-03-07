@@ -689,8 +689,6 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeString(this.saleEndTime);
         dest.writeValue(this.dateRange);
         dest.writeString(this.cityName);
-        //dest.writeParcelable(this.schedules, flags);
-        //sdest.writeParcelable(this.forms, flags);
     }
 
     protected CategoryItemsViewModel(Parcel in) {
@@ -759,8 +757,6 @@ public class CategoryItemsViewModel implements Parcelable {
         this.saleEndTime = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.cityName = in.readString();
-//        this.schedules = in.readParcelable(Object.class.getClassLoader());
-//        this.forms = in.readParcelable(Object.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Parcelable.Creator<CategoryItemsViewModel>() {
