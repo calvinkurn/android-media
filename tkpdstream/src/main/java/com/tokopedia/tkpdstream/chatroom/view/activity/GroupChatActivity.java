@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -9,6 +10,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
@@ -24,6 +31,8 @@ import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
  */
 
 public class GroupChatActivity extends BaseEmptyActivity {
+
+    private static final int KEYBOARD_TRESHOLD = 100;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -44,6 +53,8 @@ public class GroupChatActivity extends BaseEmptyActivity {
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
     public Toolbar toolbar;
+    public View rootView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,20 @@ public class GroupChatActivity extends BaseEmptyActivity {
     }
 
     private void initView() {
+        rootView = findViewById(R.id.root_view);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = rootView.getRootView().getHeight() - rootView.getHeight();
+
+                if (heightDiff > KEYBOARD_TRESHOLD) {
+                   removePaddingIfKeyboardIsShowing();
+                } else {
+                   addPaddingIfKeyboardIsClosed();
+                }
+            }
+        });
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
@@ -70,6 +95,25 @@ public class GroupChatActivity extends BaseEmptyActivity {
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
+
+    private void addPaddingIfKeyboardIsClosed() {
+        if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
+            FrameLayout container = rootView.findViewById(R.id.container);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container
+                    .getLayoutParams();
+            params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(GroupChatActivity.this));
+            container.setLayoutParams(params);
+        }
+    }
+
+    private void removePaddingIfKeyboardIsShowing() {
+        if (getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
+            FrameLayout container = rootView.findViewById(R.id.container);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+            params.setMargins(0, 0, 0, 0);
+            container.setLayoutParams(params);
+        }
     }
 
     public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
@@ -104,5 +148,21 @@ public class GroupChatActivity extends BaseEmptyActivity {
             finish();
         }
         super.onBackPressed();
+    }
+
+    public static int getSoftButtonsBarSizePort(Activity activity) {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
     }
 }
