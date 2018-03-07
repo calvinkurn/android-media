@@ -239,9 +239,11 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     @Override
                     public void onResetCartShipmentForm() {
-                        if (getFragmentManager().findFragmentById(R.id.container) instanceof SingleAddressShipmentFragment)
+                        if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof SingleAddressShipmentFragment)
                             setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
-                        else if (getFragmentManager().findFragmentById(R.id.container) instanceof MultipleAddressShipmentFragment)
+                        else if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof MultipleAddressShipmentFragment)
                             setResult(RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT);
                         finish();
                     }
