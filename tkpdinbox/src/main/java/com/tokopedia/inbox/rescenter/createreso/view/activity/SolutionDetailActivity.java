@@ -105,22 +105,14 @@ public class SolutionDetailActivity extends
     @Override
     public void onBackPressed() {
         if (editAppealSolutionModel != null) {
-            if (editAppealSolutionModel.isEdit) {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
-            } else {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
+            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
+            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
             }
         }
         super.onBackPressed();

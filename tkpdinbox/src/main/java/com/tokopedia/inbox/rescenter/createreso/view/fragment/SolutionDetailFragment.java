@@ -330,22 +330,14 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void submitData(ResultViewModel resultViewModel) {
         if (editAppealSolutionModel != null) {
-            if (editAppealSolutionModel.isEdit) {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
-            } else {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
+            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
+            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
             }
         }
         Intent output = new Intent();

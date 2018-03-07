@@ -172,22 +172,14 @@ public class SolutionListFragment extends BaseDaggerFragment
     public void onItemClicked(SolutionViewModel solutionViewModel) {
         presenter.solutionClicked(solutionViewModel);
         if (isEditAppeal) {
-            if (editAppealSolutionModel.isEdit) {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
-                            editAppealSolutionModel.resolutionId,
-                            solutionViewModel.getSolutionName()));
-                } else {
-
-                }
-            } else {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
-                            editAppealSolutionModel.resolutionId,
-                            solutionViewModel.getSolutionName()));
-                } else {
-
-                }
+            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
+                        editAppealSolutionModel.resolutionId,
+                        solutionViewModel.getSolutionName()));
+            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
+                        editAppealSolutionModel.resolutionId,
+                        solutionViewModel.getSolutionName()));
             }
         }
     }
