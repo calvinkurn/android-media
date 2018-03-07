@@ -123,7 +123,7 @@ public class EntityPackagesItem {
     private String venueDetail;
     @SerializedName("vouchers")
     @Expose
-    private Object vouchers;
+    private String vouchers = null;
 
     public String getAddress() {
         return address;
