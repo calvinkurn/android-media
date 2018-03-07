@@ -249,7 +249,7 @@
     <dimen name="keyboard_min_height">200dp</dimen>
     <dimen name="share_header_height">52dp</dimen>
 
-    <dimen name="avatar_size">70dp</dimen>
+    <dimen name="profile_avatar_size">70dp</dimen>
     <dimen name="action_icon_size">16dp</dimen>
     <dimen name="title_kol_space">4dp</dimen>
     <dimen name="space_extra_xs">4sp</dimen>
