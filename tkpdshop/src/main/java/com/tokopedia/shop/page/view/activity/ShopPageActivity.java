@@ -46,6 +46,7 @@ import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.customview.CustomContentBottomActionView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
