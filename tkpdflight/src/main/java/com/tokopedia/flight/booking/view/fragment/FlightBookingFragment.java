@@ -378,12 +378,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getReturnDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
+        if (returnTrip.getAirlineDataList() != null) {
+            if (returnTrip.getAirlineDataList().size() == 1) {
+                airLineSection = returnTrip.getAirlineDataList().get(0).getShortName();
+            } else {
+                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            }
+        }
         if (returnTrip.getRouteList().size() > 1) {
-            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
-            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
         tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
@@ -391,21 +396,26 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
+    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel departureTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
+        departureInfoView.setContent(departureTrip.getDepartureAirportCity() + " - " + departureTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getDepartureDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
-        if (returnTrip.getRouteList().size() > 1) {
-            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (departureTrip.getAirlineDataList() != null) {
+            if (departureTrip.getAirlineDataList().size() == 1) {
+                airLineSection = departureTrip.getAirlineDataList().get(0).getShortName();
+            } else {
+                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            }
+        }
+        if (departureTrip.getRouteList().size() > 1) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
-            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), departureTrip.getDepartureTime(), departureTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
