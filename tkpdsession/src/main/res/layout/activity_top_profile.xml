@@ -170,7 +170,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
             android:padding="@dimen/new_margin_med"
-            android:text="@string/try_again"
+            android:text="@string/try_again_top_profile"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_13"
             android:textStyle="normal" />

@@ -178,7 +178,7 @@
     <!-- TopProfile -->
     <string name="error_occured">Terjadi Kendala Pada Server</string>
     <string name="server_busy">Untuk saat ini, Tokopedia kepenuhan pengunjung.</string>
-    <string name="try_again">Coba lagi</string>
+    <string name="try_again_top_profile">Coba lagi</string>
     <string name="manage_profile">Atur Akun</string>
     <string name="favorite_shop">Toko Favorit</string>
     <string name="follow_with_plus">+ Follow</string>
