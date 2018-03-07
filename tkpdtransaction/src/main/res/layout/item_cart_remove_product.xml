@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             <CheckBox
                 android:id="@+id/cb_remove_product"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </FrameLayout>
 
         <LinearLayout
@@ -40,33 +40,27 @@
 
                 <TextView
                     android:id="@+id/tv_text_sender"
+                    style="@style/TextSmallMediumBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="5sp"
-                    android:text="Dikirim oleh : "
-                    android:textColor="@color/black_38"
-                    android:textSize="12sp"
-                    android:textStyle="normal"/>
+                    android:text="Dikirim oleh : " />
 
                 <TextView
                     android:id="@+id/tv_shop_name"
+                    style="@style/TextSmallMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_toEndOf="@id/tv_text_sender"
                     android:layout_toRightOf="@id/tv_text_sender"
-                    android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="5sp"
-                    android:textColor="@color/black_70"
-                    android:textSize="12sp"
-                    tools:text="Adidas"/>
+                    tools:text="Adidas" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#e0e0e0"/>
+                android:background="#e0e0e0" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -94,32 +88,28 @@
                         android:layout_marginRight="8dp"
                         android:layout_marginTop="5dp"
                         android:src="@drawable/googleg_standard_color_18"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/tv_product_name"
+                        style="@style/TextMidMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@id/iv_product_image"
                         android:layout_toRightOf="@id/iv_product_image"
-                        android:fontFamily="sans-serif-medium"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="normal"
-                        tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS"/>
+                        tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
 
                     <TextView
                         android:id="@+id/tv_product_price"
+                        style="@style/TextMidMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_product_name"
                         android:layout_toEndOf="@id/iv_product_image"
                         android:layout_toRightOf="@id/iv_product_image"
-                        android:fontFamily="sans-serif-medium"
                         android:textColor="@color/orange_red"
-                        android:textSize="14sp"
-                        android:textStyle="normal"
-                        tools:text="Rp200.000"/>
+                        tools:text="Rp200.000" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -131,41 +121,33 @@
 
                         <TextView
                             android:id="@+id/tv_text_product_weight"
+                            style="@style/TextSmallNormalBlack38"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="Berat :"
-                            android:textColor="@color/black_38"
-                            android:textSize="12sp"
-                            android:textStyle="normal"/>
+                            android:text="Berat :" />
 
                         <TextView
                             android:id="@+id/tv_product_weight"
+                            style="@style/TextSmallNormalBlack70"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="4dp"
                             android:layout_marginStart="4dp"
                             android:layout_toEndOf="@id/tv_text_product_weight"
                             android:layout_toRightOf="@id/tv_text_product_weight"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/black_70"
-                            android:textSize="12sp"
-                            android:textStyle="normal"
-                            tools:text="3kg"/>
+                            tools:text="3kg" />
 
                         <TextView
                             android:id="@+id/tv_product_total_item"
+                            style="@style/TextSmallNormalBlack70"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/black_70"
-                            android:textSize="12sp"
-                            android:textStyle="normal"
-                            tools:text="1"/>
+                            tools:text="1" />
 
                         <TextView
+                            style="@style/TextSmallNormalBlack38"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
@@ -174,12 +156,8 @@
                             android:layout_toLeftOf="@id/tv_product_total_item"
                             android:layout_toRightOf="@id/tv_product_weight"
                             android:layout_toStartOf="@id/tv_product_total_item"
-                            android:fontFamily="sans-serif"
                             android:gravity="end"
-                            android:text="Jumlah :"
-                            android:textColor="@color/black_38"
-                            android:textSize="12sp"
-                            android:textStyle="normal"/>
+                            android:text="Jumlah :" />
 
                     </RelativeLayout>
 

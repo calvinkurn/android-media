@@ -6,36 +6,37 @@
     android:paddingBottom="8dp"
     android:paddingTop="8dp">
 
-    <FrameLayout android:id="@+id/fl_select_to_remove"
+    <FrameLayout
+        android:id="@+id/fl_select_to_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginStart="8dp">
 
-        <CheckBox android:id="@+id/checkBox"
+        <CheckBox
+            android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </FrameLayout>
 
-    <LinearLayout android:id="@+id/ll_product_container"
+    <LinearLayout
+        android:id="@+id/ll_product_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/fl_select_to_remove"
-        android:layout_toEndOf="@+id/fl_select_to_remove">
+        android:layout_toEndOf="@+id/fl_select_to_remove"
+        android:layout_toRightOf="@id/fl_select_to_remove">
 
-            <TextView android:id="@+id/tv_text_sender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginRight="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="normal"
-                android:textColor="@color/black_54"
-                android:lineSpacingExtra="5sp"
-                android:text="Pilih Semua" />
+        <TextView
+            android:id="@+id/tv_text_sender"
+            style="@style/TextMidMediumBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:lineSpacingExtra="5sp"
+            android:text="Pilih Semua" />
 
     </LinearLayout>
 

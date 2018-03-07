@@ -13,22 +13,17 @@
         android:layout_margin="@dimen/new_margin_med">
 
         <TextView
+            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:text="Dikirim oleh : "
-            android:textColor="@color/label_color"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:textColor="@color/label_color" />
 
         <TextView
             android:id="@+id/sender_name"
+            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:textStyle="normal"
             tools:text="Adidas" />
 
     </LinearLayout>
@@ -57,22 +52,17 @@
 
             <TextView
                 android:id="@+id/product_name"
+                style="@style/TextMidMediumBlack70"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black_70"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
 
             <TextView
                 android:id="@+id/product_price"
+                style="@style/TextMidMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/orange_red"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 tools:text="Rp 20.000" />
 
         </LinearLayout>

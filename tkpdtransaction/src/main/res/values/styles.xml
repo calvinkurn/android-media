@@ -21,8 +21,6 @@
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
     </style>
 
-
-
     <style name="TextSmall">
         <item name="android:textSize">12sp</item>
     </style>
@@ -33,6 +31,10 @@
 
     <style name="TextSmallNormalBlack38" parent="TextSmallNormal">
         <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextSmallNormalBlack54" parent="TextSmallNormal">
+        <item name="android:textColor">@color/black_54</item>
     </style>
 
     <style name="TextSmallNormalBlack70" parent="TextSmallNormal">
@@ -47,11 +49,13 @@
         <item name="android:textColor">@color/black_38</item>
     </style>
 
+    <style name="TextSmallMediumBlack54" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
     <style name="TextSmallMediumBlack70" parent="TextSmallMedium">
         <item name="android:textColor">@color/black_70</item>
     </style>
-
-
 
     <style name="TextMid">
         <item name="android:textSize">14sp</item>
@@ -61,11 +65,19 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
+    <style name="TextMidNormalBlack70" parent="TextMidNormal">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
     <style name="TextMidMedium" parent="TextMid">
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextMidNormalBlack70" parent="TextMidNormal">
+    <style name="TextMidMediumBlack54" parent="TextMidMedium">
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="TextMidMediumBlack70" parent="TextMidMedium">
         <item name="android:textColor">@color/black_70</item>
     </style>
 
