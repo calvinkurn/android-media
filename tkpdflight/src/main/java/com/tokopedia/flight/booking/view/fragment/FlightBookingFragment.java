@@ -525,8 +525,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                FlightFlowConstant.EXPIRED_JOURNEY
+                        );
                     }
                 });
         dialog.setCancelable(false);
