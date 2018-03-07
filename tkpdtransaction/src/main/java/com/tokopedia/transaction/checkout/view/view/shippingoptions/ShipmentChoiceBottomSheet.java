@@ -3,9 +3,11 @@ package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -37,6 +40,8 @@ import butterknife.OnClick;
 public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         implements IShipmentChoiceView, ShipmentChoiceAdapter.ViewListener {
 
+    @BindView(R2.id.toolbar)
+    Toolbar toolbar;
     @BindView(R2.id.rv_shipment_choice)
     RecyclerView rvShipmentChoice;
     @BindView(R2.id.ll_network_error_view)
@@ -53,6 +58,7 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
     ImageButton imgBtClose;
 
     private ActionListener listener;
+    private View bottomSheetView;
 
     @Inject
     ShipmentChoiceAdapter shipmentChoiceAdapter;
@@ -70,7 +76,7 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
 
     private void initializeView(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
+        bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
         setContentView(bottomSheetView);
         ButterKnife.bind(this, bottomSheetView);
         initializeInjector();
@@ -86,6 +92,15 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         ShipmentChoiceComponent shipmentChoiceComponent = DaggerShipmentChoiceComponent.builder()
                 .build();
         shipmentChoiceComponent.inject(this);
+    }
+
+    public void updateHeight() {
+        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
+        int bottomSheetHeight = rvShipmentChoice.computeVerticalScrollRange() +
+                toolbar.getHeight() + layoutParams.bottomMargin;
+        behavior.setPeekHeight(bottomSheetHeight);
     }
 
     public void setListener(ActionListener listener) {
@@ -145,12 +160,12 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
-    void onCloseTickerClick(){
+    void onCloseTickerClick() {
         llShipmentInfoTicker.setVisibility(View.GONE);
     }
 
     @OnClick(R2.id.img_bt_close)
-    void onCloseClick(){
+    void onCloseClick() {
         ShipmentChoiceBottomSheet.this.dismiss();
     }
 

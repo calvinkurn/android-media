@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey_200"
     android:orientation="vertical">
 
@@ -14,7 +14,8 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <LinearLayout android:id="@+id/ll_total_payment_layout"
+        <LinearLayout
+            android:id="@+id/ll_total_payment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -22,24 +23,19 @@
 
             <TextView
                 android:id="@+id/tv_item_count"
+                style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                android:textColor="@color/black_70"
                 android:text="Total Pembayaran " />
 
             <TextView
                 android:id="@+id/tv_total_payment"
+                style="@style/TextMidMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
                 android:gravity="end"
-                android:textSize="14sp"
-                android:textStyle="normal"
                 android:textColor="@color/orange_red"
                 tools:text="Rp600.000" />
 
@@ -48,7 +44,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#e0e0e0"/>
+            android:background="#e0e0e0" />
 
         <TextView
             android:id="@+id/tv_select_payment_method"

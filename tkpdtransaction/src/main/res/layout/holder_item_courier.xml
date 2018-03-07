@@ -9,14 +9,15 @@
 
     <TextView
         android:id="@+id/tv_courier_name"
+        style="@style/TextMidNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
-        android:textSize="14sp"
         tools:text="JNE" />
 
     <TextView
         android:id="@+id/tv_price"
+        style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier_name"
@@ -24,28 +25,24 @@
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_toEndOf="@+id/tv_courier_name"
         android:layout_toRightOf="@+id/tv_courier_name"
-        android:lineSpacingExtra="4sp"
-        android:textSize="12sp"
         tools:text="Mulai dari Rp 15.000" />
 
     <TextView
         android:id="@+id/tv_delivery_time_range"
+        style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier_name"
         android:layout_marginTop="4dp"
-        android:lineSpacingExtra="4sp"
-        android:textSize="12sp"
         tools:text="(6 - 8 jam pengiriman)" />
 
     <TextView
         android:id="@+id/tv_delivery_schedule"
+        style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_delivery_time_range"
         android:layout_marginTop="4dp"
-        android:lineSpacingExtra="4sp"
-        android:textSize="12sp"
         tools:text="Jadwal pengiriman 09:00-16:00 WIB" />
 
     <RadioButton

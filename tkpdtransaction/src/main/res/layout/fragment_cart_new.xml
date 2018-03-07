@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/bottom_layout"
@@ -30,33 +30,29 @@
 
                 <TextView
                     android:id="@+id/tv_item_count"
+                    style="@style/TextSmallNormalBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/black_70"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    tools:text="Harga Barang (3 Item): "/>
+                    android:lineSpacingExtra="4sp"
+                    tools:text="Harga Barang (3 Item): " />
 
                 <TextView
                     android:id="@+id/tv_total_prices"
+                    style="@style/TextMidMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-medium"
                     android:gravity="end"
                     android:textColor="@color/orange_red"
-                    android:textSize="14sp"
-                    android:textStyle="normal"
-                    tools:text="Rp600.000"/>
+                    tools:text="Rp600.000" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#e0e0e0"/>
+                android:background="#e0e0e0" />
 
             <TextView
                 android:id="@+id/go_to_courier_page_button"
@@ -65,10 +61,10 @@
                 android:layout_margin="@dimen/margin_small"
                 android:background="@drawable/medium_green_button_rounded"
                 android:gravity="center"
-                android:text="Pilih Kurir Pengiriman"
+                android:text="@string/label_button_choose_shipment_courier"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -85,7 +81,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 </RelativeLayout>
