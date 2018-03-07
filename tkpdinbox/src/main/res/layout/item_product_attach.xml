@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@drawable/bg_selectable_attach_product"
+    android:clickable="true"
+    android:focusable="true"
+    android:minWidth="300dp">
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/attach_product_item_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:theme="@style/checkBoxStyle" />
+
+    <com.tokopedia.core.customwidget.SquareImageView
+        android:id="@+id/attach_product_item_image"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_toRightOf="@id/attach_product_item_checkbox"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:src="@drawable/ic_loading_toped" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/attach_product_item_image"
+        android:layout_toRightOf="@id/attach_product_item_image"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true" >
+        <TextView
+            android:id="@+id/attach_product_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
+            android:text="Nama Produk"
+            android:textColor="@color/black_70"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/attach_product_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/orange_red"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:text="@string/price_per_product"
+            android:layout_below="@id/attach_product_item_name"
+            />
+    </RelativeLayout>
+</RelativeLayout>

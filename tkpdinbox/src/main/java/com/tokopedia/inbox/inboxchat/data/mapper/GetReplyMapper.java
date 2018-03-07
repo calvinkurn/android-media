@@ -13,6 +13,8 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -67,6 +69,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     }
 
 
+
     private ChatRoomViewModel mappingToDomain(ReplyData data) {
 
         ChatRoomViewModel chatRoomViewModel = new ChatRoomViewModel();
@@ -93,8 +96,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                 }
                 temp.setAttachment(item.getAttachment());
-                list.add(temp);
-            } else {
+                list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
+            }else {
                 if (!item.isOpposite()) {
                     MyChatViewModel temp = new MyChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -115,7 +118,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     }
                     temp.setAttachment(item.getAttachment());
                     temp.setReadStatus(item.isMessageIsRead());
-                    list.add(temp);
+
+                    list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
                 } else {
                     OppositeChatViewModel temp = new OppositeChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -135,7 +139,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }
                     temp.setAttachment(item.getAttachment());
-                    list.add(temp);
+                    list.add(checkAndConvertItemModelToAttachProductModel(temp,temp.getAttachment()));
                 }
             }
         }
@@ -164,5 +168,24 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
             }
         }
+    }
+
+    private Visitable checkAndConvertItemModelToAttachProductModel(Visitable input, Attachment attachment){
+        if(attachment == null)
+            return input;
+        boolean shouldConvert = attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED);
+        if(!shouldConvert)
+            return input;
+
+        if((input instanceof MyChatViewModel)){
+            return new AttachProductViewModel((MyChatViewModel)input);
+        }
+        else if(input instanceof OppositeChatViewModel){
+            return new AttachProductViewModel((OppositeChatViewModel)input);
+        }
+        else if(input instanceof ThumbnailChatViewModel){
+            return new AttachProductViewModel((ThumbnailChatViewModel) input);
+        }
+        return input;
     }
 }

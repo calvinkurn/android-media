@@ -14,9 +14,11 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
+import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -70,6 +73,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         super.onViewRecycled(holder);
         if(holder instanceof MyChatViewHolder) {
             ((MyChatViewHolder) holder).onViewRecycled();
+        }
+        else if(holder instanceof AttachedProductViewHolder) {
+            ((AttachedProductViewHolder) holder).onViewRecycled();
         }
     }
 
@@ -183,6 +189,27 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void setNav(String string) {
 
+    }
+
+    public void removeLastProductWithId(Integer productId){
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        ListIterator<Visitable> iterator = list.listIterator(list.size());
+        while(iterator.hasPrevious()){
+            int position = iterator.previousIndex();
+            Visitable visitable = iterator.previous();
+            if(!(visitable instanceof AttachProductViewModel))
+                continue;
+
+            AttachProductViewModel viewModel = (AttachProductViewModel)visitable;
+            if(viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
+                if(viewModel.getAttachment().getId().equals(productId.toString())){
+                    iterator.remove();
+                    notifyItemRemoved(position);
+                }
+            }
+        }
     }
 
     public void removeLast() {

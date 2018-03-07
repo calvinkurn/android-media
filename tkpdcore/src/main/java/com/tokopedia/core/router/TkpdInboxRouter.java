@@ -45,4 +45,8 @@ public interface TkpdInboxRouter {
     Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
+
+    Intent getProductDetailIntent(Context context, Integer productId, String productName, String productPrice, Long dateTimeInMilis);
+
+    void startAddProduct(Activity activity, String shopId);
 }

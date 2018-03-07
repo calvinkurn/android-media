@@ -24,12 +24,13 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
+        Log.i("WS : " , "Opened");
         listener.onOpenWebSocket();
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
-        Log.i("Receiving : " , text);
+        Log.i("WS Receiving : " , text);
         listener.onIncomingEvent(process(text));
     }
 
@@ -40,19 +41,19 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onMessage(WebSocket webSocket, ByteString bytes) {
-        Log.i("Receiving : " , bytes.hex());
+        Log.i("WS Receiving : " , bytes.hex());
     }
 
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         webSocket.close(NORMAL_CLOSURE_STATUS, null);
         webSocket.request();
-        Log.i("Closing : ", code + " / " + reason);
+        Log.i("WS Closing : ", code + " / " + reason);
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        Log.i("Error : " , "");
+        Log.i("WS Error : " , "");
         listener.onErrorWebSocket();
     }
 }

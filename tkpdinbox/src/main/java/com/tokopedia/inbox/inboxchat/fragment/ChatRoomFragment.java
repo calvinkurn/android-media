@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -50,6 +51,9 @@ import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
+import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
@@ -68,6 +72,7 @@ import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentProductProfile;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
@@ -77,6 +82,7 @@ import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -287,7 +293,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (isNotEmpty) {
                         presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                                 .PARAM_MESSAGE_ID));
-                        maximize.setVisibility(View.VISIBLE);
+                        if(needCreateWebSocket()) {
+                            maximize.setVisibility(View.VISIBLE);
+                        }
                         pickerButton.setVisibility(View.GONE);
                         attachButton.setVisibility(View.GONE);
                     }
@@ -333,7 +341,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 maximize.setVisibility(View.GONE);
                 setPickerButton();
-                attachButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -371,21 +378,31 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
+                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_NAME,""),
                         getArguments().getString(PARAM_SENDER_ROLE, "")
                 );
+//                startAttach();
             }
         });
+    }
+
+    @Override
+    public void startAttachProductActivity(String shopId, String shopName, boolean isSeller) {
+        Intent intent = AttachProductActivity.createInstance(getActivity(),shopId,shopName,isSeller);
+        startActivityForResult(intent,AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
     }
 
     private void setPickerButton() {
         if (needCreateWebSocket()) {
             pickerButton.setVisibility(View.VISIBLE);
-        } else {
+            attachButton.setVisibility(View.VISIBLE);
+        }else{
             pickerButton.setVisibility(View.GONE);
+            attachButton.setVisibility(View.GONE);
         }
     }
 
-    @Override
+    /*@Override
     public void addUrlToReply(String url) {
         UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
                 TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
@@ -393,7 +410,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         int temp = replyColumn.getSelectionEnd();
         replyColumn.setText(String.format("%s\n%s", replyColumn.getText(), url));
         replyColumn.setSelection(temp);
-    }
+    }*/
 
     @Override
     public void addTemplateString(String message) {
@@ -1067,13 +1084,60 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
                 presenter.startUpload(list, networkType);
                 break;
+            case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
+                if(data==null)
+                    break;
+                if(!data.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+                    break;
+                ArrayList<ResultProduct> resultProducts = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY);
+                attachProductRetrieved(resultProducts);
+                break;
             default:
                 break;
         }
     }
 
-    public void onBackPressed() {
-        if (uploading) {
+    public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts){
+        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+
+        String msgId = getArguments().getString(PARAM_MESSAGE_ID);
+        for(ResultProduct result: resultProducts){
+            try {
+                addDummyProductToChat(result);
+                presenter.sendProductAttachment(msgId,result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addDummyProductToChat(ResultProduct product){
+        AttachProductViewModel item = new AttachProductViewModel(true);
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        attachmentAttributes.setProductId(product.getProductId());
+        AttachmentProductProfile productProfile = new AttachmentProductProfile();
+        productProfile.setImageUrl(product.getProductImageThumbnail());
+        productProfile.setName(product.getName());
+        productProfile.setPrice(product.getPrice());
+        productProfile.setUrl(product.getProductUrl());
+        attachmentAttributes.setProductProfile(productProfile);
+        attachment.setAttributes(attachmentAttributes);
+        attachment.setId(product.getProductId().toString());
+        item.setAttachment(attachment);
+        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
+        item.setMsg("");
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(item);
+        recyclerView.scrollToPosition(adapter.getList().size()-1);
+    }
+
+    public void onBackPressed(){
+        if(uploading){
             showDialogConfirmToAbortUpload();
         } else {
             ((ChatRoomActivity) getActivity()).destroy();
@@ -1174,4 +1238,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
+    @Override
+    public void productClicked(Integer productId, String productName, String productPrice, Long dateTimeReply) {
+        trackProductClicked();
+        TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
+        Intent intent = router.getProductDetailIntent(getContext(),productId,productName,productPrice,dateTimeReply);
+        startActivity(intent);
+    }
+
+    private void trackProductClicked(){
+        ((AbstractionRouter)getActivity().getApplicationContext()).getAnalyticTracker().sendEventTracking(
+                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+        );
+    }
 }
