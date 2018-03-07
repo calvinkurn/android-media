@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
@@ -27,7 +28,7 @@ import static android.content.Context.SENSOR_SERVICE;
  */
 
 public class ShakeDetectManager implements ShakeDetector.Listener {
-    private static ShakeDetectManager shakeDetectManager;//= new ShakeDetectManager();
+    private static ShakeDetectManager shakeDetectManager = new ShakeDetectManager();
     ShakeDetector sd;
     private Context mContext;
     public static String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
@@ -39,30 +40,42 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int MESSAGE_DISABLE_SHAKE = 2;
     private boolean  isShakeShakeEnable = true;
 
-    private ShakeDetectManager(Context context) {
-        mContext = context;
+    private ShakeDetectManager() {
+
     }
 
-    public static ShakeDetectManager getShakeDetectManager(Context context) {
-        if (shakeDetectManager == null) {
-            shakeDetectManager = new ShakeDetectManager(context);
-        }
+    public static ShakeDetectManager getShakeDetectManager() {
         return shakeDetectManager;
     }
 
-    private RemoteConfig remoteConfig;
-
-    public void init() {
-        sd = new ShakeDetector();
-        sd.registerListener(this);
-        SensorManager sensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
-        sd.start(sensorManager);
-        initRemoteConfig();
+    public void registerShake(String screenName) {
+        sTopActivity = screenName;
+        if(isShakeShakeEnable()) {
+            sd.registerListener(this);
+            sd.start(sensorManager);
+        }
     }
+
+    public void unregisterShake() {
+        sd.unregisterListener(this);
+        sd.stop();
+    }
+
+    private RemoteConfig remoteConfig;
+    private SensorManager sensorManager;
+    public void init() {
+        if(sd == null) {
+            mContext = MainApplication.getAppContext();
+            sd = new ShakeDetector();
+            sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
+            initRemoteConfig();
+        }
+    }
+
+
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(mContext);
     }
-
 
     private boolean isShakeShakeEnable() {
         return isShakeShakeEnable && remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
@@ -82,7 +95,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
         }
 
-        if (isShakeShakeEnable() && !isAppIsInBackground(mContext)) {
+        if (isShakeShakeEnable()) {
             mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
             Intent intent = null;
@@ -92,7 +105,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                 intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
             }
             if(intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
                 mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
             }
@@ -119,7 +132,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(final Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             if (intent.getBooleanExtra("isSuccess", false)) {
                 final Intent intent1 = new Intent(Intent.ACTION_VIEW);
                 if (intent.getStringExtra("data") != null) {
@@ -129,7 +142,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mContext.startActivity(intent1);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent1);
                         }
                     }, 500);
                 }

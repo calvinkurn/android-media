@@ -147,6 +147,7 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -1330,5 +1331,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+    @Override
+    public void init() {
+        ShakeDetectManager.getShakeDetectManager().init();
+    }
+    @Override
+    public void registerShake(String screenName) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    }
+
+    @Override
+    public void unregisterShake() {
+        ShakeDetectManager.getShakeDetectManager().unregisterShake();
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
@@ -85,6 +86,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
+        initShake();
     }
 
     @Override
@@ -105,6 +107,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
+        unregisterShake();
     }
 
     @Override
@@ -123,7 +126,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         initGTM();
         sendScreenAnalytics();
 
-
+        registerShake();
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
     }
@@ -290,5 +293,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
+    }
+
+    private void initShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).init();
+        }
+    }
+    private void registerShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).registerShake(getScreenName());
+        }
+    }
+
+    private void unregisterShake() {
+        if (!GlobalConfig.isSellerApp() &&  getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).unregisterShake();
+        }
     }
 }

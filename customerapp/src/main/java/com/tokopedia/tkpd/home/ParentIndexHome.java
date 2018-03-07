@@ -212,7 +212,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onCreate(arg0);
 
         //Initialize shake detect manager for shake shake campaign
-        ShakeDetectManager.getShakeDetectManager(this).init();
 
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -470,7 +469,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ShakeDetectManager.getShakeDetectManager(this).onDestroy();
     }
 
     public static Intent getHomeHotlistIntent(Context context) {
