@@ -4,6 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
     android:id="@+id/partial_empty_feed">
 
     <View
@@ -14,8 +16,8 @@
         android:background="@drawable/shadow_bottom"/>
 
     <ImageView
-        android:layout_width="@dimen/img_width"
-        android:layout_height="@dimen/img_height"
+        android:layout_width="@dimen/empty_kol_img_width"
+        android:layout_height="@dimen/empty_kol_img_height"
         app:srcCompat="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
@@ -28,7 +30,7 @@
         android:layout_height="wrap_content"
         android:text="@string/empty_kol_post"
         android:fontFamily="sans-serif"
-        android:textColor="@color/grey_550"
+        android:textColor="@color/font_black_secondary_54"
         android:textSize="@dimen/font_title"
         android:gravity="center"
         android:layout_gravity="center_horizontal"

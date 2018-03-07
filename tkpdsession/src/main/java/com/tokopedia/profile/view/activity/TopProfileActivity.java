@@ -80,7 +80,6 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View header;
     private View progressView;
     private View errorView;
-    private View headerSeparator;
     private TextView errorText;
     private TextView buttonTryAgain;
     private TextView buttonFollowToolbar;
@@ -177,7 +176,6 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonTryAgain = findViewById(R.id.button_try_again);
         buttonFollowToolbar = findViewById(R.id.button_follow_toolbar);
         tvTitleToolbar = findViewById(R.id.tv_title_toolbar);
-        headerSeparator = findViewById(R.id.header_separator);
     }
 
     private void setViewListener() {
@@ -348,9 +346,6 @@ public class TopProfileActivity extends BaseEmptyActivity
             BaseDaggerFragment kolPostFragment =
                     ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
-            headerSeparator.setVisibility(View.VISIBLE);
-        } else {
-            headerSeparator.setVisibility(View.GONE);
         }
 
         if (topProfileViewModel.isUser() || !topProfileViewModel.isKol()) {
@@ -480,7 +475,7 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private void disableFollowButton() {
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
-                R.drawable.bg_button_white_enabled_border));
+                R.drawable.background_button_border_gray));
         buttonFollowText.setText(R.string.following);
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.black_54));

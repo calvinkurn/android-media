@@ -6,6 +6,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -32,7 +33,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     private static final int MAX_CHAR = 250;
     private final KolPostListener.View viewListener;
-    private TextView title;
     private TextView name;
     private ImageView avatar;
     private TextView label;
@@ -46,15 +46,14 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private ImageView likeIcon;
     private TextView likeText;
     private TextView commentText;
-    private View topSeparator;
     private View commentButton;
     private View likeButton;
     private View topShadow;
+    private RelativeLayout containerView;
 
     public KolPostViewHolder(View itemView, KolPostListener.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
-        title = itemView.findViewById(R.id.title);
         name = itemView.findViewById(R.id.name);
         avatar = itemView.findViewById(R.id.avatar);
         label = itemView.findViewById(R.id.label);
@@ -68,22 +67,20 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         likeIcon = itemView.findViewById(R.id.like_icon);
         likeText = itemView.findViewById(R.id.like_text);
         commentText = itemView.findViewById(R.id.comment_text);
-        topSeparator = itemView.findViewById(R.id.separator);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
         topShadow = itemView.findViewById(R.id.top_shadow);
+        containerView = itemView.findViewById(R.id.container_view);
     }
 
     @Override
     public void bind(KolPostViewModel element) {
-        topShadow.setVisibility(getAdapterPosition() == 0 ? View.VISIBLE : View.GONE);
-
-        if (TextUtils.isEmpty(element.getTitle())) {
-            title.setVisibility(View.GONE);
+        if (getAdapterPosition() == 0 ) {
+            topShadow.setVisibility(View.VISIBLE);
         } else {
-            title.setVisibility(View.VISIBLE);
-            title.setText(MethodChecker.fromHtml(element.getTitle()));
+            topShadow.setVisibility(View.GONE);
         }
+
         name.setText(MethodChecker.fromHtml(element.getName()));
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
@@ -95,21 +92,18 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
         if (element.isFollowed() && !element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.GONE);
-            topSeparator.setVisibility(View.GONE);
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
-            topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.green_500));
             followText.setText(R.string.action_follow);
-            topSeparator.setVisibility(View.VISIBLE);
         }
 
         ImageHandler.loadImageWithTarget(
