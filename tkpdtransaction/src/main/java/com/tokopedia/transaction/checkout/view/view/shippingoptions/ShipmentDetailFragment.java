@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -353,6 +354,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                     presenter.getSelectedShipment());
         }
         shipmentChoiceBottomSheet.setListener(this);
+        shipmentChoiceBottomSheet.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                shipmentChoiceBottomSheet.updateHeight();
+            }
+        });
         shipmentChoiceBottomSheet.show();
     }
 
