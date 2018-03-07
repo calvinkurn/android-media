@@ -66,6 +66,7 @@ import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import javax.inject.Inject;
 
@@ -265,7 +266,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         cvNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventResoDetailClickNextAction(resolutionID);
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickNextAction(resolutionID));
                 startActivity(NextActionActivity.newInstance(
                         getActivity(),
                         resolutionID,
@@ -278,7 +279,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         cvDiscussion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventResoClickDiscussion(resolutionID);
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoClickDiscussion(resolutionID));
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
@@ -495,7 +496,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionCancelResolutionClick() {
-        UnifyTracking.eventResoDetailClickCancelComplaint(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickCancelComplaint(resolutionID));
         showActionDialog(getViewData().getButtonData().getCancelLabel(),
                 getViewData().getButtonData().getCancelDialogText(),
                 new View.OnClickListener() {
@@ -510,7 +511,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionFinishResolutionClick() {
-        UnifyTracking.eventResoDetailClickFinish(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickFinish(resolutionID));
         showActionDialog(getViewData().getButtonData().getFinishComplaintLabel(),
                 getViewData().getButtonData().getFinishComplaintDialogText(),
                 new View.OnClickListener() {
@@ -525,7 +526,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionRecomplaintClick() {
-        UnifyTracking.eventResoDetailClickRecomplaint(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickRecomplaint(resolutionID));
         Intent intent = CreateResCenterActivity.newRecomplaintInstance(
                 getActivity(),
                 String.valueOf(getViewData().getDetailData().getOrderID()),
@@ -535,7 +536,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAcceptSolutionClick() {
-        UnifyTracking.eventResoDetailClickAcceptSolution(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAcceptSolution(resolutionID));
         showActionDialog(getViewData().getButtonData().getAcceptLabel(),
                 getViewData().getButtonData().getAcceptTextLite(),
                 new View.OnClickListener() {
@@ -550,7 +551,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionInputAddressClick() {
-        UnifyTracking.eventResoDetailClickInputAddress(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickInputAddress(resolutionID));
         Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION);
@@ -563,7 +564,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAcceptAdminSolutionClick() {
-        UnifyTracking.eventResoDetailClickAcceptSolution(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAcceptSolution(resolutionID));
         showConfirmationDialog(getActivity().getString(R.string.msg_accept_admin),
                 new ConfirmationDialog.Listener() {
                     @Override
@@ -581,7 +582,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionHelpClick() {
-        UnifyTracking.eventResoDetailClickAskHelp(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAskHelp(resolutionID));
         showActionDialog(getViewData().getButtonData().getAskHelpLabel(),
                 getViewData().getButtonData().getAskHelpDialogText(),
                 new View.OnClickListener() {
@@ -596,7 +597,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionHelpTimeViewClick() {
-        UnifyTracking.eventResoDetailClickAskHelpButton(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAskHelpButton(resolutionID));
         showActionDialog(getViewData().getButtonData().getAskHelpLabel(),
                 getViewData().getButtonData().getAskHelpDialogText(),
                 new View.OnClickListener() {
@@ -611,7 +612,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAppealClick() {
-        UnifyTracking.eventResoDetailClickAppealSolution(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAppealSolution(resolutionID));
         startActivityForResult(
                 SolutionListActivity.newAppealInstance(getActivity(), resolutionID, false),
                 REQUEST_APPEAL_SOLUTION);
@@ -620,9 +621,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionInputAwbNumberClick(boolean isFromButton) {
         if (isFromButton)
-            UnifyTracking.eventResoDetailClickAddAWB(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAddAWB(resolutionID));
         else
-            UnifyTracking.eventResoDetailClickInputAwb(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickInputAwb(resolutionID));
         startActivityForResult(
                 InputShippingActivity.createNewPageIntentFromDetail(getActivity(), getResolutionID()),
                 REQUEST_INPUT_SHIPPING
@@ -632,8 +633,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionEditSolutionClick(boolean isFromButton) {
-        if (isFromButton) UnifyTracking.eventResoDetailClickEditSolution(resolutionID);
-        else UnifyTracking.eventResoDetailClickEditSolutionView(resolutionID);
+        if (isFromButton) UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickEditSolution(resolutionID));
+        else UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickEditSolutionView(resolutionID));
         startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
     }
 
@@ -666,13 +667,13 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionMoreHistoryClick() {
-        UnifyTracking.eventResoDetailClickSeeAllResoHistory(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickSeeAllResoHistory(resolutionID));
         startActivity(HistoryActionActivity.newInstance(getActivity(), getResolutionID()));
     }
 
     @Override
     public void setOnActionTrackAwbClick(String shipmentID, String shipmentRef) {
-        UnifyTracking.eventResoDetailClickTrack(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickTrack(resolutionID));
         startActivity(TrackShippingActivity.newInstance(
                 getActivity(),
                 shipmentID,
@@ -683,7 +684,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAwbHistoryClick() {
-        UnifyTracking.eventResoDetailClickAWBHistory(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAWBHistory(resolutionID));
         startActivityForResult(
                 HistoryShippingActivity.newInstance(
                         getActivity(),
@@ -696,7 +697,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAddressHistoryClick() {
-        UnifyTracking.eventResoDetailClickAddressHistory(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickAddressHistory(resolutionID));
         startActivity(HistoryAddressActivity.newInstance(getActivity(), getResolutionID()));
     }
 
@@ -709,7 +710,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnFreeReturnClicked() {
-        UnifyTracking.eventResoDetailClickFreeReturn(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickFreeReturn(resolutionID));
         startActivity(FreeReturnActivity
                 .newInstance(getActivity(), getViewData().getFreeReturnData().getFreeReturnLink()));
     }
@@ -721,7 +722,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionPeopleDetailClick(String buyerID) {
-        UnifyTracking.eventResoDetailClickBuyerName(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickBuyerName(resolutionID));
         startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), buyerID));
     }
 
@@ -735,7 +736,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionInvoiceClick(String invoice, String url) {
-        UnifyTracking.eventResoDetailClickCopyInvoice(resolutionID);
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickCopyInvoice(resolutionID));
         AppUtils.InvoiceDialog(getActivity(), url, invoice);
     }
 
@@ -836,23 +837,23 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void doImpressionTrackingButton(String buttonType) {
         if (buttonType.equals(ButtonViewAdapter.BUTTON_FINISH_COMPLAINT))
-            UnifyTracking.eventResoDetailImpressionFinishComplaint(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionFinishComplaint(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_ACCEPT_SOLUTION))
-            UnifyTracking.eventResoDetailImpressionAcceptSolution(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionAcceptSolution(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_CHANGE_SOLUTION))
-            UnifyTracking.eventResoDetailImpressionChangeSolution(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionChangeSolution(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_APPEAL_SOLUTION))
-            UnifyTracking.eventResoDetailImpressionAppealSolution(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionAppealSolution(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_INPUT_ADDRESS))
-            UnifyTracking.eventResoDetailImpressionInputAddress(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionInputAddress(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_INPUT_AWB))
-            UnifyTracking.eventResoDetailImpressionInputAwb(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionInputAwb(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_REPORT))
-            UnifyTracking.eventResoDetailImpressionAskHelp(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionAskHelp(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_CANCEL))
-            UnifyTracking.eventResoDetailImpressionCancelComplaint(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionCancelComplaint(resolutionID));
         else if (buttonType.equals(ButtonViewAdapter.BUTTON_RECOMPLAINT))
-            UnifyTracking.eventResoDetailImpressionRecomplaint(resolutionID);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailImpressionRecomplaint(resolutionID));
     }
 
     private void showActionDialog(String title, String solution, View.OnClickListener action) {

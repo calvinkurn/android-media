@@ -35,6 +35,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeRetu
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import javax.inject.Inject;
 
@@ -173,18 +174,17 @@ public class SolutionListFragment extends BaseDaggerFragment
         if (isEditAppeal) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-
-                    UnifyTracking.eventResoChatClickSolutionEditPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
                             editAppealSolutionModel.resolutionId,
-                            solutionViewModel.getSolutionName());
+                            solutionViewModel.getSolutionName()));
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatClickSolutionAppealPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
                             editAppealSolutionModel.resolutionId,
-                            solutionViewModel.getSolutionName());
+                            solutionViewModel.getSolutionName()));
                 } else {
 
                 }

@@ -24,6 +24,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by yoasfs on 10/6/17.
@@ -189,7 +190,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
-            UnifyTracking.eventResoChatClickDetail(resolutionId);
+            UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickDetail(resolutionId));
             return true;
         } else
             return super.onOptionsItemSelected(item);

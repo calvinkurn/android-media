@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingImpl;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by hangnadi on 12/13/16.
@@ -140,9 +141,11 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     protected void initView() {
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
-                UnifyTracking.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID());
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
             else
-                UnifyTracking.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID());
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
         }
         presenter.initView(this);
     }
@@ -201,9 +204,11 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         super.onBackPressed();
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
-                UnifyTracking.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID());
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID()));
             else
-                UnifyTracking.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID());
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID()));
         }
         getBottomBackSheetActivityTransition();
     }

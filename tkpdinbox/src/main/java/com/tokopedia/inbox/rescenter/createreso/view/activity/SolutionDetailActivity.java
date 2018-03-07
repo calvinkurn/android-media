@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailAct
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by yoasfs on 28/08/17.
@@ -106,17 +107,17 @@ public class SolutionDetailActivity extends
         if (editAppealSolutionModel != null) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatCloseSolutionEditDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatCloseSolutionAppealDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }

@@ -14,6 +14,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListActivi
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListActivityPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by yoasfs on 24/08/17.
@@ -162,15 +163,15 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         if (!isCreateReso) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatClickCloseEditPage(
-                            editAppealSolutionModel.resolutionId);
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseEditPage(
+                            editAppealSolutionModel.resolutionId));
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatClickCloseAppealPage(
-                            editAppealSolutionModel.resolutionId);
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseAppealPage(
+                            editAppealSolutionModel.resolutionId));
                 } else {
 
                 }

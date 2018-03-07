@@ -30,6 +30,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import javax.inject.Inject;
 
@@ -150,17 +151,17 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         if (editAppealSolutionModel != null) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatImpressionSolutionEditDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatImpressionSolutionAppealDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }
@@ -331,17 +332,17 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         if (editAppealSolutionModel != null) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatClickSolutionEditDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatClickSolutionAppealDetailPage(
+                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
                             editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName());
+                            editAppealSolutionModel.getSolutionName()));
                 } else {
 
                 }
