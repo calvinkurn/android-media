@@ -82,7 +82,7 @@ public class SingleAddressShipmentDataConverter
         List<CartItemModel> cartItemModels = convertFromProductList(products);
 
         // This is something that not well planned
-        Fobject fobject = levelUpStateFromItem(cartItemModels);
+        Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
 
         sellerItemModel.setCartItemModels(cartItemModels);
 
@@ -100,9 +100,9 @@ public class SingleAddressShipmentDataConverter
                 new ShipmentRatesDataMapper().getShipmentCartData(
                         cartItemDataList, userAddress, groupShop, sellerItemModel));
 
-        sellerItemModel.setInsuranceFee(fobject.isFinsurance() ? 0 : 1);
-        sellerItemModel.setIsFcancelPartial(fobject.isFcancelPartial() ? 0 : 1);
-        sellerItemModel.setIsPreOrder(fobject.isPreOrder() ? 0 : 1);
+        sellerItemModel.setInsuranceFee(fobject.isFinsurance());
+        sellerItemModel.setIsFcancelPartial(fobject.isFcancelPartial());
+        sellerItemModel.setIsPreOrder(fobject.isPreOrder());
 
         return sellerItemModel;
     }
@@ -257,21 +257,21 @@ public class SingleAddressShipmentDataConverter
         return cartItemModel;
     }
 
-    private Fobject levelUpStateFromItem(List<CartItemModel> cartItemList) {
+    private Fobject levelUpParametersFromProductToCartSeller(List<CartItemModel> cartItemList) {
 
-        boolean isPreOrder = false;
-        boolean isFcancelPartial = false;
-        boolean isFinsurance = false;
+        int isPreOrder = 0;
+        int isFcancelPartial = 0;
+        int isFinsurance = 0;
 
         for (CartItemModel cartItem : cartItemList) {
             if (cartItem.isPreOrder()) {
-                isPreOrder = true;
+                isPreOrder = 1;
             }
             if (cartItem.isfInsurance()) {
-                isFcancelPartial = true;
+                isFcancelPartial = 1;
             }
             if (cartItem.isfCancelPartial()) {
-                isFinsurance = true;
+                isFinsurance = 1;
             }
         }
 
@@ -280,37 +280,37 @@ public class SingleAddressShipmentDataConverter
 
     private class Fobject {
 
-        private boolean isPreOrder;
-        private boolean isFcancelPartial;
-        private boolean isFinsurance;
+        private int isPreOrder;
+        private int isFcancelPartial;
+        private int isFinsurance;
 
-        Fobject(boolean isPreOrder, boolean isFcancelPartial, boolean isFinsurance) {
+        Fobject(int isPreOrder, int isFcancelPartial, int isFinsurance) {
             this.isPreOrder = isPreOrder;
             this.isFcancelPartial = isFcancelPartial;
             this.isFinsurance = isFinsurance;
         }
 
-        public boolean isPreOrder() {
+        public int isPreOrder() {
             return isPreOrder;
         }
 
-        public void setPreOrder(boolean preOrder) {
+        public void setPreOrder(int preOrder) {
             isPreOrder = preOrder;
         }
 
-        public boolean isFcancelPartial() {
+        public int isFcancelPartial() {
             return isFcancelPartial;
         }
 
-        public void setFcancelPartial(boolean fcancelPartial) {
+        public void setFcancelPartial(int fcancelPartial) {
             isFcancelPartial = fcancelPartial;
         }
 
-        public boolean isFinsurance() {
+        public int isFinsurance() {
             return isFinsurance;
         }
 
-        public void setFinsurance(boolean finsurance) {
+        public void setFinsurance(int finsurance) {
             isFinsurance = finsurance;
         }
     }
