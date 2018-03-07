@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -100,7 +102,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private boolean mIsMenuVisible = true;
 
-    private OnPassingCartDataListener mDataPasserListener;
+    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -108,7 +110,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mDataPasserListener = (OnPassingCartDataListener) activity;
+            mDataPasserListener = (ActionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement OnPassingCartDataListener");
@@ -151,13 +153,23 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
      */
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.menu_cart_remove).setVisible(mIsMenuVisible);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_cart_remove) {
+            mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -397,7 +409,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         }
         cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartListData.getCartItemDataList());
 
         if (!mIsMenuVisible && !cartListData.getCartItemDataList().isEmpty()) {
             mIsMenuVisible = true;
@@ -429,7 +440,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
     }
 
     @Override
@@ -781,14 +791,9 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         }
     }
 
-    public interface OnPassingCartDataListener {
+    public interface ActionListener {
 
-        /**
-         * Pass data from cart fragment into its container activity
-         *
-         * @param cartItemData List of cart items
-         */
-        void onPassingCartData(List<CartItemData> cartItemData);
+        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
     }
 
 }
