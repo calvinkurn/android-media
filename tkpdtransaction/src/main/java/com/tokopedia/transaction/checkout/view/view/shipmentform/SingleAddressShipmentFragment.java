@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,8 +14,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -71,6 +75,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private TextView mTvSelectPaymentMethod;
     private LinearLayout mLlTotalPaymentLayout;
     private TextView mTvTotalPayment;
+    private CardView mCvBottomLayout;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
@@ -85,6 +90,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private List<Object> mShipmentDataList;
     private PromoCodeAppliedData promoCodeAppliedData;
+
+    private List<DataCheckoutRequest> mCheckoutRequestData;
     private List<Data> mPromoRequestData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -192,6 +199,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
         mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+        mCvBottomLayout = view.findViewById(R.id.bottom_layout);
     }
 
     /**
@@ -216,11 +224,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest());
             }
         });
 
         mTvTotalPayment.setText("-");
+        mCvBottomLayout.setVisibility(View.VISIBLE);
 
         mSingleAddressShipmentPresenter.attachView(this);
         mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
@@ -365,8 +374,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onFinishChoosingShipment(List<Data> data) {
-        mPromoRequestData = data;
+    public void onFinishChoosingShipment(List<Data> promoRequestData,
+                                         List<DataCheckoutRequest> checkoutRequestData) {
+        mPromoRequestData = promoRequestData;
+        mCheckoutRequestData = checkoutRequestData;
     }
 
     @Override
@@ -424,6 +435,34 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         }
     }
 
+    public boolean checkPromoCodeFinal(String promoCode) {
+        if (mPromoRequestData == null) {
+            return false;
+        }
+
+        CheckPromoCodeCartShipmentRequest promoCodeRequest =
+                new CheckPromoCodeCartShipmentRequest.Builder()
+                .promoCode(promoCode)
+                .data(mPromoRequestData)
+                .build();
+
+        // Do something here
+        return true;
+    }
+
+    private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
+        if (mCheckoutRequestData == null) {
+            // Show error cant checkout
+            return null;
+        }
+
+        return new CheckoutRequest.Builder()
+                .promoCode(promoCode)
+                .isDonation(isDonation)
+                .data(mCheckoutRequestData)
+                .build();
+    }
+
     private void updateSelectedAddress(RecipientAddressModel recipientAddress) {
         for (Object item : mShipmentDataList) {
             if (item instanceof RecipientAddressModel) {
@@ -431,14 +470,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 break;
             }
         }
-    }
-
-    public boolean checkPromoCodeFinal(String promoCode) {
-        if (mPromoRequestData == null) {
-            return false;
-        }
-
-        return true;
     }
 
 }

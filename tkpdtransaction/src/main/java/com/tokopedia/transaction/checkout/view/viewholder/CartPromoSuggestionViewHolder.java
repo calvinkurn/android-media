@@ -74,15 +74,12 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         };
     }
 
-    private String fromHtml(String source) {
-        Spanned htmlEncode;
+    private Spanned fromHtml(String source) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            htmlEncode = Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT);
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT);
         } else {
-            htmlEncode = Html.fromHtml(source);
+            return Html.fromHtml(source);
         }
-
-        return htmlEncode.toString();
     }
 
 }

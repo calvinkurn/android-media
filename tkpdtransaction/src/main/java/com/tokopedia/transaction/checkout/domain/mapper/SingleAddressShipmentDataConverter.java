@@ -116,6 +116,8 @@ public class SingleAddressShipmentDataConverter
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
+        cartItemModel.setfInsurance(product.isProductFcancelPartial());
+        cartItemModel.setfCancelPartial(product.isProductFinsurance());
 
         return cartItemModel;
     }
