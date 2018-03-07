@@ -69,7 +69,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private View btnClose;
     private TextView tvTitle;
 
-    public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
+    public static final int REQUEST_CODE = 980;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);

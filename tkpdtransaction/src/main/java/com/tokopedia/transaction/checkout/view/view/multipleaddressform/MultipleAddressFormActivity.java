@@ -20,7 +20,7 @@ import com.tokopedia.transaction.checkout.view.view.shipmentform.ResetShipmentFo
  */
 
 public class MultipleAddressFormActivity extends BasePresenterActivity {
-    public static final int REQUEST_CODE = MultipleAddressFormActivity.class.hashCode();
+    public static final int REQUEST_CODE = 982;
 
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";

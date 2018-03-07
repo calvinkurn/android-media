@@ -74,12 +74,12 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(ThanksTopPayData thanksTopPayData) {
-
+                cartShipmentActivity.renderThanksTopPaySuccess("Pembayaran Berhasil");
             }
         };
     }
