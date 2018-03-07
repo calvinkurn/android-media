@@ -50,52 +50,13 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/TextView.Micro"
-        android:layout_width="0dp"
+    <include
+        layout="@layout/partial_item_product"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/margin_padding_small"
-        android:ellipsize="end"
-        android:lineSpacingExtra="5sp"
-        android:maxLines="2"
-        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
-    <TextView
-        android:id="@+id/price"
-        style="@style/TextView.Small.Orange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/new_margin_small"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/new_margin_small"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_vertical"
-        android:lineSpacingExtra="5sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toTopOf="@+id/badges_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:text="Rp 3.121.500" />
-
-    <include
-        android:id="@+id/badges_container"
-        layout="@layout/partial_shop_product_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_ms"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/margin_ms"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
 
 </android.support.constraint.ConstraintLayout>

@@ -7,4 +7,5 @@
     <dimen name="image_guide_line_list">350dp</dimen>
     <dimen name="image_width_product_list">105dp</dimen>
     <dimen name="price_margin_top">6dp</dimen>
+    <dimen name="line_spacng_extra">4sp</dimen>
 </resources>
