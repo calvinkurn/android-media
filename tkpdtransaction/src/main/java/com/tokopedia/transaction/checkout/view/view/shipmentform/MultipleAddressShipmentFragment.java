@@ -56,8 +56,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
 
-    private ICartShipmentActionListener cartActivityListener;
-
     @Inject
     IMultipleAddressShipmentPresenter presenter;
 
@@ -77,18 +75,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        cartActivityListener = (ICartShipmentActionListener) context;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        cartActivityListener = (ICartShipmentActionListener) activity;
     }
 
     @Override
