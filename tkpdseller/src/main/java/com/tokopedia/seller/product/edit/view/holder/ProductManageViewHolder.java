@@ -146,7 +146,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
         return true;
     }
 
-    private String getSkuText() {
+    public String getSkuText() {
         return skuEditText.getText().toString();
     }
 

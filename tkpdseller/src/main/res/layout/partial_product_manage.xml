@@ -62,11 +62,9 @@
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/text_input_layout_sku"
                 style="@style/HintTextInputLayout"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:hint="@string/product_add_sku_hint"
-                app:counterEnabled="true"
-                app:counterMaxLength="@integer/product_max_character_sku">
+                app:helper="@string/sku_helper_info">
 
                 <EditText
                     android:id="@+id/edit_text_sku"
@@ -78,27 +76,6 @@
                     android:maxLines="1" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-            <FrameLayout
-                android:id="@+id/info_icon_add_product_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_marginTop="@dimen/margin_med"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:foregroundGravity="center"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingStart="@dimen/padding_vs">
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/info_icon_add_product"
-                    android:layout_width="@dimen/image_medal_size"
-                    android:layout_height="@dimen/image_medal_size"
-                    android:layout_gravity="end"
-                    android:foregroundGravity="center_vertical|right"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_info" />
-            </FrameLayout>
         </LinearLayout>
 
     </LinearLayout>

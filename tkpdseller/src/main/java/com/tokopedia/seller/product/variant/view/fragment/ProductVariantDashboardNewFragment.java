@@ -70,6 +70,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private int defaultStockType;
     private boolean isOfficialStore;
     private boolean needRetainImage;
+    private String defaultSku;
 
     private ProductVariantDashboardNewAdapter productVariantDashboardNewAdapter;
 
@@ -91,6 +92,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, 0);
         isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, false);
         needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, false);
+        defaultSku = activityIntent.getStringExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_SKU);
 
         if (savedInstanceState == null) {
             productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
@@ -315,7 +317,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                                 isDefaultStockStatusActive(),
                                 defaultPrice,
                                 getDefaultStock(),
-                                "",
+                                defaultSku,
                                 productVariantOptionChildLevel1List.get(i).getValue(),
                                 productVariantOptionChildLevel2List.get(j).getValue()
                         ));
@@ -331,7 +333,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                             isDefaultStockStatusActive(),
                             defaultPrice,
                             getDefaultStock(),
-                            "",
+                            defaultSku,
                             productVariantOptionChildLevel1List.get(i).getValue(),
                             ""
                     ));

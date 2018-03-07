@@ -20,6 +20,7 @@ import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
@@ -32,6 +33,8 @@ import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
 import java.util.List;
 
@@ -47,7 +50,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
     private @CurrencyTypeDef
     int currencyType;
-    private CurrencyTextWatcher currencyTextWatcher;
+
+    private NumberTextWatcher numberTextWatcher;
 
     private VariantImageView variantImageView;
     private CounterInputView counterInputViewStock;
@@ -131,24 +135,24 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         counterInputPrice.getSpinnerTextView().setClickable(false);
         counterInputPrice.setSpinnerValue(String.valueOf(currencyType));
 
-        counterInputPrice.removeDefaultTextWatcher();
-        EditText priceEditText = counterInputPrice.getCounterEditText();
-        priceEditText.removeTextChangedListener(currencyTextWatcher);
-        currencyTextWatcher = new CurrencyTextWatcher(
-                priceEditText,
-                null,
-                currencyType == CurrencyTypeDef.TYPE_USD);
-        currencyTextWatcher.setOnNumberChangeListener(new CurrencyTextWatcher.OnNumberChangeListener() {
-            @Override
-            public void onNumberChanged(double v) {
-                productVariantCombinationViewModel.setPriceVar(v);
-                checkPriceValid(v);
-            }
-        });
-        priceEditText.addTextChangedListener(currencyTextWatcher);
-        priceEditText.setText(
-                CurrencyFormatUtil.convertPriceValue(productVariantCombinationViewModel.getPriceVar(),
-                        currencyType == CurrencyTypeDef.TYPE_USD));
+        // counterInputPrice.removeDefaultTextWatcher();
+        if (currencyType == CurrencyTypeDef.TYPE_USD) {
+            numberTextWatcher = new CurrencyUsdTextWatcher(counterInputPrice.getCounterEditText(), "0.00") {
+                @Override
+                public void onNumberChanged(double number) {
+                    onNumberPriceChanged();
+                }
+            };
+        } else {
+            numberTextWatcher = new CurrencyIdrTextWatcher(counterInputPrice.getCounterEditText(), "0") {
+                @Override
+                public void onNumberChanged(double number) {
+                    onNumberPriceChanged();
+                }
+            };
+        }
+        counterInputPrice.addTextChangedListener(numberTextWatcher);
+        counterInputPrice.setCounterValue(productVariantCombinationViewModel.getPriceVar());
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
@@ -221,7 +225,13 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         return view;
     }
 
-    private void onButtonSaveClicked(){
+    private void onNumberPriceChanged(){
+        double counterValue = counterInputPrice.getCounterValue();
+        productVariantCombinationViewModel.setPriceVar(counterValue);
+        checkPriceValid(counterValue);
+    }
+
+    private void onButtonSaveClicked() {
         if (!checkPriceValid(counterInputPrice.getCounterValue())) {
             CommonUtils.hideKeyboard(getActivity(), getView());
             return;

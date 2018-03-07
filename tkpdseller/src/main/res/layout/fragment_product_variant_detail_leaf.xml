@@ -93,8 +93,7 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:hint="@string/product_add_label_sku"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="@integer/product_max_character_sku">
+                    app:helper="@string/sku_helper_info">
 
                     <EditText
                         android:id="@+id/edit_text_sku"

@@ -30,10 +30,12 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
     public static final String EXTRA_STOCK_TYPE = "EXTRA_STOCK_TYPE";
     public static final String EXTRA_IS_OFFICIAL_STORE = "EXTRA_IS_OFFICIAL_STORE";
     public static final String EXTRA_NEED_RETAIN_IMAGE = "EXTRA_NEED_RETAIN_IMAGE";
+    public static final String EXTRA_DEFAULT_SKU = "EXTRA_DEFAULT_SKU";
 
     public static Intent getIntent(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
-                                   double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage){
+                                   double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
+                                   boolean needRetainImage){
         Intent intent = new Intent(context, ProductVariantDashboardNewActivity.class);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
@@ -41,6 +43,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, defaultPrice);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, stockType);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_SKU, defaultSku);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
         return intent;
     }
