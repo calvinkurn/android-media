@@ -39,7 +39,7 @@
         android:layout_marginEnd="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
         android:layout_marginTop="@dimen/margin_vvvs"
-        android:background="@drawable/circle_white"
+        android:background="@drawable/bg_wishlist_circle_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
@@ -49,7 +49,7 @@
             android:layout_width="@dimen/small_icon_size"
             android:layout_height="@dimen/small_icon_size"
             android:layout_gravity="center"
-            android:background="@drawable/ic_wish_list_unchecked" />
+            android:background="@drawable/ic_wishlist_unchecked" />
 
     </FrameLayout>
 
