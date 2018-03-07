@@ -25,6 +25,10 @@ public class Checkout extends BaseGTMModel {
         ActionField.put("step", step);
     }
 
+    public String getStep() {
+        return (String) ActionField.get("step");
+    }
+
     public void setCheckoutOption(String option){
         ActionField.put("option", option);
     }
