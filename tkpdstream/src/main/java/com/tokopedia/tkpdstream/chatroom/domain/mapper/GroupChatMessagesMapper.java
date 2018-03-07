@@ -85,11 +85,11 @@ public class GroupChatMessagesMapper {
             case VoteAnnouncementViewModel.POLLING_CANCEL:
             case VoteAnnouncementViewModel.POLLING_UPDATE:
                 return mapToPollingViewModel(message,
-                        message.getData().replace("\\\"", "\""));
+                        message.getData().replace("\\", ""));
             case ChatViewModel.ADMIN_MESSAGE:
                 return mapToAdminChat(message);
             case ImageViewModel.ADMIN_ANNOUNCEMENT:
-                return mapToAdminImageChat(message, message.getData().replace("\\\"", "\""));
+                return mapToAdminImageChat(message, message.getData().replace("\\", ""));
             default:
                 return mapToUserChat(message);
         }
@@ -180,6 +180,7 @@ public class GroupChatMessagesMapper {
                     activePollPojo.getPollType(),
                     getVoteOptionType(activePollPojo.getOptionType()),
                     activePollPojo.getStatus(),
+                    activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
                     "INFO YG PERLU DI UPDATE",
                     "Belon ada",

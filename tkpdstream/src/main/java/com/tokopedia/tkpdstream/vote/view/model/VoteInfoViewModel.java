@@ -1,6 +1,9 @@
 package com.tokopedia.tkpdstream.vote.view.model;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdstream.R;
 
 import java.util.List;
 
@@ -10,7 +13,13 @@ import java.util.List;
 
 public class VoteInfoViewModel {
 
+    public static final int STATUS_FINISH = 4;
+    public static final int STATUS_FORCE_FINISH = 5;
+    public static final int STATUS_CANCELED = 6;
+
+
     private final String pollId;
+    private final int statusId;
     private String voteOptionType;
     private String voteGiftType;
     private String voteStatus;
@@ -23,12 +32,13 @@ public class VoteInfoViewModel {
     private String participant;
 
     public VoteInfoViewModel(String pollId, String title, List<Visitable> listOption, String participant,
-                             String voteGiftType, String voteOptionType, String voteStatus, boolean voted,
+                             String voteGiftType, String voteOptionType, String voteStatus, int statusId, boolean voted,
                              String voteInfoString, String voteInfoUrl, long startTime, long endTime) {
-        this.pollId= pollId;
+        this.pollId = pollId;
         this.title = title;
         this.listOption = listOption;
         this.participant = participant;
+        this.statusId = statusId;
         this.voteStatus = voteStatus;
         this.voteOptionType = voteOptionType;
         this.voteGiftType = voteGiftType;
@@ -101,6 +111,10 @@ public class VoteInfoViewModel {
 
     public String getPollId() {
         return pollId;
+    }
+
+    public int getStatusId() {
+        return statusId;
     }
 }
 

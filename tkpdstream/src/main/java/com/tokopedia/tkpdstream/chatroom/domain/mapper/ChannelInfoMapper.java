@@ -68,6 +68,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                     activePollPojo.getPollType(),
                     getVoteOptionType(activePollPojo.getOptionType()),
                     activePollPojo.getStatus(),
+                    activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
                     "INFO YG PERLU DI UPDATE",
                     "Belon ada",

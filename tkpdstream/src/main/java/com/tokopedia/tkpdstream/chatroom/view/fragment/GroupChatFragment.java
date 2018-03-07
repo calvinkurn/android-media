@@ -622,7 +622,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     });
             snackBar.show();
         } else if (checkPollValid(hasPoll, voteInfoViewModel)) {
-            showVoteLayout(voteInfoViewModel);
+            showVoteLayout(voteInfoViewModel, true);
         } else {
             hideVoteLayout();
         }
@@ -716,10 +716,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
         if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)
-                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
-            showVoteLayout(messageItem.getVoteInfoViewModel());
-        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)
+                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)
                 || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_FINISHED)) {
+            showVoteLayout(messageItem.getVoteInfoViewModel(), false);
+        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)
+                ) {
             hideVoteLayout();
         }
     }
@@ -860,7 +861,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         onUserKicked(getString(R.string.default_kicked_message));
     }
 
-    public void showVoteLayout(VoteInfoViewModel voteInfoViewModel) {
+    public void showVoteLayout(VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
         voteBar.setVisibility(View.VISIBLE);
 
         LinearLayoutManager voteLayoutManager;
@@ -876,15 +877,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
         voteAdapter.addList(voteInfoViewModel.getListOption());
-        voteStatus.setText(voteInfoViewModel.getVoteStatus());
         voteTitle.setText(voteInfoViewModel.getTitle());
-        progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
-//        if(voteInfoViewModel.getVoteType()){
-//            showVoteLayout();
-//        }
-        if (voteInfoViewModel.isVoted()) {
+
+        if (isUpdateAnswer && voteInfoViewModel.isVoted()) {
             setVoted();
         }
+
         participant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                 , getActivity().getString(R.string.participant)));
         voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
@@ -894,6 +892,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 //openwebview from getVoteInfoUrl
             }
         });
+
+        if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
+            progressBarWithTimer.setVisibility(View.GONE);
+            setVoteHasEnded();
+        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+            hideVoteLayout();
+        } else {
+            progressBarWithTimer.setVisibility(View.VISIBLE);
+            progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
+        }
 
 
     }

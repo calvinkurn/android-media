@@ -48,8 +48,12 @@ public class ChannelHandlerUseCase {
                 .ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
-                if (baseChannel.getUrl().equals(mChannelUrl)) {
-                    listener.onMessageReceived(mapper.map(baseMessage));
+                try {
+                    if (baseChannel.getUrl().equals(mChannelUrl)) {
+                        listener.onMessageReceived(mapper.map(baseMessage));
+                    }
+                }catch (NullPointerException e){
+                    e.printStackTrace();
                 }
             }
 
