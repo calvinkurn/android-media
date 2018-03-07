@@ -39,13 +39,17 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxTicketActivity.class);
-        Intent destinationIntent = new Intent(context, InboxTicketDetailActivity.class);
         String ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        destinationIntent.putExtra(PARAM_TICKET_ID, ticketId);
-        destinationIntent.putExtra(PARAM_INBOX_ID, ticketId);
         taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(destinationIntent);
+        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
         return taskStackBuilder;
+    }
+
+    public static Intent getIntent(Context context, String ticketId) {
+        Intent intent = new Intent(context, InboxTicketDetailActivity.class);
+        intent.putExtra(PARAM_TICKET_ID, ticketId);
+        intent.putExtra(PARAM_INBOX_ID, ticketId);
+        return intent;
     }
 
     @Override
