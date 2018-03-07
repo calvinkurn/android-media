@@ -22,11 +22,11 @@ public class ProductVariantViewModel implements Parcelable {
 
     @SerializedName("variant")
     @Expose
-    private List<ProductVariantOptionParent> variantOptionParent = null;
+    private List<ProductVariantOptionParent> variantOptionParent = new ArrayList<>();
 
     @SerializedName("product_variant")
     @Expose
-    private List<ProductVariantCombinationViewModel> productVariant = null;
+    private List<ProductVariantCombinationViewModel> productVariant = new ArrayList<>();
 
     public List<ProductVariantOptionParent> getVariantOptionParent() {
         return variantOptionParent;

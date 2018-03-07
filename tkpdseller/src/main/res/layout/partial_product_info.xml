@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:hint="@string/product_enter_label_name"
                     android:imeOptions="actionDone"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:maxLength="@integer/product_max_character_name" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>

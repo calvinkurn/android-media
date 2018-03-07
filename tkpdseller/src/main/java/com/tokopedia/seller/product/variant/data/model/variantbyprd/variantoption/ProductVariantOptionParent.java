@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductVariantOptionParent implements Parcelable{
@@ -27,7 +28,7 @@ public class ProductVariantOptionParent implements Parcelable{
 
     @SerializedName(value="opt", alternate={"option"})
     @Expose
-    private List<ProductVariantOptionChild> productVariantOptionChild;
+    private List<ProductVariantOptionChild> productVariantOptionChild = new ArrayList<>();;
 
     @SerializedName("name")
     @Expose

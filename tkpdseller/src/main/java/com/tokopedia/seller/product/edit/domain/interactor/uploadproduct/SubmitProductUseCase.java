@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.seller.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
+import com.tokopedia.seller.product.edit.view.model.edit.BasePictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -71,14 +72,7 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
                 .flatMap(new Func1<ProductViewModel, Observable<ProductViewModel>>() {
                     @Override
                     public Observable<ProductViewModel> call(final ProductViewModel productViewModel) {
-                        return uploadProductImageUseCase.createObservable(UploadProductImageUseCase.createParams(productViewModel, notificationCountListener))
-                                .map(new Func1<List<ProductPictureViewModel>, ProductViewModel>() {
-                                    @Override
-                                    public ProductViewModel call(List<ProductPictureViewModel> productPictureViewModelList) {
-                                        productViewModel.setProductPictureViewModelList(productPictureViewModelList);
-                                        return productViewModel;
-                                    }
-                                });
+                        return uploadProductImageUseCase.createObservable(UploadProductImageUseCase.createParams(productViewModel, notificationCountListener));
                     }
                 })
                 .doOnNext(new Action1<ProductViewModel>() {

@@ -63,7 +63,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private static final int DEFAULT_ETALASE_ID = -1;
     public static final int REQUEST_CODE_CATEGORY = 101;
     public static final int REQUEST_CODE_CATALOG = 102;
-    public static final int REQUEST_CODE_ETALASE = 301;
+    public static final int REQUEST_CODE_ETALASE = 103;
 
     private TkpdHintTextInputLayout nameTextInputLayout;
     private EditText nameEditText;

@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ProductManageViewHolder extends ProductViewHolder {
 
-    public static final int REQUEST_CODE_VARIANT = 2;
+    public static final int REQUEST_CODE_VARIANT = 300;
 
     public static final int DEFAULT_STOCK_VALUE = 0;
 

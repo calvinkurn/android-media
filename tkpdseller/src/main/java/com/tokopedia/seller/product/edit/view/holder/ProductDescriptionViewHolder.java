@@ -37,8 +37,8 @@ import java.util.List;
 
 public class ProductDescriptionViewHolder extends ProductViewHolder {
 
-    public static final int REQUEST_CODE_GET_VIDEO = 1;
-    public static final int REQUEST_CODE_GET_DESCRIPTION = 2;
+    public static final int REQUEST_CODE_GET_VIDEO = 400;
+    public static final int REQUEST_CODE_GET_DESCRIPTION = 401;
 
     public static final int STATUS_PRE_ORDER_INACTIVE = 0;
     public static final int STATUS_PRE_ORDER_ACTIVE = 1;
