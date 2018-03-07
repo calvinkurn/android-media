@@ -16,6 +16,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
@@ -467,15 +468,20 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private boolean isShipmentDataInitiated(int i) {
-        return addressDataList.get(i).getShipmentCartData() != null;
+        return addressDataList.get(i).getSelectedShipmentDetailData() != null
+                ||
+                addressDataList.get(i)
+                        .getSelectedShipmentDetailData()
+                        .getShipmentCartData() != null;
     }
 
     private long calculateTotalShippingCost() {
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalProductPrice = totalProductPrice + addressDataList.get(i)
-                        .getShipmentCartData().getDeliveryPriceTotal();
+                totalProductPrice = totalProductPrice +
+                        getGeneratedShipmentCartData(addressDataList.get(i))
+                        .getDeliveryPriceTotal();
             }
         }
         return totalProductPrice;
@@ -485,8 +491,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         long totalInsuranceCost = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalInsuranceCost = totalInsuranceCost + addressDataList.get(i)
-                        .getShipmentCartData().getInsurancePrice();
+                totalInsuranceCost = totalInsuranceCost +
+                        getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice();
             }
         }
         return totalInsuranceCost;
@@ -496,8 +502,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         long totalAdditionalFee = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(i)) {
-                totalAdditionalFee = totalAdditionalFee + addressDataList.get(i)
-                        .getShipmentCartData().getAdditionalFee();
+                totalAdditionalFee = totalAdditionalFee +
+                        getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
             }
         }
         return totalAdditionalFee;
@@ -513,8 +519,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        if (data.getShipmentCartData() != null)
-            return data.getProductPriceNumber() + data.getShipmentCartData()
+        if (getGeneratedShipmentCartData(data) != null)
+            return data.getProductPriceNumber() + getGeneratedShipmentCartData(data)
                     .getDeliveryPriceTotal();
         else return 0;
     }
@@ -522,6 +528,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private int switchVisibility(boolean visible) {
         if (visible) return View.VISIBLE;
         else return View.GONE;
+    }
+
+    private ShipmentCartData getGeneratedShipmentCartData(MultipleAddressShipmentAdapterData data) {
+        return data.getSelectedShipmentDetailData().getShipmentCartData();
     }
 
     private View.OnClickListener onChooseCourierClicked(
