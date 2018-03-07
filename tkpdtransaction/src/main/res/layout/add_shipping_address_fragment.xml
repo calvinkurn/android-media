@@ -97,7 +97,8 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:id="@+id/increase_quantity"
@@ -138,7 +139,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="0.5dp"
                     android:layout_below="@id/label_notes_for_seller"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:background="@color/grey_400" />

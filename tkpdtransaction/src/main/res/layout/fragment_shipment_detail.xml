@@ -308,7 +308,7 @@
                         android:id="@+id/switch_insurance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton"
+                        android:theme="@style/TransactionToggleButton"
                         android:visibility="gone" />
 
                     <TextView
@@ -366,7 +366,7 @@
                         android:id="@+id/switch_partly_accept"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton" />
+                        android:theme="@style/TransactionToggleButton" />
 
                 </LinearLayout>
 
@@ -414,7 +414,7 @@
                         android:id="@+id/switch_dropshipper"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton" />
+                        android:theme="@style/TransactionToggleButton" />
 
                 </LinearLayout>
 
