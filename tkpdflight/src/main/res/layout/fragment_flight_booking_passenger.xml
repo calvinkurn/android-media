@@ -124,7 +124,7 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:hint="@string/flight_booking_passenger_birthdate_hint">
 
-                <com.tokopedia.design.textview.Edittext
+                <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/et_birth_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

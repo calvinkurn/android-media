@@ -221,7 +221,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_small">
 
-                <com.tokopedia.design.textview.TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@id/favorite_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

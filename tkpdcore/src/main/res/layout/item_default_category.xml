@@ -15,7 +15,7 @@
         android:paddingTop="@dimen/padding_vs"
         android:paddingBottom="@dimen/padding_vs">
 
-        <com.tokopedia.design.textview.TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@id/categoryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

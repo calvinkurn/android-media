@@ -14,7 +14,7 @@
         android:elevation="4dp"
         tools:targetApi="lollipop">
 
-        <com.tokopedia.design.textview.TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/selected_album"
             android:layout_width="wrap_content"
             android:layout_height="?actionBarSize"

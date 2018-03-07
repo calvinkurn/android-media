@@ -23,7 +23,7 @@
                 android:padding="@dimen/dynamic_filter_item_padding"
                 android:background="@color/grey_200">
 
-                <com.tokopedia.design.textview.Edittext
+                <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/filter_detail_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

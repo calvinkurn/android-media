@@ -47,7 +47,7 @@
                 android:textSize="@dimen/font_small" />
 
 
-            <com.tokopedia.design.textview.Edittext
+            <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/et_expiry_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 android:textSize="@dimen/font_small" />
 
 
-            <com.tokopedia.design.textview.Edittext
+            <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/et_cvv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

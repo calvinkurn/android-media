@@ -74,7 +74,7 @@
                 android:textSize="13sp"
                 android:visibility="visible" />
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tvSurgeRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -72,7 +72,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/btn_ubah"
         android:layout_width="wrap_content"
         android:layout_height="32dp"

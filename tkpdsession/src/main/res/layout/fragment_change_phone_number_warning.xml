@@ -64,7 +64,7 @@
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
-                        <com.tokopedia.design.textview.TextView
+                        <com.tokopedia.design.component.TextViewCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:drawableLeftCompat="@drawable/ic_icon_saldo"
@@ -95,7 +95,7 @@
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
-                        <com.tokopedia.design.textview.TextView
+                        <com.tokopedia.design.component.TextViewCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:drawableLeftCompat="@drawable/ic_tokocash_icon"

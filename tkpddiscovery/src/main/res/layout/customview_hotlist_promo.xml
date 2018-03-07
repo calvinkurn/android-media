@@ -21,7 +21,7 @@
         tools:text="Promo Hotlist, Cashback hingga Rp. 100.000"
         tools:ignore="HardcodedText" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"

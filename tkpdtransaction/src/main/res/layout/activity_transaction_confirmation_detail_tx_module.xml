@@ -204,7 +204,7 @@
 
             </RelativeLayout>
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/check_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

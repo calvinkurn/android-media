@@ -33,7 +33,7 @@
         android:layout_height="1dp"
         android:background="@color/grey_500" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/transaction_detail_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

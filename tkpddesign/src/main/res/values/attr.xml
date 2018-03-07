@@ -196,7 +196,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="TextView">
+    <declare-styleable name="TextViewCompat">
         <attr name="drawableLeftCompat" format="reference"/>
         <attr name="drawableRightCompat" format="reference"/>
         <attr name="drawableTopCompat" format="reference"/>

@@ -16,7 +16,7 @@
         android:layout_weight="1"
         tools:text="CGK - DPS" />
 
-    <com.tokopedia.design.textview.TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

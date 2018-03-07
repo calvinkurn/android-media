@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:entries="@array/transaction_filter_type_ppl"
             android:layout_weight="1"/>
-        <com.tokopedia.design.textview.Edittext
+        <com.tokopedia.design.component.EditTextCompat
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -19,7 +19,7 @@
             android:layout_height="0.5dp"
             android:background="#AAAAAA" />
 
-        <com.tokopedia.design.textview.TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/filter_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

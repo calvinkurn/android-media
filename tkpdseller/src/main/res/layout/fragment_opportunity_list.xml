@@ -26,7 +26,7 @@
             android:background="@drawable/selectable_white_background"
             android:gravity="center">
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/sort_but"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
@@ -47,7 +47,7 @@
 
             android:gravity="center">
 
-            <com.tokopedia.design.textview.TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
                 app:drawableLeftCompat="@drawable/ic_filter_black"

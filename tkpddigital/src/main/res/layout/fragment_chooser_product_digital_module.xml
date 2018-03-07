@@ -13,7 +13,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <com.tokopedia.design.textview.Edittext
+        <com.tokopedia.design.component.EditTextCompat
             android:id="@+id/field_search"
             android:layout_width="match_parent"
             android:visibility="gone"

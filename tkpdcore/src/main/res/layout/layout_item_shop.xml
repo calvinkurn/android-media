@@ -58,7 +58,7 @@
             android:layout_height="@dimen/shop_list_reputation_view_height"
             android:layout_marginTop="4dp"/>
 
-        <com.tokopedia.design.textview.TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/shop_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
