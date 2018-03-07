@@ -161,14 +161,18 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     @Override
     public void onBackPressed() {
         if (!isCreateReso) {
-            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            if (isEditFromChatReso(editAppealSolutionModel)) {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseEditPage(
                         editAppealSolutionModel.resolutionId));
-            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            } else {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseAppealPage(
                         editAppealSolutionModel.resolutionId));
             }
         }
         super.onBackPressed();
+    }
+
+    public static boolean isEditFromChatReso(EditAppealSolutionModel model) {
+        return model.isEdit && model.isChatReso;
     }
 }

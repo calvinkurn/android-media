@@ -23,6 +23,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFragmentPresenter;
@@ -149,22 +150,14 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
         tilAmount.setHint(context.getResources().getString(R.string.string_money_amount_returned));
         if (editAppealSolutionModel != null) {
-            if (editAppealSolutionModel.isEdit) {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
             } else {
-                if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealDetailPage(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.getSolutionName()));
-                } else {
-
-                }
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
             }
         }
     }
@@ -330,11 +323,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void submitData(ResultViewModel resultViewModel) {
         if (editAppealSolutionModel != null) {
-            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
-            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            } else {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));

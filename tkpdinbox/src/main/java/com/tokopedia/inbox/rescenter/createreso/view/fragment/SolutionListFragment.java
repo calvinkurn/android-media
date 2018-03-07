@@ -24,6 +24,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
@@ -172,11 +173,11 @@ public class SolutionListFragment extends BaseDaggerFragment
     public void onItemClicked(SolutionViewModel solutionViewModel) {
         presenter.solutionClicked(solutionViewModel);
         if (isEditAppeal) {
-            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
                         editAppealSolutionModel.resolutionId,
                         solutionViewModel.getSolutionName()));
-            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            } else {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
                         editAppealSolutionModel.resolutionId,
                         solutionViewModel.getSolutionName()));

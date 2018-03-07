@@ -105,11 +105,11 @@ public class SolutionDetailActivity extends
     @Override
     public void onBackPressed() {
         if (editAppealSolutionModel != null) {
-            if (editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
-            } else if (!editAppealSolutionModel.isEdit && editAppealSolutionModel.isChatReso) {
+            } else {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
@@ -117,4 +117,5 @@ public class SolutionDetailActivity extends
         }
         super.onBackPressed();
     }
+
 }
