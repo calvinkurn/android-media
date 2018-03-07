@@ -60,15 +60,18 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
     private static final String FORMAT_DATE = "dd+MMM+yyyy";
     private static final String ALL_TRANSACTION_TYPE = "all";
+    private static final String PENDING_TYPE = "pending";
+
     private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
     private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
     private static final String EXTRA_SELECTION_PERIOD = "EXTRA_SELECTION_PERIOD";
     private static final String EXTRA_SELECTION_TYPE = "EXTRA_SELECTION_TYPE";
-    private static final String STATE_DATA_UPDATED = "state_data_updated";
+
     private static final String STATE_DATA_START_DATE = "state_data_start_date";
     private static final String STATE_DATA_END_DATE = "state_data_end_date";
     private static final String STATE_DATA_FILTER_TYPE = "state_data_filter_type";
-    private static final String STATE_SAVED = "saved";
+    private static final String STATE_DATE_PICKER_SELECTION = "date_picker_selection";
+    private static final String STATE_DATE_PICKER_TYPE = "date_picker_type";
 
     private LinearLayout layoutDate;
     private TextView tvDate;
@@ -95,7 +98,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     private HistoryTokoCashAdapter adapterHistory;
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
-    private String stateDataAfterFilter = "";
 
     private TokoCashHistoryData tokoCashHistoryData;
     private int oldScrollY = 0;
@@ -133,41 +135,44 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         super.onViewCreated(view, savedInstanceState);
         initInjector();
         presenter.attachView(this);
-        initVar(view);
+        initVar(view, savedInstanceState);
         setActionVar();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(STATE_DATA_UPDATED, stateDataAfterFilter);
-        outState.putString(STATE_DATA_START_DATE, startDateFormatted);
-        outState.putString(STATE_DATA_END_DATE, endDateFormatted);
+        outState.putLong(STATE_DATA_START_DATE, startDate);
+        outState.putLong(STATE_DATA_END_DATE, endDate);
         outState.putString(STATE_DATA_FILTER_TYPE, typeFilterSelected);
+        outState.putInt(STATE_DATE_PICKER_SELECTION, datePickerSelection);
+        outState.putInt(STATE_DATE_PICKER_TYPE, datePickerType);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            this.stateDataAfterFilter = savedInstanceState.getString(STATE_DATA_UPDATED);
-            this.startDateFormatted = savedInstanceState.getString(STATE_DATA_START_DATE);
-            this.endDateFormatted = savedInstanceState.getString(STATE_DATA_END_DATE);
+            this.startDate = savedInstanceState.getLong(STATE_DATA_START_DATE);
+            this.endDate = savedInstanceState.getLong(STATE_DATA_END_DATE);
             this.typeFilterSelected = savedInstanceState.getString(STATE_DATA_FILTER_TYPE);
+            this.datePickerSelection = savedInstanceState.getInt(STATE_DATE_PICKER_SELECTION);
+            this.datePickerType = savedInstanceState.getInt(STATE_DATA_FILTER_TYPE);
+            setDateByDateFormatted(startDate, endDate);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (stateDataAfterFilter.equals("")) {
-            refreshHandler.startRefresh();
-        }
+        refreshHandler.startRefresh();
         presenter.getWaitingTransaction();
     }
 
-    private void initVar(View view) {
-        initialRangeDateFilter();
+    private void initVar(View view, @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            initialRangeDateFilter();
+        }
         initialHistoryRecyclerView();
 
         refreshHandler = new RefreshHandler(getActivity(), view,
@@ -192,7 +197,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
                                     DatePickerTokoCashUtil.getPeriodRangeModel(getActivity()),
                                     startDate, endDate, datePickerSelection, datePickerType);
                     startActivityForResult(intent, EXTRA_INTENT_DATE_PICKER);
-                    stateDataAfterFilter = STATE_SAVED;
                 }
             }
         });
@@ -223,24 +227,29 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     }
 
     private void initialRangeDateFilter() {
-        Application application = getActivity().getApplication();
-        if (application != null && application instanceof TokoCashRouter) {
-            Calendar startCalendar = Calendar.getInstance();
-            Calendar endCalendar = Calendar.getInstance();
-            startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-            startCalendar.add(Calendar.DATE, -29);
-            startDate = startCalendar.getTimeInMillis();
-            endDate = endCalendar.getTimeInMillis();
-            startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
-            endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
-            String getFormattedDatePicker =
-                    ((TokoCashRouter) application)
-                            .getRangeDateFormatted(getActivity(), startDate, endDate);
-            tvDate.setText(getFormattedDatePicker);
-        }
+        Calendar startCalendar = Calendar.getInstance();
+        Calendar endCalendar = Calendar.getInstance();
+        startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
+        startCalendar.add(Calendar.DATE, -29);
+        startDate = startCalendar.getTimeInMillis();
+        endDate = endCalendar.getTimeInMillis();
+        setDateByDateFormatted(startDate, endDate);
     }
 
-    private void initialFilterRecyclerView(List<HeaderHistory> filterList) {
+    private void setDateByDateFormatted(long startDate, long endDate) {
+        startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
+        endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
+        String getFormattedDatePicker = "";
+        Application application = getActivity().getApplication();
+        if (application != null && application instanceof TokoCashRouter) {
+            getFormattedDatePicker =
+                    ((TokoCashRouter) application)
+                            .getRangeDateFormatted(getActivity(), startDate, endDate);
+        }
+        tvDate.setText(getFormattedDatePicker);
+    }
+
+    private void initialFilterHistory(List<HeaderHistory> filterList) {
         quickSingleFilterHistory.renderFilter(setQuickFilterItems(filterList));
         quickSingleFilterHistory.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
@@ -320,7 +329,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         viewEmptyNoHistory.setVisibility(View.GONE);
 
         refreshHandler.finishRefresh();
-        initialFilterRecyclerView(tokoCashHistoryData.getHeaderHistory());
+        initialFilterHistory(tokoCashHistoryData.getHeaderHistory());
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {
             adapterHistory.addItemHistoryList(tokoCashHistoryData.getItemHistoryList());
@@ -407,7 +416,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     public RequestParams getHistoryTokoCashParam(boolean isWaitingTransaction, int page) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetHistoryDataUseCase.TYPE,
-                isWaitingTransaction ? "pending" : typeFilterSelected);
+                isWaitingTransaction ? PENDING_TYPE : typeFilterSelected);
         requestParams.putString(GetHistoryDataUseCase.START_DATE,
                 isWaitingTransaction ? "" : startDateFormatted);
         requestParams.putString(GetHistoryDataUseCase.END_DATE,
