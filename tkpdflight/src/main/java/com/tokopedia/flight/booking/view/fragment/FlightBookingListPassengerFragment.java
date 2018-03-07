@@ -79,7 +79,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-//        presenter.onViewCreated();
+        presenter.onViewCreated();
     }
 
     @Override
