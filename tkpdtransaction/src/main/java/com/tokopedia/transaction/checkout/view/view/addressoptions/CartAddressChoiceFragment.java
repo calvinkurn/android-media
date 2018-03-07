@@ -96,6 +96,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_address_choice, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
