@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
 
 /**
@@ -27,12 +28,14 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     TextView voteTitle;
     TextView voteQuestion;
     Context context;
+    private final GroupChatContract.View.ImageViewHolderListener listener;
 
-    public VoteAnnouncementViewHolder(View itemView) {
+    public VoteAnnouncementViewHolder(View itemView, GroupChatContract.View.ImageViewHolderListener imageListener) {
         super(itemView);
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);
         voteQuestion = itemView.findViewById(R.id.vote_question);
+        listener = imageListener;
     }
 
     @Override
@@ -50,7 +53,12 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
 
         voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onVoteComponentClicked();
+            }
+        });
     }
 
     private void setVoteFinished(VoteAnnouncementViewModel element) {
