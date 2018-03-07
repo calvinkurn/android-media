@@ -49,6 +49,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context, extras.getString("ad_id", ""))
                             .setData(uri.build())
+                            .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
                     return TopAdsDashboardActivity.getCallingIntent(context)
@@ -58,6 +59,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                 return getCallingIntent(context, extras.getString("ad_id", ""))
                         .setData(uri.build())
+                        .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                         .putExtras(extras);
             }
         } else {

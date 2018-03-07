@@ -200,7 +200,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
     ]
 
     features = [

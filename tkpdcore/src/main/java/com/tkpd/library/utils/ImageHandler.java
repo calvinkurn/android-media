@@ -1,6 +1,7 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -168,7 +169,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(imageview);
         }
     }
@@ -292,7 +293,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .dontAnimate()
                 .into(imageview);
     }
@@ -348,6 +349,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     private static boolean isContextValid(Context context) {
-        return context instanceof Activity && !((Activity) context).isFinishing();
+        return (context instanceof Activity && !((Activity) context).isFinishing()) || context instanceof Application;
     }
 }
