@@ -38,7 +38,7 @@
     <string name="chat_as">Chat sebagai</string>
     <string name="channel_not_found">Channel tidak ditemukan.</string>
     <string name="exit">Keluar</string>
-    <string name="default_kicked_message">Anda telah dikeluarkan dari room.</string>
+    <string name="default_kicked_message">Anda telah dikeluarkan dari chatroom.</string>
     <string name="user_is_banned">Anda telah di blokir.</string>
     <string name="please_check_timezone_to_vote">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="new_message">Pesan Baru</string>

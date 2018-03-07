@@ -589,12 +589,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         setToolbarParticipantCount();
         ImageHandler.loadImageBlur(getActivity(), channelBanner, channelInfoViewModel
                 .getBannerUrl());
-
-        setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
-
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
+        setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
         channelInfoDialog.setContentView(createBottomSheetView(channelInfoViewModel.getChannelViewModel()));
     }
 

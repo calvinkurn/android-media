@@ -58,7 +58,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
+    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
