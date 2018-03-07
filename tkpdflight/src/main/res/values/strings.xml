@@ -277,7 +277,7 @@
     <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
     <string name="flight_order_departure_schedule">Jadwal Penerbangan</string>
     <string name="flight_label_copy_clipboard">Copy To Clipboard</string>
-    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>/>
+    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>
     <string name="flight_booking_atc_loading_label">Sedang menyiapkan formulir pemesanan Anda</string>
     <string name="flight_review_failed_checkout_message">Pembayaran gagal</string>
     <string name="flight_review_cancel_checkout_message">Pembayaran dibatalkan</string>

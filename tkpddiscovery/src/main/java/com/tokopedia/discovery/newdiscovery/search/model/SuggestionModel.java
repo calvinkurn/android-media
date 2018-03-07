@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class SuggestionModel implements Parcelable {
     private String suggestionText;
+    private String suggestionCurrentKeyword;
     private String suggestedQuery;
     private String formattedResultCount;
 
@@ -18,6 +19,14 @@ public class SuggestionModel implements Parcelable {
 
     public void setSuggestionText(String suggestionText) {
         this.suggestionText = suggestionText;
+    }
+
+    public String getSuggestionCurrentKeyword() {
+        return suggestionCurrentKeyword;
+    }
+
+    public void setSuggestionCurrentKeyword(String suggestionCurrentKeyword) {
+        this.suggestionCurrentKeyword = suggestionCurrentKeyword;
     }
 
     public String getSuggestedQuery() {
@@ -47,12 +56,14 @@ public class SuggestionModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.suggestionText);
+        dest.writeString(this.suggestionCurrentKeyword);
         dest.writeString(this.suggestedQuery);
         dest.writeString(this.formattedResultCount);
     }
 
     protected SuggestionModel(Parcel in) {
         this.suggestionText = in.readString();
+        this.suggestionCurrentKeyword = in.readString();
         this.suggestedQuery = in.readString();
         this.formattedResultCount = in.readString();
     }
