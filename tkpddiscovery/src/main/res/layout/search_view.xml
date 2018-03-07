@@ -25,7 +25,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/white">
 
-            <EditText
+            <com.tokopedia.design.textview.Edittext
                 android:id="@+id/searchTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -35,7 +35,7 @@
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="@dimen/search_view_text_padding"
                 android:drawablePadding="8dp"
-                android:drawableLeft="@drawable/icon_magnifier"
+                app:drawableLeftCompat="@drawable/icon_magnifier"
                 android:paddingRight="@dimen/search_view_text_padding"
                 android:singleLine="true"
                 android:textColor="#212121"
