@@ -12,8 +12,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -85,13 +87,14 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
-    public static void loadImageWithIdWithoutPlaceholder(Context context, ImageView imageview, int resId) {
-        if (isContextValid(context)) {
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, resId))
-                    .placeholder(ContextCompat.getDrawable(context, resId))
+    public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load(drawable)
+                    .placeholder(drawable)
                     .dontAnimate()
-                    .error(ContextCompat.getDrawable(context, resId))
+                    .error(drawable)
                     .into(imageview);
         }
     }
