@@ -123,6 +123,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private int set;
     private int level;
     private String shopReputationScore;
+    private String shopName;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -248,7 +249,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
+                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
                 view.getContext().startActivity(intent);
             }
         });
@@ -273,7 +274,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 if (TextUtils.isEmpty(shopReputationScore)) {
                     reputationDesc.setText(R.string.reputation_value_not_appear);
                 } else {
-                    reputationDesc.setText(shopReputationScore);
+                    reputationDesc.setText(getString(R.string.reputation_point_format, shopReputationScore));
                 }
 
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
@@ -288,7 +289,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         totalProductDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ShopPageActivity.this.startActivity(ShopProductListActivity.createIntent(
+                        ShopPageActivity.this,
+                        shopId,
+                        shopName
+                ));
             }
         });
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
@@ -322,9 +327,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 imageViewSpeed.setImageResource(getReputationSpeedIcon(speedLevel));
                 TextView speedView = speedContentBottomSheet.findViewById(R.id.speed_content_tv_desc);
                 if (TextUtils.isEmpty(speedLevelDescription)) {
-                    speedView.setText(R.string.reputation_value_not_appear);
+                    speedView.setText(R.string.speed_shop_not_available);
                 } else {
-                    speedView.setText(speedLevelDescription);
+                    speedView.setText(getString(R.string.speed_shop_not_available_format, speedLevelDescription));
                 }
 
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
@@ -486,15 +491,19 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void updateShopInfo(ShopInfo shopInfo) {
+
         shopId = shopInfo.getInfo().getShopId();
         shopUrl = shopInfo.getInfo().getShopUrl();
         shopAvatar = shopInfo.getInfo().getShopAvatar();
         shopLocation = shopInfo.getInfo().getShopLocation();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
-        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
+
+        shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
+        shopNameTextView.setText(shopName);
+
+        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop(), shopName);
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
-        shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         ImageHandler.loadImageCircle2(shopIconImageView.getContext(), shopIconImageView, shopInfo.getInfo().getShopAvatar());
 
         if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {

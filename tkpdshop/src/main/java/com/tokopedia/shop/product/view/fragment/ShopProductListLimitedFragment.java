@@ -2,8 +2,6 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -32,8 +31,6 @@ import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -43,12 +40,17 @@ import javax.inject.Inject;
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
         implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
 
-    private ProgressDialog progressDialog;
-
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
+    private ProgressDialog progressDialog;
     private String shopId;
+    private String shopName;
     private ShopModuleRouter shopModuleRouter;
+
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -65,11 +67,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         return view;
-    }
-
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
     }
 
     @Override
@@ -89,12 +86,12 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
+                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, shopName));
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true, shopName));
             }
         }, this);
     }
@@ -115,8 +112,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 .inject(this);
     }
 
-    public void displayProduct(String shopId, String promotionWebViewUrl) {
+    public void displayProduct(String shopId, String promotionWebViewUrl, String shopName) {
         this.shopId = shopId;
+        this.shopName = shopName;
         shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
     }
 
@@ -153,7 +151,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 shopId,
                 text,
                 null,
-                null
+                null,
+                shopName
         ));
     }
 
