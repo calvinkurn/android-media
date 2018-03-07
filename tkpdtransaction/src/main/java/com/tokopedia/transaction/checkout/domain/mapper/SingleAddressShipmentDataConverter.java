@@ -80,6 +80,10 @@ public class SingleAddressShipmentDataConverter
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
+
+        // This is something that not well planned
+        Fobject fobject = levelUpParametersFromProductToCartSeller(cartItemModels);
+
         sellerItemModel.setCartItemModels(cartItemModels);
 
         int totalQuantity = 0;
@@ -92,9 +96,12 @@ public class SingleAddressShipmentDataConverter
         sellerItemModel.setTotalItemPrice(totalItemPrice);
         sellerItemModel.setTotalQuantity(totalQuantity);
         sellerItemModel.setTotalWeight(totalWeight);
-        sellerItemModel.setShipmentCartData(
-                new ShipmentRatesDataMapper().getShipmentCartData(
-                        cartItemDataList, userAddress, groupShop, sellerItemModel));
+        sellerItemModel.setShipmentCartData(new ShipmentRatesDataMapper()
+                .getShipmentCartData(cartItemDataList, userAddress, groupShop, sellerItemModel));
+
+        sellerItemModel.setInsuranceFee(fobject.isFinsurance());
+        sellerItemModel.setIsFcancelPartial(fobject.isFcancelPartial());
+        sellerItemModel.setIsPreOrder(fobject.isPreOrder());
 
         return sellerItemModel;
     }
@@ -102,7 +109,7 @@ public class SingleAddressShipmentDataConverter
     private CartItemModel convertFromProduct(Product product) {
         CartItemModel cartItemModel = new CartItemModel();
 
-        cartItemModel.setId(String.valueOf(product.getProductId()));
+        cartItemModel.setId(product.getProductId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());
@@ -234,7 +241,7 @@ public class SingleAddressShipmentDataConverter
 
         cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
         cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setId(cartItemData.getOriginData().getProductId());
+        cartItemModel.setId(Integer.parseInt(cartItemData.getOriginData().getProductId()));
         cartItemModel.setName(cartItemData.getOriginData().getProductName());
 
         cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());
@@ -247,6 +254,64 @@ public class SingleAddressShipmentDataConverter
         cartItemModel.setQuantity(cartItemData.getUpdatedData().getQuantity());
 
         return cartItemModel;
+    }
+
+    private Fobject levelUpParametersFromProductToCartSeller(List<CartItemModel> cartItemList) {
+
+        int isPreOrder = 0;
+        int isFcancelPartial = 0;
+        int isFinsurance = 0;
+
+        for (CartItemModel cartItem : cartItemList) {
+            if (cartItem.isPreOrder()) {
+                isPreOrder = 1;
+            }
+            if (cartItem.isfInsurance()) {
+                isFcancelPartial = 1;
+            }
+            if (cartItem.isfCancelPartial()) {
+                isFinsurance = 1;
+            }
+        }
+
+        return new Fobject(isPreOrder, isFcancelPartial, isFinsurance);
+    }
+
+    private class Fobject {
+
+        private int isPreOrder;
+        private int isFcancelPartial;
+        private int isFinsurance;
+
+        Fobject(int isPreOrder, int isFcancelPartial, int isFinsurance) {
+            this.isPreOrder = isPreOrder;
+            this.isFcancelPartial = isFcancelPartial;
+            this.isFinsurance = isFinsurance;
+        }
+
+        public int isPreOrder() {
+            return isPreOrder;
+        }
+
+        public void setPreOrder(int preOrder) {
+            isPreOrder = preOrder;
+        }
+
+        public int isFcancelPartial() {
+            return isFcancelPartial;
+        }
+
+        public void setFcancelPartial(int fcancelPartial) {
+            isFcancelPartial = fcancelPartial;
+        }
+
+        public int isFinsurance() {
+            return isFinsurance;
+        }
+
+        public void setFinsurance(int finsurance) {
+            isFinsurance = finsurance;
+        }
     }
 
 }

@@ -6,9 +6,8 @@ import android.util.Log;
 
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
-import com.tokopedia.transaction.checkout.view.util.PeopleAddressAuthUtil;
 
 import java.util.List;
 
@@ -32,13 +31,13 @@ public class ShipmentAddressListPresenter
 
     private static final String DEFAULT_KEYWORD = "";
 
-    private final GetAllAddressUseCase mGetAllAddressUseCase;
+    private final GetPeopleAddressUseCase mGetPeopleAddressUseCase;
     private final PagingHandler mPagingHandler;
 
     @Inject
-    public ShipmentAddressListPresenter(GetAllAddressUseCase getAllAddressUseCase,
+    public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase,
                                         PagingHandler pagingHandler) {
-        mGetAllAddressUseCase = getAllAddressUseCase;
+        mGetPeopleAddressUseCase = getPeopleAddressUseCase;
         mPagingHandler = pagingHandler;
     }
 
@@ -68,8 +67,8 @@ public class ShipmentAddressListPresenter
      * @param query
      */
     public void getAddressList(Context context, int order, String query) {
-        mGetAllAddressUseCase.execute(
-                PeopleAddressAuthUtil.getRequestParams(context, order, query, mPagingHandler.getPage()),
+        mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
+                    .getRequestParams(context, order, query, mPagingHandler.getPage()),
                 new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {

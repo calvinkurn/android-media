@@ -262,23 +262,25 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for shipment
         ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder()
-                .finsurance()
+                .isPreorder(cartSellerItem.getIsPreOrder())
+                .finsurance(cartSellerItem.getIsFinsurance())
                 .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
-                .fcancelPartial()
-                .isDropship(0);
+                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
-            shopProductCheckoutBuilder.isDropship(1)
+            shopProductCheckoutBuilder
+                    .isDropship(1)
                     .dropshipData(new DropshipDataCheckoutRequest.Builder()
-                    .name(shipmentDetailData.getDropshipperName())
-                    .telpNo(shipmentDetailData.getDropshipperPhone())
-                    .build());
+                            .name(shipmentDetailData.getDropshipperName())
+                            .telpNo(shipmentDetailData.getDropshipperPhone())
+                            .build());
+        } else {
+            shopProductCheckoutBuilder.isDropship(0);
         }
 
         return shopProductCheckoutBuilder.build();
@@ -291,11 +293,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         // Create shop product model for promo request
         ShopProduct.Builder shopProductBuilder = new ShopProduct.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
+                .isPreorder(cartSellerItem.getIsPreOrder())
+                .finsurance(cartSellerItem.getIsFinsurance())
                 .shippingInfo(new ShippingInfo.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
-                .productData(convertToProductData(cartSellerItem.getCartItemModels()));
+                .productData(convertToProductData(cartSellerItem.getCartItemModels()))
+                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
         if (shipmentDetailData.getUseDropshipper() != null
                 && shipmentDetailData.getUseDropshipper()) {
@@ -319,7 +324,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
-                .productId(Integer.parseInt(cartItem.getId()))
+                .productId(cartItem.getId())
                 .build();
     }
 
@@ -344,7 +349,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private ProductData convertToProductData(CartItemModel cartItem) {
         return new ProductData.Builder()
-                .productId(Integer.parseInt(cartItem.getId()))
+                .productId(cartItem.getId())
                 .productNotes(cartItem.getNoteToSeller())
                 .productQuantity(cartItem.getQuantity())
                 .build();

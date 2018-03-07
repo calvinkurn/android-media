@@ -2,9 +2,8 @@ package com.tokopedia.transaction.checkout.view.di.module;
 
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.checkout.data.repository.PeopleAddressRepository;
-import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.di.qualifier.PaginatedAddressQualifier;
 import com.tokopedia.transaction.checkout.view.di.scope.ShipmentAddressListScope;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.ShipmentAddressListPresenter;
@@ -27,8 +26,8 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter(GetAllAddressUseCase getAllAddressUseCase, PagingHandler pagingHandler) {
-        return new ShipmentAddressListPresenter(getAllAddressUseCase, pagingHandler);
+    ShipmentAddressListPresenter provideCartAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase, PagingHandler pagingHandler) {
+        return new ShipmentAddressListPresenter(getPeopleAddressUseCase, pagingHandler);
     }
 
     @Provides
@@ -39,8 +38,8 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    GetAllAddressUseCase provideGetAddressListUseCase(@PaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
-        return new GetAllAddressUseCase(peopleAddressRepository);
+    GetPeopleAddressUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository) {
+        return new GetPeopleAddressUseCase(peopleAddressRepository);
     }
 
 }

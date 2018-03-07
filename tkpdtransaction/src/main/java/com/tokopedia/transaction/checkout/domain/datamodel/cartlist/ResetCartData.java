@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class ResetCartData implements Parcelable {
     private boolean success;
+    private String message;
 
     public boolean isSuccess() {
         return success;
@@ -19,6 +20,13 @@ public class ResetCartData implements Parcelable {
     }
 
 
+    public ResetCartData() {
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -27,16 +35,15 @@ public class ResetCartData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.success ? (byte) 1 : (byte) 0);
-    }
-
-    public ResetCartData() {
+        dest.writeString(this.message);
     }
 
     protected ResetCartData(Parcel in) {
         this.success = in.readByte() != 0;
+        this.message = in.readString();
     }
 
-    public static final Parcelable.Creator<ResetCartData> CREATOR = new Parcelable.Creator<ResetCartData>() {
+    public static final Creator<ResetCartData> CREATOR = new Creator<ResetCartData>() {
         @Override
         public ResetCartData createFromParcel(Parcel source) {
             return new ResetCartData(source);

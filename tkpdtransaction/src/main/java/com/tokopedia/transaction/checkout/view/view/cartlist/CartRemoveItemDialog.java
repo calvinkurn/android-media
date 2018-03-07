@@ -20,6 +20,7 @@ import java.util.List;
  */
 
 public class CartRemoveItemDialog extends DialogFragment {
+    public static final String DIALOG_FRAGMENT_TAG = CartRemoveItemDialog.class.getSimpleName();
 
     private static final String DATA_UPDATED = "data_updated";
     private static final String DATA_REMOVED = "data_removed";

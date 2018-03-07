@@ -3,12 +3,14 @@ package com.tokopedia.transaction.checkout.domain.mapper;
 import com.tokopedia.transaction.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.cartlist.CartList;
 import com.tokopedia.transaction.checkout.data.entity.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.data.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateCartData;
 
 import java.util.ArrayList;
@@ -139,5 +141,12 @@ public class CartMapper implements ICartMapper {
                 .message(updateCartDataResponse.getError())
                 .success(updateCartDataResponse.isStatus())
                 .build();
+    }
+
+    @Override
+    public ResetCartData convertToResetCartData(ResetCartDataResponse resetCartDataResponse) {
+        ResetCartData resetCartData = new ResetCartData();
+        resetCartData.setSuccess(resetCartDataResponse.getSuccess()==1);
+        return resetCartData ;
     }
 }

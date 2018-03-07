@@ -28,4 +28,7 @@ public interface ICartListPresenter {
 
     void processToShipmentForm();
 
+    void processResetAndRefreshCartData();
+
+    void processResetThenToShipmentForm();
 }
