@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+dependencies {
+
+    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+
+    compile rootProject.ext.supportLibDependencies.supportV4
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.debugToolsDependencies.stetho
+}
