@@ -429,11 +429,11 @@ public class EntityPackagesItem {
         this.venueDetail = venueDetail;
     }
 
-    public Object getVouchers() {
+    public String getVouchers() {
         return vouchers;
     }
 
-    public void setVouchers(Object vouchers) {
+    public void setVouchers(String vouchers) {
         this.vouchers = vouchers;
     }
 
