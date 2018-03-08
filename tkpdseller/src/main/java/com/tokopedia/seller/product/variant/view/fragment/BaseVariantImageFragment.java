@@ -5,14 +5,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Pair;
-import android.util.SparseIntArray;
-import android.view.View;
 
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
@@ -20,28 +16,18 @@ import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditVariantDialogFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevel1ListActivity;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevelLeafActivity;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerNewActivity;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
-import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
 /**
  * Created by hendry on 4/3/17.

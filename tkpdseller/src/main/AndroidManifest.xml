@@ -216,13 +216,13 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.variant.view.activity.ProductVariantDashboardNewActivity"
+            android:name=".product.variant.view.activity.ProductVariantDashboardActivity"
             android:exported="true"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".product.variant.view.activity.ProductVariantPickerNewActivity"
+            android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
 

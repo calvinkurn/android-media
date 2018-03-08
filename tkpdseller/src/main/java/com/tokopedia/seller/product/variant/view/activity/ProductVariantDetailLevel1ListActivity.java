@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     public static final String SAVED_HAS_LEAF_CHANGED = "svd_leaf_chg";
 
-    private ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel;
+    private ProductVariantDashboardViewModel productVariantDashboardViewModel;
     private String varLv1name;
     private String varLv2name;
     private boolean hasLeafChanged;
@@ -53,23 +53,23 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     private boolean isOfficialStore;
 
     public static void start(Context context, Fragment fragment,
-                             ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel,
+                             ProductVariantDashboardViewModel productVariantDashboardViewModel,
                              String variantLv1Name, String variantLv2Name,
                              @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage) {
-        Intent intent = getIntent(context, productVariantDashboardNewViewModel, variantLv1Name, variantLv2Name, currencyType,
+        Intent intent = getIntent(context, productVariantDashboardViewModel, variantLv1Name, variantLv2Name, currencyType,
                 stockType, isOfficialStore,
                 needRetainImage);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
-                                   ProductVariantDashboardNewViewModel productVariantDashboardNewViewModel,
+                                   ProductVariantDashboardViewModel productVariantDashboardViewModel,
                                    String variantLv1Name, String variantLv2Name, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
                                    boolean needRetainImage) {
         Intent intent = new Intent(context, ProductVariantDetailLevel1ListActivity.class);
-        intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardNewViewModel);
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME, variantLv1Name);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV2_NAME, variantLv2Name);
         intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
@@ -83,9 +83,9 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (savedInstanceState == null) {
-            productVariantDashboardNewViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_DATA);
+            productVariantDashboardViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_DATA);
         } else {
-            productVariantDashboardNewViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_DATA);
+            productVariantDashboardViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_DATA);
             hasLeafChanged = savedInstanceState.getBoolean(SAVED_HAS_LEAF_CHANGED);
         }
         varLv1name = intent.getStringExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME);
@@ -112,11 +112,11 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     @Override
     public List<ProductVariantCombinationViewModel> getProductVariantCombinationViewModelList() {
-        return productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList();
+        return productVariantDashboardViewModel.getProductVariantCombinationViewModelList();
     }
 
     public ProductVariantOptionChild getProductVariantChild(){
-        return productVariantDashboardNewViewModel.getProductVariantOptionChildLv1();
+        return productVariantDashboardViewModel.getProductVariantOptionChildLv1();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     @Override
     public String getVariantValue() {
-        return productVariantDashboardNewViewModel.getProductVariantOptionChildLv1().getValue();
+        return productVariantDashboardViewModel.getProductVariantOptionChildLv1().getValue();
     }
 
     @Override
@@ -147,7 +147,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     public void onSubmitVariant() {
         Intent intent = new Intent(EXTRA_ACTION_SUBMIT);
-        intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardNewViewModel);
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardViewModel);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -164,7 +164,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
             if (data!=null && data.hasExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA)) {
                 ProductVariantCombinationViewModel productVariantCombinationViewModel =
                         data.getParcelableExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA);
-                this.productVariantDashboardNewViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
+                this.productVariantDashboardViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
                 this.hasLeafChanged = true;
                 needRefreshData = true;
                 // no need to change image, because leaf cannot change image
@@ -196,7 +196,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardNewViewModel);
+        outState.putParcelable(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardViewModel);
         outState.putBoolean(SAVED_HAS_LEAF_CHANGED, hasLeafChanged);
     }
 }

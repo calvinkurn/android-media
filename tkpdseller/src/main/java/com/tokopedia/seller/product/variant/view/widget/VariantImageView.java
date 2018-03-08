@@ -68,11 +68,7 @@ public class VariantImageView extends FrameLayout {
 
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
-        /*TypedArray a = getContext().obtainStyledAttributes(attrs, com.tokopedia.design.R.styleable.LoadingStateView);
-        loadingLayoutRes = a.getResourceId(com.tokopedia.design.R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
-        errorLayoutRes = a.getResourceId(com.tokopedia.design.R.styleable.LoadingStateView_lsv_error_layout, VIEW_NOT_AVAILABLE);
-        emptyLayoutRes = a.getResourceId(com.tokopedia.design.R.styleable.LoadingStateView_lsv_empty_layout, VIEW_NOT_AVAILABLE);
-        a.recycle();*/
+
     }
 
     private void init() {

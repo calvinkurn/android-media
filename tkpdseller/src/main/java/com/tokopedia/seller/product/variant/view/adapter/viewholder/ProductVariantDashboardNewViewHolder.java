@@ -15,7 +15,7 @@ import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardNewAdapter;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 5/26/17.
  */
-public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<ProductVariantDashboardNewViewModel> {
+public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<ProductVariantDashboardViewModel> {
 
     private VariantImageView variantImageView;
     private TextView titleTextView;
@@ -53,7 +53,7 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
     }
 
     @Override
-    public void bindObject(final ProductVariantDashboardNewViewModel model) {
+    public void bindObject(final ProductVariantDashboardViewModel model) {
         final Context context = titleTextView.getContext();
         ProductVariantOptionChild childLvl1Model = model.getProductVariantOptionChildLv1();
         List<VariantPictureViewModel> productPictureViewModelList = childLvl1Model.getProductPictureViewModelList();
