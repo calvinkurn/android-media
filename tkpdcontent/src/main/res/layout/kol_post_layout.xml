@@ -79,7 +79,7 @@
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_small"
             android:textStyle="normal"
-            android:lineSpacingExtra="7sp"
+            android:lineSpacingExtra="5sp"
             tools:text="The snapback’s predecessor, the baseball cap, must be proud of its stylish spawn. Compared to fitted baseball caps worn by pro players, snapback are less expensive and much more attuned to contemporary urban culture. But earliest versions of the snapbac… Read More" />
 
         <View
