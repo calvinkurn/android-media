@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -108,6 +109,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onSearchSubmitted(String text) {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         loadInitialData();
     }
 
