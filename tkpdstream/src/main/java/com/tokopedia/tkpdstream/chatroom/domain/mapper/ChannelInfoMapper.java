@@ -70,8 +70,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                     activePollPojo.getStatus(),
                     activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
-                    "INFO YG PERLU DI UPDATE",
-                    "Belon ada",
+                    VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
+                    "https://tokopedia.com/poll",
                     activePollPojo.getStartTime(),
                     activePollPojo.getEndTime()
             );
@@ -93,7 +93,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 list.add(new VoteViewModel(
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
-                        String.valueOf( Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
+                        String.valueOf(Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             } else if (optionType.equalsIgnoreCase(OPTION_IMAGE)) {
@@ -101,7 +101,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                         String.valueOf(statisticOptionPojo.getOptionId()),
                         statisticOptionPojo.getOption(),
                         optionPojo.getImageOption().trim(),
-                        String.valueOf( Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
+                        String.valueOf(Math.round(statisticOptionPojo.getPercentage() * 100.0) / 100.0),
                         checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected())
                 ));
             }

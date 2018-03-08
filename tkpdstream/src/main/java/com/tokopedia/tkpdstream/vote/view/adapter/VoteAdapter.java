@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.List;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
+public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private VoteTypeFactory typeFactory;
@@ -31,7 +33,7 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
     public static VoteAdapter createInstance(VoteTypeFactory voteTypeFactory) {
         return new VoteAdapter(voteTypeFactory);
     }
-    
+
     public VoteAdapter(VoteTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
@@ -63,17 +65,38 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
     }
 
     public void addList(List<Visitable> listChat) {
+        this.list.clear();
         this.list.addAll(listChat);
         notifyDataSetChanged();
     }
 
-    public void change(VoteViewModel element) {
+    public void change(GroupChatViewModel viewModel, VoteViewModel element,
+                       VoteStatisticViewModel voteStatisticViewModel) {
         int index = list.indexOf(element);
         for (int i = 0; i < list.size(); i++) {
             VoteViewModel temp = (VoteViewModel) list.get(i);
-            if(index == i){
+            if (index == i) {
                 temp.setSelected(VoteViewModel.SELECTED);
-            }else {
+                ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .getListOption().get(i)).setSelected(VoteViewModel.SELECTED);
+
+            } else {
+                temp.setSelected(VoteViewModel.UNSELECTED);
+                ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .getListOption().get(i)).setSelected(VoteViewModel.UNSELECTED);
+
+            }
+            ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                    .getListOption().get(i)).setPercentage(
+                    voteStatisticViewModel.getListOptions().get(i).getPercentage());
+        }
+        notifyItemRangeChanged(0, list.size());
+    }
+
+    public void updateStatistic() {
+        for (int i = 0; i < list.size(); i++) {
+            VoteViewModel temp = (VoteViewModel) list.get(i);
+            if (temp.getSelected() == VoteViewModel.DEFAULT) {
                 temp.setSelected(VoteViewModel.UNSELECTED);
             }
         }

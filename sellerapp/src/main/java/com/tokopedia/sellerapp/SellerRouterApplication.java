@@ -645,12 +645,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+
             return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
-        else
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source);
+
     }
 
     @Override
@@ -1066,5 +1064,9 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+    @Override
+    public boolean isEnabledGroupChat() {
+        return false;
     }
 }

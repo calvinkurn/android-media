@@ -85,6 +85,7 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -115,7 +116,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private View voteBar;
     private View voteBody;
     private TextView voteTitle;
-    private TextView participant;
+    private TextView voteParticipant;
     private TextView voteInfoLink;
     private ImageView iconVote;
     private View votedView;
@@ -205,7 +206,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteBar = view.findViewById(R.id.vote_header);
         voteBody = view.findViewById(R.id.vote_body);
         voteTitle = view.findViewById(R.id.vote_title);
-        participant = view.findViewById(R.id.participant);
+        voteParticipant = view.findViewById(R.id.vote_participant);
         voteInfoLink = view.findViewById(R.id.vote_info_link);
         arrow = view.findViewById(R.id.arrow);
         iconVote = view.findViewById(R.id.icon_vote);
@@ -468,7 +469,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStartTime()
                 < viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
-                > System.currentTimeMillis() / 1000L) {
+                > System.currentTimeMillis() / 1000L
+                ) {
             progressBarWithTimer.restart();
         }
 
@@ -501,7 +503,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onDestroy() {
         presenter.detachView();
         presenter.logoutChannel(mChannel);
-
+        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+        progressBarWithTimer.cancel();
         super.onDestroy();
     }
 
@@ -669,11 +673,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
 
-        boolean voted = (votedView.getVisibility() == View.VISIBLE);
-
-        presenter.sendVote(viewModel.getPollId(), voted, element);
-
-        analytics.eventClickVote(element.getType(), toolbar.getTitle().toString());
+        if (viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+            boolean voted = (votedView.getVisibility() == View.VISIBLE);
+            presenter.sendVote(viewModel.getPollId(), voted, element);
+            analytics.eventClickVote(element.getType(), toolbar.getTitle().toString());
+        }
     }
 
     @Override
@@ -694,8 +699,19 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
-        voteAdapter.change(element);
-        setVoted();
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            voteAdapter.change(viewModel, element, voteStatisticViewModel);
+            viewModel.getChannelInfoViewModel().getVoteInfoViewModel().setVoted(true);
+            viewModel.getChannelInfoViewModel().getVoteInfoViewModel().setParticipant(
+                    String.valueOf(Integer.parseInt(voteStatisticViewModel.getTotalParticipants())));
+            setVoted();
+
+            setVoteParticipant(viewModel.getChannelInfoViewModel()
+                    .getVoteInfoViewModel().getParticipant());
+
+        }
     }
 
     @Override
@@ -716,12 +732,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
-        if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)
-                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)
+        if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)) {
+            votedView.setVisibility(View.GONE);
+            showVoteLayout(messageItem.getVoteInfoViewModel(), false);
+        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)
                 || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_FINISHED)) {
             showVoteLayout(messageItem.getVoteInfoViewModel(), false);
-        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)
-                ) {
+        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)) {
             hideVoteLayout();
         }
     }
@@ -841,10 +858,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserKicked(final String errorMessage) {
+    public void onUserBanned(final String errorMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.default_banned_title);
         builder.setMessage(errorMessage);
-        builder.setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -858,54 +876,120 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserKicked() {
-        onUserKicked(getString(R.string.default_kicked_message));
-    }
-
-    public void showVoteLayout(VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
-        voteBar.setVisibility(View.VISIBLE);
-
-        LinearLayoutManager voteLayoutManager;
-        RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
-            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
-        } else {
-            voteLayoutManager = new LinearLayoutManager(getActivity());
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
-        }
-        voteRecyclerView.addItemDecoration(itemDecoration);
-        voteRecyclerView.setLayoutManager(voteLayoutManager);
-        voteRecyclerView.setAdapter(voteAdapter);
-        voteAdapter.addList(voteInfoViewModel.getListOption());
-        voteTitle.setText(voteInfoViewModel.getTitle());
-
-        if (isUpdateAnswer && voteInfoViewModel.isVoted()) {
-            setVoted();
-        }
-
-        participant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
-                , getActivity().getString(R.string.participant)));
-        voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
-        voteInfoLink.setOnClickListener(new View.OnClickListener() {
+    public void onChannelNotFound(String errorMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.channel_not_found);
+        builder.setMessage(errorMessage);
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                //openwebview from getVoteInfoUrl
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                getActivity().finish();
             }
         });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 
-        if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
-                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
-            progressBarWithTimer.setVisibility(View.GONE);
-            setVoteHasEnded();
-        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
-            hideVoteLayout();
+    @Override
+    public void onUserBanned() {
+        onUserBanned(getString(R.string.user_is_banned));
+    }
+
+    @Override
+    public void onChannelDeleted() {
+        onChannelNotFound(getString(R.string.channel_has_been_deleted));
+    }
+
+    @Override
+    public void onChannelFrozen() {
+        onChannelNotFound(getString(R.string.channel_deactivated));
+    }
+
+    public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            updateVoteViewModel(voteInfoViewModel);
+
+            voteBar.setVisibility(View.VISIBLE);
+
+            LinearLayoutManager voteLayoutManager;
+            RecyclerView.ItemDecoration itemDecoration = null;
+            if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
+                voteLayoutManager = new GridLayoutManager(getActivity(), 2);
+                itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+            } else {
+                voteLayoutManager = new LinearLayoutManager(getActivity());
+                itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
+            }
+            voteRecyclerView.addItemDecoration(itemDecoration);
+            voteRecyclerView.setLayoutManager(voteLayoutManager);
+            voteRecyclerView.setAdapter(voteAdapter);
+            voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getTitle());
+
+            voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                    .getListOption());
+
+            if (isUpdateAnswer && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().isVoted()) {
+                setVoted();
+            }
+
+            setVoteParticipant(voteInfoViewModel.getParticipant());
+
+            voteInfoLink.setText(voteInfoViewModel.getVoteInfoStringResId());
+            voteInfoLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                }
+            });
+
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
+                progressBarWithTimer.setVisibility(View.GONE);
+                setVoteHasEnded();
+            } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+                hideVoteLayout();
+            } else {
+                progressBarWithTimer.setVisibility(View.VISIBLE);
+                progressBarWithTimer.cancel();
+                progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
+            }
         } else {
-            progressBarWithTimer.setVisibility(View.VISIBLE);
-            progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
+            hideVoteLayout();
         }
 
+    }
 
+    private void setVoteParticipant(String participant) {
+        voteParticipant.setText(String.format("%s %s", TextFormatter.format(participant)
+                , getActivity().getString(R.string.participant)));
+    }
+
+    private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel) {
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH ||
+                    voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
+                List<Visitable> tempListOption = new ArrayList<>();
+                tempListOption.addAll(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .getListOption());
+                for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
+                    if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
+                        ((VoteViewModel) voteInfoViewModel.getListOption().get(i)).setSelected(
+                                ((VoteViewModel) (tempListOption.get(i))).getSelected());
+                    }
+                }
+                viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
+
+            } else {
+                viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
+            }
+        }
     }
 
     public void hideVoteLayout() {
@@ -919,6 +1003,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (iconVote != null && iconVote.getBackground() != null) {
                 DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
             }
+            voteAdapter.updateStatistic();
         }
     }
 
@@ -981,10 +1066,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onVoteComponentClicked(String type, String name) {
-        analytics.eventClickVoteComponent(type, name);
-        if (voteBody.getVisibility() == View.GONE) {
-            expand(voteBody);
-            arrow.animate().rotationBy(180f).start();
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().isHasPoll()
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
+            analytics.eventClickVoteComponent(type, name);
+            if (voteBody.getVisibility() == View.GONE) {
+                expand(voteBody);
+                arrow.animate().rotationBy(180f).start();
+            }
         }
     }
 }

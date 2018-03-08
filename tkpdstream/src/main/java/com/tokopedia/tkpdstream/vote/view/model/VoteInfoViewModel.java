@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdstream.vote.view.model;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.R;
 
@@ -13,17 +11,22 @@ import java.util.List;
 
 public class VoteInfoViewModel {
 
+
+    public static final int STATUS_ACTIVE = 2;
+    public static final int STATUS_FORCE_ACTIVE = 3;
     public static final int STATUS_FINISH = 4;
     public static final int STATUS_FORCE_FINISH = 5;
     public static final int STATUS_CANCELED = 6;
 
+    public static final int VOTE_TYPE_GIFT = 1;
 
-    private final String pollId;
-    private final int statusId;
+
+    private String pollId;
+    private int statusId;
     private String voteOptionType;
     private String voteGiftType;
     private String voteStatus;
-    private String voteInfoString;
+    private int voteInfoStringResId;
     private String voteInfoUrl;
     private boolean voted;
     private String title;
@@ -33,7 +36,7 @@ public class VoteInfoViewModel {
 
     public VoteInfoViewModel(String pollId, String title, List<Visitable> listOption, String participant,
                              String voteGiftType, String voteOptionType, String voteStatus, int statusId, boolean voted,
-                             String voteInfoString, String voteInfoUrl, long startTime, long endTime) {
+                             int voteInfoStringResId, String voteInfoUrl, long startTime, long endTime) {
         this.pollId = pollId;
         this.title = title;
         this.listOption = listOption;
@@ -43,7 +46,7 @@ public class VoteInfoViewModel {
         this.voteOptionType = voteOptionType;
         this.voteGiftType = voteGiftType;
         this.voted = voted;
-        this.voteInfoString = voteInfoString;
+        this.voteInfoStringResId = voteInfoStringResId;
         this.voteInfoUrl = voteInfoUrl;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -93,8 +96,12 @@ public class VoteInfoViewModel {
         return voted;
     }
 
-    public String getVoteInfoString() {
-        return voteInfoString;
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
+    public int getVoteInfoStringResId() {
+        return voteInfoStringResId;
     }
 
     public String getVoteInfoUrl() {
@@ -115,6 +122,20 @@ public class VoteInfoViewModel {
 
     public int getStatusId() {
         return statusId;
+    }
+
+    public static int getStringVoteInfo(int pollTypeId) {
+        switch (pollTypeId) {
+            //TODO : Implement this in next sprint.
+//            case VoteInfoViewModel.VOTE_TYPE_GIFT:
+//                return R.string.info_prize;
+            default:
+                return R.string.info_polling;
+        }
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 }
 

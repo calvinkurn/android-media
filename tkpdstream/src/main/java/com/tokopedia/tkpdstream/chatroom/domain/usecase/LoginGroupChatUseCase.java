@@ -21,7 +21,9 @@ public class LoginGroupChatUseCase {
 
         void onErrorEnterChannel(String errorMessage);
 
-        void onUserKicked(String errorMessage);
+        void onUserBanned(String errorMessage);
+
+        void onChannelNotFound(String sendBirdErrorMessage);
     }
 
     @Inject
@@ -56,7 +58,7 @@ public class LoginGroupChatUseCase {
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null && e.getCode() == GroupChatErrorHandler
                                         .CHANNEL_NOT_FOUND) {
-                                    listener.onUserKicked(GroupChatErrorHandler
+                                    listener.onChannelNotFound(GroupChatErrorHandler
                                             .getSendBirdErrorMessage(context, e, false));
                                     return;
                                 } else if (e != null) {
@@ -71,7 +73,7 @@ public class LoginGroupChatUseCase {
                                     public void onResult(SendBirdException e) {
                                         if (e != null && e.getCode() == GroupChatErrorHandler
                                                 .USER_IS_BANNED) {
-                                            listener.onUserKicked(GroupChatErrorHandler
+                                            listener.onUserBanned(GroupChatErrorHandler
                                                     .getSendBirdErrorMessage(context, e, false));
                                             return;
                                         } else if (e != null) {

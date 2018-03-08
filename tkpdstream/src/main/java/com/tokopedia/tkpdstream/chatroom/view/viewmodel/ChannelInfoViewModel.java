@@ -72,4 +72,8 @@ public class ChannelInfoViewModel {
     public void setChannelViewModel(ChannelViewModel channelViewModel) {
         this.channelViewModel = channelViewModel;
     }
+
+    public void setVoteInfoViewModel(@Nullable VoteInfoViewModel voteInfoViewModel) {
+        this.voteInfoViewModel = voteInfoViewModel;
+    }
 }

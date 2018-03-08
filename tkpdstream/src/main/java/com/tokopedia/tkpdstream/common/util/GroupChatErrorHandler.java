@@ -63,7 +63,8 @@ public class GroupChatErrorHandler {
                 return formattedString(context.getString(R.string
                         .default_request_error_timeout), e.getCode(), withCode);
             case CHANNEL_NOT_FOUND:
-                return formattedString(context.getString(R.string.channel_not_found), e.getCode(), withCode);
+                return formattedString(context.getString(R.string.channel_not_found_message), e
+                        .getCode(), withCode);
             case USER_IS_BANNED:
                 return formattedString(context.getString(R.string.user_is_banned), e.getCode(), withCode);
             default:

@@ -904,7 +904,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
 
-            return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
+        return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
 
 
     }
@@ -912,7 +912,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
     }
 
     @Override
@@ -1047,7 +1047,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-            return InboxChatActivity.getCallingIntent(context);
+        return InboxChatActivity.getCallingIntent(context);
     }
 
     @Override
@@ -1373,5 +1373,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
+    @Override
+    public boolean isEnabledGroupChat() {
+//        return  remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
+        return true;
     }
 }

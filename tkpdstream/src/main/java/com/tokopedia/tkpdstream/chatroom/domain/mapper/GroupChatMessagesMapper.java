@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
@@ -53,12 +51,12 @@ public class GroupChatMessagesMapper {
     private Visitable mapMessage(BaseMessage message) {
         if (message instanceof UserMessage) {
             return mapToUserMessage((UserMessage) message);
-        } else if (message instanceof AdminMessage) {
-            return mapToAnnouncement((AdminMessage) message);
-        } else if (message instanceof FileMessage
-                && ((FileMessage) message).getType().toLowerCase().contains(IMAGE)
-                && !TextUtils.isEmpty(((FileMessage) message).getUrl())) {
-            return mapToImageMessage((FileMessage) message);
+//        } else if (message instanceof AdminMessage) {
+//            return mapToAnnouncement((AdminMessage) message);
+//        } else if (message instanceof FileMessage
+//                && ((FileMessage) message).getType().toLowerCase().contains(IMAGE)
+//                && !TextUtils.isEmpty(((FileMessage) message).getUrl())) {
+//            return mapToImageMessage((FileMessage) message);
         } else {
             return null;
         }
@@ -142,22 +140,30 @@ public class GroupChatMessagesMapper {
     }
 
     private VoteAnnouncementViewModel mapToPollingViewModel(UserMessage message, String json) {
-        Gson gson = new Gson();
-        ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
+        try {
+            Gson gson = new Gson();
+            ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
 
-        return new VoteAnnouncementViewModel(
-                pojo.getDescription(),
-                message.getCustomType(),
-                message.getCreatedAt(),
-                message.getUpdatedAt(),
-                String.valueOf(message.getMessageId()),
-                message.getSender().getUserId(),
-                message.getSender().getNickname(),
-                message.getSender().getProfileUrl(),
-                false,
-                true,
-                mappingToVoteInfoViewModel(pojo)
-        );
+            return new VoteAnnouncementViewModel(
+                    pojo.getDescription(),
+                    message.getCustomType(),
+                    message.getCreatedAt(),
+                    message.getUpdatedAt(),
+                    String.valueOf(message.getMessageId()),
+                    message.getSender().getUserId(),
+                    message.getSender().getNickname(),
+                    message.getSender().getProfileUrl(),
+                    false,
+                    true,
+                    mappingToVoteInfoViewModel(pojo)
+            );
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -182,8 +188,8 @@ public class GroupChatMessagesMapper {
                     activePollPojo.getStatus(),
                     activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
-                    "INFO YG PERLU DI UPDATE",
-                    "Belon ada",
+                    VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
+                    "https://tokopedia.com",
                     activePollPojo.getStartTime(),
                     activePollPojo.getEndTime()
             );

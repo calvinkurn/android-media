@@ -76,12 +76,16 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesFirstTimeListener() {
                     @Override
                     public void onGetMessagesFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-                        getView().onSuccessGetMessageFirstTime(listChat, previousMessageListQuery);
+                        if (getView() != null) {
+                            getView().onSuccessGetMessageFirstTime(listChat, previousMessageListQuery);
+                        }
                     }
 
                     @Override
                     public void onErrorGetMessagesFirstTime(String errorMessage) {
-                        getView().onErrorGetMessageFirstTime(errorMessage);
+                        if (getView() != null) {
+                            getView().onErrorGetMessageFirstTime(errorMessage);
+                        }
                     }
                 });
     }
@@ -93,13 +97,17 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onSuccessSendMessage(ChatViewModel viewModel) {
-                        getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
+                        if (getView() != null) {
+                            getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
+                        }
                     }
 
                     @Override
                     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
                                                    String errorMessage) {
-                        getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
+                        if (getView() != null) {
+                            getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
+                        }
                     }
                 });
     }
@@ -125,14 +133,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     LoadPreviousChatMessagesUseCase.LoadPreviousChatMessagesListener() {
                         @Override
                         public void onGetPreviousMessages(List<Visitable> listChat) {
-                            getView().dismissLoadingPreviousList();
-                            getView().onSuccessGetPreviousMessage(listChat);
+                            if (getView() != null) {
+                                getView().dismissLoadingPreviousList();
+                                getView().onSuccessGetPreviousMessage(listChat);
+                            }
                         }
 
                         @Override
                         public void onErrorGetPreviousMessages(String errorMessage) {
-                            getView().dismissLoadingPreviousList();
-                            getView().onErrorGetMessage(errorMessage);
+                            if (getView() != null) {
+                                getView().dismissLoadingPreviousList();
+                                getView().onErrorGetMessage(errorMessage);
+                            }
                         }
                     });
         }
@@ -145,14 +157,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             refreshMessageUseCase.execute(getView().getContext(), mChannel, new RefreshMessageUseCase.RefreshMessagesListener() {
                 @Override
                 public void onSuccessRefreshMessage(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-                    getView().dismissReconnectingMessage();
-                    getView().onSuccessRefreshReconnect(listChat, previousMessageListQuery);
+                    if (getView() != null) {
+                        getView().dismissReconnectingMessage();
+                        getView().onSuccessRefreshReconnect(listChat, previousMessageListQuery);
+                    }
                 }
 
                 @Override
                 public void onErrorRefreshMessage(String errorMessage) {
-                    getView().dismissReconnectingMessage();
-                    getView().onErrorGetMessage(errorMessage);
+                    if (getView() != null) {
+                        getView().dismissReconnectingMessage();
+                        getView().onErrorGetMessage(errorMessage);
+                    }
                 }
             });
         }
@@ -176,14 +192,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
-                                getView().getContext(), e, false
-                        ));
+                        if (getView() != null) {
+                            getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
+                                    getView().getContext(), e, false
+                            ));
+                        }
                     }
 
                     @Override
                     public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-                        getView().onSuccessGetChannelInfo(channelInfoViewModel);
+                        if (getView() != null) {
+                            getView().onSuccessGetChannelInfo(channelInfoViewModel);
+                        }
                     }
                 });
     }
@@ -202,15 +222,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                 @Override
                 public void onError(Throwable e) {
-                    Log.d("NISNIS", "ERROR VOTE");
-                    getView().onErrorVote(GroupChatErrorHandler.getErrorMessage(getView()
-                            .getContext(), e, true));
+                    if (getView() != null) {
+                        getView().onErrorVote(GroupChatErrorHandler.getErrorMessage(getView()
+                                .getContext(), e, true));
+                    }
                 }
 
                 @Override
                 public void onNext(VoteStatisticViewModel voteStatisticViewModel) {
-                    getView().onSuccessVote(element, voteStatisticViewModel );
-                    getView().showSuccessVoted();
+                    if (getView() != null) {
+                        getView().onSuccessVote(element, voteStatisticViewModel);
+                        getView().showSuccessVoted();
+                    }
                 }
             });
         }
