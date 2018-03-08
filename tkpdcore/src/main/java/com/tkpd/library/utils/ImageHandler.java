@@ -91,7 +91,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         if (imageview.getContext() != null) {
             Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
             Glide.with(imageview.getContext())
-                    .load(drawable)
+                    .load("")
                     .placeholder(drawable)
                     .dontAnimate()
                     .error(drawable)
