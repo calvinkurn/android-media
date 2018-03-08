@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -18,5 +19,9 @@ public interface IMultipleAddressShipmentPresenter {
 
     List<MultipleAddressShipmentAdapterData> initiateAdapterData(
             CartShipmentAddressFormData dataFromWebService
+    );
+
+    CheckPromoCodeCartShipmentRequest generateCheckPromoRequest(
+            List<MultipleAddressShipmentAdapterData> shipmentData
     );
 }

@@ -151,8 +151,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.generateCheckoutRequest(addressDataList, data);
-                //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+                cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
             }
         };
 
@@ -169,6 +168,11 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         }
         startActivityForResult(ShipmentDetailActivity.createInstance(
                 getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
+    }
+
+    @Override
+    public void onAllShipmentChosen(List<MultipleAddressShipmentAdapterData> adapterDataList) {
+        presenter.generateCheckPromoRequest(adapterDataList);
     }
 
     @Override

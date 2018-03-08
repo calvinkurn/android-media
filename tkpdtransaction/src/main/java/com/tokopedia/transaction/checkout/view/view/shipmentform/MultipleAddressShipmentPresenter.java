@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -158,13 +159,56 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         return adapterDataList;
     }
 
+    @Override
+    public CheckPromoCodeCartShipmentRequest generateCheckPromoRequest(
+            List<MultipleAddressShipmentAdapterData> shipmentData
+    ) {
+        CheckPromoCodeCartShipmentRequest.Builder checkoutPromoRequest =
+                new CheckPromoCodeCartShipmentRequest.Builder();
+
+        for (int i = 0; i < shipmentData.size(); i++) {
+
+            List<CheckPromoCodeCartShipmentRequest.Data> orderDatas = new ArrayList<>();
+            CheckPromoCodeCartShipmentRequest.Data.Builder orderData =
+                    new CheckPromoCodeCartShipmentRequest.Data.Builder();
+            orderData.addressId(Integer.parseInt(shipmentData.get(i).getItemData().getAddressId()));
+
+            List<CheckPromoCodeCartShipmentRequest.ShopProduct> shopProducts = new ArrayList<>();
+            CheckPromoCodeCartShipmentRequest.ShopProduct.Builder shopProduct =
+                    new CheckPromoCodeCartShipmentRequest.ShopProduct.Builder();
+
+            List<CheckPromoCodeCartShipmentRequest.ProductData> productDatas = new ArrayList<>();
+            CheckPromoCodeCartShipmentRequest.ProductData.Builder productData=
+                    new CheckPromoCodeCartShipmentRequest.ProductData.Builder();
+            productData
+                    .productId(Integer.parseInt(shipmentData.get(i).getItemData().getProductId()))
+                    .productNotes(shipmentData.get(i).getItemData().getProductNotes())
+                    .productQuantity(
+                            Integer.parseInt(shipmentData.get(i).getItemData().getProductQty()
+                            )
+                    );
+            productDatas.add(productData.build());
+
+            shopProduct.productData(productDatas);
+            /*shopProduct.
+
+            orderData.shopProducts(productDatas);
+
+
+            checkoutPromoRequest.data() shipmentData.get(i)*/
+
+        }
+
+        return checkoutPromoRequest.build();
+    }
+
     private int switchValue(boolean isTrue) {
         if (isTrue) return 1;
         else return 0;
     }
 
     private String formatRupiah(long rupiahAmount) {
-        Locale locale = new Locale("in","ID");
+        Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(rupiahAmount);
     }

@@ -87,6 +87,9 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void setShipmentDetailData(int position, ShipmentDetailData shipmentDetailData) {
         this.addressDataList.get(position).setSelectedShipmentDetailData(shipmentDetailData);
         calculateTemporarySubTotalForFloatingIndicator(position, shipmentDetailData);
+        if(isAllShipmentChosen()) {
+            listener.onAllShipmentChosen(addressDataList);
+        }
     }
 
     private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
@@ -206,6 +209,22 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return formatPrice(calculateTotalPayment());
     }
 
+    private boolean isShipmentDataInitiated(MultipleAddressShipmentAdapterData data) {
+        return data.getSelectedShipmentDetailData() != null
+                &&
+                data.getSelectedShipmentDetailData().getShipmentCartData() != null;
+    }
+
+    private boolean isAllShipmentChosen() {
+        boolean allFilled = true;
+        for(int i = 0; i < addressDataList.size(); i++) {
+            if(!isShipmentDataInitiated(addressDataList.get(i))) {
+                allFilled = false;
+            }
+        }
+        return allFilled;
+    }
+
     public void showCouponView() {
         multipleAddressShipmentItemList.remove(0);
         multipleAddressShipmentItemList.add(0, cartItemPromoHolderData);
@@ -251,6 +270,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public interface MultipleAddressShipmentAdapterListener {
 
         void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position);
+
+        void onAllShipmentChosen(List<MultipleAddressShipmentAdapterData> adapterDataList);
 
         void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 
