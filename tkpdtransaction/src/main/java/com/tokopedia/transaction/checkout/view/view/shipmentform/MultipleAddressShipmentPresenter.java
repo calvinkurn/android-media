@@ -56,9 +56,13 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                         .dropshipData(setDropshipDataCheckoutRequest(currentShipmentDetailData));
 
             shopCheckoutBuilder
-                    .fcancelPartial(switchValue(currentShipmentDetailData.getUsePartialOrder()));
+                    .fcancelPartial(
+                            switchValue(currentShipmentAdapterData.isProductFcancelPartial())
+                    );
             shopCheckoutBuilder
-                    .finsurance(switchValue(currentShipmentDetailData.getUseInsurance()));
+                    .finsurance(switchValue(currentShipmentAdapterData.isProductFinsurance()));
+            shopCheckoutBuilder
+                    .isPreorder(switchValue(currentShipmentAdapterData.isProductIsPreorder()));
             shopCheckoutBuilder
                     .isDropship(switchValue(currentShipmentDetailData.getUseDropshipper()));
             shopCheckoutBuilder.shopId(currentShipmentAdapterData.getStore().getId());
@@ -100,6 +104,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
+                    adapterData.setInvoicePosition(adapterDataList.size());
                     adapterData.setProductId(currentProduct.getProductId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
@@ -136,6 +141,12 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     adapterData.setShipmentCartData(new ShipmentRatesDataMapper()
                             .getShipmentCartData(data, currentAddress.getUserAddress(),
                                     currentGroupShop, adapterData));
+
+                    adapterData.setProductIsFreeReturns(currentProduct.isProductIsFreeReturns());
+                    adapterData.setProductIsPreorder(currentProduct.isProductIsPreorder());
+                    adapterData.setProductFcancelPartial(currentProduct.isProductFcancelPartial());
+                    adapterData.setProductFinsurance(currentProduct.isProductFinsurance());
+
                     adapterDataList.add(adapterData);
                 }
             }
