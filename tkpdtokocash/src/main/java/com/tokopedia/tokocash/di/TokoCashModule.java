@@ -92,11 +92,11 @@ public class TokoCashModule {
 
     @Provides
     @OkHttpWalletQualifier
-    OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, AbstractionRouter abstractionRouter, Gson gson,
+    OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, Gson gson,
                                            WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession) {
         return new OkHttpClient.Builder()
                 .addInterceptor(walletAuthInterceptor)
-                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, abstractionRouter, gson,
+                .addInterceptor(new WalletErrorResponseInterceptor(WalletErrorResponse.class, gson,
                         walletTokenRefresh, walletUserSession))
                 .build();
     }

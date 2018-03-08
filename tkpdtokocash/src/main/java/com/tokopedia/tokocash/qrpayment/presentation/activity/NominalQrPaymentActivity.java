@@ -39,8 +39,6 @@ import javax.inject.Inject;
 public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPaymentContract.View,
         HasComponent<TokoCashComponent> {
 
-    private static final int REQUEST_CODE_SUCCESS = 121;
-    private static final int REQUEST_CODE_FAILED = 111;
     private static final int MAX_DIGIT_NOMINAL = 10;
     private static final String INFO_QR = "info_qr";
     private static final String IDENTIFIER = "identifier";
