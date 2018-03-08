@@ -49,9 +49,6 @@ import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAd
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
-    public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
-    private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
-
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
     @BindView(R2.id.ll_send_to_multiple_address)
@@ -108,6 +105,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -226,6 +224,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
         String backStateName = fragment.getClass().getName();
         boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+        
         if (!isFragmentPopped) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
