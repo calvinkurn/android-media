@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -99,7 +98,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 new CartItemPromoHolderData(),
                 presenter.initiateAdapterData(
                         (CartShipmentAddressFormData) getArguments()
-                        .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
+                                .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
                 ),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
@@ -141,7 +140,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
             @Override
             public void onClick(View view) {
                 presenter.generateCheckoutRequest(addressDataList, data);
-                //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+                cartShipmentActivity.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
             }
         };
 
