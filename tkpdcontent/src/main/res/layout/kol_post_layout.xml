@@ -57,10 +57,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/black_tooltip"
                     android:fontFamily="sans-serif-medium"
-                    android:lineSpacingExtra="6sp"
-                    android:padding="@dimen/padding_vs"
+                    android:paddingLeft="@dimen/new_margin_med" android:paddingStart="@dimen/new_margin_med"
+                    android:paddingRight="@dimen/new_margin_sm" android:paddingEnd="@dimen/new_margin_sm"
+                    android:paddingBottom="@dimen/padding_ms"
+                    android:paddingTop="@dimen/padding_ms"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/font_micro"
+                    android:textSize="@dimen/font_small"
                     android:textStyle="normal"
                     tools:text="Rp 249000 - Lihat Produk" />
             </RelativeLayout>
