@@ -46,7 +46,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_marginTop="6dp"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <TextView
                 android:id="@+id/arrival_time"
@@ -70,7 +70,7 @@
                 android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <View
                 android:layout_width="1dp"

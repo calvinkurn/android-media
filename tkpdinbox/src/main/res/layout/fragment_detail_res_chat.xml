@@ -32,7 +32,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_keyboard_attachment" />
+                app:srcCompat="@drawable/ic_keyboard_attachment" />
 
             <EditText
                 android:id="@+id/et_chat"
@@ -53,9 +53,34 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_keyboard_send" />
+                app:srcCompat="@drawable/ic_keyboard_send" />
         </LinearLayout>
     </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_attach_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_above="@id/ff_chat">
+
+        <include
+            android:id="@+id/layout_action"
+            layout="@layout/layout_button_action"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_action"
+            android:background="@color/trans_black_40"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            context:visibility="visible" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/main_view"
@@ -74,34 +99,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:paddingBottom="@dimen/margin_small"
             context:listitem="@layout/item_detail_common_left"/>
 
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_attach_action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/ff_chat">
-
-        <include
-            android:id="@+id/layout_action"
-            layout="@layout/layout_button_action"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:visibility="visible" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_attachment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_action"
-            android:layout_alignWithParentIfMissing="true"
-            android:background="@color/trans_black_40"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            context:visibility="visible" />
-    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -119,7 +120,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_med"
-        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+        app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
         android:tint="@color/white"
         android:background="@color/tkpd_main_green"
         app:backgroundTint="@color/tkpd_main_green"

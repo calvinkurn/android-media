@@ -84,8 +84,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void shareApp() {
         formatSharingContents();
+        String type= ShareData.APP_SHARE_TYPE;
+        if(isAppShowReferralButtonActivated()){
+            type= ShareData.REFERRAL_TYPE;
+        }
         ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.APP_SHARE_TYPE)
+                .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
@@ -103,7 +107,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        contents = contents + " Cek - ";
+        if(!contents.contains(activity.getString(R.string.cek_label))){
+            contents = contents + activity.getString(R.string.cek_label);
+        }
+
     }
 
     @Override
@@ -120,6 +127,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()){
+                    return;
+                }
                 getView().hideProcessDialog();
                 e.printStackTrace();
                 if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
@@ -140,6 +150,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
+                if(!isViewAttached()){
+                    return;
+                }
                 if (referralCodeEntity.getErorMessage() == null) {
                     LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.REFERRAL);
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
@@ -223,11 +236,14 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashModel tokoCashModel) {
+                if(!isViewAttached()){
+                    return;
+                }
                 if (tokoCashModel != null
                         && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null
-                        && tokoCashModel.getTokoCashData().getAction() != null) {
-                    if (tokoCashModel.getTokoCashData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                        && tokoCashModel.getData() != null
+                        && tokoCashModel.getData().getAction() != null) {
+                    if (tokoCashModel.getData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
                         getReferralVoucherCode();
                     } else {
 
@@ -235,8 +251,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                                 getView().getActivity().getApplication(),
                                 getView().getActivity(),
                                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashModel.getTokoCashData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getTokoCashData().getAction().getmAppLinks(),
-                                tokoCashModel.getTokoCashData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getTokoCashData().getAction().getRedirectUrl(),
+                                tokoCashModel.getData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getData().getAction().getmAppLinks(),
+                                tokoCashModel.getData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getData().getAction().getRedirectUrl(),
                                 new Bundle()
                         );
                     }

@@ -170,6 +170,8 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String ADD_TO_CART_PDP = "addToCart";
+        String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
     }
 
     interface Category {
@@ -292,6 +294,7 @@ public interface AppEventTracking {
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
+        String APPSHARE = "App share";
     }
 
     interface Action {
@@ -491,8 +494,8 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "home";
-        String FAVORITE = "wishlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
 
@@ -837,10 +840,11 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
-        String REFERRAL = "Share";
+        String LONG_PRESS_SHORTCUT_REFERRAL = "Share";
         String PRODUCT_SEARCH = "Product Search";
         String TAKE_TO_SHOP = "Take to Shop";
         String DIGITAL = "Digital";
+        String REFERRAL ="Referral";
     }
 
     interface SOCIAL_MEDIA {
@@ -1052,5 +1056,22 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+        String SHOP_TYPE = "shopType";
+    }
+
+    interface ShopType {
+        String REGULAR = "regular";
+        String OFFICIAL_STORE = "official_store";
+        String GOLD_MERCHANT = "gold_merchant";
+    }
+
+    interface EventBranch {
+        String EVENT_LOGIN="login";
+        String EVENT_REGISTER="sign_up";
+    }
+
+    interface Branch {
+        String EMAIL="email";
+        String PHONE="phone";
     }
 }

@@ -53,4 +53,7 @@ public interface AccountsApi {
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.FCM.UPDATE_FCM)
+    Call<String> gcmUpdate(@FieldMap TKPDMapParam<String, Object> param);
 }

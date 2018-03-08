@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
@@ -12,6 +13,7 @@ import com.tokopedia.otp.phoneverification.data.model.ValidateVerifyPhoneNumberD
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -20,17 +22,20 @@ import rx.functions.Func1;
 
 public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhoneNumberDomain> {
 
-    ValidateOtpUseCase validateOtpUseCase;
-    VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
+    private ValidateOtpUseCase validateOtpUseCase;
+    private VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
+    private SessionHandler sessionHandler;
 
     @Inject
     public ValidateVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                             PostExecutionThread postExecutionThread,
                                             ValidateOtpUseCase validateOtpUseCase,
-                                            VerifyPhoneNumberUseCase verifyPhoneNumberUseCase) {
+                                            VerifyPhoneNumberUseCase verifyPhoneNumberUseCase,
+                                            SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
         this.validateOtpUseCase = validateOtpUseCase;
         this.verifyPhoneNumberUseCase = verifyPhoneNumberUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -51,15 +56,29 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
                         .flatMap(new Func1<VerifyPhoneNumberDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
                             @Override
                             public Observable<ValidateVerifyPhoneNumberDomain> call(VerifyPhoneNumberDomain verifyPhoneNumberDomain) {
-                                domain.setVerifyPhoneDomain(verifyPhoneNumberDomain);
                                 verifyPhoneNumberDomain.setPhoneNumber(requestParams.getString
                                         (VerifyPhoneNumberUseCase.PARAM_PHONE, ""));
+                                domain.setVerifyPhoneDomain(verifyPhoneNumberDomain);
                                 return Observable.just(domain);
                             }
-                        });
+                        })
+                        .doOnNext(saveToSession());
             }
         };
     }
+
+    private Action1<ValidateVerifyPhoneNumberDomain> saveToSession() {
+        return new Action1<ValidateVerifyPhoneNumberDomain>() {
+            @Override
+            public void call(ValidateVerifyPhoneNumberDomain validateVerifyPhoneNumberDomain) {
+                if (validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess()) {
+                    sessionHandler.setIsMSISDNVerified(true);
+                    sessionHandler.setPhoneNumber(validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().getPhoneNumber());
+                }
+            }
+        };
+    }
+
 
     private Observable<ValidateVerifyPhoneNumberDomain> validateOtp(RequestParams requestParams,
                                                                     final ValidateVerifyPhoneNumberDomain domain) {

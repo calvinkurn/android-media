@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:ignore="DisableBaselineAlignment" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="DisableBaselineAlignment">
 
     <LinearLayout
         android:id="@+id/main_view"
@@ -78,7 +79,7 @@
                     android:layout_width="@dimen/img_thumb"
                     android:layout_height="@dimen/img_thumb"
                     android:layout_margin="@dimen/margin_small"
-                    android:src="@drawable/remove"
+                    app:srcCompat="@drawable/remove"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -115,7 +116,7 @@
                         android:layout_width="@dimen/icon_prod_pad"
                         android:layout_height="@dimen/icon_prod_pad"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/ic_chevron_down"
+                        app:srcCompat="@drawable/ic_chevron_down"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 

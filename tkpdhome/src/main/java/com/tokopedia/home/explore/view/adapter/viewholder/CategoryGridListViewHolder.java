@@ -83,23 +83,31 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             final LayoutRows rowModel = data.get(position);
-            holder.title.setText(rowModel.getName());
-            ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.trackingItemGridClick(rowModel);
-                    if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
-                        listener.onMarketPlaceItemClicked(rowModel);
-                    } else if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(DIGITAL)) {
-                        listener.onDigitalItemClicked(rowModel);
-                    } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
-                        listener.onApplinkClicked(rowModel);
-                    } else {
-                        listener.onGimickItemClicked(rowModel);
-                    }
+            if (rowModel != null) {
+                if (rowModel.getName() != null) {
+                    holder.title.setText(rowModel.getName());
                 }
-            });
+                if (rowModel.getImageUrl() != null) {
+                    ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
+                }
+                if (rowModel.getType() != null) {
+                    holder.container.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.trackingItemGridClick(rowModel);
+                            if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
+                                listener.onMarketPlaceItemClicked(rowModel);
+                            } else if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(DIGITAL)) {
+                                listener.onDigitalItemClicked(rowModel);
+                            } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
+                                listener.onApplinkClicked(rowModel);
+                            } else {
+                                listener.onGimickItemClicked(rowModel);
+                            }
+                        }
+                    });
+                }
+            }
         }
 
         @Override

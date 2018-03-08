@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -165,7 +166,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter {
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -283,7 +284,7 @@ public abstract class SellerRouterApplication extends MainApplication
         context.startActivity(intent);
     }
 
-    public Intent getMitraToppersActivityIntent(Context context){
+    public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
@@ -647,7 +648,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
@@ -728,7 +729,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -795,7 +796,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
     }
 
-    public GetShopInfoUseCase getShopInfo(){
+    public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
     }
 
@@ -944,6 +945,19 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
 
+    /**
+     * Temporary Solution to send custom dimension for shop
+     * should not pass the param, after tkpd common com in
+     */
+    @Override
+    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
+                                              String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
+        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label)
+                .setUserId()
+                .setShopId(shopId)
+                .setShopType(isGoldMerchant, isOfficialStore).getEvent());
+    }
+
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
@@ -974,8 +988,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showMaintenancePage();
+    public void showForceLogoutDialog(Response response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
     @Override
@@ -985,24 +1000,16 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshLogin() {
+    public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
+        sessionRefresh.gcmUpdate();
     }
 
     @Override
-    public void refreshToken() {
+    public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            accessTokenRefresh.refreshToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        accessTokenRefresh.refreshToken();
     }
 
     @Override
@@ -1049,5 +1056,13 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
+    @Override
+    public void showForceHockeyAppDialog() {
+        ServerErrorHandler.showForceHockeyAppDialog();
+    }
 
+    @Override
+    public void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
 }

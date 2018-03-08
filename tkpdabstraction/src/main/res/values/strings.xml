@@ -19,7 +19,8 @@
     <string name="msg_no_connection">Tidak ada koneksi internet</string>
     <string name="default_request_error_timeout">Koneksi timeout. Silakan coba beberapa saat lagi</string>
     <string name="default_request_error_internal_server">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
-    <string name="default_request_error_forbidden_auth">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_forbidden_auth">Halaman tidak dapat diakses. Mohon
+        untuk menunggu beberapa saat lagi.</string>
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="default_request_error_bad_request">Silakan coba kembali</string>
     <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>

@@ -189,4 +189,17 @@
         <attr name="shadowBottom" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="Tabs">
+        <attr name="tabType" format="enum">
+            <enum name="main" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewCompat">
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
 </resources>

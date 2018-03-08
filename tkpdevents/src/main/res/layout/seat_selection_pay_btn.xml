@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_padding_medium"
+        android:background="@color/grey_400"
+        android:gravity="center"
+        android:text="@string/screen_this_way" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_padding_medium"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_default"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/seats_available_iv"
+            android:layout_width="@dimen/margin_padding_medium"
+            android:layout_height="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/margin_padding_medium"
+            app:srcCompat="@drawable/can_seat_select_bg" />
+
+        <TextView
+            android:id="@+id/tv_seats_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_padding_medium"
+            android:layout_marginLeft="@dimen/margin_padding_medium"
+            android:layout_toRightOf="@+id/seats_available_iv"
+            android:text="@string/tersedia"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/seats_not_available_iv"
+            android:layout_width="@dimen/margin_padding_medium"
+            android:layout_height="@dimen/margin_padding_medium"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_toRightOf="@+id/tv_seats_available"
+            app:srcCompat="@drawable/cannot_select_seat_bg" />
+
+        <TextView
+            android:id="@+id/tv_seats__not_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_padding_medium"
+            android:layout_marginRight="@dimen/margin_padding_medium"
+            android:layout_toRightOf="@+id/seats_not_available_iv"
+            android:text="@string/terjual"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/seats_booking"
+            android:layout_width="@dimen/margin_padding_medium"
+            android:layout_height="@dimen/margin_padding_medium"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_toRightOf="@+id/tv_seats__not_available"
+            app:srcCompat="@drawable/currently_selected_seat_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_padding_medium"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_toRightOf="@+id/seats_booking"
+            android:text="@string/terpilih"
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height_thin"
+        android:background="?android:attr/listDivider" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_padding_medium">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_padding_medium"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tiket"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/ticket_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/green_200" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_default"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/ticket_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/deep_orange_500" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/verifySeat"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progbar_height"
+        android:layout_margin="@dimen/margin_default"
+        app:cardBackgroundColor="@color/green_400"
+        app:cardCornerRadius="@dimen/card_corner_default"
+        app:cardElevation="@dimen/card_corner_default">
+
+        <TextView
+            android:id="@+id/button_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="@dimen/margin_padding_medium"
+            android:text="@string/lanjutkan"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/textsize_big"
+            android:textStyle="bold" />
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

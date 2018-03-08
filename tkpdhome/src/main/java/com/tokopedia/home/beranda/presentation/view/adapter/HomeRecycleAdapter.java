@@ -91,4 +91,8 @@ public class HomeRecycleAdapter extends BaseAdapter {
         this.visitables.remove(retryModel);
         notifyItemRemoved(index);
     }
+
+    public boolean isRetryShown() {
+        return visitables.contains(retryModel);
+    }
 }
