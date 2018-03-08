@@ -15,8 +15,8 @@ import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditVariantDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditVariantDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +75,9 @@ public abstract class BaseImageFragment extends Fragment {
 
     protected void showAddImageDialog(){
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageAddDialogFragment dialogFragment = ImageAddDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ImageAddDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
+        ProductAddImageDialogFragment dialogFragment = ProductAddImageDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ProductAddImageDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageAddListener(new ProductAddImageDialogFragment.OnImageAddListener() {
             @Override
             public void clickAddProductFromCamera(int position) {
                 BaseImageFragmentPermissionsDispatcher.goToCameraWithCheck(BaseImageFragment.this);
@@ -103,9 +103,9 @@ public abstract class BaseImageFragment extends Fragment {
             return;
         }
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditVariantDialogFragment.newInstance();
-        dialogFragment.show(fm, ImageEditVariantDialogFragment.FRAGMENT_TAG);
-        ((ImageEditVariantDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditVariantDialogFragment.OnImageEditListener() {
+        DialogFragment dialogFragment = ProductAddImageEditVariantDialogFragment.newInstance();
+        dialogFragment.show(fm, ProductAddImageEditVariantDialogFragment.FRAGMENT_TAG);
+        ((ProductAddImageEditVariantDialogFragment) dialogFragment).setOnImageEditListener(new ProductAddImageEditVariantDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditImagePathFromCamera() {
