@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
@@ -15,6 +14,9 @@ import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipme
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -238,9 +240,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
         if (isShipmentDataInitiated(data))
             return data.getProductPriceNumber()
-                    + getGeneratedShipmentCartData(data).getDeliveryPriceTotal()
-                    + getGeneratedShipmentCartData(data).getInsurance()
-                    + getGeneratedShipmentCartData(data).getAdditionalFee();
+                    + getGeneratedShipmentCartData(data).getDeliveryPriceTotal();
         else return 0;
     }
 
@@ -255,9 +255,8 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String formatPrice(long unformattedPrice) {
-        String formattedPrice = CurrencyFormatHelper
-                .ConvertToRupiah(String.valueOf(unformattedPrice));
-        formattedPrice = formattedPrice.replace(",", ".");
-        return formattedPrice;
+        Locale locale = new Locale("in","ID");
+        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+        return rupiahCurrencyFormat.format(unformattedPrice);
     }
 }
