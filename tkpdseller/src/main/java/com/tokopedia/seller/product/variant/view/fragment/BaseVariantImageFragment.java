@@ -33,7 +33,6 @@ import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQ
  * Created by hendry on 4/3/17.
  */
 
-@RuntimePermissions
 public abstract class BaseVariantImageFragment extends BaseImageFragment {
 
     public abstract ProductVariantOptionChild getProductVariantOptionChild();

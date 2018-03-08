@@ -309,7 +309,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
     @Override
     public void refreshImageView() {
-        if (productSizeChart == null) {
+        if (productSizeChart == null || TextUtils.isEmpty(productSizeChart.getUriOrPath())) {
             ivSizeChart.setImageResource(R.drawable.ic_add_product);
         } else {
             ImageHandler.LoadImage(ivSizeChart,productSizeChart.getUriOrPath());
