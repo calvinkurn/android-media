@@ -701,9 +701,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void resetSwitch() {
-        presenter.getShipmentDetailData().setUseDropshipper(null);
-        presenter.getShipmentDetailData().setUseInsurance(null);
-        presenter.getShipmentDetailData().setUsePartialOrder(null);
+        presenter.getShipmentDetailData().setUseDropshipper(false);
+        presenter.getShipmentDetailData().setUseInsurance(false);
+        presenter.getShipmentDetailData().setUsePartialOrder(false);
         presenter.getShipmentDetailData().setDropshipperName(null);
         presenter.getShipmentDetailData().setDropshipperPhone(null);
     }
