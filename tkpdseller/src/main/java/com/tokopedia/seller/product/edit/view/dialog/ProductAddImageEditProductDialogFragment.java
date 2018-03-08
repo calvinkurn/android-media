@@ -2,8 +2,6 @@ package com.tokopedia.seller.product.edit.view.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,15 +9,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.instoped.InstopedSellerActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 
 /**
  * Created by Toped18 on 5/30/2016.
  */
-public class ImageEditProductDialogFragment extends DialogFragment {
+public class ProductAddImageEditProductDialogFragment extends DialogFragment {
 
-    public static final String FRAGMENT_TAG = ImageEditProductDialogFragment.class.getSimpleName();
+    public static final String FRAGMENT_TAG = ProductAddImageEditProductDialogFragment.class.getSimpleName();
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
     public static final String IMAGE_IS_PRIMARY = "IMAGE_IS_PRIMARY";
@@ -45,7 +41,7 @@ public class ImageEditProductDialogFragment extends DialogFragment {
     public boolean isPrimary;
 
     public static DialogFragment newInstance(int position, boolean isPrimary) {
-        ImageEditProductDialogFragment f = new ImageEditProductDialogFragment();
+        ProductAddImageEditProductDialogFragment f = new ProductAddImageEditProductDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
         args.putBoolean(IMAGE_IS_PRIMARY, isPrimary);

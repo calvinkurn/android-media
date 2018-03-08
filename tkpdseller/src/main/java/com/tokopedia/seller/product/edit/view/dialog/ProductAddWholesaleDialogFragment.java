@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,7 @@ import java.util.Locale;
  *         <p>
  *         { 1 < minimum quantity <= maximum quantity <= INFINITY }
  */
-public class AddWholeSaleDialog extends DialogFragment {
+public class ProductAddWholesaleDialogFragment extends DialogFragment {
 
     public static final String TAG = "AddWholeSaleDialog";
     public static final String KEY_WHOLE_SALE_PREVIOUS_VALUE = "KEY_WHOLE_SALE_PREVIOUS_VALUE";
@@ -54,8 +53,8 @@ public class AddWholeSaleDialog extends DialogFragment {
     private NumberFormat formatter;
     private boolean isOfficialStore;
 
-    public static AddWholeSaleDialog newInstance(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean isOfficialStore) {
-        AddWholeSaleDialog addWholeSaleDialog = new AddWholeSaleDialog();
+    public static ProductAddWholesaleDialogFragment newInstance(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean isOfficialStore) {
+        ProductAddWholesaleDialogFragment addWholeSaleDialog = new ProductAddWholesaleDialogFragment();
         Bundle bundle = new Bundle();
         if (previousWholesalePrice != null) {
             bundle.putParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE, previousWholesalePrice);
@@ -161,11 +160,12 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected boolean isMinQuantityValid(double minQuantity) {
-        if (minQuantity - 1 == previousValue.getQtyMin()) {
+        if (minQuantity <= previousValue.getQtyMin()) {
+            minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
             minQuantityCounterInputView.updateMinusButtonState(false);
             return false;
-        } else if (minQuantity <= previousValue.getQtyMin()) {
-            minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
+        } else if (minQuantity - 1 == previousValue.getQtyMin()) {
+            minQuantityCounterInputView.setError(null);
             minQuantityCounterInputView.updateMinusButtonState(false);
             return true;
         }

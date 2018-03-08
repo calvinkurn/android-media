@@ -16,12 +16,12 @@ import com.tokopedia.seller.R;
 /**
  * Created by m.normansyah on 18/01/2016.
  */
-public class ImageDescriptionDialog extends DialogFragment {
+public class ProductAddImageDescriptionDialog extends DialogFragment {
     EditText editTextProdDesc;
     View viewCancel;
     View viewOK;
 
-    public static final String TAG = ImageDescriptionDialog.class.getSimpleName();
+    public static final String TAG = ProductAddImageDescriptionDialog.class.getSimpleName();
     private static final String DESC = "desc";
     private String descriptionString;
 
@@ -35,8 +35,8 @@ public class ImageDescriptionDialog extends DialogFragment {
         this.mListener = listener;
     }
 
-    public static ImageDescriptionDialog newInstance(String description){
-        ImageDescriptionDialog imageDescriptionDialog = new ImageDescriptionDialog();
+    public static ProductAddImageDescriptionDialog newInstance(String description){
+        ProductAddImageDescriptionDialog imageDescriptionDialog = new ProductAddImageDescriptionDialog();
         Bundle bundle = new Bundle();
         bundle.putString(DESC, description);
         imageDescriptionDialog.setArguments(bundle);
@@ -76,14 +76,14 @@ public class ImageDescriptionDialog extends DialogFragment {
         viewCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageDescriptionDialog.this.dismiss();
+                ProductAddImageDescriptionDialog.this.dismiss();
             }
         });
         viewOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onImageDescDialogOK(editTextProdDesc.getText().toString());
-                ImageDescriptionDialog.this.dismiss();
+                ProductAddImageDescriptionDialog.this.dismiss();
             }
         });
     }

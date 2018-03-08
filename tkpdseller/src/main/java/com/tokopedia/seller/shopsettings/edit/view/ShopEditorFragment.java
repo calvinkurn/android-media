@@ -26,13 +26,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
@@ -74,9 +72,9 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
 
     public void uploadImage(View view) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+        ProductAddImageEditDialogFragment dialogFragment = ProductAddImageEditDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ProductAddImageEditDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageEditListener(new ProductAddImageEditDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditProductFromCamera(int position) {
