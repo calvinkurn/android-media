@@ -705,9 +705,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             voteAdapter.change(viewModel, element, voteStatisticViewModel);
             viewModel.getChannelInfoViewModel().getVoteInfoViewModel().setVoted(true);
             viewModel.getChannelInfoViewModel().getVoteInfoViewModel().setParticipant(
-                    String.valueOf(Integer.parseInt(viewModel.getChannelInfoViewModel()
-                            .getVoteInfoViewModel()
-                            .getParticipant()) + 1));
+                    String.valueOf(Integer.parseInt(voteStatisticViewModel.getTotalParticipants())));
             setVoted();
 
             setVoteParticipant(viewModel.getChannelInfoViewModel()

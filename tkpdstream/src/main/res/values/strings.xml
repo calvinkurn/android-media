@@ -48,7 +48,7 @@
     <string name="default_kicked_title">Akun Anda Terblokir</string>
     <string name="channel_not_found_message">Channel tidak ditemukan. Silahkan coba beberapa saat lagi.</string>
     <string name="info_prize">Info hadiah</string>
-    <string name="info_polling">Info Polling</string>
+    <string name="info_polling">Info Vote</string>
     <string name="default_banned_title">Akun Anda Terblokir</string>
     <string name="channel_has_been_deleted">Channel telah dihapus. Silahkan join channel lain.</string>
     <string name="channel_deactivated">Channel sudah tidak aktif. Silahkan join channel lain.</string>

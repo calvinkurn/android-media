@@ -126,8 +126,9 @@ public class VoteInfoViewModel {
 
     public static int getStringVoteInfo(int pollTypeId) {
         switch (pollTypeId) {
-            case VoteInfoViewModel.VOTE_TYPE_GIFT:
-                return R.string.info_prize;
+            //TODO : Implement this in next sprint.
+//            case VoteInfoViewModel.VOTE_TYPE_GIFT:
+//                return R.string.info_prize;
             default:
                 return R.string.info_polling;
         }
