@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -45,6 +45,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_MANAGE_ACCOUNT;
+import static com.tokopedia.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
+
 /**
  * @author by milhamj on 08/02/18.
  */
@@ -57,9 +61,9 @@ public class TopProfileActivity extends BaseEmptyActivity
     private static final String TITLE_POST = "Post";
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
-
+    @Inject
+    TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
     private Tabs tabLayout;
     private ViewPager viewPager;
@@ -85,13 +89,8 @@ public class TopProfileActivity extends BaseEmptyActivity
     private TextView buttonTryAgain;
     private TextView buttonFollowToolbar;
     private TextView tvTitleToolbar;
-
     private String userId;
     private TopProfileViewModel topProfileViewModel;
-    private TopProfileFragmentListener.View fragmentListener;
-
-    @Inject
-    TopProfileActivityListener.Presenter presenter;
 
     @DeepLink(SessionApplinkUrl.PROFILE)
     public static Intent getCallingTopProfile(Context context, Bundle bundle) {
@@ -151,7 +150,6 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private void initView() {
         appBarLayout = findViewById(R.id.app_bar_layout);
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
@@ -210,6 +208,12 @@ public class TopProfileActivity extends BaseEmptyActivity
             public void onClick(View v) {
                 Intent intent = new Intent(TopProfileActivity.this, ManagePeople.class);
                 startActivityForResult(intent, MANAGE_PEOPLE_CODE);
+
+                ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                TOP_PROFILE,
+                                CLICK_ON_MANAGE_ACCOUNT,
+                                "");
             }
         });
 
@@ -353,7 +357,7 @@ public class TopProfileActivity extends BaseEmptyActivity
             profileFragment = TopProfileFragment.newInstance();
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE,
                     profileFragment));
-            fragmentListener = profileFragment;
+            TopProfileFragmentListener.View fragmentListener = profileFragment;
             fragmentListener.renderData(topProfileViewModel);
         }
 
@@ -400,7 +404,8 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         });
 
-        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ? View.VISIBLE : View.GONE);
+        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
+                View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,

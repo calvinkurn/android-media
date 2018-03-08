@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
@@ -25,6 +26,11 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
+
+import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_FAVORITE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_UNFAVORITE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
 
 /**
  * @author by alvinatin on 27/02/18.
@@ -50,6 +56,22 @@ public class PartialUserShopView extends BaseCustomView {
 
     private boolean isShopFavorite = false;
 
+    public PartialUserShopView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public PartialUserShopView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public PartialUserShopView(@NonNull Context context) {
+        super(context);
+        init();
+    }
+
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
@@ -70,22 +92,6 @@ public class PartialUserShopView extends BaseCustomView {
         super.dispatchSaveInstanceState(container);
     }
 
-    public PartialUserShopView(@NonNull Context context, @Nullable AttributeSet attrs, int
-            defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    public PartialUserShopView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public PartialUserShopView(@NonNull Context context) {
-        super(context);
-        init();
-    }
-
     private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_shop_info, this);
         ivShopProfile = view.findViewById(R.id.iv_shop_profile);
@@ -98,8 +104,10 @@ public class PartialUserShopView extends BaseCustomView {
         favouriteButton = view.findViewById(R.id.ll_fav_shop);
         llRating = view.findViewById(R.id.ll_rating);
         ivReputationMedal = view.findViewById(R.id.iv_medal);
-        drawableCheckLow = AppCompatResources.getDrawable(getContext(), R.drawable.ic_check_green_12dp);
-        drawableCheckHigh = AppCompatResources.getDrawable(getContext(), R.drawable.ic_check_green_24dp);
+        drawableCheckLow = AppCompatResources.getDrawable(getContext(), R.drawable
+                .ic_check_green_12dp);
+        drawableCheckHigh = AppCompatResources.getDrawable(getContext(), R.drawable
+                .ic_check_green_24dp);
         drawableAddLow = AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_12dp);
         drawableAddHigh = AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_24dp);
     }
@@ -122,7 +130,7 @@ public class PartialUserShopView extends BaseCustomView {
                 isShopFavorite = model.isFavorite();
                 updateFavoriteStatus(isShopFavorite);
                 favouriteButton.setOnClickListener(new ClickFavouriteShop(model));
-            }else{
+            } else {
                 favouriteButton.setVisibility(GONE);
             }
             tvShopName.setOnClickListener(new ClickShopInfo(model));
@@ -142,62 +150,8 @@ public class PartialUserShopView extends BaseCustomView {
         }
     }
 
-    private class ClickFavouriteShop implements OnClickListener {
-
-        private final TopProfileViewModel data;
-
-        ClickFavouriteShop(TopProfileViewModel model) {
-            data = model;
-        }
-
-        @Override
-        public void onClick(View v) {
-            new RetrofitInteractorImpl().favoriteShop(
-                    getContext(),
-                    NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
-                    new RetrofitInteractor.FaveListener() {
-                        @Override
-                        public void onSuccess(boolean status) {
-                            reverseFavorite();
-                        }
-
-                        @Override
-                        public void onError(String error) {
-
-                        }
-                    });
-        }
-    }
-
-    private class ClickShopInfo implements  OnClickListener{
-
-        private final TopProfileViewModel data;
-
-        ClickShopInfo(TopProfileViewModel model){
-            data = model;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-            intent.putExtras(
-                    ShopInfoActivity.
-                            createBundle(String.valueOf(data.getShopId()),
-                                    "",
-                                    data.getShopName(),
-                                    data.getShopLogo(),
-                                    data.isFavorite() ? 1 : 0));
-            getContext().startActivity(intent);
-        }
-    }
-
-
     public void reverseFavorite() {
-        if (isShopFavorite) {
-            updateFavoriteStatus(false);
-        } else {
-            updateFavoriteStatus(true);
-        }
+        updateFavoriteStatus(!isShopFavorite);
     }
 
     public void updateFavoriteStatus(boolean isShopFavorite) {
@@ -212,7 +166,7 @@ public class PartialUserShopView extends BaseCustomView {
             this.isShopFavorite = true;
             if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
-                       drawableCheckLow , null, null, null);
+                        drawableCheckLow, null, null, null);
 
             } else {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
@@ -232,6 +186,71 @@ public class PartialUserShopView extends BaseCustomView {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
                         drawableAddHigh, null, null, null);
             }
+        }
+    }
+
+    private class ClickFavouriteShop implements OnClickListener {
+
+        private final TopProfileViewModel data;
+
+        ClickFavouriteShop(TopProfileViewModel model) {
+            data = model;
+        }
+
+        @Override
+        public void onClick(View v) {
+            new RetrofitInteractorImpl().favoriteShop(
+                    getContext(),
+                    NetworkParam.paramFaveShop(String.valueOf(data.getShopId())),
+                    new RetrofitInteractor.FaveListener() {
+                        @Override
+                        public void onSuccess(boolean status) {
+                            if (!isShopFavorite) {
+                                ((AbstractionRouter) getContext().getApplicationContext())
+                                        .getAnalyticTracker()
+                                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                TOP_PROFILE,
+                                                CLICK_ON_FAVORITE,
+                                                "");
+                            } else {
+                                ((AbstractionRouter) getContext().getApplicationContext())
+                                        .getAnalyticTracker()
+                                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                TOP_PROFILE,
+                                                CLICK_ON_UNFAVORITE,
+                                                "");
+                            }
+
+                            reverseFavorite();
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
+                        }
+                    });
+        }
+    }
+
+    private class ClickShopInfo implements OnClickListener {
+
+        private final TopProfileViewModel data;
+
+        ClickShopInfo(TopProfileViewModel model) {
+            data = model;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getContext(), ShopInfoActivity.class);
+            intent.putExtras(
+                    ShopInfoActivity.
+                            createBundle(String.valueOf(data.getShopId()),
+                                    "",
+                                    data.getShopName(),
+                                    data.getShopLogo(),
+                                    data.isFavorite() ? 1 : 0));
+            getContext().startActivity(intent);
         }
     }
 }
