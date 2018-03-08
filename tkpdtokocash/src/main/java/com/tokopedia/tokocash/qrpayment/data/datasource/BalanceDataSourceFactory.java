@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.tokocash.apiservice.WalletService;
+import com.tokopedia.tokocash.network.api.WalletApi;
 
 import javax.inject.Inject;
 
@@ -11,17 +11,17 @@ import javax.inject.Inject;
 
 public class BalanceDataSourceFactory {
 
-    private WalletService walletService;
+    private WalletApi walletApi;
     private CacheManager cacheManager;
 
     @Inject
-    public BalanceDataSourceFactory(WalletService walletService, CacheManager cacheManager) {
-        this.walletService = walletService;
+    public BalanceDataSourceFactory(WalletApi walletApi, CacheManager cacheManager) {
+        this.walletApi = walletApi;
         this.cacheManager = cacheManager;
     }
 
     public BalanceDataSource createBalanceTokoCashDataSource() {
-        return new CloudBalanceDataSource(walletService, cacheManager);
+        return new CloudBalanceDataSource(walletApi, cacheManager);
     }
 
     public BalanceDataSource createLocalBalanceTokoCashDataSource() {

@@ -56,6 +56,7 @@
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>
 
+    <!-- activation tokocash -->
     <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>
     <string name="benefit_tokocash_title_item_1">Mudah melakukan Pembayaran Online</string>
     <string name="benefit_tokocash_detail_item_1">Nikmati mudahnya belanja, isi pulsa, bayar berbagai tagihan, beli voucher game hingga tiket kereta di Tokopedia dengan TokoCash.</string>
@@ -81,28 +82,9 @@
     <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
 
-    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
-    <string name="title_menu_account_setting_tokocash">Pengaturan Akun</string>
-    <string name="title_menu_help_tokocash">Bantuan</string>
-    <string name="range_date_today">Hari ini</string>
-    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
-    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
-    <string name="range_date_this_month">Bulan ini</string>
-    <string name="range_date_last_month">Bulan Lalu</string>
-    <string name="title_tokocash_topup">TokoCash</string>
-
     <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
     <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
     <string name="title_header_menu_digital_categories_subscription_digital_module">Langganan</string>
-
-    <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
-    <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
-    <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
-    <string name="title_detail_transaction">Detail Transaksi</string>
-    <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
-    <string name="title_tooltip_tokocash">Dana Tertahan</string>
-    <string name="body_tooltip_tokocash">Dana Anda tertahan, untuk Transaksi yang Belum Lunas. Dana akan dikembalikan bila transaksi batal</string>
-    <string name="limit_balance_tokocash">Limit: %s/bulan</string>
 
     <string name="ussd_batal">Batal</string>
     <string name="ok">Ok</string>
@@ -126,6 +108,7 @@
 
     <string name="input_number">Masukkan nomor</string>
 
+    <!-- history transaction -->
     <string name="title_help_history">Bantuan</string>
     <string name="tokocash">Tokocash</string>
     <string name="title_spinner_help_category">Pilih Kategori Kendala</string>
@@ -155,14 +138,33 @@
     <string name="tokocash_label_top_up">Top Up TokoCash</string>
     <string name="tokocash_label_balance">TokoCash Balance</string>
     <string name="tokocash_label_hold_balance">Dana Tertahan</string>
-
     <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
     <string name="back_to_top">Kembali ke Atas</string>
     <string name="msg_verification">Verifikasi</string>
+    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
+    <string name="title_menu_account_setting_tokocash">Pengaturan Akun</string>
+    <string name="title_menu_help_tokocash">Bantuan</string>
+    <string name="range_date_today">Hari ini</string>
+    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
+    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
+    <string name="range_date_this_month">Bulan ini</string>
+    <string name="range_date_last_month">Bulan Lalu</string>
+    <string name="title_tokocash_topup">TokoCash</string>
+    <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
+    <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
+    <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
+    <string name="title_detail_transaction">Detail Transaksi</string>
+    <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
+    <string name="title_tooltip_tokocash">Dana Tertahan</string>
+    <string name="body_tooltip_tokocash">Dana Anda tertahan, untuk Transaksi yang Belum Lunas. Dana akan dikembalikan bila transaksi batal</string>
+    <string name="limit_balance_tokocash">Limit: %s/bulan</string>
+
     <string name="label_operator_not_support">Operator tidak tersedia</string>
     <string name="label_sim">SIM</string>
     <string name="label_no_signal">No signal</string>
     <string name="label_no_service">No service</string>
     <string name="digital_product_help_menu_label">Bantuan</string>
+
+    <string name="title_topup_tokocash">Nominal Top Up</string>
 
 </resources>
