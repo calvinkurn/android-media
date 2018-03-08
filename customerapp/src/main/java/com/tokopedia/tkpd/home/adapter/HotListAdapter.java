@@ -84,7 +84,6 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        UnifyTracking.eventHotlist(hotListModel.getHotListName());
                         trackingEnhanceEccommerce(hotListModel);
                         TrackingUtils.sendMoEngageClickHotListEvent(hotListModel);
                         hotList.moveToOtherActivity(hotListModel);
