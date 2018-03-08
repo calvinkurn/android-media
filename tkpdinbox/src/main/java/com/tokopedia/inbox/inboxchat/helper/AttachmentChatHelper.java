@@ -104,7 +104,7 @@ public class AttachmentChatHelper {
     }
 
     private void parseType(final ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, final String fullTime) {
-        message.setVisibility(View.VISIBLE);
+        message.setVisibility(View.GONE);
         if (attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
             view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
