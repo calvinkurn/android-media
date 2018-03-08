@@ -10,8 +10,6 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -637,8 +635,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 && voteInfoViewModel != null
                 && voteInfoViewModel.getStartTime() != 0
                 && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime()
-                && voteInfoViewModel.getEndTime() > System.currentTimeMillis() / 1000L);
+                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime());
     }
 
     @Override
@@ -1007,8 +1004,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            if (iconVote != null && iconVote.getBackground() != null) {
-                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote_inactive);
+            } else {
+                iconVote.setImageResource(R.drawable.ic_vote_inactive);
             }
             voteAdapter.updateStatistic();
         }
@@ -1018,8 +1017,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
-            if (iconVote != null && iconVote.getBackground() != null) {
-                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.medium_green));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote);
+            } else {
+                iconVote.setImageResource(R.drawable.ic_vote);
             }
         }
     }
