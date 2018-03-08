@@ -29,6 +29,49 @@
             tools:visibility="visible"
             app:content_color="@color/tkpd_main_green"
             app:content="@string/product_label_choose"/>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="@dimen/padding_ms">-->
+            <!--<LinearLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical">-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/product_sizechart_optional"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--style="@style/TextView.Micro.BlackSecondary"-->
+                    <!--android:text="@string/product_sizechart_info"-->
+                    <!--android:layout_marginTop="@dimen/padding_vs"/>-->
+            <!--</LinearLayout>-->
+
+            <!--<FrameLayout android:id="@+id/frame_sizechart_image"-->
+                <!--android:layout_width="@dimen/image_width_variant"-->
+                <!--android:layout_height="@dimen/image_width_variant"-->
+                <!--android:background="@drawable/bg_rect_stroke_lighter_gray"-->
+                <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+                <!--xmlns:tools="http://schemas.android.com/tools">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/image_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_margin="@dimen/padding_vvs"-->
+                    <!--tools:src="@mipmap/ic_launcher"/>-->
+
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_margin="@dimen/padding_vvs"-->
+                    <!--android:background="@drawable/bg_rect_stroke_gray_dashed" />-->
+            <!--</FrameLayout>-->
+        <!--</LinearLayout>-->
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
