@@ -193,8 +193,14 @@ public class GTMContainer implements IGTMContainer {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
-        GTMDataLayer.pushEvent(context, "checkout", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "checkout", checkout.getCheckoutMapEvent()
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
+                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
+                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
+                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
         )));
 
         return this;
