@@ -110,12 +110,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected int getColorUpScannerLaser() {
-        return R.drawable.digital_gradient_green_up;
+        return R.drawable.qr_gradient_green_up;
     }
 
     @Override
     protected int getColorDownScannerLaser() {
-        return R.drawable.digital_gradient_green_down;
+        return R.drawable.qr_gradient_green_down;
     }
 
     @Override
@@ -134,12 +134,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.qrpayment_ic_flash_turn_on));
+                            com.tokopedia.tokocash.R.drawable.qr_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.qrpayment_ic_flash_turn_off));
+                            com.tokopedia.tokocash.R.drawable.qr_ic_flash_turn_off));
                 }
             }
         });

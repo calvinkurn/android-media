@@ -20,11 +20,6 @@ public interface TokoCashRouter {
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
 
-    //TODO will continue using this method in next sprint
-    Intent goToHistoryTokoCash(Context context);
-
-    Intent goToQRScannerTokoCash(Context context);
-
     WalletUserSession getTokoCashSession();
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
