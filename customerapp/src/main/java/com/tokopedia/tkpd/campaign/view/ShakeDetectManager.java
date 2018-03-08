@@ -40,6 +40,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
+
+    public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 2000;
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
@@ -81,7 +83,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isShakeShakeEnable() {
-        return isShakeShakeEnable && remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true);
 
     }
 
@@ -95,12 +97,12 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public void hearShake() {
         if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
         }
 
-        if (isShakeShakeEnable()) {
+        if (isShakeShakeEnable && isShakeShakeEnable()) {
             mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,2000);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
             Intent intent = null;
             if (!isAudioShakeEnable()) {
                 intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext);
@@ -141,7 +143,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                 if (intent.getStringExtra("data") != null) {
                     Uri uri = Uri.parse("" + intent.getStringExtra("data"));
                     intent1.setData(uri);
-                    isShakeShakeEnable = false;
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
