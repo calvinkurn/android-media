@@ -8,6 +8,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
@@ -100,58 +101,58 @@ public class CategoryDetailDataSource {
     public Observable<String> getHelpUrl(String categoryId) {
         String result;
         switch (categoryId) {
-            case "1":
+            case DigitalCategoryConstant.PULSA:
                 result = DigitalUrl.HelpUrl.PULSA;
                 break;
-            case "2":
+            case DigitalCategoryConstant.PAKET_DATA:
                 result = DigitalUrl.HelpUrl.PAKET_DATA;
                 break;
-            case "3":
+            case DigitalCategoryConstant.PLN:
                 result = DigitalUrl.HelpUrl.PLN;
                 break;
-            case "4":
+            case DigitalCategoryConstant.BPJS:
                 result = DigitalUrl.HelpUrl.BPJS;
                 break;
-            case "5":
+            case DigitalCategoryConstant.PDAM:
                 result = DigitalUrl.HelpUrl.PDAM;
                 break;
-            case "6":
+            case DigitalCategoryConstant.GAME:
                 result = DigitalUrl.HelpUrl.GAME;
                 break;
-            case "7":
+            case DigitalCategoryConstant.CREDIT:
                 result = DigitalUrl.HelpUrl.CREDIT;
                 break;
-            case "8":
+            case DigitalCategoryConstant.TV:
                 result = DigitalUrl.HelpUrl.TV;
                 break;
-            case "9":
+            case DigitalCategoryConstant.POSTPAID:
                 result = DigitalUrl.HelpUrl.POSTPAID;
                 break;
-            case "10":
+            case DigitalCategoryConstant.TELKOM:
                 result = DigitalUrl.HelpUrl.TELKOM;
                 break;
-            case "13":
+            case DigitalCategoryConstant.STREAMING:
                 result = DigitalUrl.HelpUrl.STREAMING;
                 break;
-            case "14":
+            case DigitalCategoryConstant.PGN:
                 result = DigitalUrl.HelpUrl.PGN;
                 break;
-            case "20":
+            case DigitalCategoryConstant.ROAMING:
                 result = DigitalUrl.HelpUrl.ROAMING;
                 break;
-            case "22":
+            case DigitalCategoryConstant.TAX:
                 result = DigitalUrl.HelpUrl.TAX;
                 break;
-            case "24":
+            case DigitalCategoryConstant.GIFT_CARD:
                 result = DigitalUrl.HelpUrl.GIFT_CARD;
                 break;
-            case "25":
+            case DigitalCategoryConstant.RETRIBUTION:
                 result = DigitalUrl.HelpUrl.RETRIBUTION;
                 break;
-            case "31":
+            case DigitalCategoryConstant.MTIX:
                 result = DigitalUrl.HelpUrl.MTIX;
                 break;
-            case "26":
+            case DigitalCategoryConstant.CREDIT_CARD:
                 result = DigitalUrl.HelpUrl.CREDIT_CARD;
                 break;
             default:
