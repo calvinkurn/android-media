@@ -40,4 +40,11 @@
     <color name="shadow_4">#30CCCCCC</color>
     <color name="shadow_5">#50CCCCCC</color>
 
+
+    <color name="grey_background">#f8f8f8</color>
+    <color name="white_65">#A6ffffff</color>
+    <color name="grey_button">#e6e6e6</color>
+    <color name="preview_bg">#d3f0d4</color>
+    <color name="grey_150">#4a4a4a</color>
+
 </resources>

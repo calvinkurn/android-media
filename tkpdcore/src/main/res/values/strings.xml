@@ -1031,6 +1031,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
     <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_people_tx_history">Detil Status</string>
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
@@ -1134,6 +1135,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>
+    <string name="title_understand">Mengerti</string>
     <string name="msg_new_update">Harap segera perbarui aplikasi anda</string>
     <string name="msg_server_error">Halaman sebelum nya tidak dapat dibuka karena kendala server, silakan coba beberapa saat lagi</string>
     <string name="title_activity_maintenance_page">Server Maintenance</string>
@@ -1468,9 +1470,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_notif_purchase_rejected">Pesanan kamu tidak dapat diproses </string>
     <string name="title_notif_purchase_delivered">Pesanan kamu telah tiba</string>
     <string name="title_notif_rescenter">Pusat Resolusi</string>
-
-    // CONTACT US
-    ===============================================================================================================================
     <string name="title_what_can_we_help">1. Apa yang bisa kami bantu?</string>
     <string name="title_your_problem_bro">2. Apa masalah yang kamu alami?</string>
     <string name="title_did_you_know">3. Tahukah kamu?</string>
@@ -1532,7 +1531,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_simple_home">SimpleHomeActivity</string>
     <string name="add_product_name_alert">Maximal 70 huruf</string>
 
-    //INFO TOP ADS
     <string name="promote_0">TopAds</string>
     <string name="promote_1">Tingkatkan penjualan</string>
     <string name="promote_2">Toko dan produk Anda akan lebih mudah ditemukan oleh pengunjung Tokopedia</string>
@@ -1559,7 +1557,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_choose_google_map_location">Mohon pilih lokasi Pickup</string>
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
-    //GOJEK
     <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
@@ -1637,7 +1634,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
-    <string name="image_description">Keterangan gambar...</string>s
+    <string name="image_description">Keterangan gambar...</string>
     <string name="image_description_2">Deskripsi gambar</string>
     <string name="deadline_prompt">"Batas waktu penilaian "</string>
     <string name="edited">(diubah)</string>
@@ -2178,6 +2175,7 @@ di Tokopedia Sekarang!</string>
     <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
     <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+    <string name="cek_label"> Cek - </string>
 
 
     <!--QR CODE-->

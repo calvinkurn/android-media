@@ -35,6 +35,10 @@ public class WrongProductPriceWeightEditable implements Parcelable{
 
     }
 
+    public WrongProductPriceWeightEditable(WrongProductPriceWeightEditable clonableModel) {
+        duplicate(clonableModel);
+    }
+
     protected WrongProductPriceWeightEditable(Parcel in) {
         orderId = in.readString();
         shopId = in.readString();
@@ -165,5 +169,56 @@ public class WrongProductPriceWeightEditable implements Parcelable{
         parcel.writeInt(currencyMode);
         parcel.writeString(productPriceUnformatted);
         parcel.writeString(productWeightUnformatted);
+    }
+
+    private void duplicate(WrongProductPriceWeightEditable modelToBeCloned) {
+        this.orderId = modelToBeCloned.getOrderId();
+        this.shopId = modelToBeCloned.getShopId();
+        this.productId = modelToBeCloned.getProductId();
+        this.productName = modelToBeCloned.getProductName();
+        this.productImage = modelToBeCloned.getProductImage();
+        this.productPrice = modelToBeCloned.getProductPrice();
+        this.productWeight = modelToBeCloned.getProductWeight();
+        this.weightMode = modelToBeCloned.getWeightMode();
+        this.currencyMode = modelToBeCloned.getCurrencyMode();
+        this.productPriceUnformatted = modelToBeCloned.getProductPriceUnformatted();
+        this.productWeightUnformatted = modelToBeCloned.getProductWeightUnformatted();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        WrongProductPriceWeightEditable that = (WrongProductPriceWeightEditable) o;
+
+        if (weightMode != that.weightMode) return false;
+        if (currencyMode != that.currencyMode) return false;
+        if (orderId != null ? !orderId.equals(that.orderId) : that.orderId != null) return false;
+        if (shopId != null ? !shopId.equals(that.shopId) : that.shopId != null) return false;
+        if (productId != null ? !productId.equals(that.productId) : that.productId != null)
+            return false;
+        if (productName != null ? !productName.equals(that.productName) : that.productName != null)
+            return false;
+        if (productImage != null ? !productImage.equals(that.productImage) : that.productImage != null)
+            return false;
+        if (productPrice != null ? !productPrice.equals(that.productPrice) : that.productPrice != null)
+            return false;
+        if (productPriceUnformatted != null ? !productPriceUnformatted.equals(that.productPriceUnformatted) : that.productPriceUnformatted != null)
+            return false;
+        return productWeightUnformatted != null ? productWeightUnformatted.equals(that.productWeightUnformatted) : that.productWeightUnformatted == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = orderId != null ? orderId.hashCode() : 0;
+        result = 31 * result + (shopId != null ? shopId.hashCode() : 0);
+        result = 31 * result + (productId != null ? productId.hashCode() : 0);
+        result = 31 * result + (productName != null ? productName.hashCode() : 0);
+        result = 31 * result + (productImage != null ? productImage.hashCode() : 0);
+        result = 31 * result + (productPrice != null ? productPrice.hashCode() : 0);
+        result = 31 * result + (productWeight != null ? productWeight.hashCode() : 0);
+        result = 31 * result + weightMode;
+        result = 31 * result + currencyMode;
+        result = 31 * result + (productPriceUnformatted != null ? productPriceUnformatted.hashCode() : 0);
+        result = 31 * result + (productWeightUnformatted != null ? productWeightUnformatted.hashCode() : 0);
+        return result;
     }
 }

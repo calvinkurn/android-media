@@ -30,6 +30,7 @@ public class PurchaseNotifier {
     private static final String BANK_NAME = "bank_name";
     private static final String BANK_NUM = "bank_num";
     private static final String DEADLINE_DELTA = "deadline_delta";
+    private static final String BANK_INFO = "bank_info";
 
     public static void notify(Context context, Bundle extras) {
         try {
@@ -60,7 +61,7 @@ public class PurchaseNotifier {
         return String.format(
                 context.getString(R.string.payment_description_transfer_procedure),
                 bundle.getString(TOTAL_AMOUNT),
-                bundle.getString(BANK_NAME),
+                bundle.getString(BANK_NAME, bundle.getString(BANK_INFO, "")),
                 bundle.getString(BANK_NUM),
                 dateFormat.format(new Date(calendar.getTimeInMillis()))
         );

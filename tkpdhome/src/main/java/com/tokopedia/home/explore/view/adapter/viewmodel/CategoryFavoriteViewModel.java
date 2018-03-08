@@ -109,7 +109,7 @@ public class CategoryFavoriteViewModel implements Visitable<TypeFactory>, Parcel
 
     private Map<String, Object> convertFavCategoryItemIntoDataLayer(LayoutRows item, int position) {
         return DataLayer.mapOf(
-                "id", item.getId(),
+                "id", String.valueOf(item.getId()),
                 "name", "/explore beli - p1 - Kategori Favorit Anda",
                 "creative", item.getName(),
                 "position", String.valueOf(position)

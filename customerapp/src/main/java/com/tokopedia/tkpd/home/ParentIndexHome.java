@@ -39,6 +39,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -372,6 +373,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 } else {
                     drawerHelper.openDrawer();
                 }
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
         });
         toolbar.addView(view);
@@ -417,6 +419,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 sendGTMButtonEvent(tab.getPosition());
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
 
             @Override
@@ -539,24 +542,21 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-//            case R.id.action_search:
-//                return onSearchOptionSelected();
-            case R.id.action_cart:
-                if (!SessionHandler.isV4Login(getBaseContext())) {
-                    UnifyTracking.eventClickCart();
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(this);
-                    startActivity(intent);
-                } else {
-                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-                }
-                return true;
-            case R.id.action_barcode_scan:
-                startActivity(QrScannerActivity.newInstance(this));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_cart) {
+            if (!SessionHandler.isV4Login(getBaseContext())) {
+                UnifyTracking.eventClickCart();
+                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                        .getLoginIntent(this);
+                startActivity(intent);
+            } else {
+                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+            }
+            return true;
+        } else if (item.getItemId() == R.id.action_barcode_scan) {
+            startActivity(QrScannerActivity.newInstance(this));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
 
     }

@@ -544,7 +544,7 @@ public class SessionHandler {
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
 
-        BranchSdkUtils.sendLoginEvent(u_id);
+        BranchSdkUtils.sendIdentityEvent(u_id);
 
         //return status;
     }
@@ -567,9 +567,6 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        Crashlytics.log(1, "FORCE LOGOUT",
-                "User Id: " + getLoginID(context) +
-                        " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
         TrackingUtils.eventMoEngageLogoutUser();
         clearUserData();
