@@ -161,11 +161,12 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected boolean isMinQuantityValid(double minQuantity) {
-        if (minQuantity - 1 == previousValue.getQtyMin()) {
+        if (minQuantity <= previousValue.getQtyMin()) {
+            minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
             minQuantityCounterInputView.updateMinusButtonState(false);
             return false;
-        } else if (minQuantity <= previousValue.getQtyMin()) {
-            minQuantityCounterInputView.setError(getString(R.string.product_quantity_range_is_not_valid));
+        } else if (minQuantity - 1 == previousValue.getQtyMin()) {
+            minQuantityCounterInputView.setError(null);
             minQuantityCounterInputView.updateMinusButtonState(false);
             return true;
         }
