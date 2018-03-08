@@ -153,7 +153,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void sendFailedBroadcast(Throwable error) {
-        Crashlytics.logException(error);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(error);
         String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
         UnifyTracking.eventAddProductErrorServer(errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);

@@ -50,6 +50,11 @@ public class ThankYouMoveToSaldoActivity extends BaseSimpleActivity
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.toolbar_no_icon_back;
+    }
+
+    @Override
     public void onRetryClicked() {
         setResult(RESULT_BACK_RETRY);
         finish();

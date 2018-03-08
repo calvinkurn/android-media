@@ -41,7 +41,6 @@ public class HelpHistoryDetailPresenter extends BaseDaggerPresenter<HelpHistoryD
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                //TODO error message from string.xml
                 getView().showErrorHelpHistory(e);
             }
 
@@ -69,7 +68,6 @@ public class HelpHistoryDetailPresenter extends BaseDaggerPresenter<HelpHistoryD
             public void onError(Throwable e) {
                 e.printStackTrace();
                 getView().hideProgressLoading();
-                //TODO error message from string.xml
                 getView().showErrorHelpHistory(e);
             }
 

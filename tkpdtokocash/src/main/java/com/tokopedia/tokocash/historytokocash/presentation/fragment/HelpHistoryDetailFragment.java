@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -116,6 +117,7 @@ public class HelpHistoryDetailFragment extends BaseDaggerFragment implements Hel
         sendHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgressLoading();
                 presenter.submitHelpHistory(getString(R.string.tokocash), historyHelpDetail.getText().toString(), selectedCategory, transactionId);
             }
         });

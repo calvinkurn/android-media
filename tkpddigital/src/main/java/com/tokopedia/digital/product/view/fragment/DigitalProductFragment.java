@@ -38,8 +38,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -61,11 +61,13 @@ import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
+import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
@@ -137,6 +139,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "EXTRA_STATE_HISTORY_CLIENT_NUMBER";
     private static final String EXTRA_STATE_VOUCHER_CODE_COPIED =
             "EXTRA_STATE_VOUCHER_CODE_COPIED";
+    private static final String EXTRA_STATE_HELP_URL = "EXTRA_STATE_HELP_URL";
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
@@ -163,6 +166,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
+    private String digitalHelpUrl;
 
     private boolean isInstantCheckoutChecked;
 
@@ -186,10 +190,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
 
-    public interface ActionListener {
-        void updateTitleToolbar(String title);
-    }
-
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber) {
         Fragment fragment = new DigitalProductFragment();
@@ -209,6 +209,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void onFirstTimeLaunched() {
+        presenter.processGetHelpUrlData(categoryId);
         presenter.processGetCategoryAndBannerData(
                 categoryId, operatorId, productId, clientNumber);
     }
@@ -238,6 +239,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
+        state.putString(EXTRA_STATE_HELP_URL, digitalHelpUrl);
     }
 
     @Override
@@ -252,6 +254,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
         digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
+        digitalHelpUrl = savedState.getString(EXTRA_STATE_HELP_URL);
         presenter.processStateDataToReRender();
     }
 
@@ -286,9 +289,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 getActivity(), digitalCategoryRepository
         );
 
+        DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase = new DigitalGetHelpUrlUseCase(
+                digitalCategoryRepository
+        );
+
         presenter = new ProductDigitalPresenter(getActivity(),
                 new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
-                this, productDigitalInteractor, getCategoryByIdUseCase);
+                this, productDigitalInteractor, getCategoryByIdUseCase, digitalGetHelpUrlUseCase);
     }
 
     @Override
@@ -392,11 +399,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderCheckPulsaBalanceData(int selectedSim,String ussdCode, String phoneNumber,String operatorErrorMsg,Boolean isSimActive,String carrierName) {
+    public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
         CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
         checkPulsaBalanceView.setActionListener(this);
 
-        checkPulsaBalanceView.renderData(selectedSim, ussdCode, phoneNumber, operatorErrorMsg, isSimActive,carrierName);
+        checkPulsaBalanceView.renderData(selectedSim, ussdCode, phoneNumber, operatorErrorMsg, isSimActive, carrierName);
         holderCheckBalance.addView(checkPulsaBalanceView);
 
         startShowCaseUSSD();
@@ -405,6 +412,28 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void removeCheckPulsaCards() {
         holderCheckBalance.removeAllViews();
+    }
+
+    @Override
+    public void showHelpMenu(String url) {
+        digitalHelpUrl = url;
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public String getHelpUrl() {
+        return digitalHelpUrl;
+    }
+
+    @Override
+    public void navigateToWebview(String helpUrl) {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getDefaultContactUsIntent(getActivity(), helpUrl, getString(R.string.digital_product_help_menu_label));
+            if (intent != null) {
+                startActivity(intent);
+            }
+        }
     }
 
     @Override
@@ -809,6 +838,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
             menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
         }
+        if (digitalHelpUrl != null && digitalHelpUrl.length() > 0) {
+            menu.findItem(R.id.action_menu_help_digital).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_menu_help_digital).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -841,6 +875,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                                     + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
                     )
             );
+            return true;
+        } else if (item.getItemId() == R.id.action_menu_help_digital) {
+            presenter.onHelpMenuClicked();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -917,14 +954,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
-                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     handleStyle1(orderClientNumber);
                     break;
-                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
-                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5:
                     handleStyleOther(orderClientNumber);
                     break;
             }
@@ -1165,6 +1202,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     digitalProductView.getClientNumber(),
                     selectedProduct != null ? selectedProduct.getProductId() : "");
         }
+    }
+
+    public interface ActionListener {
+        void updateTitleToolbar(String title);
     }
 
 }

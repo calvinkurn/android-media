@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <ImageView
@@ -28,7 +29,7 @@
             android:layout_height="14dp"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vvvs"
-            android:src="@drawable/ic_kol_badge"/>
+            app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/name"
@@ -71,7 +72,7 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/padding_vs"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_plus_green"
+            app:srcCompat="@drawable/ic_plus_green"
             />
 
         <TextView

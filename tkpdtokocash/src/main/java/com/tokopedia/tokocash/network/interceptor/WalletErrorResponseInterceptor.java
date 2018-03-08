@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.tokocash.WalletUserSession;
@@ -28,16 +27,14 @@ public class WalletErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
 
     private Class<? extends BaseResponseError> responseErrorClass;
-    private AbstractionRouter abstractionRouter;
     private Gson gson;
     private BaseResponseError responseError;
     private WalletTokenRefresh walletTokenRefresh;
     private WalletUserSession walletUserSession;
 
     public WalletErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass,
-                                          AbstractionRouter abstractionRouter, Gson gson, WalletTokenRefresh walletTokenRefresh,
+                                          Gson gson, WalletTokenRefresh walletTokenRefresh,
                                           WalletUserSession walletUserSession) {
-        this.abstractionRouter = abstractionRouter;
         this.responseErrorClass = responseErrorClass;
         this.walletTokenRefresh = walletTokenRefresh;
         this.walletUserSession = walletUserSession;

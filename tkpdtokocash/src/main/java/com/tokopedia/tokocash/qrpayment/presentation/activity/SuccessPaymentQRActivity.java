@@ -36,6 +36,8 @@ import javax.inject.Inject;
 public class SuccessPaymentQRActivity extends BaseSimpleActivity implements SuccessQrPaymentContract.View,
         HasComponent<TokoCashComponent> {
 
+    public static final int RESULT_CODE_HOME = 1;
+    public static final int RESULT_CODE_SCANNER = 2;
     private static final String MERCHANT_NAME = "merchant_name";
     private static final String AMOUNT = "amount";
     private static final String QR_PAYMENT_DATA = "qr_payment_tokocash";
@@ -115,7 +117,7 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent();
-                    setResult(CustomScannerTokoCashActivity.RESULT_CODE_SCANNER, intent);
+                    setResult(RESULT_CODE_SCANNER, intent);
                     finish();
                 }
             });
@@ -152,7 +154,7 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
     public void onBackPressed() {
         presenter.deleteCacheTokoCashBalance();
         Intent intent = new Intent();
-        setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
+        setResult(RESULT_CODE_HOME, intent);
         finish();
     }
 

@@ -54,10 +54,6 @@
     <string name="label_btn_buy_digital">Beli</string>
 
     <!-- scan QR Payment -->
-    <string name="title_scan_qr">Scan Kode QR</string>
-    <string name="title_dialog_wrong_scan">Oops!</string>
-    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
-    <string name="btn_dialog_wrong_scan">OK</string>
     <string name="title_input_nominal">Nominal Pembayaran</string>
     <string name="default_notes_payment">Pembayaran ke merchant</string>
     <string name="tokocash_balance_payment">TokoCash Balance: %s</string>
@@ -73,9 +69,6 @@
     <string name="failed_payment_header">Maaf, Transaksi Gagal</string>
     <string name="failed_payment_body">Cek Koneksi dan Ulangi Proses Transfer.</string>
     <string name="failed_payment_retry">Ulangi Transaksi</string>
-    <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
-    <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
-
 
     <!-- activation -->
     <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>

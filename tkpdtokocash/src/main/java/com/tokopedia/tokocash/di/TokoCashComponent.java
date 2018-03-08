@@ -11,7 +11,6 @@ import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCash
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.MoveToSaldoFragment;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.SuccessPaymentQRActivity;
 
@@ -27,8 +26,6 @@ public interface TokoCashComponent {
     GetBalanceTokoCashUseCase getBalanceTokoCashUseCase();
 
     GetPendingCasbackUseCase getPendingCasbackUseCase();
-
-    void inject(CustomScannerTokoCashActivity customScannerTokoCashActivity);
 
     void inject(NominalQrPaymentActivity nominalQrPaymentActivity);
 
