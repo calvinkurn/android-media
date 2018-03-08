@@ -2,10 +2,12 @@ package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
@@ -40,6 +42,11 @@ public class PartialUserShopView extends BaseCustomView {
     private LinearLayout favouriteButton;
     private LinearLayout llRating;
     private ImageView ivReputationMedal;
+    private Drawable drawableCheckLow;
+    private Drawable drawableCheckHigh;
+    private Drawable drawableAddLow;
+    private Drawable drawableAddHigh;
+
 
     private boolean isShopFavorite = false;
 
@@ -91,6 +98,10 @@ public class PartialUserShopView extends BaseCustomView {
         favouriteButton = view.findViewById(R.id.ll_fav_shop);
         llRating = view.findViewById(R.id.ll_rating);
         ivReputationMedal = view.findViewById(R.id.iv_medal);
+        drawableCheckLow = AppCompatResources.getDrawable(getContext(), R.drawable.ic_check_green_12dp);
+        drawableCheckHigh = AppCompatResources.getDrawable(getContext(), R.drawable.ic_check_green_24dp);
+        drawableAddLow = AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_12dp);
+        drawableAddHigh = AppCompatResources.getDrawable(getContext(), R.drawable.ic_add_24dp);
     }
 
     public void renderData(TopProfileViewModel model) {
@@ -201,11 +212,11 @@ public class PartialUserShopView extends BaseCustomView {
             this.isShopFavorite = true;
             if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_check_green_12dp, 0, 0, 0);
+                       drawableCheckLow , null, null, null);
 
             } else {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_check_green_24dp, 0, 0, 0);
+                        drawableCheckHigh, null, null, null);
             }
         } else {
             this.isShopFavorite = false;
@@ -215,11 +226,11 @@ public class PartialUserShopView extends BaseCustomView {
             tvFavouriteButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
             if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_add_12dp, 0, 0, 0);
+                        drawableAddLow, null, null, null);
 
             } else {
                 tvFavouriteButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_add_24dp, 0, 0, 0);
+                        drawableAddHigh, null, null, null);
             }
         }
     }

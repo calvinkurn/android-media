@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -417,7 +418,10 @@ public class TopProfileActivity extends BaseEmptyActivity
 
         if (topProfileViewModel.isKol()) {
             name.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_kol_badge, 0, 0, 0);
+                    AppCompatResources.getDrawable(getContext(), R.drawable.ic_kol_badge),
+                    null,
+                    null,
+                    null);
             title.setVisibility(View.VISIBLE);
             title.setText(topProfileViewModel.getTitle());
             description.setVisibility(View.VISIBLE);
