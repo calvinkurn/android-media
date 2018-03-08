@@ -1119,12 +1119,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat();
-            Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
+            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
             context.startActivity(intent);
         } else {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("login", true);
-            Intent  intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity)context).startActivityForResult(intent, 100);
         }
     }
