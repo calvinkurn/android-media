@@ -13,6 +13,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -310,6 +311,10 @@ public class EventReviewTicketPresenter
                         getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                     } else {
                         paymentparams = RequestParams.create();
+                        EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
+                        entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
+                        entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
+                        entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
                         paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();
                     }

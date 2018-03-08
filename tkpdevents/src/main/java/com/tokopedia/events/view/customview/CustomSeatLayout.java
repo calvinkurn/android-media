@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
@@ -37,8 +36,8 @@ public class CustomSeatLayout extends LinearLayout {
     char rowName;
     String columnName;
     int rowId;
-    public  static List<String> selectedSeatList = new ArrayList<>();
-    List<String> rowids = new ArrayList<>();
+    public static List<String> selectedSeatList = new ArrayList<>();
+    public static List<String> rowids = new ArrayList<>();
 
     public CustomSeatLayout(Context context) {
         super(context);
@@ -90,31 +89,31 @@ public class CustomSeatLayout extends LinearLayout {
 
     @OnClick(R2.id.tv_seat)
     void seatClicked() {
-            if (!individualSeat.isSelected() && numoFSeats < maxCount) {
-                individualSeat.setSelected(true);
-                individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
-                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                numoFSeats++;
-                if (rowName != '\0') {
-                    selectedSeatList.add("" + rowName + columnName);
-                } else {
-                    selectedSeatList.add(columnName);
-                }
-                rowids.add("" +rowId);
-            } else if (individualSeat.isSelected()) {
-                individualSeat.setSelected(false);
-                individualSeat.setBackgroundResource(R.drawable.seat_bg);
-                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                numoFSeats--;
-                if (rowName != '\0') {
-                    selectedSeatList.remove("" + rowName + columnName);
-                } else {
-                    selectedSeatList.remove(columnName);
-                }
-                rowids.remove("" + rowId);
+        if (!individualSeat.isSelected() && numoFSeats < maxCount) {
+            individualSeat.setSelected(true);
+            individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
+            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+            numoFSeats++;
+            if (rowName != '\0') {
+                selectedSeatList.add("" + rowName + columnName);
             } else {
-                Toast.makeText(getContext(), "Cannot select more than " + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
+                selectedSeatList.add(columnName);
             }
+            rowids.add("" + rowId);
+        } else if (individualSeat.isSelected()) {
+            individualSeat.setSelected(false);
+            individualSeat.setBackgroundResource(R.drawable.seat_bg);
+            individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            numoFSeats--;
+            if (rowName != '\0') {
+                selectedSeatList.remove("" + rowName + columnName);
+            } else {
+                selectedSeatList.remove(columnName);
+            }
+            rowids.remove("" + rowId);
+        } else {
+            Toast.makeText(getContext(), "Cannot select more than " + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
+        }
         mPresenter.setTicketPrice(numoFSeats);
         mPresenter.setSeatData();
     }
@@ -122,5 +121,6 @@ public class CustomSeatLayout extends LinearLayout {
     public static void destroy() {
         numoFSeats = 0;
         CustomSeatLayout.selectedSeatList.clear();
+        CustomSeatLayout.rowids.clear();
     }
 }
