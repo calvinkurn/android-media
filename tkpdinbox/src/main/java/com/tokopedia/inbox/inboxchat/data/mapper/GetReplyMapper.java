@@ -10,6 +10,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
@@ -173,8 +174,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
     private Visitable checkAndConvertItemModelToAttachProductModel(Visitable input, Attachment attachment){
         if(attachment == null)
             return input;
-        boolean shouldConvert = attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED);
-        if(!shouldConvert)
+        if(!attachment.getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED))
             return input;
 
         if((input instanceof MyChatViewModel)){
