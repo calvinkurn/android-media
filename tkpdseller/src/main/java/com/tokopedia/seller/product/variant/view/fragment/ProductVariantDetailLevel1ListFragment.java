@@ -64,7 +64,7 @@ public class ProductVariantDetailLevel1ListFragment extends BaseVariantImageFrag
     }
 
     @Override
-    public void refreshVariantImage() {
+    public void refreshImageView() {
         refreshInitialVariantImage();
         listener.onImageChanged();
     }
@@ -119,7 +119,7 @@ public class ProductVariantDetailLevel1ListFragment extends BaseVariantImageFrag
                         getProductVariantOptionChild().getProductPictureViewModelList().size() == 0) {
                     showAddImageDialog();
                 } else {
-                    showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0));
+                    showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0).getUriOrPath());
                 }
             }
         });

@@ -78,10 +78,10 @@ public abstract class BasePictureViewModel {
     }
 
     public String getUriOrPath(){
-        if (!TextUtils.isEmpty(getUrlOriginal()) && TextUtils.isEmpty(getId())){
-            return getUrlOriginal();
+        if (TextUtils.isEmpty(getId()) && !TextUtils.isEmpty(getFilePath())) {
+            return getFilePath();
         }
-        return getFilePath();
+        return getUrlOriginal();
     }
 
     public void setUrlOriginal(String urlOriginal) {

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
@@ -38,10 +39,12 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     private String variantName;
     ProductVariantOptionChild productVariantOptionChild;
 
-    private @CurrencyTypeDef int currencyType;
+    private @CurrencyTypeDef
+    int currencyType;
     private boolean needRetainImage;
     private boolean imageChanged;
-    private @StockTypeDef int stockType;
+    private @StockTypeDef
+    int stockType;
     private boolean isOfficialStore;
 
     public static void start(Context context, Fragment fragment,
@@ -49,7 +52,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                              ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
-                             boolean needRetainImage){
+                             boolean needRetainImage) {
         Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild,
                 variantName, currencyType, stockType, isOfficialStore, needRetainImage);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
@@ -60,7 +63,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                              ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
-                             boolean needRetainImage){
+                             boolean needRetainImage ) {
         Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild,
                 variantName, currencyType, stockType, isOfficialStore, needRetainImage);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
@@ -71,7 +74,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                                    ProductVariantOptionChild productVariantOptionChild,
                                    String variantName, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
-                                   boolean needRetainImage){
+                                   boolean needRetainImage) {
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);

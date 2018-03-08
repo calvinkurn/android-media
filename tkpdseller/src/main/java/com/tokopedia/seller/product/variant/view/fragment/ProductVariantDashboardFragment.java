@@ -5,18 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
-import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
@@ -36,15 +42,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
 /**
  * Created by hendry on 4/3/17.
  */
 
-public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardViewModel>
-        implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener {
+public class ProductVariantDashboardFragment extends BaseImageFragment
+        implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener,
+        BaseListAdapter.Callback<ProductVariantDashboardViewModel> {
 
+    public static final String SIZE_IDENTIFIER = "ukuran";
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -52,6 +61,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     private ProductVariantViewModel productVariantViewModel;
     private RecyclerView recyclerView;
     private List<ProductVariantDashboardViewModel> productVariantDashboardViewModelList;
+    private ProductPictureViewModel productSizeChart;
 
     private HashMap<Pair<String, String>, Integer> mapCombination;
     private Parcelable recyclerViewState;
@@ -66,7 +76,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     private boolean needRetainImage;
     private String defaultSku;
 
+    private int indexOptionParentSizeChart = -1;
+
     private ProductVariantDashboardNewAdapter productVariantDashboardNewAdapter;
+    private View vgSizechart;
+    private ImageView ivSizeChart;
 
     public static ProductVariantDashboardFragment newInstance() {
         Bundle args = new Bundle();
@@ -90,34 +104,59 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
         if (savedInstanceState == null) {
             productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = activityIntent.getParcelableExtra(EXTRA_PRODUCT_SIZECHART);
         } else {
             productVariantViewModel = savedInstanceState.getParcelable(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = savedInstanceState.getParcelable(EXTRA_PRODUCT_SIZECHART);
         }
+        if (productVariantByCatModelList != null) {
+            for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {
+                if (productVariantByCatModelList.get(i).getName().toLowerCase().contains(SIZE_IDENTIFIER)) {
+                    indexOptionParentSizeChart = i;
+                    break;
+                }
+            }
+        }
+
+        productVariantDashboardNewAdapter = new ProductVariantDashboardNewAdapter(currencyType, this);
+        productVariantDashboardNewAdapter.setCallback(this);
     }
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_product_variant_main;
-    }
-
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_product_variant_main, container, false);
         variantLevelOneLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_one);
         variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
         recyclerView = view.findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(productVariantDashboardNewAdapter);
+
+        setupSizeChart(view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVariantLabel();
-        updateVariantItemListView();
+        refreshAllItem();
     }
 
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
+    private void setupSizeChart(View rootView){
+        vgSizechart = rootView.findViewById(R.id.vg_sizechart);
+        ivSizeChart = vgSizechart.findViewById(R.id.image_view_sizechart);
+        refreshImageView();
+        ivSizeChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (productSizeChart == null || TextUtils.isEmpty(productSizeChart.getUriOrPath())) {
+                    showAddImageDialog();
+                } else {
+                    showEditImageDialog(productSizeChart.getUriOrPath());
+                }
+            }
+        });
     }
 
     private void initVariantLabel() {
@@ -161,6 +200,33 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         } else {
             variantLevelTwoLabelView.setVisibility(View.GONE);
         }
+
+    }
+
+    private void initSizeChart(){
+        if (isCatalogHasProductSizeChart()) {
+            ProductVariantOptionParent productVariantOptionParent =
+                    productVariantViewModel.getVariantOptionParent(indexOptionParentSizeChart);
+            if (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild()) {
+                vgSizechart.setVisibility(View.GONE);
+            } else {
+                vgSizechart.setVisibility(View.VISIBLE);
+            }
+        } else {
+            vgSizechart.setVisibility(View.GONE);
+        }
+    }
+
+
+    public ProductPictureViewModel getInputtedSizeChart(){
+        if (vgSizechart.getVisibility() == View.VISIBLE) {
+            return productSizeChart;
+        }
+        return null;
+    }
+
+    private boolean isCatalogHasProductSizeChart() {
+        return indexOptionParentSizeChart > -1;
     }
 
     private void setLabelVariantLevel1() {
@@ -191,22 +257,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     }
 
     @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
-    protected BaseListAdapter<ProductVariantDashboardViewModel> getNewAdapter() {
-        productVariantDashboardNewAdapter = new ProductVariantDashboardNewAdapter(currencyType, this);
-        return productVariantDashboardNewAdapter;
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-
-    }
-
-    @Override
     public void onItemClicked(ProductVariantDashboardViewModel productVariantDashboardViewModel) {
         if (productVariantDashboardViewModel.haslevel2()) {
             ProductVariantDetailLevel1ListActivity.start(getContext(), this, productVariantDashboardViewModel,
@@ -233,9 +283,41 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         startActivityForResult(intent, level);
     }
 
+    @Override
+    public boolean needRetainImage() {
+        return needRetainImage;
+    }
+
+    @Override
+    public void changeModelBasedImageUrlOrPath(String imageUrl) {
+        if (TextUtils.isEmpty(imageUrl)) {
+            productSizeChart = null;
+            return;
+        }
+        if (productSizeChart == null) { // add
+            productSizeChart = new ProductPictureViewModel();
+            productSizeChart.setFilePath(imageUrl);
+        } else { //change
+            productSizeChart.setId("");
+            productSizeChart.setUrlOriginal("");
+            productSizeChart.setUrlThumbnail("");
+            productSizeChart.setFilePath(imageUrl);
+        }
+    }
+
+    @Override
+    public void refreshImageView() {
+        if (productSizeChart == null || TextUtils.isEmpty(productSizeChart.getUriOrPath())) {
+            ivSizeChart.setImageResource(R.drawable.ic_add_product);
+        } else {
+            ImageHandler.LoadImage(ivSizeChart,productSizeChart.getUriOrPath());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK || data == null) {
             return;
         }
@@ -250,8 +332,6 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             case ProductVariantDetailLevelLeafActivity.VARIANT_EDIT_LEAF_REQUEST_CODE:
                 onActivityResultFromLeaf(data);
                 break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -264,14 +344,13 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
 
         ProductVariantOptionParent productVariantOptionParent =
                 data.getParcelableExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
-        if (requestCodeLevel == 1 &&  (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild())) {
+        if (requestCodeLevel == 1 && (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild())) {
             productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
-            if (productVariantViewModel.getVariantOptionParent(2)!= null) {
+            if (productVariantViewModel.getVariantOptionParent(2) != null) {
                 productVariantViewModel.getVariantOptionParent(2).setProductVariantOptionChild(null);
             }
             productVariantViewModel.setProductVariant(null);
-            initVariantLabel();
-            updateVariantItemListView();
+            refreshAllItem();
             return;
         }
 
@@ -336,16 +415,21 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         }
         productVariantViewModel.setProductVariant(newProductVariantCombinationViewModelList);
 
+        refreshAllItem();
+    }
+
+    private void refreshAllItem(){
         initVariantLabel();
+        initSizeChart();
         updateVariantItemListView();
     }
 
-    private boolean isDefaultStockStatusActive(){
+    private boolean isDefaultStockStatusActive() {
         return defaultStockType == StockTypeDef.TYPE_ACTIVE || defaultStockType == StockTypeDef.TYPE_ACTIVE_LIMITED;
     }
 
-    private int getDefaultStock(){
-        return (defaultStockType == StockTypeDef.TYPE_ACTIVE_LIMITED)? 1 : 0;
+    private int getDefaultStock() {
+        return (defaultStockType == StockTypeDef.TYPE_ACTIVE_LIMITED) ? 1 : 0;
     }
 
     private void createCombinationMap(List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
@@ -375,7 +459,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
                 productVariantOptionChild = data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_OPTION_CHILD);
             }
             onActivityResultFromDetailLeafUpdateList((ProductVariantCombinationViewModel)
-                    data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_LEAF_DATA),
+                            data.getParcelableExtra(ProductVariantDetailLevelLeafActivity.EXTRA_PRODUCT_VARIANT_LEAF_DATA),
                     productVariantOptionChild);
         }
     }
@@ -397,28 +481,27 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         // update from dashboardviewmodel back to the variantview model
         productVariantViewModel.replaceSelectedVariantFor(productVariantCombinationViewModel);
         // to replace image
-        if (productVariantOptionChild!= null) {
+        if (productVariantOptionChild != null) {
             productVariantViewModel.replaceVariantOptionChildFor(1, productVariantOptionChild);
         }
         refreshData();
     }
 
-    private void refreshData(){
+    private void refreshData() {
         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
-        if (productVariantViewModel!= null && productVariantViewModel.getVariantOptionParent(2)!= null) {
+        if (productVariantViewModel != null && productVariantViewModel.getVariantOptionParent(2) != null) {
             productVariantDashboardNewAdapter.setLevel2String(productVariantViewModel.getVariantOptionParent(2).getName());
         } else {
             productVariantDashboardNewAdapter.setLevel2String(null);
         }
-        adapter.clearData();
-        onSearchLoaded(this.productVariantDashboardViewModelList, this.productVariantDashboardViewModelList.size());
+        onSearchLoaded(this.productVariantDashboardViewModelList);
     }
 
-    @Override
-    public void onSearchLoaded(@NonNull List<ProductVariantDashboardViewModel> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
-        if (recyclerViewState!= null) {
+    public void onSearchLoaded(@NonNull List<ProductVariantDashboardViewModel> list) {
+        productVariantDashboardNewAdapter.clearData();
+        productVariantDashboardNewAdapter.addData(list);
+        if (recyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
             recyclerViewState = null;
         }
@@ -430,9 +513,8 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             return;
         }
         generateToDashboardViewModel();
-        adapter.clearData();
         recyclerView.setVisibility(View.VISIBLE);
-        onSearchLoaded(productVariantDashboardViewModelList, productVariantDashboardViewModelList.size());
+        onSearchLoaded(productVariantDashboardViewModelList);
     }
 
     private void generateToDashboardViewModel() {
@@ -467,11 +549,11 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         }
     }
 
-    private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList, SparseIntArray mapPvoToIndex){
-        if (productVariantOptionChildList!= null && productVariantOptionChildList.size() > 0) {
+    private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList, SparseIntArray mapPvoToIndex) {
+        if (productVariantOptionChildList != null && productVariantOptionChildList.size() > 0) {
             for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
                 ProductVariantOptionChild productVariantOptionChildLv2 = productVariantOptionChildList.get(i);
-                int tIdOrPvo = productVariantOptionChildLv2.gettId() > 0 ? productVariantOptionChildLv2.gettId():
+                int tIdOrPvo = productVariantOptionChildLv2.gettId() > 0 ? productVariantOptionChildLv2.gettId() :
                         productVariantOptionChildLv2.getPvo();
                 mapPvoToIndex.put(tIdOrPvo, i);
             }
@@ -490,15 +572,12 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         return productVariantViewModel;
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        outState.putParcelable(EXTRA_PRODUCT_SIZECHART, productSizeChart);
     }
 
 

@@ -9,6 +9,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
@@ -31,20 +32,22 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
     public static final String EXTRA_IS_OFFICIAL_STORE = "EXTRA_IS_OFFICIAL_STORE";
     public static final String EXTRA_NEED_RETAIN_IMAGE = "EXTRA_NEED_RETAIN_IMAGE";
     public static final String EXTRA_DEFAULT_SKU = "EXTRA_DEFAULT_SKU";
+    public static final String EXTRA_PRODUCT_SIZECHART = "EXTRA_SIZECHART";
 
     public static Intent getIntent(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
                                    double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
-                                   boolean needRetainImage){
+                                   boolean needRetainImage, ProductPictureViewModel productSizeChart){
         Intent intent = new Intent(context, ProductVariantDashboardActivity.class);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_CURRENCY_TYPE, currencyType);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_PRICE, defaultPrice);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, stockType);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU, defaultSku);
-        intent.putExtra(ProductVariantDashboardActivity.EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
+        intent.putExtra(EXTRA_DEFAULT_PRICE, defaultPrice);
+        intent.putExtra(EXTRA_STOCK_TYPE, stockType);
+        intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        intent.putExtra(EXTRA_DEFAULT_SKU, defaultSku);
+        intent.putExtra(EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
+        intent.putExtra(EXTRA_PRODUCT_SIZECHART, productSizeChart);
         return intent;
     }
 
@@ -60,9 +63,14 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
                 return;
             }
             Intent intent = new Intent();
-            intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardFragment) getFragment()).getProductVariantViewModel());
-            setResult(RESULT_OK, intent);
+            ProductVariantDashboardFragment productVariantDashboardFragment = ((ProductVariantDashboardFragment) getFragment());
+            if (productVariantDashboardFragment != null) {
+                intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
+                        productVariantDashboardFragment.getProductVariantViewModel());
+                intent.putExtra(EXTRA_PRODUCT_SIZECHART,
+                        productVariantDashboardFragment.getInputtedSizeChart());
+                setResult(RESULT_OK, intent);
+            }
             this.finish();
         } else {
             super.onBackPressed();
