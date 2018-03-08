@@ -172,6 +172,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void renderErrorUnlinkAccount(Throwable e) {
+        hideProgressDialog();
         String message = ErrorHandler.getErrorMessage(getActivity(), e);
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
