@@ -179,7 +179,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             public void onError(Throwable e) {
                 getView().hideProgressDialog();
                 if (e instanceof WalletException) {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    getView().showErrorGetInfo(e.getMessage());
                 } else {
                     getView().showErrorNetwork(e);
                 }
