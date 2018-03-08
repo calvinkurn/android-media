@@ -1287,7 +1287,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TokoCashData> getTokoCashBalance() {
-        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
                 .processGetBalance();
     }
 
