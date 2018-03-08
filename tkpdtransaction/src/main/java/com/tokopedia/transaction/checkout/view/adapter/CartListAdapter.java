@@ -24,6 +24,7 @@ import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.compoundview.VoucherPromoView;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
@@ -582,7 +583,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class CartPromoHolder extends RecyclerView.ViewHolder {
-        private VoucherCartHachikoView voucherCartHachikoView;
+        private VoucherPromoView voucherCartHachikoView;
 
         CartPromoHolder(View itemView) {
             super(itemView);
