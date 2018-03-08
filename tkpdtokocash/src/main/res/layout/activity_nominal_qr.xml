@@ -4,26 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance" />
 
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
         android:layout_above="@+id/bottom_pay_layout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true">
@@ -65,10 +51,10 @@
                     android:layout_alignLeft="@+id/merchant_name"
                     android:layout_below="@+id/merchant_name"
                     android:layout_marginTop="@dimen/margin_ms"
-                    app:drawableLeftCompat="@drawable/ic_shop_phone"
                     android:drawablePadding="@dimen/margin_vs"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/fontvs"
+                    app:drawableLeftCompat="@drawable/ic_shop_phone"
                     tools:text="0872721313718" />
 
             </RelativeLayout>
@@ -182,10 +168,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_detail"
             android:background="@drawable/bg_grey_border_black"
+            android:enabled="false"
             android:text="Bayar"
             android:textAllCaps="false"
-            android:textColor="@color/grey_nonactive_text"
-            android:enabled="false"/>
+            android:textColor="@color/grey_nonactive_text" />
 
     </LinearLayout>
 
