@@ -81,60 +81,8 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
         return productIds.contains(getDataRow(position).getProductId());
     }
 
-//    private void sortAllVisitableBasedOnChecked(){
-//
-////        Collections.sort(visitables, new Comparator<Visitable>() {
-////            @Override
-////            public int compare(Visitable visitable, Visitable t1) {
-////                boolean isFirstChecked = isChecked(visitable);
-////                boolean isSecondChecked = isChecked(t1);
-////                if(isFirstChecked && !isSecondChecked) {
-////                    return -1;
-////                }
-////                else if(!isFirstChecked && isSecondChecked) {
-////                    return 1;
-////                }
-////                return 0;
-////            }
-////        });
-//    }
-//
-//    private boolean isChecked(Visitable element) {
-//        AttachProductItemViewModel item = (AttachProductItemViewModel)element;
-//        return productIds.contains(item.getProductId());
-//    }
-//
-//    @Override
-//    public void addElement(List<? extends Visitable> visitables) {
-////        Iterator<? extends Visitable> iterator = visitables.iterator();
-////        while(iterator.hasNext()){
-////            AttachProductItemViewModel itemViewModel = (AttachProductItemViewModel) iterator.next();
-////            if(!productIds.contains(itemViewModel.getProductId())){
-////                this.visitables.add(itemViewModel);
-////            }
-////        }
-////        this.visitables.addAll(visitables);
-////        sortAllVisitableBasedOnChecked();
-////        notifyDataSetChanged();
-//    }
-//
-//    @Override
-//    public void addMoreData(List<? extends Visitable> data) {
-//        addElement(data);
-//    }
 
     public List<AttachProductItemViewModel> getCheckedDataList(){
-//        ArrayList<AttachProductItemViewModel> productItemViewModels = new ArrayList<>();
-//        int totalChecked = getCheckedCount();
-//        for (Visitable visitable: visitables){
-//            if(totalChecked == 0){
-//                break;
-//            }
-//            else if(isChecked(visitable)){
-//                productItemViewModels.add((AttachProductItemViewModel)visitable);
-//                totalChecked--;
-//            }
-//        }
         return checkedList;
     }
 }
