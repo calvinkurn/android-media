@@ -33,7 +33,7 @@ import java.util.List;
  * Created by nathan on 8/4/17.
  */
 
-public class ProductVariantPickerSearchNewFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantOption>
+public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantOption>
         implements BasePickerItemSearchList<ProductVariantOption>,
         BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantOption>,
         BaseEmptyDataBinder.Callback {
@@ -70,8 +70,8 @@ public class ProductVariantPickerSearchNewFragment extends BaseSearchListFragmen
 
     }
 
-    public static ProductVariantPickerSearchNewFragment newInstance() {
-        return new ProductVariantPickerSearchNewFragment();
+    public static ProductVariantPickerSearchFragment newInstance() {
+        return new ProductVariantPickerSearchFragment();
     }
 
     @Override

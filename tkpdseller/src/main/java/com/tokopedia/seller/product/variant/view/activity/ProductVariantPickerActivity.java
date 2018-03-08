@@ -14,7 +14,6 @@ import android.view.View;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -22,8 +21,8 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.product.variant.view.dialog.ProductVariantItemPickerAddDialogFragment;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheNewFragment;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchNewFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 
 import java.util.ArrayList;
@@ -34,11 +33,11 @@ import java.util.List;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActivity<ProductVariantOption>
+public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantOption>
         implements ProductVariantPickerMultipleItem<ProductVariantOption>,
         ProductVariantItemPickerAddDialogFragment.Listener,
-        ProductVariantPickerCacheNewFragment.OnProductVariantPickerCacheNewFragmentListener,
-        ProductVariantPickerSearchNewFragment.OnProductVariantPickerSearchNewFragmentListener,
+        ProductVariantPickerCacheFragment.OnProductVariantPickerCacheNewFragmentListener,
+        ProductVariantPickerSearchFragment.OnProductVariantPickerSearchNewFragmentListener,
         ProductVariantItemPickerAddDialogFragment.OnProductVariantItemPickerAddDialogFragmentListener {
 
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
@@ -91,12 +90,12 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     @Override
     protected Fragment getInitialSearchListFragment() {
-        return ProductVariantPickerSearchNewFragment.newInstance();
+        return ProductVariantPickerSearchFragment.newInstance();
     }
 
     @Override
     protected Fragment getInitialCacheListFragment() {
-        return ProductVariantPickerCacheNewFragment.newInstance();
+        return ProductVariantPickerCacheFragment.newInstance();
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     @Override
     public void removeAllItemFromSearch() {
-        ((ProductVariantPickerCacheNewFragment) getCacheListFragment()).removeAllItem();
+        ((ProductVariantPickerCacheFragment) getCacheListFragment()).removeAllItem();
         updateBottomSheetInfo();
     }
 
@@ -131,7 +130,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
     @Override
     public void onTextPickerSubmitted(String text) {
         ProductVariantOption productVariantOption = new ProductVariantOption(0, text, null, null);
-        ((ProductVariantPickerSearchNewFragment) getSearchFragment()).addCustomOption(productVariantOption);
+        ((ProductVariantPickerSearchFragment) getSearchFragment()).addCustomOption(productVariantOption);
         addItemFromSearch(productVariantOption);
         validateFooterAndInfoView();
         expandBottomSheet();
@@ -224,7 +223,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         Fragment fragment = getSearchListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((ProductVariantPickerSearchNewFragment) fragment).getFilteredList().size();
+            selectedItemSize = ((ProductVariantPickerSearchFragment) fragment).getFilteredList().size();
         }
         return selectedItemSize;
     }
@@ -233,7 +232,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         Fragment fragment = getCacheListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((ProductVariantPickerCacheNewFragment) fragment).getItemList().size();
+            selectedItemSize = ((ProductVariantPickerCacheFragment) fragment).getItemList().size();
         }
         return selectedItemSize;
     }
@@ -279,7 +278,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
     }
 
     private boolean isMaxVariantReached() {
-        return ((ProductVariantPickerCacheNewFragment) getCacheListFragment()).getItemList().size()
+        return ((ProductVariantPickerCacheFragment) getCacheListFragment()).getItemList().size()
                 >= ProductVariantConstant.MAX_LIMIT_VARIANT;
     }
 
@@ -290,7 +289,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
     @Override
     public boolean doesVariantOptionAlreadyExist(@NonNull String trimmedStringToAdd) {
         List<ProductVariantOption> productVariantOptionList =
-                ((ProductVariantPickerSearchNewFragment) getSearchFragment()).getAllList();
+                ((ProductVariantPickerSearchFragment) getSearchFragment()).getAllList();
         for (int i = 0, sizei = productVariantOptionList.size(); i < sizei; i++) {
             ProductVariantOption productVariantOption = productVariantOptionList.get(i);
             if (productVariantOption.getValue().equalsIgnoreCase(trimmedStringToAdd)) {
@@ -314,7 +313,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
     }
 
     public void showAddDialog() {
-        showAddDialog(((ProductVariantPickerSearchNewFragment) getSearchFragment()).getSearchText());
+        showAddDialog(((ProductVariantPickerSearchFragment) getSearchFragment()).getSearchText());
     }
 
 

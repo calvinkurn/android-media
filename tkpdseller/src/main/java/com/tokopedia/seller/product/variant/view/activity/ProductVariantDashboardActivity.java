@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardNewFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
+public class ProductVariantDashboardActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
@@ -36,32 +36,32 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
                                    double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
                                    boolean needRetainImage){
-        Intent intent = new Intent(context, ProductVariantDashboardNewActivity.class);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, currencyType);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_PRICE, defaultPrice);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_STOCK_TYPE, stockType);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_DEFAULT_SKU, defaultSku);
-        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
+        Intent intent = new Intent(context, ProductVariantDashboardActivity.class);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_CURRENCY_TYPE, currencyType);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_PRICE, defaultPrice);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, stockType);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU, defaultSku);
+        intent.putExtra(ProductVariantDashboardActivity.EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ProductVariantDashboardNewFragment.newInstance();
+        return ProductVariantDashboardFragment.newInstance();
     }
 
     @Override
     public void onBackPressed() {
-        if (getFragment() != null && getFragment() instanceof ProductVariantDashboardNewFragment) {
+        if (getFragment() != null && getFragment() instanceof ProductVariantDashboardFragment) {
             if (!validateVariantPrice()) {
                 return;
             }
             Intent intent = new Intent();
             intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());
+                    ((ProductVariantDashboardFragment) getFragment()).getProductVariantViewModel());
             setResult(RESULT_OK, intent);
             this.finish();
         } else {
@@ -71,7 +71,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
     private boolean validateVariantPrice() {
         ProductVariantViewModel productVariantViewModel =
-                ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel();
+                ((ProductVariantDashboardFragment) getFragment()).getProductVariantViewModel();
         if (productVariantViewModel == null) {
             return true;
         }

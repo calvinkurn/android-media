@@ -8,20 +8,20 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardNewViewHolder;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
+import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
 
-public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVariantDashboardNewViewModel> {
+public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVariantDashboardViewModel> {
 
     private int currencyType;
     private String level2String;
 
     private OnProductVariantDashboardNewAdapterListener onProductVariantDashboardNewAdapterListener;
     public interface OnProductVariantDashboardNewAdapterListener{
-        void onImageViewVariantClicked(ProductVariantDashboardNewViewModel model,
+        void onImageViewVariantClicked(ProductVariantDashboardViewModel model,
                                        VariantPictureViewModel pictureViewModel,
                                        int position);
     }
@@ -36,7 +36,7 @@ public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVa
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case ProductVariantDashboardNewViewModel.TYPE:
+            case ProductVariantDashboardViewModel.TYPE:
                 return new ProductVariantDashboardNewViewHolder(getLayoutView(parent,
                         R.layout.item_product_variant_manage_new),
                         currencyType, onProductVariantDashboardNewAdapterListener,

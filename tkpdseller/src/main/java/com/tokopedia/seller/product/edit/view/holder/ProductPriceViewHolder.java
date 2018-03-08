@@ -203,6 +203,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
         if (model.getProductMinOrder() > 0) {
             setMinimumOrder((int) model.getProductMinOrder());
         }
+        //TODO check for the variant
     }
 
     private void showEditPriceDialog() {

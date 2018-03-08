@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ import java.util.List;
 
 public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
+    public static final int MAX_STOCK = 10000;
+    public static final int MIN_STOCK = 1;
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
 
@@ -135,7 +138,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         counterInputPrice.getSpinnerTextView().setClickable(false);
         counterInputPrice.setSpinnerValue(String.valueOf(currencyType));
 
-        // counterInputPrice.removeDefaultTextWatcher();
+        counterInputPrice.removeTextChangedListener(numberTextWatcher);
         if (currencyType == CurrencyTypeDef.TYPE_USD) {
             numberTextWatcher = new CurrencyUsdTextWatcher(counterInputPrice.getCounterEditText(), "0.00") {
                 @Override
@@ -163,8 +166,18 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    counterInputViewStock.removeTextChangedListener(this);
                     String sString = StringUtils.omitNonNumeric(s.toString());
-                    int stock = Integer.parseInt(sString);
+                    int stock;
+                    if (TextUtils.isEmpty(sString)) {
+                        stock = 1;
+                    } else {
+                        stock = Integer.parseInt(sString);
+                    }
+                    counterInputViewStock.setValue(stock);
+                    checkStockValid(stock);
+                    counterInputViewStock.addTextChangedListener(this);
+
                     if (productVariantCombinationViewModel.getStock() == stock) {
                         return;
                     }
@@ -225,7 +238,18 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         return view;
     }
 
-    private void onNumberPriceChanged(){
+    private boolean checkStockValid(int stock) {
+        if (stock < MIN_STOCK || stock > MAX_STOCK) {
+            counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
+                    getContext().getString(R.string.product_minimum_total_stock),
+                    getContext().getString(R.string.product_maximum_total_stock)));
+            return false;
+        }
+        counterInputViewStock.setError(null);
+        return true;
+    }
+
+    private void onNumberPriceChanged() {
         double counterValue = counterInputPrice.getCounterValue();
         productVariantCombinationViewModel.setPriceVar(counterValue);
         checkPriceValid(counterValue);
@@ -233,6 +257,10 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private void onButtonSaveClicked() {
         if (!checkPriceValid(counterInputPrice.getCounterValue())) {
+            CommonUtils.hideKeyboard(getActivity(), getView());
+            return;
+        }
+        if (!checkStockValid((int)counterInputViewStock.getDoubleValue())) {
             CommonUtils.hideKeyboard(getActivity(), getView());
             return;
         }

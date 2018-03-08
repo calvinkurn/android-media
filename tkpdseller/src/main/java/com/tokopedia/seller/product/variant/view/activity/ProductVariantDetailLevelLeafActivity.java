@@ -12,7 +12,6 @@ import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
 /**
  * Created by hendry on 8/2/17.

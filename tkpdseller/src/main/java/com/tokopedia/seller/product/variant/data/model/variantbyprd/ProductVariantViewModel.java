@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
@@ -58,8 +59,8 @@ public class ProductVariantViewModel implements Parcelable {
     }
 
     public void replaceVariantOptionChildFor(int level, ProductVariantOptionChild productVariantOptionChildToAdd) {
-        int index = level -1;
-        if (variantOptionParent == null || variantOptionParent.size() < level ) {
+        int index = level - 1;
+        if (variantOptionParent == null || variantOptionParent.size() < level) {
             return;
         }
         ProductVariantOptionParent productVariantOptionParent = variantOptionParent.get(index);
@@ -67,7 +68,7 @@ public class ProductVariantViewModel implements Parcelable {
             return;
         }
         List<ProductVariantOptionChild> productVariantOptionChildList = productVariantOptionParent.getProductVariantOptionChild();
-        for (int i = 0, sizei = productVariantOptionChildList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
             ProductVariantOptionChild prevProductVariantOptionChild = productVariantOptionChildList.get(i);
             if (prevProductVariantOptionChild.getVuv() == productVariantOptionChildToAdd.getVuv() ||
                     prevProductVariantOptionChild.getValue().equalsIgnoreCase(productVariantOptionChildToAdd.getValue())) {
@@ -146,6 +147,23 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
+    public void changeStockTo(@StockTypeDef int stockType) {
+        if (productVariant != null) {
+            for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
+                if (stockType == StockTypeDef.TYPE_WAREHOUSE) {
+                    productVariantCombinationViewModel.setActive(false);
+                } else {
+                    productVariantCombinationViewModel.setActive(true);
+                    if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
+                        productVariantCombinationViewModel.setSt(1);
+                    } else {
+                        productVariantCombinationViewModel.setSt(0);
+                    }
+                }
+            }
+        }
+    }
+
     public ProductVariantViewModel generateTid() {
         if (!hasSelectedVariant()) {
             return this;
@@ -181,7 +199,7 @@ public class ProductVariantViewModel implements Parcelable {
 
             List<Integer> integerList = new ArrayList<>();
             Integer indexLevel1 = null;
-            if (TextUtils.isEmpty( level1String)) {
+            if (TextUtils.isEmpty(level1String)) {
                 // using pvo
                 indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.getOpt().get(0));
             } else {
@@ -192,7 +210,7 @@ public class ProductVariantViewModel implements Parcelable {
             if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
                 String level2String = productVariantCombinationViewModel.getLevel2String();
                 Integer indexLevel2 = null;
-                if (TextUtils.isEmpty( level1String)) {
+                if (TextUtils.isEmpty(level1String)) {
                     // using pvo
                     indexLevel2 = mapPvoLevel2.get(productVariantCombinationViewModel.getOpt().get(1));
                 } else {

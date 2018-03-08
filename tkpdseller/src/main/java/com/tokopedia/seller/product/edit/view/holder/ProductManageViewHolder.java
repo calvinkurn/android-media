@@ -16,10 +16,10 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +50,10 @@ public class ProductManageViewHolder extends ProductViewHolder {
             @Override
             public void onItemChanged(int position, String entry, String value) {
                 onStockSpinnerValueChanged(value);
+                // change all variant items to the value
+                if (ProductManageViewHolder.this.listener.getCurrentVariantModel()!= null) {
+                    ProductManageViewHolder.this.listener.getCurrentVariantModel().changeStockTo(Integer.parseInt(value));
+                }
             }
         });
         onStockSpinnerValueChanged(stockStatusSpinnerTextView.getSpinnerValue());
@@ -80,11 +84,18 @@ public class ProductManageViewHolder extends ProductViewHolder {
         if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value)) || value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
             stockTotalCounterInputView.setVisibility(View.GONE);
             ProductManageViewHolder.this.listener.onTotalStockUpdated(0);
-        } else {
-            stockTotalCounterInputView.setVisibility(View.VISIBLE);
+
+        } else { // if stock is limited
+            // if product has variant, no need to make stock counter enable.
+            if (listener.getCurrentVariantModel()!= null && listener.getCurrentVariantModel().hasSelectedVariant()) {
+                stockTotalCounterInputView.setVisibility(View.GONE);
+            } else {
+                stockTotalCounterInputView.setVisibility(View.VISIBLE);
+            }
             stockTotalCounterInputView.setValue(1);
-            ProductManageViewHolder.this.listener.onTotalStockUpdated((int) stockTotalCounterInputView.getDoubleValue());
+            ProductManageViewHolder.this.listener.onTotalStockUpdated(1);
         }
+
     }
 
     public void setListener(Listener listener) {
@@ -168,9 +179,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
         switch (requestCode) {
             case REQUEST_CODE_VARIANT:
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data != null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                    if (data != null && data.hasExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         ProductVariantViewModel productVariantViewModel =
-                                data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+                                data.getParcelableExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
                         listener.updateVariantModel(productVariantViewModel);
                         setUiVariantSelection();
                     }
@@ -187,6 +198,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
     private void setUiVariantSelection() {
         ProductVariantViewModel productVariantViewModel = listener.getCurrentVariantModel();
         if (productVariantViewModel == null || !productVariantViewModel.hasSelectedVariant()) {
+            // if user has no variant selected.
             variantLabelView.resetContentText();
             listener.onVariantCountChange(false);
 
@@ -195,7 +207,18 @@ public class ProductManageViewHolder extends ProductViewHolder {
             } else {
                 variantLabelView.setVisibility(View.VISIBLE);
             }
-        } else {
+
+            // enable stock total counter
+            if (stockStatusSpinnerTextView.getSpinnerValue().equalsIgnoreCase(
+                    stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_limited_value))) {
+                stockTotalCounterInputView.setVisibility(View.VISIBLE);
+            } else {
+                stockTotalCounterInputView.setVisibility(View.GONE);
+            }
+             //enable SKU
+            skuEditText.setEnabled(true);
+
+        } else { // product has selected variants
             ProductVariantOptionParent productVariantOptionParentLv1 =
                     productVariantViewModel.getVariantOptionParent(1);
             ProductVariantOptionParent productVariantOptionParentLv2 =
@@ -211,6 +234,11 @@ public class ProductManageViewHolder extends ProductViewHolder {
             variantLabelView.setContent(selectedVariantString);
             listener.onVariantCountChange(true);
             variantLabelView.setVisibility(View.VISIBLE);
+
+            // disable stock total counter
+            stockTotalCounterInputView.setVisibility(View.GONE);
+            // disable SKU
+            skuEditText.setEnabled(false);
         }
     }
 

@@ -66,7 +66,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +169,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             productManageViewHolder.onViewStateRestored(savedInstanceState);
             productDescriptionViewHolder.onViewStateRestored(savedInstanceState);
             productDeliveryInfoViewHolder.onViewStateRestored(savedInstanceState);
+        }
+        if (currentProductViewModel == null) {
+            currentProductViewModel = new ProductViewModel();
         }
 
         View btnSave = view.findViewById(R.id.button_save);
@@ -417,7 +420,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
-        Intent intent = ProductVariantDashboardNewActivity.getIntent(getActivity(),
+        Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
                 currentProductViewModel.getProductVariant(),
                 productPriceViewHolder.getCurrencyType(),
@@ -447,7 +450,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @CallSuper
     public void onSuccessLoadProduct(ProductViewModel model) {
-        currentProductViewModel = model;
+        if (model == null) {
+            currentProductViewModel = new ProductViewModel();
+        } else {
+            currentProductViewModel = model;
+        }
 
         productScoreViewHolder.renderData(currentProductViewModel, valueIndicatorScoreModel);
 
@@ -458,7 +465,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDescriptionViewHolder.renderData(currentProductViewModel);
         productDeliveryInfoViewHolder.renderData(currentProductViewModel);
 
-        onCategoryLoaded(model.getProductCategory().getCategoryId());
+        onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
     }
 
     // Presenter listener part
@@ -652,9 +659,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @CallSuper
     protected ProductViewModel collectDataFromView() {
-        if (currentProductViewModel == null) {
-            currentProductViewModel = new ProductViewModel();
-        }
         productInfoViewHolder.updateModel(currentProductViewModel);
         productImageViewHolder.updateModel(currentProductViewModel);
         productPriceViewHolder.updateModel(currentProductViewModel);
@@ -832,6 +836,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
+        productPriceViewHolder.renderData(currentProductViewModel);
     }
 
     @Override
