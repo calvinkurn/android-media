@@ -33,7 +33,7 @@ public class CartItemHolderData implements Parcelable {
 
 
     public int getErrorFormItemValidationType() {
-        if (cartItemData.getUpdatedData().getRemark().length() > 140) {
+        if (cartItemData.getUpdatedData().getRemark().length() > cartItemData.getUpdatedData().getMaxCharRemark()) {
             this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
             return ERROR_FIELD_MAX_CHAR;

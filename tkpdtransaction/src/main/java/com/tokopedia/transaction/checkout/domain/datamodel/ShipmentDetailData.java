@@ -17,63 +17,14 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
-    private Boolean useInsurance;
-    private Boolean usePartialOrder;
-    private Boolean useDropshipper;
+    private boolean useInsurance;
+    private boolean usePartialOrder;
+    private boolean useDropshipper;
     private String dropshipperName;
     private String dropshipperPhone;
 
     public ShipmentDetailData() {
     }
-
-    protected ShipmentDetailData(Parcel in) {
-        shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
-        totalQuantity = in.readInt();
-        shipmentTickerInfo = in.readString();
-        shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
-        selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
-        selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
-        byte tmpUseInsurance = in.readByte();
-        useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
-        byte tmpUsePartialOrder = in.readByte();
-        usePartialOrder = tmpUsePartialOrder == 0 ? null : tmpUsePartialOrder == 1;
-        byte tmpUseDropshipper = in.readByte();
-        useDropshipper = tmpUseDropshipper == 0 ? null : tmpUseDropshipper == 1;
-        dropshipperName = in.readString();
-        dropshipperPhone = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(shipmentItemData);
-        dest.writeInt(totalQuantity);
-        dest.writeString(shipmentTickerInfo);
-        dest.writeParcelable(shipmentCartData, flags);
-        dest.writeParcelable(selectedShipment, flags);
-        dest.writeParcelable(selectedCourier, flags);
-        dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
-        dest.writeByte((byte) (usePartialOrder == null ? 0 : usePartialOrder ? 1 : 2));
-        dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
-        dest.writeString(dropshipperName);
-        dest.writeString(dropshipperPhone);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
-        @Override
-        public ShipmentDetailData createFromParcel(Parcel in) {
-            return new ShipmentDetailData(in);
-        }
-
-        @Override
-        public ShipmentDetailData[] newArray(int size) {
-            return new ShipmentDetailData[size];
-        }
-    };
 
     public List<ShipmentItemData> getShipmentItemData() {
         return shipmentItemData;
@@ -163,4 +114,49 @@ public class ShipmentDetailData implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.shipmentItemData);
+        dest.writeInt(this.totalQuantity);
+        dest.writeString(this.shipmentTickerInfo);
+        dest.writeParcelable(this.shipmentCartData, flags);
+        dest.writeParcelable(this.selectedShipment, flags);
+        dest.writeParcelable(this.selectedCourier, flags);
+        dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.usePartialOrder ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.useDropshipper ? (byte) 1 : (byte) 0);
+        dest.writeString(this.dropshipperName);
+        dest.writeString(this.dropshipperPhone);
+    }
+
+    protected ShipmentDetailData(Parcel in) {
+        this.shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
+        this.totalQuantity = in.readInt();
+        this.shipmentTickerInfo = in.readString();
+        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        this.selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
+        this.selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
+        this.useInsurance = in.readByte() != 0;
+        this.usePartialOrder = in.readByte() != 0;
+        this.useDropshipper = in.readByte() != 0;
+        this.dropshipperName = in.readString();
+        this.dropshipperPhone = in.readString();
+    }
+
+    public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
+        @Override
+        public ShipmentDetailData createFromParcel(Parcel source) {
+            return new ShipmentDetailData(source);
+        }
+
+        @Override
+        public ShipmentDetailData[] newArray(int size) {
+            return new ShipmentDetailData[size];
+        }
+    };
 }
