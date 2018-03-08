@@ -1053,19 +1053,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim) {
-        ussdInProgress = false;
-        String number = "";
-        if (selectedCheckPulsaBalanceView != null) {
-            selectedCheckPulsaBalanceView.hideProgressbar();
-            number = selectedCheckPulsaBalanceView.getPhoneNumberText();
-        }
-        if (pulsaBalance != null && pulsaBalance.isSuccess()) {
-            pulsaBalance.setMobileNumber(number);
-            startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
-                    categoryDataState.getClientNumberList().get(0).getValidation(),
-                    categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
-        } else {
-            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
+        if (getActivity() != null) {
+            ussdInProgress = false;
+            String number = "";
+            if (selectedCheckPulsaBalanceView != null) {
+                selectedCheckPulsaBalanceView.hideProgressbar();
+                number = selectedCheckPulsaBalanceView.getPhoneNumberText();
+            }
+            if (pulsaBalance != null && pulsaBalance.isSuccess()) {
+                pulsaBalance.setMobileNumber(number);
+                startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
+                        categoryDataState.getClientNumberList().get(0).getValidation(),
+                        categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
+            } else {
+                showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
+            }
         }
     }
 
@@ -1118,10 +1120,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showPulsaBalanceError(String message) {
-        ussdInProgress = false;
-        if (selectedCheckPulsaBalanceView != null)
-            selectedCheckPulsaBalanceView.hideProgressbar();
-        showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
+        if(getActivity() != null) {
+            ussdInProgress = false;
+            if (selectedCheckPulsaBalanceView != null)
+                selectedCheckPulsaBalanceView.hideProgressbar();
+            showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
+        }
     }
 
     @Override
