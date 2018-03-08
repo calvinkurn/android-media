@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductWithWishListUseCase;
@@ -30,23 +33,47 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final UserSession userSession;
+    private final GetShopInfoUseCase getShopInfoUseCase;
 
     @Inject
     public ShopProductListPresenter(GetShopProductWithWishListUseCase getShopProductWithWishListUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
                                     RemoveFromWishListUseCase removeFromWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
-                                    UserSession userSession) {
+                                    UserSession userSession,
+                                    GetShopInfoUseCase getShopInfoUseCase
+    ) {
         this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
         this.userSession = userSession;
+        this.getShopInfoUseCase = getShopInfoUseCase;
     }
 
-    public void getShopPageList(String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
-        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
-        getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
+    @NonNull
+    private static ShopProductRequestModel getShopProductRequestModel(
+            String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
+        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
+        shopProductRequestModel.setShopId(shopId);
+        shopProductRequestModel.setPage(page);
+        if (etalaseId != null)
+            shopProductRequestModel.setEtalaseId(etalaseId);
+
+        if (keyword != null)
+            shopProductRequestModel.setKeyword(keyword);
+
+        if (wholesale > 0)
+            shopProductRequestModel.setWholesale(wholesale);
+
+        if (orderBy > 0)
+            shopProductRequestModel.setOrderBy(orderBy);
+
+        return shopProductRequestModel;
+    }
+
+    public void getShopPageList(final String shopId, final String keyword, final String etalaseId, final int wholesale, final int page, final int orderBy) {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -60,8 +87,28 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             }
 
             @Override
-            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
-                getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
+            public void onNext(ShopInfo shopInfo) {
+                getView().onSuccessGetShopInfo(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
+
+                ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopInfo.getInfo().getShopId(), keyword, etalaseId, wholesale, page, orderBy);
+                getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showGetListError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+                        getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
+                    }
+                });
             }
         });
     }
@@ -112,27 +159,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     public void clearProductCache() {
         deleteShopProductUseCase.executeSync();
-    }
-
-    @NonNull
-    private static ShopProductRequestModel getShopProductRequestModel(
-            String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
-        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
-        shopProductRequestModel.setShopId(shopId);
-        shopProductRequestModel.setPage(page);
-        if (etalaseId != null)
-            shopProductRequestModel.setEtalaseId(etalaseId);
-
-        if (keyword != null)
-            shopProductRequestModel.setKeyword(keyword);
-
-        if (wholesale > 0)
-            shopProductRequestModel.setWholesale(wholesale);
-
-        if (orderBy > 0)
-            shopProductRequestModel.setOrderBy(orderBy);
-
-        return shopProductRequestModel;
     }
 
     public UserSession getUserSession() {

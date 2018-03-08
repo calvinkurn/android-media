@@ -44,7 +44,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private ProgressDialog progressDialog;
     private String shopId;
-    private String shopName;
     private ShopModuleRouter shopModuleRouter;
 
     public static ShopProductListLimitedFragment createInstance() {
@@ -86,12 +85,12 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, shopName));
+                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true, shopName));
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
             }
         }, this);
     }
@@ -114,7 +113,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     public void displayProduct(String shopId, String promotionWebViewUrl, String shopName) {
         this.shopId = shopId;
-        this.shopName = shopName;
         shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
     }
 
@@ -151,8 +149,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 shopId,
                 text,
                 null,
-                null,
-                shopName
+                null
         ));
     }
 

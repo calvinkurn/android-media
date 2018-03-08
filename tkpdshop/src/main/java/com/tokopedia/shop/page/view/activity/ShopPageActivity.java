@@ -296,8 +296,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             public void onClick(View view) {
                 ShopPageActivity.this.startActivity(ShopProductListActivity.createIntent(
                         ShopPageActivity.this,
-                        shopId,
-                        shopName
+                        shopId
                 ));
             }
         });

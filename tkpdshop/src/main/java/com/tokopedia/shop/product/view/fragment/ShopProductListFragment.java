@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.fragment;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -83,15 +84,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
     private String page;
-    private String shopName;
 
     public static ShopProductListFragment createInstance(String shopId,
                                                          String keyword,
                                                          String etalaseId,
                                                          String etalaseName,
                                                          String sort,
-                                                         String page,
-                                                         String shopName) {
+                                                         String page) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_ID, shopId);
@@ -100,7 +99,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bundle.putString(ShopProductListFragment.ETALASE_NAME, etalaseName);
         bundle.putString(ShopProductListActivity.SORT, sort);
         bundle.putString(ShopProductListActivity.PAGE, page);
-        bundle.putString(ShopParamConstant.SHOP_NAME, shopName);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -133,7 +131,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
         page = getArguments().getString(ShopProductListActivity.PAGE, null);
         sortName = getArguments().getString(ShopProductListActivity.SORT, Integer.toString(Integer.MIN_VALUE));
-        shopName = getArguments().getString(ShopParamConstant.SHOP_NAME);
         shopProductListPresenter.attachView(this);
     }
 
@@ -172,7 +169,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId, false, shopName);
+                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId, false);
                     ShopProductListFragment.this.startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
             }
@@ -311,6 +308,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onErrorRemoveFromWishList(Throwable e) {
 
+    }
+
+    @Override
+    public void onSuccessGetShopInfo(String shopName) {
+        ActionBar actionBar = getActivity().getActionBar();
+
+        if (actionBar != null)
+            actionBar.setTitle(shopName);
     }
 
     @Override
