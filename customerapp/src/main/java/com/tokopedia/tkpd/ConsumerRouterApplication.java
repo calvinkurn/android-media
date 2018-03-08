@@ -1299,7 +1299,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     public TokoCashData call(Throwable throwable) {
                         if (throwable instanceof UserInactivateTokoCashException) {
                             Action action = new Action();
-                            action.setmText("Aktivasi");
+                            action.setmText("Aktivasi TokoCash");
                             action.setmAppLinks("tokopedia://wallet/activation");
                             TokoCashData tokoCashData = new TokoCashData();
                             tokoCashData.setBalance("");

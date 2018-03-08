@@ -192,9 +192,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(com.tokopedia.tokocash.R.string.title_dialog_wrong_scan));
+        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
-        builder.setPositiveButton(getString(com.tokopedia.tokocash.R.string.btn_dialog_wrong_scan),
+        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
