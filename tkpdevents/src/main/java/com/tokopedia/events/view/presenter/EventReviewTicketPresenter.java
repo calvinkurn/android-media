@@ -311,10 +311,12 @@ public class EventReviewTicketPresenter
                         getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                     } else {
                         paymentparams = RequestParams.create();
-                        EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-                        entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-                        entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-                        entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                        if (selectedSeatViewModel != null) {
+                            EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
+                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
+                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
+                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                        }
                         paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();
                     }

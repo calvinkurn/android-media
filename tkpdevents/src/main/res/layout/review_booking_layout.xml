@@ -235,7 +235,7 @@
 
                     <EditText
                         android:id="@+id/tv_visitor_names"
-                        android:layout_width="296dp"
+                        android:layout_width="@dimen/edittext_width"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv2"
                         android:layout_marginBottom="@dimen/margin_default"
