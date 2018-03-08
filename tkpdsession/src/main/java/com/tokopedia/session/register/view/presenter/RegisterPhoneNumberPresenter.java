@@ -4,7 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
+import com.tokopedia.session.login.loginphonenumber.domain.interactor.LoginPhoneNumberUseCase;
+import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
 import com.tokopedia.session.register.domain.interactor.registerphonenumber.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.subscriber.registerphonenumber.CheckMsisdnRegisterPhoneNumberSubscriber;
@@ -26,12 +27,15 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
 
     private final CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase;
     private final RegisterPhoneNumberUseCase registerPhoneNumberUseCase;
+    private final LoginPhoneNumberUseCase loginPhoneNumberUseCase;
 
     @Inject
     public RegisterPhoneNumberPresenter(CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase,
-                                        RegisterPhoneNumberUseCase registerPhoneNumberUseCase) {
+                                        RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+                                        LoginPhoneNumberUseCase loginPhoneNumberUseCase) {
         this.checkMsisdnPhoneNumberUseCase = checkMsisdnPhoneNumberUseCase;
         this.registerPhoneNumberUseCase = registerPhoneNumberUseCase;
+        this.loginPhoneNumberUseCase = loginPhoneNumberUseCase;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
         super.detachView();
         checkMsisdnPhoneNumberUseCase.unsubscribe();
         registerPhoneNumberUseCase.unsubscribe();
+        loginPhoneNumberUseCase.unsubscribe();
     }
 
 
@@ -77,23 +82,8 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     }
 
     @Override
-    public void startAction(RegisterPhoneNumberData data) {
-        switch (data.getAction()) {
-//            case GO_TO_LOGIN:
-//                viewListener.goToAutomaticLogin();
-//                break;
-//            case GO_TO_REGISTER:
-//            case GO_TO_ACTIVATION_PAGE:
-//                if (data.getIsActive() == STATUS_ACTIVE)
-//                    viewListener.goToAutomaticLogin();
-//                else if (data.getIsActive() == STATUS_INACTIVE || data.getIsActive() == STATUS_PENDING)
-//                    viewListener.goToActivationPage(data);
-//                break;
-//            case GO_TO_RESET_PASSWORD:
-//                viewListener.showInfo();
-//                break;
-//            default:
-//                viewListener.onErrorRegister(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
-        }
+    public void loginWithPhoneNumber(String phoneNumber,
+                                     RegisterPhoneNumberModel registerPhoneNumberModel) {
+        loginPhoneNumberUseCase.execute(LoginPhoneNumberUseCase.getParam());
     }
 }

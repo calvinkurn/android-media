@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,7 +21,6 @@ import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.tokocashotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
-import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
@@ -31,7 +29,8 @@ import java.util.ArrayList;
  * @author by nisie on 11/29/17.
  */
 
-public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment implements
+public class
+ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
     RecyclerView methodListRecyclerView;

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
-import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
 
 /**
  * @author by yfsx on 26/2/18.
@@ -44,6 +43,6 @@ public interface RegisterPhoneNumber {
 
         void registerPhoneNumber(String phoneNumber);
 
-        void startAction(RegisterPhoneNumberData viewModel);
+        void loginWithPhoneNumber(String phoneNumber, RegisterPhoneNumberModel registerPhoneNumberModel);
     }
 }

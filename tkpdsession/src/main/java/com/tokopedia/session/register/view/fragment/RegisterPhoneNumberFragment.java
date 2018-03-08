@@ -297,7 +297,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showSuccessRegisterPhoneNumber(RegisterPhoneNumberModel model) {
         dismissLoading();
-        presenter.startAction(model.getRegisterPhoneNumberData());
+        if (model.isSuccess())
+            presenter.loginWithPhoneNumber(phoneNumber.getText().toString(), model);
     }
 
     @Override
