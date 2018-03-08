@@ -32,7 +32,7 @@ public class LoginTextView extends LinearLayout {
     int borderSize;
     boolean imageEnabled;
     GradientDrawable shape;
-    private int drawable;
+    private int resourceId;
     int backgroundColor;
     private float myDefaultPadding;
     private int padding;
@@ -91,7 +91,7 @@ public class LoginTextView extends LinearLayout {
             cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
-            drawable = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
+            resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
         } finally {
             a.recycle();
         }
@@ -105,12 +105,12 @@ public class LoginTextView extends LinearLayout {
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 
         shape.setStroke(borderSize, borderColor);
-        if (drawable != 0) {
-            Drawable imgDrawable = AppCompatResources.getDrawable(context, drawable);
-            (findViewById(R.id.provider_image)).setBackground(imgDrawable);
+        if (resourceId != 0) {
+            Drawable drawable = AppCompatResources.getDrawable(context, resourceId);
+            (findViewById(R.id.provider_image)).setBackground(drawable);
         }
 
-        if (!imageEnabled || drawable == 0) {
+        if (!imageEnabled || resourceId == 0) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
         }
     }

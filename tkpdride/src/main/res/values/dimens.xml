@@ -30,7 +30,16 @@
     <dimen name="width_iv_arrow_pending_fare_dropdown">20dp</dimen>
     <dimen name="height_iv_arrow_pending_fare_dropdown">20dp</dimen>
     <dimen name="four_dp">4dp</dimen>
+    <dimen name="default_input_text_size">16sp</dimen>
     <integer name="anim_duration_medium">300</integer>
     <integer name="tip_grid_col">4</integer>
     <integer name="tip_grid_row">2</integer>
+    <dimen name="min_chat_width">100dp</dimen>
+    <dimen name="chat_view_min_height">48dp</dimen>
+    <dimen name="chat_padding_small">16dp</dimen>
+    <dimen name="chat_padding_large">72dp</dimen>
+    <dimen name="chat_status_width">16dp</dimen>
+    <dimen name="chat_status_height">7dp</dimen>
+    <dimen name="chat_fab_width">52dp</dimen>
+    <dimen name="chat_fab_height">52dp</dimen>
 </resources>

@@ -34,7 +34,7 @@
     <string name="toko_cash_pending_title">Bonus Cashback</string>
     <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
     <string name="toko_cash_pending_close_button">Tutup</string>
-    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir.</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
 
     <string name="react_native_banner_official_title">Official Store</string>
     <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
@@ -77,5 +77,6 @@
     <string name="longpress_jual">Jual</string>
     <string name="longpress_share">Share</string>
     <string name="coupon_copy_text">Kode voucher tersalin</string>
-
+    <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
+    <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
 </resources>
