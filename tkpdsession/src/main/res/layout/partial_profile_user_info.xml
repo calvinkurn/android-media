@@ -34,7 +34,6 @@
             android:id="@+id/tv_subtitle_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:lineSpacingExtra="6sp"
             android:text="@string/subtitle_user_data"
             android:textColor="@color/font_black_disabled_38"

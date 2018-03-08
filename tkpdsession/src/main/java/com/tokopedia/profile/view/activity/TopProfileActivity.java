@@ -22,6 +22,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.ManagePeople;
@@ -33,6 +34,7 @@ import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.di.DaggerTopProfileComponent;
 import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.adapter.TopProfileTabPagerAdapter;
+import com.tokopedia.profile.view.fragment.DisabledPostFragment;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
@@ -343,13 +345,25 @@ public class TopProfileActivity extends BaseEmptyActivity
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
         TopProfileFragment profileFragment;
 
-        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
+        if (topProfileViewModel.isKol()
+                && !GlobalConfig.isSellerApp()
+                && getApplicationContext() instanceof SessionRouter) {
             BaseDaggerFragment kolPostFragment =
                     ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
+            topProfileSectionItemList.add(
+                    new TopProfileSectionItem(TITLE_POST, kolPostFragment));
         }
 
-        if (topProfileViewModel.isUser() || !topProfileViewModel.isKol()) {
+        if (topProfileViewModel.isKol()
+                && GlobalConfig.isSellerApp()) {
+            DisabledPostFragment disabledPostFragment =
+                    DisabledPostFragment.newInstance();
+            topProfileSectionItemList.add(
+                    new TopProfileSectionItem(TITLE_POST, disabledPostFragment));
+        }
+
+        if (topProfileViewModel.isUser()
+                || !topProfileViewModel.isKol()) {
             profileFragment = TopProfileFragment.newInstance();
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE,
                     profileFragment));
@@ -400,7 +414,8 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         });
 
-        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ? View.VISIBLE : View.GONE);
+        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
+                View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,
