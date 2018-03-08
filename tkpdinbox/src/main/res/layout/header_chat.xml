@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/main_header"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_gravity="center"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_header"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/user_avatar"
@@ -22,7 +23,7 @@
         android:layout_alignBottom="@+id/user_avatar"
         android:layout_alignEnd="@+id/user_avatar"
         android:layout_alignRight="@+id/user_avatar"
-        android:src="@drawable/dot_notification"
+        app:srcCompat="@drawable/dot_notification"
         android:visibility="gone"
         tools:visibility="visible"/>
 

@@ -17,7 +17,6 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.features.topAdsSdk)
 

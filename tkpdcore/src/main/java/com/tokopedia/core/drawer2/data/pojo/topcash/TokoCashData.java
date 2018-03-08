@@ -40,7 +40,7 @@ public class TokoCashData implements Parcelable {
     private List<String> abTags;
     @SerializedName("raw_balance")
     @Expose
-    private int raw_balance;
+    private long raw_balance;
     @SerializedName("total_balance")
     @Expose
     private String totalBalance;
@@ -73,7 +73,7 @@ public class TokoCashData implements Parcelable {
         }
         link = in.readInt();
         abTags = in.createStringArrayList();
-        raw_balance = in.readInt();
+        raw_balance = in.readLong();
         totalBalance = in.readString();
         rawTotalBalance = in.readLong();
         holdBalance = in.readString();
@@ -114,7 +114,7 @@ public class TokoCashData implements Parcelable {
         }
         parcel.writeInt(link);
         parcel.writeStringList(abTags);
-        parcel.writeInt(raw_balance);
+        parcel.writeLong(raw_balance);
         parcel.writeString(totalBalance);
         parcel.writeLong(rawTotalBalance);
         parcel.writeString(holdBalance);
@@ -175,6 +175,10 @@ public class TokoCashData implements Parcelable {
         return mAppLinks;
     }
 
+    public void setmAppLinks(String mAppLinks) {
+        this.mAppLinks = mAppLinks;
+    }
+
     public List<String> getAbTags() {
         return abTags;
     }
@@ -183,11 +187,11 @@ public class TokoCashData implements Parcelable {
         this.abTags = abTags;
     }
 
-    public int getRaw_balance() {
+    public long getRaw_balance() {
         return raw_balance;
     }
 
-    public void setRaw_balance(int raw_balance) {
+    public void setRaw_balance(long raw_balance) {
         this.raw_balance = raw_balance;
     }
 
@@ -240,6 +244,7 @@ public class TokoCashData implements Parcelable {
     }
 
     public TokoCashData() {
+
     }
 
 }

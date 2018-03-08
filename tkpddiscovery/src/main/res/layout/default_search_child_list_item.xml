@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <View
@@ -47,7 +48,7 @@
             android:layout_margin="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="12dp"
-            android:src="@drawable/ic_diagonal_arrow"/>
+            app:srcCompat="@drawable/ic_diagonal_arrow"/>
 
     </LinearLayout>
 </LinearLayout>

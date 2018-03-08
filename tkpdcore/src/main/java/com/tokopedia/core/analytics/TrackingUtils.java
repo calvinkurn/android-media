@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -9,10 +10,12 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
+import com.google.gson.Gson;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -20,6 +23,7 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
@@ -50,7 +54,6 @@ public class TrackingUtils extends TrackingConfig {
                 .sendCampaign(temp)
                 .clearCampaign(campaign);
     }
-
 
     public static void activityBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();

@@ -128,7 +128,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         checkIfForceLogoutMustShow();
     }
 
-    private void sendScreenAnalytics() {
+    protected void sendScreenAnalytics() {
         ScreenTracking.sendScreen(this, this);
     }
 
