@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.neenbedankt.android-apt'
 
-
 dependencies {
     compile project(rootProject.ext.libraries.design)
     compile rootProject.ext.supportLibDependencies.appCompactV7
