@@ -125,7 +125,7 @@ public class ChatRoomContract {
 
         void startAttachProductActivity(String shopId, String shopName, boolean isSeller);
 
-        void productClicked(Integer productId, String productName, String productPrice, Long dateTime);
+        void productClicked(Integer productId, String productName, String productPrice, Long dateTime, String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{

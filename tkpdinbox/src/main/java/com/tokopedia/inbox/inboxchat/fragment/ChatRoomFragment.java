@@ -7,7 +7,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -46,6 +48,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
@@ -110,6 +113,7 @@ import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
+import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.ROLE_SELLER;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -119,7 +123,7 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant
         , WebSocketInterface {
-
+    private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
     private static final long MILIS_TO_SECOND = 1000;
@@ -1229,18 +1233,27 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void productClicked(Integer productId, String productName, String productPrice, Long dateTimeReply) {
+    public void productClicked(Integer productId, String productName, String productPrice, Long dateTimeReply,String url) {
         trackProductClicked();
-        TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setProductPrice(productPrice)
-                .setProductName(productName)
-                .setDateTimeInMilis(dateTimeReply)
-                .build();
+        String senderRole = getArguments().getString(PARAM_SENDER_ROLE, "");
+        if(!GlobalConfig.isSellerApp() || !senderRole.equals(ROLE_SHOP)) {
+            TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
+            ProductPass productPass = ProductPass.Builder.aProductPass()
+                    .setProductId(productId)
+                    .setProductPrice(productPrice)
+                    .setProductName(productName)
+                    .setDateTimeInMilis(dateTimeReply)
+                    .build();
 
-        Intent intent = router.getProductDetailIntent(getContext(),productPass);
-        startActivity(intent);
+            Intent intent = router.getProductDetailIntent(getContext(), productPass);
+            startActivity(intent);
+        }
+        else {
+            //Necessary to do it this way to prevent PDP opened in seller app
+            //otherwise someone other than the owner can access PDP with topads promote page
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
+        }
     }
 
     private void trackProductClicked(){

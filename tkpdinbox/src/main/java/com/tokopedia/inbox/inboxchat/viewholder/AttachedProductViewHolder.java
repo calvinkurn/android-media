@@ -57,6 +57,7 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
     private Integer productId;
     private String productName;
     private String productPrice;
+    private String productUrl;
     private long dateTimeInMilis;
     @LayoutRes
     public static final int LAYOUT = R.layout.attached_product_chat_item;
@@ -92,6 +93,9 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
                 productContainerView.setBackground(context.getResources().getDrawable(R.drawable.attach_product_left_bubble));
                 setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT,productContainerView);
                 chatStatus.setVisibility(View.GONE);
+                name.setVisibility(View.GONE);
+                label.setVisibility(View.GONE);
+                dot.setVisibility(View.GONE);
             }
 
             setupProductUI(attachmentModel.getAttributes(),productContainerView);
@@ -115,6 +119,7 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
             this.productId = attachmentAttributes.getProductId();
             this.productName = productProfile.getName();
             this.productPrice = productProfile.getPrice();
+            this.productUrl = productProfile.getUrl();
             setUIValue(productContainer, R.id.attach_product_chat_image,productProfile.getImageUrl());
             setUIValue(productContainer,R.id.attach_product_chat_name,productProfile.getName());
             setUIValue(productContainer,R.id.attach_product_chat_price,productProfile.getPrice());
@@ -146,7 +151,7 @@ public class AttachedProductViewHolder extends AbstractViewHolder<AttachProductV
             @Override
             public void onClick(View view) {
                 if(productId != null && productName != null && productPrice != null){
-                    viewListener.productClicked(productId,productName,productPrice,dateTimeInMilis);
+                    viewListener.productClicked(productId,productName,productPrice,dateTimeInMilis,productUrl);
                 }
             }
         });
