@@ -7,6 +7,7 @@ import com.tokopedia.posapp.bank.data.source.local.BankLocalSource;
 
 /**
  * Created by okasurya on 9/5/17.
+ * Deprecated because of unnecessary layer
  */
 @Deprecated
 public class BankFactory {

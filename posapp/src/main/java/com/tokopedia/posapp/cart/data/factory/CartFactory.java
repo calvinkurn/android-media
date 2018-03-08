@@ -4,6 +4,7 @@ import com.tokopedia.posapp.cart.CartLocalSource;
 
 /**
  * Created by okasurya on 8/22/17.
+ * Deprecated because of unnecessary layer
  */
 @Deprecated
 public class CartFactory {

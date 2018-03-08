@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 /**
  * Created by okasurya on 9/28/17.
+ * Deprecated because of unnecessary layer
  */
 @Deprecated
 public class ValidatePasswordFactory {

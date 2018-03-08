@@ -6,6 +6,7 @@ import com.tokopedia.posapp.outlet.data.source.OutletCloudSource;
 
 /**
  * Created by okasurya on 7/31/17.
+ * Deprecated because of unnecessary layer
  */
 @Deprecated
 public class OutletFactory {
