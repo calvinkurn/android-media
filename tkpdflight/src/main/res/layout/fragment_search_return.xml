@@ -28,7 +28,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/padding_med"
             android:layout_marginRight="@dimen/padding_med"
-            android:src="@drawable/ic_flight_round"/>
+            app:srcCompat="@drawable/ic_flight_round"/>
 
         <LinearLayout
             android:layout_width="match_parent"
