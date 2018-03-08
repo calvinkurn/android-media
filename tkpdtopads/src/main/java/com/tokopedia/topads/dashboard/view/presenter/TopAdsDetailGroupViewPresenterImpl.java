@@ -41,7 +41,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onTurnOnAdError();
+                topAdsDetailViewListener.onTurnOnAdError(throwable);
             }
         });
     }

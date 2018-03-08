@@ -38,7 +38,7 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailViewListener.onTurnOnAdError();
+                topAdsDetailViewListener.onTurnOnAdError(throwable);
             }
         });
     }
