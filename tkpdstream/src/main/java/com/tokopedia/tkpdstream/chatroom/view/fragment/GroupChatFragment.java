@@ -950,6 +950,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
                     || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
                 progressBarWithTimer.setVisibility(View.GONE);
+                progressBarWithTimer.cancel();
                 setVoteHasEnded();
             } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
                 hideVoteLayout();
