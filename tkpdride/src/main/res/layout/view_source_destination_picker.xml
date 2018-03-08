@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
             android:layout_height="35dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20.5dp"
-            android:src="@drawable/cabs_src_dest_line" />
+            app:srcCompat="@drawable/cabs_src_dest_line" />
 
         <RelativeLayout
             android:id="@+id/crux_cabs_source_container"
@@ -28,7 +29,7 @@
                 android:layout_height="13dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/cabs_source_ic" />
+                app:srcCompat="@drawable/cabs_source_ic" />
 
             <TextView
                 android:id="@+id/crux_cabs_source"
@@ -81,7 +82,7 @@
                 android:layout_height="13dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/cabs_dest_ic" />
+                app:srcCompat="@drawable/cabs_dest_ic" />
 
             <TextView
                 android:id="@+id/crux_cabs_destination"
@@ -111,7 +112,7 @@
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/blue_close_icon"
+                app:srcCompat="@drawable/blue_close_icon"
                 android:tint="@color/grey_500"
                 android:visibility="gone" />
 

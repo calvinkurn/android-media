@@ -43,7 +43,7 @@ public class CloudWalletDataSource implements WalletDataSource {
 
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
-        String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash.json");
+        String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash_2.json");
         return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
                 HelpHistoryTokoCashEntity[].class)));
     }
