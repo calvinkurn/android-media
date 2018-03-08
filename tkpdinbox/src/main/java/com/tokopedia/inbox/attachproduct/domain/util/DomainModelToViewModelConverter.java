@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.attachproduct.domain.util;
 
-import com.tokopedia.core.shopinfo.models.productmodel.Product;
+import com.tokopedia.inbox.attachproduct.data.model.DataProductResponse;
 import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 /**
@@ -8,7 +8,7 @@ import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewMod
  */
 
 public class DomainModelToViewModelConverter {
-    public static AttachProductItemViewModel convertProductDomainModel(Product product){
+    public static AttachProductItemViewModel convertProductDomainModel(DataProductResponse product){
         return new AttachProductItemViewModel(product.getProductUrl(),
                 product.getProductName(),
                 product.getProductId(),

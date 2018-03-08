@@ -10,11 +10,11 @@ import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewMod
  */
 
 public class ResultProduct implements Parcelable {
-    Integer productId;
-    String productUrl;
-    String productImageThumbnail;
-    String price;
-    String name;
+    private Integer productId;
+    private String productUrl;
+    private String productImageThumbnail;
+    private String price;
+    private String name;
     public ResultProduct(Integer productId, String productUrl, String productImageThumbnail, String price, String name) {
         this.productId = productId;
         this.productUrl = productUrl;

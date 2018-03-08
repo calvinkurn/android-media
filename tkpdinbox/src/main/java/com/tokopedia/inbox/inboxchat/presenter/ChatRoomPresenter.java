@@ -16,7 +16,6 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
@@ -303,7 +302,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addDummyInitialMessage();
+            getView().addInitialMessageBalloon();
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,

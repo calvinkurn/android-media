@@ -7,16 +7,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**

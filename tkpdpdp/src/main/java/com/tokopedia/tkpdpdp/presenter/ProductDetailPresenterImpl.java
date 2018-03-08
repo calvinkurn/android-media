@@ -312,7 +312,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
                             }
-                            validateProductDataWithProductPassAndShowMessage(productDetailData,productPass);
+                            validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
 
                         @Override
@@ -827,7 +827,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         } else {
                             data.getInfo().setHasVariant(false);
                         }
-                        validateProductDataWithProductPassAndShowMessage(data,productPass);
+                        validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
 
                     @Override
@@ -1082,7 +1082,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass){
+    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass, @NonNull Context context){
         if(productPass == null)
             return;
         if(productPass.getDateTimeInMilis() != 0){
@@ -1092,7 +1092,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy, HH:mm", Locale.ENGLISH);
                 Date lastUpdateDate = df.parse(lastUpdate);
                 if(lastUpdateDate.after(date)){
-                    viewListener.showToastMessage("Produk telah diperbaharui pada "+lastUpdate);
+                    viewListener.showToastMessage(context.getString(R.string.product_updated_on_message_container, lastUpdate));
                 }
             }
             catch (ParseException ex)

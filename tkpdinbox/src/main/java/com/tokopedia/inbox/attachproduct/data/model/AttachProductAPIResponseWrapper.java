@@ -2,7 +2,6 @@ package com.tokopedia.inbox.attachproduct.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.shopinfo.models.productmodel.Product;
 
 import java.util.List;
 
@@ -13,13 +12,13 @@ import java.util.List;
 public class AttachProductAPIResponseWrapper {
     @SerializedName("list")
     @Expose
-    List<Product> products;
+    private List<DataProductResponse> products;
 
-    public List<Product> getProducts() {
+    public List<DataProductResponse> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<DataProductResponse> products) {
         this.products = products;
     }
 }

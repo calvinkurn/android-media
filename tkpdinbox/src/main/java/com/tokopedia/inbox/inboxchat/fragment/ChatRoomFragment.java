@@ -381,7 +381,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         getArguments().getString(ChatRoomActivity.PARAM_SENDER_NAME,""),
                         getArguments().getString(PARAM_SENDER_ROLE, "")
                 );
-//                startAttach();
             }
         });
     }
@@ -401,16 +400,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             attachButton.setVisibility(View.GONE);
         }
     }
-
-    /*@Override
-    public void addUrlToReply(String url) {
-        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
-                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
-        int temp = replyColumn.getSelectionEnd();
-        replyColumn.setText(String.format("%s\n%s", replyColumn.getText(), url));
-        replyColumn.setSelection(temp);
-    }*/
 
     @Override
     public void addTemplateString(String message) {
@@ -831,7 +820,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
 
     @Override
-    public void addDummyInitialMessage() {
+    public void addInitialMessageBalloon() {
         MyChatViewModel item = new MyChatViewModel();
         item.setMsg(getReplyMessage());
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
@@ -1247,8 +1236,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void trackProductClicked(){
-        ((AbstractionRouter)getActivity().getApplicationContext()).getAnalyticTracker().sendEventTracking(
-                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
-        );
+        if((getActivity().getApplicationContext() instanceof AbstractionRouter)){
+            AbstractionRouter abstractionRouter = (AbstractionRouter)getActivity().getApplicationContext();
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+            );
+        }
     }
 }

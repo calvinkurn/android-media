@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +14,15 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
-import com.tokopedia.inbox.attachproduct.di.AttachProductComponent;
 import com.tokopedia.inbox.attachproduct.di.DaggerAttachProductComponent;
+import com.tokopedia.inbox.attachproduct.view.AttachProductContract;
 import com.tokopedia.inbox.attachproduct.view.AttachProductPresenter;
-import com.tokopedia.inbox.attachproduct.view.AttachProductPresenterImpl;
 import com.tokopedia.inbox.attachproduct.view.adapter.AttachProductListAdapter;
 import com.tokopedia.inbox.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
 import com.tokopedia.inbox.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
@@ -40,18 +38,18 @@ import javax.inject.Inject;
 
 public class AttachProductFragment extends BaseSearchListFragment<AttachProductItemViewModel,AttachProductListAdapterTypeFactory>
         implements CheckableInteractionListenerWithPreCheckedAction,
-                   AttachProductPresenter.View {
-    final static int MAX_CHECKED = 3;
-    Button sendButton;
-    SwipeRefreshLayout swipeRefreshLayout;
+                   AttachProductContract.View {
+    private final static int MAX_CHECKED = 3;
+    private Button sendButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Inject
-    AttachProductPresenter.Presenter presenter;
+    AttachProductPresenter presenter;
 
-    private AttachProductPresenter.Activity activityContract;
+    private AttachProductContract.Activity activityContract;
     protected AttachProductListAdapter adapter;
 
-    public void setActivityContract(AttachProductPresenter.Activity activityContract) {
+    public void setActivityContract(AttachProductContract.Activity activityContract) {
         this.activityContract = activityContract;
     }
 
@@ -99,7 +97,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         super.onStart();
     }
 
-    public static AttachProductFragment newInstance(AttachProductPresenter.Activity checkedUIView) {
+    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
         Bundle args = new Bundle();
         AttachProductFragment fragment = new AttachProductFragment();
         fragment.setActivityContract(checkedUIView);
@@ -115,9 +113,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onSearchTextChanged(String text) {
-        if(text!=null && text.length()==0){
+        if(TextUtils.isEmpty(text))
             loadInitialData();
-        }
     }
 
     @Override
@@ -234,8 +231,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     }
 
     private void trackAction(){
-        ((AbstractionRouter)getActivity().getApplicationContext()).getAnalyticTracker().sendEventTracking(
-                AttachProductAnalytics.getEventCheckProduct().getEvent()
-        );
+        if((getActivity().getApplicationContext() instanceof AbstractionRouter)){
+            AbstractionRouter abstractionRouter = (AbstractionRouter)getActivity().getApplicationContext();
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    AttachProductAnalytics.getEventCheckProduct().getEvent()
+            );
+        }
     }
 }

@@ -1,8 +1,7 @@
 package com.tokopedia.inbox.attachproduct.domain.model;
 
-import com.tokopedia.core.shopinfo.models.productmodel.Product;
+import com.tokopedia.inbox.attachproduct.data.model.DataProductResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,13 +9,13 @@ import java.util.List;
  */
 
 public class AttachProductDomainModel {
-    List<Product> products;
+    private List<DataProductResponse> products;
 
-    public List<Product> getProducts() {
+    public List<DataProductResponse> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<DataProductResponse> products) {
         this.products = products;
     }
 }

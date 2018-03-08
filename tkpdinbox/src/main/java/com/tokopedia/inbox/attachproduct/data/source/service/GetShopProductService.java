@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.attachproduct.data.source.service;
 
-import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.inbox.attachproduct.data.source.api.TomeGetShopProductAPI;

@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.attachproduct.view.AttachProductPresenter;
+import com.tokopedia.inbox.attachproduct.view.AttachProductContract;
 import com.tokopedia.inbox.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 
@@ -20,16 +19,16 @@ import java.util.ArrayList;
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductActivity extends BaseSimpleActivity implements AttachProductPresenter.Activity {
+public class AttachProductActivity extends BaseSimpleActivity implements AttachProductContract.Activity {
     public static final int TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 113;
     public static final int TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324;
     public static final String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY = "TKPD_ATTACH_PRODUCT_SHOP_ID";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY = "TKPD_ATTACH_PRODUCT_SHOP_NAME";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
-    String shopId;
-    String shopName;
-    boolean isSeller;
+    private String shopId;
+    private String shopName;
+    private boolean isSeller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +51,6 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
             shopName = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
         else
             shopName = "";
-//        16sp & 12sp
         toolbar.setSubtitleTextAppearance(this,R.style.AttachProductToolbarSubTitle_SansSerif);
         toolbar.setTitleTextAppearance(this,R.style.AttachProductToolbarTitle_SansSerif);
         toolbar.setSubtitle(shopName);

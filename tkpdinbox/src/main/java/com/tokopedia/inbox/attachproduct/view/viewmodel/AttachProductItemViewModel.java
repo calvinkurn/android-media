@@ -3,15 +3,8 @@ package com.tokopedia.inbox.attachproduct.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.shopinfo.models.productmodel.Badge;
-import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.inbox.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Hendri on 13/02/18.

@@ -101,7 +101,7 @@ public class ChatRoomContract {
 
         void onSuccessInitMessage();
 
-        void addDummyInitialMessage();
+        void addInitialMessageBalloon();
 
         void disableAction();
 
