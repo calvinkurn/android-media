@@ -182,8 +182,8 @@ public class GroupChatMessagesMapper {
                     activePollPojo.getStatus(),
                     activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
-                    "INFO YG PERLU DI UPDATE",
-                    "Belon ada",
+                    VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
+                    "https://tokopedia.com",
                     activePollPojo.getStartTime(),
                     activePollPojo.getEndTime()
             );

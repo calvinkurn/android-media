@@ -501,7 +501,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onDestroy() {
         presenter.detachView();
         presenter.logoutChannel(mChannel);
-
+        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+        progressBarWithTimer.cancel();
         super.onDestroy();
     }
 
@@ -841,10 +843,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserKicked(final String errorMessage) {
+    public void onUserBanned(final String errorMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.default_banned_title);
         builder.setMessage(errorMessage);
-        builder.setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -858,11 +861,33 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserKicked() {
-        onUserKicked(getString(R.string.default_kicked_message));
+    public void onChannelNotFound(String errorMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.channel_not_found);
+        builder.setMessage(errorMessage);
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                getActivity().finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
-    public void showVoteLayout(VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
+    @Override
+    public void onUserBanned() {
+        onUserBanned(getString(R.string.user_is_banned));
+    }
+
+    @Override
+    public void onChannelDeleted() {
+
+    }
+
+    public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
         voteBar.setVisibility(View.VISIBLE);
 
         LinearLayoutManager voteLayoutManager;
@@ -886,11 +911,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         participant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                 , getActivity().getString(R.string.participant)));
-        voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
+        voteInfoLink.setText(voteInfoViewModel.getVoteInfoStringResId());
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //openwebview from getVoteInfoUrl
+                ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                        (getActivity(), voteInfoViewModel.getVoteInfoUrl());
             }
         });
 

@@ -141,11 +141,10 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
-        if (getApplicationContext() instanceof TkpdInboxRouter
-                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat()) {
-            indicator.setVisibility(View.GONE);
-        } else {
+        if (isEnabledGroupChat()) {
             indicator.setVisibility(View.VISIBLE);
+        } else {
+            indicator.setVisibility(View.GONE);
         }
 
         if (getIntent().getExtras() != null
@@ -157,6 +156,11 @@ public class InboxChatActivity extends DrawerPresenterActivity
             initTopChatFragment();
         }
 
+    }
+
+    private boolean isEnabledGroupChat() {
+        return getApplicationContext() instanceof TkpdInboxRouter
+                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
     }
 
     private List<IndicatorItem> getIndicatorList() {
@@ -289,7 +293,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     public void showIndicators() {
-        if (!GlobalConfig.isSellerApp()) {
+        if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
             indicator.setVisibility(View.VISIBLE);
         }
     }

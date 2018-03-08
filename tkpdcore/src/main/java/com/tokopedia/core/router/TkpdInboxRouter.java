@@ -17,7 +17,7 @@ public interface TkpdInboxRouter {
     String PRODUCT = "product";
     String PROFILE = "profile";
 
-    String ENABLE_GROUPCHAT = "ENABLE_GROUPCHAT";
+    String ENABLE_GROUPCHAT = "enable_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,

@@ -40,7 +40,9 @@ public class ChannelHandlerUseCase {
 
         void onUserExited(UserActionViewModel userActionViewModel, int participantCount);
 
-        void onUserKicked();
+        void onUserBanned();
+
+        void onChannelDeleted();
     }
 
     public void execute(final String mChannelUrl, final ChannelHandlerListener listener) {
@@ -60,13 +62,13 @@ public class ChannelHandlerUseCase {
             @Override
             public void onUserBanned(OpenChannel channel, User user) {
                 super.onUserBanned(channel, user);
-                listener.onUserKicked();
+                listener.onUserBanned();
             }
 
             @Override
             public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
                 super.onChannelDeleted(channelUrl, channelType);
-                listener.onUserKicked();
+                listener.onChannelDeleted();
             }
 
             @Override
