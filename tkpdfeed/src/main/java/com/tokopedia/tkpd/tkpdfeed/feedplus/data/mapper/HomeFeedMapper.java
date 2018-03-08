@@ -1,27 +1,17 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
+import com.google.gson.Gson;
 import com.tkpdfeed.feeds.HomeFeedQuery;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.InspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.SourceFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.WholesaleDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.DataDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.ShopDomain;
+import com.tokopedia.topads.sdk.domain.model.Data;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +44,11 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
 
                     List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
                             .content().inspirasi());
-
+                    List<Data> topAdsList = convertToTopadsDomain(datum.content().topads());
                     ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                             datum.content(),
-                            inspirationDomains
+                            inspirationDomains,
+                            topAdsList
                     );
                     SourceFeedDomain sourceFeedDomain =
                             createSourceFeedDomain(datum.source());
@@ -68,6 +59,20 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
             }
         }
         return dataFeedDomains;
+    }
+
+    private List<Data> convertToTopadsDomain(List<HomeFeedQuery.Data.Topad> topads) {
+        List<Data> list = new ArrayList<>();
+        if(topads !=null){
+            for (HomeFeedQuery.Data.Topad topad : topads){
+                try {
+                    list.add(new Data(new JSONObject(new Gson().toJson(topad, HomeFeedQuery.Data.Topad.class))));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     private List<InspirationDomain> convertToInspirationDomain(List<HomeFeedQuery.Data.Inspirasi> inspirasi) {
@@ -110,7 +115,8 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
 
     private ContentFeedDomain
     createContentFeedDomain(HomeFeedQuery.Data.Content content,
-                            List<InspirationDomain> inspirationDomains) {
+                            List<InspirationDomain> inspirationDomains,
+                            List<Data> topAdsList) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 0,
@@ -119,6 +125,7 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
                 null,
                 null,
                 inspirationDomains,
+                topAdsList,
                 null,
                 null,
                 null,

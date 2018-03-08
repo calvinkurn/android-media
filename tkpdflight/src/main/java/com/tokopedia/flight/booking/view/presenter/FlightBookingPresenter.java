@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -63,6 +64,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
+    private UserSession userSession;
 
     private static final int GENDER_MAN = 1;
     private static final int GENDER_WOMAN = 2;
@@ -74,7 +76,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                   FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
                                   FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase,
-                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase, FlightAnalytics flightAnalytics) {
+                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
+                                  FlightAnalytics flightAnalytics,
+                                  UserSession userSession) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
@@ -82,6 +86,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
         this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
         this.flightAnalytics = flightAnalytics;
+        this.userSession = userSession;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -457,6 +462,26 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     }
                 })
         );
+    }
+
+    @Override
+    public void initialize() {
+        if (userSession.isMsisdnVerified()) {
+            processGetCartData();
+            onGetProfileData();
+        } else {
+            getView().navigateToOtpPage();
+        }
+    }
+
+    @Override
+    public void onReceiveOtpSuccessResult() {
+        initialize();
+    }
+
+    @Override
+    public void onReceiveOtpCancelResult() {
+        getView().closePage();
     }
 
     @Override

@@ -22,7 +22,7 @@
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/footer"
+            android:layout_above="@+id/footer"
             android:layout_below="@id/ticket_notice">
 
             <android.support.v7.widget.RecyclerView

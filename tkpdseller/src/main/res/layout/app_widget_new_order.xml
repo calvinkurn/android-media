@@ -50,7 +50,7 @@
             android:id="@+id/image_no_result"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_no_result"
+            app:srcCompat="@drawable/ic_no_result"
             android:layout_centerInParent="true"/>
 
         <TextView

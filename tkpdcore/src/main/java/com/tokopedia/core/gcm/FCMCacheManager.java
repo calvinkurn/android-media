@@ -19,6 +19,7 @@ import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -227,7 +228,7 @@ public class FCMCacheManager {
                 }
             }
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
+            if(!GlobalConfig.DEBUG) Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
                     "tkp_code:" + Integer.parseInt(data.getString(NOTIFICATION_CODE)) +
                             " size contentArray " + content.size() +
                             " size codeArray " + code.size() +
@@ -278,16 +279,23 @@ public class FCMCacheManager {
 
     public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
-            SessionHandler sessionHandler = new SessionHandler(context);
-            if (sessionHandler.isV4Login()) {
-                IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
-                FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-                tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
-                tokenUpdate.setOsType(String.valueOf(1));
-                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
-                tokenUpdate.setUserId(sessionHandler.getLoginID());
-                fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-            }
+            updateGcmId(context);
+        }
+    }
+
+    /**
+     * Only call this method when you need to update GCM Id.
+     * Do not change this method**/
+    public static void updateGcmId(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        if (sessionHandler.isV4Login()) {
+            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
+            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
+            tokenUpdate.setOsType(String.valueOf(1));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
+            tokenUpdate.setUserId(sessionHandler.getLoginID());
+            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
         }
     }
 

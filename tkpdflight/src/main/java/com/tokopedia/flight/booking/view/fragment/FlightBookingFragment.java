@@ -21,8 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -87,6 +85,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_REVIEW = 4;
+    private static final int REQUEST_CODE_OTP = 5;
     @Inject
     FlightBookingPresenter presenter;
     private LinearLayout fullPageLoadingLayout;
@@ -254,6 +253,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         }
 
         presenter.onGetProfileData();
+        presenter.initialize();
     }
 
     @Override
@@ -285,7 +285,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         switch (requestCode) {
             case REQUEST_CODE_PASSENGER:
                 if (resultCode == Activity.RESULT_OK) {
-                    hideSameAsContactContainer();
+                    // hideSameAsContactContainer();
                     FlightBookingPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightBookingPassengerActivity.EXTRA_PASSENGER);
                     presenter.onPassengerResultReceived(passengerViewModel);
                 }
@@ -322,12 +322,23 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 }
                 if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
+            case REQUEST_CODE_OTP:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.onReceiveOtpSuccessResult();
+                } else {
+                    presenter.onReceiveOtpCancelResult();
+                }
         }
     }
 
     @Override
     public String getContactName() {
         return etContactName.getText().toString().trim();
+    }
+
+    @Override
+    public void setContactName(String fullname) {
+        etContactName.setText(fullname);
     }
 
     @Override
@@ -657,11 +668,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void setContactName(String fullname) {
-        etContactName.setText(fullname);
-    }
-
-    @Override
     public void setContactEmail(String email) {
         etContactEmail.setText(email);
     }
@@ -696,18 +702,26 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         showMessageErrorInSnackBar(resId);
     }
 
+    @Override
+    public void navigateToOtpPage() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getPhoneVerifIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_OTP);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
+    }
+
     public void onBackPressed() {
         presenter.deleteAllPassengerList();
     }
 
     @Override
-    public void canGoBack() {
-        getActivity().finish();
-    }
-
-    @Override
     public void setSameAsContactChecked(boolean isChecked) {
-        ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
+        // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 
 //    private View.OnClickListener getCheckboxClickListener() {
