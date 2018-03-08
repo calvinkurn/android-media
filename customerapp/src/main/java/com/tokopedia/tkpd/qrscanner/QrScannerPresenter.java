@@ -132,6 +132,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     }
 
     private void getAbTagsForContinuingPayment(final String qrCode) {
+        getView().showProgressDialog();
         getBalanceTokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<BalanceTokoCash>() {
             @Override
             public void onCompleted() {
@@ -166,7 +167,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     }
 
     private void getInfoQrWallet(final String qrcode) {
-        getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, qrcode);
         getInfoQrTokoCashUseCase.execute(requestParams, new Subscriber<InfoQrTokoCash>() {
@@ -177,7 +177,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
             @Override
             public void onError(Throwable e) {
-
                 getView().hideProgressDialog();
                 if (e instanceof WalletException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));

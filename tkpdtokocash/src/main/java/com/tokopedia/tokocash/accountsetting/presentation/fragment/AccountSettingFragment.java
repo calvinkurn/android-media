@@ -42,7 +42,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private TextView phoneAccount;
     private RecyclerView rvConnectedUser;
 
-    private TkpdProgressDialog progressDialogNormal;
+    private TkpdProgressDialog progressDialog;
     private RefreshHandler refreshHandler;
     private LinkedAccountAdapter accountListAdapter;
     private ActionListener listener;
@@ -84,6 +84,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
 
         refreshHandler = new RefreshHandler(getActivity(), view, getRefreshHandlerListener());
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
         initialVar();
         refreshHandler.startRefresh();
@@ -101,7 +102,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void initialVar() {
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         accountListAdapter = new LinkedAccountAdapter(new ArrayList<AccountWalletItem>());
         accountListAdapter.setActionListener(getActionListener());
@@ -127,6 +127,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         return new DeleteTokoCashAccountDialog.DeleteAccessAccountListener() {
             @Override
             public void onDeleteAccess(String revokeToken, String identifier, String identifierType) {
+                showProgressDialog();
                 presenter.processDeleteConnectedUser(revokeToken, identifier, identifierType);
             }
         };
@@ -158,6 +159,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void renderSuccessUnlinkToHome() {
+        hideProgressDialog();
         presenter.deleteCacheBalanceAndTokenTokoCash();
         listener.directPageToHome();
     }
@@ -194,6 +196,18 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                         }
                     }
             ).showRetrySnackbar();
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.showDialog();
+        }
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog.isProgress()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
