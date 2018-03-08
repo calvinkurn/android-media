@@ -123,6 +123,10 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
 
     @Override
     public void onBackPressed() {
-        flightBookingPassengerFragment.onBackPressed();
+        if (flightBookingPassengerFragment != null) {
+            flightBookingPassengerFragment.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

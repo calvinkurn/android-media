@@ -125,7 +125,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
     }
 
-    private void renderUi(FlightBookingCartData flightBookingCartData) {
+    public void renderUi(FlightBookingCartData flightBookingCartData, boolean isFromSavedInstance) {
         getView().getCurrentBookingParamViewModel().setId(flightBookingCartData.getId());
         getView().setCartData(flightBookingCartData);
         getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(),
@@ -138,6 +138,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentBookingParamViewModel().getSearchParam());
             getView().getCurrentBookingParamViewModel().setPassengerViewModels(passengerViewModels);
             getView().renderPassengersList(passengerViewModels);
+        }
+        if (isFromSavedInstance) {
+            getView().renderPassengersList(getView().getCurrentBookingParamViewModel().getPassengerViewModels());
         }
         getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(flightBookingCartData.getDefaultPhoneCode());
         getView().renderPhoneCodeView(String.format("+%s", getView().getCurrentBookingParamViewModel().getPhoneCodeViewModel().getCountryPhoneCode()));
@@ -311,7 +314,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         if (isViewAttached()) {
                             flightAnalytics.eventAddToCart(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
                             getView().hideFullPageLoading();
-                            renderUi(flightBookingCartData);
+                            renderUi(flightBookingCartData, false);
                         }
                     }
                 })

@@ -65,6 +65,10 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
 
     @Override
     public void onBackPressed() {
-        flightBookingFragment.onBackPressed();
+        if (flightBookingFragment != null) {
+            flightBookingFragment.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
