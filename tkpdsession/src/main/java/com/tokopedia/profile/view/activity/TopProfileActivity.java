@@ -28,7 +28,6 @@ import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.ProfileComponentInstance;
