@@ -131,7 +131,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
         page = getArguments().getString(ShopProductListActivity.PAGE, null);
         sortName = getArguments().getString(ShopProductListActivity.SORT, Integer.toString(Integer.MIN_VALUE));
-        shopName = getArguments().getString(ShopParamConstant.SHOP_NAME);
         shopProductListPresenter.attachView(this);
     }
 
