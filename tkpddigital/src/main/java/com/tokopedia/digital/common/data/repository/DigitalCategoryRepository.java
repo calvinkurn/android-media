@@ -34,4 +34,9 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
         return favoriteListDataSource.getFavoriteList(param);
     }
 
+    @Override
+    public Observable<String> getHelpUrl(String categoryId) {
+        return categoryDetailDataSource.getHelpUrl(categoryId);
+    }
+
 }

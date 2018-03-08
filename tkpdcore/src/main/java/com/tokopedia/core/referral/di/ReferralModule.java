@@ -51,7 +51,7 @@ public class ReferralModule {
     @ReferralScope
     Retrofit provideRideRetrofit(@ReferralQualifier OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.LIVE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 
 

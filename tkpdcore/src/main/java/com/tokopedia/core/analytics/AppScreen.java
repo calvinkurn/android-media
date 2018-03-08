@@ -274,6 +274,7 @@ public final class AppScreen {
 
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+    public static final String SCREEN_REFERRAL = "Referral";
 
     public static class UnifyScreenTracker {
         public static final String SCREEN_UNIFY_HOME_BERANDA = "/";

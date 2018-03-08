@@ -27,7 +27,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_gravity="center"
-                android:src="@drawable/bg_circle_green"
+                app:srcCompat="@drawable/bg_circle_green"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_openshop" />
+            app:srcCompat="@drawable/ic_openshop" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_hello"

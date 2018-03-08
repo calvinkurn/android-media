@@ -84,8 +84,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void shareApp() {
         formatSharingContents();
+        String type= ShareData.APP_SHARE_TYPE;
+        if(isAppShowReferralButtonActivated()){
+            type= ShareData.REFERRAL_TYPE;
+        }
         ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.APP_SHARE_TYPE)
+                .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
