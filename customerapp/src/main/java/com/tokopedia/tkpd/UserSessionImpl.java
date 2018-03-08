@@ -55,4 +55,9 @@ public class UserSessionImpl implements UserSession {
         return sessionHandler.isUserHasShop();
     }
 
+    @Override
+    public boolean isMsisdnVerified() {
+        return sessionHandler.isMsisdnAlreadyVerified();
+    }
+
 }

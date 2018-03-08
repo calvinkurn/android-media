@@ -8,6 +8,9 @@ import java.util.List;
 
 public class ReplyData {
 
+    @SerializedName("contacts")
+    @Expose
+    private java.util.List<Contact> contacts = null;
     @SerializedName("list")
     @Expose
     private List<ListReply> list = null;
@@ -95,5 +98,9 @@ public class ReplyData {
 
     public int getTimeMachineStatus() {
         return timeMachineStatus;
+    }
+
+    public List<Contact> getContacts() {
+        return contacts;
     }
 }

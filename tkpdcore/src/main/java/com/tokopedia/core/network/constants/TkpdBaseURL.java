@@ -877,7 +877,7 @@ public class TkpdBaseURL {
     public static class Chat {
         public static final String CHAT_WEBSOCKET = "/connect";
         public static final String GET_MESSAGE = "/tc/v1/list_message";
-        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_REPLY = "/tc/v2/list_reply/{msgId}";
         public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
         public static final String REPLY = "/tc/v1/reply";
         public static final String LISTEN_WEBSOCKET = "/connect";

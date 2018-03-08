@@ -56,6 +56,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_info" />
+        app:srcCompat="@drawable/ic_info" />
 
 </RelativeLayout>

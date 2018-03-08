@@ -19,4 +19,6 @@ public interface UserSession {
     String getShopId();
 
     boolean hasShop();
+
+    boolean isMsisdnVerified();
 }

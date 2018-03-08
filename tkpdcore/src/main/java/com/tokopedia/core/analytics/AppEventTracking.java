@@ -172,6 +172,7 @@ public interface AppEventTracking {
         String CLICK_PDP = "clickPDP";
         String ADD_TO_CART_PDP = "addToCart";
         String EVENT_CHECKOUT = "checkout";
+        String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
     }
 
     interface Category {
@@ -294,8 +295,8 @@ public interface AppEventTracking {
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
-
         String ECOMMERCE = "Ecommerce";
+        String APPSHARE = "App share";
     }
 
     interface Action {
@@ -842,10 +843,11 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
-        String REFERRAL = "Share";
+        String LONG_PRESS_SHORTCUT_REFERRAL = "Share";
         String PRODUCT_SEARCH = "Product Search";
         String TAKE_TO_SHOP = "Take to Shop";
         String DIGITAL = "Digital";
+        String REFERRAL ="Referral";
     }
 
     interface SOCIAL_MEDIA {

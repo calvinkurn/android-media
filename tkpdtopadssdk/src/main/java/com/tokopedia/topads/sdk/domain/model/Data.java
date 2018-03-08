@@ -29,6 +29,9 @@ public class Data {
     private Product product;
     private boolean favorit;
 
+    public Data() {
+    }
+
     public Data(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)) {
             setId(object.getString(KEY_ID));

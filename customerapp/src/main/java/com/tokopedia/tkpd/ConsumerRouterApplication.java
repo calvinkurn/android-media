@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -81,6 +82,7 @@ import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
@@ -123,7 +125,6 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -158,6 +159,7 @@ import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
+import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
@@ -175,7 +177,6 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -205,7 +206,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter {
+        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -750,11 +751,45 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
+        Intent intent = new Intent(activity, ContactUsActivity.class);
+        intent.putExtra(InboxRouter.PARAM_URL,
+                URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        return intent;
+    }
+
+    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         return intent;
+    }
+
+    @Override
+    public Intent getPhoneVerifIntent(Activity activity) {
+        return FlightPhoneVerificationActivity.getCallingIntent(activity);
+    }
+
+    @Override
+    public Intent getSellerHomeIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginGoogleIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginFacebookIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginWebviewIntent(Context context, String name, String url) {
+        return null;
     }
 
     @Override
@@ -1041,7 +1076,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1100,8 +1135,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showMaintenancePage();
+    public void showForceLogoutDialog(Response response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
     @Override
@@ -1111,24 +1147,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void refreshLogin() {
+    public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
+        sessionRefresh.gcmUpdate();
     }
 
     @Override
-    public void refreshToken() {
+    public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            accessTokenRefresh.refreshToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        accessTokenRefresh.refreshToken();
     }
 
     @Override
@@ -1330,5 +1358,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    public void showForceHockeyAppDialog() {
+        ServerErrorHandler.showForceHockeyAppDialog();
+    }
+
+    @Override
+    public void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
 }
