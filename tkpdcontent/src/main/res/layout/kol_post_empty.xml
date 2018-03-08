@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/empty_kol_post"
             android:fontFamily="sans-serif"
-            android:textColor="@color/font_black_secondary_54"
+            android:textColor="@color/font_black_disabled_38"
             android:textSize="@dimen/font_title"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
