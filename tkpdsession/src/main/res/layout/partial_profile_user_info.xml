@@ -28,7 +28,7 @@
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_information"
             android:textColor="@color/font_black_primary_70"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/tv_subtitle_user_info"
@@ -75,8 +75,8 @@
 
                 <ImageView
                     android:id="@+id/iv_status_info"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_gravity="center_vertical"
                     app:srcCompat="@drawable/info_icon" />
             </LinearLayout>
@@ -133,8 +133,8 @@
 
                 <ImageView
                     android:id="@+id/iv_reputation_info"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_gravity="center_vertical"
                     app:srcCompat="@drawable/info_icon" />
             </LinearLayout>

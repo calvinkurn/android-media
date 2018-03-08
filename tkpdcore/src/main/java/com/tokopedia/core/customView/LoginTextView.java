@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -31,7 +32,7 @@ public class LoginTextView extends LinearLayout {
     int borderSize;
     boolean imageEnabled;
     GradientDrawable shape;
-    private Drawable drawable;
+    private int drawable;
     int backgroundColor;
     private float myDefaultPadding;
     private int padding;
@@ -90,7 +91,7 @@ public class LoginTextView extends LinearLayout {
             cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
-            drawable = a.getDrawable(R.styleable.LoginTextView_iconButton);
+            drawable = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
         } finally {
             a.recycle();
         }
@@ -104,10 +105,12 @@ public class LoginTextView extends LinearLayout {
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 
         shape.setStroke(borderSize, borderColor);
-        if (drawable != null)
-            (findViewById(R.id.provider_image)).setBackgroundDrawable(drawable);
+        if (drawable != 0) {
+            Drawable imgDrawable = AppCompatResources.getDrawable(context, drawable);
+            (findViewById(R.id.provider_image)).setBackground(imgDrawable);
+        }
 
-        if (!imageEnabled || drawable == null) {
+        if (!imageEnabled || drawable == 0) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
         }
     }

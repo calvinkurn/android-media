@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -19,7 +20,7 @@
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_data"
             android:textColor="@color/font_black_primary_70"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
         <TextView
@@ -27,10 +28,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title_user_data"
-            android:layout_marginTop="2dp"
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
+            android:layout_marginTop="2dp"
             android:lineSpacingExtra="6sp"
             android:text="@string/subtitle_user_data"
             android:textColor="@color/font_black_disabled_38"
@@ -154,18 +155,17 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
-                    android:drawableLeft="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="6.5dp"
-                    android:paddingStart="6.5dp"
-                    android:paddingRight="8.5dp"
                     android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
+                    android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
             </LinearLayout>
 
             <TextView
@@ -223,18 +223,17 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
-                    android:drawableLeft="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="6.5dp"
-                    android:paddingStart="6.5dp"
-                    android:paddingRight="8.5dp"
                     android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
+                    android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
             </LinearLayout>
 
             <TextView
