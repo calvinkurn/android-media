@@ -172,7 +172,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivi
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tokocash.TokoCashBalanceMapper;
+import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -1287,9 +1287,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TokoCashData> getTokoCashBalance() {
-        return tokoCashComponent.getBalanceTokoCashUseCase()
-                .createObservable(com.tokopedia.usecase.RequestParams.EMPTY)
-                .map(new TokoCashBalanceMapper());
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+                .processGetBalance();
     }
 
     @Override
