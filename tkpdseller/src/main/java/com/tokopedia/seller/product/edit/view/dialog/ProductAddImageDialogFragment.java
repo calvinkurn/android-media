@@ -13,9 +13,9 @@ import com.tokopedia.seller.R;
 /**
  * Created by Toped18 on 5/30/2016.
  */
-public class ImageAddDialogFragment extends DialogFragment {
+public class ProductAddImageDialogFragment extends DialogFragment {
 
-    public static final String FRAGMENT_TAG = ImageAddDialogFragment.class.getSimpleName();
+    public static final String FRAGMENT_TAG = ProductAddImageDialogFragment.class.getSimpleName();
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
     private CharSequence imageMenu[];
@@ -31,8 +31,8 @@ public class ImageAddDialogFragment extends DialogFragment {
 
     public int position;
 
-    public static ImageAddDialogFragment newInstance(int position) {
-        ImageAddDialogFragment f = new ImageAddDialogFragment();
+    public static ProductAddImageDialogFragment newInstance(int position) {
+        ProductAddImageDialogFragment f = new ProductAddImageDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
         f.setArguments(args);

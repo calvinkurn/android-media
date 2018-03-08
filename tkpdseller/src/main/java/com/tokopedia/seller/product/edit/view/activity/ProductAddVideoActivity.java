@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.edit.di.component.DaggerYoutubeVideoComponen
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.YoutubeAddUrlDialog;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddVideoDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddVideoFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
@@ -61,8 +61,8 @@ public class ProductAddVideoActivity extends BaseSimpleActivity
 
     @Override
     public void openAddYoutubeDialog() {
-        YoutubeAddUrlDialog dialog = new YoutubeAddUrlDialog();
-        dialog.show(getSupportFragmentManager(), YoutubeAddUrlDialog.TAG);
+        ProductAddVideoDialogFragment dialog = new ProductAddVideoDialogFragment();
+        dialog.show(getSupportFragmentManager(), ProductAddVideoDialogFragment.TAG);
     }
 
     @Override

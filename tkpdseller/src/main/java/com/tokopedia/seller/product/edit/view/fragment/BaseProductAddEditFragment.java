@@ -41,9 +41,9 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerAc
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductDeliveryInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDescriptionViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
@@ -241,9 +241,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageAddDialogFragment dialogFragment = ImageAddDialogFragment.newInstance(imagePosition);
-        dialogFragment.show(fm, ImageAddDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
+        ProductAddImageDialogFragment dialogFragment = ProductAddImageDialogFragment.newInstance(imagePosition);
+        dialogFragment.show(fm, ProductAddImageDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageAddListener(new ProductAddImageDialogFragment.OnImageAddListener() {
             @Override
             public void clickAddProductFromCamera(int position) {
                 BaseProductAddEditFragmentPermissionsDispatcher.goToCameraWithCheck(BaseProductAddEditFragment.this, imagePosition);
@@ -266,9 +266,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onImagePickerItemClicked(int position, boolean isPrimary) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditProductDialogFragment.newInstance(position, isPrimary);
-        dialogFragment.show(fm, ImageEditProductDialogFragment.FRAGMENT_TAG);
-        ((ImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditProductDialogFragment.OnImageEditListener() {
+        DialogFragment dialogFragment = ProductAddImageEditProductDialogFragment.newInstance(position, isPrimary);
+        dialogFragment.show(fm, ProductAddImageEditProductDialogFragment.FRAGMENT_TAG);
+        ((ProductAddImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ProductAddImageEditProductDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditImagePathFromCamera(int position) {
@@ -303,9 +303,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             @Override
             public void clickEditImageDesc(int position) {
                 String currentDescription = productImageViewHolder.getImagesSelectView().getImageAt(position).getDescription();
-                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
-                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
-                fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
+                ProductAddImageDescriptionDialog fragment = ProductAddImageDescriptionDialog.newInstance(currentDescription);
+                fragment.show(getActivity().getSupportFragmentManager(), ProductAddImageDescriptionDialog.TAG);
+                fragment.setListener(new ProductAddImageDescriptionDialog.OnImageDescDialogListener() {
                     @Override
                     public void onImageDescDialogOK(String newDescription) {
                         productImageViewHolder.getImagesSelectView().changeImageDesc(newDescription);

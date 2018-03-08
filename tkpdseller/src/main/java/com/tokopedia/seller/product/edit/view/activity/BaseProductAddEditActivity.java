@@ -20,7 +20,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddWholesaleDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
@@ -34,7 +34,7 @@ import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     implements HasComponent<ProductComponent>,
         BaseTextPickerDialogFragment.Listener,
-        AddWholeSaleDialog.WholeSaleDialogListener,
+        ProductAddWholesaleDialogFragment.WholeSaleDialogListener,
         ProductAddFragment.Listener {
     public static final int MAX_IMAGES = 5;
 
@@ -87,9 +87,9 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
 
     @Override
     public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(currencyType, previousWholesalePrice, officialStore);
-        addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
-        addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
+        ProductAddWholesaleDialogFragment addWholeSaleDialog = ProductAddWholesaleDialogFragment.newInstance(currencyType, previousWholesalePrice, officialStore);
+        addWholeSaleDialog.show(getSupportFragmentManager(), ProductAddWholesaleDialogFragment.TAG);
+        addWholeSaleDialog.setOnDismissListener(new ProductAddWholesaleDialogFragment.OnDismissListener() {
             @Override
             public void onDismiss() {
                 new Handler().post(new Runnable() {
