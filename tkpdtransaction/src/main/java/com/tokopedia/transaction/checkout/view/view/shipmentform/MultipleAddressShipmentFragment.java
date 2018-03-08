@@ -29,6 +29,7 @@ import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -90,17 +91,23 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
         totalPayment = view.findViewById(R.id.total_payment_text_view);
         ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
+        ViewGroup confirmButton = view.findViewById(R.id.confirm_payment_button);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
+                (CartPromoSuggestion) getArguments().getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION),
+                new CartItemPromoHolderData(),
                 presenter.initiateAdapterData(
                         (CartShipmentAddressFormData) getArguments()
-                                .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
-                ), new MultipleAddressPriceSummaryData(),
+                        .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
+                ),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
+        confirmButton.setOnClickListener(onConfirmedButtonClicked(
+                shipmentAdapter.getAddressDataList(),
+                shipmentAdapter.getPriceSummaryData()));
         return view;
     }
 
@@ -126,11 +133,17 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         alert.show();
     }
 
-    @Override
-    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList,
-                                         MultipleAddressPriceSummaryData data) {
-        presenter.generateCheckoutRequest(addressDataList, data);
-        //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+    private View.OnClickListener onConfirmedButtonClicked(
+            final List<MultipleAddressShipmentAdapterData> addressDataList,
+            final MultipleAddressPriceSummaryData data) {
+
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.generateCheckoutRequest(addressDataList, data);
+                //cartActivityListener.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+            }
+        };
 
     }
 
@@ -173,7 +186,12 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     }
 
     @Override
-    public void onPromoSuggestionClicked(MultipleAddressPriceSummaryData priceSummaryData) {
+    public void onPromoSuggestionClicked(CartPromoSuggestion cartPromoSuggestion) {
+
+    }
+
+    @Override
+    public void onPromoSuggestionCancelled() {
 
     }
 
@@ -211,15 +229,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         };
     }
 
-    private MultipleAddressPriceSummaryData dummyPriceSummaryData() {
-        MultipleAddressPriceSummaryData data = new MultipleAddressPriceSummaryData();
-        data.setAdditionalFee(10000);
-        data.setInsurancePrice(1000);
-        data.setPromoDiscount(4000);
-        data.setQuantity(3);
-        data.setTotalProductPrice(10000);
-        return new MultipleAddressPriceSummaryData();
-    }
 
     @Override
     public void onAttach(Activity activity) {
