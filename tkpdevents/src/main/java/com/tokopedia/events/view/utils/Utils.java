@@ -103,7 +103,7 @@ public class Utils {
                 if (item.getItems() != null) {
                     List<CategoryItemsViewModel> sourceModels = item.getItems();
                     for (CategoryItemsViewModel sourceItem : sourceModels) {
-                        if (sourceItem.getIsTop() == 1) {
+                        if (sourceItem.getIsTop() == 1 && !isPresent(searchViewModels, sourceItem.getTitle())) {
                             searchModelItem = new SearchViewModel();
                             searchModelItem.setCityName(sourceItem.getCityName());
                             searchModelItem.setDisplayName(sourceItem.getDisplayName());
@@ -121,6 +121,14 @@ public class Utils {
             }
         }
         return searchViewModels;
+    }
+
+    private boolean isPresent(ArrayList<SearchViewModel> searchViewModels, String title) {
+        for (SearchViewModel viewModel : searchViewModels) {
+            if (viewModel.getTitle().equals(title))
+                return true;
+        }
+        return false;
     }
 
     public List<SearchViewModel> convertSearchResultsToModel(List<CategoryItemsViewModel> categoryItemsViewModels) {
