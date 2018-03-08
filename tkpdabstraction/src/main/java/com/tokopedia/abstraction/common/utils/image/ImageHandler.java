@@ -532,4 +532,12 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .placeholder(placeHolder)
+                .error(placeHolder)
+                .into(getCircleImageViewTarget(imageView));
+    }
 }
