@@ -46,7 +46,7 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
             public void onNext(List<TrainStation> trainStations) {
                 TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
                 viewModel.setStations(trainStationViewModelMapper.transform(trainStations));
-                getView().renderList(viewModel);
+                getView().renderStationList(viewModel);
             }
         });
     }

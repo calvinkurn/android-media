@@ -18,7 +18,7 @@ import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStati
  */
 
 public class TrainPopularStationViewHolder extends AbstractViewHolder<TrainPopularStationViewModel> {
-    public static final int LAYOUT = R.layout.view_train_station_city_item;
+    public static final int LAYOUT = R.layout.view_train_popular_station_item;
 
     private RecyclerView stationsRecyclerView;
 

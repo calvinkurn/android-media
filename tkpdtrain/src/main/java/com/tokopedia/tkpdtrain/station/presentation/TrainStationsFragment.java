@@ -2,6 +2,7 @@ package com.tokopedia.tkpdtrain.station.presentation;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,9 @@ import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationAdapterT
 import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFactory;
 import com.tokopedia.tkpdtrain.station.presentation.contract.TrainStationsContract;
 import com.tokopedia.tkpdtrain.station.presentation.presenter.TrainStationsPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -46,6 +50,13 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
         View view = inflater.inflate(R.layout.fragment_train_stations, container, false);
         view.requestFocus();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        presenter.attachView(this);
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -86,7 +97,14 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     }
 
     @Override
-    public void renderList(Visitable visitable) {
-        getAdapter().addElement(visitable);
+    public void renderStationList(Visitable visitable) {
+        List<Visitable> visitables = new ArrayList<>();
+        visitables.add(visitable);
+        super.renderList(visitables);
+    }
+
+    @Override
+    public void renderStationList(List<Visitable> visitables) {
+        super.renderList(visitables);
     }
 }

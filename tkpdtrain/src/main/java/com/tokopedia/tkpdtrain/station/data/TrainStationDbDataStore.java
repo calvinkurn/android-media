@@ -1,10 +1,12 @@
 package com.tokopedia.tkpdtrain.station.data;
 
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainCityEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
@@ -29,6 +31,7 @@ import rx.functions.Func1;
 public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIslandEntity, TrainStation> {
 
     public TrainStationDbDataStore() {
+
     }
 
     @Override
@@ -57,6 +60,7 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                ModelAdapter<TrainStationDb> adapter = FlowManager.getModelAdapter(TrainStationDb.class);
                 for (TrainCityEntity trainCityEntity : data.getCities()) {
                     for (TrainStationEntity trainStationEntity : trainCityEntity.getStations()) {
                         TrainStationDb trainStationDb = new TrainStationDb();
@@ -70,9 +74,10 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                         trainStationDb.setStationCode(trainStationEntity.getCode());
                         trainStationDb.setStationDisplayName(trainStationEntity.getDisplayName());
                         trainStationDb.setStationStatus(trainStationEntity.getStatus());
-                        trainStationDb.save();
+                        adapter.insert(trainStationDb);
                     }
                 }
+                subscriber.onNext(true);
             }
         });
     }
@@ -83,9 +88,29 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 for (TrainStationIslandEntity entity : datas){
-                    insert(entity);
+                    insertStation(entity);
                 }
                 subscriber.onNext(true);
+            }
+
+            private void insertStation(TrainStationIslandEntity entity) {
+                ModelAdapter<TrainStationDb> adapter = FlowManager.getModelAdapter(TrainStationDb.class);
+                for (TrainCityEntity trainCityEntity : entity.getCities()) {
+                    for (TrainStationEntity trainStationEntity : trainCityEntity.getStations()) {
+                        TrainStationDb trainStationDb = new TrainStationDb();
+                        trainStationDb.setIslandId(entity.getId());
+                        trainStationDb.setIslandName(entity.getName());
+                        trainStationDb.setCityId(trainCityEntity.getId());
+                        trainStationDb.setCityName(trainCityEntity.getName());
+                        trainStationDb.setPopularityOrder(trainStationEntity.getPopularityOrder());
+                        trainStationDb.setStationId(trainStationEntity.getId());
+                        trainStationDb.setStationName(trainStationEntity.getName());
+                        trainStationDb.setStationCode(trainStationEntity.getCode());
+                        trainStationDb.setStationDisplayName(trainStationEntity.getDisplayName());
+                        trainStationDb.setStationStatus(trainStationEntity.getStatus());
+                        adapter.insert(trainStationDb);
+                    }
+                }
             }
         });
                 /*.flatMapIterable(new Func1<List<TrainStationIslandEntity>, Iterable<TrainStationIslandEntity>>() {

@@ -14,9 +14,9 @@ import java.util.List;
 public interface TrainStationsContract {
     interface View extends CustomerView {
 
-        void renderList(Visitable visitable);
+        void renderStationList(Visitable visitable);
 
-        void renderList(List<Visitable> visitables);
+        void renderStationList(List<Visitable> visitables);
     }
 
     interface Presenter extends CustomerPresenter<View> {
