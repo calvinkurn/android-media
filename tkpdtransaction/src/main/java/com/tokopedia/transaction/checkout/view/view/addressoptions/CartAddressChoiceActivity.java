@@ -77,7 +77,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 getFragmentManager().beginTransaction()
                         .add(R.id.container, fragment, fragment.getClass().getSimpleName())
                         .commit();
-
                 break;
 
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
@@ -86,7 +85,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 getFragmentManager().beginTransaction()
                         .add(R.id.container, fragment, fragment.getClass().getSimpleName())
                         .commit();
-
                 break;
 
             default:
@@ -148,4 +146,5 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
         setResult(RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM);
         finish();
     }
+    
 }

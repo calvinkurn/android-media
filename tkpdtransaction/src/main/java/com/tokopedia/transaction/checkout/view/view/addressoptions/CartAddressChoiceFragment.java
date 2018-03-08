@@ -65,7 +65,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @BindView(R2.id.ll_content)
     LinearLayout llContent;
 
-    private ICartAddressChoiceActivityListener cartAddressChoiceListener;
+    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -230,16 +230,16 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
-        cartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
+        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
-        RecipientAddressModel recipientAddressModel
+        RecipientAddressModel recipientAddress
                 = mCartAddressChoicePresenter.getSelectedRecipientAddress();
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddressModel);
+        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddress);
 
         getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
         getActivity().finish();
@@ -254,8 +254,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
-                mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        cartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
+        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
 
 }
