@@ -104,8 +104,9 @@ public class LoginTextView extends LinearLayout {
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 
         shape.setStroke(borderSize, borderColor);
-        if (drawable != null)
-            (findViewById(R.id.provider_image)).setBackgroundDrawable(drawable);
+        if (drawable != null) {
+            (findViewById(R.id.provider_image)).setBackground(drawable);
+        }
 
         if (!imageEnabled || drawable == null) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
