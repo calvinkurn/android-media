@@ -1237,16 +1237,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
         trackProductClicked();
         String senderRole = getArguments().getString(PARAM_SENDER_ROLE, "");
         if(!GlobalConfig.isSellerApp() || !senderRole.equals(ROLE_SHOP)) {
-            TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
-            ProductPass productPass = ProductPass.Builder.aProductPass()
-                    .setProductId(productId)
-                    .setProductPrice(productPrice)
-                    .setProductName(productName)
-                    .setDateTimeInMilis(dateTimeReply)
-                    .build();
+            if(MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
+                ProductPass productPass = ProductPass.Builder.aProductPass()
+                        .setProductId(productId)
+                        .setProductPrice(productPrice)
+                        .setProductName(productName)
+                        .setDateTimeInMilis(dateTimeReply)
+                        .build();
 
-            Intent intent = router.getProductDetailIntent(getContext(), productPass);
-            startActivity(intent);
+                Intent intent = router.getProductDetailIntent(getContext(), productPass);
+                startActivity(intent);
+            }
         }
         else {
             //Necessary to do it this way to prevent PDP opened in seller app

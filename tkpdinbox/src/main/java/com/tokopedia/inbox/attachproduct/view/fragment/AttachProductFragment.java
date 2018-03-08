@@ -113,8 +113,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onSearchTextChanged(String text) {
-        if(TextUtils.isEmpty(text))
-            loadInitialData();
+        if(TextUtils.isEmpty(text)) loadInitialData();
     }
 
     @Override
@@ -161,8 +160,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             NetworkErrorHelper.showSnackbar(getActivity(), message);
             return false;
         }
-        else
+        else {
             return true;
+        }
     }
 
     @Override
@@ -196,10 +196,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     public void updateButtonBasedOnChecked(int checkedCount) {
         sendButton.setText(getString(R.string.string_attach_product_send_button_text,String.valueOf(checkedCount),String.valueOf(MAX_CHECKED)));
-        if (checkedCount > 0 && checkedCount <=MAX_CHECKED)
+        if (checkedCount > 0 && checkedCount <= MAX_CHECKED) {
             sendButton.setEnabled(true);
-        else
+        }
+        else {
             sendButton.setEnabled(false);
+        }
     }
 
     private void sendButtonClicked(){

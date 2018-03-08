@@ -48,8 +48,9 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
 
     @Override
     public void updateCheckedList(List<AttachProductItemViewModel> products) {
-        if (checkedList == null)
+        if (checkedList == null) {
             checkedList = new ArrayList<>();
+        }
         resetCheckedList();
         checkedList.addAll(products);
         view.updateButtonBasedOnChecked(checkedList.size());

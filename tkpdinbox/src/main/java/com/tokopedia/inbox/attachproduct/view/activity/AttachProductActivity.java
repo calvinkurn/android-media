@@ -33,24 +33,28 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = "";
-        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null)
+        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
-        if(!getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,false))
+        }
+        if(!getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,false)) {
             isSeller = true;
+        }
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
     }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
-        setTitle("Lampirkan Produk");
+        setTitle(getString(R.string.string_attach_product_activity_title));
         super.setupLayout(savedInstanceState);
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_toolbar_drop_shadow));
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_close_default));
-        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null)
+        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
             shopName = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
-        else
+        }
+        else {
             shopName = "";
+        }
         toolbar.setSubtitleTextAppearance(this,R.style.AttachProductToolbarSubTitle_SansSerif);
         toolbar.setTitleTextAppearance(this,R.style.AttachProductToolbarTitle_SansSerif);
         toolbar.setSubtitle(shopName);
@@ -95,7 +99,9 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
 
     @Override
     public void goToAddProduct(String shopId) {
-        TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
-        router.startAddProduct(this,"");
+        if(MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+            TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
+            router.startAddProduct(this, "");
+        }
     }
 }

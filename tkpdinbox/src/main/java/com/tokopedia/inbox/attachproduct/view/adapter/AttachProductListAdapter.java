@@ -41,8 +41,9 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
     }
 
     private AttachProductItemViewModel getDataRow(int position){
-        if(position < 0 && position >= visitables.size())
+        if(position < 0 && position >= visitables.size()) {
             return null;
+        }
         else {
             AttachProductItemViewModel item = (AttachProductItemViewModel) visitables.get(position);
             return item;
@@ -84,8 +85,9 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
     public boolean isChecked(int position){
         int productId = 0;
         AttachProductItemViewModel attachProductItemViewModel = getDataRow(position);
-        if(attachProductItemViewModel != null)
+        if(attachProductItemViewModel != null) {
             productId = attachProductItemViewModel.getProductId();
+        }
         return productIds.contains(productId);
     }
 
