@@ -8,6 +8,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
+import okhttp3.Interceptor;
 import rx.Observable;
 
 public interface FlightModuleRouter {
@@ -39,4 +40,6 @@ public interface FlightModuleRouter {
     Intent getDefaultContactUsIntent(Activity activity, String url);
 
     Observable<ProfileInfo> getProfile();
+
+    Interceptor getChuckInterceptor();
 }
