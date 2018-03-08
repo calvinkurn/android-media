@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+        android:layout_width="@dimen/groupchat_avatar_size"
+        android:layout_height="@dimen/groupchat_avatar_size"
         android:layout_marginEnd="@dimen/new_margin_small"
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginRight="@dimen/new_margin_small"
