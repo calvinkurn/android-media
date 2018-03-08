@@ -204,13 +204,13 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     }
 
     private void initSizeChart(){
-        if (isCatalogHasProductSizeChart()) {
+        if (isCatalogHasProductSizeChart() && productVariantViewModel!= null) {
             ProductVariantOptionParent productVariantOptionParent =
                     productVariantViewModel.getVariantOptionParent(indexOptionParentSizeChart);
-            if (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild()) {
-                vgSizechart.setVisibility(View.GONE);
-            } else {
+            if (productVariantOptionParent != null && productVariantOptionParent.hasProductVariantOptionChild()) {
                 vgSizechart.setVisibility(View.VISIBLE);
+            } else {
+                vgSizechart.setVisibility(View.GONE);
             }
         } else {
             vgSizechart.setVisibility(View.GONE);
@@ -230,27 +230,29 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     }
 
     private void setLabelVariantLevel1() {
-        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(1) == null
-                || !productVariantViewModel.getVariantOptionParent(1).hasProductVariantOptionChild()) {
+        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(0) == null
+                || !productVariantViewModel.getVariantOptionParent(0).hasProductVariantOptionChild()) {
             variantLevelOneLabelView.resetContentText();
         } else {
-            ProductVariantOptionParent optionLv1 = productVariantViewModel.getVariantOptionParent(1);
+            ProductVariantOptionParent optionLv1 = productVariantViewModel.getVariantOptionParent(0);
             variantLevelOneLabelView.setContent(optionLv1.getProductVariantOptionChild().size()
                     + " " + optionLv1.getName());
         }
     }
 
     private void setLabelVariantLevel2() {
-        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(2) == null
-                || !productVariantViewModel.getVariantOptionParent(2).hasProductVariantOptionChild()) {
+        if (productVariantViewModel == null || productVariantViewModel.getVariantOptionParent(1) == null
+                || !productVariantViewModel.getVariantOptionParent(1).hasProductVariantOptionChild()) {
             variantLevelTwoLabelView.resetContentText();
             // if level 1 is chosen, set enabled to true
             if (productVariantViewModel != null) {
-                variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(1) != null);
+                variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(0) != null);
+            } else {
+                variantLevelTwoLabelView.setEnabled(false);
             }
         } else {
             variantLevelTwoLabelView.setEnabled(true);
-            ProductVariantOptionParent optionLv2 = productVariantViewModel.getVariantOptionParent(2);
+            ProductVariantOptionParent optionLv2 = productVariantViewModel.getVariantOptionParent(1);
             variantLevelTwoLabelView.setContent(optionLv2.getProductVariantOptionChild().size()
                     + " " + optionLv2.getName());
         }
@@ -260,15 +262,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     public void onItemClicked(ProductVariantDashboardViewModel productVariantDashboardViewModel) {
         if (productVariantDashboardViewModel.haslevel2()) {
             ProductVariantDetailLevel1ListActivity.start(getContext(), this, productVariantDashboardViewModel,
+                    productVariantViewModel.getVariantOptionParent(0).getName(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
-                    productVariantViewModel.getVariantOptionParent(2).getName(),
                     currencyType, defaultStockType, isOfficialStore,
                     needRetainImage);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardViewModel.getProductVariantCombinationViewModelList().get(0),
                     productVariantDashboardViewModel.getProductVariantOptionChildLv1(),
-                    productVariantViewModel.getVariantOptionParent(1).getName(),
+                    productVariantViewModel.getVariantOptionParent(0).getName(),
                     currencyType, defaultStockType, isOfficialStore,
                     needRetainImage);
         }
@@ -279,7 +281,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         intent.putExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_CATEGORY_LEVEL,
                 productVariantByCatModelList.get(level - 1));
         intent.putExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL,
-                productVariantViewModel == null ? null : productVariantViewModel.getVariantOptionParent(level));
+                productVariantViewModel == null ? null : productVariantViewModel.getVariantOptionParent(level - 1));
         startActivityForResult(intent, level);
     }
 
@@ -345,9 +347,9 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         ProductVariantOptionParent productVariantOptionParent =
                 data.getParcelableExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
         if (requestCodeLevel == 1 && (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild())) {
-            productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
-            if (productVariantViewModel.getVariantOptionParent(2) != null) {
-                productVariantViewModel.getVariantOptionParent(2).setProductVariantOptionChild(null);
+            productVariantViewModel.getVariantOptionParent(0).setProductVariantOptionChild(null);
+            if (productVariantViewModel.getVariantOptionParent(1) != null) {
+                productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
             }
             productVariantViewModel.setProductVariant(null);
             refreshAllItem();
@@ -360,8 +362,8 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         productVariantViewModel.replaceVariantOptionParentFor(requestCodeLevel, productVariantOptionParent);
 
         // get current selection for item level 1, level 2, and the matrix combination
-        ProductVariantOptionParent productVariantOptionParentLevel1 = productVariantViewModel.getVariantOptionParent(1);
-        ProductVariantOptionParent productVariantOptionParentLevel2 = productVariantViewModel.getVariantOptionParent(2);
+        ProductVariantOptionParent productVariantOptionParentLevel1 = productVariantViewModel.getVariantOptionParent(0);
+        ProductVariantOptionParent productVariantOptionParentLevel2 = productVariantViewModel.getVariantOptionParent(1);
         List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
         List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
         if (productVariantOptionParentLevel2 != null) {
@@ -490,8 +492,8 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private void refreshData() {
         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         generateToDashboardViewModel();
-        if (productVariantViewModel != null && productVariantViewModel.getVariantOptionParent(2) != null) {
-            productVariantDashboardNewAdapter.setLevel2String(productVariantViewModel.getVariantOptionParent(2).getName());
+        if (productVariantViewModel != null && productVariantViewModel.getVariantOptionParent(1) != null) {
+            productVariantDashboardNewAdapter.setLevel2String(productVariantViewModel.getVariantOptionParent(1).getName());
         } else {
             productVariantDashboardNewAdapter.setLevel2String(null);
         }

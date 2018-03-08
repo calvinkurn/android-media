@@ -35,8 +35,7 @@
             <com.tokopedia.seller.product.edit.view.widget.ImagesSelectView
                 android:id="@+id/image_select_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/image_select_view_height"
-                app:addImageString="@string/product_add_image"
+                android:layout_height="wrap_content"
                 app:addPictureSrc="@drawable/ic_add_product"
                 app:imageLimit="5"
                 app:primaryImageString="@string/prompt_main_picture"
@@ -46,7 +45,7 @@
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/text_input_layout_name"
                 style="@style/HintTextInputLayout"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_med"
                 android:hint="@string/product_label_name"
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/product_max_character_name">
