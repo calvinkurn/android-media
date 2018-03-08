@@ -626,7 +626,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     });
             snackBar.show();
         } else if (checkPollValid(hasPoll, voteInfoViewModel)) {
-            showVoteLayout(voteInfoViewModel, true);
+            showVoteLayout(voteInfoViewModel, "");
         } else {
             hideVoteLayout();
         }
@@ -734,10 +734,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
         if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)) {
             votedView.setVisibility(View.GONE);
-            showVoteLayout(messageItem.getVoteInfoViewModel(), false);
+            showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
         } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)
                 || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_FINISHED)) {
-            showVoteLayout(messageItem.getVoteInfoViewModel(), false);
+            showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
         } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)) {
             hideVoteLayout();
         }
@@ -846,15 +846,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorEnterChannel(String errorMessage) {
-        hideVoteLayout();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-                        userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatFragment.this);
-            }
-        });
+        if (getActivity() != null
+                && getView() != null) {
+            hideVoteLayout();
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
+                            userSession.getName(), userSession.getProfilePicture(),
+                            GroupChatFragment.this);
+                }
+            });
+        }
     }
 
     @Override
@@ -907,11 +910,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         onChannelNotFound(getString(R.string.channel_deactivated));
     }
 
-    public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {
+    public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
         if (viewModel != null
                 && viewModel.getChannelInfoViewModel() != null
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
-            updateVoteViewModel(voteInfoViewModel);
+            updateVoteViewModel(voteInfoViewModel, voteType);
 
             voteBar.setVisibility(View.VISIBLE);
 
@@ -932,7 +935,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                     .getListOption());
 
-            if (isUpdateAnswer && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().isVoted()) {
+            if (viewModel.getChannelInfoViewModel().getVoteInfoViewModel().isVoted()) {
                 setVoted();
             }
 
@@ -969,12 +972,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 , getActivity().getString(R.string.participant)));
     }
 
-    private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel) {
+    private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
         if (viewModel != null
                 && viewModel.getChannelInfoViewModel() != null
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
-            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH ||
-                    voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
+                    || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
+                boolean isVoted = viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .isVoted();
                 List<Visitable> tempListOption = new ArrayList<>();
                 tempListOption.addAll(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                         .getListOption());
@@ -984,6 +990,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                                 ((VoteViewModel) (tempListOption.get(i))).getSelected());
                     }
                 }
+                voteInfoViewModel.setVoted(isVoted);
                 viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
 
             } else {
