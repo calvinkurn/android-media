@@ -3,15 +3,26 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
@@ -28,7 +39,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Cart
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
+import com.tokopedia.transaction.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
@@ -62,6 +73,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         implements ICartSingleAddressView,
         SingleAddressShipmentAdapter.ActionListener {
 
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
@@ -78,6 +90,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private TextView mTvSelectPaymentMethod;
     private LinearLayout mLlTotalPaymentLayout;
     private TextView mTvTotalPayment;
+    private TextView mTvPromoMessage;
     private CardView mCvBottomLayout;
 
     @Inject
@@ -87,7 +100,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
 
     @Inject
-    SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
+    CartShipmentAddressFormDataConverter mCartShipmentAddressFormDataConverter;
 
     ICartShipmentActivity cartShipmentActivityListener;
 
@@ -183,11 +196,25 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
 
-        mShipmentDataList = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
+        mShipmentDataList = mCartShipmentAddressFormDataConverter.convert(cartShipmentAddressFormData);
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
-        mShipmentDataList.add(0, new CartPromo());
+        CartPromo cartPromo = new CartPromo();
+        if (promoCodeAppliedData != null) {
+            cartPromo.setCouponCode(promoCodeAppliedData.getPromoCode());
+            cartPromo.setCouponMessage(promoCodeAppliedData.getDescription());
+            cartPromo.setCouponTitle(promoCodeAppliedData.getCouponTitle());
+            int promoCodeAppliedDataType = promoCodeAppliedData.getTypeVoucher();
+            if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_VOUCHER) {
+                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_VOUCHER);
+                cartPromo.setVoucherDiscountAmount(promoCodeAppliedData.getAmount());
+            } else if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_COUPON) {
+                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_COUPON);
+                cartPromo.setCouponDiscountAmount(promoCodeAppliedData.getAmount());
+            }
+        }
+        mShipmentDataList.add(0, cartPromo);
         mShipmentDataList.add(1, cartPromoSuggestion);
     }
 
@@ -202,6 +229,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
         mTvTotalPayment = view.findViewById(R.id.tv_total_payment);
+        mTvPromoMessage = view.findViewById(R.id.tv_promo_message);
         mCvBottomLayout = view.findViewById(R.id.bottom_layout);
     }
 
@@ -220,6 +248,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 if (mRvCartOrderDetails != null) {
                     boolean isReachBottomEnd = mRvCartOrderDetails.canScrollVertically(1);
                     mLlTotalPaymentLayout.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
+                    if (!TextUtils.isEmpty(mTvPromoMessage.getText().toString())) {
+                        mTvPromoMessage.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
+                    } else {
+                        mTvPromoMessage.setVisibility(View.GONE);
+                    }
                 }
             }
         });
@@ -382,7 +415,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mPromoRequestData = promoRequestData;
         mCheckoutRequestData = checkoutRequestData;
 
-        if (promoCodeAppliedData != null) {
+        if (promoCodeAppliedData != null && mSingleAddressShipmentAdapter.hasAppliedPromoCode()) {
             if (checkPromoCodeFinal(promoCodeAppliedData.getPromoCode())) {
                 cartShipmentActivityListener.checkPromoCodeShipment(
                         new Subscriber<CheckPromoCodeCartShipmentResult>() {
@@ -398,7 +431,15 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
                             @Override
                             public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-
+                                if (!checkPromoCodeCartShipmentResult.isError()) {
+                                    mSingleAddressShipmentAdapter
+                                            .updatePromo(checkPromoCodeCartShipmentResult
+                                                    .getDataVoucher());
+                                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                                } else {
+                                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                                            checkPromoCodeCartShipmentResult.getErrorMessage());
+                                }
                             }
                         }, new CheckPromoCodeCartShipmentRequest.Builder()
                                 .promoCode(promoCodeAppliedData.getPromoCode())
@@ -407,6 +448,54 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 );
             }
         }
+    }
+
+    @Override
+    public void onShowPromoMessage(String promoMessage) {
+        formatPromoMessage(mTvPromoMessage, promoMessage);
+        mTvPromoMessage.setVisibility(View.VISIBLE);
+    }
+
+    private Spannable formatPromoMessage(TextView textView, String promoMessage) {
+        String formatText = " Hapus";
+        promoMessage += formatText;
+        int startSpan = promoMessage.indexOf(formatText);
+        int endSpan = promoMessage.indexOf(formatText) + formatText.length();
+        Spannable formattedPromoMessage = new SpannableString(promoMessage);
+        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_54);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+        formattedPromoMessage.setSpan(new ClickableSpan() {
+            @Override
+            public void updateDrawState(TextPaint textPaint) {
+                textPaint.setColor(color);
+                textPaint.setUnderlineText(false);
+            }
+
+            @Override
+            public void onClick(View widget) {
+                onRemovePromoCode();
+            }
+        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(formattedPromoMessage);
+        return formattedPromoMessage;
+    }
+
+    @Override
+    public void onHidePromoMessage() {
+        mTvPromoMessage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRemovePromoCode() {
+        mTvPromoMessage.setText("");
+        mTvPromoMessage.setVisibility(View.GONE);
+        mSingleAddressShipmentAdapter.updatePromo(null);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

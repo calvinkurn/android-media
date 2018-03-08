@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
-import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
+import com.tokopedia.transaction.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,7 +13,7 @@ import dagger.Provides;
 public class ConverterDataModule {
 
     @Provides
-    SingleAddressShipmentDataConverter provideSingleShipmentDataConverter() {
-        return new SingleAddressShipmentDataConverter();
+    CartShipmentAddressFormDataConverter provideSingleShipmentDataConverter() {
+        return new CartShipmentAddressFormDataConverter();
     }
 }

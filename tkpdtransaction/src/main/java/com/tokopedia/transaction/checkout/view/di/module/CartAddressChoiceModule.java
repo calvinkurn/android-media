@@ -19,7 +19,6 @@ public class CartAddressChoiceModule {
 
     private final ShipmentAddressListAdapter.ActionListener actionListener;
 
-
     public CartAddressChoiceModule(CartAddressChoiceFragment cartAddressChoiceFragment) {
         actionListener = cartAddressChoiceFragment;
     }

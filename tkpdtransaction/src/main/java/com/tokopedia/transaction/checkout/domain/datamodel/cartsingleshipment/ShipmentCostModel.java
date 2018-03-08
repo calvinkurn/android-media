@@ -16,6 +16,7 @@ public class ShipmentCostModel implements Parcelable {
     private double shippingFee;
     private double insuranceFee;
     private double promoPrice;
+    private String promoMessage;
 
     public int getTotalItem() {
         return totalItem;
@@ -73,6 +74,14 @@ public class ShipmentCostModel implements Parcelable {
         this.promoPrice = promoPrice;
     }
 
+    public String getPromoMessage() {
+        return promoMessage;
+    }
+
+    public void setPromoMessage(String promoMessage) {
+        this.promoMessage = promoMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,6 +96,7 @@ public class ShipmentCostModel implements Parcelable {
         dest.writeDouble(this.shippingFee);
         dest.writeDouble(this.insuranceFee);
         dest.writeDouble(this.promoPrice);
+        dest.writeString(this.promoMessage);
     }
 
     public ShipmentCostModel() {
@@ -100,6 +110,7 @@ public class ShipmentCostModel implements Parcelable {
         this.shippingFee = in.readDouble();
         this.insuranceFee = in.readDouble();
         this.promoPrice = in.readDouble();
+        this.promoMessage = in.readString();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

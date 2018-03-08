@@ -27,7 +27,7 @@ import javax.inject.Inject;
  *         Aghny A. Putra on 08/02/18.
  */
 
-public class SingleAddressShipmentDataConverter
+public class CartShipmentAddressFormDataConverter
         extends ConverterData<CartShipmentAddressFormData, List<Object>> {
 
     private static final int FIRST_ELEMENT = 0;
@@ -37,7 +37,8 @@ public class SingleAddressShipmentDataConverter
     private UserAddress userAddress;
 
     @Inject
-    public SingleAddressShipmentDataConverter() {
+    public CartShipmentAddressFormDataConverter() {
+
     }
 
     @Override

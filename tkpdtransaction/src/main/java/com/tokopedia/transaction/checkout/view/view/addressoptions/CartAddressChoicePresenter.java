@@ -28,6 +28,10 @@ import rx.Subscriber;
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
 
+    private static final int TOP_POSITION = 0;
+    private static final int SECOND_TOP_POSITION = 1;
+    private static final int PRIME_ADDRESS = 2;
+
     private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
 
     private static final int DEFAULT_ORDER = 1;
@@ -122,9 +126,12 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         List<RecipientAddressModel> shortList = new ArrayList<>();
 
         if (mSelectedRecipientAddress == null) {
-            shortList.addAll(recipientAddressList.subList(0, 2));
+            shortList.addAll(recipientAddressList.subList(TOP_POSITION, 2));
+        } else if (mSelectedRecipientAddress.getAddressStatus() == PRIME_ADDRESS) {
+            shortList.add(mSelectedRecipientAddress);
+            shortList.add(recipientAddressList.get(SECOND_TOP_POSITION));
         } else {
-            shortList.add(recipientAddressList.get(0));
+            shortList.add(recipientAddressList.get(TOP_POSITION));
             shortList.add(mSelectedRecipientAddress);
         }
 
