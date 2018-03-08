@@ -86,10 +86,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
-
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -112,7 +109,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent  {
+        GetUserInfoListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -120,6 +117,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
     public static final int ONBOARDING_REQUEST = 101;
     public static final int WISHLIST_REQUEST = 202;
+
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
     public static final String TAG = ParentIndexHome.class.getSimpleName();
     public static final String messageTAG = TAG + " : ";
@@ -210,7 +208,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
-
         //Initialize shake detect manager for shake shake campaign
 
         if (arg0 != null) {

@@ -31,6 +31,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     private static ShakeDetectManager shakeDetectManager = new ShakeDetectManager();
     ShakeDetector sd;
     private Context mContext;
+    private RemoteConfig remoteConfig;
+    private SensorManager sensorManager;
     public static String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
 
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
@@ -39,6 +41,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
     private boolean  isShakeShakeEnable = true;
+
+    public static String sTopActivity = null;
 
     private ShakeDetectManager() {
 
@@ -61,8 +65,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         sd.stop();
     }
 
-    private RemoteConfig remoteConfig;
-    private SensorManager sensorManager;
+
     public void init() {
         if(sd == null) {
             mContext = MainApplication.getAppContext();
@@ -152,7 +155,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         }
     };
 
-    public static String sTopActivity = null;
 
 
 
