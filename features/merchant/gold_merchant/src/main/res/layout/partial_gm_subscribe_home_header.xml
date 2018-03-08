@@ -1,0 +1,50 @@
+<RelativeLayout android:id="@+id/header_gm_subscribe_home"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/background_gmsubscribe_home_main_header"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/icon_gold_merchant"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        app:srcCompat="@drawable/ic_gmsubscribe_gold_badge"/>
+
+    <TextView
+        android:layout_marginBottom="2dp"
+        android:id="@+id/main_title_gm_subscribe_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/icon_gold_merchant"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="@string/gm_home_title"/>
+
+    <TextView
+        android:id="@+id/sub_title_gm_subscribe_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_title_gm_subscribe_home"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:text="@string/gm_home_subtitle"
+        android:textColor="@color/white"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/background_gmsubscribe_home_illustration_house"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"/>
+
+</RelativeLayout>
