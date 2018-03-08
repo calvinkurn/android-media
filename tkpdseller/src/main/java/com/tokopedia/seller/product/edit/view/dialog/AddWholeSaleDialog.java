@@ -192,10 +192,10 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected boolean isPriceValid(double currencyValue) {
-        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType, isOfficialStore);
-        if (currencyValue < minMaxPrice.first || currencyValue > minMaxPrice.second) {
+        if (!ViewUtils.isPriceValid(currencyValue,currencyType, isOfficialStore)) {
             priceDecimalInputView.setError(getString(R.string.product_error_product_price_not_valid,
-                    formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
+                    ViewUtils.getMinPriceString(currencyType, isOfficialStore),
+                    ViewUtils.getMaxPriceString(currencyType, isOfficialStore)));
             return false;
         }
 

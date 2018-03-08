@@ -424,6 +424,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 productPriceViewHolder.getPriceValue(),
                 productManageViewHolder.getViewStatusStock(),
                 productPriceViewHolder.isOfficialStore(),
+                productManageViewHolder.getSkuText(),
                 isEdittingDraft());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
