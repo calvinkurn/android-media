@@ -192,21 +192,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void removeLastProductWithId(Integer productId){
-        if (list == null || list.isEmpty()) {
-            return;
-        }
-        ListIterator<Visitable> iterator = list.listIterator(list.size());
-        while(iterator.hasPrevious()){
-            int position = iterator.previousIndex();
-            Visitable visitable = iterator.previous();
-            if(!(visitable instanceof AttachProductViewModel))
-                continue;
-
-            AttachProductViewModel viewModel = (AttachProductViewModel)visitable;
-            if(viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
-                if(viewModel.getAttachment().getId().equals(productId.toString())){
-                    iterator.remove();
-                    notifyItemRemoved(position);
+        if ((list != null && !list.isEmpty())) {
+            ListIterator<Visitable> iterator = list.listIterator(list.size());
+            while (iterator.hasPrevious()) {
+                int position = iterator.previousIndex();
+                Visitable visitable = iterator.previous();
+                if ((visitable instanceof AttachProductViewModel)) {
+                    AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
+                    if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
+                        if (viewModel.getAttachment().getId().equals(productId.toString())) {
+                            iterator.remove();
+                            notifyItemRemoved(position);
+                        }
+                    }
                 }
             }
         }

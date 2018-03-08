@@ -141,7 +141,7 @@ public class ChatRoomContract {
 
         void sendMessageWithApi();
 
-        void addDummyMessage(WebSocketResponse response);
+        void addMessageChatBalloon(WebSocketResponse response);
 
         void initMessage(String s, String string, String string1, String string2);
 

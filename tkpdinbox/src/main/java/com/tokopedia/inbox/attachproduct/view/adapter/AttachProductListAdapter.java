@@ -35,14 +35,18 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
         super.onBindViewHolder(holder, position);
         if(holder instanceof BaseCheckableViewHolder){
             ((BaseCheckableViewHolder) holder).getCheckable()
-                    .setChecked(productIds.contains(getDataRow(position).getProductId()));
-            ((BaseCheckableViewHolder) holder).itemView.setSelected(productIds.contains(getDataRow(position).getProductId()));
+                    .setChecked(isChecked(position));
+            ((BaseCheckableViewHolder) holder).itemView.setSelected(isChecked(position));
         }
     }
 
     private AttachProductItemViewModel getDataRow(int position){
-        AttachProductItemViewModel item = (AttachProductItemViewModel)visitables.get(position);
-        return item;
+        if(position < 0 && position >= visitables.size())
+            return null;
+        else {
+            AttachProductItemViewModel item = (AttachProductItemViewModel) visitables.get(position);
+            return item;
+        }
     }
 
     public void itemChecked(boolean isChecked,int position){
@@ -78,7 +82,11 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
     }
 
     public boolean isChecked(int position){
-        return productIds.contains(getDataRow(position).getProductId());
+        int productId = 0;
+        AttachProductItemViewModel attachProductItemViewModel = getDataRow(position);
+        if(attachProductItemViewModel != null)
+            productId = attachProductItemViewModel.getProductId();
+        return productIds.contains(productId);
     }
 
 

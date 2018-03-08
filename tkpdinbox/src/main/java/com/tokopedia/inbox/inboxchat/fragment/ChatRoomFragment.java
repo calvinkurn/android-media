@@ -263,7 +263,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                                 model.setImageId(String.valueOf(System.currentTimeMillis() /
                                         MILIS_TO_SECOND));
                                 model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
-                                MyChatViewModel temp = addDummyAttachImage(model);
+                                MyChatViewModel temp = addAttachImageBalloonToChatList(model);
                                 presenter.startUpload(Collections.singletonList(temp), networkType);
                                 break;
                             case DELETE:
@@ -721,7 +721,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     setViewEnabled(true);
-                    presenter.addDummyMessage(response);
+                    presenter.addMessageChatBalloon(response);
                     setResult();
                 }
             });
@@ -841,7 +841,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         scrollToBottom();
     }
 
-    private MyChatViewModel addDummyAttachImage(ImageUpload imageUpload) {
+    private MyChatViewModel addAttachImageBalloonToChatList(ImageUpload imageUpload) {
         MyChatViewModel item = new MyChatViewModel();
         Attachment attachment = new Attachment();
         attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
@@ -1051,7 +1051,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     ImageUpload model = new ImageUpload();
                     model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
                     model.setFileLoc(fileLoc);
-                    MyChatViewModel temp = addDummyAttachImage(model);
+                    MyChatViewModel temp = addAttachImageBalloonToChatList(model);
                     presenter.startUpload(Collections.singletonList(temp), networkType);
                 }
                 break;
@@ -1067,7 +1067,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     ImageUpload model = new ImageUpload();
                     model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
                     model.setFileLoc(imageUrl);
-                    MyChatViewModel temp = addDummyAttachImage(model);
+                    MyChatViewModel temp = addAttachImageBalloonToChatList(model);
                     list.add(temp);
                 } else {
                     ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
@@ -1076,7 +1076,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             ImageUpload model = new ImageUpload();
                             model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
                             model.setFileLoc(imageUrls.get(i));
-                            MyChatViewModel temp = addDummyAttachImage(model);
+                            MyChatViewModel temp = addAttachImageBalloonToChatList(model);
                             list.add(temp);
                         }
                     }
@@ -1105,7 +1105,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for(ResultProduct result: resultProducts){
             try {
-                addDummyProductToChat(result);
+                addProductChatBalloonToChatList(result);
                 presenter.sendProductAttachment(msgId,result);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1113,7 +1113,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    private void addDummyProductToChat(ResultProduct product){
+    private void addProductChatBalloonToChatList(ResultProduct product){
         AttachProductViewModel item = new AttachProductViewModel(true);
         Attachment attachment = new Attachment();
         attachment.setType(AttachmentChatHelper.PRODUCT_ATTACHED);

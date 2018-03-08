@@ -245,7 +245,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
 
     @Override
-    public void addDummyMessage(WebSocketResponse response) {
+    public void addMessageChatBalloon(WebSocketResponse response) {
         if (getView().isCurrentThread(response.getData().getMsgId())
                 && getView().isMyMessage(response.getData().getFromUid())) {
 
@@ -571,15 +571,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             id = sessionHandler.getShopID();
             shopNameLocal = sessionHandler.getShopName();
         }
-
-//        GetProductUrlUtil getProd = GetProductUrlUtil.createInstance(getView().getContext(), id);
-//        getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
-//            @Override
-//            public void onGetUrl(String url) {
-//                getView().addUrlToReply(url);
-//            }
-//        });
-
         getView().startAttachProductActivity(id,shopNameLocal,senderRole.equals(ROLE_SHOP));
     }
 

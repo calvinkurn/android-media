@@ -172,44 +172,9 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             fullTime = "";
         }
 
-//        Attachment attachmentModel = element.getAttachment();
-//        if (attachmentModel != null && attachmentModel.getType().equals("3")) {
-//            View productContainerView = itemView.findViewById(R.id.attach_product_chat);
-//            if(isShouldDisplayProductInstead(attachmentModel)){
-//                productContainerView.setVisibility(View.VISIBLE);
-//                message.setVisibility(View.GONE);
-//                setupProductUI(attachmentModel.getAttributes(),productContainerView);
-//            }
-//            else {
-//                message.setVisibility(View.VISIBLE);
-//                productContainerView.setVisibility(View.GONE);
-//            }
-//        }
-//        else
             attachmentChatHelper.parse(element, attachment, message, action, element, viewListener
                 , element.isDummy(), element.isRetry(), hour, progressBarSendImage, chatStatus, fullTime);
     }
-
-//    private boolean isShouldDisplayProductInstead(Attachment attachmentModel){
-//        return attachmentModel != null && attachmentModel.getType().equals("3") && attachmentModel.getAttributes() != null;
-//    }
-//
-//    private void setupProductUI(AttachmentAttributes attachmentAttributes, View productContainer){
-//        AttachmentProductProfile productProfile = attachmentAttributes.getProductProfile();
-//        if(productProfile != null){
-//            setUIValue(productContainer,R.id.attach_product_chat_image,productProfile.getImageUrl());
-//            setUIValue(productContainer,R.id.attach_product_chat_name,productProfile.getName());
-//            setUIValue(productContainer,R.id.attach_product_chat_price,productProfile.getPrice());
-//        }
-//    }
-
-//    private void setUIValue(View productContainer, int id, String value){
-//        View destination = productContainer.findViewById(id);
-//        if(destination instanceof TextView)
-//            ((TextView)destination).setText(value);
-//        else if(destination instanceof ImageView)
-//            ImageHandler.LoadImage((ImageView)destination,value);
-//    }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
         //Get the text from text view and create a spannable string
