@@ -154,6 +154,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void renderSuccessUnlinkAccount() {
+        hideProgressDialog();
         refreshHandler.startRefresh();
     }
 
@@ -205,7 +206,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void hideProgressDialog() {
-        if (progressDialog.isProgress()) {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
