@@ -64,9 +64,7 @@ public class ShipmentDataRequestConverter {
                 .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
                 .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
-        if (shipmentDetailData.getUseDropshipper() != null
-                && shipmentDetailData.getUseDropshipper()) {
-
+        if (shipmentDetailData.getUseDropshipper()) {
             shopProductCheckoutBuilder.isDropship(1)
                     .dropshipData(new DropshipDataCheckoutRequest.Builder()
                             .name(shipmentDetailData.getDropshipperName())
@@ -95,9 +93,7 @@ public class ShipmentDataRequestConverter {
                 .productData(convertToProductData(cartSellerItem.getCartItemModels()))
                 .fcancelPartial(cartSellerItem.getIsFcancelPartial());
 
-        if (shipmentDetailData.getUseDropshipper() != null
-                && shipmentDetailData.getUseDropshipper()) {
-
+        if (shipmentDetailData.getUseDropshipper()) {
             shopProductBuilder.dropshipData(new CheckPromoCodeCartShipmentRequest.DropshipData.Builder()
                     .name(shipmentDetailData.getDropshipperName())
                     .telpNo(shipmentDetailData.getDropshipperPhone())

@@ -201,8 +201,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     cartSellerItem.setShippingFee(courierItemData.getDeliveryPrice()
                             + courierItemData.getAdditionalPrice());
 
-                    if (shipmentDetailData.getUseInsurance() != null
-                            && shipmentDetailData.getUseInsurance()) {
+                    if (shipmentDetailData.getUseInsurance()) {
                         cartSellerItem.setInsuranceFee(courierItemData.getInsurancePrice());
                     }
 
