@@ -124,7 +124,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         presenter.attachView(this);
         updateTitle(getString(R.string.title_scan_qr));
 
-        final ImageView torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
+        final ImageView torch = (ImageView) findViewById(R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
         decoratedBarcodeView.setTorchListener(getListener());
         torch.setOnClickListener(new View.OnClickListener() {
@@ -134,12 +134,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.qr_ic_flash_turn_on));
+                            R.drawable.qr_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.qr_ic_flash_turn_off));
+                            R.drawable.qr_ic_flash_turn_off));
                 }
             }
         });
