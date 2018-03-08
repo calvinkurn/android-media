@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationAdapterTypeFactory;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFactory;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.listener.TrainStationActionListener;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
-import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationsCityViewModel;
 
 /**
  * Created by alvarisi on 3/5/18.
@@ -21,15 +21,17 @@ public class TrainPopularStationViewHolder extends AbstractViewHolder<TrainPopul
     public static final int LAYOUT = R.layout.view_train_popular_station_item;
 
     private RecyclerView stationsRecyclerView;
+    private final TrainStationActionListener trainStationActionListener;
 
-    public TrainPopularStationViewHolder(View itemView) {
+    public TrainPopularStationViewHolder(View itemView, TrainStationActionListener trainStationActionListener) {
         super(itemView);
         stationsRecyclerView = itemView.findViewById(R.id.rv_stations);
+        this.trainStationActionListener = trainStationActionListener;
     }
 
     @Override
     public void bind(TrainPopularStationViewModel element) {
-        TrainStationTypeFactory typeFactory = new TrainStationAdapterTypeFactory();
+        TrainStationTypeFactory typeFactory = new TrainStationAdapterTypeFactory(trainStationActionListener);
         BaseListAdapter<TrainStationViewModel, TrainStationTypeFactory> adapter =  new BaseListAdapter<>(typeFactory);
         LinearLayoutManager trainStationLayoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);

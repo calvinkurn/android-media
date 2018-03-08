@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainPopularStationViewHolder;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainStationViewHolder;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainStationsCityViewHolder;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.listener.TrainStationActionListener;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationsCityViewModel;
@@ -16,8 +17,10 @@ import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStati
  */
 
 public class TrainStationAdapterTypeFactory extends BaseAdapterTypeFactory implements TrainStationTypeFactory {
+    private TrainStationActionListener trainStationActionListener;
 
-    public TrainStationAdapterTypeFactory() {
+    public TrainStationAdapterTypeFactory(TrainStationActionListener trainStationActionListener) {
+        this.trainStationActionListener = trainStationActionListener;
     }
 
     @Override
@@ -33,11 +36,11 @@ public class TrainStationAdapterTypeFactory extends BaseAdapterTypeFactory imple
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == TrainStationViewHolder.LAYOUT) {
-            return new TrainStationViewHolder(parent);
+            return new TrainStationViewHolder(parent, trainStationActionListener);
         } else if (type == TrainStationsCityViewHolder.LAYOUT) {
             return new TrainStationsCityViewHolder(parent);
         } else if (type == TrainPopularStationViewHolder.LAYOUT) {
-            return new TrainPopularStationViewHolder(parent);
+            return new TrainPopularStationViewHolder(parent, trainStationActionListener);
         } else {
             return super.createViewHolder(parent, type);
         }

@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdtrain.station.presentation;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,12 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.station.di.TrainStationsComponent;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationAdapterTypeFactory;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFactory;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.listener.TrainStationActionListener;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.contract.TrainStationsContract;
 import com.tokopedia.tkpdtrain.station.presentation.presenter.TrainStationsPresenter;
 
@@ -26,13 +29,18 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrainStationsFragment extends BaseSearchListFragment<Visitable, TrainStationTypeFactory> implements TrainStationsContract.View {
-
+public class TrainStationsFragment extends BaseSearchListFragment<Visitable, TrainStationTypeFactory> implements TrainStationsContract.View, TrainStationActionListener {
 
     @Inject
     TrainStationsPresenter presenter;
 
+    private OnFragmentInteractionListener interactionListener;
+
     private boolean isFirstTime = true;
+
+    public interface OnFragmentInteractionListener {
+        void onStationClicked(TrainStationViewModel viewModel);
+    }
 
     public static TrainStationsFragment newInstance() {
         return new TrainStationsFragment();
@@ -68,7 +76,7 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
 
     @Override
     protected TrainStationTypeFactory getAdapterTypeFactory() {
-        return new TrainStationAdapterTypeFactory();
+        return new TrainStationAdapterTypeFactory(this);
     }
 
     @Override
@@ -106,5 +114,20 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     @Override
     public void renderStationList(List<Visitable> visitables) {
         super.renderList(visitables);
+    }
+
+    @Override
+    public void onStationClicked(TrainStationViewModel viewModel) {
+        if (interactionListener != null) interactionListener.onStationClicked(viewModel);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException("Activity must implement " + OnFragmentInteractionListener.class.getSimpleName());
+        }
     }
 }

@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tkpdtrain.common.di.utils.TrainComponentUtils;
 import com.tokopedia.tkpdtrain.station.di.DaggerTrainStationsComponent;
 import com.tokopedia.tkpdtrain.station.di.TrainStationsComponent;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 /**
  * Created by alvarisi on 3/5/18.
  */
 
-public class TrainStationsActivity extends BaseSimpleActivity implements HasComponent<TrainStationsComponent> {
+public class TrainStationsActivity extends BaseSimpleActivity implements HasComponent<TrainStationsComponent>, TrainStationsFragment.OnFragmentInteractionListener {
+    public static final String EXTRA_SELECTED_STATION  = "EXTRA_SELECTED_STATION";
     private TrainStationsComponent trainStationsComponent;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -33,5 +35,13 @@ public class TrainStationsActivity extends BaseSimpleActivity implements HasComp
             trainStationsComponent = DaggerTrainStationsComponent.builder().trainComponent(TrainComponentUtils.getTrainComponent(getApplication())).build();
         }
         return trainStationsComponent;
+    }
+
+    @Override
+    public void onStationClicked(TrainStationViewModel viewModel) {
+        Intent intent = getIntent();
+        intent.putExtra(EXTRA_SELECTED_STATION, viewModel);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
