@@ -124,13 +124,12 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:hint="@string/flight_booking_passenger_birthdate_hint">
 
-                <android.support.v7.widget.AppCompatEditText
+                <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/et_birth_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:drawableEnd="@drawable/ic_arrow_down_grey"
-                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey"
                     android:focusable="false"
                     android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
                     android:paddingEnd="10dp"

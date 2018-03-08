@@ -13,6 +13,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
@@ -31,6 +32,7 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     private int startFrom;
     private int totalData;
     private Context context;
+    private GuidedSearchViewModel guidedSearch;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
@@ -72,6 +74,10 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public void incrementStart() {
         setStartFrom(getStartFrom() + Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS));
+    }
+
+    public boolean isEvenPage() {
+        return getStartFrom() / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) % 2 == 0;
     }
 
     public int getStartFrom() {
@@ -149,5 +155,25 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean hasHeader() {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
+    }
+
+    public void addGuidedSearch() {
+        if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
+            int start = getItemCount();
+            list.add(guidedSearch);
+            notifyItemInserted(start);
+        }
+    }
+
+    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
+        this.guidedSearch = guidedSearch;
+    }
+
+    public boolean isGuidedSearch(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
+    }
+
+    public boolean hasGuidedSearch() {
+        return guidedSearch != null;
     }
 }
