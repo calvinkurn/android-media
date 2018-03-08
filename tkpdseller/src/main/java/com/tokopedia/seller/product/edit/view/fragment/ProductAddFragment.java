@@ -66,20 +66,12 @@ public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPre
         if (savedInstanceState == null && CommonUtils.checkCollectionNotNull(imageUrlListFromArg)) {
             productImageViewHolder.setImages(imageUrlListFromArg);
         }
-        saveDefaultModel();
         return view;
     }
 
     @Override
     public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
         super.onSuccessLoadShopInfo(isGoldMerchant, isFreeReturn, officialStore);
-        saveDefaultModel();
-    }
-
-    private void saveDefaultModel() {
-        //save default value here, so we can compare when we want to save draft
-        // will be overriden when not adding product
-        firstTimeViewModel = collectDataFromView();
     }
 
     @Override
@@ -89,7 +81,7 @@ public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPre
         // if there is the difference, then assume that the data has been added.
         // will be overriden when not adding product
         ProductViewModel model = collectDataFromView();
-        return !model.equals(firstTimeViewModel);
+        return model.isFilledAny();
     }
 
     @Override

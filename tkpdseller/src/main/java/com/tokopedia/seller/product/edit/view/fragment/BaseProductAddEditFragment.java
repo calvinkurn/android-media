@@ -107,9 +107,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     protected ValueIndicatorScoreModel valueIndicatorScoreModel;
 
-    // view model to be compare later when we want to save as draft
-    protected ProductViewModel firstTimeViewModel;
-
     protected ProductViewModel currentProductViewModel;
 
     private Listener listener;
