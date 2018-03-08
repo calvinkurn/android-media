@@ -201,7 +201,21 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
-        mShipmentDataList.add(0, new CartPromo());
+        CartPromo cartPromo = new CartPromo();
+        if (promoCodeAppliedData != null) {
+            cartPromo.setCouponCode(promoCodeAppliedData.getPromoCode());
+            cartPromo.setCouponMessage(promoCodeAppliedData.getDescription());
+            cartPromo.setCouponTitle(promoCodeAppliedData.getCouponTitle());
+            int promoCodeAppliedDataType = promoCodeAppliedData.getTypeVoucher();
+            if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_VOUCHER) {
+                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_VOUCHER);
+                cartPromo.setVoucherDiscountAmount(promoCodeAppliedData.getAmount());
+            } else if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_COUPON) {
+                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_COUPON);
+                cartPromo.setCouponDiscountAmount(promoCodeAppliedData.getAmount());
+            }
+        }
+        mShipmentDataList.add(0, cartPromo);
         mShipmentDataList.add(1, cartPromoSuggestion);
     }
 
@@ -402,7 +416,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mPromoRequestData = promoRequestData;
         mCheckoutRequestData = checkoutRequestData;
 
-        if (promoCodeAppliedData != null) {
+        if (promoCodeAppliedData != null && mSingleAddressShipmentAdapter.hasAppliedPromoCode()) {
             if (checkPromoCodeFinal(promoCodeAppliedData.getPromoCode())) {
                 cartShipmentActivityListener.checkPromoCodeShipment(
                         new Subscriber<CheckPromoCodeCartShipmentResult>() {
@@ -479,7 +493,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onRemovePromoCode() {
-        Toast.makeText(getActivity(), "Remove Promo Code", Toast.LENGTH_SHORT).show();
+        mTvPromoMessage.setText("");
+        mTvPromoMessage.setVisibility(View.GONE);
+        mSingleAddressShipmentAdapter.updatePromo(null);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

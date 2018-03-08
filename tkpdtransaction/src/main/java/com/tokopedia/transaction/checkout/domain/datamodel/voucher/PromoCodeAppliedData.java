@@ -8,8 +8,8 @@ import android.os.Parcelable;
  */
 
 public class PromoCodeAppliedData implements Parcelable {
-    public static final int TYPE_VOUCHER = 0;
-    public static final int TYPE_COUPON = 1;
+    public static final int TYPE_VOUCHER = 1;
+    public static final int TYPE_COUPON = 2;
 
     private int typeVoucher;
     private String promoCode;

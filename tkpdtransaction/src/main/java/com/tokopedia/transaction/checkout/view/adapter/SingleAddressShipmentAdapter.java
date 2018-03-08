@@ -2,7 +2,6 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoViewHolder;
@@ -187,8 +186,32 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
-        mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
-        mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+        if (dataVoucher != null) {
+            mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
+            mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+        } else {
+            mShipmentCost.setPromoPrice(0);
+            mShipmentCost.setPromoMessage(null);
+            for (Object itemAdapter : mShipmentDataList) {
+                if (itemAdapter instanceof CartPromo) {
+                    ((CartPromo) itemAdapter).setTypePromo(CartPromo.TYPE_PROMO_NOT_ACTIVE);
+                    break;
+                }
+            }
+        }
+    }
+
+    public boolean hasAppliedPromoCode() {
+        for (Object itemAdapter : mShipmentDataList) {
+            if (itemAdapter instanceof CartPromo) {
+                if (((CartPromo) itemAdapter).getTypePromo() == CartPromo.TYPE_PROMO_VOUCHER ||
+                        ((CartPromo) itemAdapter).getTypePromo() == CartPromo.TYPE_PROMO_COUPON) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
     }
 
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
