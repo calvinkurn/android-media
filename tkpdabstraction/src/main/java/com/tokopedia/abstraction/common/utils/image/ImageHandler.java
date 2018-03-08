@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -75,21 +76,27 @@ public class ImageHandler {
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(resId)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(drawable)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
 
