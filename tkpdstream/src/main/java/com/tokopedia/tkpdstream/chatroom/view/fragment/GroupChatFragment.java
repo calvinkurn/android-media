@@ -469,7 +469,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStartTime()
                 < viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getEndTime()
-                > System.currentTimeMillis() / 1000L) {
+                > System.currentTimeMillis() / 1000L
+                ) {
             progressBarWithTimer.restart();
         }
 
@@ -956,6 +957,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 hideVoteLayout();
             } else {
                 progressBarWithTimer.setVisibility(View.VISIBLE);
+                progressBarWithTimer.cancel();
                 progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
             }
         } else {
@@ -973,8 +975,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (viewModel != null
                 && viewModel.getChannelInfoViewModel() != null
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
-            if (voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_FINISH &&
-                    voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_FORCE_FINISH) {
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH ||
+                    voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
                 List<Visitable> tempListOption = new ArrayList<>();
                 tempListOption.addAll(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                         .getListOption());
@@ -986,9 +988,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 }
                 viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
 
-            } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE &&
-                    voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
-                viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
             } else {
                 viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
             }
