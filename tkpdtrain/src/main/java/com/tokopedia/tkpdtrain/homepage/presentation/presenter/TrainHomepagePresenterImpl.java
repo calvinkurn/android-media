@@ -8,6 +8,7 @@ import com.tokopedia.tkpdtrain.common.util.TrainDateUtil;
 import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainPassengerViewModel;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -121,6 +122,30 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     public void initialize() {
         setupViewModel();
         singleTrip();
+    }
+
+    @Override
+    public void onOriginStationChanged(TrainStationViewModel viewModel) {
+        TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
+        homepageViewModel.setOriginStation(viewModel);
+        getView().setHomepageViewModel(homepageViewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onDepartureStationChanged(TrainStationViewModel viewModel) {
+        TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
+        homepageViewModel.setDestinationStation(viewModel);
+        getView().setHomepageViewModel(homepageViewModel);
+        renderUi();
+    }
+
+    private void renderUi() {
+        if (getView().getHomepageViewModel().isOneWay()) {
+            singleTrip();
+        } else {
+            roundTrip();
+        }
     }
 
     private void setupViewModel() {

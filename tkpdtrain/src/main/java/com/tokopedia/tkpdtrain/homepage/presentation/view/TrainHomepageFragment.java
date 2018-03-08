@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdtrain.homepage.presentation.view;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -27,6 +29,7 @@ import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 import com.tokopedia.tkpdtrain.station.presentation.TrainStationsActivity;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -90,7 +93,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), ORIGIN_STATION_REQUEST_CODE);
             }
         });
-        layoutOriginStation.setOnClickListener(new View.OnClickListener() {
+
+        layoutDestinationStation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), DESTINATION_STATION_REQUEST_CODE);
@@ -289,5 +293,24 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     protected void initInjector() {
         getComponent(TrainHomepageComponent.class).inject(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case ORIGIN_STATION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    trainHomepagePresenterImpl.onOriginStationChanged(viewModel);
+                }
+                break;
+            case DESTINATION_STATION_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    trainHomepagePresenterImpl.onDepartureStationChanged(viewModel);
+                }
+                break;
+        }
     }
 }
