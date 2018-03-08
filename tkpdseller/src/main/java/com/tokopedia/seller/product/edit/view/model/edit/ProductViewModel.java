@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.model.edit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -520,4 +521,16 @@ public class ProductViewModel implements ItemType, Parcelable {
             return new ProductViewModel[size];
         }
     };
+
+    public boolean isFilledAny() {
+        return  (!TextUtils.isEmpty(productName) ||
+                (productPictureViewModelList!= null && productPictureViewModelList.size() > 0) ||
+                (productCategory!= null && productCategory.getCategoryId() > 0) ||
+                (productEtalase!= null && productEtalase.getEtalaseId() > 0 ) ||
+                productPrice > 0 ||
+                !TextUtils.isEmpty( productDescription) ||
+                (productVideo!= null && productVideo.size() > 0) ||
+                productWeight > 0 ||
+                !TextUtils.isEmpty(productSku));
+    }
 }

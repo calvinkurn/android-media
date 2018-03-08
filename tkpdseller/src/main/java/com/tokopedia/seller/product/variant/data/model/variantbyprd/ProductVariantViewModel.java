@@ -79,8 +79,7 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
-    public ProductVariantOptionParent getVariantOptionParent(int position) {
-        int index = position - 1;
+    public ProductVariantOptionParent getVariantOptionParent(int index) {
         return (variantOptionParent == null || index >= variantOptionParent.size()) ?
                 null :
                 variantOptionParent.get(index);
@@ -169,8 +168,8 @@ public class ProductVariantViewModel implements Parcelable {
             return this;
         }
         // get current selection for item level 1, level 2, and the matrix combination
-        ProductVariantOptionParent productVariantOptionParentLevel1 = getVariantOptionParent(1);
-        ProductVariantOptionParent productVariantOptionParentLevel2 = getVariantOptionParent(2);
+        ProductVariantOptionParent productVariantOptionParentLevel1 = getVariantOptionParent(0);
+        ProductVariantOptionParent productVariantOptionParentLevel2 = getVariantOptionParent(1);
         List<ProductVariantOptionChild> productVariantOptionChildLevel1List = productVariantOptionParentLevel1.getProductVariantOptionChild();
         List<ProductVariantOptionChild> productVariantOptionChildLevel2List = null;
         if (productVariantOptionParentLevel2 != null) {

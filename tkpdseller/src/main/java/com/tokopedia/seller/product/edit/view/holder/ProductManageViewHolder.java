@@ -228,9 +228,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
 
         } else { // product has selected variants
             ProductVariantOptionParent productVariantOptionParentLv1 =
-                    productVariantViewModel.getVariantOptionParent(1);
+                    productVariantViewModel.getVariantOptionParent(0);
             ProductVariantOptionParent productVariantOptionParentLv2 =
-                    productVariantViewModel.getVariantOptionParent(2);
+                    productVariantViewModel.getVariantOptionParent(1);
             StringBuilder selectedVariantString = new StringBuilder(productVariantOptionParentLv1.getProductVariantOptionChild().size()
                     + " " + productVariantOptionParentLv1.getName());
             if (productVariantOptionParentLv2 != null && productVariantOptionParentLv2.hasProductVariantOptionChild()) {

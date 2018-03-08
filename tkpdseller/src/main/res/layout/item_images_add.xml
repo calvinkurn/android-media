@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.core.customwidget.SquareHFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/image_width_xxxl"
+    android:layout_height="@dimen/image_width_xxxl"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_rect_stroke_lighter_gray"
     android:clickable="true"
-    android:padding="4dp"
-    android:background="@drawable/bg_rect_stroke_gray"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:focusable="true">
 
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foreground="?attr/selectableItemBackground"
-        android:background="@color/grey_300">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center">
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/imageview_picture"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:scaleType="fitCenter"
-                tools:src="@mipmap/ic_launcher"
-                android:layout_gravity="center_horizontal"/>
+        android:background="@color/grey_200"
+        android:layout_margin="@dimen/margin_ms"/>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_add_product"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="Add Product"
-                android:textSize="@dimen/font_small"
-                android:textColor="@color/font_black_secondary_54"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
-    </FrameLayout>
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imageview_picture"
+        android:layout_width="@dimen/image_width_l"
+        android:layout_height="@dimen/image_width_l"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_margin="@dimen/margin_ms"
+        tools:src="@mipmap/ic_launcher"
+        app:tint="@color/grey_400"/>
 
-</com.tokopedia.core.customwidget.SquareHFrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_ms"
+        android:foreground="@drawable/bg_rect_stroke_gray_dashed" />
+</FrameLayout>
