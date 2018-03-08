@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
+import java.io.IOException;
+
 import okhttp3.Response;
 
 /**
@@ -20,13 +22,13 @@ public interface AbstractionRouter {
 
     void showMaintenancePage();
 
-    void showForceLogoutDialog();
+    void showForceLogoutDialog(Response response);
 
     void showServerError(Response response);
 
-    void refreshLogin();
+    void gcmUpdate() throws IOException;
 
-    void refreshToken();
+    void refreshToken() throws IOException;
 
     UserSession getSession();
 
@@ -39,4 +41,8 @@ public interface AbstractionRouter {
     CacheManager getGlobalCacheManager();
 
     AnalyticTracker getAnalyticTracker();
+
+    void showForceHockeyAppDialog();
+
+    void logInvalidGrant(Response response);
 }

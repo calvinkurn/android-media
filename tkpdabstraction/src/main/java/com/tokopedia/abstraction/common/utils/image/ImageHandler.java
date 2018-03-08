@@ -182,7 +182,7 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
 
@@ -532,4 +532,12 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .placeholder(placeHolder)
+                .error(placeHolder)
+                .into(getCircleImageViewTarget(imageView));
+    }
 }

@@ -48,6 +48,7 @@ public class DeepLinkChecker {
     public static final int PELUANG = 16;
     public static final int DISCOVERY_PAGE = 17;
     public static final int FLIGHT = 18;
+    public static final int REFERRAL = 19;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
@@ -103,6 +104,8 @@ public class DeepLinkChecker {
                 return PRODUCT;
             else if (isShop(linkSegment))
                 return SHOP;
+            else if (isReferral(linkSegment))
+                return REFERRAL;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,7 +197,8 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("about")
                 && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl"));
+                && !linkSegment.get(0).equals("activation.pl")
+                && !linkSegment.get(0).equals("referral"));
     }
 
     private static boolean isSearch(String url) {
@@ -203,6 +207,10 @@ public class DeepLinkChecker {
 
     private static boolean isEtalase(List<String> linkSegment) {
         return (linkSegment.size() == 3 && linkSegment.get(1).equals("etalase"));
+    }
+
+    private static boolean isReferral(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("referral"));
     }
 
     public static String getQuery(String url, String q) {

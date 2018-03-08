@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:context="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_small"
@@ -28,7 +29,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_gravity="center"
-                android:src="@drawable/bg_circle_green"
+                app:srcCompat="@drawable/bg_circle_green"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView

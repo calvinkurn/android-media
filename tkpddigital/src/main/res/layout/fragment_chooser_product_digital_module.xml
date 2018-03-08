@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -12,16 +13,15 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <EditText
+        <com.tokopedia.design.component.EditTextCompat
             android:id="@+id/field_search"
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_height="@dimen/img_thumb_l"
             android:layout_margin="@dimen/small_dp"
             android:background="@color/digital_operator_search_bar_color"
-            android:drawableLeft="@drawable/search_operator"
+            app:drawableLeftCompat="@drawable/search_operator"
             android:drawablePadding="@dimen/padding_small"
-            android:drawableStart="@drawable/search_operator"
             android:hint="@string/action_search"
             android:inputType="text"
             android:lines="1"
