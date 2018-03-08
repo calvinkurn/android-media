@@ -176,11 +176,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     public void setPickupPoint(Store store, int position) {
-        addressDataList.get(position - 1).setStore(store);
+        addressDataList.get(position).setStore(store);
     }
 
     public void unSetPickupPoint(int position) {
-        addressDataList.get(position - 1).setStore(null);
+        addressDataList.get(position).setStore(null);
     }
 
     public List<MultipleAddressShipmentAdapterData> getAddressDataList() {

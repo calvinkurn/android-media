@@ -53,9 +53,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             shopCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                     .productData(productDataCheckoutRequests)
                     .shippingInfo(setShippingInfoRequest(currentShipmentDetailData));
-            if (currentShipmentDetailData.getUseDropshipper())
+            if (currentShipmentDetailData.getUseDropshipper()) {
                 shopCheckoutBuilder
                         .dropshipData(setDropshipDataCheckoutRequest(currentShipmentDetailData));
+            }
 
             shopCheckoutBuilder
                     .fcancelPartial(
@@ -67,7 +68,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     .isPreorder(switchValue(currentShipmentAdapterData.isProductIsPreorder()));
             shopCheckoutBuilder
                     .isDropship(switchValue(currentShipmentDetailData.getUseDropshipper()));
-            shopCheckoutBuilder.shopId(currentShipmentAdapterData.getStore().getId());
+            shopCheckoutBuilder.shopId(currentShipmentAdapterData.getShopId());
 
             List<ShopProductCheckoutRequest> shopCheckoutRequests = new ArrayList<>();
             shopCheckoutRequests.add(shopCheckoutBuilder.build());
@@ -107,6 +108,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
                     adapterData.setInvoicePosition(adapterDataList.size());
+                    adapterData.setShopId(currentGroupShop.getShop().getShopId());
                     adapterData.setProductId(currentProduct.getProductId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());

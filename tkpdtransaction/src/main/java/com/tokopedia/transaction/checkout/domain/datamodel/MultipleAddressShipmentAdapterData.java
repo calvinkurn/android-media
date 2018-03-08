@@ -12,6 +12,8 @@ public class MultipleAddressShipmentAdapterData {
 
     private int productId;
 
+    private int shopId;
+
     private String senderName;
 
     private String productImageUrl;
@@ -70,6 +72,14 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setProductId(int productId) {
         this.productId = productId;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
     public String getSenderName() {
