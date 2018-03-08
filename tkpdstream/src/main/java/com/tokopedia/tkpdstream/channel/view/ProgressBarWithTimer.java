@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -85,6 +86,7 @@ public class ProgressBarWithTimer extends FrameLayout {
     }
 
     public void setTimer(final long startTime, final long endTime) {
+        Log.d("NISNIS", "setTimer " + startTime + " - " + endTime);
         this.startTime = startTime;
         this.endTime = endTime;
         long now = System.currentTimeMillis() / 1000L;
@@ -101,7 +103,6 @@ public class ProgressBarWithTimer extends FrameLayout {
 
             @Override
             public void onFinish() {
-                getRootView().setVisibility(View.GONE);
                 if (listener != null)
                     listener.onFinishTick();
             }
@@ -130,7 +131,7 @@ public class ProgressBarWithTimer extends FrameLayout {
         }
     }
 
-    public void restart(){
+    public void restart() {
         setTimer(startTime, endTime);
     }
 }

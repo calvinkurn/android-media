@@ -612,6 +612,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
+
         if (MethodChecker.isTimezoneNotAutomatic(getActivity())) {
             Snackbar snackBar = SnackbarManager.make(getActivity(), getString(R.string
                             .please_check_timezone_to_vote),
@@ -908,59 +909,55 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
-        if (viewModel != null
-                && viewModel.getChannelInfoViewModel() != null
-                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
-            updateVoteViewModel(voteInfoViewModel, voteType);
+        Log.d("NISNIS", "showVoteLayout");
 
-            voteBar.setVisibility(View.VISIBLE);
+        updateVoteViewModel(voteInfoViewModel, voteType);
 
-            LinearLayoutManager voteLayoutManager;
-            RecyclerView.ItemDecoration itemDecoration = null;
-            if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
-                voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-                itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
-            } else {
-                voteLayoutManager = new LinearLayoutManager(getActivity());
-                itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med), false);
-            }
-            voteRecyclerView.addItemDecoration(itemDecoration);
-            voteRecyclerView.setLayoutManager(voteLayoutManager);
-            voteRecyclerView.setAdapter(voteAdapter);
-            voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getTitle());
+        voteBar.setVisibility(View.VISIBLE);
 
-            voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
-                    .getListOption());
-
-            if (viewModel.getChannelInfoViewModel().getVoteInfoViewModel().isVoted()) {
-                setVoted();
-            }
-
-            setVoteParticipant(voteInfoViewModel.getParticipant());
-
-            voteInfoLink.setText(voteInfoViewModel.getVoteInfoStringResId());
-            voteInfoLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
-                }
-            });
-
-            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
-                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
-                progressBarWithTimer.setVisibility(View.GONE);
-                progressBarWithTimer.cancel();
-                setVoteHasEnded();
-            } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
-                hideVoteLayout();
-            } else {
-                progressBarWithTimer.setVisibility(View.VISIBLE);
-                progressBarWithTimer.cancel();
-                progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
-            }
+        LinearLayoutManager voteLayoutManager;
+        RecyclerView.ItemDecoration itemDecoration = null;
+        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
+            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
         } else {
+            voteLayoutManager = new LinearLayoutManager(getActivity());
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med), false);
+        }
+        voteRecyclerView.addItemDecoration(itemDecoration);
+        voteRecyclerView.setLayoutManager(voteLayoutManager);
+        voteRecyclerView.setAdapter(voteAdapter);
+        voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getTitle());
+
+        voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                .getListOption());
+
+        if (viewModel.getChannelInfoViewModel().getVoteInfoViewModel().isVoted()) {
+            setVoted();
+        }
+
+        setVoteParticipant(voteInfoViewModel.getParticipant());
+
+        voteInfoLink.setText(voteInfoViewModel.getVoteInfoStringResId());
+        voteInfoLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                        (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+            }
+        });
+
+        if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH) {
+            progressBarWithTimer.setVisibility(View.GONE);
+            progressBarWithTimer.cancel();
+            setVoteHasEnded();
+        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
             hideVoteLayout();
+        } else {
+            progressBarWithTimer.setVisibility(View.VISIBLE);
+            progressBarWithTimer.cancel();
+            progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
         }
 
     }
@@ -994,6 +991,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             } else {
                 viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
             }
+        } else if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
         }
     }
 
@@ -1003,6 +1002,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public void setVoteHasEnded() {
         if (getActivity() != null) {
+            progressBarWithTimer.setVisibility(View.GONE);
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -1016,6 +1016,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public void setVoteStarted() {
         if (getActivity() != null) {
+            progressBarWithTimer.setVisibility(View.VISIBLE);
             voteStatus.setText(R.string.vote);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
