@@ -2,6 +2,7 @@ package com.tokopedia.tkpdtrain.common.domain;
 
 
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ import rx.Observable;
 
 public interface TrainRepository {
     Observable<List<TrainStation>> getPopularStations();
+
+    Observable<List<TrainStation>> getStationsByKeyword(String keyword);
 }

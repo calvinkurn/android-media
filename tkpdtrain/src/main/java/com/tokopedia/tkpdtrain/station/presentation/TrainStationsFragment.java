@@ -91,17 +91,19 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
 
     @Override
     public void onSearchSubmitted(String text) {
-
+        presenter.onKeywordChange(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        presenter.onKeywordChange(text);
     }
 
     @Override
     public void onItemClicked(Visitable visitable) {
-
+        if (visitable instanceof TrainStationViewModel){
+            onStationClicked((TrainStationViewModel) visitable);
+        }
     }
 
     @Override

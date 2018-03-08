@@ -23,5 +23,6 @@ public interface TrainStationsContract {
 
         void actionOnInitialLoad();
 
+        void onKeywordChange(String keyword);
     }
 }
