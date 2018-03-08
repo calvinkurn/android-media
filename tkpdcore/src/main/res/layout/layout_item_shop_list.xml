@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shop_1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
                     android:id="@+id/item_shop_gold"
                     android:layout_width="13dp"
                     android:layout_height="13dp"
-                    android:src="@drawable/ic_shop_gold"
+                    app:srcCompat="@drawable/ic_shop_gold"
                     android:layout_marginRight="7dp"
                     android:visibility="gone" />
 
@@ -58,12 +59,12 @@
                 android:scaleType="fitStart"
                 />
             
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/shop_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:drawableLeft="@drawable/ic_icon_authorize_grey"
+                app:drawableLeftCompat="@drawable/ic_icon_authorize_grey"
                 android:textSize="11sp"
                 android:textColor="@color/black_36"
                 />

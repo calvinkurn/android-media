@@ -22,6 +22,7 @@
     <dimen name="map_polyline_padding">10dp</dimen>
     <dimen name="marker_width">14dp</dimen>
     <dimen name="marker_height">14dp</dimen>
+    <dimen name="marker_height_for_car">28dp</dimen>
     <dimen name="car_marker_width">15dp</dimen>
     <dimen name="car_marker_height">35dp</dimen>
     <dimen name="thirty_two_dp">32dp</dimen>

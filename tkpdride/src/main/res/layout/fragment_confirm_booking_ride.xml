@@ -68,7 +68,7 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/margin_med"
-                android:src="@drawable/cabs_cross_white"
+                app:srcCompat="@drawable/cabs_cross_white"
                 android:tint="@color/grey_900"
                 android:visibility="gone" />
         </LinearLayout>

@@ -392,6 +392,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void setResult(ChatRoomViewModel replyData) {
         getView().setCanLoadMore(false);
+        getView().setHeaderModel(replyData.getNameHeader(),replyData.getImageHeader());
         getView().setHeader();
         if (pagingHandler.getPage() == 1) {
             getView().getAdapter().setList(replyData.getChatList());

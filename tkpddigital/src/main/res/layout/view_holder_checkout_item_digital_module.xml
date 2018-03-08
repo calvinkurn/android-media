@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingTop="@dimen/padding_small">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_small">
 
     <ImageView
         android:id="@+id/icon_category"
@@ -13,7 +14,7 @@
         android:layout_height="75dp"
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginStart="@dimen/margin_med"
-        android:src="@drawable/loading_page"
+        app:srcCompat="@drawable/loading_page"
         tools:ignore="ContentDescription"/>
 
     <TextView
@@ -90,16 +91,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/separator">
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/button_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:drawableEnd="@drawable/page_2"
+            app:drawableRightCompat="@drawable/page_2"
             android:drawablePadding="@dimen/margin_small"
-            android:drawableRight="@drawable/page_2"
             android:text="@string/lihat_detail"
             android:textColor="@color/tkpd_main_green"
             android:visibility="gone"
