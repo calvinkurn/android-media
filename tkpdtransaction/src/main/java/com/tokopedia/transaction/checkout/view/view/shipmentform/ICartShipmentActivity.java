@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
+
+import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 29/01/18.
@@ -16,7 +19,8 @@ public interface ICartShipmentActivity extends IBaseView {
 
     void checkoutCart(CheckoutRequest checkoutRequest);
 
-    void checkPromoCodeShipment(CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest);
+    void checkPromoCodeShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
+                                CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest);
 
     void renderCheckoutCartSuccess(CheckoutData checkoutData);
 

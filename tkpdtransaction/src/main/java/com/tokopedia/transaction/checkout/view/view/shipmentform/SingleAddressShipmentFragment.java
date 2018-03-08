@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
@@ -46,6 +47,8 @@ import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
@@ -224,7 +227,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest());
+                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest("", 0));
             }
         });
 
@@ -378,6 +381,32 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                                          List<DataCheckoutRequest> checkoutRequestData) {
         mPromoRequestData = promoRequestData;
         mCheckoutRequestData = checkoutRequestData;
+
+        if (promoCodeAppliedData != null) {
+            if (checkPromoCodeFinal(promoCodeAppliedData.getPromoCode())) {
+                cartShipmentActivityListener.checkPromoCodeShipment(
+                        new Subscriber<CheckPromoCodeCartShipmentResult>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+
+                            }
+                        }, new CheckPromoCodeCartShipmentRequest.Builder()
+                                .promoCode(promoCodeAppliedData.getPromoCode())
+                                .data(mPromoRequestData)
+                                .build()
+                );
+            }
+        }
     }
 
     @Override
@@ -442,9 +471,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
         CheckPromoCodeCartShipmentRequest promoCodeRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder()
-                .promoCode(promoCode)
-                .data(mPromoRequestData)
-                .build();
+                        .promoCode(promoCode)
+                        .data(mPromoRequestData)
+                        .build();
 
         // Do something here
         return true;

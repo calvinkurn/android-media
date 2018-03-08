@@ -8,7 +8,10 @@ import com.tokopedia.transaction.checkout.domain.mapper.CheckoutMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.transaction.checkout.domain.mapper.ITopPayMapper;
+import com.tokopedia.transaction.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.TopPayMapper;
+import com.tokopedia.transaction.checkout.domain.mapper.VoucherCouponMapper;
+import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.transaction.checkout.view.di.scope.CartShipmentActivityScope;
@@ -54,6 +57,12 @@ public class CartShipmentModule {
 
     @Provides
     @CartShipmentActivityScope
+    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
+        return new VoucherCouponMapper(mapperUtil);
+    }
+
+    @Provides
+    @CartShipmentActivityScope
     TXActService provideTXActService() {
         return new TXActService();
     }
@@ -78,10 +87,20 @@ public class CartShipmentModule {
 
     @Provides
     @CartShipmentActivityScope
+    CheckPromoCodeCartShipmentUseCase provideCheckPromoCodeCartShipmentUseCase(ICartRepository cartRepository,
+                                                                               IVoucherCouponMapper voucherCouponMapper) {
+        return new CheckPromoCodeCartShipmentUseCase(cartRepository, voucherCouponMapper);
+    }
+
+    @Provides
+    @CartShipmentActivityScope
     ICartShipmentPresenter provideICartShipmentPresenter(CheckoutUseCase checkoutUseCase,
                                                          GetThanksToppayUseCase getThanksToppayUseCase,
+                                                         CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                          CompositeSubscription compositeSubscription) {
-        return new CartShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase, viewListener);
+        return new CartShipmentPresenter(compositeSubscription,
+                checkoutUseCase, getThanksToppayUseCase,
+                checkPromoCodeCartShipmentUseCase, viewListener);
     }
 
 }
