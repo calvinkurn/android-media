@@ -130,6 +130,14 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     @Override
     protected void initialPresenter() {
         presenter = new InputShippingImpl(this);
+        if (getParamsModel().isFromChat()) {
+            if (getParamsModel().isEdit())
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
+            else
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
+        }
     }
 
     @Override
@@ -139,15 +147,8 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
 
     @Override
     protected void initView() {
-        if (getParamsModel().isFromChat()) {
-            if (getParamsModel().isEdit())
-                UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
-            else
-                UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
-        }
         presenter.initView(this);
+
     }
 
     @Override

@@ -39,11 +39,13 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     public static Intent createResolutionInstance(Context context, String resolutionId, boolean isResoChat, boolean isEditAddress) {
         Intent intent = createInstance(context);
-        intent.putExtra(RESOLUTION_ID, resolutionId);
-        intent.putExtra(IS_RESOLUTION, true);
-        intent.putExtra(IS_RESO_CHAT, isResoChat);
-        intent.putExtra(IS_EDIT_ADDRESS, isEditAddress);
-        return new Intent(context, ChooseAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(RESOLUTION_ID, resolutionId);
+        bundle.putBoolean(IS_RESOLUTION, true);
+        bundle.putBoolean(IS_RESO_CHAT, isResoChat);
+        bundle.putBoolean(IS_EDIT_ADDRESS, isEditAddress);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
@@ -106,9 +108,8 @@ public class ChooseAddressActivity extends BasePresenterActivity {
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
-            if (bundle.get(IS_RESOLUTION) != null && bundle.getBoolean(IS_RESOLUTION) &&
-                    bundle.get(IS_RESO_CHAT) != null && !bundle.getBoolean(IS_RESO_CHAT)) {
-                if (bundle.get(IS_EDIT_ADDRESS) != null && bundle.getBoolean(IS_EDIT_ADDRESS)) {
+            if (bundle.getBoolean(IS_RESOLUTION) && !bundle.getBoolean(IS_RESO_CHAT)) {
+                if (bundle.getBoolean(IS_EDIT_ADDRESS)) {
                     UnifyTracking.eventResoDetailClickBackEditAddressPage(bundle.getString(RESOLUTION_ID));
                 } else {
                     UnifyTracking.eventResoDetailClickBackInputAddressPage(bundle.getString(RESOLUTION_ID));

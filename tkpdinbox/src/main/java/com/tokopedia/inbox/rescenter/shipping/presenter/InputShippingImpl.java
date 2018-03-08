@@ -39,7 +39,7 @@ public class InputShippingImpl implements InputShippingPresenter {
             paramsModel.setShippingID(bundleExtras.getString(EXTRA_PARAM_SHIPPING_ID, ""));
             paramsModel.setShippingRefNum(bundleExtras.getString(EXTRA_PARAM_SHIPPING_REFNUM, ""));
             paramsModel.setFromChat(bundleExtras.getBoolean(EXTRA_PARAM_FROM_CHAT, false));
-            paramsModel.setFromChat(bundleExtras.getBoolean(EXTRA_PARAM_EDIT, false));
+            paramsModel.setEdit(bundleExtras.getBoolean(EXTRA_PARAM_EDIT, false));
         } else if (uriData != null) {
             throw new RuntimeException("unhandled extra uri data");
         } else {

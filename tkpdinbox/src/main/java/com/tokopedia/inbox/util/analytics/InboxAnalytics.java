@@ -87,7 +87,7 @@ public class InboxAnalytics {
         String CLICK_RESO_FREE_RETURN_DETAIL = "click disini on detail";
         String CLICK_RESO_COPY_INVOICE_DETAIL = "click invoice on detail";
         String CLICK_RESO_TRACK_DETAIL = "click lacak on detail";
-        String CLICK_RESO_SEE_RESO_HISTORY_DETAIL = "click lihat selengakpnya on detail";
+        String CLICK_RESO_SEE_RESO_HISTORY_DETAIL = "click lihat selengkapnya on detail";
         String CLICK_RESO_ASK_HELP_DETAIL = "click minta bantuan on detail";
         String CLICK_RESO_SEE_ADDRESS_HISTORY_DETAIL = "click lihat riwayat alamat pengembalian on detail";
         String CLICK_RESO_SEE_AWB_HISTORY_DETAIL = "click lihat riwayat no resi on detail";
