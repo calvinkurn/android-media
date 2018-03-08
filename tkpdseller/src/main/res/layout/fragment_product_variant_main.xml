@@ -1,84 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/bg_line_separator"
-        android:showDividers="beginning|middle|end"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:showDividers="beginning|middle|end">
+
         <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_view_variant_level_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
+            app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
-            app:content="@string/product_label_choose"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/label_view_variant_level_two"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
+            app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
-            app:content="@string/product_label_choose"/>
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:padding="@dimen/padding_ms">-->
-            <!--<LinearLayout-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical">-->
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/product_sizechart_optional"/>-->
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--style="@style/TextView.Micro.BlackSecondary"-->
-                    <!--android:text="@string/product_sizechart_info"-->
-                    <!--android:layout_marginTop="@dimen/padding_vs"/>-->
-            <!--</LinearLayout>-->
+            tools:visibility="visible" />
 
-            <!--<FrameLayout android:id="@+id/frame_sizechart_image"-->
-                <!--android:layout_width="@dimen/image_width_variant"-->
-                <!--android:layout_height="@dimen/image_width_variant"-->
-                <!--android:background="@drawable/bg_rect_stroke_lighter_gray"-->
-                <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-                <!--xmlns:tools="http://schemas.android.com/tools">-->
+        <LinearLayout
+            android:id="@+id/vg_sizechart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_ms"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-                <!--<ImageView-->
-                    <!--android:id="@+id/image_view"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_margin="@dimen/padding_vvs"-->
-                    <!--tools:src="@mipmap/ic_launcher"/>-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_margin="@dimen/padding_vvs"-->
-                    <!--android:background="@drawable/bg_rect_stroke_gray_dashed" />-->
-            <!--</FrameLayout>-->
-        <!--</LinearLayout>-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_sizechart_optional" />
+
+                <TextView
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_vs"
+                    android:text="@string/product_sizechart_info" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_sizechart_image"
+                android:layout_width="@dimen/image_width_variant"
+                android:layout_height="@dimen/image_width_variant"
+                android:background="@drawable/bg_rect_stroke_lighter_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/image_view_sizechart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/padding_vvs"
+                    android:background="@color/grey_200"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_add_product" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/padding_vvs"
+                    android:background="@drawable/bg_rect_stroke_gray_dashed" />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_ms"
+        android:clipToPadding="false"
         android:paddingBottom="@dimen/padding_ms"
-        android:clipToPadding="false" />
+        android:paddingTop="@dimen/padding_ms" />
 </LinearLayout>

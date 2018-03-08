@@ -45,6 +45,7 @@ import static com.tokopedia.seller.product.variant.view.activity.ProductVariantD
 public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardViewModel>
         implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener {
 
+    public static final String SIZE_IDENTIFIER = "Ukuran";
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -65,6 +66,9 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
     private boolean isOfficialStore;
     private boolean needRetainImage;
     private String defaultSku;
+
+    private boolean isCatalogHasProductSizeChart;
+    private int indexOptionParentSizeChart = -1;
 
     private ProductVariantDashboardNewAdapter productVariantDashboardNewAdapter;
 
@@ -92,6 +96,14 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
             productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
         } else {
             productVariantViewModel = savedInstanceState.getParcelable(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
+        }
+        if (productVariantByCatModelList!= null) {
+            for (ProductVariantByCatModel productVariantByCatModel: productVariantByCatModelList) {
+                if (productVariantByCatModel.getName().toLowerCase().contains(SIZE_IDENTIFIER)) {
+                    isCatalogHasProductSizeChart = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -161,6 +173,9 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         } else {
             variantLevelTwoLabelView.setVisibility(View.GONE);
         }
+
+        if (isCatalogHasProductSizeChart)
+
     }
 
     private void setLabelVariantLevel1() {
