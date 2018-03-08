@@ -16,8 +16,10 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Grou
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kris on 2/5/18. Tokopedia
@@ -56,9 +58,13 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                         .dropshipData(setDropshipDataCheckoutRequest(currentShipmentDetailData));
 
             shopCheckoutBuilder
-                    .fcancelPartial(switchValue(currentShipmentDetailData.getUsePartialOrder()));
+                    .fcancelPartial(
+                            switchValue(currentShipmentAdapterData.isProductFcancelPartial())
+                    );
             shopCheckoutBuilder
-                    .finsurance(switchValue(currentShipmentDetailData.getUseInsurance()));
+                    .finsurance(switchValue(currentShipmentAdapterData.isProductFinsurance()));
+            shopCheckoutBuilder
+                    .isPreorder(switchValue(currentShipmentAdapterData.isProductIsPreorder()));
             shopCheckoutBuilder
                     .isDropship(switchValue(currentShipmentDetailData.getUseDropshipper()));
             shopCheckoutBuilder.shopId(currentShipmentAdapterData.getStore().getId());
@@ -100,11 +106,12 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
+                    adapterData.setInvoicePosition(adapterDataList.size());
                     adapterData.setProductId(currentProduct.getProductId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
+                    adapterData.setProductPrice(formatRupiah(currentProduct.getProductPrice()));
                     adapterData.setProductImageUrl(currentProduct.getProductImageSrc200Square());
-                    adapterData.setProductPrice(String.valueOf(currentProduct.getProductPrice()));
                     adapterData.setSenderName(currentGroupShop.getShop().getShopName());
                     MultipleAddressItemData addressItemData = new MultipleAddressItemData();
                     addressItemData.setCartPosition(productIndex);
@@ -136,6 +143,12 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     adapterData.setShipmentCartData(new ShipmentRatesDataMapper()
                             .getShipmentCartData(data, currentAddress.getUserAddress(),
                                     currentGroupShop, adapterData));
+
+                    adapterData.setProductIsFreeReturns(currentProduct.isProductIsFreeReturns());
+                    adapterData.setProductIsPreorder(currentProduct.isProductIsPreorder());
+                    adapterData.setProductFcancelPartial(currentProduct.isProductFcancelPartial());
+                    adapterData.setProductFinsurance(currentProduct.isProductFinsurance());
+
                     adapterDataList.add(adapterData);
                 }
             }
@@ -146,6 +159,12 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private int switchValue(boolean isTrue) {
         if (isTrue) return 1;
         else return 0;
+    }
+
+    private String formatRupiah(long rupiahAmount) {
+        Locale locale = new Locale("in","ID");
+        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+        return rupiahCurrencyFormat.format(rupiahAmount);
     }
 
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
 
-    <include layout="@layout/layout_item_warning" />
+    <include layout="@layout/layout_item_warning"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="5sp"
-            android:text="Dikirim oleh : " />
+            android:text="Dikirim oleh : "/>
 
         <TextView
             android:id="@+id/tv_shop_name"
@@ -34,7 +34,7 @@
             android:layout_toRightOf="@id/tv_label_shop_name"
             android:lineSpacingExtra="5sp"
             tools:ignore="RelativeOverlap"
-            tools:text="Loaa Store" />
+            tools:text="Loaa Store"/>
 
         <ImageView
             android:id="@+id/btn_delete_cart"
@@ -44,13 +44,13 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_delete_cart"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+        android:background="#e0e0e0"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:layout_height="52dp"
                 android:layout_marginTop="4dp"
                 tools:ignore="ContentDescription"
-                tools:src="@drawable/ic_tokocash_icon" />
+                tools:src="@drawable/ic_tokocash_icon"/>
 
             <ImageView
                 android:id="@+id/iv_image_wishlist"
@@ -83,7 +83,7 @@
                 android:background="@drawable/circle"
                 android:padding="5dp"
                 android:src="@drawable/ic_wishlist"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    tools:text="Tas organizer sepeda double container" />
+                    tools:text="Tas organizer sepeda double container"/>
 
                 <TextView
                     android:id="@+id/tv_product_price"
@@ -110,7 +110,7 @@
                     android:layout_below="@id/tv_product_name"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/orange_red"
-                    tools:text="Rp 200.000" />
+                    tools:text="Rp 200.000"/>
 
                 <LinearLayout
                     android:id="@+id/product_properties"
@@ -150,7 +150,7 @@
                         android:padding="2dp"
                         android:text="PO"
                         android:textSize="10sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/tv_info_cashback"
@@ -166,7 +166,7 @@
                         android:text="Cashback 5%"
                         android:textColor="@color/white"
                         android:textSize="10sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                 </LinearLayout>
 
@@ -181,14 +181,14 @@
                         style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Berat : " />
+                        android:text="Berat : "/>
 
                     <TextView
                         android:id="@+id/tv_product_weight"
                         style="@style/TextSmallNormalBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="3kg" />
+                        tools:text="3kg"/>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -203,14 +203,14 @@
             android:paddingTop="16dp">
 
             <TextView
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:text="Jumlah"
-                style="@style/TextSmallNormalBlack38"/>
+                android:text="Jumlah"/>
 
             <ImageView
                 android:id="@+id/btn_qty_plus"
@@ -219,7 +219,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/bg_button_counter_plus" />
+                android:src="@drawable/bg_button_counter_plus"/>
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_qty"
@@ -239,7 +239,7 @@
                 android:textColorHighlight="@color/medium_green"
                 android:textSize="16sp"
                 app:backgroundTint="@color/medium_green"
-                tools:text="1" />
+                tools:text="1"/>
 
             <ImageView
                 android:id="@+id/btn_qty_min"
@@ -248,7 +248,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/et_qty"
                 android:layout_toStartOf="@id/et_qty"
-                android:src="@drawable/bg_button_counter_minus" />
+                android:src="@drawable/bg_button_counter_minus"/>
 
             <TextView
                 android:id="@+id/tv_error_form_validation"
@@ -263,7 +263,7 @@
                 android:visibility="gone"
                 tools:ignore="SmallSp"
                 tools:text="Maksimal 2 broh"
-                tools:visibility="visible" />
+                tools:visibility="visible"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -272,11 +272,11 @@
 
             <TextView
                 android:id="@+id/tv_label_form_remark"
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="Catatan untuk penjual (Opsional)"
-                style="@style/TextSmallNormalBlack38"/>
+                android:text="Catatan untuk penjual (Opsional)"/>
 
             <TextView
                 android:id="@+id/tv_label_remark_option"
@@ -290,7 +290,7 @@
                 android:text="Tulis Catatan"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
 
             <android.support.v7.widget.AppCompatEditText
@@ -301,9 +301,8 @@
                 android:fontFamily="sans-serif"
                 android:imeActionLabel="Selesai"
                 android:imeOptions="actionDone"
-                android:maxLength="144"
                 android:maxLines="3"
-                android:paddingBottom="10dp"
+                android:paddingBottom="16dp"
                 android:textColor="@color/black_70"
                 android:textColorHighlight="@color/medium_green"
                 android:textSize="12sp"
@@ -311,13 +310,29 @@
                 app:backgroundTint="@color/medium_green"
                 tools:ignore="TextFields"
                 tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
-barangnya gan!" />
+barangnya gan!"/>
+
+            <TextView
+                android:id="@+id/tv_error_form_remark_validation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/et_remark"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:textColor="@color/text_cart_item_error_red"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                android:visibility="gone"
+                tools:ignore="SmallSp"
+                tools:text="Maksimal 2 broh"
+                tools:visibility="visible"/>
         </RelativeLayout>
+
 
         <View
             android:id="@+id/line_bottom_remark"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
+            android:background="#e0e0e0"/>
     </LinearLayout>
 </LinearLayout>

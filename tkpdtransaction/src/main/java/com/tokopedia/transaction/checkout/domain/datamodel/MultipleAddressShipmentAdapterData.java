@@ -8,6 +8,8 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 public class MultipleAddressShipmentAdapterData {
 
+    private int invoicePosition;
+
     private int productId;
 
     private String senderName;
@@ -41,6 +43,26 @@ public class MultipleAddressShipmentAdapterData {
     private long subTotal;
 
     private long productPriceNumber;
+
+    private String freeReturnLogo;
+
+    private boolean productIsPreorder;
+
+    private boolean productIsFreeReturns;
+
+    private boolean productReturnable;
+
+    private boolean productFinsurance;
+
+    private boolean productFcancelPartial;
+
+    public int getInvoicePosition() {
+        return invoicePosition;
+    }
+
+    public void setInvoicePosition(int invoicePosition) {
+        this.invoicePosition = invoicePosition;
+    }
 
     public int getProductId() {
         return productId;
@@ -168,6 +190,54 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setProductPriceNumber(long productPriceNumber) {
         this.productPriceNumber = productPriceNumber;
+    }
+
+    public String getFreeReturnLogo() {
+        return freeReturnLogo;
+    }
+
+    public void setFreeReturnLogo(String freeReturnLogo) {
+        this.freeReturnLogo = freeReturnLogo;
+    }
+
+    public boolean isProductIsPreorder() {
+        return productIsPreorder;
+    }
+
+    public void setProductIsPreorder(boolean productIsPreorder) {
+        this.productIsPreorder = productIsPreorder;
+    }
+
+    public boolean isProductIsFreeReturns() {
+        return productIsFreeReturns;
+    }
+
+    public void setProductIsFreeReturns(boolean productIsFreeReturns) {
+        this.productIsFreeReturns = productIsFreeReturns;
+    }
+
+    public boolean isProductReturnable() {
+        return productReturnable;
+    }
+
+    public void setProductReturnable(boolean productReturnable) {
+        this.productReturnable = productReturnable;
+    }
+
+    public boolean isProductFinsurance() {
+        return productFinsurance;
+    }
+
+    public void setProductFinsurance(boolean productFinsurance) {
+        this.productFinsurance = productFinsurance;
+    }
+
+    public boolean isProductFcancelPartial() {
+        return productFcancelPartial;
+    }
+
+    public void setProductFcancelPartial(boolean productFcancelPartial) {
+        this.productFcancelPartial = productFcancelPartial;
     }
 
     public ShipmentDetailData getSelectedShipmentDetailData() {

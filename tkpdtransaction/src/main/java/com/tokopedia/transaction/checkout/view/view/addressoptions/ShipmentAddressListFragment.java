@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -285,9 +286,8 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
-                mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
-
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
 }

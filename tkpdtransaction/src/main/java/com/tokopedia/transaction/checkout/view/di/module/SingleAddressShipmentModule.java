@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.di.module;
 
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.scope.SingleAddressShipmentScope;
+import com.tokopedia.transaction.checkout.view.mapper.ShipmentDataRequestConverter;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentPresenter;
 
@@ -29,8 +30,14 @@ public class SingleAddressShipmentModule {
 
     @Provides
     @SingleAddressShipmentScope
-    SingleAddressShipmentAdapter provideCartSingleAddressAdapter() {
-        return new SingleAddressShipmentAdapter(actionListener);
+    ShipmentDataRequestConverter provideShipmentDataRequestConverter() {
+        return new ShipmentDataRequestConverter();
+    }
+
+    @Provides
+    @SingleAddressShipmentScope
+    SingleAddressShipmentAdapter provideCartSingleAddressAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter) {
+        return new SingleAddressShipmentAdapter(actionListener, shipmentDataRequestConverter);
     }
 
 }
