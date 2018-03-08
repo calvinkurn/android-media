@@ -117,7 +117,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
-        ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
