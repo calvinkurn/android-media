@@ -1363,7 +1363,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void unregisterShake() {
         ShakeDetectManager.getShakeDetectManager().unregisterShake();
-
+    }
 
     @Override
     public void showForceHockeyAppDialog() {
