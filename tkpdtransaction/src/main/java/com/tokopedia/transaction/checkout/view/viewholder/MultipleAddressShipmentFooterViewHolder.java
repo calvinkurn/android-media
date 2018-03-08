@@ -4,13 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -82,10 +83,9 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
     }
 
     private String formatPrice(long unformattedPrice) {
-        String formattedPrice = CurrencyFormatHelper
-                .ConvertToRupiah(String.valueOf(unformattedPrice));
-        formattedPrice = formattedPrice.replace(",", ".");
-        return formattedPrice;
+        Locale locale = new Locale("in","ID");
+        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+        return rupiahCurrencyFormat.format(unformattedPrice);
     }
 
     private long calculateTotalProductCost(List<MultipleAddressShipmentAdapterData> addressDataList) {
@@ -108,15 +108,17 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
     private long calculateTotalShippingCost(
             List<MultipleAddressShipmentAdapterData> addressDataList
     ) {
-        long totalProductPrice = 0;
+        long totalShipmentPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
-                totalProductPrice = totalProductPrice +
-                        getGeneratedShipmentCartData(addressDataList.get(i))
-                                .getDeliveryPriceTotal();
+                totalShipmentPrice = totalShipmentPrice
+                        + getGeneratedShipmentCartData(addressDataList.get(i))
+                                .getDeliveryPriceTotal()
+                        - getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice()
+                        - getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
             }
         }
-        return totalProductPrice;
+        return totalShipmentPrice;
     }
 
     private long calculateInsuranceCost(List<MultipleAddressShipmentAdapterData> addressDataList) {

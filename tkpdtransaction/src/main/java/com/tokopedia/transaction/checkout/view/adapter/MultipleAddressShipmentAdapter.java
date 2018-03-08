@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
@@ -21,8 +20,10 @@ import com.tokopedia.transaction.checkout.view.viewholder.MultipleShipmentPromoV
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleShippingAddressViewHolder;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
@@ -85,6 +86,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     public void setShipmentDetailData(int position, ShipmentDetailData shipmentDetailData) {
         this.addressDataList.get(position).setSelectedShipmentDetailData(shipmentDetailData);
+        calculateTemporarySubTotalForFloatingIndicator(position, shipmentDetailData);
+    }
+
+    private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
+        this.addressDataList.get(position).setSubTotal(shipmentDetailData
+                .getShipmentCartData()
+                .getDeliveryPriceTotal()
+                + addressDataList.get(position).getProductPriceNumber()
+        );
     }
 
     @Override
@@ -187,10 +197,9 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private String formatPrice(long unformattedPrice) {
-        String formattedPrice = CurrencyFormatHelper
-                .ConvertToRupiah(String.valueOf(unformattedPrice));
-        formattedPrice = formattedPrice.replace(",", ".");
-        return formattedPrice;
+        Locale locale = new Locale("in","ID");
+        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+        return rupiahCurrencyFormat.format(unformattedPrice);
     }
 
     public String getTotalPayment() {
