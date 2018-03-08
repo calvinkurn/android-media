@@ -29,8 +29,7 @@ import java.util.ArrayList;
  * @author by nisie on 11/29/17.
  */
 
-public class
-ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment implements
+public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
     RecyclerView methodListRecyclerView;
