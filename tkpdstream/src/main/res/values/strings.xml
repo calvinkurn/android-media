@@ -39,7 +39,7 @@
     <string name="chat_as">Chat sebagai</string>
     <string name="channel_not_found">Channel tidak ditemukan.</string>
     <string name="exit">Keluar</string>
-    <string name="user_is_banned">Anda diblokir oleh admin karena melakukan pelanggaran. </string>
+    <string name="user_is_banned">Anda diblokir oleh admin karena melakukan pelanggaran, sehingga tidak dapat melihat konten ini.</string>
     <string name="please_check_timezone_to_vote">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="new_message">Pesan Baru</string>
     <string name="title_info">Info</string>
@@ -50,5 +50,7 @@
     <string name="info_prize">Info hadiah</string>
     <string name="info_polling">Info Polling</string>
     <string name="default_banned_title">Akun Anda Terblokir</string>
+    <string name="channel_has_been_deleted">Channel telah dihapus. Silahkan join channel lain.</string>
+    <string name="channel_deactivated">Channel sudah tidak aktif. Silahkan join channel lain.</string>
 
 </resources>

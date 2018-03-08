@@ -11,7 +11,7 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 public class VoteAnnouncementViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
     public static final String POLLING_START = "polling_start";
-    public static final String POLLING_FINISHED = "polling_finished";
+    public static final String POLLING_FINISHED = "polling_finish";
     public static final String POLLING_CANCEL = "polling_cancel";
     public static final String POLLING_UPDATE = "polling_update";
 

@@ -884,7 +884,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onChannelDeleted() {
+        onChannelNotFound(getString(R.string.channel_has_been_deleted));
+    }
 
+    @Override
+    public void onChannelFrozen() {
+        onChannelNotFound(getString(R.string.channel_deactivated));
     }
 
     public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, boolean isUpdateAnswer) {

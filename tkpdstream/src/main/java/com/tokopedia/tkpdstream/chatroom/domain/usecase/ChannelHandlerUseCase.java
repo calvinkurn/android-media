@@ -43,11 +43,20 @@ public class ChannelHandlerUseCase {
         void onUserBanned();
 
         void onChannelDeleted();
+
+        void onChannelFrozen();
     }
 
     public void execute(final String mChannelUrl, final ChannelHandlerListener listener) {
         SendBird.addChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID, new SendBird
                 .ChannelHandler() {
+
+            @Override
+            public void onChannelFrozen(OpenChannel channel) {
+                super.onChannelFrozen(channel);
+                listener.onChannelFrozen();
+            }
+
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 try {
