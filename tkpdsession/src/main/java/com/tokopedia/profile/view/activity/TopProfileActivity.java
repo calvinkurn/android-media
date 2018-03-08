@@ -27,6 +27,7 @@ import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.ProfileComponentInstance;
@@ -178,18 +179,20 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void setViewListener() {
-        followingLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (topProfileViewModel != null) {
-                    startActivity(((TkpdCoreRouter) getApplicationContext())
-                            .getKolFollowingPageIntent(
-                                    TopProfileActivity.this,
-                                    topProfileViewModel.getUserId())
-                    );
+        if (GlobalConfig.isSellerApp()) {
+            followingLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (topProfileViewModel != null) {
+                        startActivity(((TkpdCoreRouter) getApplicationContext())
+                                .getKolFollowingPageIntent(
+                                        TopProfileActivity.this,
+                                        topProfileViewModel.getUserId())
+                        );
+                    }
                 }
-            }
-        });
+            });
+        }
 
         favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
             @Override
