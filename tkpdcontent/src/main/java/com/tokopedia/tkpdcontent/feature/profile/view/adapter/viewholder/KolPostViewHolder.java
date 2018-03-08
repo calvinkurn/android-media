@@ -242,7 +242,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                             + kolText.getContext().getString(R.string.read_more_english)
                             + "</font>");
         } else {
-            return MethodChecker.fromHtml(element.getReview());
+            return MethodChecker.fromHtml(element.getReview().replaceAll("(\r\n|\n)", "<br />"));
         }
     }
 
