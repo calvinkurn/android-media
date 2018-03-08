@@ -17,6 +17,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transaction.R;
@@ -32,6 +33,7 @@ import com.tokopedia.transaction.checkout.view.view.multipleaddressform.Multiple
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -326,8 +328,9 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
-    public void checkPromoCodeShipment(CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
-
+    public void checkPromoCodeShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
+                                       CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
+        cartShipmentPresenter.checkPromoShipment(subscriber, checkPromoCodeCartShipmentRequest);
     }
 
     @Override
