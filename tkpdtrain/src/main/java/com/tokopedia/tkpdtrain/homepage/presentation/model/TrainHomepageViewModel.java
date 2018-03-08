@@ -152,7 +152,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         TrainStationViewModel trainStationViewModel = isDeparture? originStation: destinationStation;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
-        String stationId = trainStationViewModel.getStationId();
+        String stationId = String.valueOf(trainStationViewModel.getStationId());
         if (TextUtils.isEmpty(stationId)) {
             // id is more than one
             String cityCode = trainStationViewModel.getCityCode();

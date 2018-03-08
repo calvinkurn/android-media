@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationsCityViewModel;
 
@@ -17,4 +18,6 @@ public interface TrainStationTypeFactory extends AdapterTypeFactory{
     int type(TrainStationsCityViewModel trainStationsCityViewModel);
 
     AbstractViewHolder createViewHolder(View parent, int type);
+
+    int type(TrainPopularStationViewModel trainPopularStationViewModel);
 }

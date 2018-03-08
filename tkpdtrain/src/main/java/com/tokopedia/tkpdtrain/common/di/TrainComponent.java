@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdtrain.common.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
 
 import dagger.Component;
 
@@ -10,4 +11,5 @@ import dagger.Component;
 @TrainScope
 @Component(modules = TrainModule.class, dependencies = BaseAppComponent.class)
 public interface TrainComponent {
+    TrainRepository trainRepository();
 }

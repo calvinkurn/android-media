@@ -26,6 +26,7 @@ import com.tokopedia.tkpdtrain.homepage.di.TrainHomepageComponent;
 import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
+import com.tokopedia.tkpdtrain.station.presentation.TrainStationsActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +38,8 @@ import javax.inject.Inject;
  */
 public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
+    private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
+    private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
 
     private AppCompatButton buttonOneWayTrip;
@@ -80,6 +83,19 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         textInputViewPassenger = view.findViewById(R.id.text_input_view_passenger);
         buttonSearchTicket = view.findViewById(R.id.button_search_ticket);
         separatorDateReturn = view.findViewById(R.id.separator_date_return);
+
+        layoutOriginStation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), ORIGIN_STATION_REQUEST_CODE);
+            }
+        });
+        layoutOriginStation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), DESTINATION_STATION_REQUEST_CODE);
+            }
+        });
 
         buttonOneWayTrip.setSelected(true);
 

@@ -15,4 +15,6 @@
     <string name="train_homepage_toolbar_title">Tiket Kereta</string>
     <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
+    <string name="train_station_popular_label">Populer</string>
+    <string name="train_station_toolbar_title">Pencarian Stasiun</string>
 </resources>

@@ -4,8 +4,8 @@ package com.tokopedia.tkpdtrain.station.domain.model;
  * @author by alvarisi on 3/7/18.
  */
 
-public class FlightStation {
-    private String stationId;
+public class TrainStation {
+    private int stationId;
     private String stationName;
     private String stationCode;
     private int cityId;
@@ -13,14 +13,14 @@ public class FlightStation {
     private int islandId;
     private String islandName;
 
-    public FlightStation() {
+    public TrainStation() {
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 
-    public void setStationId(String stationId) {
+    public void setStationId(int stationId) {
         this.stationId = stationId;
     }
 

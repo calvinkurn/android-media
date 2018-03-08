@@ -15,7 +15,7 @@ public class TrainStationDb extends BaseModel {
     @PrimaryKey
     @Column(name = "station_id")
     private
-    String stationId;
+    int stationId;
     @PrimaryKey
     @Column(name = "station_name")
     private
@@ -49,11 +49,11 @@ public class TrainStationDb extends BaseModel {
     public TrainStationDb() {
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 
-    public void setStationId(String stationId) {
+    public void setStationId(int stationId) {
         this.stationId = stationId;
     }
 

@@ -1,5 +1,5 @@
-apply from: "features/settings-features.gradle"
-apply from: "libraries/settings-libraries.gradle"
+//apply from: "features/settings-features.gradle"
+//apply from: "libraries/settings-libraries.gradle"
 
 //include 'customerapp', 'tkpdhome'
 //include 'tkpdloyalty'

@@ -2,9 +2,7 @@ package com.tokopedia.tkpdtrain.station.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb_Table;
-import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

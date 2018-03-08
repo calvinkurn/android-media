@@ -7,10 +7,16 @@
         android:supportsRtl="true">
 
         <activity
-            android:theme="@style/Theme.White"
             android:name="com.tokopedia.tkpdtrain.homepage.presentation.view.TrainHomepageActivity"
             android:label="@string/train_homepage_toolbar_title"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.tkpdtrain.station.presentation.TrainStationsActivity"
+            android:label="@string/train_station_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

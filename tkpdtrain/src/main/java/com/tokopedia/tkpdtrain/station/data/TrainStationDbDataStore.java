@@ -1,9 +1,10 @@
 package com.tokopedia.tkpdtrain.station.data;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainCityEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
@@ -11,10 +12,10 @@ import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
 import com.tokopedia.tkpdtrain.station.data.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.DbFlowWithOrderSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.Specification;
-import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
+import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
+import com.tokopedia.tkpdtrain.station.domain.model.mapper.TrainStationDbMapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -25,16 +26,30 @@ import rx.functions.Func1;
  * @author by alvarisi on 3/5/18.
  */
 
-public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIslandEntity, FlightStation> {
+public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIslandEntity, TrainStation> {
+
+    public TrainStationDbDataStore() {
+    }
 
     @Override
     public Observable<Boolean> isDataAvailable() {
-        return null;
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(new Select(Method.count()).from(TrainStationDb.class).hasData());
+            }
+        });
     }
 
     @Override
     public Observable<Boolean> deleteAll() {
-        return null;
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                new Delete().from(TrainStationDb.class).execute();
+                subscriber.onNext(true);
+            }
+        });
     }
 
     @Override
@@ -63,9 +78,17 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
     }
 
     @Override
-    public Observable<Boolean> insertAll(List<TrainStationIslandEntity> datas) {
-        return Observable.just(datas)
-                .flatMapIterable(new Func1<List<TrainStationIslandEntity>, Iterable<TrainStationIslandEntity>>() {
+    public Observable<Boolean> insertAll(final List<TrainStationIslandEntity> datas) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                for (TrainStationIslandEntity entity : datas){
+                    insert(entity);
+                }
+                subscriber.onNext(true);
+            }
+        });
+                /*.flatMapIterable(new Func1<List<TrainStationIslandEntity>, Iterable<TrainStationIslandEntity>>() {
                     @Override
                     public Iterable<TrainStationIslandEntity> call(List<TrainStationIslandEntity> trainStationIslandEntities) {
                         return trainStationIslandEntities;
@@ -75,12 +98,12 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                     public Observable<Boolean> call(TrainStationIslandEntity trainStationIslandEntity) {
                         return insert(trainStationIslandEntity);
                     }
-                });
+                });*/
     }
 
 
     @Override
-    public Observable<List<FlightStation>> getDatas(final Specification specification) {
+    public Observable<List<TrainStation>> getDatas(final Specification specification) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<TrainStationDb>>() {
             @Override
             public void call(Subscriber<? super List<TrainStationDb>> subscriber) {
@@ -100,12 +123,7 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
 
                 subscriber.onNext(flightAirportDBList);
             }
-        }).map(new Func1<List<TrainStationDb>, List<FlightStation>>() {
-            @Override
-            public List<FlightStation> call(List<TrainStationDb> trainStationDbs) {
-                return null;
-            }
-        });
+        }).map(new TrainStationDbMapper());
     }
 
     @Override
@@ -114,7 +132,7 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
     }
 
     @Override
-    public Observable<FlightStation> getData(final Specification specification) {
+    public Observable<TrainStation> getData(final Specification specification) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<TrainStationDb>() {
             @Override
             public void call(Subscriber<? super TrainStationDb> subscriber) {
@@ -134,10 +152,11 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
 
                 subscriber.onNext(flightAirportDBList);
             }
-        }).map(new Func1<TrainStationDb, FlightStation>() {
+        }).map(new Func1<TrainStationDb, TrainStation>() {
             @Override
-            public FlightStation call(TrainStationDb trainStationDb) {
-                return null;
+            public TrainStation call(TrainStationDb trainStationDb) {
+                TrainStationDbMapper mapper = new TrainStationDbMapper();
+                return mapper.transform(trainStationDb);
             }
         });
     }

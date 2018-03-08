@@ -21,6 +21,7 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
     public TrainHomepageComponent getComponent() {
         if (component == null){
             component = DaggerTrainHomepageComponent.builder()
+                    .trainComponent(TrainComponentUtils.getTrainComponent(getApplication()))
                     .build();
         }
         return component;

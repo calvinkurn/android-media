@@ -1,5 +1,8 @@
 package com.tokopedia.tkpdtrain.common.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
@@ -7,7 +10,10 @@ import com.tokopedia.tkpdtrain.common.constant.TrainUrl;
 import com.tokopedia.tkpdtrain.common.data.TrainDataStoreFactory;
 import com.tokopedia.tkpdtrain.common.data.TrainRepositoryImpl;
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.station.data.TrainStationCacheDataStore;
+import com.tokopedia.tkpdtrain.station.data.TrainStationCloudDataStore;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
+import com.tokopedia.tkpdtrain.station.data.TrainStationDbDataStore;
 
 import java.util.concurrent.TimeUnit;
 
@@ -55,10 +61,31 @@ public class TrainModule {
     public TrainDataStoreFactory provideDataStoreFactory(TrainApi trainApi) {
         return new TrainDataStoreFactory(trainApi);
     }
+
     @TrainScope
     @Provides
-    public TrainStationDataStoreFactory provideTrainStationDataStoreFactory(TrainApi trainApi) {
-        return new TrainStationDataStoreFactory(trainApi);
+    public TrainStationDbDataStore provideTrainStationDbDataStore() {
+        return new TrainStationDbDataStore();
+    }
+
+    @TrainScope
+    @Provides
+    public TrainStationCloudDataStore provideTrainStationCloudDataStore(TrainApi trainApi) {
+        return new TrainStationCloudDataStore(trainApi);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainStationCacheDataStore provideTrainStationCacheDataStore(@ApplicationContext Context context) {
+        return new TrainStationCacheDataStore(context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainStationDataStoreFactory provideTrainStationDataStoreFactory(TrainStationDbDataStore trainStationDbDataStore,
+                                                                            TrainStationCloudDataStore trainStationCloudDataStore,
+                                                                            TrainStationCacheDataStore trainStationCacheDataStore) {
+        return new TrainStationDataStoreFactory(trainStationDbDataStore, trainStationCloudDataStore, trainStationCacheDataStore);
     }
 
     @TrainScope

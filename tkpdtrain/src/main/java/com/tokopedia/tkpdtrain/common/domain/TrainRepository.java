@@ -1,8 +1,7 @@
 package com.tokopedia.tkpdtrain.common.domain;
 
 
-import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
-import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
+import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 
 import java.util.List;
 
@@ -13,5 +12,5 @@ import rx.Observable;
  */
 
 public interface TrainRepository {
-    Observable<List<FlightStation>> getPopularStations();
+    Observable<List<TrainStation>> getPopularStations();
 }

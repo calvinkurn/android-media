@@ -11,16 +11,42 @@ import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFact
  */
 
 public class TrainStationViewModel implements Parcelable, Visitable<TrainStationTypeFactory> {
-    private String stationId;
+    private int stationId;
     private String stationCode;
+    private String stationName;
     private String cityCode;
     private String cityName;
+    private String islandId;
 
-    public String getStationId() {
+    public TrainStationViewModel() {
+    }
+
+    protected TrainStationViewModel(Parcel in) {
+        stationId = in.readInt();
+        stationCode = in.readString();
+        stationName = in.readString();
+        cityCode = in.readString();
+        cityName = in.readString();
+        islandId = in.readString();
+    }
+
+    public static final Creator<TrainStationViewModel> CREATOR = new Creator<TrainStationViewModel>() {
+        @Override
+        public TrainStationViewModel createFromParcel(Parcel in) {
+            return new TrainStationViewModel(in);
+        }
+
+        @Override
+        public TrainStationViewModel[] newArray(int size) {
+            return new TrainStationViewModel[size];
+        }
+    };
+
+    public int getStationId() {
         return stationId;
     }
 
-    public void setStationId(String stationId) {
+    public void setStationId(int stationId) {
         this.stationId = stationId;
     }
 
@@ -48,20 +74,27 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         this.cityName = cityName;
     }
 
-    protected TrainStationViewModel(Parcel in) {
+    @Override
+    public int type(TrainStationTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
-    public static final Creator<TrainStationViewModel> CREATOR = new Creator<TrainStationViewModel>() {
-        @Override
-        public TrainStationViewModel createFromParcel(Parcel in) {
-            return new TrainStationViewModel(in);
-        }
 
-        @Override
-        public TrainStationViewModel[] newArray(int size) {
-            return new TrainStationViewModel[size];
-        }
-    };
+    public String getStationName() {
+        return stationName;
+    }
+
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
+    }
+
+    public String getIslandId() {
+        return islandId;
+    }
+
+    public void setIslandId(String islandId) {
+        this.islandId = islandId;
+    }
 
     @Override
     public int describeContents() {
@@ -69,12 +102,12 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(stationId);
+        parcel.writeString(stationCode);
+        parcel.writeString(stationName);
+        parcel.writeString(cityCode);
+        parcel.writeString(cityName);
+        parcel.writeString(islandId);
     }
-    @Override
-    public int type(TrainStationTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
-
 }

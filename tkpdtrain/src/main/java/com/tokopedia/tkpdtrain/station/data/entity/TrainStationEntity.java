@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class TrainStationEntity {
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
     @SerializedName("popularity_order")
     @Expose
     private int popularityOrder;
@@ -27,7 +27,7 @@ public class TrainStationEntity {
     @Expose
     private String code;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

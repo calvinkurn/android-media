@@ -2,11 +2,9 @@ package com.tokopedia.tkpdtrain.station.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
-import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
 import com.tokopedia.tkpdtrain.station.data.specification.NetworkSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.Specification;
-import com.tokopedia.tkpdtrain.station.domain.model.FlightStation;
 
 import java.util.List;
 

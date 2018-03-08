@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainPopularStationViewHolder;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainStationViewHolder;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewholder.TrainStationsCityViewHolder;
+import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationsCityViewModel;
 
@@ -34,8 +36,15 @@ public class TrainStationAdapterTypeFactory extends BaseAdapterTypeFactory imple
             return new TrainStationViewHolder(parent);
         } else if (type == TrainStationsCityViewHolder.LAYOUT) {
             return new TrainStationsCityViewHolder(parent);
+        } else if (type == TrainPopularStationViewHolder.LAYOUT) {
+            return new TrainPopularStationViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
+    }
+
+    @Override
+    public int type(TrainPopularStationViewModel trainPopularStationViewModel) {
+        return TrainPopularStationViewHolder.LAYOUT;
     }
 }
