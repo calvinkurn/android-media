@@ -154,32 +154,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static String sTopActivity = null;
 
-    private boolean isAppIsInBackground(Context context) {
-        boolean isInBackground = true;
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        ComponentName componentInfo = taskInfo.get(0).topActivity;
-        if(!componentInfo.getClassName().contains("ShakeDetectCampaignActivity")) {
-            sTopActivity = componentInfo.getClassName().substring(componentInfo.getClassName().lastIndexOf(".")+1);
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
-                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    for (String activeProcess : processInfo.pkgList) {
-                        if (activeProcess.equals(context.getPackageName())) {
-                            isInBackground = false;
-                        }
-                    }
-                }
-            }
-        } else {
-            if (componentInfo.getPackageName().equals(context.getPackageName())) {
-                isInBackground = false;
-            }
-        }
-        return isInBackground;
-    }
+
 
     public void onDestroy() {
         sd.unregisterListener(this);

@@ -1056,4 +1056,15 @@ public abstract class SellerRouterApplication extends MainApplication
             }
         };
     }
+
+    @Override
+    public void init() {
+    }
+    @Override
+    public void registerShake(String screenName) {
+    }
+
+    @Override
+    public void unregisterShake() {
+    }
 }
