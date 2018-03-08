@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+
 /**
  * @author by nisie on 9/14/17.
  */
@@ -46,7 +48,7 @@ public interface TkpdInboxRouter {
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 
-    Intent getProductDetailIntent(Context context, Integer productId, String productName, String productPrice, Long dateTimeInMilis);
+    Intent getProductDetailIntent(Context context, ProductPass productPass);
 
     void startAddProduct(Activity activity, String shopId);
 }

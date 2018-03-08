@@ -24,7 +24,6 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
-        Log.i("WS : " , "Opened");
         listener.onOpenWebSocket();
     }
 
@@ -53,7 +52,6 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        Log.i("WS Error : " , "");
         listener.onErrorWebSocket();
     }
 }

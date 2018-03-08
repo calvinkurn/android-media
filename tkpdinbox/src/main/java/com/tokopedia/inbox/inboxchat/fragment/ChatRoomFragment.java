@@ -45,6 +45,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
@@ -1231,7 +1232,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void productClicked(Integer productId, String productName, String productPrice, Long dateTimeReply) {
         trackProductClicked();
         TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
-        Intent intent = router.getProductDetailIntent(getContext(),productId,productName,productPrice,dateTimeReply);
+        ProductPass productPass = ProductPass.Builder.aProductPass()
+                .setProductId(productId)
+                .setProductPrice(productPrice)
+                .setProductName(productName)
+                .setDateTimeInMilis(dateTimeReply)
+                .build();
+
+        Intent intent = router.getProductDetailIntent(getContext(),productPass);
         startActivity(intent);
     }
 

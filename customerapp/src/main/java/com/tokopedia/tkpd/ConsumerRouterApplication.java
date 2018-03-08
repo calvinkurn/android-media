@@ -1418,13 +1418,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProductDetailIntent(Context context, Integer productId, String productName, String productPrice, Long dateTimeInMilis) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductPrice(productPrice)
-                            .setProductName(productName)
-                            .setDateTimeInMilis(dateTimeInMilis)
-                            .build();
+    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         return intent;
     }
