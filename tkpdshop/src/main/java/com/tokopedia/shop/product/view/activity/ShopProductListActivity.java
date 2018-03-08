@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopAppLink;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
@@ -35,28 +33,25 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     private String etalaseName;
     private String sort;
     private String page;
-    private String shopName;
 
-    public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId, String etalaseName, String shopName) {
+    public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId, String etalaseName) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(SHOP_ID, shopId);
         intent.putExtra(KEYWORD_EXTRAS, keyword);
         intent.putExtra(ShopProductListFragment.ETALASE_ID, etalaseId);
         intent.putExtra(ShopProductListFragment.ETALASE_NAME, etalaseName);
-        intent.putExtra(ShopParamConstant.SHOP_NAME, shopName);
         return intent;
     }
 
 
-    public static Intent createIntent(Context context, String shopId, String shopName) {
+    public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(SHOP_ID, shopId);
-        intent.putExtra(ShopParamConstant.SHOP_NAME, shopName);
         return intent;
     }
 
-    public static Intent createIntent(Activity activity, String shopId, String keyword, String id, String sort, String page, String shopName) {
-        Intent intent = createIntent(activity, shopId, keyword, id, "", shopName);
+    public static Intent createIntent(Activity activity, String shopId, String keyword, String id, String sort, String page) {
+        Intent intent = createIntent(activity, shopId, keyword, id, "");
         intent.putExtra(SORT, sort);
         intent.putExtra(PAGE, page);
         return intent;
@@ -79,16 +74,12 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         etalaseName = getIntent().getStringExtra(ShopProductListFragment.ETALASE_NAME);
         sort = getIntent().getStringExtra(SORT);
         page = getIntent().getStringExtra(PAGE);
-        shopName = getIntent().getStringExtra(ShopParamConstant.SHOP_NAME);
         super.onCreate(savedInstanceState);
-
-        if (!TextUtils.isEmpty(shopName))
-            toolbar.setTitle(shopName);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, etalaseName, sort, page, shopName);
+        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, etalaseName, sort, page);
     }
 
     @Override
