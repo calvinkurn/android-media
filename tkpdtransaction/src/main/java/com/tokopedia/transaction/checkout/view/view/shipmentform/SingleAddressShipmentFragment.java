@@ -224,7 +224,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest());
+                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest("", 0));
             }
         });
 

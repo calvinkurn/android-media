@@ -11,8 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -36,7 +39,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
-    public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
+    public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
@@ -58,6 +61,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     ICartShipmentPresenter cartShipmentPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
+    private CheckoutData checkoutData;
 
 
     public static Intent createInstanceSingleAddress(Context context,
@@ -163,6 +167,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
+        this.checkoutData = checkoutData;
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
         paymentPassData.setTransactionId(checkoutData.getTransactionId());
@@ -170,55 +175,57 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         paymentPassData.setCallbackSuccessUrl(checkoutData.getCallbackSuccessUrl());
         paymentPassData.setCallbackFailedUrl(checkoutData.getCallbackFailedUrl());
         paymentPassData.setQueryString(checkoutData.getQueryString());
-        navigateToActivityRequest
-                (TopPayActivity.createInstance(this, paymentPassData),
-                        TopPayActivity.REQUEST_CODE
-                );
+        this.startActivityForResult(
+                TopPayActivity.createInstance(this, paymentPassData),
+                TopPayActivity.REQUEST_CODE);
     }
 
     @Override
     public void renderErrorCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorHttpCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderThanksTopPaySuccess(String message) {
-        finish();
+        showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
+        navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
+        CartBadgeNotificationReceiver.resetBadgeCart(this);
+        closeView();
     }
 
     @Override
     public void renderErrorThanksTopPaySuccess(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorHttpThanksTopPaySuccess(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorNoConnectionThanksTopPaySuccess(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionThanksTopPaySuccess(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
@@ -327,5 +334,26 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     protected void onDestroy() {
         super.onDestroy();
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TopPayActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case TopPayActivity.PAYMENT_CANCELLED:
+                    NetworkErrorHelper.showSnackbar(
+                            this,
+                            getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+                    );
+                    break;
+                case TopPayActivity.PAYMENT_SUCCESS:
+                    cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
+                    break;
+                case TopPayActivity.PAYMENT_FAILED:
+                    cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
+                    break;
+            }
+        }
     }
 }
