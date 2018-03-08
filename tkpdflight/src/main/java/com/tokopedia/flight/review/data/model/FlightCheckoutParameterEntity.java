@@ -72,7 +72,7 @@ public class FlightCheckoutParameterEntity {
     private List<String> paymentsName = null;
     @SerializedName("pid")
     @Expose
-    private int pid;
+    private long pid;
 
     public String getMerchantCode() {
         return merchantCode;
@@ -154,7 +154,7 @@ public class FlightCheckoutParameterEntity {
         return paymentsName;
     }
 
-    public int getPid() {
+    public long getPid() {
         return pid;
     }
 }
