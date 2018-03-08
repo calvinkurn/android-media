@@ -128,4 +128,8 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
             return 0;
         }
     }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
+    }
 }

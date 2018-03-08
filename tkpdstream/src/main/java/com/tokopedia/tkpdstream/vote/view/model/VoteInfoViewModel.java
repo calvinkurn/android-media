@@ -11,6 +11,9 @@ import java.util.List;
 
 public class VoteInfoViewModel {
 
+
+    public static final int STATUS_ACTIVE = 2;
+    public static final int STATUS_FORCE_ACTIVE = 3;
     public static final int STATUS_FINISH = 4;
     public static final int STATUS_FORCE_FINISH = 5;
     public static final int STATUS_CANCELED = 6;
@@ -18,8 +21,8 @@ public class VoteInfoViewModel {
     public static final int VOTE_TYPE_GIFT = 1;
 
 
-    private final String pollId;
-    private final int statusId;
+    private String pollId;
+    private int statusId;
     private String voteOptionType;
     private String voteGiftType;
     private String voteStatus;
@@ -93,6 +96,10 @@ public class VoteInfoViewModel {
         return voted;
     }
 
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
     public int getVoteInfoStringResId() {
         return voteInfoStringResId;
     }
@@ -124,6 +131,10 @@ public class VoteInfoViewModel {
             default:
                 return R.string.info_polling;
         }
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 }
 

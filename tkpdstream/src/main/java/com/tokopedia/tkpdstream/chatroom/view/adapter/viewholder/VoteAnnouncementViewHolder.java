@@ -25,6 +25,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     ImageView voteIcon;
     TextView voteTitle;
     TextView voteQuestion;
+    View voteLayout;
     Context context;
     private final GroupChatContract.View.VoteAnnouncementViewHolderListener listener;
 
@@ -33,6 +34,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);
         voteQuestion = itemView.findViewById(R.id.vote_question);
+        voteLayout = itemView.findViewById(R.id.vote_layout);
         listener = imageListener;
     }
 
@@ -51,7 +53,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
 
         voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
-        itemView.setOnClickListener(new View.OnClickListener() {
+        voteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onVoteComponentClicked("vote", element.getMessage());
