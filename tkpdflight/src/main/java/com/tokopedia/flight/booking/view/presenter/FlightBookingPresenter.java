@@ -736,7 +736,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        getView().canGoBack();
+                        getView().closePage();
                     }
                 }
         );
