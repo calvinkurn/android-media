@@ -27,4 +27,6 @@ public interface TrainHomepagePresenter extends CustomerPresenter<TrainHomepageV
     void onOriginStationChanged(TrainStationViewModel viewModel);
 
     void onDepartureStationChanged(TrainStationViewModel viewModel);
+
+    void onSubmitButtonClicked();
 }

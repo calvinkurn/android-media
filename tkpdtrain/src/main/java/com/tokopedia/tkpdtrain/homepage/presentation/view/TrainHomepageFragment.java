@@ -27,7 +27,9 @@ import com.tokopedia.tkpdtrain.common.presentation.TextInputView;
 import com.tokopedia.tkpdtrain.homepage.di.TrainHomepageComponent;
 import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
+import com.tokopedia.tkpdtrain.search.presentation.TrainSearchActivity;
 import com.tokopedia.tkpdtrain.station.presentation.TrainStationsActivity;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
@@ -155,7 +157,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
             }
         });
 
-        trainHomepagePresenterImpl = new TrainHomepagePresenterImpl();
+        buttonSearchTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                trainHomepagePresenterImpl.onSubmitButtonClicked();
+            }
+        });
 
         return view;
     }
@@ -276,6 +283,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     }
 
     @Override
+    public void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel) {
+        Intent intent = TrainSearchActivity.getCallingIntent(getActivity(), passDataViewModel);
+        startActivity(intent);
+    }
+
+    @Override
     public TrainHomepageViewModel getHomepageViewModel() {
         return viewModel;
     }
@@ -298,7 +311,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case ORIGIN_STATION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);

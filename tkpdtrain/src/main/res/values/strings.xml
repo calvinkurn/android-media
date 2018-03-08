@@ -17,4 +17,5 @@
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
     <string name="train_station_popular_label">Populer</string>
     <string name="train_station_toolbar_title">Pencarian Stasiun</string>
+    <string name="train_search_toolbar_title">Pencarian</string>
 </resources>

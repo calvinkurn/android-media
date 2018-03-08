@@ -8,6 +8,7 @@ import com.tokopedia.tkpdtrain.common.util.TrainDateUtil;
 import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainPassengerViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 import java.util.Calendar;
@@ -138,6 +139,27 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         homepageViewModel.setDestinationStation(viewModel);
         getView().setHomepageViewModel(homepageViewModel);
         renderUi();
+    }
+
+    @Override
+    public void onSubmitButtonClicked() {
+        if (validateFields()){
+            TrainHomepageViewModel viewModel = getView().getHomepageViewModel();
+            TrainSearchPassDataViewModel passDataViewModel = new TrainSearchPassDataViewModel();
+            passDataViewModel.setAdult(viewModel.getKaiPassengerViewModel().getAdult());
+            passDataViewModel.setInfant(viewModel.getKaiPassengerViewModel().getInfant());
+            passDataViewModel.setDepartureDate(viewModel.getDepartureDate());
+            passDataViewModel.setReturnDate(viewModel.getReturnDate());
+            passDataViewModel.setDestinationStationCode(viewModel.getDestinationStation().getStationCode());
+            passDataViewModel.setDestinationCityName(viewModel.getDestinationStation().getCityName());
+            passDataViewModel.setOriginStationCode(viewModel.getOriginStation().getStationCode());
+            passDataViewModel.setOriginCityName(viewModel.getOriginStation().getStationName());
+            getView().navigateToSearchPage(passDataViewModel);
+        }
+    }
+
+    private boolean validateFields() {
+        return true;
     }
 
     private void renderUi() {

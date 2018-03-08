@@ -5,6 +5,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 
 import java.util.Date;
 
@@ -35,4 +36,6 @@ public interface TrainHomepageView extends CustomerView{
     Activity getActivity();
 
     void setHomepageViewModel(TrainHomepageViewModel viewModel);
+
+    void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel);
 }

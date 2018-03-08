@@ -18,6 +18,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.tkpdtrain.search.presentation.TrainSearchActivity"
+            android:label="@string/train_search_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
