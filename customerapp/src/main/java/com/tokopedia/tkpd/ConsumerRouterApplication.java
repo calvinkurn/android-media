@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -123,7 +124,6 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -176,7 +176,6 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -1067,7 +1066,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1126,8 +1125,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showMaintenancePage();
+    public void showForceLogoutDialog(Response response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
     @Override
@@ -1137,24 +1137,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void refreshLogin() {
+    public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
+        sessionRefresh.gcmUpdate();
     }
 
     @Override
-    public void refreshToken() {
+    public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            accessTokenRefresh.refreshToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        accessTokenRefresh.refreshToken();
     }
 
     @Override
@@ -1356,5 +1348,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    public void showForceHockeyAppDialog() {
+        ServerErrorHandler.showForceHockeyAppDialog();
+    }
+
+    @Override
+    public void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
 }
