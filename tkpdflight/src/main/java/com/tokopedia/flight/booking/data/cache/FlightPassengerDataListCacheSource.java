@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class FlightPassengerDataListCacheSource extends DataCacheSource {
 
     private static final String PREF_KEY_NAME = "PREF_KEY_NAME";
-    private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
+    private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(20);
 
     @Inject
     public FlightPassengerDataListCacheSource(@ApplicationContext Context context) {
