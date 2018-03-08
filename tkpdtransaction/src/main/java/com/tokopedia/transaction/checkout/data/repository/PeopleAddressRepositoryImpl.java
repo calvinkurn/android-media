@@ -18,7 +18,7 @@ import rx.functions.Func1;
  * @author Aghny A. Putra on 21/02/18
  */
 
-public class NonPaginatedPeopleAddressRepositoryImpl implements PeopleAddressRepository {
+public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
 
     private static final int FIRST_ELEMENT = 0;
     private static final int PRIME_ADDRESS = 2;
@@ -26,7 +26,7 @@ public class NonPaginatedPeopleAddressRepositoryImpl implements PeopleAddressRep
     private final PeopleService mPeopleService;
     private final AddressModelMapper mAddressModelMapper;
 
-    public NonPaginatedPeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
+    public PeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
         mPeopleService = peopleService;
         mAddressModelMapper = addressModelMapper;
     }
@@ -110,5 +110,5 @@ public class NonPaginatedPeopleAddressRepositoryImpl implements PeopleAddressRep
                     }
                 });
     }
-    
+
 }

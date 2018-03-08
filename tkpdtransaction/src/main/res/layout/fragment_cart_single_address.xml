@@ -1,73 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/grey_200"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_button_payment_container"
+    <android.support.v7.widget.CardView
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:visibility="gone"
+        app:cardElevation="@dimen/padding_med"
+        tools:visibility="visible">
 
-        <LinearLayout android:id="@+id/ll_total_payment_layout"
+        <LinearLayout
+            android:id="@+id/ll_button_payment_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_small_sm">
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_total_payment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_small_sm">
+
+                <TextView
+                    android:id="@+id/tv_item_count"
+                    style="@style/TextSmallNormalBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Pembayaran " />
+
+                <TextView
+                    android:id="@+id/tv_total_payment"
+                    style="@style/TextMidMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/orange_red"
+                    tools:text="Rp600.000" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#e0e0e0" />
 
             <TextView
-                android:id="@+id/tv_item_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                android:textColor="@color/black_70"
-                android:text="Total Pembayaran " />
-
-            <TextView
-                android:id="@+id/tv_total_payment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="end"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:textColor="@color/orange_red"
-                tools:text="Rp600.000" />
+                android:id="@+id/tv_select_payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/medium_green_button_rounded"
+                android:gravity="center"
+                android:text="Pilih Metode Pembayaran"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#e0e0e0"/>
-
-        <TextView
-            android:id="@+id/tv_select_payment_method"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/medium_green_button_rounded"
-            android:gravity="center"
-            android:text="Pilih Metode Pembayaran"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
-
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_cart_order_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ll_button_payment_container" />
+        android:layout_above="@id/bottom_layout" />
 
 </RelativeLayout>

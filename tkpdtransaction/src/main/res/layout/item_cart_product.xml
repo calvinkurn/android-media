@@ -15,9 +15,9 @@
         android:id="@+id/ll_shipping_warning_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -47,7 +47,8 @@
         android:layout_marginBottom="8dp"
         android:background="@color/white">
 
-        <ImageView android:id="@+id/iv_product_image"
+        <ImageView
+            android:id="@+id/iv_product_image"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginEnd="16dp"
@@ -56,47 +57,46 @@
             android:src="@drawable/googleg_standard_color_18"
             tools:ignore="ContentDescription" />
 
-        <TextView android:id="@+id/tv_product_name"
+        <TextView
+            android:id="@+id/tv_product_name"
+            style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_product_image"
             android:layout_toRightOf="@id/iv_product_image"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black_70"
-            android:textSize="14sp"
-            android:textStyle="normal"
             tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
 
-        <TextView android:id="@+id/tv_product_price"
+        <TextView
+            android:id="@+id/tv_product_price"
+            style="@style/TextMidMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_product_name"
             android:layout_toEndOf="@id/iv_product_image"
             android:layout_toRightOf="@id/iv_product_image"
-            android:fontFamily="sans-serif-medium"
             android:textColor="@color/orange_red"
-            android:textSize="14sp"
-            android:textStyle="normal"
             tools:text="Rp200.000" />
 
-        <RelativeLayout android:id="@+id/rl_product_policies_layout"
+        <RelativeLayout
+            android:id="@+id/rl_product_policies_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_product_price"
+            android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/iv_product_image"
-            android:layout_toRightOf="@id/iv_product_image"
-            android:layout_marginTop="4dp">
+            android:layout_toRightOf="@id/iv_product_image">
 
             <ImageView
                 android:id="@+id/iv_free_return_icon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_centerVertical="true"
-                tools:src="@drawable/ic_free_return"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/ic_free_return" />
 
             <TextView
                 android:id="@+id/tv_free_return_label"
+                style="@style/TextSmallNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -106,11 +106,8 @@
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@id/iv_free_return_icon"
                 android:layout_toRightOf="@id/iv_free_return_icon"
-                android:fontFamily="sans-serif"
                 android:text="Free Returns"
-                android:textColor="@color/font_black_secondary_54"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:textColor="@color/font_black_secondary_54" />
 
             <TextView
                 android:id="@+id/tv_pre_order"
@@ -152,48 +149,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_product_policies_layout"
+            android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/iv_product_image"
-            android:layout_toRightOf="@id/iv_product_image"
-            android:layout_marginTop="4dp">
+            android:layout_toRightOf="@id/iv_product_image">
 
             <TextView
                 android:id="@+id/tv_text_product_weight"
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Berat :"
-                android:textColor="@color/black_38"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:text="Berat :" />
 
             <TextView
                 android:id="@+id/tv_product_weight"
+                style="@style/TextSmallNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@id/tv_text_product_weight"
                 android:layout_toRightOf="@id/tv_text_product_weight"
-                android:fontFamily="sans-serif"
                 android:textColor="@color/font_black_secondary_54"
-                android:textSize="12sp"
-                android:textStyle="normal"
                 tools:text="3kg" />
 
             <TextView
                 android:id="@+id/tv_product_total_item"
+                style="@style/TextSmallNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:fontFamily="sans-serif"
                 android:textColor="@color/font_black_secondary_54"
-                android:textSize="12sp"
-                android:textStyle="normal"
                 tools:text="1" />
 
             <TextView
                 android:id="@+id/tv_label_item_count"
+                style="@style/TextSmallNormalBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -202,12 +193,8 @@
                 android:layout_toLeftOf="@id/tv_product_total_item"
                 android:layout_toRightOf="@id/tv_product_weight"
                 android:layout_toStartOf="@id/tv_product_total_item"
-                android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="Jumlah :"
-                android:textColor="@color/black_38"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:text="Jumlah :" />
 
         </RelativeLayout>
 
@@ -221,24 +208,18 @@
 
         <TextView
             android:id="@+id/tv_note_to_seller_label"
+            style="@style/TextSmallNormalBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif"
-            android:text="Catatan untuk penjual (Opsional)"
-            android:textColor="@color/black_38"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:text="Catatan untuk penjual (Opsional)" />
 
         <TextView
             android:id="@+id/tv_optional_note_to_seller"
+            style="@style/TextSmallNormalBlack70"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:textStyle="normal"
             tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     </LinearLayout>

@@ -241,6 +241,7 @@
     <string name="label_delivery_day_with_asterisk">\u0020hari kerja*</string>
     <string name="label_delivery_hour_with_asterisk">\u0020jam perjalanan*</string>
     <string name="label_max_delivery">Maks\u0020</string>
+    <string name="label_button_choose_shipment_courier">Pilih Kurir Pengiriman</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

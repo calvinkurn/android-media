@@ -1,6 +1,11 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
+import com.tokopedia.transaction.checkout.data.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
+
+import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 05/03/18.
@@ -9,4 +14,10 @@ import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 public interface ICartShipmentPresenter {
 
     void processCheckout(CheckoutRequest checkoutRequest);
+
+    void processVerifyPayment(String transactionId);
+
+    void checkPromoShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
+                            CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest);
+
 }

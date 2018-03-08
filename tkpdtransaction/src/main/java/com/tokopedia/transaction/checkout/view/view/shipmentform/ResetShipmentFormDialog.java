@@ -12,13 +12,14 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveItemDialog;
 
 /**
  * @author Aghny A. Putra on 28/02/18.
  */
 
 public class ResetShipmentFormDialog extends DialogFragment {
-
+    public static final String DIALOG_FRAGMENT_TAG = ResetShipmentFormDialog.class.getSimpleName();
     private ResetShipmentFormCallbackAction mCallbackAction;
 
     public static ResetShipmentFormDialog newInstance(ResetShipmentFormCallbackAction callbackAction) {

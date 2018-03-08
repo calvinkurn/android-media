@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -58,577 +59,620 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingTop="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:text="@string/label_shipment_type"
-                    android:textColor="@color/black_38"
-                    android:textSize="12sp" />
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_shipment_choice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?selectableItemBackground"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp">
 
                     <TextView
-                        android:id="@+id/tv_shipment_type"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/black_54"
-                        android:textSize="16sp"
-                        tools:text="Same Day" />
-
-                    <ImageView
+                        style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/arrow_drop_down" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:background="@color/grey_300" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:text="@string/label_choose_courier"
-                    android:textColor="@color/black_38"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:text="@string/label_arrival_probability"
-                    android:textColor="@color/black_38"
-                    android:textSize="12sp" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_courier_choice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/grey_300" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_pinpoint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingTop="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="10sp"
-                    android:text="@string/label_pinpoint"
-                    android:textColor="@color/black_54"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
-                <FrameLayout
-                    android:id="@+id/fl_pinpoint_map"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_margin="@dimen/new_margin_med">
-
-                    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/map_view_pinpoint"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clickable="false"
-                        map:cameraZoom="17"
-                        map:liteMode="true"
-                        map:mapType="normal" />
-
-                    <View
-                        android:id="@+id/v_no_pinpoint_layer"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/background_no_pinpoint" />
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/label_shipment_type" />
 
                     <LinearLayout
+                        android:id="@+id/ll_shipment_choice"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:foreground="?selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
                         <TextView
-                            android:id="@+id/tv_no_ponpoint_information"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:id="@+id/tv_shipment_type"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:padding="@dimen/padding_ms"
-                            android:text="@string/label_no_pinpoint_choosen" />
-
-                        <Button
-                            android:id="@+id/bt_change_pinpoint"
-                            android:layout_width="match_parent"
-                            android:layout_height="32dp"
-                            android:layout_gravity="bottom|center_horizontal"
-                            android:layout_marginBottom="14dp"
-                            android:layout_marginLeft="14dp"
-                            android:layout_marginRight="14dp"
-                            android:background="@color/white"
-                            android:foreground="?selectableItemBackground"
-                            android:text="@string/label_change_pinpoint"
-                            android:textAllCaps="false"
                             android:textColor="@color/black_54"
-                            android:textSize="12sp"
-                            android:visibility="visible" />
+                            android:textSize="16sp"
+                            tools:text="Same Day" />
 
-                        <Button
-                            android:id="@+id/bt_choose_pinpoint"
-                            android:layout_width="match_parent"
-                            android:layout_height="32dp"
-                            android:layout_gravity="bottom|center_horizontal"
-                            android:layout_marginBottom="14dp"
-                            android:layout_marginLeft="14dp"
-                            android:layout_marginRight="14dp"
-                            android:background="@color/white"
-                            android:foreground="?selectableItemBackground"
-                            android:text="@string/label_choose_pinpoint"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black_54"
-                            android:textSize="12sp"
-                            android:visibility="gone" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/arrow_drop_down" />
 
                     </LinearLayout>
 
-                </FrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_shipment_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/new_margin_med"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_icon_location_grey_32dp" />
-
-                    <TextView
-                        android:id="@+id/tv_shipment_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="11sp"
-                        tools:text="RT 6 RW 3, DKI Jakarta, 11410, Indonesia" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/grey_300" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingTop="16dp">
-
-                <LinearLayout
-                    android:id="@+id/ll_insurance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_label_insurance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_shipment_insurance"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="14sp" />
-
-                    <ImageButton
-                        android:id="@+id/img_bt_insurance_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        android:contentDescription="@string/image_desc_button_insurance_info"
-                        android:padding="@dimen/padding_ms"
-                        android:src="@drawable/info_icon"
-                        android:visibility="gone" />
-
                     <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <Switch
-                        android:id="@+id/switch_insurance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton"
-                        android:visibility="gone" />
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:background="@color/grey_300" />
 
                     <TextView
-                        android:id="@+id/tv_special_insurance_condition"
+                        style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_ms"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_marginTop="@dimen/margin_ms"
-                        android:text="@string/label_insurance_not_available"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/separator_insurance"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:background="@drawable/bg_line_separator" />
-
-                <LinearLayout
-                    android:id="@+id/ll_partial_order"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/label_choose_courier" />
 
                     <TextView
+                        style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_accept_partial_order_new"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="14sp" />
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/label_arrival_probability" />
 
-                    <ImageButton
-                        android:id="@+id/img_bt_partly_accept_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        android:contentDescription="@string/image_desc_button_partial_order_info"
-                        android:padding="@dimen/padding_ms"
-                        android:src="@drawable/info_icon" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_courier_choice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                     <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <Switch
-                        android:id="@+id/switch_partly_accept"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton" />
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/grey_300" />
 
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-                <View
-                    android:id="@+id/separator_partial_order"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:background="@drawable/bg_line_separator" />
-
-                <LinearLayout
-                    android:id="@+id/ll_dropshipper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_dropshipper_new"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="14sp" />
-
-                    <ImageButton
-                        android:id="@+id/img_bt_dropshipper_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        android:contentDescription="@string/image_desc_button_dropshipper_info"
-                        android:padding="@dimen/padding_ms"
-                        android:src="@drawable/info_icon" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <Switch
-                        android:id="@+id/switch_dropshipper"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:theme="@style/TransactionToogleButton" />
-
-                </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_pinpoint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/new_margin_med"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_dropshipper_info"
+                    android:id="@+id/ll_pinpoint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/margin_ms"
+                    android:background="@color/white"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:paddingTop="16dp">
 
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/text_input_layout_shipper_name"
+                    <TextView
+                        style="@style/TextSmallNormalBlack38"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="10sp"
+                        android:text="@string/label_pinpoint"
+                        android:textStyle="normal" />
+
+                    <FrameLayout
+                        android:id="@+id/fl_pinpoint_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_margin="@dimen/new_margin_med">
+
+                        <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/map_view_pinpoint"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            map:cameraZoom="17"
+                            map:liteMode="true"
+                            map:mapType="normal" />
+
+                        <View
+                            android:id="@+id/v_no_pinpoint_layer"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/background_no_pinpoint" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_no_ponpoint_information"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="@dimen/padding_ms"
+                                android:text="@string/label_no_pinpoint_choosen" />
+
+                            <Button
+                                android:id="@+id/bt_change_pinpoint"
+                                android:layout_width="match_parent"
+                                android:layout_height="32dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginBottom="14dp"
+                                android:layout_marginLeft="14dp"
+                                android:layout_marginRight="14dp"
+                                android:background="@color/white"
+                                android:foreground="?selectableItemBackground"
+                                android:text="@string/label_change_pinpoint"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black_54"
+                                android:textSize="12sp"
+                                android:visibility="visible" />
+
+                            <Button
+                                android:id="@+id/bt_choose_pinpoint"
+                                android:layout_width="match_parent"
+                                android:layout_height="32dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginBottom="14dp"
+                                android:layout_marginLeft="14dp"
+                                android:layout_marginRight="14dp"
+                                android:background="@color/white"
+                                android:foreground="?selectableItemBackground"
+                                android:text="@string/label_choose_pinpoint"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black_54"
+                                android:textSize="12sp"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_shipment_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/label_hint_cart_item_dropshipper_name">
+                        android:layout_marginBottom="@dimen/new_margin_med"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/et_shipper_name"
-                            android:layout_width="match_parent"
+                        <ImageView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
-                            android:imeOptions="actionNext"
-                            android:inputType="textCapWords"
-                            android:textSize="@dimen/font_small" />
-                    </android.support.design.widget.TextInputLayout>
+                            android:src="@drawable/ic_icon_location_grey_32dp" />
 
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/text_input_layout_shipper_phone"
+                        <TextView
+                            android:id="@+id/tv_shipment_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11sp"
+                            tools:text="RT 6 RW 3, DKI Jakarta, 11410, Indonesia" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/grey_300" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/new_margin_med"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_insurance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/label_hint_cart_item_dropshipper_phone">
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/et_shipper_phone"
+                        <TextView
+                            android:id="@+id/tv_label_insurance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_shipment_insurance"
+                            android:textColor="@color/black_70"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_bt_insurance_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:contentDescription="@string/image_desc_button_insurance_info"
+                            android:padding="@dimen/padding_ms"
+                            android:src="@drawable/info_icon"
+                            android:visibility="gone" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Switch
+                            android:id="@+id/switch_insurance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/TransactionToggleButton"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_special_insurance_condition"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_ms"
+                            android:layout_marginTop="@dimen/margin_ms"
+                            android:text="@string/label_insurance_not_available"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/separator_insurance"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_partial_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_accept_partial_order_new"
+                            android:textColor="@color/black_70"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_bt_partly_accept_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:contentDescription="@string/image_desc_button_partial_order_info"
+                            android:padding="@dimen/padding_ms"
+                            android:src="@drawable/info_icon" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Switch
+                            android:id="@+id/switch_partly_accept"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/TransactionToggleButton" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/separator_partial_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_dropshipper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_dropshipper_new"
+                            android:textColor="@color/black_70"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_bt_dropshipper_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:contentDescription="@string/image_desc_button_dropshipper_info"
+                            android:padding="@dimen/padding_ms"
+                            android:src="@drawable/info_icon" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Switch
+                            android:id="@+id/switch_dropshipper"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/TransactionToggleButton" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_dropshipper_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/text_input_layout_shipper_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
-                            android:imeOptions="actionDone"
-                            android:inputType="phone"
-                            android:textSize="@dimen/font_small" />
-                    </android.support.design.widget.TextInputLayout>
+                            android:hint="@string/label_hint_cart_item_dropshipper_name">
+
+                            <EditText
+                                android:id="@+id/et_shipper_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:imeOptions="actionNext"
+                                android:inputType="textCapWords"
+                                android:textSize="@dimen/font_small" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/text_input_layout_shipper_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_hint_cart_item_dropshipper_phone">
+
+                            <EditText
+                                android:id="@+id/et_shipper_phone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:imeOptions="actionDone"
+                                android:inputType="phone"
+                                android:textSize="@dimen/font_small" />
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/grey_300" />
 
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/grey_300" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_fees_group"
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_fees_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
+                    android:id="@+id/ll_fees_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:orientation="horizontal">
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_delivery_price" />
+
+                        <TextView
+                            android:id="@+id/tv_delivery_fee"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/black_70"
+                            tools:text="Rp 125.500" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_insurance_fee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/new_margin_med"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_insurance" />
+
+                        <TextView
+                            android:id="@+id/tv_insurance_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/black_70"
+                            tools:text="Rp 125.500" />
+
+                    </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tv_insurance_terms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_delivery_price" />
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/message_tos_agreement"
+                        android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_delivery_fee"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:id="@+id/ll_additional_fee"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:textColor="@color/black_70"
-                        tools:text="Rp 125.500" />
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/new_margin_med"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_additional_cost" />
+
+                        <TextView
+                            android:id="@+id/tv_additional_fee"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/black_70"
+                            tools:text="Rp 125.500" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/grey_300" />
 
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-                <LinearLayout
-                    android:id="@+id/ll_insurance_fee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/new_margin_med"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title_insurance" />
-
-                    <TextView
-                        android:id="@+id/tv_insurance_price"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:textColor="@color/black_70"
-                        tools:text="Rp 125.500" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_insurance_terms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="16dp"
-                    android:text="@string/message_tos_agreement"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/ll_additional_fee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginRight="@dimen/new_margin_med"
-                    android:layout_marginTop="@dimen/new_margin_med"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_additional_cost" />
-
-                    <TextView
-                        android:id="@+id/tv_additional_fee"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="Rp 125.500"
-                        android:textColor="@color/black_70" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/grey_300" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:orientation="vertical">
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:background="@color/white"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_shipment_fee" />
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tv_delivery_fee_total"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="end"
-                        android:textColor="@color/colorRed"
-                        tools:text="Rp 125.500" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_shipment_fee" />
+
+                        <TextView
+                            android:id="@+id/tv_delivery_fee_total"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="end"
+                            android:textColor="@color/colorRed"
+                            tools:text="Rp 125.500" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/grey_300" />
 
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/grey_300" />
-
-            </LinearLayout>
-
-            <FrameLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/new_margin_med"
-                android:background="@color/white"
-                android:padding="@dimen/padding_ms">
+                app:cardCornerRadius="0dp"
+                app:cardElevation="2dp">
 
-                <Button
-                    android:id="@+id/bt_save"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_button_green_enabled"
-                    android:text="@string/title_save"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="@dimen/padding_ms">
 
-            </FrameLayout>
+                    <Button
+                        android:id="@+id/bt_save"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_button_green_enabled"
+                        android:text="@string/title_save"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+
+                </FrameLayout>
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 

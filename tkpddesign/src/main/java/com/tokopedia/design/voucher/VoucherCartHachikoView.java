@@ -47,7 +47,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
     }
 
     private void init(Context context) {
-        View rootView = inflate(context, R.layout.widget_voucher_hachiko_cart, this);
+        View rootView = inflate(context, getLayoutId(), this);
         labelUseVoucher = rootView.findViewById(R.id.textview_voucher);
         labelPromoCode = rootView.findViewById(R.id.label_promo_code);
         textviewPromoCode = rootView.findViewById(R.id.textview_promo_code);
@@ -57,6 +57,10 @@ public class VoucherCartHachikoView extends BaseCustomView {
         layoutInputPromo = rootView.findViewById(R.id.layout_input_promo);
 
         actionVoucher();
+    }
+
+    protected int getLayoutId() {
+        return R.layout.widget_voucher_hachiko_cart;
     }
 
     public void setActionListener(ActionListener actionListener) {

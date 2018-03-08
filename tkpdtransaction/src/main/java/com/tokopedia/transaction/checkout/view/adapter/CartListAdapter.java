@@ -24,6 +24,7 @@ import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.compoundview.VoucherPromoView;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
@@ -187,7 +188,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderErrorItemHeader(data, holderView, position);
 
 
-            holderView.etRemark.addTextChangedListener(new RemarkTextWatcher(position));
+            holderView.etRemark.addTextChangedListener(new RemarkTextWatcher(data, holderView, position));
             holderView.etQty.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -314,9 +315,20 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
             holderView.tvErrorFormValidation.setText("");
             holderView.tvErrorFormValidation.setVisibility(View.GONE);
+            holderView.tvErrorFormRemarkValidation.setVisibility(View.GONE);
+            holderView.tvErrorFormRemarkValidation.setText("");
         } else {
-            holderView.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
-            holderView.tvErrorFormValidation.setVisibility(View.VISIBLE);
+            if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_FIELD_MAX_CHAR) {
+                holderView.tvErrorFormValidation.setText("");
+                holderView.tvErrorFormValidation.setVisibility(View.GONE);
+                holderView.tvErrorFormRemarkValidation.setVisibility(View.VISIBLE);
+                holderView.tvErrorFormRemarkValidation.setText(data.getErrorFormItemValidationMessage());
+            } else {
+                holderView.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
+                holderView.tvErrorFormValidation.setVisibility(View.VISIBLE);
+                holderView.tvErrorFormRemarkValidation.setVisibility(View.GONE);
+                holderView.tvErrorFormRemarkValidation.setText("");
+            }
         }
     }
 
@@ -324,6 +336,9 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (data.getCartItemData().isError()) {
             holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
             holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.text_cart_item_error_red));
+            holderView.tvError.setCompoundDrawables(
+                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_red),
+                    null, null, null);
             holderView.errorContainer.setVisibility(View.VISIBLE);
             holderView.tvError.setVisibility(View.VISIBLE);
             holderView.tvErrorDetail.setVisibility(View.GONE);
@@ -331,6 +346,9 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (data.getCartItemData().isWarning()) {
             holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
             holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.black_54));
+            holderView.tvError.setCompoundDrawables(
+                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_grey),
+                    null, null, null);
             holderView.errorContainer.setVisibility(View.VISIBLE);
             holderView.tvError.setVisibility(View.VISIBLE);
             holderView.tvErrorDetail.setVisibility(View.GONE);
@@ -516,6 +534,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private ImageView btnDelete;
         private ImageView ivWishlistBadge;
         private TextView tvErrorFormValidation;
+        private TextView tvErrorFormRemarkValidation;
         private LinearLayout errorContainer;
         private TextView tvError;
         private TextView tvErrorDetail;
@@ -524,6 +543,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CartItemHolder(View itemView) {
             super(itemView);
             this.tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation);
+            this.tvErrorFormRemarkValidation = itemView.findViewById(R.id.tv_error_form_remark_validation);
             this.ivProductImage = itemView.findViewById(R.id.iv_image_product);
             this.tvProductName = itemView.findViewById(R.id.tv_product_name);
             this.tvProductPrice = itemView.findViewById(R.id.tv_product_price);
@@ -563,7 +583,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class CartPromoHolder extends RecyclerView.ViewHolder {
-        private VoucherCartHachikoView voucherCartHachikoView;
+        private VoucherPromoView voucherCartHachikoView;
 
         CartPromoHolder(View itemView) {
             super(itemView);
@@ -584,9 +604,14 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private class RemarkTextWatcher implements TextWatcher {
+        private final CartItemHolderData data;
+        private final CartItemHolder holderView;
         private final int position;
 
-        RemarkTextWatcher(int position) {
+
+        RemarkTextWatcher(CartItemHolderData data, CartItemHolder holderView, int position) {
+            this.data = data;
+            this.holderView = holderView;
             this.position = position;
         }
 
@@ -602,8 +627,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @Override
         public void afterTextChanged(Editable s) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().setRemark(s.toString());
+            data.getCartItemData().getUpdatedData().setRemark(s.toString());
+            renderErrorFormItemValidation(data, holderView, position);
         }
     }
 }

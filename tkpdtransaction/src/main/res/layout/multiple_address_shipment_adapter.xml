@@ -15,31 +15,26 @@
         android:paddingTop="@dimen/padding_small">
 
         <TextView
+            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
             android:text="Dikirim oleh : "
-            android:textColor="@color/label_color"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:textColor="@color/label_color" />
 
         <TextView
             android:id="@+id/sender_name"
+            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:textStyle="normal"
             tools:text="Adidas" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/grey_300" />
 
     <include layout="@layout/item_cart_product" />
@@ -79,7 +74,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/grey_300" />
 
     <LinearLayout
@@ -91,30 +86,25 @@
         android:paddingTop="@dimen/padding_small">
 
         <TextView
+            style="@style/TextSmallMediumBlack54"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
             android:foregroundGravity="center_vertical"
-            android:text="Kurir Pengiriman"
-            android:textColor="@color/black_54"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:text="Kurir Pengiriman" />
 
         <TextView
             android:id="@+id/choose_courier_button"
+            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/green_button_rounded_unify"
-            android:fontFamily="sans-serif-medium"
             android:paddingBottom="9dp"
             android:paddingLeft="27dp"
             android:paddingRight="27dp"
             android:paddingTop="9dp"
             android:text="Pilih Kurir"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tv_selected_shipment"
@@ -141,7 +131,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/grey_300" />
 
     <RelativeLayout
@@ -155,16 +145,13 @@
 
         <TextView
             android:id="@+id/sub_total_label"
+            style="@style/TextSmallMediumBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:fontFamily="sans-serif-medium"
             android:gravity="end"
-            android:text="Sub total "
-            android:textColor="@color/black_54"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:text="Sub total " />
 
         <ImageView
             android:id="@+id/sub_total_detail_button"

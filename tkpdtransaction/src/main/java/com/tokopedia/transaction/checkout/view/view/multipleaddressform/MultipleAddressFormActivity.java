@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,17 +13,19 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.ResetShipmentFormDialog;
 
 /**
  * Created by kris on 2/22/18. Tokopedia
  */
 
 public class MultipleAddressFormActivity extends BasePresenterActivity {
+    public static final int REQUEST_CODE = 982;
 
-    public static final int REQUEST_CODE = MultipleAddressFormActivity.class.hashCode();
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
     public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
+    public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
 
     private CartListData cartListData;
     private RecipientAddressModel addressData;
@@ -91,5 +95,27 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        DialogFragment dialog = ResetShipmentFormDialog.newInstance(
+                new ResetShipmentFormDialog.ResetShipmentFormCallbackAction() {
+
+                    @Override
+                    public void onResetCartShipmentForm() {
+                        setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM);
+                        finish();
+                    }
+
+                    @Override
+                    public void onCancelResetCartShipmentForm() {
+
+                    }
+                });
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
+        ft.commitAllowingStateLoss();
     }
 }

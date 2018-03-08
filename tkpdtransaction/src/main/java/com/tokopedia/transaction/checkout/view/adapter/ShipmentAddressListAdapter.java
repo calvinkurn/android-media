@@ -62,9 +62,7 @@ public class ShipmentAddressListAdapter
         holder.mTvAddressStatus.setVisibility(address.getAddressStatus() == PRIME_ADDRESS ?
                 View.VISIBLE : View.GONE);
         holder.mTvRecipientName.setText(address.getRecipientName());
-        holder.mTvRecipientAddress.setText(getFullAddress(address.getAddressStreet(),
-                address.getDestinationDistrictName(), address.getAddressCityName(),
-                address.getAddressProvinceName()));
+        holder.mTvRecipientAddress.setText(getFullAddress(address));
         holder.mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
 
         holder.mRbCheckAddress.setChecked(address.isSelected());
@@ -84,8 +82,11 @@ public class ShipmentAddressListAdapter
         return mAddressModelList.size();
     }
 
-    private String getFullAddress(String street, String district, String city, String province) {
-        return street + ", " + district + ", " + city + ", " + province;
+    private String getFullAddress(RecipientAddressModel recipientAddress) {
+        return recipientAddress.getAddressStreet() + ", "
+                + recipientAddress.getDestinationDistrictName() + ", "
+                + recipientAddress.getAddressCityName() + ", "
+                + recipientAddress.getAddressProvinceName();
     }
 
     private View.OnClickListener getItemClickListener(final RecipientAddressModel recipientAddressModel,

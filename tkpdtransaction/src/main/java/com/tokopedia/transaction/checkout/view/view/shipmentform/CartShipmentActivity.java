@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.view.shipmentform;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transaction.R;
@@ -19,7 +25,7 @@ import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.view.di.component.CartShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerCartShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.CartShipmentModule;
@@ -27,16 +33,18 @@ import com.tokopedia.transaction.checkout.view.view.multipleaddressform.Multiple
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 25/01/18.
  */
 
-public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity,
-        ICartShipmentActionListener {
-    public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
+public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
+    public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
+    public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
+    public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
@@ -49,17 +57,18 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     private int typeAddressShipment;
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestionData;
-    private PromoCodeCartListData promoCodeCartListData;
+    private PromoCodeAppliedData promoCodeAppliedData;
 
     @Inject
     ICartShipmentPresenter cartShipmentPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
+    private CheckoutData checkoutData;
 
 
     public static Intent createInstanceSingleAddress(Context context,
                                                      CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                     PromoCodeCartListData promoCodeCartListData,
+                                                     PromoCodeAppliedData promoCodeCartListData,
                                                      CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
@@ -71,7 +80,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     public static Intent createInstanceMultipleAddress(Context context,
                                                        CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                       PromoCodeCartListData promoCodeCartListData,
+                                                       PromoCodeAppliedData promoCodeCartListData,
                                                        CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
@@ -88,7 +97,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        promoCodeCartListData = extras.getParcelable(EXTRA_PROMO_CODE_APPLIED_DATA);
+        promoCodeAppliedData = extras.getParcelable(EXTRA_PROMO_CODE_APPLIED_DATA);
         typeAddressShipment = extras.getInt(EXTRA_ADDRESS_SHIPMENT_TYPE);
         cartShipmentAddressFormData = extras.getParcelable(EXTRA_SHIPMENT_FORM_DATA);
         cartPromoSuggestionData = extras.getParcelable(EXTRA_CART_PROMO_SUGGESTION);
@@ -126,13 +135,13 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         SingleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, promoCodeCartListData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                         )).commit();
             } else {
                 //TODO Change Later
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
-                                cartShipmentAddressFormData, cartPromoSuggestionData
+                                cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                         )).commit();
             }
         }
@@ -160,6 +169,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
+        this.checkoutData = checkoutData;
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
         paymentPassData.setTransactionId(checkoutData.getTransactionId());
@@ -167,30 +177,57 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         paymentPassData.setCallbackSuccessUrl(checkoutData.getCallbackSuccessUrl());
         paymentPassData.setCallbackFailedUrl(checkoutData.getCallbackFailedUrl());
         paymentPassData.setQueryString(checkoutData.getQueryString());
-        navigateToActivityRequest
-                (TopPayActivity.createInstance(this, paymentPassData),
-                        TopPayActivity.REQUEST_CODE
-                );
+        this.startActivityForResult(
+                TopPayActivity.createInstance(this, paymentPassData),
+                TopPayActivity.REQUEST_CODE);
     }
 
     @Override
     public void renderErrorCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorHttpCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckoutCart(String message) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionCheckoutCart(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
+    }
 
+    @Override
+    public void renderThanksTopPaySuccess(String message) {
+        showToastMessage(getString(R.string.message_payment_succeded_transaction_module));
+        navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
+        CartBadgeNotificationReceiver.resetBadgeCart(this);
+        closeView();
+    }
+
+    @Override
+    public void renderErrorThanksTopPaySuccess(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
+    }
+
+    @Override
+    public void renderErrorHttpThanksTopPaySuccess(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
+    }
+
+    @Override
+    public void renderErrorNoConnectionThanksTopPaySuccess(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionThanksTopPaySuccess(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
@@ -202,7 +239,6 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void onBackPressed() {
-        // TODO add reset cart shipment dialog here
         showResetDialog();
     }
 
@@ -212,6 +248,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     @Override
                     public void onResetCartShipmentForm() {
+                        if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof SingleAddressShipmentFragment)
+                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
+                        else if (getFragmentManager().findFragmentById(R.id.container)
+                                instanceof MultipleAddressShipmentFragment)
+                            setResult(RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT);
                         finish();
                     }
 
@@ -220,8 +262,9 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
                     }
                 });
-
-        dialog.show(getFragmentManager(), "dialog");
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
+        ft.commitAllowingStateLoss();
     }
 
     @Override
@@ -282,5 +325,38 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     public void checkoutCart(CheckoutRequest checkoutRequest) {
         cartShipmentPresenter.processCheckout(checkoutRequest);
+    }
+
+    @Override
+    public void checkPromoCodeShipment(Subscriber<CheckPromoCodeCartShipmentResult> subscriber,
+                                       CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest) {
+        cartShipmentPresenter.checkPromoShipment(subscriber, checkPromoCodeCartShipmentRequest);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TopPayActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case TopPayActivity.PAYMENT_CANCELLED:
+                    NetworkErrorHelper.showSnackbar(
+                            this,
+                            getString(R.string.alert_payment_canceled_or_failed_transaction_module)
+                    );
+                    break;
+                case TopPayActivity.PAYMENT_SUCCESS:
+                    cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
+                    break;
+                case TopPayActivity.PAYMENT_FAILED:
+                    cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
+                    break;
+            }
+        }
     }
 }

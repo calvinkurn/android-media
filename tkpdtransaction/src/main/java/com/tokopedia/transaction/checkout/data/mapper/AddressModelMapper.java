@@ -19,26 +19,26 @@ public class AddressModelMapper {
     }
 
     public RecipientAddressModel transform(AddressModel addressModel) {
-        RecipientAddressModel recipientAddressModel = new RecipientAddressModel();
+        RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
-        recipientAddressModel.setId(addressModel.getAddressId());
-        recipientAddressModel.setAddressStatus(addressModel.getAddressStatus());
-        recipientAddressModel.setAddressName(addressModel.getAddressName());
-        recipientAddressModel.setAddressStreet(addressModel.getAddressStreet());
-        recipientAddressModel.setDestinationDistrictId(addressModel.getDistrictId());
-        recipientAddressModel.setDestinationDistrictName(addressModel.getDistrictName());
-        recipientAddressModel.setAddressCityName(addressModel.getCityName());
-        recipientAddressModel.setAddressProvinceName(addressModel.getProvinceName());
-        recipientAddressModel.setAddressCountryName(addressModel.getCountryName());
-        recipientAddressModel.setAddressPostalCode(addressModel.getPostalCode());
-        recipientAddressModel.setRecipientName(addressModel.getReceiverName());
-        recipientAddressModel.setRecipientPhoneNumber(addressModel.getReceiverPhone());
-        recipientAddressModel.setLatitude(!TextUtils.isEmpty(addressModel.getLatitude()) ?
+        recipientAddress.setId(addressModel.getAddressId());
+        recipientAddress.setAddressStatus(addressModel.getAddressStatus());
+        recipientAddress.setAddressName(addressModel.getAddressName());
+        recipientAddress.setAddressStreet(addressModel.getAddressStreet());
+        recipientAddress.setDestinationDistrictId(addressModel.getDistrictId());
+        recipientAddress.setDestinationDistrictName(addressModel.getDistrictName());
+        recipientAddress.setAddressCityName(addressModel.getCityName());
+        recipientAddress.setAddressProvinceName(addressModel.getProvinceName());
+        recipientAddress.setAddressCountryName(addressModel.getCountryName());
+        recipientAddress.setAddressPostalCode(addressModel.getPostalCode());
+        recipientAddress.setRecipientName(addressModel.getReceiverName());
+        recipientAddress.setRecipientPhoneNumber(addressModel.getReceiverPhone());
+        recipientAddress.setLatitude(!TextUtils.isEmpty(addressModel.getLatitude()) ?
                 Double.parseDouble(addressModel.getLatitude()) : null);
-        recipientAddressModel.setLongitude(!TextUtils.isEmpty(addressModel.getLongitude()) ?
+        recipientAddress.setLongitude(!TextUtils.isEmpty(addressModel.getLongitude()) ?
                 Double.parseDouble(addressModel.getLongitude()) : null);
 
-        return recipientAddressModel;
+        return recipientAddress;
     }
 
     public List<RecipientAddressModel> transform(List<AddressModel> addressModels) {
@@ -50,21 +50,21 @@ public class AddressModelMapper {
         return recipientAddressModels;
     }
 
-    public AddressModel transform(RecipientAddressModel recipientAddressModel) {
+    public AddressModel transform(RecipientAddressModel recipientAddress) {
         AddressModel addressModel = new AddressModel();
 
-        addressModel.setAddressId(recipientAddressModel.getId());
-        addressModel.setAddressStatus(recipientAddressModel.getAddressStatus());
-        addressModel.setAddressName(recipientAddressModel.getAddressName());
-        addressModel.setAddressStreet(recipientAddressModel.getAddressStreet());
-        addressModel.setDistrictId(recipientAddressModel.getDestinationDistrictId());
-        addressModel.setDistrictName(recipientAddressModel.getDestinationDistrictName());
-        addressModel.setCityName(recipientAddressModel.getAddressCityName());
-        addressModel.setProvinceName(recipientAddressModel.getAddressProvinceName());
-        addressModel.setCountryName(recipientAddressModel.getAddressCountryName());
-        addressModel.setPostalCode(recipientAddressModel.getAddressPostalCode());
-        addressModel.setReceiverName(recipientAddressModel.getRecipientName());
-        addressModel.setReceiverPhone(recipientAddressModel.getRecipientPhoneNumber());
+        addressModel.setAddressId(recipientAddress.getId());
+        addressModel.setAddressStatus(recipientAddress.getAddressStatus());
+        addressModel.setAddressName(recipientAddress.getAddressName());
+        addressModel.setAddressStreet(recipientAddress.getAddressStreet());
+        addressModel.setDistrictId(recipientAddress.getDestinationDistrictId());
+        addressModel.setDistrictName(recipientAddress.getDestinationDistrictName());
+        addressModel.setCityName(recipientAddress.getAddressCityName());
+        addressModel.setProvinceName(recipientAddress.getAddressProvinceName());
+        addressModel.setCountryName(recipientAddress.getAddressCountryName());
+        addressModel.setPostalCode(recipientAddress.getAddressPostalCode());
+        addressModel.setReceiverName(recipientAddress.getRecipientName());
+        addressModel.setReceiverPhone(recipientAddress.getRecipientPhoneNumber());
 
         return addressModel;
     }

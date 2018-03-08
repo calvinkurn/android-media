@@ -217,21 +217,21 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvChevronShipmentOption.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
     }
 
-    private void bindCostDetail(CartSellerItemModel cartSellerItemModel) {
+    private void bindCostDetail(CartSellerItemModel cartSellerItem) {
         mRlSubTotalLayout.setVisibility(View.VISIBLE);
         mRlCostDetailLayout.setVisibility(mIsCostDetailShown ? View.VISIBLE : View.GONE);
 
-        mTvShopName.setText(cartSellerItemModel.getShopName());
+        mTvShopName.setText(cartSellerItem.getShopName());
 
-        mTvTotalItemPrice.setText(getPriceFormat(cartSellerItemModel.getTotalItemPrice()));
-        mTvTotalItemLabel.setText(getTotalItemLabel(cartSellerItemModel.getTotalQuantity()));
-        mTvShippingFeeLabel.setText(getTotalWeightLabel(cartSellerItemModel.getTotalWeight(),
-                cartSellerItemModel.getWeightUnit()));
+        mTvTotalItemPrice.setText(getPriceFormat(cartSellerItem.getTotalItemPrice()));
+        mTvTotalItemLabel.setText(getTotalItemLabel(cartSellerItem.getTotalQuantity()));
+        mTvShippingFeeLabel.setText(getTotalWeightLabel(cartSellerItem.getTotalWeight(),
+                cartSellerItem.getWeightUnit()));
 
-        mTvShippingFee.setText(getPriceFormat(cartSellerItemModel.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(cartSellerItemModel.getInsuranceFee()));
+        mTvShippingFee.setText(getPriceFormat(cartSellerItem.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat(cartSellerItem.getInsuranceFee()));
 
-        mTvSubTotal.setText(getPriceFormat(cartSellerItemModel.getTotalPrice()));
+        mTvSubTotal.setText(getPriceFormat(cartSellerItem.getTotalPrice()));
         mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
     }
 
@@ -246,7 +246,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
+    private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
         mRvCartItem.setVisibility(View.GONE);
 
         mRvCartItem.setHasFixedSize(true);
@@ -255,7 +255,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mRvCartItem.setLayoutManager(layoutManager);
 
         InnerProductListAdapter innerProductListAdapter =
-                new InnerProductListAdapter(cartItemModels);
+                new InnerProductListAdapter(cartItemList);
         mRvCartItem.setAdapter(innerProductListAdapter);
     }
 
@@ -278,26 +278,26 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         return price == 0 ? "-" : CURRENCY_IDR.format(price);
     }
 
-    private String getOtherCartItemsLabel(List<CartItemModel> cartItemModels,
+    private String getOtherCartItemsLabel(List<CartItemModel> cartItemList,
                                               boolean isExpandAllProduct) {
         return isExpandAllProduct ? "Tutup" :
-                String.format("+%s Produk Lainnya", cartItemModels.size());
+                String.format("+%s Produk Lainnya", cartItemList.size());
     }
 
-    private View.OnClickListener showAllProductListener(final List<CartItemModel> cartItemModels) {
+    private View.OnClickListener showAllProductListener(final List<CartItemModel> cartItemList) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleShowAllProduct(cartItemModels);
+                toggleShowAllProduct(cartItemList);
             }
         };
     }
 
-    private void toggleShowAllProduct(List<CartItemModel> cartItemModels) {
+    private void toggleShowAllProduct(List<CartItemModel> cartItemList) {
         mIsAllCartItemShown = !mIsAllCartItemShown;
         mRvCartItem.setVisibility(mIsAllCartItemShown ? View.VISIBLE : View.GONE);
 
-        mTvOtherCartItemLabel.setText(getOtherCartItemsLabel(cartItemModels,
+        mTvOtherCartItemLabel.setText(getOtherCartItemsLabel(cartItemList,
                 mIsAllCartItemShown));
     }
 

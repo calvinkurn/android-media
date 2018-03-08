@@ -46,9 +46,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="@dimen/new_margin_med"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/new_margin_med"
         android:background="@drawable/border_rectangle_yellow"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -89,8 +89,7 @@
         android:id="@+id/rv_shipment_choice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_shipment_info_ticker"
-        android:layout_marginTop="@dimen/new_margin_med">
+        android:layout_below="@+id/ll_shipment_info_ticker">
 
     </android.support.v7.widget.RecyclerView>
 

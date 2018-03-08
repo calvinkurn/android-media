@@ -11,14 +11,15 @@
 
     <TextView
         android:id="@+id/tv_shipment_type"
+        style="@style/TextMidNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
-        android:textSize="14sp"
         tools:text="Same Day" />
 
     <TextView
         android:id="@+id/tv_price_range"
+        style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_shipment_type"
@@ -27,17 +28,16 @@
         android:layout_toEndOf="@+id/tv_shipment_type"
         android:layout_toRightOf="@+id/tv_shipment_type"
         android:lineSpacingExtra="4sp"
-        android:textSize="12sp"
         tools:text="Mulai dari Rp 15.000" />
 
     <TextView
         android:id="@+id/tv_delivery_time_range"
+        style="@style/TextSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_shipment_type"
         android:layout_marginBottom="@dimen/padding_small_sm"
         android:lineSpacingExtra="4sp"
-        android:textSize="12sp"
         tools:text="(6 - 8 jam pengiriman)" />
 
     <View

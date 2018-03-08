@@ -24,16 +24,17 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    style="@style/TextSmallMediumBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dikirim oleh: " />
+                    android:text="Penjual : " />
 
                 <TextView
                     android:id="@+id/sender_name"
+                    style="@style/TextSmallMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Adidas"
-                    android:textColor="@color/black_70" />
+                    android:text="Adidas" />
 
             </LinearLayout>
 
@@ -50,10 +51,10 @@
 
                 <TextView
                     android:id="@+id/product_name"
+                    style="@style/TextMidMediumBlack70"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_small"
-                    android:textStyle="bold"
                     tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
             </LinearLayout>
 
@@ -73,6 +74,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -96,7 +98,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:inputType="number"
-                         />
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:id="@+id/increase_quantity"
@@ -118,12 +120,14 @@
 
                 <TextView
                     android:id="@+id/label_notes_for_seller"
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Catatan untuk penjual (optional)" />
+                    android:text="Catatan untuk penjual (opsional)" />
 
                 <TextView
                     android:id="@+id/insert_notes_button"
+                    style="@style/TextSmallMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_small"
@@ -131,12 +135,11 @@
                     android:layout_toEndOf="@id/label_notes_for_seller"
                     android:layout_toRightOf="@id/label_notes_for_seller"
                     android:text="Tulis Catatan"
-                    android:textColor="@color/tkpd_main_green"
-                    android:textStyle="bold" />
+                    android:textColor="@color/tkpd_main_green" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="0.5dp"
                     android:layout_below="@id/label_notes_for_seller"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:background="@color/grey_400" />
@@ -152,12 +155,14 @@
                 android:visibility="gone">
 
                 <TextView
+                    style="@style/TextSmallNormalBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Catatan untuk penjual (optional)" />
+                    android:text="Catatan untuk penjual (opsional)" />
 
                 <EditText
                     android:id="@+id/notes_edit_text"
+                    style="@style/TextSmallNormalBlack70"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -179,23 +184,25 @@
 
                     <TextView
                         android:id="@+id/address_title"
+                        style="@style/TextSmallNormalBlack38"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="Alamat Kantor" />
 
                     <TextView
                         android:id="@+id/address_receiver_name"
+                        style="@style/TextSmallMediumBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_70"
-                        android:textStyle="bold"
+                        android:lineSpacingExtra="5sp"
                         tools:text="Agus Maulana" />
 
                     <TextView
                         android:id="@+id/address"
+                        style="@style/TextSmallNormalBlack54"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_70"
+                        android:lineSpacingExtra="6sp"
                         tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678" />
 
                 </LinearLayout>
@@ -203,12 +210,14 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/margin_vs"
                     android:gravity="center_vertical|end">
 
                     <ImageView
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:src="@drawable/chevron_thin_right" />
+                        android:src="@drawable/chevron_thin_right"
+                        android:tint="#999999" />
 
                 </LinearLayout>
 
@@ -225,24 +234,32 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
 
                     <TextView
+                        style="@style/TextSmallNormalBlack54"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Pengiriman"
-                        android:textColor="@color/black_70" />
+                        android:text="Pengiriman" />
 
                     <TextView
+                        style="@style/TextSmallMedium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="end"
                         android:text="Pilih Alamat"
-                        android:textColor="@color/tkpd_main_green"
-                        android:textStyle="bold" />
+                        android:textColor="@color/tkpd_main_green" />
 
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginLeft="@dimen/margin_ms"
+                        android:layout_marginStart="@dimen/margin_ms"
+                        android:src="@drawable/chevron_thin_right"
+                        android:tint="@color/tkpd_main_green" />
                 </LinearLayout>
 
                 <TextView
@@ -252,6 +269,7 @@
                     android:layout_marginTop="@dimen/margin_vs"
                     android:text="Pilih alamat pengiriman"
                     android:textColor="@color/red_500"
+                    android:textSize="11sp"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
@@ -268,10 +286,11 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/margin_small"
         android:background="@color/grey_400"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="Simpan Perubahan"
         android:textColor="@color/grey_600"
-        android:textStyle="bold" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/save_changes_button"
@@ -280,9 +299,10 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="Simpan Perubahan"
+        android:text="Simpan"
         android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:textSize="13sp" />
 
 </RelativeLayout>

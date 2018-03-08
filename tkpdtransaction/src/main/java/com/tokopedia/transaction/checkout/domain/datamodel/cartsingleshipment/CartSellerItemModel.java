@@ -26,6 +26,10 @@ public class CartSellerItemModel implements Parcelable {
     private int weightUnit;
     private int totalQuantity;
 
+    private int isPreOrder;
+    private int isFinsurance;
+    private int isFcancelPartial;
+
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
 
@@ -109,6 +113,30 @@ public class CartSellerItemModel implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    public int getIsPreOrder() {
+        return isPreOrder;
+    }
+
+    public void setIsPreOrder(int isPreOrder) {
+        this.isPreOrder = isPreOrder;
+    }
+
+    public int getIsFinsurance() {
+        return isFinsurance;
+    }
+
+    public void setIsFinsurance(int isFinsurance) {
+        this.isFinsurance = isFinsurance;
+    }
+
+    public int getIsFcancelPartial() {
+        return isFcancelPartial;
+    }
+
+    public void setIsFcancelPartial(int isFcancelPartial) {
+        this.isFcancelPartial = isFcancelPartial;
+    }
+
     public ShipmentCartData getShipmentCartData() {
         return shipmentCartData;
     }
@@ -142,6 +170,9 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeDouble(this.totalWeight);
         dest.writeInt(this.weightUnit);
         dest.writeInt(this.totalQuantity);
+        dest.writeInt(this.isPreOrder);
+        dest.writeInt(this.isFinsurance);
+        dest.writeInt(this.isFcancelPartial);
         dest.writeParcelable(this.shipmentCartData, flags);
         dest.writeParcelable(this.selectedShipmentDetailData, flags);
     }
@@ -160,6 +191,9 @@ public class CartSellerItemModel implements Parcelable {
         this.totalWeight = in.readDouble();
         this.weightUnit = in.readInt();
         this.totalQuantity = in.readInt();
+        this.isPreOrder = in.readInt();
+        this.isFinsurance = in.readInt();
+        this.isFcancelPartial = in.readInt();
         this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         this.selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
     }

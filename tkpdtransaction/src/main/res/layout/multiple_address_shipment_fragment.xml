@@ -15,7 +15,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:background="@color/grey_300" />
 
         <LinearLayout
@@ -31,31 +31,26 @@
             android:paddingTop="@dimen/padding_small">
 
             <TextView
+                style="@style/TextSmallNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:text="Total Pembayaran"
-                android:textColor="@color/black_70"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:text="Total Pembayaran" />
 
             <TextView
                 android:id="@+id/total_payment_text_view"
+                style="@style/TextMidNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="-"
-                android:textSize="14sp"
-                android:textStyle="normal" />
+                android:text="-" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:background="@color/grey_300" />
 
         <LinearLayout

@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.checkout.view.viewholder;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,9 +32,9 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         mRlPromoSuggestionLayout = itemView.findViewById(R.id.rl_promo_suggestion_layout);
-        mBtnClose = itemView.findViewById(R.id.btn_close);
-        mTvAction = itemView.findViewById(R.id.tv_action);
-        mTvDescription = itemView.findViewById(R.id.tv_desc);
+        mBtnClose = itemView.findViewById(R.id.iv_close_banner);
+        mTvAction = itemView.findViewById(R.id.tv_text_promo_suggestion_action);
+        mTvDescription = itemView.findViewById(R.id.tv_text_promo_suggestion_description);
 
         mActionListener = actionListener;
     }
@@ -40,7 +43,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         if (cartPromoSuggestion.isVisible()) {
             mRlPromoSuggestionLayout.setVisibility(View.VISIBLE);
 
-            mTvDescription.setText(cartPromoSuggestion.getText());
+            mTvDescription.setText(fromHtml(cartPromoSuggestion.getText()));
             mTvAction.setText(cartPromoSuggestion.getCta());
             mTvAction.setTextColor(Color.parseColor(cartPromoSuggestion.getCtaColor()));
 
@@ -69,6 +72,14 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
                 mActionListener.onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestion, position);
             }
         };
+    }
+
+    private Spanned fromHtml(String source) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            return Html.fromHtml(source);
+        }
     }
 
 }
