@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ProductData;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShippingInfo;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShopProduct;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -161,6 +163,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onFinishChoosingShipment(List<Data> data, List<DataCheckoutRequest> checkoutRequest);
 
+        void onShowPromoMessage(String promoMessage);
+
+        void onHidePromoMessage();
+
+        void onRemovePromoCode();
+
     }
 
     public void changeDataSet(List<Object> shipmentDataList) {
@@ -178,9 +186,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mRecipientAddress.setStore(null);
     }
 
-    public void updatePromo(double promo) {
-        // TODO update promo price here
-        mShipmentCost.setPromoPrice(promo);
+    public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
+        mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
+        mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
     }
 
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
