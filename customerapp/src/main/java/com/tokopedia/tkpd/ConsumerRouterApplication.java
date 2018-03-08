@@ -1396,7 +1396,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat();
             Intent  intent = getAskSellerIntent(this,shopId,shopName,TkpdInboxRouter.SHOP,avatar);
-            startActivity(intent);
+            context.startActivity(intent);
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
