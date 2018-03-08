@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.REQUEST_CODE;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST;
 
 /**
@@ -380,10 +381,19 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            RecipientAddressModel addressModel = data.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA);
-            presenter.setEditableModel(addressModel);
-            showAddressLayout();
-            updateAddressView(presenter.getEditableModel());
+            switch (resultCode) {
+                case RESULT_CODE_ACTION_SELECT_ADDRESS:
+                    RecipientAddressModel addressModel =
+                            data.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA);
+                    presenter.setEditableModel(addressModel);
+                    showAddressLayout();
+                    updateAddressView(presenter.getEditableModel());
+                    break;
+
+                default:
+                    finish();
+                    break;
+            }
         }
     }
 

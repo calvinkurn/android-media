@@ -12,7 +12,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 /**
- * @author Irfan Khoirul on 05/02/18.
+ * @author Irfan Khoirul on 05/02/18
+ *         Aghny A. Putra on 07/02/18
  */
 
 public class CartAddressChoiceActivity extends BasePresenterActivity
@@ -30,11 +31,12 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST = 1;
 
-    private int typeRequest;
+    private int mTypeRequest;
 
     public static Intent createInstance(Activity activity, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+
         return intent;
     }
 
@@ -45,7 +47,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
+        mTypeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
     }
 
     @Override
@@ -68,7 +70,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     protected void initView() {
         Fragment fragment;
 
-        switch (typeRequest) {
+        switch (mTypeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
                 fragment = CartAddressChoiceFragment.newInstance();
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -115,7 +117,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     @Override
     public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
-        switch (typeRequest) {
+        switch (mTypeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, selectedAddressResult);
@@ -127,7 +129,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 getFragmentManager().beginTransaction()
                         .add(R.id.container, fragment, fragment.getClass().getSimpleName())
                         .commit();
-
                 break;
 
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
@@ -135,7 +136,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
                 setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent);
                 finish();
-
                 break;
 
             default:
