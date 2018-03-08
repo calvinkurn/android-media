@@ -208,8 +208,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
-        //Initialize shake detect manager for shake shake campaign
-
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
             //yang bikin nama var pake entahlah..... semoga lu segera tobat -rico-
