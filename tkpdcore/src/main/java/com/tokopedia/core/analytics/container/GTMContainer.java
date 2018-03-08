@@ -195,12 +195,12 @@ public class GTMContainer implements IGTMContainer {
 
         GTMDataLayer.pushGeneral(context,
                 DataLayer.mapOf(
-                        "event", "checkout",
-                        "eventCategory", "Ecommerce",
-                        "eventAction", "Checkout",
-                        "eventLabel", checkout.getStep(),
-                        "ecommerce", DataLayer.mapOf(
-                "checkout", checkout.getCheckoutMapEvent()
+                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
+                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
+                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
+                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
         )));
 
         return this;

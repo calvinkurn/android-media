@@ -171,6 +171,7 @@ public interface AppEventTracking {
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
         String ADD_TO_CART_PDP = "addToCart";
+        String EVENT_CHECKOUT = "checkout";
     }
 
     interface Category {
@@ -293,6 +294,8 @@ public interface AppEventTracking {
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
+
+        String ECOMMERCE = "Ecommerce";
     }
 
     interface Action {
@@ -482,6 +485,7 @@ public interface AppEventTracking {
         String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
 
         String LOGIN_NOW = "masuk sekarang";
+        String CHECKOUT = "Checkout";
     }
 
     interface ImageEditor{
