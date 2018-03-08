@@ -129,6 +129,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 officialStoreDomains,
                 topPicksDomains,
                 inspirationDomains,
+                null,
                 kolPostDomain,
                 kolRecommendations,
                 favoriteCtaDomain,
