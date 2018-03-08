@@ -36,7 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_ms"
+            android:padding="@dimen/margin_sm"
+            android:background="@color/white"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -52,7 +53,7 @@
                     android:text="@string/product_sizechart_optional" />
 
                 <TextView
-                    style="@style/TextView.Micro.BlackSecondary"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_vs"
@@ -63,10 +64,7 @@
                 android:id="@+id/frame_sizechart_image"
                 android:layout_width="@dimen/image_width_variant"
                 android:layout_height="@dimen/image_width_variant"
-                android:background="@drawable/bg_rect_stroke_lighter_gray"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
+                android:background="@drawable/bg_rect_stroke_lighter_gray">
 
                 <ImageView
                     android:id="@+id/image_view_sizechart"
@@ -75,7 +73,10 @@
                     android:layout_margin="@dimen/padding_vvs"
                     android:background="@color/grey_200"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_add_product" />
+                    android:src="@drawable/ic_add_product"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"/>
 
                 <View
                     android:layout_width="match_parent"

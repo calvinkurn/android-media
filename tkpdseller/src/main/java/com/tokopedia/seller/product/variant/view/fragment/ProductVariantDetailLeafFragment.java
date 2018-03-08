@@ -16,13 +16,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
@@ -99,7 +96,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     @Override
-    public void refreshVariantImage() {
+    public void refreshImageView() {
         refreshInitialVariantImage();
         listener.onImageChanged();
     }
@@ -210,15 +207,16 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             variantImageView.setVisibility(View.GONE);
         } else {
             variantImageView.setVisibility(View.VISIBLE);
-            refreshVariantImage();
+            refreshImageView();
             variantImageView.setOnImageClickListener(new VariantImageView.OnImageClickListener() {
                 @Override
                 public void onImageVariantClicked() {
                     if (getProductVariantOptionChild().getProductPictureViewModelList() == null ||
-                            getProductVariantOptionChild().getProductPictureViewModelList().size() == 0) {
+                            getProductVariantOptionChild().getProductPictureViewModelList().size() == 0 ||
+                            getProductVariantOptionChild().getProductPictureViewModelList().get(0) == null) {
                         showAddImageDialog();
                     } else {
-                        showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0));
+                        showEditImageDialog(getProductVariantOptionChild().getProductPictureViewModelList().get(0).getUriOrPath());
                     }
                 }
             });

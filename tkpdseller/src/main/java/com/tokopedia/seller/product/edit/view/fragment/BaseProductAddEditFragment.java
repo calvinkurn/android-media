@@ -56,6 +56,7 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -428,7 +429,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 productManageViewHolder.getViewStatusStock(),
                 productPriceViewHolder.isOfficialStore(),
                 productManageViewHolder.getSkuText(),
-                isEdittingDraft());
+                isEdittingDraft(),
+                currentProductViewModel.getProductSizeChart());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -837,6 +839,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
         productPriceViewHolder.renderData(currentProductViewModel);
+    }
+
+    @Override
+    public void updateVariantSizeChartModel(ProductPictureViewModel productPictureViewModel) {
+        currentProductViewModel.setProductSizeChart(productPictureViewModel);
     }
 
     @Override

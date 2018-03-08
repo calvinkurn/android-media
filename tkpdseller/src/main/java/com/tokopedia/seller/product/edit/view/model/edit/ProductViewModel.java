@@ -208,6 +208,15 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productWeightUnit = productWeightUnit;
     }
 
+    public ProductPictureViewModel getProductSizeChart() {
+        return (productSizeChart == null || productSizeChart.size() == 0) ? null : productSizeChart.get(0);
+    }
+
+    public void setProductSizeChart(ProductPictureViewModel productPictureViewModel) {
+        this.productSizeChart = new ArrayList<>();
+        productSizeChart.add(productPictureViewModel);
+    }
+
     public long getProductCondition() {
         return productCondition;
     }
