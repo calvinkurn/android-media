@@ -32,6 +32,6 @@
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_small"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow_down_grey" />
+            app:srcCompat="@drawable/ic_arrow_down_grey" />
     </LinearLayout>
 </FrameLayout>

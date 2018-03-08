@@ -107,24 +107,24 @@ public class HeaderHomeView extends BaseCustomView {
         } else {
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
-            tvActionTokopoint.setVisibility(GONE);
-            tvTitleTokoPoint.setVisibility(VISIBLE);
-            tvBalanceTokoPoint.setVisibility(VISIBLE);
-            tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
-            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
-            tokoPointHolder.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    UnifyTracking.eventUserProfileTokopoints();
-                    listener.actionTokoPointClicked(
-                            headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
-                            TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
-                                    ? TITLE_HEADER_WEBSITE
-                                    : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
-                    );
-                }
-            });
+            tvActionTokopoint.setVisibility(GONE);tvTitleTokoPoint.setVisibility(VISIBLE);
+        tvBalanceTokoPoint.setVisibility(VISIBLE);
+        tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
+        tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+        tokoPointHolder.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (headerViewModel.getTokoPointDrawerData() != null) {UnifyTracking.eventUserProfileTokopoints();
+                listener.actionTokoPointClicked(
+                        headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
+                        TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
+                                ? TITLE_HEADER_WEBSITE
+                                : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
+                );
+            }
         }
+    });
+    }
 
     }
 

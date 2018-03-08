@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="90dp"
     android:layout_height="75dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <LinearLayout
@@ -16,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:tint="@color/black_70"
-        android:src="@drawable/ic_new_action_cart"/>
+        app:srcCompat="@drawable/ic_new_action_cart"/>
 
     <TextView
         android:id="@+id/text1"
