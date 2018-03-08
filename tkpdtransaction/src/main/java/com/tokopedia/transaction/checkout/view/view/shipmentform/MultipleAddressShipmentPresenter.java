@@ -166,9 +166,9 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         CheckPromoCodeCartShipmentRequest.Builder checkoutPromoRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder();
 
-        for (int i = 0; i < shipmentData.size(); i++) {
+        List<CheckPromoCodeCartShipmentRequest.Data> orderDatas = new ArrayList<>();
 
-            List<CheckPromoCodeCartShipmentRequest.Data> orderDatas = new ArrayList<>();
+        for (int i = 0; i < shipmentData.size(); i++) {
             CheckPromoCodeCartShipmentRequest.Data.Builder orderData =
                     new CheckPromoCodeCartShipmentRequest.Data.Builder();
             orderData.addressId(Integer.parseInt(shipmentData.get(i).getItemData().getAddressId()));
@@ -189,15 +189,40 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     );
             productDatas.add(productData.build());
 
-            shopProduct.productData(productDatas);
-            /*shopProduct.
+            CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder shipmentInfo =
+                    new CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder();
+            shipmentInfo
+                    .shippingId(shipmentData.get(i).getSelectedShipmentDetailData()
+                            .getSelectedCourier().getShipperId())
+                    .spId(shipmentData.get(i).getSelectedShipmentDetailData()
+                            .getSelectedShipment().getServiceId());
 
-            orderData.shopProducts(productDatas);
+            shopProduct.productData(productDatas)
+                    .shopId(shipmentData.get(i).getShopId())
+                    .fcancelPartial(switchValue(shipmentData.get(i).isProductFcancelPartial()))
+                    .finsurance(switchValue(shipmentData.get(i).isProductFinsurance()))
+                    .isPreorder(switchValue(shipmentData.get(i).isProductIsPreorder()))
+                    .shippingInfo(shipmentInfo.build());
 
+            if(shipmentData.get(i).getSelectedShipmentDetailData().getUseDropshipper()) {
+                CheckPromoCodeCartShipmentRequest.DropshipData.Builder dropshipData =
+                        new CheckPromoCodeCartShipmentRequest.DropshipData.Builder();
 
-            checkoutPromoRequest.data() shipmentData.get(i)*/
+                dropshipData
+                        .name(shipmentData.get(i).getSelectedShipmentDetailData()
+                                .getDropshipperName())
+                        .telpNo(shipmentData.get(i).getSelectedShipmentDetailData()
+                                .getDropshipperPhone());
+            }
 
+            shopProducts.add(shopProduct.build());
+
+            orderData.shopProducts(shopProducts);
+
+            orderDatas.add(orderData.build());
         }
+
+        checkoutPromoRequest.data(orderDatas);
 
         return checkoutPromoRequest.build();
     }
