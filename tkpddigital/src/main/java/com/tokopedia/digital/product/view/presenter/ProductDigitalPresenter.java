@@ -313,7 +313,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (view == null || activity == null || view.getActivity() == null) {
+                if (view == null || view.getActivity() == null) {
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -345,7 +345,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-               if (view != null && activity != null && view.getActivity() != null) {
+               if (view != null && view.getActivity() != null) {
                     view.renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
