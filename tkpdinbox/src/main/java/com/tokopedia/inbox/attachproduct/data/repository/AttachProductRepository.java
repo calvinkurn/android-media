@@ -2,6 +2,8 @@ package com.tokopedia.inbox.attachproduct.data.repository;
 
 import com.tokopedia.inbox.attachproduct.domain.model.AttachProductDomainModel;
 
+import java.util.Map;
+
 import rx.Observable;
 
 /**
@@ -9,5 +11,5 @@ import rx.Observable;
  */
 
 public interface AttachProductRepository {
-    Observable<AttachProductDomainModel> loadProductFromShop(String query, String shopId, int page);
+    Observable<AttachProductDomainModel> loadProductFromShop(Map<String,String> params);
 }

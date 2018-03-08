@@ -1,8 +1,9 @@
-package com.tokopedia.inbox.attachproduct.view;
+package com.tokopedia.inbox.attachproduct.view.presenter;
 
 import com.tokopedia.core.util.getproducturlutil.model.GetProductPass;
 import com.tokopedia.inbox.attachproduct.domain.usecase.AttachProductUseCase;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.inbox.attachproduct.view.subscriber.AttachProductGetProductListSubscriber;
 import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 import java.util.ArrayList;
@@ -41,26 +42,8 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
 
     @Override
     public void loadProductData(String query, String shopId, int page) {
-        useCase.getProductList(query,shopId,page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<AttachProductItemViewModel>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        view.showErrorMessage(throwable);
-                    }
-
-                    @Override
-                    public void onNext(List<AttachProductItemViewModel> attachProductItemViewModels) {
-                        view.hideAllLoadingIndicator();
-                        view.addProductToList(attachProductItemViewModels,(attachProductItemViewModels.size() >= Integer.parseInt(GetProductPass.DEFAULT_ROWS)));
-                    }
-                });
+        useCase.execute(AttachProductUseCase.createRequestParams(query, shopId, page),
+                new AttachProductGetProductListSubscriber(view));
     }
 
     @Override

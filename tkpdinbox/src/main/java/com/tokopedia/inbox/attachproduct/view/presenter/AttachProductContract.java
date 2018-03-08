@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.attachproduct.view;
+package com.tokopedia.inbox.attachproduct.view.presenter;
 
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewModel;

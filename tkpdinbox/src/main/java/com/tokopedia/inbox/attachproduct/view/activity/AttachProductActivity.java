@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.attachproduct.view.AttachProductContract;
+import com.tokopedia.inbox.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.inbox.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 
