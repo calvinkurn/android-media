@@ -1,9 +1,12 @@
 package com.tokopedia.core.router;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.net.Uri;
+import android.os.Bundle;
 
 /**
  * @author by nisie on 9/14/17.
@@ -44,4 +47,6 @@ public interface TkpdInboxRouter {
     String getChannelFragmentTag();
 
     Intent getLoginIntent(Context context);
+
+    void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 }

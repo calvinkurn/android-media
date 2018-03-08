@@ -46,6 +46,7 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_default));
             icon.setVisibility(View.GONE);
+            percent.setText(MethodChecker.getColor(context, R.color.black_38));
         } else {
             percent.setVisibility(View.VISIBLE);
             progressBar.setProgress(element.getPercentageInteger());
@@ -56,6 +57,7 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
                 icon.setVisibility(View.GONE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_bar_unselected));
             }
+            percent.setText(MethodChecker.getColor(context, R.color.black_54));
         }
 
         option.setText(element.getOption());

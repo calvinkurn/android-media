@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:id="@id/nested_intermediary"
     android:orientation="vertical">
 
@@ -78,7 +78,7 @@
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:visibility="visible"
-                android:src="@drawable/ic_expand_more_black_24dp"/>
+                app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
         </LinearLayout>
 
@@ -103,7 +103,7 @@
                 android:layout_height="@dimen/med_dp"
                 android:gravity="center_vertical"
                 android:visibility="visible"
-                android:src="@drawable/ic_expand_less_grey_24dp"/>
+                app:srcCompat="@drawable/ic_expand_less_grey_24dp"/>
 
         </LinearLayout>
 

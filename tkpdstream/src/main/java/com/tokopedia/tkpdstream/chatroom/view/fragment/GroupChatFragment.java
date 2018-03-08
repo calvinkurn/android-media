@@ -872,7 +872,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med), false);
+            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
         }
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);

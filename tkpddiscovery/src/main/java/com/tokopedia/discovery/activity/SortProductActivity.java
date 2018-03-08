@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -44,7 +43,7 @@ public class SortProductActivity extends TActivity {
     View buttonClose;
     private TextView topBarTitle;
     private ListAdapter adapter;
-    public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";
+    public static final String SORT_ACTION_INTENT = "com.tokopedia.core" + ".SORT";
     private static final String TAG = SortProductActivity.class.getSimpleName();
     private ArrayList<Sort> data;
     private String selectedKey;

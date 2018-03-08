@@ -65,6 +65,8 @@ import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -521,6 +523,24 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses, boolean isNearbyPlaces) {
         getView().showGoogleLabel();
         ArrayList<Visitable> addr = new ArrayList<>();
+
+        if (isNearbyPlaces) {
+            Collections.sort(addresses, new Comparator<PlaceAutoCompeleteViewModel>() {
+                @Override
+                public int compare(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel1, PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel2) {
+
+                    if (placeAutoCompeleteViewModel1 != null &&
+                            placeAutoCompeleteViewModel1.getDistance() != null &&
+                            placeAutoCompeleteViewModel2 != null &&
+                            placeAutoCompeleteViewModel2.getDistance() != null) {
+                        return placeAutoCompeleteViewModel1.getDistanceValue() - placeAutoCompeleteViewModel2.getDistanceValue();
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+        }
+
         addr.addAll(addresses);
         getView().showListPlaces();
         getView().renderPlacesList(addr);
@@ -646,9 +666,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         for (Element element : distanceMatrixEntity.getRows().get(0).getElements()) {
                             if (element != null && element.getStatus().equalsIgnoreCase("OK")) {
                                 String distance = element.getDistance().getText();
+                                Integer value = element.getDistance().getValue();
 
                                 if (addresses.size() > index) {
                                     addresses.get(index).setDistance(distance);
+                                    addresses.get(index).setDistanceValue(value);
                                 }
                             }
                             index++;

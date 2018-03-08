@@ -12,6 +12,7 @@ import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
+import com.tokopedia.ride.bookingride.domain.GetNearbyRoadsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
@@ -69,6 +70,14 @@ public class BookingRideModule {
                                                        PostExecutionThread postExecutionThread,
                                                        BookingRideRepository bookingRideRepository) {
         return new GetUserAddressUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetNearbyRoadsUseCase provideGetNearByRoadsUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       PlaceRepository placeRepository) {
+        return new GetNearbyRoadsUseCase(threadExecutor, postExecutionThread, placeRepository);
     }
 
     @Provides

@@ -69,4 +69,9 @@ public class UserSessionImpl implements UserSession {
     public String getProfilePicture() {
         return sessionHandler.getProfilePicture();
     }
+    @Override
+    public boolean isMsisdnVerified() {
+        return sessionHandler.isMsisdnAlreadyVerified();
+    }
+
 }
