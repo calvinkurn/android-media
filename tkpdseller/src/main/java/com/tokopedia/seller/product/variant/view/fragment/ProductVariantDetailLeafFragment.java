@@ -239,11 +239,14 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private boolean checkStockValid(int stock) {
-        if (stock < MIN_STOCK || stock > MAX_STOCK) {
-            counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
-                    getContext().getString(R.string.product_minimum_total_stock),
-                    getContext().getString(R.string.product_maximum_total_stock)));
-            return false;
+        if (listener.getProductVariantCombinationViewModel().isActive() &&
+                isStockLimited()) {
+            if (stock < MIN_STOCK || stock > MAX_STOCK) {
+                counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
+                        getContext().getString(R.string.product_minimum_total_stock),
+                        getContext().getString(R.string.product_maximum_total_stock)));
+                return false;
+            }
         }
         counterInputViewStock.setError(null);
         return true;

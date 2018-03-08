@@ -40,11 +40,6 @@ public abstract class BaseVariantImageFragment extends Fragment {
     public abstract ProductVariantOptionChild getProductVariantOptionChild();
     public abstract void refreshVariantImage();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
