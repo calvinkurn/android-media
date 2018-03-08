@@ -27,9 +27,11 @@ public class PaymentTracking extends TrackingUtils {
     }
 
     /* new from TopPayActivity revamped*/
-    public static void eventTransactionAF(
-            String paymentId, String grandTotalBeforeFee, JSONArray afJSON, int qty,
-            Map[] productList
+    public static void eventTransactionAF(String paymentId,
+                                          String grandTotalBeforeFee,
+                                          JSONArray afJSON,
+                                          int qty,
+                                          Map[] productList
     ) {
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.REVENUE, grandTotalBeforeFee);

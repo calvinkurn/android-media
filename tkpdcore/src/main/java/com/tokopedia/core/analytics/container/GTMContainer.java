@@ -247,7 +247,8 @@ public class GTMContainer implements IGTMContainer {
                 Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                 Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                 Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
+                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel()
         ));
 
         return this;
