@@ -10,7 +10,6 @@ import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerU
 import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;
@@ -44,6 +43,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     private FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase;
     private FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
 
+    private static long YEAR = 1000 * 60 * 60 * 24 * 365;
     private static int TWELVE_YEARS = 12;
     private static int TWO_YEARS = 2;
 
@@ -354,17 +354,16 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             Date now = FlightDateUtil.getCurrentDate();
             Date birth = FlightDateUtil.stringToDate(birthdate);
             long diff = now.getTime() - birth.getTime();
-            long year = (1000 * 60 * 60 * 24 * 365);
 
-            if (diff > (TWELVE_YEARS * year)) {
+            if (diff > (TWELVE_YEARS * YEAR)) {
                 if (salutationId == TUAN) {
                     return R.drawable.ic_passenger_male;
                 } else {
                     return R.drawable.ic_passenger_female;
                 }
-            } else if (diff > (TWO_YEARS * year)) {
+            } else if (diff > (TWO_YEARS * YEAR)) {
                 return R.drawable.ic_passenger_childreen;
-            } else if (diff < (TWO_YEARS * year)) {
+            } else if (diff < (TWO_YEARS * YEAR)) {
                 return R.drawable.ic_passenger_infant;
             }
         }

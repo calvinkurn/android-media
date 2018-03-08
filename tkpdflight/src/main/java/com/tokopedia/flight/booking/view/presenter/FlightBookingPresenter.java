@@ -57,6 +57,8 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBookingContract.View>
         implements FlightBookingContract.Presenter {
 
+    private static final int TWELVE_YEARS_AGO = -12;
+    private static final int MAX_CONTACT_NAME_LENGTH = 20;
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
@@ -731,7 +733,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        throwable.printStackTrace();
                     }
 
                     @Override
@@ -763,12 +765,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private boolean validatePassengerData() {
         boolean isValid = true;
 
-        Date twelveYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
+        Date twelveYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, TWELVE_YEARS_AGO);
 
         if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
             isValid = false;
             getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
-        } else if (getView().getContactName().length() > 20) {
+        } else if (getView().getContactName().length() > MAX_CONTACT_NAME_LENGTH) {
             isValid = false;
             getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
         } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
