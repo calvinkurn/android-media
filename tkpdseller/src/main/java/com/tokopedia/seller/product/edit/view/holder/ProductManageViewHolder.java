@@ -191,7 +191,6 @@ public class ProductManageViewHolder extends ProductViewHolder {
                             ProductPictureViewModel productPictureViewModel =
                                     data.getParcelableExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART);
                             listener.updateVariantSizeChartModel(productPictureViewModel);
-                            setUiVariantSelection();
                         }
                     }
                 }
