@@ -247,9 +247,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
-        return new EndlessLayoutManagerListener(){
-            public RecyclerView.LayoutManager getCurrentLayoutManager(){
+    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener() {
+        return new EndlessLayoutManagerListener() {
+            public RecyclerView.LayoutManager getCurrentLayoutManager() {
                 return recyclerViews.getLayoutManager();
             }
         };
@@ -265,7 +265,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        if(this.page != null){
+        if (this.page != null) {
             page = Integer.valueOf(this.page);
         }
         shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
@@ -313,9 +313,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onSuccessGetShopInfo(String shopName) {
         ActionBar actionBar = getActivity().getActionBar();
-
         if (actionBar != null)
-            actionBar.setTitle(shopName);
+            actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
     }
 
     @Override

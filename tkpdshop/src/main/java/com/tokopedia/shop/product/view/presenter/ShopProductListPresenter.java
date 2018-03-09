@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
@@ -88,27 +87,30 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessGetShopInfo(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
+                getView().onSuccessGetShopInfo(shopInfo.getInfo().getShopName());
+                getShopProductWithWishList(shopId, keyword, etalaseId, wholesale, page, orderBy);
+            }
+        });
+    }
 
-                ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopInfo.getInfo().getShopId(), keyword, etalaseId, wholesale, page, orderBy);
-                getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
-                    @Override
-                    public void onCompleted() {
+    private void getShopProductWithWishList(final String shopId, final String keyword, final String etalaseId, final int wholesale, final int page, final int orderBy) {
+        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
+        getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().showGetListError(e);
-                        }
-                    }
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().showGetListError(e);
+                }
+            }
 
-                    @Override
-                    public void onNext(PagingList<ShopProductViewModel> shopProductList) {
-                        getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
-                    }
-                });
+            @Override
+            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+                getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
             }
         });
     }
