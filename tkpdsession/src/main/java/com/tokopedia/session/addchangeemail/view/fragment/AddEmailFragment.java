@@ -173,12 +173,12 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private void setTextError(String s) {
         if (s.equals("")) {
-            etEmail.setText(s);
-            etEmail.setVisibility(View.GONE);
+            tvError.setText(s);
+            tvError.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);
         } else {
-            etEmail.setText(s);
-            etEmail.setVisibility(View.VISIBLE);
+            tvError.setText(s);
+            tvError.setVisibility(View.VISIBLE);
             tvMessage.setVisibility(View.GONE);
         }
     }

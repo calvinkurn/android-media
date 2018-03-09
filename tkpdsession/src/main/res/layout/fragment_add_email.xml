@@ -24,10 +24,9 @@
             android:id="@+id/et_email"
             android:hint="@string/title_email"
             android:textColorHint="@color/black_54"
-            android:focusable="false"
-            android:enabled="false"
+            android:textColor="@color/black_70"
             android:inputType="textEmailAddress"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/font_medium"
             android:layout_marginTop="@dimen/margin_sm"
             />
 
