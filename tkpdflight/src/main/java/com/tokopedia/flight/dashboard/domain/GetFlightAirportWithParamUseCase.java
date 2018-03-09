@@ -17,10 +17,9 @@ import rx.Observable;
  */
 
 public class GetFlightAirportWithParamUseCase extends UseCase<FlightAirportDB> {
-    private static final String PARAM_AIRPORT_ID = "PARAM_AIRPORT_ID";
-    public static final String AIRPORT_ID = "AIRPORT_ID";
-    public static final String CITY_CODE = "CITY_CODE";
-    private static final String DEFAULT_AIRPORT_ID = "CGK";
+    private static final String AIRPORT_ID = "AIRPORT_ID";
+    private static final String CITY_CODE = "CITY_CODE";
+    private static final int AIRPORT_CODE_DEFAULT_LENGTH = 3;
 
     private FlightRepository flightRepository;
 
@@ -31,19 +30,17 @@ public class GetFlightAirportWithParamUseCase extends UseCase<FlightAirportDB> {
 
     @Override
     public Observable<FlightAirportDB> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportWithParam((Map<String, String>) requestParams.getObject(PARAM_AIRPORT_ID));
+
+        return flightRepository.getAirportWithParam(requestParams.getParamsAllValueInString());
     }
 
     public RequestParams createRequestParams(String paramId) {
-        Map<String, String> mapParam = new HashMap<>();
-        if (paramId.length() > 3) {
-            mapParam.put(CITY_CODE, paramId);
-        } else {
-            mapParam.put(AIRPORT_ID, paramId);
-        }
-
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(PARAM_AIRPORT_ID, mapParam);
+        if (paramId.length() > AIRPORT_CODE_DEFAULT_LENGTH) {
+            requestParams.putString(CITY_CODE, paramId);
+        } else {
+            requestParams.putString(AIRPORT_ID, paramId);
+        }
         return requestParams;
     }
 }

@@ -87,8 +87,8 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
 
         return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
             @Override
-            public Observable<FlightAirportDB> call(Boolean aBoolean) {
-                if (aBoolean) {
+            public Observable<FlightAirportDB> call(Boolean isLocalAvailable) {
+                if (isLocalAvailable) {
                     return flightAirportDataListDBSource.getAirport(airportCode);
                 } else {
                     return getCloudData(new HashMap<String, Object>())
@@ -112,8 +112,8 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
         return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
             @Override
-            public Observable<FlightAirportDB> call(Boolean aBoolean) {
-                if (aBoolean) {
+            public Observable<FlightAirportDB> call(Boolean isLocalAvailable) {
+                if (isLocalAvailable) {
                     return flightAirportDataListDBSource.getAirport(params);
                 } else {
                     return getCloudData(new HashMap<String, Object>())

@@ -121,9 +121,8 @@ public class FlightRepositoryImpl implements FlightRepository {
             return flightAirportDataListSource.getAirportCount(query, idCountry)
                     .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
                         @Override
-                        public Observable<List<FlightAirportDB>> call(Integer integer) {
-                            CommonUtils.dumper("Size Airport " + integer);
-                            if (integer == 0) {
+                        public Observable<List<FlightAirportDB>> call(Integer airportTotal) {
+                            if (airportTotal == 0) {
                                 flightAirportDataListSource.deleteCache();
                                 flightAirlineDataListSource.setCacheExpired();
                             }
@@ -155,8 +154,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                     .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
                             new Func2<Boolean, Boolean, Boolean>() {
                                 @Override
-                                public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
-                                    return aBoolean && aBoolean2;
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
                                 }
                             });
         } else {
@@ -164,8 +163,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                     .zipWith(flightSearchSingleDataListSource.isDataAvailable(),
                             new Func2<Boolean, Boolean, Boolean>() {
                                 @Override
-                                public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
-                                    return aBoolean && aBoolean2;
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
                                 }
                             });
         }
