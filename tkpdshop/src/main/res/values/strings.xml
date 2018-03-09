@@ -65,7 +65,7 @@
         paket ke logistik
     </string>
     <string name="product_quality_content_tv_desc">
-        nilai rata-rata dari seluruh penilaian kualitas produk pada toko yang diberikan oleh pembeli
+        Nilai rata-rata dari seluruh penilaian kualitas produk pada toko yang diberikan oleh pembeli
     </string>
     <string name="shop_reputation_desc">Nilai toko yang diberikan pembeli</string>
     <string name="dashboard_x_points">%1$s poin</string>
@@ -76,7 +76,7 @@
     <string name="favorited_shop_title">Yang Memfavoritkan</string>
     <string name="speed_shop_not_available">Belum Tersedia (1 bulan terakhir)</string>
     <string name="reputation_point_format">%1$s poin</string>
-    <string name="speed_shop_not_available_format">%1$s%%  (1 bulan terakhir)</string>
+    <string name="speed_shop_not_available_format">%1$s (dihitung dalam 12 bulan terakhir)</string>
     <string name="shop_note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
