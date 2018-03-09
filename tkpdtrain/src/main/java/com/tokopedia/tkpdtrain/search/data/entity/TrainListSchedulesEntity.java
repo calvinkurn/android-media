@@ -15,7 +15,15 @@ public class TrainListSchedulesEntity {
     @Expose
     private List<TrainScheduleEntity> trainSchedules;
 
+    @SerializedName("availability_keys")
+    @Expose
+    private List<AvailabilityKeysEntity> availabilityKeys;
+
     public List<TrainScheduleEntity> getTrainSchedules() {
         return trainSchedules;
+    }
+
+    public List<AvailabilityKeysEntity> getAvailabilityKeys() {
+        return availabilityKeys;
     }
 }

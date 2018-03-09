@@ -11,7 +11,7 @@ public class TrainScheduleEntity {
 
     @SerializedName("id")
     @Expose
-    private String idTrain;
+    private String idSchedule;
     @SerializedName("adult_fare")
     @Expose
     private long adultFare;
@@ -61,8 +61,8 @@ public class TrainScheduleEntity {
     @Expose
     private String trainNumber;
 
-    public String getIdTrain() {
-        return idTrain;
+    public String getIdSchedule() {
+        return idSchedule;
     }
 
     public long getAdultFare() {

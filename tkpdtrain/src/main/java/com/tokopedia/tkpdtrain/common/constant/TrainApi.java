@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdtrain.common.constant;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpdtrain.search.data.entity.TrainAvailabilityEntity;
+import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainListSchedulesEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
 
@@ -28,7 +28,7 @@ public interface TrainApi {
     Observable<DataResponse<TrainListSchedulesEntity>> schedulesTrain(@Body Map<String, Object> params);
 
     @GET("kereta-api/schedules/availabilities/{idTrain}")
-    Observable<DataResponse<List<TrainAvailabilityEntity>>> availabilityTrain(Map<String, Object> params,
+    Observable<DataResponse<List<ScheduleAvailabilityEntity>>> availabilityTrain(Map<String, Object> params,
             @Path("idTrain") String idTrain);
 
 }
