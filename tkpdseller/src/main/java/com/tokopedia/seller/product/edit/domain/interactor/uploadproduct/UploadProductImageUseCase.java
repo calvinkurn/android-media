@@ -12,6 +12,7 @@ import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.seller.product.edit.view.model.edit.BasePictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -29,6 +30,7 @@ import rx.schedulers.Schedulers;
 public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel>> {
 
     private static final String PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
+    private static final String PRODUCT_ID = "PRODUCT_ID";
     private static final String NOTIFICATION_COUNT_LISTENER = "NOTIFICATION_COUNT_LISTENER";
 
     private final UploadImageUseCase<UploadImageModel> uploadImageUseCase;
@@ -44,10 +46,11 @@ public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel
     @Override
     public Observable<List<BasePictureViewModel>> createObservable(RequestParams requestParams) {
         final ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
+        final String productId = requestParams.getString(PRODUCT_ID, "");
         notificationCountListener = (ProductSubmitNotificationListener) requestParams.getObject(NOTIFICATION_COUNT_LISTENER);
-        return Observable.zip(uploadProductImageList(productViewModel).subscribeOn(Schedulers.io()),
-                uploadProductVariantImageList(productViewModel).subscribeOn(Schedulers.io()),
-                uploadProductSizeCart(productViewModel).subscribeOn(Schedulers.io()),
+        return Observable.zip(uploadProductImageList(productViewModel, productId).subscribeOn(Schedulers.io()),
+                uploadProductVariantImageList(productViewModel, productId).subscribeOn(Schedulers.io()),
+                uploadProductSizeCart(productViewModel, productId).subscribeOn(Schedulers.io()),
                 new Func3<List<BasePictureViewModel>, List<BasePictureViewModel>, List<BasePictureViewModel>, List<BasePictureViewModel>>() {
                     @Override
                     public List<BasePictureViewModel> call(List<BasePictureViewModel> basePictureViewModelList, List<BasePictureViewModel> basePictureViewModels2, List<BasePictureViewModel> basePictureViewModels3) {
@@ -58,24 +61,24 @@ public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel
                 });
     }
 
-    private Observable<List<BasePictureViewModel>> uploadProductImageList(ProductViewModel productViewModel) {
+    private Observable<List<BasePictureViewModel>> uploadProductImageList(ProductViewModel productViewModel, String productId) {
         return Observable.from(productViewModel.getProductPictureViewModelList())
-                .flatMap(new UploadSingleImage(productViewModel.getProductId()))
+                .flatMap(new UploadSingleImage(productId))
                 .toList();
     }
 
-    private Observable<List<BasePictureViewModel>> uploadProductVariantImageList(ProductViewModel productViewModel) {
+    private Observable<List<BasePictureViewModel>> uploadProductVariantImageList(ProductViewModel productViewModel, String productId) {
         return Observable.from(productUploadMapper.getVariantPictureViewModelList(productViewModel))
-                .flatMap(new UploadSingleImage(productViewModel.getProductId()))
+                .flatMap(new UploadSingleImage(productId))
                 .toList();
     }
 
-    private Observable<List<BasePictureViewModel>> uploadProductSizeCart(ProductViewModel productViewModel) {
+    private Observable<List<BasePictureViewModel>> uploadProductSizeCart(ProductViewModel productViewModel, String productId) {
         List<BasePictureViewModel> basePictureViewModelList = new ArrayList<>();
         if (productViewModel.getProductSizeChart() != null) {
             basePictureViewModelList.add(productViewModel.getProductSizeChart());
             return Observable.from(basePictureViewModelList)
-                    .flatMap(new UploadSingleImage(productViewModel.getProductId()))
+                    .flatMap(new UploadSingleImage(productId))
                     .toList();
         } else {
             return Observable.just(basePictureViewModelList);
@@ -130,13 +133,10 @@ public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel
         }
     }
 
-    public static RequestParams createParams(ProductViewModel productViewModel) {
-        return createParams(productViewModel, null);
-    }
-
-    public static RequestParams createParams(ProductViewModel productViewModel, ProductSubmitNotificationListener notificationCountListener) {
+    public static RequestParams createParams(ProductViewModel productViewModel, String productId, ProductSubmitNotificationListener notificationCountListener) {
         RequestParams params = RequestParams.create();
         params.putObject(PRODUCT_VIEW_MODEL, productViewModel);
+        params.putString(PRODUCT_ID, productId);
         params.putObject(NOTIFICATION_COUNT_LISTENER, notificationCountListener);
         return params;
     }
