@@ -163,6 +163,14 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
+    /**
+     * function to convert the pvo to tid and custom values to tid
+     * if all are already converted to tid (means pvo == 0), the result should be same.
+     * example pvo 100, 200, 300, 678  option [100,200] [100,300] [100,678]
+     * will be converted to tid 1,2,3,4 option [1,2] [1,3][1,4]
+     * the same goes for "Merah" "Kuning"; "S", "M" ,"L"  with option ["Merah", "S"] ["Kuning", "L"]
+     * will be converted to 1,2; 3,4,5 with option [1,3] [2,5]
+     */
     public ProductVariantViewModel generateTid() {
         if (!hasSelectedVariant()) {
             return this;
@@ -231,9 +239,14 @@ public class ProductVariantViewModel implements Parcelable {
         for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
             ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
             productVariantOptionChild.settId(counter++);
+            // comes from custom value
             mapLevel1.put(productVariantOptionChild.getValue(), i);
             int pvo = productVariantOptionChild.getPvo();
-            mapPvoLevel1.put(pvo, i);
+            if (pvo == 0) { // means it has converted to tid
+                mapPvoLevel1.put(productVariantOptionChild.gettId(), i);
+            } else { // it comes from the server
+                mapPvoLevel1.put(pvo, i);
+            }
             productVariantOptionChild.setPvo(0);
         }
 
@@ -241,8 +254,14 @@ public class ProductVariantViewModel implements Parcelable {
             for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
                 ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
                 productVariantOptionChild.settId(counter++);
+                // comes from custom value
                 mapLevel2.put(productVariantOptionChild.getValue(), i);
                 int pvo = productVariantOptionChild.getPvo();
+                if (pvo == 0) { // means it has converted to tid, comes from draft
+                    mapPvoLevel2.put(productVariantOptionChild.gettId(), i);
+                } else { // comes from server
+                    mapPvoLevel2.put(pvo, i);
+                }
                 mapPvoLevel2.put(pvo, i);
                 productVariantOptionChild.setPvo(0);
             }
