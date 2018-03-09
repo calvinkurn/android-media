@@ -36,22 +36,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/product_quality_desc"
-        style="@style/TextView.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_small"
-        android:layout_marginStart="@dimen/new_margin_small"
-        android:layout_marginTop="0dp"
-        android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="@dimen/line_spacng_extra"
-        android:textColor="@color/colorSheetTitle"
-        android:textStyle="normal"
-        app:layout_constraintLeft_toRightOf="@+id/rating_bar_product_quality"
-        app:layout_constraintTop_toTopOf="@+id/rating_bar_product_quality"
-        tools:text="128.189 poin" />
-
-    <TextView
         android:id="@+id/product_quality_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

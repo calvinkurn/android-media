@@ -124,7 +124,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private String speedLevelDescription;
     private long ratingStar;
     private String qualityAverage;
-    private String qualityCountTotal;
     private int set;
     private int level;
     private String shopReputationScore;
@@ -287,7 +286,15 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.shop_reputation_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
@@ -311,15 +318,20 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 TextView speedView = speedContentBottomSheet.findViewById(R.id.product_quality_value);
                 speedView.setText(qualityAverage);
 
-                TextView qualityCountTotalTextView = speedContentBottomSheet.findViewById(R.id.product_quality_desc);
-                qualityCountTotalTextView.setText(qualityCountTotal);
-
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.product_quality_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
@@ -341,7 +353,15 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.shop_speed_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
@@ -561,8 +581,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
         shopReputationScore = shopInfo.getStats().getShopReputationScore();
         shopReputationView.setValue(set, level, shopReputationScore);
-
-        qualityCountTotal = shopInfo.getRatings().getQuality().getCountTotal();
         qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
 
