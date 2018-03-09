@@ -5,8 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * @author by alvarisi on 11/21/17.
  */
 
-public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductListViewHolder> {
+public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductFeaturedViewHolder> {
 
     private final ShopProductClickedListener shopProductClickedListener;
     private List<ShopProductViewModel> list;
@@ -36,13 +35,13 @@ public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<Shop
     }
 
     @Override
-    public ShopProductListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductListViewHolder.LAYOUT, parent, false);
-        return new ShopProductListViewHolder(view, shopProductClickedListener);
+    public ShopProductFeaturedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductFeaturedViewHolder.LAYOUT, parent, false);
+        return new ShopProductFeaturedViewHolder(view, shopProductClickedListener);
     }
 
     @Override
-    public void onBindViewHolder(ShopProductListViewHolder holder, int position) {
+    public void onBindViewHolder(ShopProductFeaturedViewHolder holder, int position) {
         holder.bind(list.get(holder.getAdapterPosition()));
     }
 

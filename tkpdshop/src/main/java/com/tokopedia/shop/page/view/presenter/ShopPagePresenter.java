@@ -2,10 +2,7 @@ package com.tokopedia.shop.page.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
-import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.page.domain.interactor.GetShopPageDataByDomainUseCase;
@@ -87,6 +84,12 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     }
 
     public void toggleFavouriteShop(String shopId) {
+        if (!userSession.isLoggedIn()) {
+            if (isViewAttached()) {
+                getView().onErrorToggleFavourite(new UserNotLoginException());
+            }
+            return;
+        }
         toggleFavouriteShopAndDeleteCacheUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

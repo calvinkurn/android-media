@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -45,31 +46,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         this.userSession = userSession;
     }
 
-    public void addToWishList(final String productId){
-        getView().showLoading();
-        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorAddToWishList(e);
-                    getView().hideLoading();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                getView().onSuccessAddToWishList(productId, aBoolean);
-                getView().hideLoading();
-            }
-        });
-    }
-
     public void getProductLimitedList(String shopId, final String promotionWebViewUrl) {
         getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductBaseViewModel>>() {
             @Override
@@ -96,15 +72,40 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         });
     }
 
-    @Override
-    public void detachView() {
-        super.detachView();
-        if (getShopProductLimitedUseCase != null) {
-            getShopProductLimitedUseCase.unsubscribe();
+    public void addToWishList(final String productId){
+        if (!userSession.isLoggedIn() && isViewAttached()) {
+            getView().onErrorAddToWishList(new UserNotLoginException());
+            return;
         }
+        getView().showLoading();
+        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
+        addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorAddToWishList(e);
+                    getView().hideLoading();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessAddToWishList(productId, aBoolean);
+                getView().hideLoading();
+            }
+        });
     }
 
     public void removeFromWishList(final String productId){
+        if (!userSession.isLoggedIn() && isViewAttached()) {
+            getView().onErrorAddToWishList(new UserNotLoginException());
+            return;
+        }
         getView().showLoading();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
@@ -127,5 +128,13 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                 getView().hideLoading();
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        if (getShopProductLimitedUseCase != null) {
+            getShopProductLimitedUseCase.unsubscribe();
+        }
     }
 }

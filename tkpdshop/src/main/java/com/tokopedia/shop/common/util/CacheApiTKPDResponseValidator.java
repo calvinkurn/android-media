@@ -1,8 +1,8 @@
-package com.tokopedia.core.network.validator;
+package com.tokopedia.shop.common.util;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -11,7 +11,6 @@ import okhttp3.ResponseBody;
  * Created by nathan on 1/26/18.
  */
 
-@Deprecated
 public class CacheApiTKPDResponseValidator<T extends BaseResponseError> extends CacheApiResponseValidator {
 
     private static final long BYTE_COUNT = Long.MAX_VALUE;

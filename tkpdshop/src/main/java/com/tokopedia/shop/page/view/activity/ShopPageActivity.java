@@ -26,9 +26,11 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
@@ -64,6 +66,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public static final String SHOP_DOMAIN = "shop_domain";
     public static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
 
+    private static final int REQUEST_CODER_USER_LOGIN = 100;
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
     private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
     private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
@@ -78,9 +81,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Inject
     ShopPagePresenter shopPagePresenter;
-
-    @Inject
-    UserSession userSession;
 
     private ShopProductListLimitedFragment shopProductListLimitedFragment;
     private ImageView backgroundImageView;
@@ -368,14 +368,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userSession != null && !userSession.isLoggedIn()) {
-                    Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(
-                            ShopPageActivity.this
-                    );
-                    ShopPageActivity.this.startActivityForResult(intent, 100);
-                    return;
-                }
-
                 buttonFavouriteShop.setEnabled(false);
                 shopPagePresenter.toggleFavouriteShop(shopId);
             }
@@ -636,6 +628,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onErrorToggleFavourite(Throwable e) {
         buttonFavouriteShop.setEnabled(true);
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(this);
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
     }
 
     @DrawableRes
@@ -667,6 +665,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shopPagePresenter.detachView();
+        if (shopPagePresenter != null) {
+            shopPagePresenter.detachView();
+        }
     }
 }
