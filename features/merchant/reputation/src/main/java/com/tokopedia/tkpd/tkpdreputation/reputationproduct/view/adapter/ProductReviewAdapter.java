@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.ReputationRecyclerView;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.util.MethodChecker;
@@ -33,6 +32,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.Const;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.helpful_review.HelpfulReviewList;
@@ -470,7 +470,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
             @Override
             public void onClick(View v) {
                 context.startActivity(
-                        ((TkpdCoreRouter) context.getApplicationContext())
+                        ((ReputationRouter) context.getApplicationContext())
                                 .getTopProfileIntent(context, reviewUserId));
             }
         };

@@ -25,6 +25,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -529,7 +530,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void openPeople(String url) {
         startActivity(
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                ((TkpdInboxRouter) getActivity().getApplicationContext())
                         .getTopProfileIntent(getActivity(), Uri.parse(url).getQueryParameter("id")));
     }
 

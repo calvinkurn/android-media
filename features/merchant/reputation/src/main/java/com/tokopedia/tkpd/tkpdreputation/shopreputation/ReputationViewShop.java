@@ -32,7 +32,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -418,7 +417,7 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((TkpdCoreRouter) getBaseContext().getApplicationContext())
+                startActivity(((ReputationRouter) getBaseContext().getApplicationContext())
                         .getTopProfileIntent(getBaseContext(),
                                 model.userId));
             }
