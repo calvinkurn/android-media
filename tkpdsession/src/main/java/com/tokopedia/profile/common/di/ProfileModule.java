@@ -6,6 +6,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.DeveloperOptions;
@@ -28,15 +29,22 @@ import retrofit2.Retrofit;
 @ProfileScope
 @Module
 public class ProfileModule {
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_RETRY = 1;
+
     @ProfileScope
     @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
-            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            TkpdAuthInterceptor tkpdAuthInterceptor) {
+    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
+                                                    httpLoggingInterceptor,
+                                            @ApplicationContext Context context,
+                                            TkpdAuthInterceptor tkpdAuthInterceptor,
+                                            OkHttpRetryPolicy retryPolicy) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(new FingerprintInterceptor());
 
@@ -71,5 +79,15 @@ public class ProfileModule {
     @Provides
     public ProfileApi provideProfileApi(@ProfileQualifier Retrofit retrofit){
         return retrofit.create(ProfileApi.class);
+    }
+
+    @ProfileScope
+    @ProfileQualifier
+    @Provides
+    public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
+                NET_WRITE_TIMEOUT,
+                NET_CONNECT_TIMEOUT,
+                NET_RETRY);
     }
 }
