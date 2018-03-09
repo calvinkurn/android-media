@@ -495,7 +495,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void kickIfIdleForTooLong() {
         if(viewModel != null) {
-            if (System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
+            if (viewModel.getTimeStampBeforePause() > 0
+                    && System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
                 onUserIdleTooLong();
             }
         }
