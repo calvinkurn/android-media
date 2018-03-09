@@ -168,6 +168,8 @@ public class ProductVariantViewModel implements Parcelable {
      * if all are already converted to tid (means pvo == 0), the result should be same.
      * example pvo 100, 200, 300, 678  option [100,200] [100,300] [100,678]
      * will be converted to tid 1,2,3,4 option [1,2] [1,3][1,4]
+     * the same goes for "Merah" "Kuning"; "S", "M" ,"L"  with option ["Merah", "S"] ["Kuning", "L"]
+     * will be converted to 1,2; 3,4,5 with option [1,3] [2,5]
      */
     public ProductVariantViewModel generateTid() {
         if (!hasSelectedVariant()) {
