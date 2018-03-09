@@ -8,7 +8,7 @@ import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.data.FlightPassengerDataListSource;
+import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
@@ -67,7 +67,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportVersionDBSource flightAirportVersionDBSource;
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
-    private FlightPassengerDataListSource flightPassengerDataListSource;
+    private FlightPassengerFactorySource flightPassengerFactorySource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -83,7 +83,7 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
-                                FlightPassengerDataListSource flightPassengerDataListSource) {
+                                FlightPassengerFactorySource flightPassengerFactorySource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -98,7 +98,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightAirportVersionDBSource = flightAirportVersionDBSource;
         this.flightOrderDataSource = flightOrderDataSource;
         this.flightOrderMapper = flightOrderMapper;
-        this.flightPassengerDataListSource = flightPassengerDataListSource;
+        this.flightPassengerFactorySource = flightPassengerFactorySource;
     }
 
     @Override
@@ -335,21 +335,21 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<List<FlightPassengerDB>> getSavedPassenger(String passengerId) {
-        return flightPassengerDataListSource.getPassengerList(passengerId);
+        return flightPassengerFactorySource.getPassengerList(passengerId);
     }
 
     @Override
     public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
-        return flightPassengerDataListSource.updateIsSelected(passengerId, isSelected);
+        return flightPassengerFactorySource.updateIsSelected(passengerId, isSelected);
     }
 
     @Override
     public Observable<Boolean> deleteAllListPassenger() {
-        return flightPassengerDataListSource.deleteAllListPassenger();
+        return flightPassengerFactorySource.deleteAllListPassenger();
     }
 
     @Override
     public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
-        return flightPassengerDataListSource.deletePassenger(request, idempotencyKey);
+        return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
     }
 }

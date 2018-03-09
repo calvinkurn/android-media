@@ -3,7 +3,6 @@ package com.tokopedia.flight.booking.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingDeletePassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
@@ -14,10 +13,10 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -41,11 +40,10 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     private FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase;
     private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
     private FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase;
-    private FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase;
 
-    private static long YEAR = 1000 * 60 * 60 * 24 * 365;
-    private static int TWELVE_YEARS = 12;
-    private static int TWO_YEARS = 2;
+    private static long YEAR_IN_MILLIS = TimeUnit.DAYS.toMillis(365);
+    private static long TWELVE_YEARS_IN_MILLIS = 12 * YEAR_IN_MILLIS;
+    private static long TWO_YEARS_IN_MILLIS = 2 * YEAR_IN_MILLIS;
 
     private CompositeSubscription compositeSubscription;
 
@@ -53,12 +51,10 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     @Inject
     public FlightBookingListPassengerPresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase,
                                                FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase,
-                                               FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase,
-                                               FlightBookingDeleteAllPassengerListUseCase flightBookingDeleteAllPassengerListUseCase) {
+                                               FlightBookingDeletePassengerUseCase flightBookingDeletePassengerUseCase) {
         this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
         this.flightBookingUpdateSelectedPassengerUseCase = flightBookingUpdateSelectedPassengerUseCase;
         this.flightBookingDeletePassengerUseCase = flightBookingDeletePassengerUseCase;
-        this.flightBookingDeleteAllPassengerListUseCase = flightBookingDeleteAllPassengerListUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -143,7 +139,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         flightBookingDeletePassengerUseCase.execute(
                 flightBookingDeletePassengerUseCase.generateRequest(passengerId,
                         getView().getRequestId()),
-                new Subscriber<Response<Object>>() {
+                new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
 
@@ -155,29 +151,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     }
 
                     @Override
-                    public void onNext(Response<Object> response) {
-                        clearDatabase();
-                    }
-                }
-        );
-    }
-
-    private void clearDatabase() {
-        flightBookingDeleteAllPassengerListUseCase.execute(
-                flightBookingDeleteAllPassengerListUseCase.createEmptyRequestParams(),
-                new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
+                    public void onNext(Boolean response) {
                         getSavedPassengerList();
                     }
                 }
@@ -320,15 +294,12 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             if (diff < 0) {
                 diff *= -1;
             }
-            long year = (1000 * 60 * 60 * 24 * 365);
-            long twelveYear = TWELVE_YEARS * year;
-            long twoYear = TWO_YEARS * year;
 
-            if (diff > twelveYear) {
+            if (diff > TWELVE_YEARS_IN_MILLIS) {
                 return ADULT;
-            } else if (diff > twoYear) {
+            } else if (diff > TWO_YEARS_IN_MILLIS) {
                 return CHILDREN;
-            } else if (diff < twoYear) {
+            } else if (diff < TWO_YEARS_IN_MILLIS) {
                 return INFANT;
             }
         }
@@ -355,15 +326,15 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             Date birth = FlightDateUtil.stringToDate(birthdate);
             long diff = now.getTime() - birth.getTime();
 
-            if (diff > (TWELVE_YEARS * YEAR)) {
+            if (diff > (TWELVE_YEARS_IN_MILLIS)) {
                 if (salutationId == TUAN) {
                     return R.drawable.ic_passenger_male;
                 } else {
                     return R.drawable.ic_passenger_female;
                 }
-            } else if (diff > (TWO_YEARS * YEAR)) {
+            } else if (diff > (TWO_YEARS_IN_MILLIS)) {
                 return R.drawable.ic_passenger_childreen;
-            } else if (diff < (TWO_YEARS * YEAR)) {
+            } else if (diff < (TWO_YEARS_IN_MILLIS)) {
                 return R.drawable.ic_passenger_infant;
             }
         }

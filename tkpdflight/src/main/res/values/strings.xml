@@ -331,7 +331,7 @@
     <string name="flight_booking_data_pemesan_sama_contact_label">Data penumpang sama dengan data pemesan.</string>
     <string name="flight_booking_passenger_saved_secondary_hint">Penumpang Baru</string>
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
-    <string name="pilih_penumpang_title">Pilih Penumpang</string>
+    <string name="flight_booking_list_passenger_title">Pilih Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
 </resources>

@@ -14,9 +14,9 @@ public class PassengerAttribute {
     @SerializedName("last_name")
     @Expose
     private String lastName;
-    @SerializedName("is_default")
+    @SerializedName("isDefault")
     @Expose
-    private boolean is_default;
+    private boolean isDefault;
     @SerializedName("passport_country")
     @Expose
     private String passportCountry;
@@ -52,12 +52,12 @@ public class PassengerAttribute {
         this.lastName = lastName;
     }
 
-    public boolean isIs_default() {
-        return is_default;
+    public boolean isDefault() {
+        return isDefault;
     }
 
-    public void setIs_default(boolean is_default) {
-        this.is_default = is_default;
+    public void setDefault(boolean aDefault) {
+        this.isDefault = aDefault;
     }
 
     public String getPassportCountry() {

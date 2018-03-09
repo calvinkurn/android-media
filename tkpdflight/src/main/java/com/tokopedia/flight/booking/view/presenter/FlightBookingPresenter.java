@@ -734,6 +734,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        getView().closePage();
                     }
 
                     @Override

@@ -22,12 +22,12 @@ import rx.functions.Func1;
  * @author by furqan on 28/02/18.
  */
 
-public class FlightPassengerDataListDBSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDB> {
+public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDB> {
 
     public static final String PASSENGER_ID = "PASSENGER_ID";
 
     @Inject
-    public FlightPassengerDataListDBSource() {
+    public FlightPassengerDataListDbSource() {
     }
 
     @Override

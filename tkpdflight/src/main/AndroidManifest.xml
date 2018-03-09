@@ -74,7 +74,7 @@
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingListPassengerActivity"
-            android:label="@string/activity_label_flight_nationality"
+            android:label="@string/flight_booking_list_passenger_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
