@@ -4,19 +4,16 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
@@ -39,8 +36,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
@@ -50,7 +45,7 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressShipmentFragment extends TkpdFragment
+public class MultipleAddressShipmentFragment extends BasePresenterFragment
         implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
@@ -62,11 +57,15 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Inject
     IMultipleAddressShipmentPresenter presenter;
 
-    private TextView totalPayment;
-
-    private MultipleAddressShipmentAdapter shipmentAdapter;
-    private PromoCodeAppliedData promoCodeAppliedData;
     private ICartShipmentActivity cartShipmentActivity;
+
+    private TextView totalPayment;
+    private MultipleAddressShipmentAdapter shipmentAdapter;
+
+    private PromoCodeAppliedData promoCodeAppliedData;
+    private CartShipmentAddressFormData cartShipmentAddressFormData;
+    private CartPromoSuggestion cartPromoSuggestion;
+
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                               PromoCodeAppliedData promoCodeAppliedData,
@@ -85,24 +84,59 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         return null;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initInjector();
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
         promoCodeAppliedData = getArguments().getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
+        cartShipmentAddressFormData = getArguments().getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
+        cartPromoSuggestion = getArguments().getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.multiple_address_shipment_fragment;
+    }
+
+    @Override
+    protected void initView(View view) {
         totalPayment = view.findViewById(R.id.total_payment_text_view);
         ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
         ViewGroup confirmButton = view.findViewById(R.id.confirm_payment_button);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
-                (CartPromoSuggestion) getArguments().getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION),
+                cartPromoSuggestion,
                 new CartItemPromoHolderData(),
-                presenter.initiateAdapterData(
-                        (CartShipmentAddressFormData) getArguments()
-                                .get(ARG_EXTRA_SHIPMENT_FORM_DATA)
-                ),
+                presenter.initiateAdapterData(cartShipmentAddressFormData),
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
@@ -110,13 +144,34 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         confirmButton.setOnClickListener(onConfirmedButtonClicked(
                 shipmentAdapter.getAddressDataList(),
                 shipmentAdapter.getPriceSummaryData()));
-        return view;
     }
 
-    private void initInjector() {
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
         MultipleAddressShipmentComponent component = DaggerMultipleAddressShipmentComponent
                 .builder().build();
         component.inject(this);
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
     }
 
     private void showCancelPickupBoothDialog(final int position) {
@@ -142,7 +197,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartShipmentActivity.checkoutCart(presenter.generateCheckoutRequest(addressDataList, data));
+                cartShipmentActivity.checkoutCart(
+                        presenter.generateCheckoutRequest(addressDataList, data)
+                );
             }
         };
 
@@ -163,22 +220,10 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     @Override
     public void onAllShipmentChosen(List<MultipleAddressShipmentAdapterData> adapterDataList) {
-        cartShipmentActivity.checkPromoCodeShipment(new Subscriber<CheckPromoCodeCartShipmentResult>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-
-            }
-        }, presenter.generateCheckPromoRequest(adapterDataList));
+        cartShipmentActivity.checkPromoCodeShipment(
+                presenter.checkPromoSubscription(),
+                presenter.generateCheckPromoRequest(adapterDataList)
+        );
     }
 
     @Override
