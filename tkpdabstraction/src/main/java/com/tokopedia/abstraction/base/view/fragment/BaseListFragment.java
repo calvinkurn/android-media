@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -101,8 +102,8 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
 
         if (callInitialLoadAutomatically()) {
-            showLoading();
             loadInitialData();
+            showLoading();
         }
     }
 
@@ -170,6 +171,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected void showLoading() {
         adapter.removeErrorNetwork();
+        adapter.setLoadingModel(getLoadingModel());
         adapter.showLoading();
         hideSnackBarRetry();
     }
@@ -304,4 +306,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return endlessRecyclerViewScrollListener.getCurrentPage();
     }
 
+    public LoadingModel getLoadingModel() {
+        return new LoadingModel();
+    }
 }

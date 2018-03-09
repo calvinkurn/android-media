@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:columnCount="2"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include android:layout_width="120dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_ms"
+        layout="@layout/include_shimmering_grid"
+        />
+
+    <include android:layout_width="120dp"
+        android:layout_margin="@dimen/margin_ms"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        layout="@layout/include_shimmering_grid"
+        />
+
+    <include android:layout_width="120dp"
+        android:layout_margin="@dimen/margin_ms"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        layout="@layout/include_shimmering_grid"
+        />
+
+    <include android:layout_width="120dp"
+        android:layout_margin="@dimen/margin_ms"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        layout="@layout/include_shimmering_grid"
+        />
+</GridLayout>
