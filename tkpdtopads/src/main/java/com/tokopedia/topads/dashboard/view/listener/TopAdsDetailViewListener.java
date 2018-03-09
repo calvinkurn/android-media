@@ -10,7 +10,7 @@ public interface TopAdsDetailViewListener<V extends Ad> extends TopAdsDetailList
 
     void onTurnOnAdSuccess(BulkAction dataResponseActionAds);
 
-    void onTurnOnAdError();
+    void onTurnOnAdError(Throwable e);
 
     void onTurnOffAdSuccess(BulkAction dataResponseActionAds);
 

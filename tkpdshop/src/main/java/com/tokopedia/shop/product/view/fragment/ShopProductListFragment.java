@@ -149,17 +149,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (!TextUtils.isEmpty(keyword))
+        if (!TextUtils.isEmpty(keyword)) {
             searchInputView.getSearchTextView().setText(keyword);
-
-        recyclerViews = view.findViewById(R.id.recycler_view);
-        chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
-        bottomActionView = view.findViewById(R.id.bottom_action_view);
-
+        }
         if (!TextUtils.isEmpty(etalaseName)) {
             chooseEtalaseLabelView.setContent(etalaseName);
         }
+
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
+        recyclerViews = view.findViewById(R.id.recycler_view);
+        chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
 
         setBottomActionViewImage(currentImgBottomNav);
         RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
@@ -247,9 +247,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
-        return new EndlessLayoutManagerListener(){
-            public RecyclerView.LayoutManager getCurrentLayoutManager(){
+    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener() {
+        return new EndlessLayoutManagerListener() {
+            public RecyclerView.LayoutManager getCurrentLayoutManager() {
                 return recyclerViews.getLayoutManager();
             }
         };
@@ -265,7 +265,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        if(this.page != null){
+        if (this.page != null) {
             page = Integer.valueOf(this.page);
         }
         shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
@@ -313,9 +313,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onSuccessGetShopInfo(String shopName) {
         ActionBar actionBar = getActivity().getActionBar();
-
         if (actionBar != null)
-            actionBar.setTitle(shopName);
+            actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
     }
 
     @Override
@@ -326,8 +325,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSearchTextChanged(String s) {
-        keyword = s;
-        loadInitialData();
+        if (TextUtils.isEmpty(s)) {
+            keyword = s;
+            loadInitialData();
+        }
     }
 
     @Override

@@ -46,6 +46,7 @@
     <string name="shop_info_success_percentage">%1$s%%</string>
     <string name="shop_info_label_default_content">-</string>
     <string name="shop_info_label_choose_etalase">Pilih Etalase</string>
+    <string name="shop_product_search_hint">Cari produk di toko ini</string>
 
     <string name="product_label_variant">Varian</string>
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
