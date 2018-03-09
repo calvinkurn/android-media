@@ -35,6 +35,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -45,6 +46,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
@@ -82,12 +84,15 @@ import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.tokocash.topup.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -187,6 +192,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProduct
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
+import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
+import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
@@ -195,7 +203,9 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
+import com.tokopedia.tokocash.WalletUserSession;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -229,7 +239,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, KolRouter {
+        DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, com.tokopedia.tokocash.TokoCashRouter,
+        DigitalRouter, KolRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -247,6 +258,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
+    private TokoCashComponent tokoCashComponent;
 
     private CacheManager cacheManager;
     private UserSession userSession;
@@ -303,6 +315,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         .build();
         daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
                 .sessionComponent(sessionComponent);
+
+        tokoCashComponent = DaggerTokoCashComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
+                .build();
 
         FeedPlusComponent feedPlusComponent =
                 DaggerFeedPlusComponent.builder()
@@ -1130,8 +1146,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToHistoryTokoCash(Context context) {
-        return HistoryTokoCashActivity.newInstance(context);
+    public WalletUserSession getTokoCashSession() {
+        return new WalletUserSessionImpl(this);
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return SimpleWebViewActivity.getIntentWithTitle(context, url, title);
+    }
+
+    @Override
+    public String getUserEmailProfil() {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        return sessionHandler.getEmail();
+    }
+
+    @Override
+    public Fragment getTopupTokoCashFragment() {
+        return TopupTokoCashFragment.newInstance();
     }
 
     @Override
@@ -1335,6 +1367,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
+        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+                .processGetBalance();
+    }
+
+    @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
@@ -1380,6 +1418,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
+    }
+
+    @Override
+    public Observable<CashBackData> getPendingCashbackUseCase(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
+        return tokoCashComponent.getPendingCasbackUseCase()
+                .createObservable(requestParams)
+                .map(new TokoCashPendingCashbackMapper());
     }
 
     @Override
