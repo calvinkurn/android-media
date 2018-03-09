@@ -32,12 +32,10 @@
             app:spinner_decimal_show_counter_button="false"
             app:spinner_decimal_values="@array/product_weight_values" />
 
-        <com.tokopedia.design.text.SpinnerTextView
-            android:id="@+id/spinner_text_view_insurance"
+        <com.tokopedia.seller.common.widget.LabelSwitch
+            android:id="@+id/label_switch_insurance"
             style="@style/LabelLayout"
-            app:spinner_entries="@array/product_insurance_entries"
-            app:spinner_hint="@string/product_label_insurance"
-            app:spinner_values="@array/product_insurance_values" />
+            app:ls_title="@string/product_label_delivery_insurance" />
 
         <com.tokopedia.seller.common.widget.LabelSwitch
             android:id="@+id/label_switch_free_return"

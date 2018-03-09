@@ -10,8 +10,7 @@ import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.ProductConditionTypeDef;
 import com.tokopedia.seller.product.edit.constant.WeightUnitTypeDef;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
@@ -62,26 +61,18 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
 
             productViewModel.setProductDescription(instagramDescList.get(i) == null? "": instagramDescList.get(i));
 
-            ProductPhotoListDomainModel productPhotoListDomainModel = new ProductPhotoListDomainModel();
-            productPhotoListDomainModel.setProductDefaultPicture(0);
-            ArrayList<ImageProductInputDomainModel> imageProductInputDomainModelArrayList = new ArrayList<>();
-            ImageProductInputDomainModel imageProductInputDomainModel = new ImageProductInputDomainModel();
-            imageProductInputDomainModel.setImagePath(localPath);
-            imageProductInputDomainModelArrayList.add(imageProductInputDomainModel);
-            productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
-//            productViewModel.setProductPhotos(productPhotoListDomainModel);
+            List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
+            ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
+            productPictureViewModel.setFilePath(localPath);
+            productPictureViewModel.setId("");
+
+            productPictureViewModelList.add(productPictureViewModel);
+            productViewModel.setProductPictureViewModelList(productPictureViewModelList);
 
             productViewModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
             productViewModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
 
-//            productViewModel.setProductUploadTo(UploadToTypeDef.TYPE_NOT_ACTIVE);
-//            productViewModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
-
-//            productViewModel.setProductInvenageSwitch(
-//                    ProductStockTypeDef.TYPE_NOT_ACTIVE);
             productViewModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
-
-//            productViewModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);
             productViewModels.add(productViewModel);
         }
         RequestParams params = RequestParams.create();

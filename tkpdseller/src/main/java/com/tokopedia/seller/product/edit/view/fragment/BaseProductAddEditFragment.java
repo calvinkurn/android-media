@@ -464,7 +464,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDescriptionViewHolder.renderData(currentProductViewModel);
         productDeliveryInfoViewHolder.renderData(currentProductViewModel);
 
-        onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
+        if (currentProductViewModel.getProductCategory()!= null) {
+            onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
+        }
     }
 
     // Presenter listener part

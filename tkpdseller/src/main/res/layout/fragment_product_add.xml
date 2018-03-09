@@ -49,7 +49,7 @@
                 style="@style/Button.Submit.White.Border"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
-                android:text="@string/product_label_save_and_add"
+                android:text="@string/product_label_upload_and_add_new_product"
                 android:textColor="@color/font_black_secondary_54" />
 
             <Button
@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:text="@string/product_label_save" />
+                android:text="@string/product_label_upload_this_product" />
 
         </LinearLayout>
 

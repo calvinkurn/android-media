@@ -150,14 +150,18 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void renderData(ProductViewModel model) {
-        setName(model.getProductName());
-        setCategoryId(model.getProductCategory().getCategoryId());
+        setName(model.getProductName(), model.isProductNameEditable());
+        if (model.getProductCategory()!= null) {
+            setCategoryId(model.getProductCategory().getCategoryId());
+        } else {
+            setCategoryId(DEFAULT_CATEGORY_ID);
+        }
         if (model.getProductCatalog() == null || model.getProductCatalog().getCatalogId() <= 0) {
             setCatalog(-1, null);
         } else {
             setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
         }
-        if (model.getProductEtalase().getEtalaseId() > 0) {
+        if (model.getProductEtalase()!= null && model.getProductEtalase().getEtalaseId() > 0) {
             setEtalaseId(model.getProductEtalase().getEtalaseId());
             setEtalaseName(model.getProductEtalase().getEtalaseName());
         } else {
@@ -239,9 +243,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return nameEditText.getText().toString().trim();
     }
 
-    public void setName(String name) {
+    public void setName(String name, boolean isNameEditable) {
         nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
         nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
+        nameEditText.setEnabled(isNameEditable);
     }
 
     public String getCatalogName() {

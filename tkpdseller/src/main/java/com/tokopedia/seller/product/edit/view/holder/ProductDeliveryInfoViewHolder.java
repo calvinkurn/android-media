@@ -11,12 +11,9 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
-import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
-import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
-import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -28,13 +25,13 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     private Listener listener;
 
     private SpinnerCounterInputView weightSpinnerCounterInputView;
-    private SpinnerTextView insuranceSpinnerTextView;
 
     private LabelSwitch freeReturnsSwitch;
+    private LabelSwitch insuranceSwitch;
 
     public ProductDeliveryInfoViewHolder(View view, Listener listener) {
         weightSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_weight);
-        insuranceSpinnerTextView = view.findViewById(R.id.spinner_text_view_insurance);
+        insuranceSwitch = view.findViewById(R.id.label_switch_insurance);
         freeReturnsSwitch = view.findViewById(R.id.label_switch_free_return);
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
@@ -93,27 +90,27 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         listener.onFreeReturnChecked(freeReturnsSwitch.isChecked());
     }
 
-    public int getWeightUnit() {
+    private int getWeightUnit() {
         return Integer.parseInt(weightSpinnerCounterInputView.getSpinnerValue());
     }
 
-    public void setWeightUnit(int unit) {
+    private void setWeightUnit(int unit) {
         weightSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public int getWeightValue() {
+    private int getWeightValue() {
         return (int) weightSpinnerCounterInputView.getCounterValue();
     }
 
-    public void setWeightValue(int value) {
+    private void setWeightValue(int value) {
         weightSpinnerCounterInputView.setCounterValue(value);
     }
 
-    public boolean isFreeReturns() {
-        return getFreeReturns() == FreeReturnTypeDef.TYPE_ACTIVE;
+    private boolean isFreeReturns() {
+        return freeReturnsSwitch.getVisibility() == View.VISIBLE && freeReturnsSwitch.isChecked();
     }
 
-    public void setFreeReturn(boolean isFreeReturn) {
+    private void setFreeReturn(boolean isFreeReturn) {
         if (isFreeReturn) {
             freeReturnsSwitch.setChecked(true);
         } else {
@@ -121,23 +118,15 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         }
     }
 
-    public boolean isMustInsurance() {
-        return Integer.valueOf(insuranceSpinnerTextView.getSpinnerValue()) == ProductInsuranceValueTypeDef.TYPE_YES;
+    private boolean isMustInsurance() {
+        return insuranceSwitch.isChecked();
     }
 
     public void setInsurance(boolean isMustInsurance) {
         if (isMustInsurance) {
-            insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_YES));
+            insuranceSwitch.setChecked(true);
         } else {
-            insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_OPTIONAL));
-        }
-    }
-
-    public int getFreeReturns() {
-        if (freeReturnsSwitch.getVisibility() != View.VISIBLE || !freeReturnsSwitch.isChecked()) {
-            return Integer.parseInt(freeReturnsSwitch.getContext().getString(R.string.product_free_return_values_inactive));
-        } else {
-            return Integer.parseInt(freeReturnsSwitch.getContext().getString(R.string.product_free_return_values_active));
+            insuranceSwitch.setChecked(false);
         }
     }
 
