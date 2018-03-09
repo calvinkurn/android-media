@@ -110,6 +110,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                 Bundle savedInstanceState) {
+        CommonUtils.dumper("Load URL: " + url);
         if(overrideUrl(decode(url))) {
             getActivity().finish();
             return null;
@@ -120,7 +121,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        CommonUtils.dumper("Load URL: " + url);
         View fragmentView = inflater.inflate(
                 R.layout.fragment_fragment_general_web_view, container, false
         );
@@ -231,7 +231,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
                 || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(".pl")) {
-            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
+            switch (DeepLinkChecker.getDeepLinkType(url)) {
                 case DeepLinkChecker.CATEGORY:
                     DeepLinkChecker.openCategory(url, getActivity());
                     return true;
@@ -249,6 +250,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     return true;
                 case DeepLinkChecker.HOME:
                     DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    return true;
+                case DeepLinkChecker.TOKOPOINT:
+                    CommonUtils.dumper("tokopoint: " + url);
+                    DeepLinkChecker.openTokoPoint(getActivity(), url);
                     return true;
                 default:
                     return false;
