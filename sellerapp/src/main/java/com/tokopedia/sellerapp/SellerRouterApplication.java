@@ -29,6 +29,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -919,6 +920,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
         return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
+    }
+
+    @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
+        return null;
     }
 
     @Override

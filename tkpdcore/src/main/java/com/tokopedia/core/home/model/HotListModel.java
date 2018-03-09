@@ -10,6 +10,8 @@ import com.tokopedia.core.var.TkpdState;
  * Created by m.normansyah on 28/10/2015.
  */
 public class HotListModel extends RecyclerViewItem{
+    @SerializedName("id")
+    String hotListId;
     @SerializedName("title")
     String hotListName;
     @SerializedName("price_start")
@@ -21,9 +23,19 @@ public class HotListModel extends RecyclerViewItem{
     @SerializedName("url")
     String hotListProductUrl;
     String hotListKey;
+    private int trackerEnhancePosition;
+    private String trackerEnhanceName;
 
     public HotListModel(){
         setType(TkpdState.RecyclerView.VIEW_STANDARD);
+    }
+
+    public String getHotListId() {
+        return hotListId;
+    }
+
+    public void setHotListId(String hotListId) {
+        this.hotListId = hotListId;
     }
 
     public String getHotListImage() {
@@ -124,6 +136,9 @@ public class HotListModel extends RecyclerViewItem{
         dest.writeString(this.hotListBiggerImage);
         dest.writeString(this.hotListProductUrl);
         dest.writeString(this.hotListKey);
+        dest.writeString(this.hotListId);
+        dest.writeString(this.trackerEnhanceName);
+        dest.writeInt(this.trackerEnhancePosition);
     }
 
     protected HotListModel(Parcel in) {
@@ -134,6 +149,9 @@ public class HotListModel extends RecyclerViewItem{
         this.hotListBiggerImage = in.readString();
         this.hotListProductUrl = in.readString();
         this.hotListKey = in.readString();
+        this.hotListId = in.readString();
+        this.trackerEnhanceName = in.readString();
+        this.trackerEnhancePosition = in.readInt();
     }
 
     public static final Creator<HotListModel> CREATOR = new Creator<HotListModel>() {
@@ -147,4 +165,20 @@ public class HotListModel extends RecyclerViewItem{
             return new HotListModel[size];
         }
     };
+
+    public void setTrackerEnhancePosition(int trackerEnhancePosition) {
+        this.trackerEnhancePosition = trackerEnhancePosition;
+    }
+
+    public int getTrackerEnhancePosition() {
+        return trackerEnhancePosition;
+    }
+
+    public void setTrackerEnhanceName(String trackerEnhanceName) {
+        this.trackerEnhanceName = trackerEnhanceName;
+    }
+
+    public String getTrackerEnhanceName() {
+        return trackerEnhanceName;
+    }
 }
