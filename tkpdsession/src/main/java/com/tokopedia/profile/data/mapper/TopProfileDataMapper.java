@@ -21,6 +21,9 @@ import rx.functions.Func1;
 
 public class TopProfileDataMapper
         implements Func1<Response<GraphqlResponse<ProfileGraphql>>, TopProfileViewModel> {
+    private static final String ERROR_SERVER = "Server error";
+    private static final String ERROR_NETWORK = "Network call failed";
+    private static final String ERROR_EMPTY_RESPONSE = "Response is empty";
 
     @Inject
     public TopProfileDataMapper() {
@@ -95,13 +98,13 @@ public class TopProfileDataMapper
                         ())) {
                     return graphqlResponse.body().getData();
                 } else {
-                    throw new RuntimeException("Server error");
+                    throw new RuntimeException(ERROR_SERVER);
                 }
             } else {
-                throw new RuntimeException("Network call failed");
+                throw new RuntimeException(ERROR_NETWORK);
             }
         } else {
-            throw new RuntimeException("Response is empty");
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
         }
     }
 

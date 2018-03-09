@@ -22,6 +22,9 @@ import rx.functions.Func1;
 
 public class GetProfileKolDataMapper
         implements Func1<Response<GraphqlResponse<GetUserKolPostResponse>>, KolProfileModel> {
+    private static final String ERROR_SERVER = "Server error";
+    private static final String ERROR_NETWORK = "Network call failed";
+    private static final String ERROR_EMPTY_RESPONSE = "Response is empty";
 
     @Inject
     public GetProfileKolDataMapper() {
@@ -73,13 +76,13 @@ public class GetProfileKolDataMapper
                 if (TextUtils.isEmpty(graphqlResponse.body().getData().postKol.error)) {
                     return graphqlResponse.body().getData().postKol;
                 } else {
-                    throw new RuntimeException("Server error");
+                    throw new RuntimeException(ERROR_SERVER);
                 }
             } else {
-                throw new RuntimeException("Network call failed");
+                throw new RuntimeException(ERROR_NETWORK);
             }
         } else {
-            throw new RuntimeException("Response is empty");
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
         }
     }
 
