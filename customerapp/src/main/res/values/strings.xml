@@ -61,12 +61,19 @@
     <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
     <string name="digital_widget_title">Produk Digital</string>
 
-    <string name="title_scan_qr">Scan Kode QR</string>
-
     <!--For QR Code-->
-
+    <string name="title_scan_qr">Scan Kode QR</string>
+    <string name="title_dialog_wrong_scan">Oops!</string>
+    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="btn_dialog_wrong_scan">OK</string>
+    <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+    <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
     <string name="error_actiivty_open_permission">Gagal membuka scan kode QR</string>
 
+    <!-- Tokocash activation -->
+    <string name="title_activation">Aktivasi TokoCash</string>
+    <string name="applick_tokocash_activation">tokopedia://wallet/activation</string>
+    <string name="label_tokocash">TokoCash</string>
 
     <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
