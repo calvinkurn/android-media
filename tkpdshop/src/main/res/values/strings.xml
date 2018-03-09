@@ -70,6 +70,7 @@
     </string>
     <string name="shop_reputation_desc">Nilai toko yang diberikan pembeli</string>
     <string name="dashboard_x_points">%1$s poin</string>
+    <string name="total_point_format">(%1$s)</string>
     <string name="shop_reputation_label">Reputasi Toko</string>
     <string name="product_quality_label">Kualitas Produk</string>
     <string name="shop_speed_label">"Kecepatan Toko"</string>
