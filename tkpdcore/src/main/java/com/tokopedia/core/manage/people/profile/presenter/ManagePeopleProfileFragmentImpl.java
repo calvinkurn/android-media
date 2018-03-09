@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.manage.people.profile.datamanager.DataManager;
@@ -181,8 +182,8 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
     }
 
     @Override
-    public void setOnAddEmailClick(Context click) {
-        
+    public void setOnAddEmailClick(Context context) {
+        ((TkpdCoreRouter)context).getAddEmailIntent(context);
     }
 
     @Override

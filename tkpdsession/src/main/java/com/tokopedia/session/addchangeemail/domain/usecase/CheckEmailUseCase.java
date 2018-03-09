@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.session.addchangeemail.data.source.CheckEmailSource;
+import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
 import com.tokopedia.session.addchangeemail.view.viewmodel.CheckEmailViewModel;
 
 import rx.Observable;
@@ -16,18 +16,18 @@ import rx.Observable;
 public class CheckEmailUseCase extends UseCase<CheckEmailViewModel> {
     private final static String PARAM_EMAIL = "email";
 
-    private final CheckEmailSource checkEmailSource;
+    private final AddEmailSource addEmailSource;
 
     public CheckEmailUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             CheckEmailSource checkEmailSource) {
+                             AddEmailSource addEmailSource) {
         super(threadExecutor, postExecutionThread);
-        this.checkEmailSource = checkEmailSource;
+        this.addEmailSource = addEmailSource;
     }
 
     @Override
     public Observable<CheckEmailViewModel> createObservable(RequestParams requestParams) {
-        return checkEmailSource.checkEmail(requestParams);
+        return addEmailSource.checkEmail(requestParams);
     }
 
     public static RequestParams getParams(String email) {

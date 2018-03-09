@@ -2,7 +2,7 @@ package com.tokopedia.session.addchangeemail.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailVerificationListener;
-import com.tokopedia.session.addchangeemail.view.viewmodel.AddEmailViewModel;
+import com.tokopedia.session.addchangeemail.view.viewmodel.RequestVerificationViewModel;
 
 import rx.Subscriber;
 
@@ -10,11 +10,11 @@ import rx.Subscriber;
  * @author by yfsx on 09/03/18.
  */
 
-public class AddEmailSubscriber extends Subscriber<AddEmailViewModel> {
+public class RequestVerificationSubscriber extends Subscriber<RequestVerificationViewModel> {
 
     private AddEmailVerificationListener.View mainView;
 
-    public AddEmailSubscriber(AddEmailVerificationListener.View mainView) {
+    public RequestVerificationSubscriber(AddEmailVerificationListener.View mainView) {
         this.mainView = mainView;
     }
 
@@ -26,12 +26,12 @@ public class AddEmailSubscriber extends Subscriber<AddEmailViewModel> {
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.onErrorVerify(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
+        mainView.onErrorRequest(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
     }
 
     @Override
-    public void onNext(AddEmailViewModel addEmailViewModel) {
+    public void onNext(RequestVerificationViewModel requestVerificationViewModel) {
         mainView.dismissLoading();
-        mainView.onSuccessVerify();
+        mainView.onSuccessRequest();
     }
 }

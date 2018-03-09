@@ -1,5 +1,7 @@
 package com.tokopedia.session.addchangeemail.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangeemail.view.activity.AddEmailVerificationActivity;
 import com.tokopedia.session.addchangeemail.view.listener.AddEmailListener;
 import com.tokopedia.session.addchangeemail.view.presenter.AddEmailPresenter;
 
@@ -30,6 +33,8 @@ import javax.inject.Inject;
  */
 
 public class AddEmailFragment extends BaseDaggerFragment implements AddEmailListener.View {
+
+    private static final int REQUEST_VERIFY_EMAIL = 1234;
 
     private TkpdHintTextInputLayout wrapperEmail;
     private EditText etEmail;
@@ -112,7 +117,8 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     @Override
     public void onSuccessCheckEmail() {
         //intent to verification email
-
+        Intent intent = AddEmailVerificationActivity.newInstance(getActivity(), etEmail.getText().toString());
+        startActivityForResult(intent, REQUEST_VERIFY_EMAIL);
     }
 
     @Override
@@ -181,6 +187,17 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
             tvMessage.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_VERIFY_EMAIL) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
         }
     }
 }

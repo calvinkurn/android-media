@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,10 +24,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.analytics.OTPAnalytics;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -131,16 +126,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
     }
 
     @Override
     protected String getScreenName() {
-        if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreen())) {
-            return viewModel.getAppScreen();
-        } else {
-            return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
-        }
+        return null;
     }
 
     @Nullable
@@ -197,8 +187,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == MAX_INPUT_OTP) {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking
-                            (viewModel.getType()));
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
                 }
@@ -209,7 +197,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking(viewModel.getType()));
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
@@ -375,9 +362,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void onClick(View v) {
                 inputOtp.setText("");
                 removeErrorOtp();
-                UnifyTracking.eventTracking(
-                        LoginPhoneNumberAnalytics.getResendVerificationTracking(
-                                viewModel.getType()));
                 presenter.requestOTP(viewModel);
             }
         });

@@ -166,4 +166,5 @@ public interface TkpdCoreRouter {
 
     Observable<TokoCashData> getTokoCashBalance();
 
+    Intent getAddEmailIntent(Context context);
 }
