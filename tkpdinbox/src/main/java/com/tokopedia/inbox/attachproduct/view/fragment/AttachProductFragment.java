@@ -190,7 +190,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void showErrorMessage(Throwable throwable) {
-        showGetListError(throwable);
+        throwable.printStackTrace();
+        NetworkErrorHelper.showSnackbar(getActivity());
     }
 
     @Override

@@ -16,17 +16,6 @@ import dagger.Provides;
 
 @Module
 public class AttachProductModule {
-
-    @Provides
-    public static TkpdResponseToAttachProductDomainModelMapper provideTkpdResponseMapper(){
-        return new TkpdResponseToAttachProductDomainModelMapper();
-    }
-
-    @Provides
-    public static DataModelToDomainModelMapper provideDataModelMapper(){
-        return new DataModelToDomainModelMapper();
-    }
-
     @Provides
     public static GetShopProductService provideShopService(){
         return new GetShopProductService();

@@ -39,7 +39,7 @@ public class AttachProductUseCase extends UseCase<List<AttachProductItemViewMode
         RequestParams param = RequestParams.create();
         param.putString(KEYWORD_KEY,query);
         param.putString(SHOP_ID_KEY,shopId);
-        param.putInt(PAGE_KEY,page);
+        param.putString(PAGE_KEY,String.valueOf(page));
         return param;
     }
 }

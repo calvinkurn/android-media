@@ -27,7 +27,7 @@ public class AttachProductGetProductListSubscriber extends Subscriber<List<Attac
 
     @Override
     public void onError(Throwable throwable) {
-
+        view.showErrorMessage(throwable);
     }
 
     @Override

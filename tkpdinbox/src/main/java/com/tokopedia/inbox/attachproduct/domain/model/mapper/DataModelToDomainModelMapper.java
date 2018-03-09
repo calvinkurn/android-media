@@ -8,6 +8,8 @@ import com.tokopedia.inbox.attachproduct.view.viewmodel.AttachProductItemViewMod
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -15,6 +17,10 @@ import rx.functions.Func1;
  */
 
 public class DataModelToDomainModelMapper implements Func1<AttachProductDomainModel, List<AttachProductItemViewModel>> {
+    @Inject
+    public DataModelToDomainModelMapper() {
+    }
+
     @Override
     public List<AttachProductItemViewModel> call(AttachProductDomainModel attachProductDomainModel) {
         ArrayList<AttachProductItemViewModel> arrayList = new ArrayList<>();

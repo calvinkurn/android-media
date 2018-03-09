@@ -4,6 +4,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.attachproduct.data.model.AttachProductAPIResponseWrapper;
 import com.tokopedia.inbox.attachproduct.domain.model.AttachProductDomainModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -12,6 +14,10 @@ import rx.functions.Func1;
  */
 
 public class TkpdResponseToAttachProductDomainModelMapper implements Func1<Response<TkpdResponse>, AttachProductDomainModel> {
+    @Inject
+    public TkpdResponseToAttachProductDomainModelMapper() {
+    }
+
     @Override
     public AttachProductDomainModel call(Response<TkpdResponse> tkpdResponseResponse) {
         AttachProductDomainModel domainModel = new AttachProductDomainModel();

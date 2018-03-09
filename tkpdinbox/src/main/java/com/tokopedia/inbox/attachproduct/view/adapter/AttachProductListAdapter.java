@@ -52,14 +52,15 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
 
     public void itemChecked(boolean isChecked,int position){
         AttachProductItemViewModel product = getDataRow(position);
-        int productId = product.getProductId();
-        if(isChecked) {
-            productIds.add(productId);
-            addToCheckedDataList(product);
-        }
-        else {
-            productIds.remove(productId);
-            removeFromCheckedDataList(productId);
+        if(product != null) {
+            int productId = product.getProductId();
+            if (isChecked) {
+                productIds.add(productId);
+                addToCheckedDataList(product);
+            } else {
+                productIds.remove(productId);
+                removeFromCheckedDataList(productId);
+            }
         }
     }
 
