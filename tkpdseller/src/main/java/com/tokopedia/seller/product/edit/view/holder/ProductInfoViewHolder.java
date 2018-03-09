@@ -151,7 +151,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     @Override
     public void renderData(ProductViewModel model) {
         setName(model.getProductName());
-        setCategoryId(model.getProductCategory().getCategoryId());
+        if (model.getProductCategory()!= null) {
+            setCategoryId(model.getProductCategory().getCategoryId());
+        } else {
+            setCategoryId(0);
+        }
         if (model.getProductCatalog() == null || model.getProductCatalog().getCatalogId() <= 0) {
             setCatalog(-1, null);
         } else {
