@@ -6,4 +6,8 @@
     <dimen name="empty_kol_img_width">200dp</dimen>
     <dimen name="empty_kol_img_height">120dp</dimen>
     <dimen name="empty_kol_padding">50dp</dimen>
+
+    <dimen name="kol_post_shadow_size">14dp</dimen>
+    <dimen name="kol_post_badge_size">14dp</dimen>
+    <dimen name="kol_post_icon_size">20dp</dimen>
 </resources>

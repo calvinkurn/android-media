@@ -9,7 +9,7 @@
     <View
         android:id="@+id/top_shadow"
         android:layout_width="match_parent"
-        android:layout_height="14dp"
+        android:layout_height="@dimen/kol_post_shadow_size"
         android:visibility="visible"
         android:background="@drawable/shadow_bottom"/>
 
@@ -110,8 +110,8 @@
 
                 <ImageView
                     android:id="@+id/like_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/kol_post_icon_size"
+                    android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/margin_small"
                     app:srcCompat="@drawable/ic_thumb" />
@@ -145,8 +145,8 @@
 
                 <ImageView
                     android:id="@+id/comment_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/kol_post_icon_size"
+                    android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/margin_small"
                     app:srcCompat="@drawable/ic_comment" />
