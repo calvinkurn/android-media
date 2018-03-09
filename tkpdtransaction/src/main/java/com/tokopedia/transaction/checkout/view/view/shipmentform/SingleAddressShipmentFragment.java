@@ -380,10 +380,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            Intent intent = ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(), "", true);
-
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+            );
         }
     }
 
@@ -507,49 +509,107 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
-            switch (resultCode) {
-                case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
-                    RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+            onResultFromRequestCodeAddressOptions(resultCode, data);
+        } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT
+                || requestCode == REQUEST_CODE_SHIPMENT_DETAIL) && resultCode == Activity.RESULT_OK) {
+            onResultFromRequestCodeCourierOptions(requestCode, data);
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            onResultFromRequestCodeLoyalty(resultCode, data);
+        }
+    }
 
-                    updateSelectedAddress(selectedAddress);
-                    mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
-                    break;
+    private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String voucherCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                String voucherMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                long voucherDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(voucherCode)
+                        .description(voucherMessage)
+                        .amount((int) voucherDiscountAmount)
+                        .build();
+                CartPromo cartPromo = new CartPromo();
+                cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
-                case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-                    Intent intent = new Intent();
-                    for (Object object : mShipmentDataList) {
-                        if (object instanceof RecipientAddressModel) {
-                            intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-                                    (RecipientAddressModel) object);
-                        }
-                    }
-                    cartShipmentActivityListener.closeWithResult(
-                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
-                    break;
+                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
+            }
+        } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String couponTitle = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                String couponMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                String couponCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                long couponDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(couponCode)
+                        .couponTitle(couponTitle)
+                        .description(couponMessage)
+                        .amount((int) couponDiscountAmount)
+                        .build();
+                CartPromo cartPromo = new CartPromo();
+                cartPromo.setPromoCouponType(
+                        couponTitle, couponCode, couponMessage, couponDiscountAmount
+                );
 
-                default:
-                    break;
+                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
             }
         }
+    }
 
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CHOOSE_PICKUP_POINT:
-                    Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
-                    mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
-                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
-                    break;
+    private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHOOSE_PICKUP_POINT:
+                Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                break;
 
-                case REQUEST_CODE_SHIPMENT_DETAIL:
-                    ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    int position = data.getIntExtra(EXTRA_POSITION, 0);
-                    mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
-                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
+            case REQUEST_CODE_SHIPMENT_DETAIL:
+                ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
+                int position = data.getIntExtra(EXTRA_POSITION, 0);
+                mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
 
-                default:
-                    break;
-            }
+            default:
+                break;
+        }
+    }
+
+    private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
+        switch (resultCode) {
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+                RecipientAddressModel selectedAddress = data.getParcelableExtra(
+                        CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+
+                updateSelectedAddress(selectedAddress);
+                mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
+                break;
+
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                Intent intent = new Intent();
+                for (Object object : mShipmentDataList) {
+                    if (object instanceof RecipientAddressModel) {
+                        intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                                (RecipientAddressModel) object);
+                    }
+                }
+                cartShipmentActivityListener.closeWithResult(
+                        CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                break;
+
+            default:
+                break;
         }
     }
 

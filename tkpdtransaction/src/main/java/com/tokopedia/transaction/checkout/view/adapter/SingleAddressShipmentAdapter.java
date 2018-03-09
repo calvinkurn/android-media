@@ -129,6 +129,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         return super.getItemViewType(position);
     }
 
+    public void updateItemPromoVoucher(CartPromo cartPromo) {
+        for (int i = 0; i < mShipmentDataList.size(); i++) {
+            Object object = mShipmentDataList.get(i);
+            if (object instanceof CartPromo) {
+                mShipmentDataList.set(i, cartPromo);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
     public interface ActionListener {
 
         void onAddOrChangeAddress();

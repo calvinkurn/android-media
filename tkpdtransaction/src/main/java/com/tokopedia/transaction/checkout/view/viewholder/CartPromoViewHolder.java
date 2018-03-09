@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.compoundview.VoucherPromoView;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 
 /**
@@ -14,7 +15,7 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 
 public class CartPromoViewHolder extends RecyclerView.ViewHolder {
 
-    private VoucherCartHachikoView mVoucherCartHachikoView;
+    private VoucherPromoView mVoucherCartHachikoView;
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
 
     public CartPromoViewHolder(View itemView,
