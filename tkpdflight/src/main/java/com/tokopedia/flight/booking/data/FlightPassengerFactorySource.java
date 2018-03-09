@@ -4,7 +4,7 @@ import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloud
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.db.FlightPassengerDataListDbSource;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +31,14 @@ public class FlightPassengerFactorySource {
         this.flightSavedPassengerDataListCloudSource = flightSavedPassengerDataListCloudSource;
     }
 
-    public Observable<List<FlightPassengerDB>> getPassengerList(String passengerId) {
+    public Observable<List<FlightPassengerDb>> getPassengerList(String passengerId) {
         final HashMap<String, Object> params = new HashMap<>();
         params.put(FlightPassengerDataListDbSource.PASSENGER_ID, passengerId);
 
         return flightPassengerDataListDbSource.isDataAvailable()
-                .flatMap(new Func1<Boolean, Observable<List<FlightPassengerDB>>>() {
+                .flatMap(new Func1<Boolean, Observable<List<FlightPassengerDb>>>() {
                     @Override
-                    public Observable<List<FlightPassengerDB>> call(Boolean aBoolean) {
+                    public Observable<List<FlightPassengerDb>> call(Boolean aBoolean) {
                         if (aBoolean) {
                             return flightPassengerDataListDbSource.getData(params);
                         } else {
@@ -60,7 +60,7 @@ public class FlightPassengerFactorySource {
         return flightSavedPassengerDataListCloudSource.deletePassenger(deletePassengerRequest, idempotencyKey);
     }
 
-    private Observable<List<FlightPassengerDB>> getPassengerListFromCloud() {
+    private Observable<List<FlightPassengerDb>> getPassengerListFromCloud() {
         return flightPassengerDataListDbSource.deleteAll()
                 .flatMap(new Func1<Boolean, Observable<List<SavedPassengerEntity>>>() {
                     @Override
@@ -74,9 +74,9 @@ public class FlightPassengerFactorySource {
                         return flightPassengerDataListDbSource.insertAll(savedPassengerEntities);
                     }
                 })
-                .flatMap(new Func1<Boolean, Observable<List<FlightPassengerDB>>>() {
+                .flatMap(new Func1<Boolean, Observable<List<FlightPassengerDb>>>() {
                     @Override
-                    public Observable<List<FlightPassengerDB>> call(Boolean aBoolean) {
+                    public Observable<List<FlightPassengerDb>> call(Boolean aBoolean) {
                         return flightPassengerDataListDbSource.getData(null);
                     }
                 });

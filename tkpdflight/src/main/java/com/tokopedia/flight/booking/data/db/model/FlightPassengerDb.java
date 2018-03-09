@@ -17,7 +17,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
  */
 
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class FlightPassengerDB extends BaseModel implements Parcelable {
+public class FlightPassengerDb extends BaseModel implements Parcelable {
     @PrimaryKey
     @Column(name = "id")
     String passengerId;
@@ -32,10 +32,10 @@ public class FlightPassengerDB extends BaseModel implements Parcelable {
     @Column(name = "is_selected")
     int isSelected;
 
-    public FlightPassengerDB() {
+    public FlightPassengerDb() {
     }
 
-    public FlightPassengerDB(SavedPassengerEntity savedPassengerEntity) {
+    public FlightPassengerDb(SavedPassengerEntity savedPassengerEntity) {
         this.passengerId = savedPassengerEntity.getId();
         this.firstName = savedPassengerEntity.getPassengerAttribute().getFirstName();
         this.lastName = savedPassengerEntity.getPassengerAttribute().getLastName();
@@ -53,7 +53,7 @@ public class FlightPassengerDB extends BaseModel implements Parcelable {
     }
 
 
-    protected FlightPassengerDB(Parcel in) {
+    protected FlightPassengerDb(Parcel in) {
         passengerId = in.readString();
         firstName = in.readString();
         lastName = in.readString();
@@ -62,15 +62,15 @@ public class FlightPassengerDB extends BaseModel implements Parcelable {
         isSelected = in.readInt();
     }
 
-    public static final Creator<FlightPassengerDB> CREATOR = new Creator<FlightPassengerDB>() {
+    public static final Creator<FlightPassengerDb> CREATOR = new Creator<FlightPassengerDb>() {
         @Override
-        public FlightPassengerDB createFromParcel(Parcel in) {
-            return new FlightPassengerDB(in);
+        public FlightPassengerDb createFromParcel(Parcel in) {
+            return new FlightPassengerDb(in);
         }
 
         @Override
-        public FlightPassengerDB[] newArray(int size) {
-            return new FlightPassengerDB[size];
+        public FlightPassengerDb[] newArray(int size) {
+            return new FlightPassengerDb[size];
         }
     };
 

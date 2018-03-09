@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.domain.model;
 
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
@@ -19,7 +19,7 @@ public class SavedPassengerViewModelMapper {
     public SavedPassengerViewModelMapper() {
     }
 
-    public FlightBookingPassengerViewModel transform(FlightPassengerDB savedPassengerEntity) {
+    public FlightBookingPassengerViewModel transform(FlightPassengerDb savedPassengerEntity) {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
         if (savedPassengerEntity.getBirthdate() != null) {
             flightBookingPassengerViewModel.setPassengerBirthdate(
@@ -39,10 +39,10 @@ public class SavedPassengerViewModelMapper {
         return flightBookingPassengerViewModel;
     }
 
-    public List<FlightBookingPassengerViewModel> transform(List<FlightPassengerDB> savedPassengerEntityList) {
+    public List<FlightBookingPassengerViewModel> transform(List<FlightPassengerDb> savedPassengerEntityList) {
         List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList = new ArrayList<>();
 
-        for (FlightPassengerDB savedPassengerEntity : savedPassengerEntityList) {
+        for (FlightPassengerDb savedPassengerEntity : savedPassengerEntityList) {
             flightBookingPassengerViewModelList.add(this.transform(savedPassengerEntity));
         }
 

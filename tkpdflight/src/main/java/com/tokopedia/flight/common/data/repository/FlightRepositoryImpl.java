@@ -13,7 +13,7 @@ import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -334,7 +334,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightPassengerDB>> getSavedPassenger(String passengerId) {
+    public Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId) {
         return flightPassengerFactorySource.getPassengerList(passengerId);
     }
 

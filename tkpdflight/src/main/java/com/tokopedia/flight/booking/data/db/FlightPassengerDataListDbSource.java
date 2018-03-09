@@ -5,7 +5,7 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
@@ -22,7 +22,7 @@ import rx.functions.Func1;
  * @author by furqan on 28/02/18.
  */
 
-public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDB> {
+public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDb> {
 
     public static final String PASSENGER_ID = "PASSENGER_ID";
 
@@ -32,7 +32,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
 
     @Override
     protected Class<? extends Model> getDBClass() {
-        return FlightPassengerDB.class;
+        return FlightPassengerDb.class;
     }
 
     @Override
@@ -41,8 +41,8 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
                 .flatMap(new Func1<SavedPassengerEntity, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(SavedPassengerEntity savedPassengerEntity) {
-                        FlightPassengerDB flightPassengerDB = new FlightPassengerDB(savedPassengerEntity);
-                        flightPassengerDB.insert();
+                        FlightPassengerDb flightPassengerDb = new FlightPassengerDb(savedPassengerEntity);
+                        flightPassengerDb.insert();
                         return Observable.just(true);
                     }
                 })
@@ -51,7 +51,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
                     @Override
                     public Observable<Boolean> call(List<Boolean> booleans) {
                         return Observable.just(new Select(Method.count())
-                                .from(FlightPassengerDB.class)
+                                .from(FlightPassengerDb.class)
                                 .hasData());
                     }
                 });
@@ -65,7 +65,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
                 ConditionGroup conditions = ConditionGroup.clause();
                 conditions.and(FlightPassengerDB_Table.id.eq(passengerId));
 
-                FlightPassengerDB result = new Select().from(FlightPassengerDB.class)
+                FlightPassengerDb result = new Select().from(FlightPassengerDb.class)
                         .where(conditions)
                         .querySingle();
 
@@ -81,7 +81,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
     }
 
     @Override
-    public Observable<List<FlightPassengerDB>> getData(HashMap<String, Object> params) {
+    public Observable<List<FlightPassengerDb>> getData(HashMap<String, Object> params) {
         final ConditionGroup conditions = ConditionGroup.clause();
         conditions.and(FlightPassengerDB_Table.is_selected.eq(0));
 
@@ -91,15 +91,15 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
             conditions.or(FlightPassengerDB_Table.id.eq((String) params.get(PASSENGER_ID)));
         }
 
-        return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDB>>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDb>>() {
             @Override
-            public void call(Subscriber<? super List<FlightPassengerDB>> subscriber) {
-                List<FlightPassengerDB> flightPassengerDBList;
+            public void call(Subscriber<? super List<FlightPassengerDb>> subscriber) {
+                List<FlightPassengerDb> flightPassengerDbList;
 
-                flightPassengerDBList = new Select().from(FlightPassengerDB.class)
+                flightPassengerDbList = new Select().from(FlightPassengerDb.class)
                         .where(conditions)
                         .queryList();
-                subscriber.onNext(flightPassengerDBList);
+                subscriber.onNext(flightPassengerDbList);
             }
         });
     }
