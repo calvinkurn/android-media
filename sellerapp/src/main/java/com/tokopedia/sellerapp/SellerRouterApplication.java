@@ -122,6 +122,7 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -1106,6 +1107,12 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageShop(Context context) {
         context.startActivity(getIntentManageShop(context));
+    }
+
+    @Override
+    public void goToEditShopNote(Context context) {
+        Intent intent = new Intent(context, ManageShopNotesActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
