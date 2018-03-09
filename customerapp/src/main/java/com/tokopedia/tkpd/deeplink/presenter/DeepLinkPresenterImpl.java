@@ -16,7 +16,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
@@ -24,6 +23,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -126,6 +126,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case DeepLinkChecker.RECHARGE:
                 return true;
             case DeepLinkChecker.PELUANG:
+                return false;
+            case DeepLinkChecker.REFERRAL:
                 return false;
             default:
                 return true;
@@ -275,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_INDEX_HOME;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData);
+                    break;
+                case DeepLinkChecker.REFERRAL:
+                    screenName = AppScreen.SCREEN_REFERRAL;
+                    openReferralScreen(uriData);
                     break;
                 default:
                     prepareOpenWebView(uriData);
@@ -568,6 +574,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             IntermediaryActivity.moveToClear(context, departmentId);
         }
     }
+
+    private void openReferralScreen(Uri uriData) {
+        context.startActivity(ReferralActivity.getCallingIntent(context));
+    }
+
 
     private boolean isHotLink(List<String> linkSegment) {
         return (linkSegment.size() == 2);

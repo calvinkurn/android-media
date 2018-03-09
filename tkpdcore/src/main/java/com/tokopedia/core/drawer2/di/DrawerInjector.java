@@ -1,7 +1,6 @@
 package com.tokopedia.core.drawer2.di;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.apollographql.apollo.ApolloClient;
@@ -19,24 +18,21 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.TopPointsSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.DepositMapper;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
-import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.repository.DepositRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.TopPointsRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.DepositRepository;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.drawer2.domain.TopPointsRepository;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
@@ -49,7 +45,6 @@ import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
@@ -58,6 +53,8 @@ import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.util.SessionHandler;
+
+import rx.Observable;
 
 /**
  * @author by nisie on 6/6/17.
@@ -127,25 +124,11 @@ public class DrawerInjector {
                 topPointsRepository
         );
 
-        Bundle bundle = new Bundle();
-        String authKey = sessionHandler.getAccessToken(context);
-        authKey = BEARER_TOKEN + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-        AccountsService accountsService = new AccountsService(bundle);
-
-        GlobalCacheManager walletCache = new GlobalCacheManager();
-
-        TokoCashSourceFactory tokoCashSourceFactory = new TokoCashSourceFactory(
-                context,
-                accountsService,
-                new TokoCashMapper(),
-                walletCache);
-
-        TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
+        Observable<TokoCashData> tokoCashModelObservable = ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance();
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
                 jobExecutor,
                 uiThread,
-                tokoCashRepository
+                tokoCashModelObservable
         );
 
         ChatService chatService = new ChatService();

@@ -47,7 +47,7 @@
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_info"
+                        app:srcCompat="@drawable/ic_info"
                         android:layout_marginStart="@dimen/margin_vvs"
                         android:layout_marginLeft="@dimen/margin_vvs"/>
                 </LinearLayout>
