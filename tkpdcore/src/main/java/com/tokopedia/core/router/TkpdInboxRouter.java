@@ -3,7 +3,6 @@ package com.tokopedia.core.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 /**
@@ -45,4 +44,6 @@ public interface TkpdInboxRouter {
     Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
+
+    Intent getTopProfileIntent(Context context, String userId);
 }

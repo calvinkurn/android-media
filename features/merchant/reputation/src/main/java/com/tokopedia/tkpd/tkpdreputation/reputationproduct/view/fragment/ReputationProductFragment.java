@@ -28,7 +28,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -783,7 +782,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                startActivity(((ReputationRouter) getActivity().getApplicationContext())
                         .getTopProfileIntent(getActivity(),
                                 model.getReviewUserId()));
             }

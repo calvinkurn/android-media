@@ -26,6 +26,7 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -184,7 +185,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToProfile(String reviewerId) {
-        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+        startActivity(((ReputationRouter) getActivity().getApplicationContext())
                 .getTopProfileIntent(getActivity(),
                         String.valueOf(reviewerId)));
     }

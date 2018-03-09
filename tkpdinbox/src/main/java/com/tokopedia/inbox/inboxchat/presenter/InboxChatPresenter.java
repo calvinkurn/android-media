@@ -6,11 +6,11 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -279,7 +279,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void goToProfile(int userId) {
         getView().startActivity(
-                ((TkpdCoreRouter) getView().getActivity().getApplicationContext())
+                ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
                         .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
         );
     }

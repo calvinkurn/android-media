@@ -7,8 +7,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
@@ -454,7 +454,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     @Override
     public void goToProfile(int userId) {
         viewListener.startActivity(
-                ((TkpdCoreRouter) viewListener.getActivity().getApplicationContext())
+                ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
                         .getTopProfileIntent(viewListener.getActivity(), String.valueOf(userId))
         );
     }
