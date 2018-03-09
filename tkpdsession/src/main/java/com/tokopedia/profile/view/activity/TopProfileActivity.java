@@ -180,7 +180,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void setViewListener() {
-        if (GlobalConfig.isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             followingLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
