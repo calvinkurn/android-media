@@ -231,9 +231,14 @@ public class ProductVariantViewModel implements Parcelable {
         for (int i = 0, sizei = productVariantOptionChildLevel1List.size(); i < sizei; i++) {
             ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel1List.get(i);
             productVariantOptionChild.settId(counter++);
+            // comes from custom value
             mapLevel1.put(productVariantOptionChild.getValue(), i);
             int pvo = productVariantOptionChild.getPvo();
-            mapPvoLevel1.put(pvo, i);
+            if (pvo == 0) { // means it has converted to tid
+                mapPvoLevel1.put(productVariantOptionChild.gettId(), i);
+            } else { // it comes from the server
+                mapPvoLevel1.put(pvo, i);
+            }
             productVariantOptionChild.setPvo(0);
         }
 
@@ -241,8 +246,14 @@ public class ProductVariantViewModel implements Parcelable {
             for (int i = 0, sizei = productVariantOptionChildLevel2List.size(); i < sizei; i++) {
                 ProductVariantOptionChild productVariantOptionChild = productVariantOptionChildLevel2List.get(i);
                 productVariantOptionChild.settId(counter++);
+                // comes from custom value
                 mapLevel2.put(productVariantOptionChild.getValue(), i);
                 int pvo = productVariantOptionChild.getPvo();
+                if (pvo == 0) { // means it has converted to tid, comes from draft
+                    mapPvoLevel2.put(productVariantOptionChild.gettId(), i);
+                } else { // comes from server
+                    mapPvoLevel2.put(pvo, i);
+                }
                 mapPvoLevel2.put(pvo, i);
                 productVariantOptionChild.setPvo(0);
             }
