@@ -100,7 +100,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             email.setOnClickListener(new AddEmailClick());
             tvEmail.setVisibility(GONE);
             tvEmailHint.setVisibility(VISIBLE);
-            changeEmailBtn.setVisibility(G);
+            changeEmailBtn.setVisibility(GONE);
         }
 
         if (SessionHandler.isMsisdnVerified()) {
