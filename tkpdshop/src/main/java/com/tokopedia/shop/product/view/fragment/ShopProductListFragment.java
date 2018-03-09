@@ -149,17 +149,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (!TextUtils.isEmpty(keyword))
+        if (!TextUtils.isEmpty(keyword)) {
             searchInputView.getSearchTextView().setText(keyword);
-
-        recyclerViews = view.findViewById(R.id.recycler_view);
-        chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
-        bottomActionView = view.findViewById(R.id.bottom_action_view);
-
+        }
         if (!TextUtils.isEmpty(etalaseName)) {
             chooseEtalaseLabelView.setContent(etalaseName);
         }
+
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
+        recyclerViews = view.findViewById(R.id.recycler_view);
+        chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
 
         setBottomActionViewImage(currentImgBottomNav);
         RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
