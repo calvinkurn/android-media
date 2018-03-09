@@ -114,28 +114,11 @@ public class TopPayPresenter implements ITopPayPresenter {
             LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData
     ) throws Exception {
         Gson afGSON = new Gson();
-        Map[] mapResult = afGSON.fromJson(
-                cacheHandler.getString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS),
-                new TypeToken<Map[]>() {
-                }.getType()
-        );
-        ArrayList<Product> locaProducts = afGSON.fromJson(
-                cacheHandler.getString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS),
-                new TypeToken<ArrayList<Product>>() {
-                }.getType()
-        );
         ArrayList<Purchase> purchases = afGSON.fromJson(
                 cacheHandler.getString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE),
                 new TypeToken<ArrayList<Purchase>>() {
                 }.getType()
         );
-
-        JSONArray arrJas = new JSONArray(
-                cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
-        );
-        String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
-        int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
-        String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
 
         /**
          * GTM Block
@@ -149,14 +132,5 @@ public class TopPayPresenter implements ITopPayPresenter {
                 }
             }
         }
-
-        /**
-         * AppsFlyer Block
-         *
-         */
-        PaymentTracking.eventTransactionAF(
-                thanksTopPayData.getParameter().getPaymentId(),
-                revenue, arrJas, qty, mapResult
-        );
     }
 }

@@ -111,12 +111,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected int getColorUpScannerLaser() {
-        return R.drawable.digital_gradient_green_up;
+        return R.drawable.qr_gradient_green_up;
     }
 
     @Override
     protected int getColorDownScannerLaser() {
-        return R.drawable.digital_gradient_green_down;
+        return R.drawable.qr_gradient_green_down;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         presenter.attachView(this);
         updateTitle(getString(R.string.title_scan_qr));
 
-        final ImageView torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
+        final ImageView torch = (ImageView) findViewById(R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
         decoratedBarcodeView.setTorchListener(getListener());
         torch.setOnClickListener(new View.OnClickListener() {
@@ -135,12 +135,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_on));
+                            R.drawable.qr_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_off));
+                            R.drawable.qr_ic_flash_turn_off));
                 }
             }
         });
@@ -192,9 +192,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(com.tokopedia.tokocash.R.string.title_dialog_wrong_scan));
+        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
-        builder.setPositiveButton(getString(com.tokopedia.tokocash.R.string.btn_dialog_wrong_scan),
+        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
@@ -206,7 +206,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void showErrorNetwork(String message) {
+    public void showErrorNetwork(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getApplicationContext(), throwable);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override

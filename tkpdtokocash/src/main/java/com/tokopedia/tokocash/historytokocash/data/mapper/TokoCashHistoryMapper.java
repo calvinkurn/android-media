@@ -11,6 +11,8 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistory
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -18,6 +20,10 @@ import rx.functions.Func1;
  */
 
 public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoCashHistoryData> {
+
+    @Inject
+    public TokoCashHistoryMapper() {
+    }
 
     @Override
     public TokoCashHistoryData call(TokoCashHistoryEntity tokoCashHistoryEntity) {
