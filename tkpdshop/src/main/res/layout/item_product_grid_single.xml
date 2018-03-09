@@ -49,7 +49,7 @@
             android:layout_width="@dimen/small_icon_size"
             android:layout_height="@dimen/small_icon_size"
             android:layout_gravity="center"
-            android:background="@drawable/ic_wishlist_unchecked" />
+            android:background="@drawable/ic_wishlist" />
 
     </FrameLayout>
 

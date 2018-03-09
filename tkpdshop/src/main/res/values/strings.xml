@@ -85,6 +85,9 @@
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
-
+    <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
+    <string name="open_shop">Buka Toko</string>
+    <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
+    <string name="dashboard_reason_x">Alasan : %1$s</string>
 
 </resources>

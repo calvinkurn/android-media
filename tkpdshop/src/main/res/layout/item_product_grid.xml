@@ -46,7 +46,7 @@
             android:layout_width="@dimen/image_width_xs"
             android:layout_height="@dimen/image_width_xs"
             android:layout_gravity="center"
-            android:background="@drawable/ic_wishlist_unchecked" />
+            android:background="@drawable/ic_wishlist" />
 
     </FrameLayout>
 

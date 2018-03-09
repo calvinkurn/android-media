@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -39,6 +40,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopAppLink;
+import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -52,6 +54,7 @@ import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.customview.CustomContentBottomActionView;
+import com.tokopedia.shop.product.view.customview.ShopWarningTickerView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
 import javax.inject.Inject;
@@ -108,6 +111,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private ShopPageSubDetailView reputationDetailView;
     private ShopPageSubDetailView productQualityDetailView;
     private ShopPageSubDetailView reputationSpeedDetailView;
+    private ShopWarningTickerView shopWarningTickerView;
     private ShopReputationView shopReputationView;
     private TextView totalFavouriteTextView;
     private TextView totalProductTextView;
@@ -234,6 +238,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        shopWarningTickerView = findViewById(R.id.shop_warning_ticker_view);
         backgroundImageView = findViewById(R.id.image_view_shop_background);
         shopIconImageView = findViewById(R.id.image_view_shop_icon);
         shopStatusImageView = findViewById(R.id.image_view_shop_status);
@@ -529,9 +534,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
+        updateViewShopOpen(shopPageViewModel);
         setViewState(VIEW_CONTENT);
         updateShopInfo(shopPageViewModel.getShopInfo());
         updateReputationSpeed(shopPageViewModel.getReputationSpeed());
+
     }
 
     private void updateShopInfo(ShopInfo shopInfo) {
@@ -679,6 +686,43 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             default:
                 return R.drawable.ic_shop_reputation_speed_default;
         }
+    }
+
+    private void updateViewShopOpen(ShopPageViewModel shopModel) {
+        switch ((int) shopModel.getShopInfo().getInfo().getShopStatus()) {
+            case ShopStatusDef.CLOSED:
+                showShopClosed(shopModel);
+                break;
+            case ShopStatusDef.MODERATED:
+                showShopModerated(shopModel);
+                break;
+            case ShopStatusDef.NOT_ACTIVE:
+                shopWarningTickerView.setVisibility(View.GONE);
+                break;
+            default:
+                shopWarningTickerView.setVisibility(View.GONE);
+        }
+    }
+
+    private void showShopClosed(ShopPageViewModel shopModel) {
+        String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
+                DateFormatUtils.FORMAT_D_MMMM_YYYY,
+                shopModel.getShopInfo().getClosedInfo().getUntil());
+        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+        shopWarningTickerView.setDescription(shopModel.getShopInfo().getClosedInfo().getNote());
+        shopWarningTickerView.setAction(getString(R.string.open_shop), null);
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(this, R.color.green_ticker));
+        shopWarningTickerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showShopModerated(ShopPageViewModel shopModel) {
+        shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
+        shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.getShopInfo().getClosedInfo().getReason()));
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(this, R.color.yellow_ticker));
+        shopWarningTickerView.setAction(null, null);
+        shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
     @Override

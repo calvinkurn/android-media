@@ -23,6 +23,13 @@
             layout="@layout/partial_shop_page_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+            
+        <com.tokopedia.shop.product.view.customview.ShopWarningTickerView
+	        android:id="@+id/shop_warning_ticker_view"
+    	    android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:visibility="gone"
+	        tools:visibility="visible" />
 
         <include
             layout="@layout/partial_shop_page_header_sub_info"
@@ -36,4 +43,3 @@
 
     </LinearLayout>
 </com.tokopedia.design.loading.LoadingStateView>
-

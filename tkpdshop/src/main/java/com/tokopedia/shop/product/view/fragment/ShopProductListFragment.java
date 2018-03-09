@@ -197,7 +197,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (shopProductListPresenter.getUserSession().getShopId().equals(shopId) && TextUtils.isEmpty(etalaseName)) {
             chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
         } else {
-            chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
+            if (!TextUtils.isEmpty(etalaseName)) {
+                chooseEtalaseLabelView.setContent(etalaseName);
+            } else {
+                chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
+            }
         }
     }
 

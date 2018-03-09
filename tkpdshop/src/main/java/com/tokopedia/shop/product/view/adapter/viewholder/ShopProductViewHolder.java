@@ -107,7 +107,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
         wishlistContainer.setVisibility(shopProductViewModel.isShowWishList() ? View.VISIBLE : View.GONE);
-        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked);
+        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_red : R.drawable.ic_wishlist);
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
