@@ -92,6 +92,28 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Rp 3.121.500" />
 
+    <android.support.v7.widget.AppCompatRatingBar
+        android:id="@+id/ratingBar"
+        style="@style/Small.RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/price"
+        app:layout_constraintTop_toBottomOf="@+id/price"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/total_review"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/ratingBar"
+        app:layout_constraintTop_toTopOf="@+id/ratingBar"
+        tools:text="TextView"
+        tools:visibility="visible" />
+
     <Space
         android:id="@+id/space"
         android:layout_width="@dimen/padding_vvs"
@@ -109,8 +131,8 @@
         layout="@layout/partial_shop_product_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/price"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
+        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
     <Space
         android:layout_width="wrap_content"

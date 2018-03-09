@@ -80,7 +80,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
-        if (totalReview != null && shopProductViewModel.getTotalReview() > 0) {
+        if (totalReview != null && qualityRatingBar != null && shopProductViewModel.getTotalReview() > 0) {
             totalReview.setText(String.valueOf(shopProductViewModel.getTotalReview()));
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
