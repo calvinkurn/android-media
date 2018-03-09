@@ -28,7 +28,7 @@
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
-    <string name="product_label_insurance">Asuransi</string>
+    <string name="product_label_delivery_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_returns">Free Returns</string>
     <string name="product_add_label_sku">SKU (Stock Keeping Unit)</string>
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
