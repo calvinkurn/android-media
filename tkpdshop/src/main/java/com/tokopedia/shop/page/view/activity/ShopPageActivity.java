@@ -28,7 +28,9 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
@@ -74,6 +76,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private static final int TAB_POSITION_HOME = 0;
     private static final int TAB_POSITION_TALK = 1;
     private static final int TAB_POSITION_REVIEW = 2;
+    private static final int VIEW_CONTENT = 1;
+    private static final int VIEW_LOADING = 2;
+    private static final int VIEW_ERROR = 3;
 
     @Inject
     ShopPagePresenter shopPagePresenter;
@@ -88,6 +93,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    private View loadingStateView;
+    private View errorStateView;
+    private View containerPager;
+    private TextView textRetryError;
+    private TextView buttonRetryError;
 
     private ShopPageSubDetailView totalFavouriteDetailView;
     private ShopPageSubDetailView totalProductDetailView;
@@ -177,15 +187,20 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
         viewPager.setCurrentItem(tabPosition);
+        getShopInfo();
+        if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
+            shopModuleRouter = (ShopModuleRouter) getApplication();
+        }
+        updateShopDiscussionIntent();
+    }
+
+    private void getShopInfo() {
         if (!TextUtils.isEmpty(shopId)) {
             shopPagePresenter.getShopInfo(shopId);
         } else {
             shopPagePresenter.getShopInfoByDomain(shopDomain);
         }
-        if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
-            shopModuleRouter = (ShopModuleRouter) getApplication();
-        }
-        updateShopDiscussionIntent();
+        setViewState(VIEW_LOADING);
     }
 
     /**
@@ -244,6 +259,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
+        loadingStateView = findViewById(R.id.shop_page_loading_state);
+        errorStateView = findViewById(R.id.shop_page_error_state);
+        containerPager = findViewById(R.id.container_view_pager);
+        textRetryError = findViewById(R.id.message_retry);
+        buttonRetryError = findViewById(R.id.button_retry);
 
         shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -471,6 +491,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
+        setViewState(VIEW_CONTENT);
         updateShopInfo(shopPageViewModel.getShopInfo());
         updateReputationSpeed(shopPageViewModel.getReputationSpeed());
     }
@@ -557,7 +578,14 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onErrorGetShopPageInfo(Throwable e) {
-
+        setViewState(VIEW_ERROR);
+        textRetryError.setText(ErrorHandler.getErrorMessage(this, e));
+        buttonRetryError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getShopInfo();
+            }
+        });
     }
 
     public void updateReputationSpeed(ReputationSpeed reputationSpeed) {
@@ -619,5 +647,34 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     protected void onDestroy() {
         super.onDestroy();
         shopPagePresenter.detachView();
+    }
+
+    public void setViewState(int viewState) {
+        switch (viewState){
+            case VIEW_CONTENT :
+                loadingStateView.setVisibility(View.GONE);
+                errorStateView.setVisibility(View.GONE);
+                appBarLayout.setVisibility(View.VISIBLE);
+                containerPager.setVisibility(View.VISIBLE);
+                break;
+            case VIEW_LOADING :
+                loadingStateView.setVisibility(View.VISIBLE);
+                errorStateView.setVisibility(View.GONE);
+                appBarLayout.setVisibility(View.INVISIBLE);
+                containerPager.setVisibility(View.INVISIBLE);
+                break;
+            case VIEW_ERROR :
+                loadingStateView.setVisibility(View.GONE);
+                errorStateView.setVisibility(View.VISIBLE);
+                appBarLayout.setVisibility(View.INVISIBLE);
+                containerPager.setVisibility(View.INVISIBLE);
+                break;
+            default:
+                loadingStateView.setVisibility(View.GONE);
+                errorStateView.setVisibility(View.GONE);
+                appBarLayout.setVisibility(View.VISIBLE);
+                containerPager.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

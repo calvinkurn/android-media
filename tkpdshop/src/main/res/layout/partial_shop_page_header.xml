@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loading_state_view_shop_page"
+    app:lsv_loading_layout="@layout/activity_shop_page_loading_state"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:divider="@drawable/bg_line_separator"
-    android:orientation="vertical"
-    android:showDividers="middle">
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/partial_shop_page_header_background"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_xxl" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:divider="@drawable/bg_line_separator"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
-    <include
-        layout="@layout/partial_shop_page_header_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            layout="@layout/partial_shop_page_header_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_width_xxl" />
 
-    <include
-        layout="@layout/partial_shop_page_header_sub_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            layout="@layout/partial_shop_page_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/partial_shop_page_header_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            layout="@layout/partial_shop_page_header_sub_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
+        <include
+            layout="@layout/partial_shop_page_header_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</com.tokopedia.design.loading.LoadingStateView>
 

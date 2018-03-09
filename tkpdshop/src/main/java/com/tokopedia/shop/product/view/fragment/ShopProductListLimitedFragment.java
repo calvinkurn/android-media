@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -44,6 +45,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
 
     private ProgressDialog progressDialog;
+    private LoadingStateView loadingStateView;
 
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -63,6 +65,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
         progressDialog = new ProgressDialog(getActivity());
+        loadingStateView = view.findViewById(R.id.loading_state_view_shop_page_product);
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         progressDialog.setMessage(getString(R.string.title_loading));
         return view;
     }
@@ -163,6 +167,18 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
+    public void renderList(@NonNull List<ShopProductBaseViewModel> list) {
+        super.renderList(list);
+        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
         if (shopProductViewModel.isWishList()) {
             shopProductListLimitedPresenter.removeFromWishList(shopProductViewModel.getId());
@@ -197,12 +213,12 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public void showLoading() {
+    public void showLoadingDialog() {
         progressDialog.show();
     }
 
     @Override
-    public void hideLoading() {
+    public void hideLoadingDialog() {
         progressDialog.dismiss();
     }
 }

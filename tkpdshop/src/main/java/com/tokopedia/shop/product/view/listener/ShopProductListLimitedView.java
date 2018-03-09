@@ -13,7 +13,7 @@ public interface ShopProductListLimitedView extends BaseListViewListener<ShopPro
 
     void onSuccessAddToWishList(String productId, Boolean value);
 
-    void showLoading();
+    void hideLoadingDialog();
 
-    void hideLoading();
+    void showLoadingDialog();
 }

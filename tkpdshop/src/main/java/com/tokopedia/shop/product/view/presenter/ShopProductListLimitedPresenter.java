@@ -46,7 +46,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     }
 
     public void addToWishList(final String productId){
-        getView().showLoading();
+        getView().showLoadingDialog();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -58,14 +58,14 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().onErrorAddToWishList(e);
-                    getView().hideLoading();
+                    getView().hideLoadingDialog();
                 }
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
                 getView().onSuccessAddToWishList(productId, aBoolean);
-                getView().hideLoading();
+                getView().hideLoadingDialog();
             }
         });
     }
@@ -105,7 +105,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     }
 
     public void removeFromWishList(final String productId){
-        getView().showLoading();
+        getView().showLoadingDialog();
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -117,14 +117,14 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().onErrorRemoveFromWishList(e);
-                    getView().hideLoading();
+                    getView().hideLoadingDialog();
                 }
             }
 
             @Override
             public void onNext(Boolean value) {
                 getView().onSuccessRemoveFromWishList(productId, value);
-                getView().hideLoading();
+                getView().hideLoadingDialog();
             }
         });
     }
