@@ -3,10 +3,12 @@ package com.tokopedia.profile.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.profile.data.network.ProfileApi;
 import com.tokopedia.profile.data.network.ProfileUrl;
@@ -39,7 +41,16 @@ public class ProfileModule {
                 .addInterceptor(new FingerprintInterceptor());
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            clientBuilder.addInterceptor(new ChuckInterceptor(context));
+            LocalCacheHandler localCacheHandler =
+                    new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+            clientBuilder.addInterceptor(
+                    new ChuckInterceptor(context).showNotification(
+                            localCacheHandler.getBoolean(
+                                    DeveloperOptions.IS_CHUCK_ENABLED,
+                                    false
+                            )
+                    )
+            );
             clientBuilder.addInterceptor(httpLoggingInterceptor);
         }
 

@@ -159,7 +159,6 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
 import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
-import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
