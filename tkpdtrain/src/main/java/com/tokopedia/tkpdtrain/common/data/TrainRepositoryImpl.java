@@ -2,6 +2,7 @@ package com.tokopedia.tkpdtrain.common.data;
 
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.search.domain.TrainSchedule;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
 import com.tokopedia.tkpdtrain.station.data.specification.TrainPopularStationSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.TrainStationByKeywordSpecification;
@@ -33,6 +34,11 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainStation>> getStationsByKeyword(String keyword) {
         return trainStationDataStoreFactory.getStations(new TrainStationByKeywordSpecification(keyword));
+    }
+
+    @Override
+    public Observable<List<TrainSchedule>> getSchedule() {
+        return null;
     }
 
     @Override

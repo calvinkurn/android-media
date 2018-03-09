@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdtrain.common.domain;
 
 
+import com.tokopedia.tkpdtrain.search.domain.TrainSchedule;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 import com.tokopedia.usecase.RequestParams;
 
@@ -18,4 +19,6 @@ public interface TrainRepository {
     Observable<List<TrainStation>> getStationsByKeyword(String keyword);
 
     Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword);
+
+    Observable<List<TrainSchedule>> getSchedule(RequestParams);
 }
