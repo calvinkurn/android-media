@@ -326,8 +326,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSearchTextChanged(String s) {
-        keyword = s;
-        loadInitialData();
+        if (TextUtils.isEmpty(s)) {
+            keyword = s;
+            loadInitialData();
+        }
     }
 
     @Override
