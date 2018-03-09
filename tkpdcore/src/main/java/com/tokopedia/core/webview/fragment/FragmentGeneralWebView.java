@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
+import java.net.URLDecoder;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -62,6 +65,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
+
+    private boolean pageLoaded = false;
 
     public FragmentGeneralWebView() {
         // Required empty public constructor
@@ -92,9 +97,28 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
+    private String decode(String url) {
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
+        if(overrideUrl(decode(url))) {
+            getActivity().finish();
+            return null;
+        } else {
+            return onCreateWebView(inflater, container, savedInstanceState);
+        }
+    }
+
+    private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         CommonUtils.dumper("Load URL: " + url);
         View fragmentView = inflater.inflate(
