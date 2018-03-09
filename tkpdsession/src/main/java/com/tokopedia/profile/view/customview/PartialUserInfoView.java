@@ -110,7 +110,7 @@ public class PartialUserInfoView extends BaseCustomView {
 
         tvSubtitle.setVisibility(model.isUser() && model.isKol() ? VISIBLE : GONE);
 
-        partialUserStatus.setVisibility(model.getCompletion()==100 ? VISIBLE : GONE);
+        partialUserStatus.setVisibility(model.getCompletion() == 100 ? VISIBLE : GONE);
 
         tvReputationSummaryScore.setVisibility(VISIBLE);
         String summary = model.getSummaryScore() + "%";

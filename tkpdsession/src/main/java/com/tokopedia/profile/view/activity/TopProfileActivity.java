@@ -448,13 +448,13 @@ public class TopProfileActivity extends BaseEmptyActivity
                     null,
                     null,
                     null);
-            if (TextUtils.isEmpty(topProfileViewModel.getTitle())) {
+            if (!TextUtils.isEmpty(topProfileViewModel.getTitle())) {
                 title.setVisibility(View.VISIBLE);
                 title.setText(topProfileViewModel.getTitle());
             } else {
                 title.setVisibility(View.GONE);
             }
-            if (TextUtils.isEmpty(topProfileViewModel.getBiodata())) {
+            if (!TextUtils.isEmpty(topProfileViewModel.getBiodata())) {
                 description.setVisibility(View.VISIBLE);
                 description.setText(topProfileViewModel.getBiodata());
             } else {
