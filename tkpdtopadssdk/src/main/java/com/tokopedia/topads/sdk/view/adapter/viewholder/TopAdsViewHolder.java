@@ -65,9 +65,6 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
     @Override
     public void bind(TopAdsViewModel element) {
         List<Item> list = element.getList();
-        if (list.size() > 0) {
-            switchDisplay(list.get(0));
-        }
         adapter.setList(list);
         adapter.setAdapterPosition(getAdapterPosition());
         adapter.setPosition(getAdapterPosition());

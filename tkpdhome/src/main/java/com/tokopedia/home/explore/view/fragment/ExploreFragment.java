@@ -32,7 +32,7 @@ import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
-import com.tokopedia.home.explore.view.adapter.TypeFactory;
+import com.tokopedia.home.explore.view.adapter.TypeFactory;Top
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 
 /**
