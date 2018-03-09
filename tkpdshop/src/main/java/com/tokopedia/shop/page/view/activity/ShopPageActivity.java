@@ -27,8 +27,10 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -65,6 +67,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public static final String SHOP_DOMAIN = "shop_domain";
     public static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
 
+    private static final int REQUEST_CODER_USER_LOGIN = 100;
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
     private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
     private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
@@ -82,6 +85,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Inject
     ShopPagePresenter shopPagePresenter;
+
     private ShopProductListLimitedFragment shopProductListLimitedFragment;
     private ImageView backgroundImageView;
     private ImageView shopIconImageView;
@@ -129,10 +133,10 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private String speedLevelDescription;
     private long ratingStar;
     private String qualityAverage;
-    private String qualityCountTotal;
     private int set;
     private int level;
     private String shopReputationScore;
+    private String shopName;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -268,7 +272,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
+                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
                 view.getContext().startActivity(intent);
             }
         });
@@ -290,19 +294,36 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
                 reputationDesc.setText(getString(R.string.dashboard_x_points, shopReputationScore));
 
+                if (TextUtils.isEmpty(shopReputationScore)) {
+                    reputationDesc.setText(R.string.reputation_value_not_appear);
+                } else {
+                    reputationDesc.setText(getString(R.string.reputation_point_format, shopReputationScore));
+                }
+
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.shop_reputation_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
         totalProductDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ShopPageActivity.this.startActivity(ShopProductListActivity.createIntent(
+                        ShopPageActivity.this,
+                        shopId
+                ));
             }
         });
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
@@ -316,15 +337,20 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 TextView speedView = speedContentBottomSheet.findViewById(R.id.product_quality_value);
                 speedView.setText(qualityAverage);
 
-                TextView qualityCountTotalTextView = speedContentBottomSheet.findViewById(R.id.product_quality_desc);
-                qualityCountTotalTextView.setText(qualityCountTotal);
-
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.product_quality_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
@@ -335,14 +361,26 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                 AppCompatImageView imageViewSpeed = speedContentBottomSheet.findViewById(R.id.image_view_speed_content);
                 imageViewSpeed.setImageResource(getReputationSpeedIcon(speedLevel));
                 TextView speedView = speedContentBottomSheet.findViewById(R.id.speed_content_tv_desc);
-                speedView.setText(speedLevelDescription);
+                if (TextUtils.isEmpty(speedLevelDescription)) {
+                    speedView.setText(R.string.speed_shop_not_available);
+                } else {
+                    speedView.setText(getString(R.string.speed_shop_not_available_format, speedLevelDescription));
+                }
 
                 CustomContentBottomActionView bottomSheetView = new CustomContentBottomActionView(ShopPageActivity.this);
                 bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
                 bottomSheetView.renderBottomSheet(new CustomContentBottomActionView.BottomSheetField
                         .BottomSheetFieldBuilder()
                         .setTitle(getString(R.string.shop_speed_label))
+                        .setCloseButton(getString(R.string.see_shop_information))
                         .build());
+                bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId, shopName);
+                        view.getContext().startActivity(intent);
+                    }
+                });
                 bottomSheetView.show();
             }
         });
@@ -497,15 +535,19 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void updateShopInfo(ShopInfo shopInfo) {
+
         shopId = shopInfo.getInfo().getShopId();
         shopUrl = shopInfo.getInfo().getShopUrl();
         shopAvatar = shopInfo.getInfo().getShopAvatar();
         shopLocation = shopInfo.getInfo().getShopLocation();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
-        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
+
+        shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
+        shopNameTextView.setText(shopName);
+
+        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop(), shopName);
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
-        shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         ImageHandler.loadImageCircle2(shopIconImageView.getContext(), shopIconImageView, shopInfo.getInfo().getShopAvatar());
 
         if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
@@ -551,8 +593,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
         shopReputationScore = shopInfo.getStats().getShopReputationScore();
         shopReputationView.setValue(set, level, shopReputationScore);
-
-        qualityCountTotal = shopInfo.getRatings().getQuality().getCountTotal();
         qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
 
@@ -615,6 +655,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onErrorToggleFavourite(Throwable e) {
         buttonFavouriteShop.setEnabled(true);
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(this);
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
     }
 
     @DrawableRes
@@ -646,7 +692,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shopPagePresenter.detachView();
+        if (shopPagePresenter != null) {
+            shopPagePresenter.detachView();
+        }
     }
 
     public void setViewState(int viewState) {

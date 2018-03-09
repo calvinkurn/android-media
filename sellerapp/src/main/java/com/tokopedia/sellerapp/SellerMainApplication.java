@@ -164,7 +164,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
-
+        ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
 
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
 

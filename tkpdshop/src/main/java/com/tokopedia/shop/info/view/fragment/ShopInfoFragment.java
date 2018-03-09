@@ -1,15 +1,15 @@
 package com.tokopedia.shop.info.view.fragment;
 
+import android.app.Application;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -18,10 +18,12 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.TextHtmlUtils;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
@@ -39,14 +41,8 @@ import javax.inject.Inject;
 
 public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView {
 
-    public static ShopInfoFragment createInstance(String shopId) {
-        ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
-        shopInfoFragment.setArguments(bundle);
-        return shopInfoFragment;
-    }
-
+    private LinearLayout shopInfoStatisticLinearLayout;
+    private LinearLayout shopInfoSatisfiedLinearLayout;
     private LabelView transactionSuccessLabelView;
     private LabelView totalTransactionLabelView;
     private LabelView productSoldLabelView;
@@ -69,10 +65,18 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private RecyclerView recyclerView;
 
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
-
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
     private String shopId;
+    private long userId;
+
+    public static ShopInfoFragment createInstance(String shopId) {
+        ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        shopInfoFragment.setArguments(bundle);
+        return shopInfoFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,9 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_info, container, false);
+        shopInfoStatisticLinearLayout = view.findViewById(R.id.linear_layout_shop_info_statistic);
+        shopInfoSatisfiedLinearLayout = view.findViewById(R.id.linear_layout_shop_info_satisfied);
+
         transactionSuccessLabelView = view.findViewById(R.id.label_view_transaction_success);
         totalTransactionLabelView = view.findViewById(R.id.label_view_total_transaction);
         productSoldLabelView = view.findViewById(R.id.label_view_product_sold);
@@ -121,6 +128,12 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         if (getActivity() instanceof BaseTabActivity) {
             ((BaseTabActivity) getActivity()).updateTitle(shopInfo.getInfo().getShopName());
         }
+        if (!TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
+            shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
+            shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
+        }
+
+        userId = shopInfo.getOwner().getOwnerId();
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
         totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
         productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
@@ -149,13 +162,20 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
                 }
             });
         }
+
         physicalShopLabelView.setContent(physicalAddressContent);
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
         ImageHandler.loadImageCircle2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Application application = ShopInfoFragment.this.getActivity().getApplication();
+                if (application instanceof ShopModuleRouter) {
+                    ((ShopModuleRouter) application).goToProfileShop(
+                            ShopInfoFragment.this.getActivity(),
+                            Long.toString(userId)
+                    );
+                }
             }
         });
     }

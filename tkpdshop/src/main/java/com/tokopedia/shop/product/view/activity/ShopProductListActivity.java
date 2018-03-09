@@ -43,6 +43,7 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         return intent;
     }
 
+
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(SHOP_ID, shopId);
