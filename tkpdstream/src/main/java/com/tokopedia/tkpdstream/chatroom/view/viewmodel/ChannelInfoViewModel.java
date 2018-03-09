@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
@@ -9,7 +11,7 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
  * @author by nisie on 2/22/18.
  */
 
-public class ChannelInfoViewModel {
+public class ChannelInfoViewModel implements Parcelable{
     private String title;
     private String channelUrl;
     private String bannerUrl;
@@ -29,6 +31,26 @@ public class ChannelInfoViewModel {
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
     }
+
+    protected ChannelInfoViewModel(Parcel in) {
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        hasPoll = in.readByte() != 0;
+        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
 
     public String getChannelUrl() {
         return channelUrl;
@@ -75,5 +97,19 @@ public class ChannelInfoViewModel {
 
     public void setVoteInfoViewModel(@Nullable VoteInfoViewModel voteInfoViewModel) {
         this.voteInfoViewModel = voteInfoViewModel;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(channelUrl);
+        dest.writeString(bannerUrl);
+        dest.writeByte((byte) (hasPoll ? 1 : 0));
+        dest.writeParcelable(channelViewModel, flags);
     }
 }

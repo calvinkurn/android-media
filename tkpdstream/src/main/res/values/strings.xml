@@ -52,5 +52,8 @@
     <string name="default_banned_title">Akun Anda Terblokir</string>
     <string name="channel_has_been_deleted">Channel telah dihapus. Silahkan join channel lain.</string>
     <string name="channel_deactivated">Channel sudah tidak aktif. Silahkan join channel lain.</string>
+    <string name="you_have_been_idle_for_too_long">Anda telah dikeluarkan dari chatroom karena
+        terlalu lama tidak aktif.</string>
+    <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
 
 </resources>

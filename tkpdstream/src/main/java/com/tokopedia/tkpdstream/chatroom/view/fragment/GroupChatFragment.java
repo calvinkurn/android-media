@@ -85,6 +85,7 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -98,6 +99,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(1);
 
     @Inject
     GroupChatPresenter presenter;
@@ -487,6 +489,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
             presenter.setHandler(viewModel.getChannelUrl(), this);
+
+        kickIfIdleForTooLong();
+    }
+
+    private void kickIfIdleForTooLong() {
+        if(viewModel != null) {
+            if (System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
+                onUserIdleTooLong();
+            }
+        }
     }
 
     @Override
@@ -494,6 +506,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
         SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
         progressBarWithTimer.cancel();
+        if(viewModel!= null){
+            viewModel.setTimeStampBeforePause(System.currentTimeMillis());
+        }
         super.onPause();
     }
 
@@ -856,6 +871,22 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 }
             });
         }
+    }
+    private void onUserIdleTooLong() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.you_have_been_kicked);
+        builder.setMessage(R.string.you_have_been_idle_for_too_long);
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                getActivity().setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
+                getActivity().finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override
