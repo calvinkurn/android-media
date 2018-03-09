@@ -82,6 +82,7 @@
     <string name="shop_sort_title">Urutkan</string>
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
+    <string name="see_label">Lihat</string>
 
 
 </resources>
