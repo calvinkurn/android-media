@@ -14,6 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
@@ -197,17 +198,32 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             while (iterator.hasPrevious()) {
                 int position = iterator.previousIndex();
                 Visitable visitable = iterator.previous();
-                if ((visitable instanceof AttachProductViewModel)) {
-                    AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
-                    if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
-                        if (viewModel.getAttachment().getId().equals(productId.toString())) {
-                            iterator.remove();
-                            notifyItemRemoved(position);
-                        }
-                    }
+                Attachment attachment = getProductAttachmentFromVisitable(visitable);
+                if(isAttachmentMatched(attachment,productId)) {
+                    iterator.remove();
+                    notifyItemRemoved(position);
                 }
             }
         }
+    }
+
+    private boolean isAttachmentMatched(Attachment attachment, Integer productId){
+        if (attachment != null) {
+            if (attachment.getId().equals(productId.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Attachment getProductAttachmentFromVisitable(Visitable visitable){
+        if ((visitable instanceof AttachProductViewModel)) {
+            AttachProductViewModel viewModel = (AttachProductViewModel) visitable;
+            if (viewModel.getAttachment() != null && viewModel.getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)) {
+                return viewModel.getAttachment();
+            }
+        }
+        return null;
     }
 
     public void removeLast() {

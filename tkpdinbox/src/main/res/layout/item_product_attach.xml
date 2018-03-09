@@ -45,21 +45,17 @@
             android:id="@+id/attach_product_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            style="@style/TextView.Small.Bold"
             android:maxLines="2"
-            android:text="Nama Produk"
-            android:textColor="@color/black_70"
-            android:textSize="14sp"/>
+            android:text="@string/product_name_field"
+            android:textColor="@color/black_70" />
 
         <TextView
             android:id="@+id/attach_product_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange_red"
-            android:textStyle="bold"
-            android:textSize="14sp"
+            style="@style/TextView.Small.OrangeRed.Bold"
             android:text="@string/price_per_product"
-            android:layout_below="@id/attach_product_item_name"
-            />
+            android:layout_below="@id/attach_product_item_name" />
     </RelativeLayout>
 </RelativeLayout>
