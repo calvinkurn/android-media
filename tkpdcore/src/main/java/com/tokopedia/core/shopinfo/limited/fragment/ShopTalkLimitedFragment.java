@@ -8,6 +8,7 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.fragment.ShopTalkFragment;
+import com.tokopedia.core.shopinfo.limited.adapter.ShopTalkEmptyDataBinder;
 import com.tokopedia.core.shopinfo.limited.adapter.ShopTalkLimitedAdapter;
 import com.tokopedia.core.shopinfo.limited.model.ShopTalkLimited;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
@@ -31,6 +32,7 @@ public class ShopTalkLimitedFragment extends ShopTalkFragment implements View.On
     @Override
     protected void initView(View view) {
         adapter = new ShopTalkLimitedAdapter(getActivity(), getShopTalkListener(), this);
+        adapter.setEmptyView(new ShopTalkEmptyDataBinder(adapter));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
