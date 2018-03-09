@@ -42,13 +42,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
@@ -1108,7 +1108,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+        Intent intent = ((InboxModuleRouter) MainApplication.getAppContext())
                 .getGalleryIntent(getActivity(), false, 1, true);
         startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }

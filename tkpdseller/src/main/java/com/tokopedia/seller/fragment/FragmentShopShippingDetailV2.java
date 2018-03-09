@@ -39,13 +39,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -327,8 +327,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
-                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+                    Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
                             .getAskBuyerIntent(getActivity(),
                                     orderShippingList.getOrderCustomer().getCustomerId(),
                                     orderShippingList.getOrderCustomer().getCustomerName(),
@@ -338,7 +338,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                                                     .replace("XXX",
                                                             orderShippingList.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    SellerModuleRouter.TX_ASK_BUYER,
                                     orderShippingList.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }

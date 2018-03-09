@@ -162,4 +162,10 @@ public interface TkpdCoreRouter {
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getInboxMessageIntent(Context context);
+
+    Intent getAskBuyerIntent(Context context, String toUserId,
+                             String customerName, String customSubject,
+                             String customMessage, String source, String avatarUrl);
 }

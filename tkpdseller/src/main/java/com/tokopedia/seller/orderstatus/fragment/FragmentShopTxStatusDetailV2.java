@@ -33,7 +33,6 @@ import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -43,6 +42,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.OrderHistoryView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenter;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenterImpl;
@@ -308,8 +308,8 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
-                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+                    Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
                             .getAskBuyerIntent(getActivity(),
                                     presenter.getOrderData().getOrderCustomer().getCustomerId(),
                                     presenter.getOrderData().getOrderCustomer().getCustomerName(),
@@ -319,7 +319,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                                                     .replace("XXX",
                                                             presenter.getOrderData().getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    SellerModuleRouter.TX_ASK_BUYER,
                                     presenter.getOrderData().getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }

@@ -27,7 +27,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.profile.data.network.ProfileUrl;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
@@ -211,10 +210,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
     }
 }

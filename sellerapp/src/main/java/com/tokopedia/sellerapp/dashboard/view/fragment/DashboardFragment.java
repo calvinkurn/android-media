@@ -30,7 +30,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -196,10 +195,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().getApplication() instanceof TkpdInboxRouter) {
+                if (getActivity().getApplication() instanceof SellerModuleRouter) {
                     UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                             AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
-                    Intent intent = ((TkpdInboxRouter) getActivity().getApplication())
+                    Intent intent = ((SellerModuleRouter) getActivity().getApplication())
                             .getInboxMessageIntent(getActivity());
                     startActivity(intent);
                 }

@@ -1,4 +1,4 @@
-package com.tokopedia.core.router;
+package com.tokopedia.inbox;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
- * @author by nisie on 9/14/17.
+ * @author by alvinatin on 09/03/18.
  */
 
-public interface TkpdInboxRouter {
-
+public interface InboxModuleRouter {
     String ENABLE_TOPCHAT = "enable_topchat";
 
     String TX_ASK_SELLER = "tx_ask_seller";

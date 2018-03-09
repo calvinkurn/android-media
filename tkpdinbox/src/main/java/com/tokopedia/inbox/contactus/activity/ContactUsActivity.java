@@ -10,12 +10,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.IFCMInstanceIDService;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -175,7 +174,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             startActivity(intent);
             finish();
         } else {
-            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+            Intent intent = ((InboxModuleRouter) MainApplication.getAppContext())
                     .getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

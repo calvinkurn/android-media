@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -25,9 +24,9 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -48,13 +47,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -127,7 +119,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             String serverId = "";
             switch (category) {
                 case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (!remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT)) {
                         customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
                         if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                             serverId = Uri.parse(applinks).getLastPathSegment();
@@ -165,7 +157,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     break;
 
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT)) {
                         if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                                 && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                             ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);

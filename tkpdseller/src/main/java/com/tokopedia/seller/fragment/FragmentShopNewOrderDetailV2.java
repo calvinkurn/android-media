@@ -34,13 +34,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
@@ -458,8 +458,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
-                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+                    Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
                             .getAskBuyerIntent(getActivity(),
                                     order.getOrderCustomer().getCustomerId(),
                                     order.getOrderCustomer().getCustomerName(),
@@ -469,7 +469,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                                                     .replace("XXX",
                                                             order.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    SellerModuleRouter.TX_ASK_BUYER,
                                     order.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }

@@ -24,7 +24,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -80,8 +79,8 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                if (context.getApplication() instanceof TkpdInboxRouter) {
-                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);

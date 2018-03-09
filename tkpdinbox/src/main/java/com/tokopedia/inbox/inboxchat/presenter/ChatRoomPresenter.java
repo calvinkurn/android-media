@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -17,6 +16,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
@@ -180,7 +180,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 getView().startActivity(intent);
             } else {
                 getView().startActivity(
-                        ((TkpdCoreRouter) getView().getActivity().getApplicationContext())
+                        ((InboxModuleRouter) getView().getActivity().getApplicationContext())
                                 .getTopProfileIntent(getView().getContext(), id)
                 );
             }

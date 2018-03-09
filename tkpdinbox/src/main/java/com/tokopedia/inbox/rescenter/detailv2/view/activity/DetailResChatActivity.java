@@ -17,8 +17,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
@@ -87,8 +87,8 @@ public class DetailResChatActivity
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
-        if (context.getApplicationContext() instanceof TkpdInboxRouter){
-            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+        if (context.getApplicationContext() instanceof InboxModuleRouter){
+            Intent intent = ((InboxModuleRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(parentIntent);

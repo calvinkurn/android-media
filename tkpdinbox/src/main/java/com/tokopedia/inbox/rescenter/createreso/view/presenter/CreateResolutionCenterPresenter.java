@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDomain;
@@ -185,8 +185,8 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        if (context instanceof TkpdInboxRouter){
-            Intent intent = ((TkpdInboxRouter) context).getHomeIntent(context);
+        if (context instanceof InboxModuleRouter){
+            Intent intent = ((InboxModuleRouter) context).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(resInboxIntent);

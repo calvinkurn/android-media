@@ -60,7 +60,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -96,6 +95,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
@@ -116,6 +116,7 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -226,7 +227,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, InboxModuleRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
         DiscoveryRouter, RideModuleRouter, DigitalModuleRouter, KolRouter {
@@ -932,7 +933,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
 
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT))
             return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
@@ -944,7 +945,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
 
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT))
             return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
@@ -957,7 +958,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT))
             return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
@@ -968,7 +969,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT))
             return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
@@ -1113,7 +1114,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(InboxModuleRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
@@ -1498,5 +1499,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return TopProfileActivity.newInstance(context, userId);
+
     }
 }

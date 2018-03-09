@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.contactus.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,19 +10,17 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
+import com.tokopedia.inbox.InboxModuleRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
 
@@ -212,8 +209,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     getActivity().finish();
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)
-                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
-                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                        && getActivity().getApplicationContext() instanceof InboxModuleRouter) {
+                    ((InboxModuleRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new Bundle());
                     return true;
                 } else {
