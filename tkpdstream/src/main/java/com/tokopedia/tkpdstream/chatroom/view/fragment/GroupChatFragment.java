@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -47,6 +48,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
@@ -333,6 +335,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         && !adapter.isLoading()) {
                     presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
                 }
+
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    resetNewMessageCounter();
+                }
+
+                collapse(voteBody);
+                arrow.animate().rotationBy(180f).start();
             }
         });
 
@@ -382,6 +391,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     collapse(voteBody);
                 } else {
                     expand(voteBody);
+                    KeyboardHandler.DropKeyboard(getActivity(), getView());
                     analytics.eventClickVoteExpand();
                 }
                 arrow.animate().rotationBy(180f).start();
@@ -695,6 +705,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                channelInfoDialog.show();
+            }
+        },1500);
     }
 
     @Override
@@ -966,7 +983,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void setVoteParticipant(String participant) {
         voteParticipant.setText(String.format("%s %s", TextFormatter.format(participant)
-                , getActivity().getString(R.string.participant)));
+                , getActivity().getString(R.string.voter)));
     }
 
     private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel) {
@@ -1074,6 +1091,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             analytics.eventClickVoteComponent(type, name);
             if (voteBody.getVisibility() == View.GONE) {
                 expand(voteBody);
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
                 arrow.animate().rotationBy(180f).start();
             }
         }

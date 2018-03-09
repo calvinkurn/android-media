@@ -2,11 +2,13 @@ package com.tokopedia.tkpdstream.channel.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -55,6 +58,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     UserSession userSession;
 
     SwipeRefreshLayout swipeRefreshLayout;
+
+    SpaceItemDecoration itemDecoration;
 
     public static Fragment createInstance(Bundle bundle) {
         return new ChannelFragment();
@@ -96,6 +101,14 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         return view;
+    }
+
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        RecyclerView recyclerView = super.getRecyclerView(view);
+        recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
+        return recyclerView;
     }
 
     @Override
@@ -242,5 +255,29 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onSwipeRefresh() {
         presenter.refreshData();
+    }
+
+    public class ItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int space;
+
+        public ItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            if (parent.getChildAdapterPosition(view) == 0) {
+                outRect.top = space;
+                outRect.bottom= space / 2;
+            } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+                outRect.bottom = space;
+                outRect.top = space / 2;
+            } else {
+                outRect.top = space / 2;
+                outRect.bottom = space / 2;
+            }
+        }
     }
 }

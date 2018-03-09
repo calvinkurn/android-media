@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_header"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/space_between">
 
     <ImageView
         android:id="@+id/influencer_badge"
         android:layout_width="@dimen/badge_size"
         android:layout_height="@dimen/badge_size"
-        android:visibility="gone"
         android:layout_marginEnd="@dimen/margin_vvs"
         android:layout_marginRight="@dimen/margin_vvs"
-        app:layout_constraintEnd_toStartOf="@+id/nickname"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nickname"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_influencer"
         tools:visibility="visible" />
 
@@ -46,15 +47,17 @@
         android:layout_marginStart="@dimen/margin_vvs"
         android:background="@drawable/bg_rounded_green_label"
         android:fontFamily="sans-serif"
+        android:includeFontPadding="false"
         android:lineSpacingExtra="3sp"
         android:maxHeight="@dimen/space_med"
+        android:paddingBottom="@dimen/padding_vvs"
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_vvvs"
         android:text="@string/label_admin"
         android:textColor="@color/medium_green"
         android:textSize="@dimen/font_label"
         android:textStyle="normal"
-        android:includeFontPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/nickname"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,8 +66,8 @@
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin_vvs"
         android:layout_marginStart="@dimen/margin_vvs"
+        android:layout_marginLeft="@dimen/margin_vvs"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:text="@string/dot"
@@ -83,15 +86,12 @@
         android:layout_marginStart="@dimen/margin_vvvs"
         android:fontFamily="sans-serif"
         android:includeFontPadding="false"
-        android:paddingBottom="@dimen/padding_vvs"
-        android:paddingTop="@dimen/padding_vvs"
         android:textColor="@color/black_26"
         android:textSize="@dimen/font_time"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dot"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:text="12.00" />
 
 

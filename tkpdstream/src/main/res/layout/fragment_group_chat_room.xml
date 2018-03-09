@@ -35,7 +35,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
             app:titleTextAppearance="@style/ToolbarGroupChat"
-
+            android:alpha="0.9"
             tools:layout_height="64dp"/>
 
         <View

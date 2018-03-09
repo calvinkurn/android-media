@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="groupchat_avatar_size">20dp</dimen>
+    <dimen name="groupchat_avatar_size_large">30dp</dimen>
     <dimen name="card_channel_elevation">3dp</dimen>
 
     <dimen name="space_atomic">0.5dp</dimen>
@@ -18,6 +19,7 @@
     <dimen name="radius">5dp</dimen>
 
     <dimen name="space_between">14dp</dimen>
+    <dimen name="space_edittext">20dp</dimen>
 
     <dimen name="size_icon_vote">15dp</dimen>
     <dimen name="size_icon_share_app">32dp</dimen>

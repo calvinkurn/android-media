@@ -24,7 +24,7 @@
             android:paddingTop="@dimen/space_med"
             android:paddingBottom="@dimen/space_med"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close"/>
+            app:srcCompat="@drawable/ic_close_dialog_stream"/>
 
         <TextView
             android:id="@+id/textView2"
