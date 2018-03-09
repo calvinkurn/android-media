@@ -82,6 +82,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     private LinearLayout followersLayout;
     private TextView followersValue;
     private View followersSeparator;
+    private View tabSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
     private View header;
@@ -177,6 +178,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonTryAgain = findViewById(R.id.button_try_again);
         buttonFollowToolbar = findViewById(R.id.button_follow_toolbar);
         tvTitleToolbar = findViewById(R.id.tv_title_toolbar);
+        tabSeparator = findViewById(R.id.separator_tab);
     }
 
     private void setViewListener() {
@@ -420,6 +422,9 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         });
 
+        tabSeparator.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
+                View.VISIBLE : View.GONE);
+
         tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
                 View.VISIBLE : View.GONE);
 
@@ -443,10 +448,18 @@ public class TopProfileActivity extends BaseEmptyActivity
                     null,
                     null,
                     null);
-            title.setVisibility(View.VISIBLE);
-            title.setText(topProfileViewModel.getTitle());
-            description.setVisibility(View.VISIBLE);
-            description.setText(topProfileViewModel.getBiodata());
+            if (TextUtils.isEmpty(topProfileViewModel.getTitle())) {
+                title.setVisibility(View.VISIBLE);
+                title.setText(topProfileViewModel.getTitle());
+            } else {
+                title.setVisibility(View.GONE);
+            }
+            if (TextUtils.isEmpty(topProfileViewModel.getBiodata())) {
+                description.setVisibility(View.VISIBLE);
+                description.setText(topProfileViewModel.getBiodata());
+            } else {
+                description.setVisibility(View.GONE);
+            }
             followersLayout.setVisibility(View.VISIBLE);
             followersSeparator.setVisibility(View.VISIBLE);
             followersValue.setText(topProfileViewModel.getFollowers());
