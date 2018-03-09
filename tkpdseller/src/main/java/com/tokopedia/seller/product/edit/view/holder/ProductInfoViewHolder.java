@@ -150,7 +150,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void renderData(ProductViewModel model) {
-        setName(model.getProductName());
+        setName(model.getProductName(), model.isProductNameEditable());
         if (model.getProductCategory()!= null) {
             setCategoryId(model.getProductCategory().getCategoryId());
         } else {
@@ -243,9 +243,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return nameEditText.getText().toString().trim();
     }
 
-    public void setName(String name) {
+    public void setName(String name, boolean isNameEditable) {
         nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
         nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
+        nameEditText.setEnabled(isNameEditable);
     }
 
     public String getCatalogName() {
