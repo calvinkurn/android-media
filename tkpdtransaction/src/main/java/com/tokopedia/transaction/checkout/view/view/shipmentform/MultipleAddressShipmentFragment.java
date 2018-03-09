@@ -254,7 +254,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     @Override
     public void onAllShipmentChosen(List<MultipleAddressShipmentAdapterData> adapterDataList) {
         CartItemPromoHolderData appliedPromo = shipmentAdapter.getAppliedPromo();
-        if (appliedPromo != null) {
+        if (appliedPromo != null && appliedPromo.getTypePromo() != CartItemPromoHolderData.TYPE_PROMO_NOT_ACTIVE) {
             cartShipmentActivity.checkPromoCodeShipment(
                     presenter.checkPromoSubscription(appliedPromo),
                     presenter.generateCheckPromoRequest(adapterDataList, appliedPromo)
@@ -313,10 +313,13 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onShowPromo(String promoMessageString) {
         formatPromoMessage(promoMessage, promoMessageString);
         this.promoMessage.setVisibility(View.VISIBLE);
+        shipmentAdapter.showPromoSuggestionVisibility(false);
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onRemovePromo() {
+        shipmentAdapter.showPromoSuggestionVisibility(true);
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(null);
         shipmentAdapter.notifyDataSetChanged();
         promoMessage.setText("");
