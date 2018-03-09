@@ -395,12 +395,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventDrawerSellerHome();
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
-                case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                    intent = ((SellerRouterApplication) context.getApplication())
-                            .getInboxMessageIntent(context);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
-                    break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     UnifyTracking.eventClickGoldMerchantViaDrawer();
                     context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));

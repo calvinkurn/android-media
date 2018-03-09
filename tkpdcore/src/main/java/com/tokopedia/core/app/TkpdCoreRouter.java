@@ -169,4 +169,6 @@ public interface TkpdCoreRouter {
     Intent getGroupChatIntent(Context context, String channelUrl);
 
     Intent getInboxChannelsIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
 }
