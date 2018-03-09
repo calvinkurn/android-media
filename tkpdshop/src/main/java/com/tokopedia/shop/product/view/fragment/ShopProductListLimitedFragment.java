@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.shop.R;
@@ -39,6 +41,8 @@ import javax.inject.Inject;
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
         implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
+
+    private static final int REQUEST_CODER_USER_LOGIN = 100;
 
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -155,7 +159,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        // Do nothing
     }
 
     @Override
@@ -174,6 +178,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onErrorRemoveFromWishList(Throwable e) {
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            return;
+        }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
@@ -184,6 +193,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onErrorAddToWishList(Throwable e) {
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            return;
+        }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
     }
 
@@ -200,5 +214,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void hideLoading() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (shopProductListLimitedPresenter != null) {
+            shopProductListLimitedPresenter.detachView();
+        }
     }
 }

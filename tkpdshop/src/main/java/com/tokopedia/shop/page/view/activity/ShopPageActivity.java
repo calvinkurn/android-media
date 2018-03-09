@@ -26,8 +26,8 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -81,9 +81,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Inject
     ShopPagePresenter shopPagePresenter;
-
-    @Inject
-    UserSession userSession;
 
     private ShopProductListLimitedFragment shopProductListLimitedFragment;
     private ImageView backgroundImageView;
@@ -371,11 +368,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userSession != null && !userSession.isLoggedIn()) {
-                    Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(ShopPageActivity.this);
-                    ShopPageActivity.this.startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
-                    return;
-                }
                 buttonFavouriteShop.setEnabled(false);
                 shopPagePresenter.toggleFavouriteShop(shopId);
             }
@@ -636,6 +628,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onErrorToggleFavourite(Throwable e) {
         buttonFavouriteShop.setEnabled(true);
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(this);
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            return;
+        }
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
     }
 
