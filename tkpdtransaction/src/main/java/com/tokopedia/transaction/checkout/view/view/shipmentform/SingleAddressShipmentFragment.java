@@ -38,6 +38,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSug
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.SingleShipmentData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
@@ -45,7 +46,7 @@ import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdap
 import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.SingleAddressShipmentModule;
-import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -54,7 +55,6 @@ import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -102,10 +102,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Inject
     CartShipmentAddressFormDataConverter mCartShipmentAddressFormDataConverter;
 
-    ICartShipmentActivity cartShipmentActivityListener;
+    private ICartShipmentActivity cartShipmentActivityListener;
 
-    private List<Object> mShipmentDataList;
     private PromoCodeAppliedData promoCodeAppliedData;
+    private CartPromoSuggestion cartPromoSuggestion;
+    private SingleShipmentData singleShipmentData;
 
     private List<DataCheckoutRequest> mCheckoutRequestData;
     private List<Data> mPromoRequestData;
@@ -158,64 +159,32 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
-    @Override
+
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    /**
-     * instantiate presenter disini. sesuai dengan Type param di class
-     */
+
     @Override
     protected void initialPresenter() {
 
     }
 
-    /**
-     * Cast si activity ke listener atau bisa juga ini untuk context activity
-     *
-     * @param activity si activity yang punya fragment
-     */
     @Override
     protected void initialListener(Activity activity) {
         cartShipmentActivityListener = (ICartShipmentActivity) activity;
     }
 
-    /**
-     * kalau memang argument tidak kosong. ini data argumentnya
-     *
-     * @param arguments argument nya
-     */
     @Override
     protected void setupArguments(Bundle arguments) {
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
 
-        mShipmentDataList = mCartShipmentAddressFormDataConverter.convert(cartShipmentAddressFormData);
+        singleShipmentData = mCartShipmentAddressFormDataConverter.convert(
+                cartShipmentAddressFormData
+        );
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
-
-        CartPromo cartPromo = new CartPromo();
-        if (promoCodeAppliedData != null) {
-            cartPromo.setCouponCode(promoCodeAppliedData.getPromoCode());
-            cartPromo.setCouponMessage(promoCodeAppliedData.getDescription());
-            cartPromo.setCouponTitle(promoCodeAppliedData.getCouponTitle());
-            int promoCodeAppliedDataType = promoCodeAppliedData.getTypeVoucher();
-            if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_VOUCHER) {
-                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_VOUCHER);
-                cartPromo.setVoucherDiscountAmount(promoCodeAppliedData.getAmount());
-            } else if (promoCodeAppliedDataType == CartPromo.TYPE_PROMO_COUPON) {
-                cartPromo.setTypePromo(CartPromo.TYPE_PROMO_COUPON);
-                cartPromo.setCouponDiscountAmount(promoCodeAppliedData.getAmount());
-            }
-        }
-        mShipmentDataList.add(0, cartPromo);
-        mShipmentDataList.add(1, cartPromoSuggestion);
+        cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
     }
 
     @Override
@@ -233,9 +202,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mCvBottomLayout = view.findViewById(R.id.bottom_layout);
     }
 
-    /**
-     * set listener atau attribute si view. misalkan texView.setText("blablalba");
-     */
     @Override
     protected void setViewListener() {
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -268,20 +234,20 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mCvBottomLayout.setVisibility(View.VISIBLE);
 
         mSingleAddressShipmentPresenter.attachView(this);
-        mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
+        mSingleAddressShipmentAdapter.addPromoVoucherData(
+                CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData)
+        );
+        mSingleAddressShipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+        mSingleAddressShipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
+        mSingleAddressShipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
+        mSingleAddressShipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
     }
 
-    /**
-     * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll
-     */
     @Override
     protected void initialVar() {
         getActivity().setTitle("Kurir Pengiriman");
     }
 
-    /**
-     * setup aksi, attr, atau listener untuk si variable. misal. appHandler.startAction();
-     */
     @Override
     protected void setActionVar() {
 
@@ -289,8 +255,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void show(List<Object> shipmentDataList) {
-        mSingleAddressShipmentAdapter.changeDataSet(shipmentDataList);
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -368,38 +333,34 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-        ListIterator<Object> iterator = mShipmentDataList.listIterator();
-        while (iterator.hasNext()) {
-            if (iterator.next() instanceof CartPromoSuggestion) {
-                iterator.remove();
-            }
-        }
-        mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
+        mSingleAddressShipmentAdapter.removeData(position);
     }
 
     @Override
-    public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
+    public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            Intent intent = ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                    .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(getActivity(), "", true);
-
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+            );
         }
     }
 
     @Override
-    public void onCartPromoCancelVoucherPromoClicked(CartPromo cartPromo, int position) {
+    public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
         cartPromo.setPromoNotActive();
         mSingleAddressShipmentAdapter.notifyItemChanged(position);
     }
 
     @Override
-    public void onCartPromoTrackingSuccess(CartPromo cartPromo, int position) {
+    public void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position) {
 
     }
 
     @Override
-    public void onCartPromoTrackingCancelled(CartPromo cartPromo, int position) {
+    public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
 
     }
 
@@ -507,49 +468,101 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
-            switch (resultCode) {
-                case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
-                    RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+            onResultFromRequestCodeAddressOptions(resultCode, data);
+        } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT
+                || requestCode == REQUEST_CODE_SHIPMENT_DETAIL) && resultCode == Activity.RESULT_OK) {
+            onResultFromRequestCodeCourierOptions(requestCode, data);
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            onResultFromRequestCodeLoyalty(resultCode, data);
+        }
+    }
 
-                    updateSelectedAddress(selectedAddress);
-                    mSingleAddressShipmentPresenter.setShipmentData(mShipmentDataList);
-                    break;
+    private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String voucherCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                String voucherMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                long voucherDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(voucherCode)
+                        .description(voucherMessage)
+                        .amount((int) voucherDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
-                case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-                    Intent intent = new Intent();
-                    for (Object object : mShipmentDataList) {
-                        if (object instanceof RecipientAddressModel) {
-                            intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-                                    (RecipientAddressModel) object);
-                        }
-                    }
-                    cartShipmentActivityListener.closeWithResult(
-                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
-                    break;
+                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
+            }
+        } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String couponTitle = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                String couponMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                String couponCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                long couponDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(couponCode)
+                        .couponTitle(couponTitle)
+                        .description(couponMessage)
+                        .amount((int) couponDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setPromoCouponType(
+                        couponTitle, couponCode, couponMessage, couponDiscountAmount
+                );
 
-                default:
-                    break;
+                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
             }
         }
+    }
 
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CHOOSE_PICKUP_POINT:
-                    Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
-                    mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
-                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
-                    break;
+    private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHOOSE_PICKUP_POINT:
+                Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                break;
 
-                case REQUEST_CODE_SHIPMENT_DETAIL:
-                    ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    int position = data.getIntExtra(EXTRA_POSITION, 0);
-                    mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
-                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
+            case REQUEST_CODE_SHIPMENT_DETAIL:
+                ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
+                int position = data.getIntExtra(EXTRA_POSITION, 0);
+                mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
 
-                default:
-                    break;
-            }
+            default:
+                break;
+        }
+    }
+
+    private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
+        switch (resultCode) {
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+                RecipientAddressModel selectedAddress = data.getParcelableExtra(
+                        CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+
+                mSingleAddressShipmentAdapter.updateSelectedAddress(selectedAddress);
+                break;
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                Intent intent = new Intent();
+                intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                        mSingleAddressShipmentAdapter.getSelectedAddressReceipent());
+                cartShipmentActivityListener.closeWithResult(
+                        CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -581,13 +594,5 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 .build();
     }
 
-    private void updateSelectedAddress(RecipientAddressModel recipientAddress) {
-        for (Object item : mShipmentDataList) {
-            if (item instanceof RecipientAddressModel) {
-                mShipmentDataList.set(mShipmentDataList.indexOf(item), recipientAddress);
-                break;
-            }
-        }
-    }
 
 }
