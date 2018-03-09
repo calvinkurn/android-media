@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -203,12 +205,19 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }
     }
 
+    @Override
+    public LoadingModel getLoadingModel() {
+        if(isLoadingInitialData) {
+            return new LoadingModelShimmeringGrid();
+        }else{
+            return new LoadingModel();
+        }
+    }
 
     @Override
     public void onSwipeRefresh() {
         shopProductListPresenter.clearProductCache();
         super.onSwipeRefresh();
-
     }
 
     private void setBottomActionViewImage(int index) {

@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:background="@color/background_apps">
 
+    <include layout="@layout/activity_shop_page_loading_state"
+        android:id="@+id/shop_page_loading_state"
+        android:visibility="gone"/>
+
+    <include layout="@layout/design_error_network"
+        android:id="@+id/shop_page_error_state"
+        android:visibility="gone"/>
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -22,6 +30,7 @@
             app:expandedTitleMarginStart="12dp"
             app:expandedTitleTextAppearance="@style/TextView.Title"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
 
             <include
                 layout="@layout/partial_shop_page_header"
@@ -44,6 +53,7 @@
                 app:subtitleTextAppearance="@style/TitleTextAppearance.White"
                 app:titleTextAppearance="@style/SubTitleTextAppearance" />
 
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <android.support.design.widget.TabLayout
@@ -56,6 +66,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/container_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_submit"

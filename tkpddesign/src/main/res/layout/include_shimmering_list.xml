@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_width_xxxs"
+        android:layout_marginBottom="@dimen/margin_ms"
+        app:width_weight="0.8"
+        />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_width_xxxs"
+        android:layout_marginBottom="@dimen/margin_ms"
+        app:width_weight="0.6"
+        />
+</LinearLayout>

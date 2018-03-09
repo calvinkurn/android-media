@@ -160,4 +160,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
+
+    public void setLoadingModel(LoadingModel loadingModel) {
+        this.loadingModel = loadingModel;
+    }
 }

@@ -1,7 +1,10 @@
 package com.tokopedia.shop.favourite.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringList;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -11,6 +14,8 @@ import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,6 +47,15 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void loadData(int page) {
         shopFavouriteListPresenter.getshopFavouriteList(shopId, page);
+    }
+
+    @Override
+    public LoadingModel getLoadingModel() {
+        if(isLoadingInitialData){
+            return new LoadingModelShimmeringList();
+        }else{
+            return super.getLoadingModel();
+        }
     }
 
     @Override
