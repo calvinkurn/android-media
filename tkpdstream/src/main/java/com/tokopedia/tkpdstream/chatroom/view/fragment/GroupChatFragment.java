@@ -99,7 +99,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(1);
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
 
     @Inject
     GroupChatPresenter presenter;
