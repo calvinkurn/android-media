@@ -42,7 +42,7 @@ public class AddEmailPresenter
     public void submitEmail(String email) {
         getView().showLoading();
         checkEmailUseCase.execute(CheckEmailUseCase.getParams(email),
-                new CheckEmailSubscriber(getView().getContext(), getView()));
+                new CheckEmailSubscriber(getView()));
     }
 
 
