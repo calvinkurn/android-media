@@ -19,6 +19,7 @@ import rx.Subscriber;
  */
 
 public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
+    private static final String DASH = "-";
     private final KolPostListener.View view;
 
     public GetKolPostSubscriber(KolPostListener.View view) {
@@ -56,13 +57,13 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                         kolPostViewModel.getId(),
                         KolTracking.Promotion.createContentNameKolPost(
                                 kolPostViewModel.getTagsType()),
-                        TextUtils.isEmpty(kolPostViewModel.getName()) ? "-" :
+                        TextUtils.isEmpty(kolPostViewModel.getName()) ? DASH :
                                 kolPostViewModel.getName(),
                         index,
-                        TextUtils.isEmpty(kolPostViewModel.getLabel()) ? "-" :
+                        TextUtils.isEmpty(kolPostViewModel.getLabel()) ? DASH :
                                 kolPostViewModel.getLabel(),
                         kolPostViewModel.getContentId(),
-                        TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? "-" :
+                        TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? DASH :
                                 kolPostViewModel.getContentLink(),
                         Integer.valueOf(!TextUtils.isEmpty(view.getUserSession().getUserId()) ?
                                         view.getUserSession().getUserId() : "0")
