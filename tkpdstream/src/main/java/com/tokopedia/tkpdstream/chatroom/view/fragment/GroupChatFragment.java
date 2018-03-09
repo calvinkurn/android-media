@@ -176,7 +176,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else {
             Intent intent = new Intent();
             intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
-            getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN, intent);
+            getActivity().setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
             getActivity().finish();
         }
 
@@ -867,6 +867,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+                getActivity().setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
                 getActivity().finish();
             }
         });
@@ -885,6 +886,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+                getActivity().setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
                 getActivity().finish();
             }
         });

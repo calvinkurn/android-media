@@ -8,7 +8,7 @@ import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 
 public class ChannelActivity extends BaseSimpleActivity {
 
-    public static final int RESULT_ERROR_LOGIN = 101;
+    public static final int RESULT_ERROR_ENTER_CHANNEL = 101;
     public static final String RESULT_MESSAGE = "result_message";
 
     @Override

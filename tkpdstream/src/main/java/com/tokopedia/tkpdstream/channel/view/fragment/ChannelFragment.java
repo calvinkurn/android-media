@@ -216,14 +216,14 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_OPEN_GROUPCHAT
-                && resultCode == ChannelActivity.RESULT_ERROR_LOGIN
+                && resultCode == ChannelActivity.RESULT_ERROR_ENTER_CHANNEL
                 && data != null
                 && data.getExtras() != null) {
             String errorMessage = data.getExtras().getString(ChannelActivity.RESULT_MESSAGE, "");
             if (!TextUtils.isEmpty(errorMessage)) {
-                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
             } else {
-                NetworkErrorHelper.showSnackbar(getActivity());
+                presenter.refreshData();
             }
         } else if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_CANCELED) {
