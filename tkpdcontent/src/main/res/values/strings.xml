@@ -6,4 +6,9 @@
     <string name="comment">Comment</string>
     <string name="following">Following</string>
     <string name="empty_kol_post">Belum ada post</string>
+    <string name="post_time_just_now">Baru saja</string>
+    <string name="post_time_minutes_ago">\u0020menit yang lalu</string>
+    <string name="post_time_hours_ago">\u0020jam yang lalu</string>
+    <string name="post_time_hour">\u0020pukul\u0020</string>
+    <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 </resources>

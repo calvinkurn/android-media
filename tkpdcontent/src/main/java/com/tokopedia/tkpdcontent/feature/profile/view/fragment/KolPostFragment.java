@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.KolComponentInstance;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.R;
+import com.tokopedia.tkpdcontent.common.util.TimeConverter;
 import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileModule;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
@@ -230,7 +231,8 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
         Intent intent = kolRouter.getKolCommentActivity(
                 getContext(), kolPostViewModel.getAvatar(), kolPostViewModel.getName(),
-                kolPostViewModel.getReview(), kolPostViewModel.getTime(),
+                kolPostViewModel.getReview(),
+                TimeConverter.generateTime(getContext(), kolPostViewModel.getTime()),
                 String.valueOf(kolPostViewModel.getUserId()), kolPostViewModel.getKolImage(),
                 kolPostViewModel.getContentName(), kolPostViewModel.getProductPrice(),
                 kolPostViewModel.isWishlisted(), kolPostViewModel.getId(), rowNumber

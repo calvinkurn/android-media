@@ -3,10 +3,9 @@ package com.tokopedia.tkpdcontent.feature.profile.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.tkpdcontent.common.util.TimeConverter;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetUserKolPostResponse;
-import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolData;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
+import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolData;
 import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
@@ -50,8 +49,7 @@ public class GetProfileKolDataMapper
                     "",
                     getTagId(postKolData),
                     postKolData.id != null ? postKolData.id : 0,
-                    postKolData.createTime != null ?
-                            TimeConverter.generateTime(postKolData.createTime) : "",
+                    postKolData.createTime != null ? postKolData.createTime : "",
                     "",
                     getTagPrice(postKolData),
                     false,

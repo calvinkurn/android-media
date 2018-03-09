@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.analytics.KolTracking;
+import com.tokopedia.tkpdcontent.common.util.TimeConverter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
@@ -85,7 +86,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
         if (element.isFollowed()) {
-            label.setText(element.getTime());
+            label.setText(TimeConverter.generateTime(label.getContext(), element.getTime()));
         } else {
             label.setText(element.getLabel());
         }
