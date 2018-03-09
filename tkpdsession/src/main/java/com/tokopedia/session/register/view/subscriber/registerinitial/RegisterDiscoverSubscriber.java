@@ -29,16 +29,17 @@ public class RegisterDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissLoadingDiscover();
-        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
-            int code = Integer.parseInt(e.getLocalizedMessage());
-            if (code == ResponseStatus.SC_FORBIDDEN) {
+        ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+            @Override
+            public void onForbidden() {
                 viewListener.onForbidden();
-            } else {
-                viewListener.onErrorDiscoverRegister(ErrorHandler.getErrorMessage(e));
             }
-        } else {
-            viewListener.onErrorDiscoverRegister(ErrorHandler.getErrorMessage(e));
-        }
+
+            @Override
+            public void onError(String errorMessage) {
+                viewListener.onErrorDiscoverRegister(errorMessage);
+            }
+        }, e, MainApplication.getAppContext());
     }
 
     @Override

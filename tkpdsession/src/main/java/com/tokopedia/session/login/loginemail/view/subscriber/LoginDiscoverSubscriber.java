@@ -28,16 +28,17 @@ public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingDiscover();
-        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
-            int code = Integer.parseInt(e.getLocalizedMessage());
-            if (code == ResponseStatus.SC_FORBIDDEN) {
+        ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+            @Override
+            public void onForbidden() {
                 view.onForbidden();
-            } else {
-                view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
             }
-        } else {
-            view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
-        }
+
+            @Override
+            public void onError(String errorMessage) {
+                view.onErrorDiscoverLogin(errorMessage);
+            }
+        }, e, view.getContext());
     }
 
     @Override
