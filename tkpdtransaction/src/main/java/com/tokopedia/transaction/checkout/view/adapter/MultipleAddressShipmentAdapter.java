@@ -71,15 +71,13 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         this.promoSuggestionData = promoSuggestion;
 
-//        if (promoHolderData != null) {
-//            promoSuggestionData.setVisible(false);
-//        }
-
-//        if (this.promoSuggestionData.isVisible())
-//        else
-        multipleAddressShipmentItemList.add(promoSuggestionData);
+        if (promoHolderData != null) {
+            promoSuggestionData.setVisible(false);
+        }
 
         multipleAddressShipmentItemList.add(cartItemPromoHolderData);
+
+        multipleAddressShipmentItemList.add(promoSuggestionData);
 
         multipleAddressShipmentItemList.addAll(addressDataList);
 
@@ -164,7 +162,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private void bindPromoView(MultipleShipmentPromoViewHolder promoHolder) {
-        promoHolder.bindPromoView(cartItemPromoHolderData, voucherClickedListener());
+        promoHolder.bindPromoView(cartItemPromoHolderData, voucherClickedListener(cartItemPromoHolderData));
     }
 
     private void bindPromoSuggestion(
@@ -235,9 +233,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         multipleAddressShipmentItemList.add(0, cartItemPromoHolderData);
     }
 
-    public void showPromoSuggestion() {
-        multipleAddressShipmentItemList.remove(0);
-        multipleAddressShipmentItemList.add(0, promoSuggestionData);
+    public void showPromoSuggestionVisibility(boolean visible) {
+//        multipleAddressShipmentItemList.remove(0);
+//        multipleAddressShipmentItemList.add(0, promoSuggestionData);
+        promoSuggestionData.setVisible(visible);
     }
 
     public void removePromo() {
@@ -256,7 +255,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return totalPayment;
     }
 
-    private VoucherCartHachikoView.ActionListener voucherClickedListener() {
+    private VoucherCartHachikoView.ActionListener voucherClickedListener(
+            final CartItemPromoHolderData cartItemPromoHolderData) {
         return new VoucherCartHachikoView.ActionListener() {
             @Override
             public void onClickUseVoucher() {
@@ -265,6 +265,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             @Override
             public void disableVoucherDiscount() {
+                cartItemPromoHolderData.setPromoNotActive();
                 notifyDataSetChanged();
             }
 
