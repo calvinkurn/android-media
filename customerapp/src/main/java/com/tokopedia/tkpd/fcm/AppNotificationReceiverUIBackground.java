@@ -32,6 +32,7 @@ import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
+import com.tokopedia.tkpd.fcm.applink.ApplinkNotificationHelper;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -78,18 +79,27 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public void notifyReceiverBackgroundMessage(Bundle bundle) {
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
-            //TODO this function for divide the new and old flow(that still supported)
-            // next if complete new plz to delete
-            if (isSupportedApplinkNotification(bundle)) {
-                handleApplinkNotification(bundle);
+            if (isApplinkNotification(bundle)) {
+                ApplinkNotificationHelper applinkNotificationHelper = new ApplinkNotificationHelper(mContext);
+                applinkNotificationHelper.notifyApplinkNotification(bundle);
             } else {
-                if (isDedicatedNotification(bundle)) {
-                    handleDedicatedNotification(bundle);
+                //TODO this function for divide the new and old flow(that still supported)
+                // next if complete new plz to delete
+                if (isSupportedApplinkNotification(bundle)) {
+                    handleApplinkNotification(bundle);
                 } else {
-                    prepareAndExecutePromoNotification(bundle);
+                    if (isDedicatedNotification(bundle)) {
+                        handleDedicatedNotification(bundle);
+                    } else {
+                        prepareAndExecutePromoNotification(bundle);
+                    }
                 }
             }
         }
+    }
+
+    private boolean isApplinkNotification(Bundle data) {
+        return !data.getString(Constants.ARG_NOTIFICATION_APPLINK, "").equals("");
     }
 
     private boolean isAllowedNotification(Bundle data) {

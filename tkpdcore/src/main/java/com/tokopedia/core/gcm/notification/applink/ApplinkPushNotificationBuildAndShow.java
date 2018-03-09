@@ -18,7 +18,7 @@ import com.tokopedia.core.util.GlobalConfig;
 /**
  * Created by alvarisi on 5/22/17.
  */
-
+@Deprecated
 public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification {
 
     private static final String NOTIFICATION_GROUP = "general_group";

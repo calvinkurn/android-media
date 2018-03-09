@@ -39,6 +39,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  * @author by alvarisi on 1/11/17.
  */
 
+@Deprecated
 public class BuildAndShowNotification {
     private final Context mContext;
     private FCMCacheManager cacheManager;
