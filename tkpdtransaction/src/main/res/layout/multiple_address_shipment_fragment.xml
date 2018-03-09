@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_200"
@@ -47,6 +48,18 @@
                 android:text="-" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_promo_message"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:visibility="gone"
+            tools:text="Anda mendapat gratis ongkir Rp20.000"
+            tools:visibility="visible" />
 
         <View
             android:layout_width="match_parent"

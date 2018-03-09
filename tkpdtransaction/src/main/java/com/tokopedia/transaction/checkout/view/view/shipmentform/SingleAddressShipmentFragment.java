@@ -387,7 +387,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
                             @Override
                             public void onError(Throwable e) {
-
+                                NetworkErrorHelper.showRedCloseSnackbar(getActivity(), "Terjadi kesalahan");
                             }
 
                             @Override

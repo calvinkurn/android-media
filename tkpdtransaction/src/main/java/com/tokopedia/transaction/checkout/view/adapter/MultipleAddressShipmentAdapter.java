@@ -71,10 +71,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         this.promoSuggestionData = promoSuggestion;
 
-        if (this.promoSuggestionData.isVisible())
-            multipleAddressShipmentItemList.add(this.promoSuggestionData);
-        else
-            multipleAddressShipmentItemList.add(cartItemPromoHolderData);
+//        if (promoHolderData != null) {
+//            promoSuggestionData.setVisible(false);
+//        }
+
+//        if (this.promoSuggestionData.isVisible())
+//        else
+        multipleAddressShipmentItemList.add(promoSuggestionData);
+
+        multipleAddressShipmentItemList.add(cartItemPromoHolderData);
 
         multipleAddressShipmentItemList.addAll(addressDataList);
 
@@ -87,7 +92,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void setShipmentDetailData(int position, ShipmentDetailData shipmentDetailData) {
         this.addressDataList.get(position).setSelectedShipmentDetailData(shipmentDetailData);
         calculateTemporarySubTotalForFloatingIndicator(position, shipmentDetailData);
-        if(isAllShipmentChosen()) {
+        if (isAllShipmentChosen()) {
             listener.onAllShipmentChosen(addressDataList);
         }
     }
@@ -133,7 +138,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         else if (viewType == MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT)
             return new MultipleAddressShipmentFooterViewHolder(itemView);
         else if (viewType == MULTIPLE_ADDRESS_FOOTER_TOTAL_PAYMENT)
-            return new MultipleAddressShipmentFooterTotalPayment(itemView);
+            return new MultipleAddressShipmentFooterTotalPayment(itemView, listener);
         else return new MultipleShippingAddressViewHolder(itemView);
     }
 
@@ -196,11 +201,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     @Override
     public int getItemCount() {
-       return multipleAddressShipmentItemList.size();
+        return multipleAddressShipmentItemList.size();
     }
 
     private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in","ID");
+        Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(unformattedPrice);
     }
@@ -217,8 +222,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private boolean isAllShipmentChosen() {
         boolean allFilled = true;
-        for(int i = 0; i < addressDataList.size(); i++) {
-            if(!isShipmentDataInitiated(addressDataList.get(i))) {
+        for (int i = 0; i < addressDataList.size(); i++) {
+            if (!isShipmentDataInitiated(addressDataList.get(i))) {
                 allFilled = false;
             }
         }
@@ -233,6 +238,14 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void showPromoSuggestion() {
         multipleAddressShipmentItemList.remove(0);
         multipleAddressShipmentItemList.add(0, promoSuggestionData);
+    }
+
+    public void removePromo() {
+
+    }
+
+    public CartItemPromoHolderData getAppliedPromo() {
+        return cartItemPromoHolderData;
     }
 
     private long calculateTotalPayment() {
@@ -284,5 +297,9 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         void onPromoSuggestionCancelled();
 
         void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData);
+
+        void onShowPromo(String promoMessage);
+
+        void onRemovePromo();
     }
 }
