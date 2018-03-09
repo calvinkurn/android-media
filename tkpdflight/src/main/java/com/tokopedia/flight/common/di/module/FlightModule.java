@@ -8,13 +8,16 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
+import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloudSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
@@ -32,6 +35,8 @@ import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -60,7 +65,11 @@ public class FlightModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
+        OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy();
         return new OkHttpClient.Builder()
+                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))
@@ -84,17 +93,20 @@ public class FlightModule {
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
+                                                    FlightSavedPassengerDataListCloudSource flightSavedPassengerDataListCloudSource,
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
                                                     FlightAirportVersionDBSource flightAirportVersionDBSource,
                                                     FlightOrderDataSource flightOrderDataSource,
-                                                    FlightOrderMapper flightOrderMapper) {
+                                                    FlightOrderMapper flightOrderMapper,
+                                                    FlightPassengerFactorySource flightPassengerFactorySource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource,flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
-                flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource, flightBookingDataSource,
-                flightAirportVersionDBSource, flightOrderDataSource, flightOrderMapper);
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
+                flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
+                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
+                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource);
     }
 
     @Provides
