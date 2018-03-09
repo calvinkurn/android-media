@@ -20,6 +20,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -113,7 +114,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToProfile(String reviewerId) {
-        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+        startActivity(((ReputationRouter) getActivity().getApplicationContext())
                 .getTopProfileIntent(getActivity(),
                         String.valueOf(reviewerId)));
     }

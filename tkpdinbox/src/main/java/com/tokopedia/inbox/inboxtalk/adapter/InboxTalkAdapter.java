@@ -25,6 +25,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talk.model.model.TalkUserReputation;
@@ -295,7 +296,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
             @Override
             public void onClick(View v) {
                 context.startActivity(
-                        ((TkpdCoreRouter) context.getApplicationContext())
+                        ((TkpdInboxRouter) context.getApplicationContext())
                                 .getTopProfileIntent(context, talkUserId));
             }
         };

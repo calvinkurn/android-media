@@ -7,9 +7,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.inboxmessageold.InboxMessageConstant;
@@ -237,7 +237,7 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
     @Override
     public void onGoToProfile(String userId) {
         viewListener.getActivity().startActivity(
-                ((TkpdCoreRouter) viewListener.getActivity().getApplicationContext())
+                ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
                         .getTopProfileIntent(viewListener.getActivity(), userId)
         );
     }

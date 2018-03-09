@@ -37,6 +37,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -461,7 +462,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(int reviewerId) {
-        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+        startActivity(((ReputationRouter) getActivity().getApplicationContext())
                 .getTopProfileIntent(getActivity(),
                         String.valueOf(reviewerId)));
     }
@@ -513,7 +514,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToPeopleProfile(int userId) {
-        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+        startActivity(((ReputationRouter) getActivity().getApplicationContext())
                 .getTopProfileIntent(getActivity(), String.valueOf(userId)));
     }
 

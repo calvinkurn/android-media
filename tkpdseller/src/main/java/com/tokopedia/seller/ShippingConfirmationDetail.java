@@ -19,7 +19,6 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -430,7 +429,7 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void onBuyerClick() {
-        startActivity(((TkpdCoreRouter) this.getApplicationContext())
+        startActivity(((SellerModuleRouter) this.getApplicationContext())
                 .getTopProfileIntent(this,
                         UserID));
     }
