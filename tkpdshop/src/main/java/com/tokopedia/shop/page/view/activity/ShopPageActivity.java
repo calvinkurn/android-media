@@ -33,7 +33,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
@@ -565,7 +564,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         } else {
             displayAsGeneralShop(shopInfo);
         }
-        if (shopPagePresenter.getUserSession().getShopId().equals(shopId)) {
+        if (shopPagePresenter.isMyShop(shopId)) {
             displayAsBuyerShop();
         } else {
             displayAsSellerShop();

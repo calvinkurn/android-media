@@ -47,6 +47,10 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         this.userSession = userSession;
     }
 
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
+    }
+
     public void getProductLimitedList(String shopId, final String promotionWebViewUrl) {
         getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductBaseViewModel>>() {
             @Override

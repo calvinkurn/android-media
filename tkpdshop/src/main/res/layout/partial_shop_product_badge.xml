@@ -16,7 +16,7 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_nano"
         android:visibility="gone"
-        tools:text="@string/product_manage_item_cashback"
+        tools:text="@string/shop_product_manage_item_cashback"
         tools:visibility="visible" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_marginRight="@dimen/margin_ms"
         android:background="@drawable/bg_rect_stroke_lighter_gray"
         android:padding="@dimen/padding_vvs"
-        android:text="@string/product_label_wholesale"
+        android:text="@string/shop_product_label_wholesale"
         android:textSize="@dimen/font_nano"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -39,7 +39,7 @@
         android:layout_marginRight="@dimen/margin_ms"
         android:background="@drawable/bg_rect_stroke_lighter_gray"
         android:padding="@dimen/padding_vvs"
-        android:text="@string/product_label_po"
+        android:text="@string/shop_product_label_po"
         android:textSize="@dimen/font_nano"
         android:visibility="gone"
         tools:visibility="visible" />

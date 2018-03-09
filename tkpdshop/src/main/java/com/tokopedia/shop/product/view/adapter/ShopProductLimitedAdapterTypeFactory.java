@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
@@ -25,13 +24,13 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final View.OnClickListener showMoreProductOnClickListener;
     private final View.OnClickListener showMoreEtalaseOnClickListener;
     private final ShopProductClickedListener shopProductClickedListener;
-    private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
+    private final EmptyViewHolder.Callback emptyProductOnClickListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener,
-                                                EmptyResultViewHolder.Callback emptyProductOnClickListener) {
+                                                EmptyViewHolder.Callback emptyProductOnClickListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -59,7 +58,7 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == EmptyViewHolder.LAYOUT) {
-            return new EmptyViewHolder(parent);
+            return new EmptyViewHolder(parent, emptyProductOnClickListener);
         }  else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {

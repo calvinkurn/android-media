@@ -37,8 +37,8 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         this.userSession = userSession;
     }
 
-    public UserSession getUserSession() {
-        return userSession;
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
     }
 
     public void getShopInfo(String shopId) {

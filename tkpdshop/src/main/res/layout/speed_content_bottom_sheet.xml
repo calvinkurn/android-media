@@ -27,7 +27,7 @@
         android:layout_marginStart="@dimen/new_margin_med"
         android:layout_marginTop="@dimen/margin_small"
         android:lineSpacingExtra="@dimen/line_spacng_extra"
-        android:text="@string/speed_content_desc"
+        android:text="@string/shop_speed_content_desc"
         android:textColor="@color/colorSheetTitle"
         android:textStyle="normal"
         app:layout_constraintHorizontal_bias="0.0"

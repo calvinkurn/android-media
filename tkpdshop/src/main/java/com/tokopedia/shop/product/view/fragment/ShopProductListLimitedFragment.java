@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -44,7 +46,7 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener, EmptyResultViewHolder.Callback {
+        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback {
 
     private static final int REQUEST_CODER_USER_LOGIN = 100;
 
@@ -113,6 +115,19 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        if (shopProductListLimitedPresenter.isMyShop(shopId)) {
+            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_owner));
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_content_owner));
+            emptyModel.setButtonTitle(getString(R.string.shop_page_label_add_product));
+        } else {
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title));
+        }
+        return emptyModel;
+    }
+
+    @Override
     protected void initInjector() {
         DaggerShopProductComponent
                 .builder()
@@ -134,7 +149,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onEmptyButtonClicked() {
-
+        ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
     }
 
     @Override
@@ -183,6 +198,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void renderList(@NonNull List<ShopProductBaseViewModel> list) {
         super.renderList(list);
         loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        if (list.size() <= 0) {
+            searchInputView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -227,7 +245,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
             startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override

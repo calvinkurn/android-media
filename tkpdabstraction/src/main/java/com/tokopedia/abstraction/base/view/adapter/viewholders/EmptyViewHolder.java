@@ -26,7 +26,6 @@ public class EmptyViewHolder extends BaseEmptyViewHolder<EmptyModel> {
 
     @Override
     public void bind(EmptyModel element) {
-        element.setTitle(emptyTitleTextView.getContext().getString(R.string.title_no_result));
         super.bind(element);
     }
 }

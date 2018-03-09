@@ -95,7 +95,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
-                    R.string.product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
+                    R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);

@@ -16,7 +16,7 @@ public class CacheApiLoggingUtils {
         if (!logEnabled) {
             return;
         }
-        if (str.length() > MAX_LOG_LENGTH) {
+        if (str.length() < MAX_LOG_LENGTH) {
             Log.v(TAG, str);
             return;
         }

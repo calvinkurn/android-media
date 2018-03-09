@@ -225,7 +225,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected Visitable getEmptyDataViewModel() {
-        return new EmptyModel();
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setContent(getString(R.string.title_no_result));
+        return emptyModel;
     }
 
     @Override
@@ -246,6 +248,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     private void onGetListErrorWithEmptyData(Throwable throwable) {
+        if (getView() != null) {
+            return;
+        }
         String message = getMessageFromThrowable(getView().getContext(), throwable);
         adapter.showErrorNetwork(message, this);
         if (swipeToRefresh != null) {
