@@ -255,13 +255,19 @@
             android:exported="false" />
 
         <activity
-            android:name=".datepicker.DatePickerTokoCashActivity"
+            android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
             android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".flight.presentation.FlightPhoneVerificationActivity"
+            android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

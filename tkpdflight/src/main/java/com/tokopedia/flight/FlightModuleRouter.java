@@ -39,6 +39,8 @@ public interface FlightModuleRouter {
 
     Intent getDefaultContactUsIntent(Activity activity, String url);
 
+    Intent getPhoneVerifIntent(Activity activity);
+
     Observable<ProfileInfo> getProfile();
 
     Interceptor getChuckInterceptor();

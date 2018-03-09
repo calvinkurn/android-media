@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -59,18 +60,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
+    private UserSession userSession;
 
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase, FlightAnalytics flightAnalytics) {
+                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
+                                  FlightAnalytics flightAnalytics,
+                                  UserSession userSession) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
         this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
         this.flightAnalytics = flightAnalytics;
+        this.userSession = userSession;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -419,6 +424,26 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     }
                 })
         );
+    }
+
+    @Override
+    public void initialize() {
+        if (userSession.isMsisdnVerified()) {
+            processGetCartData();
+            onGetProfileData();
+        } else {
+            getView().navigateToOtpPage();
+        }
+    }
+
+    @Override
+    public void onReceiveOtpSuccessResult() {
+        initialize();
+    }
+
+    @Override
+    public void onReceiveOtpCancelResult() {
+        getView().closePage();
     }
 
     @Override

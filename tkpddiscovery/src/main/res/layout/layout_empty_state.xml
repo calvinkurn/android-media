@@ -19,7 +19,7 @@
             android:layout_width="@dimen/img_hotprod"
             android:layout_height="@dimen/img_hotprod"
             android:layout_gravity="center"
-            android:src="@drawable/status_no_result"
+            app:srcCompat="@drawable/status_no_result"
             android:layout_marginBottom="@dimen/margin_vs" />
 
         <TextView

@@ -28,6 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
@@ -127,10 +128,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             addMainData(listFeedView, feedDomain, feedResult);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            viewListener.onShowEmptyWithRecentView(listFeedView,
-                    checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmptyWithRecentView(listFeedView);
         } else
-            viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmpty();
 
 
         if (hasFeed(feedDomain)) {
@@ -149,10 +149,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         checkCanLoadNext(feedResult, listFeedView);
     }
 
-    private boolean checkCanShowTopads(int dataSource) {
-        return dataSource == FeedResult.SOURCE_CLOUD;
-    }
-
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
         if (hasFeed(feedResult.getFeedDomain())
@@ -160,7 +156,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
         } else {
-            viewListener.showTopAds(checkCanShowTopads(feedResult.getDataSource()));
             viewListener.onSuccessGetFeedFirstPage(listFeedView);
         }
     }
@@ -298,6 +293,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_TOPADS:
+                        if (domain.getContent() != null
+                                && domain.getContent().getTopAdsList() != null
+                                && !domain.getContent().getTopAdsList().isEmpty()) {
+                            FeedTopAdsViewModel feedTopAdsViewModel =
+                                    new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
+                            listFeedView.add(feedTopAdsViewModel);
+                        }
                         break;
                     case TYPE_KOL_FOLLOWED:
                     case TYPE_KOL:
@@ -372,11 +374,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                 }
             }
-
-    }
-
-    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
-        return new FeedTopAdsViewModel(page);
     }
 
     private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {

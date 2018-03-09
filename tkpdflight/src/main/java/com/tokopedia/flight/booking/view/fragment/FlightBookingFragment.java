@@ -83,6 +83,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_REVIEW = 4;
+    private static final int REQUEST_CODE_OTP = 5;
     @Inject
     FlightBookingPresenter presenter;
     private LinearLayout fullPageLoadingLayout;
@@ -216,8 +217,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.processGetCartData();
-        presenter.onGetProfileData();
+        presenter.initialize();
     }
 
     @Override
@@ -285,12 +285,23 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 }
                 if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
+            case REQUEST_CODE_OTP:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.onReceiveOtpSuccessResult();
+                } else {
+                    presenter.onReceiveOtpCancelResult();
+                }
         }
     }
 
     @Override
     public String getContactName() {
         return etContactName.getText().toString().trim();
+    }
+
+    @Override
+    public void setContactName(String fullname) {
+        etContactName.setText(fullname);
     }
 
     @Override
@@ -309,6 +320,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void setContactEmail(String email) {
+        etContactEmail.setText(email);
+    }
+
+    @Override
     public void showContactEmailEmptyError(@StringRes int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -321,6 +337,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public String getContactPhoneNumber() {
         return etPhoneNumber.getText().toString().trim();
+    }
+
+    @Override
+    public void setContactPhoneNumber(String phone) {
+        etPhoneNumber.setText(phone);
     }
 
     @Override
@@ -625,22 +646,20 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void setContactName(String fullname) {
-        etContactName.setText(fullname);
-    }
-
-    @Override
-    public void setContactEmail(String email) {
-        etContactEmail.setText(email);
-    }
-
-    @Override
-    public void setContactPhoneNumber(String phone) {
-        etPhoneNumber.setText(phone);
-    }
-
-    @Override
     public void showContactEmailInvalidSymbolError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void navigateToOtpPage() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getPhoneVerifIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_OTP);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
     }
 }

@@ -4,6 +4,7 @@
     android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="@dimen/margin_16"
     android:layout_marginRight="@dimen/margin_16"
     android:layout_marginTop="@dimen/margin_8"
@@ -90,7 +91,7 @@
                 android:layout_marginEnd="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
 
             <ImageView
@@ -102,7 +103,7 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <View
                 android:layout_width="1dp"

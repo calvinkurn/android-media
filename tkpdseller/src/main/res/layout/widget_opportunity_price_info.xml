@@ -28,7 +28,7 @@
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_ms"
-        android:src="@drawable/ic_info"
+        app:srcCompat="@drawable/ic_info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toTopOf="parent" />
