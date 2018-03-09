@@ -27,10 +27,11 @@ public interface IMultipleAddressShipmentPresenter {
     );
 
     CheckPromoCodeCartShipmentRequest generateCheckPromoRequest(
-            List<MultipleAddressShipmentAdapterData> shipmentData
+            List<MultipleAddressShipmentAdapterData> shipmentData, CartItemPromoHolderData appliedPromo
     );
 
     CartItemPromoHolderData generateCartPromoHolderData(PromoCodeAppliedData appliedPromoData);
 
-    Subscriber<CheckPromoCodeCartShipmentResult> checkPromoSubscription();
+    Subscriber<CheckPromoCodeCartShipmentResult> checkPromoSubscription(
+            CartItemPromoHolderData cartItemPromoHolderData);
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.domain.datamodel;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 
 /**
  * Created by kris on 1/29/18. Tokopedia
@@ -33,6 +34,8 @@ public class MultipleAddressPriceSummaryData {
     private String totalPaymentText = "";
 
     private boolean isCouponActive;
+
+    private CheckPromoCodeCartShipmentResult appliedPromo;
 
     public long getQuantity() {
         return quantity;
@@ -140,6 +143,14 @@ public class MultipleAddressPriceSummaryData {
 
     public void setCouponActive(boolean couponActive) {
         isCouponActive = couponActive;
+    }
+
+    public CheckPromoCodeCartShipmentResult getAppliedPromo() {
+        return appliedPromo;
+    }
+
+    public void setAppliedPromo(CheckPromoCodeCartShipmentResult appliedPromo) {
+        this.appliedPromo = appliedPromo;
     }
 
     private String formatPrice(long unformattedPrice) {

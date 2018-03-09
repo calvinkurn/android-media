@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
 import com.tokopedia.transaction.checkout.view.di.scope.MultipleAddressShipmentScope;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressView;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.IMultipleAddressShipmentPresenter;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.IMultipleAddressShipmentView;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.MultipleAddressShipmentPresenter;
 
 import dagger.Module;
@@ -14,10 +17,16 @@ import dagger.Provides;
 @Module(includes = {DataModule.class})
 public class MultipleAddressShipmentModule {
 
+    private IMultipleAddressShipmentView view;
+
+    public MultipleAddressShipmentModule(IMultipleAddressShipmentView view) {
+        this.view = view;
+    }
+
     @MultipleAddressShipmentScope
     @Provides
     IMultipleAddressShipmentPresenter providePresenter() {
-        return new MultipleAddressShipmentPresenter();
+        return new MultipleAddressShipmentPresenter(view);
     }
 
 }
