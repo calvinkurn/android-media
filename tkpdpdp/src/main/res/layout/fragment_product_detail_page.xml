@@ -202,7 +202,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         app:backgroundTint="@color/white"
-        android:src="@drawable/ic_wishlist"
+        app:srcCompat="@drawable/ic_wishlist"
         app:layout_anchor="@id/appbar"
         app:borderWidth="0dp"
         android:visibility="gone"

@@ -23,4 +23,6 @@ public interface UserSession {
     String getName();
 
     String getProfilePicture();
+
+    boolean isMsisdnVerified();
 }

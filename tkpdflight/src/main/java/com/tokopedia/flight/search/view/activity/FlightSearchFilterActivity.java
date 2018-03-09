@@ -228,7 +228,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private void updateToolbarBackIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
         } else {
             getSupportActionBar().setHomeAsUpIndicator(null);
         }

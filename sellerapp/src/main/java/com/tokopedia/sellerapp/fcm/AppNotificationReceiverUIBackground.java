@@ -60,27 +60,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isSupportedApplinkNotification(bundle)) {
-                    handleApplinkNotification(bundle);
-                } else if (isDedicatedNotification(bundle)) {
-                    handleDedicatedNotification(bundle);
-                } else {
-                    handlePromotionNotification(bundle);
-                }
-                return true;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+    public void notifyReceiverBackgroundMessage(Bundle bundle) {
+        if (isSupportedApplinkNotification(bundle)) {
+            handleApplinkNotification(bundle);
+        } else if (isDedicatedNotification(bundle)) {
+            handleDedicatedNotification(bundle);
+        } else {
+            handlePromotionNotification(bundle);
+        }
 
     }
 

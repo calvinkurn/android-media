@@ -15,7 +15,6 @@ import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
@@ -107,7 +106,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.APPSHARE:
                 context.startActivity(new Intent(context, ReferralActivity.class));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+                sendReferralGTMNavigationEvent(item);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
@@ -181,4 +180,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         }
         return null;
     }
+
+   private void sendReferralGTMNavigationEvent(DrawerItem item){
+        if(context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())){
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+        }else {
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.REFERRAL);
+        }
+   }
 }

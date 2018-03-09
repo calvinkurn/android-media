@@ -149,6 +149,6 @@
         android:layout_width="@dimen/fab_button_diameter"
         android:layout_height="@dimen/fab_button_diameter"
         android:layout_gravity="bottom|center"
-        android:src="@drawable/ic_login_arrow_down"
+        app:srcCompat="@drawable/ic_login_arrow_down"
         android:visibility="gone"/>
 </android.support.design.widget.CoordinatorLayout>

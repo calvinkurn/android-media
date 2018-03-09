@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.neenbedankt.android-apt'
+
+dependencies {
+    compile project(rootProject.ext.features.core)
+    compile rootProject.ext.miscDependencies.dagger
+    compile rootProject.ext.miscDependencies.reactNative
+    compile rootProject.ext.miscDependencies.codePushReactNative
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+}

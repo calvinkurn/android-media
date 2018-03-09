@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="@dimen/margin_small"
+        android:paddingBottom="@dimen/space_between"
         android:fontFamily="sans-serif"
         android:textAllCaps="true"
         android:textColor="@color/font_black_disabled_38"
@@ -25,12 +25,11 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+        android:layout_width="@dimen/groupchat_avatar_size"
+        android:layout_height="@dimen/groupchat_avatar_size"
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginStart="@dimen/new_margin_med"
         android:layout_below="@id/header_time"
-        android:layout_marginTop="@dimen/margin_vs"
         tools:src="@color/background_notification"/>
 
     <include
