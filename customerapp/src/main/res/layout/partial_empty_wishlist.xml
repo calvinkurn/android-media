@@ -43,7 +43,7 @@
         android:layout_marginTop="@dimen/new_margin_tiny"/>
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/btn_login"
         android:layout_width="@dimen/button_width"
         style="@style/Button.Primary.Medium"
         android:textAllCaps="false"

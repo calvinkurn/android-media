@@ -9,21 +9,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -64,6 +61,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     ProgressBar progressBar;
     RelativeLayout mainContent;
     View wishlistNotLoggedIn;
+    Button btnLogin;
 
     @Inject
     FavoritePresenter favoritePresenter;
@@ -97,6 +95,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
         wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
+        btnLogin = parentView.findViewById(R.id.btn_login);
 
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();
@@ -118,6 +117,16 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (btnLogin != null) {
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
