@@ -149,6 +149,12 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".addchangeemail.view.activity.AddEmailActivity"
+            android:label="@string/title_add_email"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->

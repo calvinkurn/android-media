@@ -243,7 +243,7 @@ yang ditemukan</string>
     <string name="string_awb_attachment_title">Lampiran Foto Resi: </string>
     <string name="string_input_awb_title">Contoh Informasi yang Harus Terlihat:</string>
 
-    <!--success message-->
+    existcess message-->
     <string name="string_success_accept">Solusi telah diterima</string>
     <string name="string_success_appeal">Anda berhasil melakukan proses naik banding</string>
     <string name="string_success_cancel">Resolusi telah dibatalkan</string>

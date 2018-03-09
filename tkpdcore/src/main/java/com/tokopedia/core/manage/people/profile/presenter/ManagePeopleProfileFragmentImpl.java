@@ -181,6 +181,11 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
     }
 
     @Override
+    public void setOnAddEmailClick(Context click) {
+        
+    }
+
+    @Override
     public void setOnNotifiedEmailChanged(Context context) {
         refreshPage(context);
         deleteCache(context);

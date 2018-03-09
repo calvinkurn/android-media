@@ -29,6 +29,8 @@ public interface ManagePeopleProfileFragmentPresenter {
 
     void setOnVerificationButtonClick(Context context, String userPhone);
 
+    void setOnAddEmailClick(Context click);
+
     void setOnNotifiedEmailChanged(Context context);
 
     void refreshPage(Context context);

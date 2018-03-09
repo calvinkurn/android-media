@@ -122,6 +122,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_phone_wrong_format">Nomor Telepon tidak benar</string>
     <string name="error_phone_too_long">Nomor Terlalu Panjang</string>
     <string name="error_download_provider">"Gagal mendownload provider"</string>
+    <string name="string_change">Ubah</string>
 
     <!-- Strings related to add product -->
     <string name="title_activity_add_product">Tambah Produk</string>
@@ -456,6 +457,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_email_input">Masukkan email</string>
+    <string name="title_email_hint">Jaga akun dan transaksi Anda tetap aman dengan menambahkan email.</string>
     <string name="title_email_optional">Email (Optional)</string>
     <string name="title_email_long">Alamat Email</string>
     <string name="title_phone_number">Nomor Ponsel</string>

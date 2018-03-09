@@ -2,45 +2,35 @@ package com.tokopedia.core.manage.people.profile.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
-
-import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @BindView(R2.id.messenger)
     public EditText messenger;
-    @BindView(R2.id.change_email_button)
     public View changeEmailBtn;
-    @BindView(R2.id.email)
     public EditText email;
-    @BindView(R2.id.phone_section)
     public View phoneSection;
-    @BindView(R2.id.change_hp_button)
     public View changeHpBtn;
-    @BindView(R2.id.phone)
     public EditText phone;
-    @BindView(R2.id.phone_verification_section)
     public View phoneVerificationSection;
-    @BindView(R2.id.verification)
     public EditText verification;
-    @BindView(R2.id.verify_phone_button)
     public View verificationBtn;
-    @BindView(R2.id.check_email_info)
     public TextView checkEmailInfo;
+    public TextView tvEmail, tvEmailHint;
 
     public ContactView(Context context) {
         super(context);
@@ -66,6 +56,25 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     }
 
     @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        tvEmail = (TextView) view.findViewById(R.id.tv_email);
+        tvEmailHint = (TextView) view.findViewById(R.id.tv_email_hint);
+        messenger = (EditText) view.findViewById(R.id.messenger);
+        changeEmailBtn = view.findViewById(R.id.change_email_button);
+        email = view.findViewById(R.id.email);
+        phoneSection = view.findViewById(R.id.phone_section);
+        changeHpBtn = view.findViewById(R.id.change_hp_button);
+        phone = view.findViewById(R.id.phone);
+        phoneVerificationSection = view.findViewById(R.id.phone_verification_section);
+        verification = view.findViewById(R.id.verification);
+        verificationBtn = view.findViewById(R.id.verify_phone_button);
+        checkEmailInfo = view.findViewById(R.id.check_email_info);
+    }
+
+    @Override
     public void renderData(@NonNull Profile profile) {
         DataUser dataUser = profile.getDataUser();
         messenger.setText(dataUser.getUserMessenger());
@@ -75,14 +84,28 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     }
 
     private void renderEmailView(String userEmail) {
-        email.setText(userEmail);
+        if (!TextUtils.isEmpty(userEmail)) {
+            email.setVisibility(GONE);
+            email.setClickable(false);
+            email.setEnabled(false);
+            tvEmail.setVisibility(VISIBLE);
+            tvEmailHint.setVisibility(GONE);
+            tvEmail.setText(userEmail);
+        } else {
+            email.setVisibility(VISIBLE);
+            email.setClickable(true);
+            email.setEnabled(true);
+            email.setOnClickListener(new AddEmailClick());
+            tvEmail.setVisibility(GONE);
+            tvEmailHint.setVisibility(VISIBLE);
+        }
+
         if (SessionHandler.isMsisdnVerified()) {
             changeEmailBtn.setVisibility(VISIBLE);
             changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
         } else {
             changeEmailBtn.setVisibility(GONE);
         }
-
     }
 
     private void renderPhoneView(String userPhone) {
@@ -150,6 +173,13 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         @Override
         public void onClick(View view) {
             presenter.setOnVerificationButtonClick(getContext(), userPhone);
+        }
+    }
+
+    private class AddEmailClick implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            presenter.setOnAddEmailClick(getContext());
         }
     }
 }

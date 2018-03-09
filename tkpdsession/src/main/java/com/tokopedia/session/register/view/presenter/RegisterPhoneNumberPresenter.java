@@ -84,6 +84,6 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     @Override
     public void loginWithPhoneNumber(String phoneNumber,
                                      RegisterPhoneNumberModel registerPhoneNumberModel) {
-        loginPhoneNumberUseCase.execute(LoginPhoneNumberUseCase.getParam());
+//        loginPhoneNumberUseCase.execute(LoginPhoneNumberUseCase.getParam());
     }
 }

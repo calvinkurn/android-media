@@ -30,6 +30,12 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.addchangeemail.data.mapper.AddEmailMapper;
+import com.tokopedia.session.addchangeemail.data.mapper.CheckEmailMapper;
+import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
+import com.tokopedia.session.addchangeemail.data.source.CheckEmailSource;
+import com.tokopedia.session.addchangeemail.domain.usecase.AddEmailUseCase;
+import com.tokopedia.session.addchangeemail.domain.usecase.CheckEmailUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -352,5 +358,33 @@ SessionModule {
                                                PostExecutionThread postExecutionThread,
                                                RegisterPhoneNumberOtpSource source) {
         return new VerifyOtpUseCase(threadExecutor, postExecutionThread, source);
+    }
+
+    @SessionScope
+    @Provides
+    AddEmailSource provideAddEmailSource(AccountsService service, AddEmailMapper mapper) {
+        return new AddEmailSource(service, mapper);
+    }
+
+    @SessionScope
+    @Provides
+    CheckEmailSource provideCheckEmailSource(AccountsService service, CheckEmailMapper mapper) {
+        return new CheckEmailSource(service, mapper);
+    }
+
+    @SessionScope
+    @Provides
+    CheckEmailUseCase provideCheckEmailUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 CheckEmailSource source) {
+        return new CheckEmailUseCase(threadExecutor, postExecutionThread, source);
+    }
+
+    @SessionScope
+    @Provides
+    AddEmailUseCase providesAddEmailUseCase(ThreadExecutor threadExecutor,
+                                             PostExecutionThread postExecutionThread,
+                                             AddEmailSource source) {
+        return new AddEmailUseCase(threadExecutor, postExecutionThread, source);
     }
 }

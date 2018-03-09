@@ -196,4 +196,10 @@
     <string name="phone_number_already_registered_yes">Masuk</string>
     <string name="phone_number_not_registered_no">Ubah</string>
     <string name="phone_number_not_registered_yes">Ya, Lanjut</string>
+
+    <!--ADD CHANGE EMAIL-->
+    <string name="title_add_email">Tanbah Email</string>
+    <string name="email_title_top">Pastikan email Anda aktif untuk keamanan\n dan kemudahan transaksi.</string>
+    <string name="we_will_send_email_verification_code">Kami akan mengirimkan email kode verifikasi</string>
+    <string name="button_continue">Lanjutkan</string>
 </resources>

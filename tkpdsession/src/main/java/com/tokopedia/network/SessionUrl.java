@@ -71,4 +71,12 @@ public class SessionUrl {
         public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
         public static final String PATH_SEND_VERIFICATION_EMAIL = BASE_ACCOUNTS + "/email/verify/send";
     }
+
+    public static class UpdateProfile {
+        public static final String BASE_ACCOUNTS = "/api/v1/account";
+        public static final String BASE_UPDATE = BASE_ACCOUNTS + "/update";
+        public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
+        public static final String PATH_ADD_EMAIL = BASE_UPDATE;
+    }
+
 }

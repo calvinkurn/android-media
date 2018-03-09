@@ -154,4 +154,14 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> verifyRegisterOtp(@FieldMap Map<String,
             Object> parameters);
 
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_EMAIL_CHECK)
+    Observable<Response<TkpdResponse>> checkEmail(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_ADD_EMAIL)
+    Observable<Response<TkpdResponse>> addEmail(@FieldMap Map<String,
+            Object> parameters);
+
 }
