@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author sebastianuskh on 4/12/17.
  */
-
+@Deprecated
 public class ProductPhotoListDomainModel {
     List<ImageProductInputDomainModel> photos;
     int productDefaultPicture;

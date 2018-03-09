@@ -154,14 +154,14 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         if (model.getProductCategory()!= null) {
             setCategoryId(model.getProductCategory().getCategoryId());
         } else {
-            setCategoryId(0);
+            setCategoryId(DEFAULT_CATEGORY_ID);
         }
         if (model.getProductCatalog() == null || model.getProductCatalog().getCatalogId() <= 0) {
             setCatalog(-1, null);
         } else {
             setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
         }
-        if (model.getProductEtalase().getEtalaseId() > 0) {
+        if (model.getProductEtalase()!= null && model.getProductEtalase().getEtalaseId() > 0) {
             setEtalaseId(model.getProductEtalase().getEtalaseId());
             setEtalaseName(model.getProductEtalase().getEtalaseName());
         } else {
