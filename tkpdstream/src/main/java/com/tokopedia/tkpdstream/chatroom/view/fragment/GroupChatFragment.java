@@ -494,7 +494,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void kickIfIdleForTooLong() {
-        if(viewModel != null) {
+        if (viewModel != null) {
             if (viewModel.getTimeStampBeforePause() > 0
                     && System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
                 onUserIdleTooLong();
@@ -507,7 +507,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
         SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
         progressBarWithTimer.cancel();
-        if(viewModel!= null){
+        if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
         }
         super.onPause();
@@ -737,24 +737,36 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
+        }else{
+            addIncomingMessage(messageItem);
         }
-
-        adapter.addIncomingMessage(messageItem);
-        adapter.notifyItemInserted(0);
-
-        scrollToBottomWhenPossible();
     }
 
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
-        if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_START)) {
-            votedView.setVisibility(View.GONE);
-            showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_UPDATE)
-                || messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_FINISHED)) {
-            showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-        } else if (messageItem.getVoteType().equals(VoteAnnouncementViewModel.POLLING_CANCEL)) {
-            hideVoteLayout();
+
+        switch (messageItem.getVoteType()) {
+            case VoteAnnouncementViewModel.POLLING_START:
+                votedView.setVisibility(View.GONE);
+                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+                addIncomingMessage(messageItem);
+                break;
+            case VoteAnnouncementViewModel.POLLING_UPDATE:
+                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+                break;
+            case VoteAnnouncementViewModel.POLLING_FINISHED:
+                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+                addIncomingMessage(messageItem);
+                break;
+            case VoteAnnouncementViewModel.POLLING_CANCEL:
+                hideVoteLayout();
+                break;
         }
+    }
+
+    private void addIncomingMessage(Visitable messageItem) {
+        adapter.addIncomingMessage(messageItem);
+        adapter.notifyItemInserted(0);
+        scrollToBottomWhenPossible();
     }
 
     private void scrollToBottomWhenPossible() {
@@ -873,6 +885,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             });
         }
     }
+
     private void onUserIdleTooLong() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.you_have_been_kicked);
