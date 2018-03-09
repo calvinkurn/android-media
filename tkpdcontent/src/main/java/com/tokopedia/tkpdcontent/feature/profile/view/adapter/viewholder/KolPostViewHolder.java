@@ -32,6 +32,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_post_layout;
 
+    private static final String DASH = "-";
+
     private static final int MAX_CHAR = 250;
     private final KolPostListener.View viewListener;
     private TextView name;
@@ -253,13 +255,13 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
                 element.getId(),
                 KolTracking.Promotion.createContentNameKolPost(
                         element.getTagsType()),
-                TextUtils.isEmpty(element.getName()) ? "-" :
+                TextUtils.isEmpty(element.getName()) ? DASH :
                         element.getName(),
                 getAdapterPosition(),
-                TextUtils.isEmpty(element.getLabel()) ? "-" :
+                TextUtils.isEmpty(element.getLabel()) ? DASH :
                         element.getLabel(),
                 element.getContentId(),
-                TextUtils.isEmpty(element.getContentLink()) ? "-" :
+                TextUtils.isEmpty(element.getContentLink()) ? DASH :
                         element.getContentLink(),
                 Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
                         viewListener.getUserSession().getUserId() : "0")
