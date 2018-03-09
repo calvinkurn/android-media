@@ -120,4 +120,11 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         HashMap<String, Object> maps = dataLayer.toHashMap();
         TrackingUtils.eventTrackingEnhancedEcommerce(maps);
     }
+
+    @ReactMethod
+    public void finish() {
+        if(getCurrentActivity() != null) {
+            getCurrentActivity().finish();
+        }
+    }
 }
