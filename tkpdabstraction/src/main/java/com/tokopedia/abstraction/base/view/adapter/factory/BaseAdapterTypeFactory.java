@@ -62,18 +62,18 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder creatViewHolder;
-        if (type == EmptyViewHolder.LAYOUT) {
-            creatViewHolder = new EmptyViewHolder(parent);
-        } else if (type == LoadingViewholder.LAYOUT) {
+        if (type == LoadingViewholder.LAYOUT) {
             creatViewHolder = new LoadingViewholder(parent);
+        } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
+            creatViewHolder = new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == LoadingShimmeringListViewHolder.LAYOUT) {
+            creatViewHolder = new LoadingShimmeringListViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             creatViewHolder = new ErrorNetworkViewHolder(parent);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             creatViewHolder = new EmptyResultViewHolder(parent);
-        }else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
-            creatViewHolder = new LoadingShimmeringGridViewHolder(parent);
-        }else if (type == LoadingShimmeringListViewHolder.LAYOUT) {
-            creatViewHolder = new LoadingShimmeringListViewHolder(parent);
+        } else if (type == EmptyViewHolder.LAYOUT) {
+            creatViewHolder = new EmptyViewHolder(parent);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

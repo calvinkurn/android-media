@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loading_state_view_shop_page"
-    app:lsv_loading_layout="@layout/activity_shop_page_loading_state"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:lsv_loading_layout="@layout/activity_shop_page_loading_state">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,13 +24,13 @@
             layout="@layout/partial_shop_page_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-            
+
         <com.tokopedia.shop.product.view.customview.ShopWarningTickerView
-	        android:id="@+id/shop_warning_ticker_view"
-    	    android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:visibility="gone"
-	        tools:visibility="visible" />
+            android:id="@+id/shop_warning_ticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <include
             layout="@layout/partial_shop_page_header_sub_info"

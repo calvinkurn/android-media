@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -62,7 +63,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
             @Override
             public void onNext(List<ShopProductBaseViewModel> shopProductBaseViewModelList) {
-                if (!TextUtils.isEmpty(promotionWebViewUrl)) {
+                if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
                     ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
                     shopProductLimitedPromoViewModel.setUrl(promotionWebViewUrl);
                     shopProductBaseViewModelList.add(0, shopProductLimitedPromoViewModel);

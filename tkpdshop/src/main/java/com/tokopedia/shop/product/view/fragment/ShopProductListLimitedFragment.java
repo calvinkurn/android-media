@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -43,7 +44,7 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
+        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener, EmptyResultViewHolder.Callback {
 
     private static final int REQUEST_CODER_USER_LOGIN = 100;
 
@@ -102,7 +103,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
             public void onClick(View view) {
                 startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
             }
-        }, this);
+        }, this, this);
     }
 
     @NonNull
@@ -124,6 +125,16 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void displayProduct(String shopId, String promotionWebViewUrl, String shopName) {
         this.shopId = shopId;
         shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+
     }
 
     @Override

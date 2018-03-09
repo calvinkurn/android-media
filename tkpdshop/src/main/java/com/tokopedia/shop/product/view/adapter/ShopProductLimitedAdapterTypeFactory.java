@@ -3,7 +3,10 @@ package com.tokopedia.shop.product.view.adapter;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
@@ -20,17 +23,25 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
 
     private final ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final View.OnClickListener showMoreProductOnClickListener;
-    private final ShopProductClickedListener shopProductClickedListener;
     private final View.OnClickListener showMoreEtalaseOnClickListener;
+    private final ShopProductClickedListener shopProductClickedListener;
+    private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
-                                                ShopProductClickedListener shopProductClickedListener) {
+                                                ShopProductClickedListener shopProductClickedListener,
+                                                EmptyResultViewHolder.Callback emptyProductOnClickListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.showMoreEtalaseOnClickListener = showMoreEtalaseOnClickListener;
+        this.emptyProductOnClickListener = emptyProductOnClickListener;
+    }
+
+    @Override
+    public int type(EmptyModel viewModel) {
+        return EmptyViewHolder.LAYOUT;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -47,7 +58,9 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
+        if (type == EmptyViewHolder.LAYOUT) {
+            return new EmptyViewHolder(parent);
+        }  else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
             return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
