@@ -6,7 +6,7 @@
     android:background="@color/white">
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/kol_rv"
         tools:listitem="@layout/kol_post_layout">
     </android.support.v7.widget.RecyclerView>
