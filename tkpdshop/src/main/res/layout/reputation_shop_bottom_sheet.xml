@@ -8,7 +8,7 @@
 
     <com.tokopedia.design.reputation.ShopReputationView
         android:id="@+id/shop_reputation_view"
-        android:layout_width="@dimen/font_loading_height_title"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/font_loading_height_title"
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginStart="@dimen/new_margin_med"
