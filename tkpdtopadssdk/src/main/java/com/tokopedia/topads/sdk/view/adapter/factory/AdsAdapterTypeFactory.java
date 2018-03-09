@@ -97,4 +97,5 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         }
         return holder;
     }
+
 }

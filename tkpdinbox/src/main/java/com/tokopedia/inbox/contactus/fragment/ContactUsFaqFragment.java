@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.contactus.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,13 +11,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
@@ -35,6 +39,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private static final String SOLUTION_ID = "solution_id";
     private static final String TAGS = "tags";
     private static final String ORDER_ID = "order_id";
+    private static final String APPLINK_SCHEME = "tokopedia://";
 
     @BindView(R2.id.scroll_view)
     ScrollView mainView;
@@ -206,6 +211,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     CommonUtils.UniversalToast(getActivity(), getString(R.string.finish_contact_us));
                     getActivity().finish();
                     return true;
+                } else if (url.toString().contains(APPLINK_SCHEME)
+                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new Bundle());
+                    return true;
                 } else {
                     return false;
                 }
@@ -213,6 +223,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 e.printStackTrace();
                 return false;
             }
+
         }
 
     }

@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <uses-permission-sdk-23 android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
@@ -17,6 +21,10 @@
         <activity
             android:name=".bookingride.view.activity.RideHomeActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
+        <activity
+            android:name=".bookingride.view.activity.UberSMSChatActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar">
+        </activity>
         <activity
             android:name=".bookingride.view.activity.GooglePlacePickerActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />

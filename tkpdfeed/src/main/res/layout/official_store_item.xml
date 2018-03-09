@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -153,7 +154,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/margin_vs"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_badge_free_return"
+            app:srcCompat="@drawable/ic_badge_free_return"
             android:visibility="visible"/>
     </LinearLayout>
 

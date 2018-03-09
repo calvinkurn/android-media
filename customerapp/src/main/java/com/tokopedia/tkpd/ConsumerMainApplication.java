@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -24,13 +25,15 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.network.SessionUrl;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.network.SessionUrl;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -106,13 +109,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
+        WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
+        WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
     }
 
     public void initializeDatabase() {

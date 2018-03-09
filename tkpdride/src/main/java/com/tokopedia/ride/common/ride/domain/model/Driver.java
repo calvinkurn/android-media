@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by alvarisi on 3/24/17.
  */
 
-public class Driver implements Parcelable{
+public class Driver implements Parcelable {
     private String phoneNumber;
     private String smsNumber;
     private String rating;

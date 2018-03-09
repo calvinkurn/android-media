@@ -8,10 +8,9 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Contact;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
@@ -20,6 +19,9 @@ import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -31,6 +33,11 @@ import rx.functions.Func1;
 public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomViewModel> {
 
     private static final String TOKOPEDIA = "Tokopedia";
+    private final SessionHandler sessionHandler;
+
+    public GetReplyMapper(SessionHandler sessionHandler) {
+        this.sessionHandler = sessionHandler;
+    }
 
     @Override
     public ChatRoomViewModel call(Response<TkpdResponse> response) {
@@ -67,7 +74,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         ArrayList<Visitable> list = new ArrayList<>();
 
         for (ListReply item : data.getList()) {
-            if(item.getRole().contains(TOKOPEDIA)){
+            if (item.getRole().contains(TOKOPEDIA)) {
                 ThumbnailChatViewModel temp = new ThumbnailChatViewModel();
                 temp.setReplyId(item.getReplyId());
                 temp.setSenderId(item.getSenderId());
@@ -87,7 +94,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                 }
                 temp.setAttachment(item.getAttachment());
                 list.add(temp);
-            }else {
+            } else {
                 if (!item.isOpposite()) {
                     MyChatViewModel temp = new MyChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -137,6 +144,25 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         chatRoomViewModel.setHasNext(data.isHasNext());
         chatRoomViewModel.setTextAreaReply(data.getTextAreaReply());
         chatRoomViewModel.setHasTimeMachine(data.getTimeMachineStatus() == 1);
+        setOpponentViewModel(chatRoomViewModel, data.getContacts());
         return chatRoomViewModel;
+    }
+
+    private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
+            contacts) {
+        for (Contact contact : contacts) {
+            if (contact.getUserId() != 0
+                    && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())) {
+
+                if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
+                    chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
+                }
+
+                if (!TextUtils.isEmpty(contact.getAttributes().getThumbnail())) {
+                    chatRoomViewModel.setImageHeader(contact.getAttributes().getThumbnail());
+                }
+
+            }
+        }
     }
 }
