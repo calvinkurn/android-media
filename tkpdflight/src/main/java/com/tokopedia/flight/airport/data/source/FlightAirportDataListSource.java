@@ -1,5 +1,7 @@
 package com.tokopedia.flight.airport.data.source;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.flight.airport.data.source.cache.FlightAirportDataCacheSource;
 import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListFileSource;
@@ -91,22 +93,33 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
                 if (isLocalAvailable) {
                     return flightAirportDataListDBSource.getAirport(airportCode);
                 } else {
-                    return getCloudData(new HashMap<String, Object>())
-                            .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
-                                @Override
-                                public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
-                                    return Observable.from(flightAirportDBS)
-                                            .filter(new Func1<FlightAirportDB, Boolean>() {
-                                                @Override
-                                                public Boolean call(FlightAirportDB airportDB) {
-                                                    return airportDB.getAirportId().equalsIgnoreCase(airportCode);
-                                                }
-                                            });
-                                }
-                            });
+                    return getAirportCloudById(airportCode);
                 }
             }
         });
+    }
+
+    private Observable<FlightAirportDB> getAirportCloudById(final String airportCode) {
+        return getCloudData(new HashMap<String, Object>())
+                .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
+                    @Override
+                    public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
+                        return getFilterAirportByAiportIdObservable(flightAirportDBS, airportCode);
+                    }
+                });
+    }
+
+    @NonNull
+    private Observable<FlightAirportDB> getFilterAirportByAiportIdObservable(
+            List<FlightAirportDB> flightAirportDBS,
+            final String airportCode) {
+        return Observable.from(flightAirportDBS)
+                .filter(new Func1<FlightAirportDB, Boolean>() {
+                    @Override
+                    public Boolean call(FlightAirportDB airportDB) {
+                        return airportDB.getAirportId().equalsIgnoreCase(airportCode);
+                    }
+                });
     }
 
     public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
@@ -116,30 +129,40 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
                 if (isLocalAvailable) {
                     return flightAirportDataListDBSource.getAirport(params);
                 } else {
-                    return getCloudData(new HashMap<String, Object>())
-                            .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
-                                @Override
-                                public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
-                                    return Observable.from(flightAirportDBS)
-                                            .filter(new Func1<FlightAirportDB, Boolean>() {
-                                                @Override
-                                                public Boolean call(FlightAirportDB flightAirportDB) {
-                                                    for (Map.Entry<String, String> entry : params.entrySet()) {
-                                                        if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
-                                                            return flightAirportDB.getCityCode().equalsIgnoreCase(entry.getValue());
-                                                        } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
-                                                            return flightAirportDB.getAirportId().equalsIgnoreCase(entry.getValue());
-                                                        }
-                                                    }
-
-                                                    return false;
-                                                }
-                                            });
-                                }
-                            });
+                    return getAirportCloudByParam(params);
                 }
             }
         });
+    }
+
+    private Observable<FlightAirportDB> getAirportCloudByParam(final Map<String, String> params) {
+        return getCloudData(new HashMap<String, Object>())
+                .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
+                    @Override
+                    public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
+                        return getFilterAirportByParamObservable(flightAirportDBS, params);
+                    }
+                });
+    }
+
+    @NonNull
+    private Observable<FlightAirportDB> getFilterAirportByParamObservable(
+            List<FlightAirportDB> flightAirportDBS, final Map<String, String> params) {
+        return Observable.from(flightAirportDBS)
+                .filter(new Func1<FlightAirportDB, Boolean>() {
+                    @Override
+                    public Boolean call(FlightAirportDB flightAirportDB) {
+                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                            if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
+                                return flightAirportDB.getCityCode().equalsIgnoreCase(entry.getValue());
+                            } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
+                                return flightAirportDB.getAirportId().equalsIgnoreCase(entry.getValue());
+                            }
+                        }
+
+                        return false;
+                    }
+                });
     }
 
     public  Observable<Integer> getAirportCount(String query, String idCountry) {
