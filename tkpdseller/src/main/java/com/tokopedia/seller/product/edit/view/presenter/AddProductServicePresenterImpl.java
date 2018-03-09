@@ -28,18 +28,18 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     private static final int MIN_NOTIFICATION_PROGRESS = 6;
 
     private final FetchDraftProductUseCase fetchDraftProductUseCase;
-    private final SubmitProductUseCase uploadProductUseCase;
+    private final SubmitProductUseCase submitProductUseCase;
     private final DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private final UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private final ProductUploadMapper addUploadMapper;
 
     public AddProductServicePresenterImpl(FetchDraftProductUseCase fetchDraftProductUseCase,
-                                          SubmitProductUseCase uploadProductUseCase,
+                                          SubmitProductUseCase submitProductUseCase,
                                           DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                           UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
                                           ProductUploadMapper addUploadMapper) {
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
-        this.uploadProductUseCase = uploadProductUseCase;
+        this.submitProductUseCase = submitProductUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.addUploadMapper = addUploadMapper;
@@ -75,7 +75,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     }
 
     private void submitProduct(final long draftProductId, final ProductViewModel productViewModel, final ProductSubmitNotificationListener notificationCountListener) {
-        uploadProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Boolean>() {
+        submitProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -134,6 +134,9 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             }
         }
         count += addUploadMapper.getVariantPictureViewModelList(productViewModel).size();
+        if (productViewModel.getProductSizeChart() != null) {
+            count++;
+        }
         return count;
     }
 }

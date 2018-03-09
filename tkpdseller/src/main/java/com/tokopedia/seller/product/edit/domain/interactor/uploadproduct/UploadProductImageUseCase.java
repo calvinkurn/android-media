@@ -16,14 +16,17 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func3;
+import rx.schedulers.Schedulers;
 
-public class UploadProductImageUseCase extends UseCase<ProductViewModel> {
+public class UploadProductImageUseCase extends UseCase<List<BasePictureViewModel>> {
 
     private static final String PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String NOTIFICATION_COUNT_LISTENER = "NOTIFICATION_COUNT_LISTENER";
@@ -39,20 +42,20 @@ public class UploadProductImageUseCase extends UseCase<ProductViewModel> {
     }
 
     @Override
-    public Observable<ProductViewModel> createObservable(RequestParams requestParams) {
+    public Observable<List<BasePictureViewModel>> createObservable(RequestParams requestParams) {
         final ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
         notificationCountListener = (ProductSubmitNotificationListener) requestParams.getObject(NOTIFICATION_COUNT_LISTENER);
-        return uploadProductImageList(productViewModel).flatMap(new Func1<List<BasePictureViewModel>, Observable<ProductViewModel>>() {
-            @Override
-            public Observable<ProductViewModel> call(List<BasePictureViewModel> basePictureViewModels) {
-                return uploadProductVariantImageList(productViewModel).map(new Func1<List<BasePictureViewModel>, ProductViewModel>() {
+        return Observable.zip(uploadProductImageList(productViewModel).subscribeOn(Schedulers.io()),
+                uploadProductVariantImageList(productViewModel).subscribeOn(Schedulers.io()),
+                uploadProductSizeCart(productViewModel).subscribeOn(Schedulers.io()),
+                new Func3<List<BasePictureViewModel>, List<BasePictureViewModel>, List<BasePictureViewModel>, List<BasePictureViewModel>>() {
                     @Override
-                    public ProductViewModel call(List<BasePictureViewModel> basePictureViewModels) {
-                        return productViewModel;
+                    public List<BasePictureViewModel> call(List<BasePictureViewModel> basePictureViewModelList, List<BasePictureViewModel> basePictureViewModels2, List<BasePictureViewModel> basePictureViewModels3) {
+                        basePictureViewModelList.addAll(basePictureViewModels2);
+                        basePictureViewModelList.addAll(basePictureViewModels3);
+                        return basePictureViewModelList;
                     }
                 });
-            }
-        });
     }
 
     private Observable<List<BasePictureViewModel>> uploadProductImageList(ProductViewModel productViewModel) {
@@ -65,6 +68,18 @@ public class UploadProductImageUseCase extends UseCase<ProductViewModel> {
         return Observable.from(productUploadMapper.getVariantPictureViewModelList(productViewModel))
                 .flatMap(new UploadSingleImage(productViewModel.getProductId()))
                 .toList();
+    }
+
+    private Observable<List<BasePictureViewModel>> uploadProductSizeCart(ProductViewModel productViewModel) {
+        List<BasePictureViewModel> basePictureViewModelList = new ArrayList<>();
+        if (productViewModel.getProductSizeChart() != null) {
+            basePictureViewModelList.add(productViewModel.getProductSizeChart());
+            return Observable.from(basePictureViewModelList)
+                    .flatMap(new UploadSingleImage(productViewModel.getProductId()))
+                    .toList();
+        } else {
+            return Observable.just(basePictureViewModelList);
+        }
     }
 
     private class UploadSingleImage implements Func1<BasePictureViewModel, Observable<BasePictureViewModel>> {

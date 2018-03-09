@@ -72,7 +72,12 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
                 .flatMap(new Func1<ProductViewModel, Observable<ProductViewModel>>() {
                     @Override
                     public Observable<ProductViewModel> call(final ProductViewModel productViewModel) {
-                        return uploadProductImageUseCase.createObservable(UploadProductImageUseCase.createParams(productViewModel, notificationCountListener));
+                        return uploadProductImageUseCase.createObservable(UploadProductImageUseCase.createParams(productViewModel, notificationCountListener)).map(new Func1<List<BasePictureViewModel>, ProductViewModel>() {
+                            @Override
+                            public ProductViewModel call(List<BasePictureViewModel> basePictureViewModels) {
+                                return productViewModel;
+                            }
+                        });
                     }
                 })
                 .doOnNext(new Action1<ProductViewModel>() {
