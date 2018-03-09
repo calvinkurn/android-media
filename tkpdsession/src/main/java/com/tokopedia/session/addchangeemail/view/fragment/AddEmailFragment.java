@@ -176,10 +176,12 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
             tvError.setText(s);
             tvError.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);
+            enableNextButton();
         } else {
             tvError.setText(s);
             tvError.setVisibility(View.VISIBLE);
             tvMessage.setVisibility(View.GONE);
+            disableNextButton();
         }
     }
 
