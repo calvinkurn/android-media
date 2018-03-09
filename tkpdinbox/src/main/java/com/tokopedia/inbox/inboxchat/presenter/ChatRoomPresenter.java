@@ -6,13 +6,13 @@ import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -180,7 +180,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 getView().startActivity(intent);
             } else {
                 getView().startActivity(
-                        ((TkpdCoreRouter) getView().getActivity().getApplicationContext())
+                        ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
                                 .getTopProfileIntent(getView().getContext(), id)
                 );
             }
@@ -393,6 +393,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void setResult(ChatRoomViewModel replyData) {
         getView().setCanLoadMore(false);
+        getView().setHeaderModel(replyData.getNameHeader(),replyData.getImageHeader());
         getView().setHeader();
         if (pagingHandler.getPage() == 1) {
             getView().getAdapter().setList(replyData.getChatList());

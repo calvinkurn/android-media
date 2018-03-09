@@ -19,7 +19,7 @@
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_ms"
-        android:src="@drawable/bg_button_counter_minus" />
+        app:srcCompat="@drawable/bg_button_counter_minus" />
 
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/image_button_plus"
@@ -27,6 +27,6 @@
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_ms"
-        android:src="@drawable/bg_button_counter_plus" />
+        app:srcCompat="@drawable/bg_button_counter_plus" />
 
 </LinearLayout>

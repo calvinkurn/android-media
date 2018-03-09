@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/cards_ui_selected"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/overflow_selected"
             android:padding="@dimen/padding_vs"
-            android:src="@drawable/ic_edit_pencil" />
+            app:srcCompat="@drawable/ic_edit_pencil" />
 
         <TextView
             android:id="@+id/title_address"

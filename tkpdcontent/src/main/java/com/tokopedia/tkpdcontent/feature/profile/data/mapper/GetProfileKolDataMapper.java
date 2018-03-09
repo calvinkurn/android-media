@@ -3,10 +3,9 @@ package com.tokopedia.tkpdcontent.feature.profile.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.tkpdcontent.common.util.TimeConverter;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetUserKolPostResponse;
-import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolData;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
+import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolData;
 import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
@@ -23,6 +22,9 @@ import rx.functions.Func1;
 
 public class GetProfileKolDataMapper
         implements Func1<Response<GraphqlResponse<GetUserKolPostResponse>>, KolProfileModel> {
+    private static final String ERROR_SERVER = "Server error";
+    private static final String ERROR_NETWORK = "Network call failed";
+    private static final String ERROR_EMPTY_RESPONSE = "Response is empty";
 
     @Inject
     public GetProfileKolDataMapper() {
@@ -50,8 +52,7 @@ public class GetProfileKolDataMapper
                     "",
                     getTagId(postKolData),
                     postKolData.id != null ? postKolData.id : 0,
-                    postKolData.createTime != null ?
-                            TimeConverter.generateTime(postKolData.createTime) : "",
+                    postKolData.createTime != null ? postKolData.createTime : "",
                     "",
                     getTagPrice(postKolData),
                     false,
@@ -75,13 +76,13 @@ public class GetProfileKolDataMapper
                 if (TextUtils.isEmpty(graphqlResponse.body().getData().postKol.error)) {
                     return graphqlResponse.body().getData().postKol;
                 } else {
-                    throw new RuntimeException("Server error");
+                    throw new RuntimeException(ERROR_SERVER);
                 }
             } else {
-                throw new RuntimeException("Network call failed");
+                throw new RuntimeException(ERROR_NETWORK);
             }
         } else {
-            throw new RuntimeException("Response is empty");
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
         }
     }
 

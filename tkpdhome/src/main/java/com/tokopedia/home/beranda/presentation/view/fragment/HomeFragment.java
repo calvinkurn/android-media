@@ -83,11 +83,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         TokoCashUpdateListener, HomeFeedListener {
 
-    @Inject
-    HomePresenter presenter;
-
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    @Inject
+    HomePresenter presenter;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
@@ -421,7 +420,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void resetFeedState() {
         presenter.resetPageFeed();
-        if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+        if (getContext() != null && SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
         }
     }
@@ -605,6 +604,44 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Log.e(TAG, errorMessage);
     }
 
+    @Override
+    public void onRefreshTokoPointButtonClicked() {
+        presenter.onRefreshTokoPoint();
+    }
+
+    @Override
+    public void onRefreshTokoCashButtonClicked() {
+        presenter.onRefreshTokoCash();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        trackScreen(isVisibleToUser);
+        restartBanner(isVisibleToUser);
+    }
+
+    private void restartBanner(boolean isVisibleToUser) {
+        if ((isVisibleToUser && getView() != null) && adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void trackScreen(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
+        }
+    }
+
+    @Override
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    public void scrollToTop() {
+        if (recyclerView != null) recyclerView.scrollToPosition(0);
+    }
+
     public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -634,42 +671,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoCashPendingData(cashBackData);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.updateHeaderTokoCashData(null);
+                    presenter.onHeaderTokocashErrorFromBroadcast();
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
-                    presenter.updateHeaderTokoPointData(null);
+                    presenter.onHeaderTokopointErrorFromBroadcast();
                     break;
                 default:
                     break;
             }
         }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        trackScreen(isVisibleToUser);
-        restartBanner(isVisibleToUser);
-    }
-
-    private void restartBanner(boolean isVisibleToUser) {
-        if ((isVisibleToUser && getView() != null) && adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    private void trackScreen(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
-        }
-    }
-
-    @Override
-    public boolean isMainViewVisible() {
-        return getUserVisibleHint();
-    }
-
-    public void scrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 }

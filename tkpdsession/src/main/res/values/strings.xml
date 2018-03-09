@@ -178,7 +178,7 @@
     <!-- TopProfile -->
     <string name="error_occured">Terjadi Kendala Pada Server</string>
     <string name="server_busy">Untuk saat ini, Tokopedia kepenuhan pengunjung.</string>
-    <string name="try_again">Coba lagi</string>
+    <string name="try_again_top_profile">Coba lagi</string>
     <string name="manage_profile">Atur Akun</string>
     <string name="favorite_shop">Toko Favorit</string>
     <string name="follow_with_plus">+ Follow</string>
@@ -207,5 +207,7 @@
     <string name="status_description">Status Verified Account adalah status bagi pengguna yang sudah melengkapi data diri, nomor ponsel, dan email yang sudah terverifikasi.</string>
     <string name="shop_not_favorite">Favoritkan</string>
     <string name="shop_favorited">Favorit</string>
+    <string name="title_disabled_post">Oops, post belum bisa ditampilkan</string>
+    <string name="subtitle_disabled_post">Anda dapat melihat post ini melalui Tokopedia App</string>
 
 </resources>

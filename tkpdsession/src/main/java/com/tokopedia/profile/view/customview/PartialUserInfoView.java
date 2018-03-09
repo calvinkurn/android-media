@@ -27,6 +27,7 @@ public class PartialUserInfoView extends BaseCustomView {
     private TextView tvReputationNetralScore;
     private View userStatusLayout;
     private View userReputationLayout;
+    private TextView tvSubtitle;
 
     private BottomSheetView statusBottomSheetView;
     private BottomSheetView reputationBottomSheetView;
@@ -81,6 +82,7 @@ public class PartialUserInfoView extends BaseCustomView {
         tvReputationSummaryScore = view.findViewById(R.id.tv_reputation_summary);
         userStatusLayout = view.findViewById(R.id.ll_status_title);
         userReputationLayout = view.findViewById(R.id.ll_reputation_title);
+        tvSubtitle = view.findViewById(R.id.tv_subtitle_user_info);
 
         statusBottomSheetView = new BottomSheetView(getContext());
         statusBottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen
@@ -106,8 +108,9 @@ public class PartialUserInfoView extends BaseCustomView {
     public void renderData(TopProfileViewModel model) {
         this.setVisibility(VISIBLE);
 
-        partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ?
-                VISIBLE : GONE);
+        tvSubtitle.setVisibility(model.isUser() && model.isKol() ? VISIBLE : GONE);
+
+        partialUserStatus.setVisibility(model.getCompletion() == 100 ? VISIBLE : GONE);
 
         tvReputationSummaryScore.setVisibility(VISIBLE);
         String summary = model.getSummaryScore() + "%";

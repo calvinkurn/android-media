@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -19,8 +19,10 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.ManagePeople;
@@ -32,6 +34,7 @@ import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.di.DaggerTopProfileComponent;
 import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.adapter.TopProfileTabPagerAdapter;
+import com.tokopedia.profile.view.fragment.DisabledPostFragment;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
@@ -43,6 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_MANAGE_ACCOUNT;
+import static com.tokopedia.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -56,9 +63,9 @@ public class TopProfileActivity extends BaseEmptyActivity
     private static final String TITLE_POST = "Post";
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
-
+    @Inject
+    TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
     private Tabs tabLayout;
     private ViewPager viewPager;
@@ -75,23 +82,18 @@ public class TopProfileActivity extends BaseEmptyActivity
     private LinearLayout followersLayout;
     private TextView followersValue;
     private View followersSeparator;
+    private View tabSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
     private View header;
     private View progressView;
     private View errorView;
-    private View headerSeparator;
     private TextView errorText;
     private TextView buttonTryAgain;
     private TextView buttonFollowToolbar;
     private TextView tvTitleToolbar;
-
     private String userId;
     private TopProfileViewModel topProfileViewModel;
-    private TopProfileFragmentListener.View fragmentListener;
-
-    @Inject
-    TopProfileActivityListener.Presenter presenter;
 
     @DeepLink(SessionApplinkUrl.PROFILE)
     public static Intent getCallingTopProfile(Context context, Bundle bundle) {
@@ -151,7 +153,6 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private void initView() {
         appBarLayout = findViewById(R.id.app_bar_layout);
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
@@ -177,22 +178,24 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonTryAgain = findViewById(R.id.button_try_again);
         buttonFollowToolbar = findViewById(R.id.button_follow_toolbar);
         tvTitleToolbar = findViewById(R.id.tv_title_toolbar);
-        headerSeparator = findViewById(R.id.header_separator);
+        tabSeparator = findViewById(R.id.separator_tab);
     }
 
     private void setViewListener() {
-        followingLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (topProfileViewModel != null) {
-                    startActivity(((TkpdCoreRouter) getApplicationContext())
-                            .getKolFollowingPageIntent(
-                                    TopProfileActivity.this,
-                                    topProfileViewModel.getUserId())
-                    );
+        if (!GlobalConfig.isSellerApp()) {
+            followingLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (topProfileViewModel != null) {
+                        startActivity(((TkpdCoreRouter) getApplicationContext())
+                                .getKolFollowingPageIntent(
+                                        TopProfileActivity.this,
+                                        topProfileViewModel.getUserId())
+                        );
+                    }
                 }
-            }
-        });
+            });
+        }
 
         favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +214,12 @@ public class TopProfileActivity extends BaseEmptyActivity
             public void onClick(View v) {
                 Intent intent = new Intent(TopProfileActivity.this, ManagePeople.class);
                 startActivityForResult(intent, MANAGE_PEOPLE_CODE);
+
+                ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                TOP_PROFILE,
+                                CLICK_ON_MANAGE_ACCOUNT,
+                                "");
             }
         });
 
@@ -344,20 +353,29 @@ public class TopProfileActivity extends BaseEmptyActivity
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
         TopProfileFragment profileFragment;
 
-        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
+        if (topProfileViewModel.isKol()
+                && !GlobalConfig.isSellerApp()
+                && getApplicationContext() instanceof SessionRouter) {
             BaseDaggerFragment kolPostFragment =
                     ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
-            headerSeparator.setVisibility(View.VISIBLE);
-        } else {
-            headerSeparator.setVisibility(View.GONE);
+            topProfileSectionItemList.add(
+                    new TopProfileSectionItem(TITLE_POST, kolPostFragment));
         }
 
-        if (topProfileViewModel.isUser() || !topProfileViewModel.isKol()) {
+        if (topProfileViewModel.isKol()
+                && GlobalConfig.isSellerApp()) {
+            DisabledPostFragment disabledPostFragment =
+                    DisabledPostFragment.newInstance();
+            topProfileSectionItemList.add(
+                    new TopProfileSectionItem(TITLE_POST, disabledPostFragment));
+        }
+
+        if (topProfileViewModel.isUser()
+                || !topProfileViewModel.isKol()) {
             profileFragment = TopProfileFragment.newInstance();
             topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE,
                     profileFragment));
-            fragmentListener = profileFragment;
+            TopProfileFragmentListener.View fragmentListener = profileFragment;
             fragmentListener.renderData(topProfileViewModel);
         }
 
@@ -404,7 +422,11 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         });
 
-        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ? View.VISIBLE : View.GONE);
+        tabSeparator.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
+                View.VISIBLE : View.GONE);
+
+        tabLayout.setVisibility(topProfileViewModel.isKol() && topProfileViewModel.isUser() ?
+                View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,
@@ -422,11 +444,22 @@ public class TopProfileActivity extends BaseEmptyActivity
 
         if (topProfileViewModel.isKol()) {
             name.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_kol_badge, 0, 0, 0);
-            title.setVisibility(View.VISIBLE);
-            title.setText(topProfileViewModel.getTitle());
-            description.setVisibility(View.VISIBLE);
-            description.setText(topProfileViewModel.getBiodata());
+                    AppCompatResources.getDrawable(getContext(), R.drawable.ic_kol_badge),
+                    null,
+                    null,
+                    null);
+            if (!TextUtils.isEmpty(topProfileViewModel.getTitle())) {
+                title.setVisibility(View.VISIBLE);
+                title.setText(topProfileViewModel.getTitle());
+            } else {
+                title.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(topProfileViewModel.getBiodata())) {
+                description.setVisibility(View.VISIBLE);
+                description.setText(topProfileViewModel.getBiodata());
+            } else {
+                description.setVisibility(View.GONE);
+            }
             followersLayout.setVisibility(View.VISIBLE);
             followersSeparator.setVisibility(View.VISIBLE);
             followersValue.setText(topProfileViewModel.getFollowers());
@@ -480,7 +513,7 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private void disableFollowButton() {
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
-                R.drawable.bg_button_white_enabled_border));
+                R.drawable.background_button_border_gray));
         buttonFollowText.setText(R.string.following);
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.black_54));

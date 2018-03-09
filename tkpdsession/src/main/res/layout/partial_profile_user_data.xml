@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -7,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="27dp">
+        android:layout_marginTop="@dimen/new_margin_med">
 
         <TextView
             android:id="@+id/tv_title_user_data"
@@ -19,7 +20,7 @@
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_data"
             android:textColor="@color/font_black_primary_70"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
         <TextView
@@ -27,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title_user_data"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:lineSpacingExtra="6sp"
@@ -55,10 +56,10 @@
 
                 <RelativeLayout
                     android:id="@+id/rv_progress"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp">
+                    android:layout_width="@dimen/progbar_height"
+                    android:layout_height="@dimen/progbar_height"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginStart="@dimen/new_margin_med">
 
                     <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
@@ -124,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_incomplete_profile"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med">
 
@@ -146,23 +147,24 @@
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_verified_phone_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
-                    android:drawableLeft="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="8.5dp"
+                    android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
                     android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
             </LinearLayout>
 
             <TextView
@@ -180,7 +182,7 @@
             <View
                 android:id="@+id/separator_phone_number"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="0.5dp"
                 android:layout_below="@id/tv_phone_number"
                 android:layout_marginTop="13dp"
                 android:background="@color/separator_color" />
@@ -191,7 +193,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_phone_number"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med">
 
@@ -213,23 +215,24 @@
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_verified_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
-                    android:drawableLeft="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="8.5dp"
+                    android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
                     android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
                     android:text="@string/data_verified"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_11"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
             </LinearLayout>
 
             <TextView
@@ -247,7 +250,7 @@
             <View
                 android:id="@+id/separator_email"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="0.5dp"
                 android:layout_below="@id/tv_email"
                 android:layout_marginTop="13dp"
                 android:background="@color/separator_color" />
@@ -258,7 +261,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_email"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med">
 
@@ -289,7 +292,7 @@
             <View
                 android:id="@+id/separator_gender"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="0.5dp"
                 android:layout_below="@id/tv_gender"
                 android:layout_marginTop="13dp"
                 android:background="@color/separator_color" />
@@ -300,7 +303,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_gender"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med">
 

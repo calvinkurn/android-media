@@ -41,10 +41,14 @@ public class TopProfileFragment extends TkpdBaseV4Fragment
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_top_profile, container, false);
-
         initView(rootView);
-        populateData();
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        populateData();
     }
 
     @Override

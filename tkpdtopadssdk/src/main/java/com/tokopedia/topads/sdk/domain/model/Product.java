@@ -49,6 +49,9 @@ public class Product {
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
 
+    public Product() {
+    }
+
     public Product(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
             setId(object.getString(KEY_ID));

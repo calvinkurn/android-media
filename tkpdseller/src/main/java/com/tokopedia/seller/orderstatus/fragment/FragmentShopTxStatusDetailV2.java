@@ -28,7 +28,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -39,9 +38,11 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.OrderHistoryView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenter;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenterImpl;
@@ -330,7 +331,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
                         .getTopProfileIntent(getActivity(),
                                 presenter.getInvoiceData().getUserId()));
             }
@@ -519,7 +520,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                             + "\n"
                             + getActivity().getString(R.string.message_verification_timeout),
                     Toast.LENGTH_LONG).show();
-            Crashlytics.log(0,
+            if(!GlobalConfig.DEBUG) Crashlytics.log(0,
                     "NullPointerException "
                             + getActivity().getClass().getSimpleName(), e.toString());
             getActivity().finish();

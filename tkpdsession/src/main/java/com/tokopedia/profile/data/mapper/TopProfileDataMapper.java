@@ -20,10 +20,13 @@ import rx.functions.Func1;
  */
 
 public class TopProfileDataMapper
-        implements Func1<Response<GraphqlResponse<ProfileGraphql>>, TopProfileViewModel>{
+        implements Func1<Response<GraphqlResponse<ProfileGraphql>>, TopProfileViewModel> {
+    private static final String ERROR_SERVER = "Server error";
+    private static final String ERROR_NETWORK = "Network call failed";
+    private static final String ERROR_EMPTY_RESPONSE = "Response is empty";
 
     @Inject
-    public TopProfileDataMapper(){
+    public TopProfileDataMapper() {
 
     }
 
@@ -39,11 +42,11 @@ public class TopProfileDataMapper
         return model;
     }
 
-    private void setUserData(TopProfileViewModel model, ProfileData.Data data){
+    private void setUserData(TopProfileViewModel model, ProfileData.Data data) {
         model.setUserId(data.getId());
         model.setName(data.getName());
         model.setTitle(data.getInfo());
-        model.setBiodata(data.getBio() != null ? data.getBio().replace("\n","") : "");
+        model.setBiodata(data.getBio() != null ? data.getBio().replace("\n", "") : "");
         model.setFollowing(data.getFollowingFmt());
         model.setFollowers(data.getFollowersFmt());
         model.setFollowed(data.isFollowed());
@@ -53,7 +56,7 @@ public class TopProfileDataMapper
         model.setIsUser(data.isMe());
     }
 
-    private void setUserInfo(TopProfileViewModel model, ProfileInfo data){
+    private void setUserInfo(TopProfileViewModel model, ProfileInfo data) {
         model.setPhoneVerified(data.isPhoneVerified());
         model.setEmailVerified(data.isEmailVerified());
         model.setPhoneNumber(data.getPhone());
@@ -63,19 +66,19 @@ public class TopProfileDataMapper
         model.setCompletion(data.getCompletion());
     }
 
-    private void setReputation(TopProfileViewModel model, ProfileReputation data){
-        model.setSummaryScore(String.valueOf(data.getPercentage()));
+    private void setReputation(TopProfileViewModel model, ProfileReputation data) {
+        model.setSummaryScore(stringFromFloat(data.getPercentage()));
         model.setPositiveScore(String.valueOf(data.getPositive()));
         model.setNetralScore(String.valueOf(data.getNeutral()));
         model.setNegativeScore(String.valueOf(data.getNegative()));
     }
 
-    private void setShopInfo(TopProfileViewModel model, ProfileShopInfo.Data data){
+    private void setShopInfo(TopProfileViewModel model, ProfileShopInfo.Data data) {
         model.setShopId(data.getShopId());
         model.setShopName(data.getShopName());
-        model.setGoldShop(data.getIsGold()==1);
+        model.setGoldShop(data.getIsGold() == 1);
         model.setGoldBadge(data.isGoldBadge());
-        model.setOfficialShop(data.getIsOfficial()==1);
+        model.setOfficialShop(data.getIsOfficial() == 1);
         model.setShopLocation(data.getLocation());
         model.setShopLogo(data.getLogo());
         model.setShopBadge(data.getReputationBadge());
@@ -91,16 +94,24 @@ public class TopProfileDataMapper
                 && graphqlResponse.body() != null
                 && graphqlResponse.body().getData() != null) {
             if (graphqlResponse.isSuccessful()) {
-                if (TextUtils.isEmpty(graphqlResponse.body().getData().getProfileData().getError())) {
+                if (TextUtils.isEmpty(graphqlResponse.body().getData().getProfileData().getError
+                        ())) {
                     return graphqlResponse.body().getData();
                 } else {
-                    throw new RuntimeException("Server error");
+                    throw new RuntimeException(ERROR_SERVER);
                 }
             } else {
-                throw new RuntimeException("Network call failed");
+                throw new RuntimeException(ERROR_NETWORK);
             }
         } else {
-            throw new RuntimeException("Response is empty");
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
         }
+    }
+
+    private String stringFromFloat(float x) {
+        if (x == (long) x)
+            return String.valueOf((long) x);
+        else
+            return String.valueOf(x);
     }
 }

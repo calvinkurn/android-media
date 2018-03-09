@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/background_light"
     android:padding="@dimen/padding_small">
@@ -99,7 +100,7 @@
             android:id="@+id/iv_official"
             android:layout_width="@dimen/med_dp"
             android:layout_height="@dimen/med_dp"
-            android:src="@drawable/ic_badge_official"
+            app:srcCompat="@drawable/ic_badge_official"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

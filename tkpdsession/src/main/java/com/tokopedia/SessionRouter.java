@@ -18,4 +18,6 @@ public interface SessionRouter {
     void doFollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
 
     void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
+
+    Intent getTopProfileIntent(Context context, String userId);
 }

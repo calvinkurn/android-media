@@ -127,7 +127,7 @@
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
                 android:layout_margin="@dimen/margin_vs"
-                android:src="@drawable/ic_red_hourglass"/>
+                app:srcCompat="@drawable/ic_red_hourglass"/>
 
             <TextView
                 android:id="@+id/deadline_text"
@@ -175,7 +175,7 @@
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
                 android:layout_margin="@dimen/margin_vs"
-                android:src="@drawable/ic_locked2"/>
+                app:srcCompat="@drawable/ic_locked2"/>
 
             <TextView
                 android:id="@+id/locked_text"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_detail"
-                android:background="@drawable/bg_white_border_shadow"
+                android:background="@drawable/qrpayment_bg_white_border_shadow"
                 android:padding="@dimen/margin_small">
 
                 <TextView
@@ -43,17 +44,17 @@
                     android:textSize="@dimen/font_medium"
                     tools:text="Pohon Terang" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/merchant_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/merchant_name"
                     android:layout_below="@+id/merchant_name"
                     android:layout_marginTop="@dimen/margin_ms"
-                    android:drawableLeft="@drawable/ic_shop_phone"
                     android:drawablePadding="@dimen/margin_vs"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/fontvs"
+                    app:drawableLeftCompat="@drawable/ic_shop_phone"
                     tools:text="0872721313718" />
 
             </RelativeLayout>
@@ -167,10 +168,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_detail"
             android:background="@drawable/bg_grey_border_black"
+            android:enabled="false"
             android:text="Bayar"
             android:textAllCaps="false"
-            android:textColor="@color/grey_nonactive_text"
-            android:enabled="false"/>
+            android:textColor="@color/grey_nonactive_text" />
 
     </LinearLayout>
 

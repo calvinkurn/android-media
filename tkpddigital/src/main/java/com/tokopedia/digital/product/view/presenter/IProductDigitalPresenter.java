@@ -38,4 +38,7 @@ public interface IProductDigitalPresenter {
 
     void renderCheckPulsa();
 
+    void processGetHelpUrlData(String categoryId);
+
+    void onHelpMenuClicked();
 }

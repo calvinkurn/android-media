@@ -15,10 +15,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
+
+import static com.tokopedia.analytics.TopProfileAnalytics.Action.CLICK_ON_COMPLETE_NOW;
+import static com.tokopedia.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
+import static com.tokopedia.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
 
 /**
  * @author by alvinatin on 13/02/18.
@@ -44,6 +49,22 @@ public class PartialUserDataView extends BaseCustomView {
     View separatorEmail;
     View separatorGender;
 
+    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public PartialUserDataView(@NonNull Context context) {
+        super(context);
+        init();
+    }
+
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
@@ -62,22 +83,6 @@ public class PartialUserDataView extends BaseCustomView {
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         super.dispatchSaveInstanceState(container);
-    }
-
-    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs, int
-            defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public PartialUserDataView(@NonNull Context context) {
-        super(context);
-        init();
     }
 
     private void init() {
@@ -218,6 +223,12 @@ public class PartialUserDataView extends BaseCustomView {
         public void onClick(View v) {
             getContext().startActivity(
                     new Intent(getContext(), ProfileCompletionActivity.class));
+
+            ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                    .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                            TOP_PROFILE,
+                            CLICK_ON_COMPLETE_NOW,
+                            "");
         }
     }
 }

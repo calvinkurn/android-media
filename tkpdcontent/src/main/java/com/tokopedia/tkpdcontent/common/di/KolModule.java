@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdcontent.common.di;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.tkpdcontent.common.data.source.KolAuthInterceptor;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
@@ -20,17 +22,28 @@ import retrofit2.Retrofit;
 @KolScope
 @Module
 public class KolModule {
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_RETRY = 1;
+
     @KolScope
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                         httpLoggingInterceptor,
-                                            KolAuthInterceptor kolAuthInterceptor) {
-        return new OkHttpClient.Builder()
-                .readTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(kolAuthInterceptor)
-                .build();
+                                            KolAuthInterceptor kolAuthInterceptor,
+                                            OkHttpRetryPolicy retryPolicy) {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .addInterceptor(kolAuthInterceptor);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            clientBuilder.addInterceptor(httpLoggingInterceptor);
+        }
+
+        return clientBuilder.build();
     }
 
     @KolScope
@@ -45,5 +58,15 @@ public class KolModule {
     @Provides
     public KolApi provideKolApi(@KolQualifier Retrofit retrofit) {
         return retrofit.create(KolApi.class);
+    }
+
+    @KolScope
+    @KolQualifier
+    @Provides
+    public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
+                NET_WRITE_TIMEOUT,
+                NET_CONNECT_TIMEOUT,
+                NET_RETRY);
     }
 }
