@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailVerificationActivity;
@@ -36,7 +35,6 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
 
     private static final int REQUEST_VERIFY_EMAIL = 1234;
 
-    private TkpdHintTextInputLayout wrapperEmail;
     private EditText etEmail;
     private TextView tvMessage, tvError;
     private Button btnContinue;
@@ -60,12 +58,11 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_address, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_email, container, false);
         etEmail = (EditText) view.findViewById(R.id.et_email);
         tvMessage = (TextView) view.findViewById(R.id.tv_message);
         tvError = (TextView) view.findViewById(R.id.tv_error);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
-        wrapperEmail = (TkpdHintTextInputLayout) view.findViewById(R.id.wrapper_email);
         presenter.attachView(this);
         return view;
     }
@@ -101,7 +98,28 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
             }
         });
 
-        etEmail.addTextChangedListener(emailWatcher(wrapperEmail));
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setTextError("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setTextError(getString(R.string.error_field_required));
+                } else if (!CommonUtils.EmailValidation(etEmail.getText().toString())) {
+                    setTextError(getString(R.string.wrong_email_format));
+                }
+            }
+        });
     }
 
     @Override
@@ -141,31 +159,6 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
         progressDialog.showDialog();
     }
 
-    private TextWatcher emailWatcher(final TkpdHintTextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                } else if (!CommonUtils.EmailValidation(etEmail.getText().toString())) {
-                    setWrapperError(wrapper, getString(R.string.wrong_email_format));
-                }
-            }
-        };
-    }
-
     private void enableButton(Button button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
@@ -178,14 +171,14 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
         button.setEnabled(true);
     }
 
-    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
-        if (s == null) {
-            wrapper.setError(s);
-            wrapper.setErrorEnabled(false);
+    private void setTextError(String s) {
+        if (s.equals("")) {
+            etEmail.setText(s);
+            etEmail.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);
         } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
+            etEmail.setText(s);
+            etEmail.setVisibility(View.VISIBLE);
             tvMessage.setVisibility(View.GONE);
         }
     }

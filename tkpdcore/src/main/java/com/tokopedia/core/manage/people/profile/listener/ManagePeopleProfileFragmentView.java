@@ -78,4 +78,6 @@ public interface ManagePeopleProfileFragmentView {
     void finishActivity();
 
     void startChangePhoneNumber();
+
+    void startAddEmailActivity();
 }

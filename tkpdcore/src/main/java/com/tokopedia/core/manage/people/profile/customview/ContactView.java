@@ -14,6 +14,7 @@ import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.EditTextCompat;
 
 /**
  * Created on 6/9/16.
@@ -25,7 +26,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public EditText email;
     public View phoneSection;
     public View changeHpBtn;
-    public EditText phone;
+    public EditTextCompat phone;
     public View phoneVerificationSection;
     public EditText verification;
     public View verificationBtn;
@@ -91,6 +92,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             tvEmail.setVisibility(VISIBLE);
             tvEmailHint.setVisibility(GONE);
             tvEmail.setText(userEmail);
+            changeEmailBtn.setVisibility(VISIBLE);
         } else {
             email.setVisibility(VISIBLE);
             email.setClickable(true);
@@ -98,6 +100,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             email.setOnClickListener(new AddEmailClick());
             tvEmail.setVisibility(GONE);
             tvEmailHint.setVisibility(VISIBLE);
+            changeEmailBtn.setVisibility(G);
         }
 
         if (SessionHandler.isMsisdnVerified()) {

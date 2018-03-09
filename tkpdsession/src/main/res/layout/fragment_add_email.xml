@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_sm">
+    android:padding="@dimen/margin_sm"
+    android:background="@color/white">
 
     <include
         layout="@layout/layout_email_top"
@@ -40,19 +42,19 @@
         android:textColor="@color/black_38"
         android:layout_marginTop="@dimen/margin_ms"/>
     
-    <!--<TextView-->
-        <!--android:id="@+id/tv_error"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="@dimen/text_size_small"-->
-        <!--android:fontFamily="sans-serif"-->
-        <!--android:textStyle="normal"-->
-        <!--android:textColor="@color/red_500"-->
-        <!--android:lineSpacingExtra="4sp"-->
-        <!--android:visibility="gone"-->
-        <!--tools:visibility="visible"-->
-        <!--tools:text="Nomor ponsel belum terdaftar"-->
-        <!--/>-->
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/red_500"
+        android:lineSpacingExtra="4sp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Nomor ponsel belum terdaftar"
+        />
     
     <Button
         android:id="@+id/btn_continue"

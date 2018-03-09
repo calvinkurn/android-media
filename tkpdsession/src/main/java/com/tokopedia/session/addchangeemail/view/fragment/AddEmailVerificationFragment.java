@@ -99,7 +99,8 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
         errorImage = view.findViewById(R.id.error_image);
         prepareView();
         presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        initData();
+        return view;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,12 +128,6 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(ARGS_DATA, viewModel);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
     }
 
     private void initData() {
