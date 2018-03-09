@@ -14,6 +14,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.User
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.SingleShipmentData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  */
 
 public class CartShipmentAddressFormDataConverter
-        extends ConverterData<CartShipmentAddressFormData, List<Object>> {
+        extends ConverterData<CartShipmentAddressFormData, SingleShipmentData> {
 
     private static final int FIRST_ELEMENT = 0;
     private static final int PRIME_ADDRESS = 2;
@@ -42,10 +43,8 @@ public class CartShipmentAddressFormDataConverter
     }
 
     @Override
-    public List<Object> convert(CartShipmentAddressFormData cartItemDataList) {
+    public SingleShipmentData convert(CartShipmentAddressFormData cartItemDataList) {
         this.cartItemDataList = cartItemDataList;
-        List<Object> shipmentDataList = new ArrayList<>();
-
         GroupAddress groupAddress = cartItemDataList.getGroupAddress().get(FIRST_ELEMENT);
 
         userAddress = groupAddress.getUserAddress();
@@ -55,11 +54,11 @@ public class CartShipmentAddressFormDataConverter
         List<CartSellerItemModel> cartSellerItemModels = convertFromGroupShopList(groupShops);
         ShipmentCostModel shipmentCostModel = getTotalPayableDetail(cartSellerItemModels);
 
-        shipmentDataList.add(recipientAddressModel);
-        shipmentDataList.addAll(cartSellerItemModels);
-        shipmentDataList.add(shipmentCostModel);
-
-        return shipmentDataList;
+        SingleShipmentData singleShipmentData = new SingleShipmentData();
+        singleShipmentData.setRecipientAddress(recipientAddressModel);
+        singleShipmentData.setCartItem(cartSellerItemModels);
+        singleShipmentData.setShipmentCost(shipmentCostModel);
+        return singleShipmentData;
     }
 
     private List<CartSellerItemModel> convertFromGroupShopList(List<GroupShop> groupShops) {

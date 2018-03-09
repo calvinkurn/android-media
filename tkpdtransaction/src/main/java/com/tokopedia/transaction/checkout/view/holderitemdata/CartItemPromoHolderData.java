@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view.holderitemdata;
 
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+
 /**
  * @author anggaprasetiyo on 20/02/18.
  */
@@ -82,5 +84,32 @@ public class CartItemPromoHolderData {
         this.couponCode = "";
         this.couponDiscountAmount = 0;
         this.couponTitle = "";
+    }
+
+    public static CartItemPromoHolderData createInstanceFromAppliedPromo(
+            PromoCodeAppliedData promoCodeAppliedData
+    ) {
+        CartItemPromoHolderData data = new CartItemPromoHolderData();
+        if (promoCodeAppliedData == null) {
+            data.setPromoNotActive();
+        } else {
+            switch (promoCodeAppliedData.getTypeVoucher()) {
+                case PromoCodeAppliedData.TYPE_COUPON:
+                    data.setPromoCouponType(
+                            promoCodeAppliedData.getCouponTitle(),
+                            promoCodeAppliedData.getPromoCode(),
+                            promoCodeAppliedData.getDescription(),
+                            promoCodeAppliedData.getAmount()
+                    );
+                    break;
+                case PromoCodeAppliedData.TYPE_VOUCHER:
+                    data.setPromoVoucherType(
+                            promoCodeAppliedData.getPromoCode(),
+                            promoCodeAppliedData.getDescription(),
+                            promoCodeAppliedData.getAmount());
+                    break;
+            }
+        }
+        return data;
     }
 }
