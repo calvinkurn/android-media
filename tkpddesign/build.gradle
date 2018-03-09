@@ -83,6 +83,7 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.design
     compile rootProject.ext.supportLibDependencies.cardViewV7
     compile rootProject.ext.supportLibDependencies.constraintLayout
+    compile rootProject.ext.miscDependencies.loaderviewlibrary
 
     compile rootProject.ext.networkDependencies.glide
 

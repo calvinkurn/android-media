@@ -34,6 +34,8 @@ import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
