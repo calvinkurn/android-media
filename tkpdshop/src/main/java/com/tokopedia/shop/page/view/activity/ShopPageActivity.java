@@ -665,6 +665,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shopPagePresenter.detachView();
+        if (shopPagePresenter != null) {
+            shopPagePresenter.detachView();
+        }
     }
 }
