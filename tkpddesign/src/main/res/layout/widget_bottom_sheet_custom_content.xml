@@ -15,7 +15,7 @@
         android:id="@+id/body_bottom_sheet"
         style="@style/TextView.Small.BlackDisabled"
         android:layout_marginTop="@dimen/margin_ms"
-        tools:text="Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. " />
+        tools:text="@string/app_name" />
 
     <FrameLayout
         android:id="@+id/layout_custom_content"
@@ -33,7 +33,7 @@
         android:gravity="center"
         android:textColor="@color/font_black_disabled_38"
         android:visibility="gone"
-        tools:text="Test" />
+        tools:text="@string/app_name" />
 
     <TextView
         android:id="@+id/button_close_bottom_sheet"

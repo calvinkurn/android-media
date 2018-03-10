@@ -54,7 +54,7 @@ import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.customview.BottomSheetCustomContentView;
+import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.shop.product.view.customview.ShopWarningTickerView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
@@ -578,7 +578,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         TextView reviewInfoTextView = speedContentBottomSheet.findViewById(R.id.text_view_review_info);
         reviewInfoTextView.setText(getString(R.string.shop_page_bottom_sheet_product_quality_review_info, totalReview));
-
 
         BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(ShopPageActivity.this);
         bottomSheetView.setCustomContentLayout(speedContentBottomSheet);

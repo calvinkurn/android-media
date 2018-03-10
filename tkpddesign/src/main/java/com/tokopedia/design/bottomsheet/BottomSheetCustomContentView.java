@@ -1,12 +1,12 @@
-package com.tokopedia.shop.product.view.customview;
+package com.tokopedia.design.bottomsheet;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.view.View;
 import android.widget.FrameLayout;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.shop.R;
+
+import com.tokopedia.design.R;
 
 public class BottomSheetCustomContentView extends BottomSheetView {
 
