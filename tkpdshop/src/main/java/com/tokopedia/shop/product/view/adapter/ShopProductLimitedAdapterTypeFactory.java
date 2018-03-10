@@ -13,6 +13,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
+import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 /**
  * Created by alvarisi on 12/7/17.
@@ -25,17 +26,20 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final View.OnClickListener showMoreEtalaseOnClickListener;
     private final ShopProductClickedListener shopProductClickedListener;
     private final EmptyViewHolder.Callback emptyProductOnClickListener;
+    private final ShopPagePromoWebView.Listener promoWebViewListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener,
-                                                EmptyViewHolder.Callback emptyProductOnClickListener) {
+                                                EmptyViewHolder.Callback emptyProductOnClickListener,
+                                                ShopPagePromoWebView.Listener promoWebViewListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.showMoreEtalaseOnClickListener = showMoreEtalaseOnClickListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
+        this.promoWebViewListener = promoWebViewListener;
     }
 
     @Override
@@ -59,10 +63,10 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == EmptyViewHolder.LAYOUT) {
             return new EmptyViewHolder(parent, emptyProductOnClickListener);
-        }  else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
-            return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
+        } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
+            return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
-            return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
+            return new ShopProductLimitedFeaturedViewHolder(parent, shopProductClickedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
             return new ShopProductLimitedProductViewHolder(parent,
                     showMoreProductOnClickListener,

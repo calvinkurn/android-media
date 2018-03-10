@@ -36,6 +36,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
+import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 import java.util.List;
 
@@ -46,7 +47,13 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback {
+        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener,
+        ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback {
+
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
 
     private static final int REQUEST_CODER_USER_LOGIN = 100;
 
@@ -56,10 +63,10 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private LoadingStateView loadingStateView;
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
+    private ShopPagePromoWebView.Listener promoWebViewListener;
 
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
+    public void setPromoWebViewListener(ShopPagePromoWebView.Listener promoWebViewListener) {
+        this.promoWebViewListener = promoWebViewListener;
     }
 
     @Override
@@ -67,6 +74,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         super.onAttach(context);
         if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
             shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+            promoWebViewListener = (ShopPagePromoWebView.Listener) context;
         }
     }
 
@@ -105,7 +113,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
             public void onClick(View view) {
                 startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
             }
-        }, this, this);
+        }, this, this, promoWebViewListener);
     }
 
     @NonNull

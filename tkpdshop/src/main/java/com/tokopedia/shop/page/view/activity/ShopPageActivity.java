@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -51,10 +52,12 @@ import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
+import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.customview.CustomContentBottomActionView;
 import com.tokopedia.shop.product.view.customview.ShopWarningTickerView;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
+import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 import javax.inject.Inject;
 
@@ -62,7 +65,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/3/18.
  */
 
-public class ShopPageActivity extends BaseTabActivity implements HasComponent<ShopComponent>, ShopPageView {
+public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, HasComponent<ShopComponent>, ShopPageView {
 
     public static final int MAX_RATING_STAR = 5;
     public static final String SHOP_ID = "shop_id";
@@ -322,6 +325,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
         shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
+        shopProductListLimitedFragment.setPromoWebViewListener(this);
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
@@ -336,7 +340,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
+            private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 1f;
+            boolean toolbarTitleShown = false;
             int scrollRange = -1;
 
             @Override
@@ -345,31 +350,28 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 float percentage = (float) Math.abs(verticalOffset) / (float) scrollRange;
-                if (percentage > 1f) {
-                    setCollapsedToolbar();
-                    isShow = true;
-                } else if (isShow) {
-                    setExpandedToolbar();
-                    isShow = false;
+                if (percentage < OFFSET_TOOLBAR_TITLE_SHOWN && toolbarTitleShown) {
+                    showToolbarTitle(false);
+                    toolbarTitleShown = false;
+                } else if (percentage >= OFFSET_TOOLBAR_TITLE_SHOWN && !toolbarTitleShown) {
+                    showToolbarTitle(true);
+                    toolbarTitleShown = true;
+                }
+            }
+
+            private void showToolbarTitle(boolean show) {
+                String title = show ? shopNameTextView.getText().toString() : " ";
+                int icBackRes = show ? R.drawable.ic_action_back_grey : R.drawable.ic_action_back;
+                int icShareRes = show ? R.drawable.ic_share_grey : R.drawable.ic_share_white;
+                collapsingToolbarLayout.setTitle(title);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setHomeAsUpIndicator(icBackRes);
+                }
+                if (menu != null && menu.size() > 0) {
+                    menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(ShopPageActivity.this, icShareRes));
                 }
             }
         };
-    }
-
-    private void setExpandedToolbar() {
-        collapsingToolbarLayout.setTitle(" ");
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
-        if (menu != null && menu.size() > 0) {
-            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_share_white));
-        }
-    }
-
-    public void setCollapsedToolbar() {
-        collapsingToolbarLayout.setTitle(shopNameTextView.getText());
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back_grey);
-        if (menu != null && menu.size() > 0) {
-            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_share_grey));
-        }
     }
 
     @Override
@@ -439,6 +441,14 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     protected int getPageLimit() {
         return PAGE_LIMIT;
+    }
+
+    @Override
+    public void webViewTouched(boolean touched) {
+        if (viewPager instanceof ShopPageViewPager) {
+            CommonUtils.dumper("touched: " + touched);
+            ((ShopPageViewPager) viewPager).setPagingEnabled(!touched);
+        }
     }
 
     @Override
