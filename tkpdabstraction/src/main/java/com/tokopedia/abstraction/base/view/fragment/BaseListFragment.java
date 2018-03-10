@@ -103,7 +103,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
         if (callInitialLoadAutomatically()) {
             loadInitialData();
-            showLoading();
         }
     }
 
@@ -114,10 +113,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void loadInitialData() {
-        // Note that we don't clear data when load initial
-        // instead, we just set the flag, so that the data is still there
-        // do this flag check on renderList.
+        // Load all from the beginning / reset data
+        // Need to clear all data to avoid invalid data in case of error
         isLoadingInitialData = true;
+        adapter.clearAllElements();
+        showLoading();
         loadData(getDefaultInitialPage());
     }
 
