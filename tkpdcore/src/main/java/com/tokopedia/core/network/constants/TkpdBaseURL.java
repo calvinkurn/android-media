@@ -821,6 +821,7 @@ public class TkpdBaseURL {
         public static final String ACTION_FINISH_RESOLUTION = BASE_DETAIL_RESOLUTION + "/finish";
         public static final String ACTION_CANCEL_RESOLUTION = BASE_DETAIL_RESOLUTION + "/cancel";
         public static final String ACTION_ASK_HELP_RESOLUTION = BASE_DETAIL_RESOLUTION + "/report_resolution";
+        public static final String ACTION_ACCEPT_SOLUTION = BASE_DETAIL_RESOLUTION + "/accept";
 
 
         public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
@@ -901,7 +902,7 @@ public class TkpdBaseURL {
     public static class Chat {
         public static final String CHAT_WEBSOCKET = "/connect";
         public static final String GET_MESSAGE = "/tc/v1/list_message";
-        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_REPLY = "/tc/v2/list_reply/{msgId}";
         public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
         public static final String REPLY = "/tc/v1/reply";
         public static final String LISTEN_WEBSOCKET = "/connect";

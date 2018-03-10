@@ -50,5 +50,4 @@ public class Attachment {
     public void setFallbackAttachment(FallbackAttachment fallbackAttachment) {
         this.fallbackAttachment = fallbackAttachment;
     }
-
 }

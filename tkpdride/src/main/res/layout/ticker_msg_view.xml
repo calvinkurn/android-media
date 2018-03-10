@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|center_horizontal"
+    android:layout_marginBottom="@dimen/margin_vvs"
+    android:layout_marginTop="@dimen/margin_vvs"
+    android:orientation="vertical"
+    app:layout_anchorGravity="top|center_horizontal">
+
+    <TextView
+        android:id="@+id/ticker_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginStart="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/sms_ticker_msg_drawable"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small"
+        android:textSize="@dimen/text_size_medium" />
+
+</FrameLayout>

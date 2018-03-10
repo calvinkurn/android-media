@@ -24,57 +24,82 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_title_tokocash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:lineSpacingExtra="4sp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:visibility="gone"
-            tools:text="TokoCash"
+        <ProgressBar
+            android:id="@+id/progress_bar_tokocash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:orientation="vertical"
+            android:visibility="visible"
             tools:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_balance_tokocash"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/container_action_tokocash"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:lineSpacingExtra="4sp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:text="Rp 100.000"
-            app:srcCompat="@drawable/ic_info"/>
+            android:orientation="vertical"
+            tools:visibility="visible">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_btn_action_tokocash"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_med"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:lineSpacingExtra="4sp"
-                tools:text="Aktivasi"
-                app:srcCompat="@drawable/ic_topup"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontvs"
-                android:textStyle="bold"
-                tools:visibility="visible" />
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tv_title_tokocash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:lineSpacingExtra="4sp"
+                    android:textColor="@color/black_70"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:text="TokoCash"
+                    tools:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_balance_tokocash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:lineSpacingExtra="4sp"
+                    android:textColor="@color/black_70"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_info"
+                    tools:text="Rp 100.000"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_btn_action_tokocash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_med"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="4sp"
+                        android:textColor="@color/tkpd_main_green"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold"
+                        app:srcCompat="@drawable/ic_topup"
+                        tools:text="Aktivasi"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
     </RelativeLayout>

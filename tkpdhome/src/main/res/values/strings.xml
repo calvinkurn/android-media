@@ -29,4 +29,9 @@
     <string name="sprint_sale_expired_text">Promo Berakhir</string>
     <string name="official_store">Official Store</string>
     <string name="gold_merchant">Gold Merchant</string>
+    <string name="home_header_tokopoint_unable_to_load_label">Gagal Memuat</string>
+    <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
+    <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokopoint_new_label">Baru</string>
 </resources>

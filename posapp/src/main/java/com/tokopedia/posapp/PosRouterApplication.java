@@ -17,6 +17,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -41,6 +42,8 @@ import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -436,6 +439,11 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
+        return null;
+    }
+
+    @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
         return null;
     }
 
