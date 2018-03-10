@@ -151,12 +151,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!TextUtils.isEmpty(keyword)) {
-            searchInputView.getSearchTextView().setText(keyword);
-        }
-        if (!TextUtils.isEmpty(etalaseName)) {
-            chooseEtalaseLabelView.setContent(etalaseName);
-        }
 
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
         recyclerViews = view.findViewById(R.id.recycler_view);
@@ -202,6 +196,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             } else {
                 chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
             }
+        }
+        if (!TextUtils.isEmpty(keyword)) {
+            searchInputView.getSearchTextView().setText(keyword);
+        }
+        if (!TextUtils.isEmpty(etalaseName)) {
+            chooseEtalaseLabelView.setContent(etalaseName);
         }
     }
 
