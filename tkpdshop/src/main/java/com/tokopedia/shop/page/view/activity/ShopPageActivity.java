@@ -376,7 +376,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_shop_info, menu);
+        getMenuInflater().inflate(R.menu.menu_shop_page, menu);
         this.menu = menu;
         return true;
     }
@@ -390,7 +390,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     private void onShareShop() {
-        ((ShopModuleRouter) getApplication()).goToShareShop(ShopPageActivity.this, shopId, shopUrl,
+        ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopUrl,
                 getString(R.string.shop_label_share_formatted, shopNameTextView.getText().toString(), shopLocation));
     }
 

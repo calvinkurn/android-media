@@ -8,6 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -66,10 +69,11 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private RecyclerView recyclerView;
 
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
+
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
     private String shopId;
-    private long userId;
+    private ShopInfo shopInfo;
 
     public static ShopInfoFragment createInstance(String shopId) {
         ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
@@ -82,6 +86,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         shopInfoDetailPresenter.attachView(this);
         shopInfoDetailPresenter.getShopInfo(shopId);
@@ -121,11 +126,12 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     @Override
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
         displayBasicShopInfo(shopInfo);
         displayLogisticShopInfo(shopInfo);
     }
 
-    private void displayBasicShopInfo(ShopInfo shopInfo) {
+    private void displayBasicShopInfo(final ShopInfo shopInfo) {
         if (getActivity() instanceof BaseTabActivity) {
             ((BaseTabActivity) getActivity()).updateTitle(shopInfo.getInfo().getShopName());
         }
@@ -134,7 +140,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
         }
 
-        userId = shopInfo.getOwner().getOwnerId();
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
         totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
         productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
@@ -173,10 +178,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
             public void onClick(View view) {
                 Application application = ShopInfoFragment.this.getActivity().getApplication();
                 if (application instanceof ShopModuleRouter) {
-                    ((ShopModuleRouter) application).goToProfileShop(
-                            ShopInfoFragment.this.getActivity(),
-                            Long.toString(userId)
-                    );
+                    ((ShopModuleRouter) application).goToProfileShop(getActivity(), Long.toString(shopInfo.getOwner().getOwnerId()));
                 }
             }
         });
@@ -194,7 +196,28 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     @Override
     public void onErrorGetShopInfo(Throwable e) {
+        // TODO handle error
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
     }
 
     @Override
