@@ -49,6 +49,7 @@
             android:id="@+id/label_view_shop_owner"
             style="@style/LabelLayout"
             app:lv_content="@string/see_label"
+            app:lv_content_color="@color/tkpd_main_green"
             app:lv_image="@drawable/ic_smiley_neutral"
             app:lv_image_width="@dimen/image_width_l"
             app:lv_sub_title="@string/shop_info_label_shop_owner"

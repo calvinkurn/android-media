@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -154,6 +155,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
             physicalAddressContent = getString(R.string.shop_info_physical_shop_location_count, shopInfo.getAddress().size());
+            physicalShopLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
             physicalShopLabelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
