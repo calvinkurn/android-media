@@ -1,5 +1,8 @@
 package com.tokopedia.posapp.auth.login.view.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,17 +19,31 @@ import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.di.LoginQualifier;
+import com.tokopedia.di.SessionComponent;
+import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.posapp.PosRouterApplication;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.auth.login.di.qualifier.PosLoginQualifier;
+import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
+import com.tokopedia.posapp.auth.login.di.component.DaggerPosLoginComponent;
+import com.tokopedia.posapp.auth.login.view.PosLogin;
+import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
-import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
+import com.tokopedia.session.login.loginemail.view.fragment.BaseLoginFragment;
+import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
@@ -34,22 +51,32 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
+
 /**
  * @author okasurya on 2/23/18.
  */
 
-public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
+public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View {
     private AutoCompleteTextView emailEditText;
     private TextInputEditText passwordEditText;
     private TextView forgotPass;
+    private View loadingView;
     private LinearLayout loginLayout;
     private TextView loginButton;
     private TkpdHintTextInputLayout wrapperEmail;
     private TkpdHintTextInputLayout wrapperPassword;
 
-    @PosLoginQualifier
     @Inject
-    LoginPresenter presenter;
+    PosLogin.Presenter presenter;
+
+    @Inject
+    GlobalCacheManager cacheManager;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static Fragment createInstance() {
         return new PosLoginFragment();
@@ -62,6 +89,11 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     protected void initInjector() {
+        PosLoginComponent posLoginComponent = (DaggerPosLoginComponent) DaggerPosLoginComponent
+                .builder()
+                .appComponent(getComponent(AppComponent.class))
+                .build();
+        posLoginComponent.inject(this);
         presenter.attachView(this);
     }
 
@@ -78,6 +110,7 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
         emailEditText = view.findViewById(R.id.email_auto);
         passwordEditText = view.findViewById(R.id.password);
         forgotPass = view.findViewById(R.id.forgot_pass);
+        loadingView = view.findViewById(R.id.login_status);
         loginLayout = view.findViewById(R.id.login_layout);
         loginButton = view.findViewById(R.id.accounts_sign_in);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
@@ -124,38 +157,32 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
         });
     }
 
-    private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(com.tokopedia.core.R.string.error_field_required));
-                }
-            }
-        };
-    }
-
-    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
-        if (s == null) {
-            wrapper.setError(null);
-            wrapper.setErrorEnabled(false);
-        } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
-        }
-    }
+//     if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+//        view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
+//                .getGetUserInfoDomainData());
+//    } else if (loginEmailDomain.getLoginResult() != null
+//            && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
+//            && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+//        view.dismissLoadingLogin();
+//        view.setSmartLock();
+//        view.onSuccessLoginEmail();
+//    } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
+//            && !isMsisdnVerified(loginEmailDomain.getInfo())) {
+//        view.setSmartLock();
+//        view.onGoToPhoneVerification();
+//    } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
+//        view.setSmartLock();
+//        view.onGoToSecurityQuestion(
+//                loginEmailDomain.getLoginResult().getSecurityDomain(),
+//                loginEmailDomain.getLoginResult().getFullName(),
+//                loginEmailDomain.getInfo().getGetUserInfoDomainData().getEmail(),
+//                loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
+//    } else {
+//        view.dismissLoadingLogin();
+//        view.resetToken();
+//        view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
+//    }
 
     @Override
     public void resetError() {
@@ -164,22 +191,26 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     public void showLoadingLogin() {
-
+        showLoading(true);
     }
 
     @Override
     public void showErrorPassword(int resId) {
-
+        setWrapperError(wrapperPassword, getString(resId));
+        passwordEditText.requestFocus();
+        UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
     }
 
     @Override
     public void showErrorEmail(int resId) {
-
+        setWrapperError(wrapperEmail, getString(resId));
+        emailEditText.requestFocus();
+        UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
     }
 
     @Override
     public void dismissLoadingLogin() {
-
+        showLoading(false);
     }
 
     @Override
@@ -189,7 +220,7 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     public void onErrorLogin(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -229,22 +260,26 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     public void onGoToPhoneVerification() {
-
+        startActivityForResult(
+                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
+                REQUEST_VERIFY_PHONE);
     }
 
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
-
+        goToSecurityQuestion(securityDomain, fullName, email, phone, cacheManager);
     }
 
     @Override
     public void setSmartLock() {
-
+        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                emailEditText.getText().toString(),
+                passwordEditText.getText().toString());
     }
 
     @Override
     public void resetToken() {
-
+        presenter.resetToken();
     }
 
     @Override
@@ -259,7 +294,8 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     public void onSuccessLoginEmail() {
-
+        startActivity(OutletActivity.newTopIntent(getActivity()));
+        getActivity().finish();
     }
 
     @Override
@@ -274,6 +310,71 @@ public class PosLoginFragment extends BaseDaggerFragment implements Login.View {
 
     @Override
     public void enableArrow() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SMART_LOCK
+                && resultCode == Activity.RESULT_OK
+                && data != null
+                && data.getExtras() != null
+                && data.getExtras().getString(SmartLockActivity.USERNAME) != null
+                && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
+            emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+            passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+            presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+                    data.getExtras().getString(SmartLockActivity.PASSWORD));
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_VERIFY_PHONE) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void showLoading(final boolean isLoading) {
+        int shortAnimTime = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        loadingView.animate().setDuration(shortAnimTime)
+                .alpha(isLoading ? 1 : 0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (loadingView != null) {
+                            loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                        }
+                    }
+                });
 
     }
 }

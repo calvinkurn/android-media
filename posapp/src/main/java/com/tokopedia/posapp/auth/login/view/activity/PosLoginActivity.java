@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.auth.login.view.fragment.PosLoginFragment;
 
 /**
@@ -43,7 +45,7 @@ public class PosLoginActivity extends BaseSimpleActivity implements HasComponent
     }
 
     @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication) getApplicationContext()).getBaseAppComponent();
+    public AppComponent getComponent() {
+        return ((MainApplication) getApplicationContext()).getAppComponent();
     }
 }

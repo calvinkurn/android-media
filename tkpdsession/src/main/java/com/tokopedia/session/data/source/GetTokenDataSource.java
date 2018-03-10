@@ -23,7 +23,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class GetTokenDataSource {
     private final AccountsBasicService basicService;
     private final TokenMapper tokenMapper;
-    private final SessionHandler sessionHandler;
+    protected final SessionHandler sessionHandler;
 
     public GetTokenDataSource(AccountsBasicService basicService,
                               TokenMapper tokenMapper,
