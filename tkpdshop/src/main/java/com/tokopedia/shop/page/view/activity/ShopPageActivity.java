@@ -122,6 +122,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private Button buttonAddProduct;
     private Button buttonChatSeller;
     private Button buttonFavouriteShop;
+    private Button buttonAlreadyFavouriteShop;
     private String shopId;
     private String shopDomain;
     private boolean favouriteShop;
@@ -257,6 +258,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonAddProduct = findViewById(R.id.button_add_product);
         buttonChatSeller = findViewById(R.id.button_chat_seller);
         buttonFavouriteShop = findViewById(R.id.button_favourite_shop);
+        buttonAlreadyFavouriteShop = findViewById(R.id.button_already_favourite_shop);
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
@@ -290,8 +292,13 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonFavouriteShop.setEnabled(false);
-                shopPagePresenter.toggleFavouriteShop(shopId);
+                toggleFavouriteShop();
+            }
+        });
+        buttonAlreadyFavouriteShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFavouriteShop();
             }
         });
         buttonManageShop.setOnClickListener(new View.OnClickListener() {
@@ -319,6 +326,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         collapsingToolbarLayout.setTitle(" ");
+    }
+
+    private void toggleFavouriteShop() {
+        buttonFavouriteShop.setEnabled(false);
+        buttonAlreadyFavouriteShop.setEnabled(false);
+        shopPagePresenter.toggleFavouriteShop(shopId);
     }
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
@@ -461,11 +474,10 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             displayAsGeneralShop(shopInfo);
         }
         if (shopPagePresenter.isMyShop(shopId)) {
-            displayAsBuyerShop();
-        } else {
             displayAsSellerShop();
+        } else {
+            displayAsBuyerShop();
         }
-        updateFavouriteButtonView();
     }
 
     private void displayAsOfficialStoreView(ShopInfo shopInfo) {
@@ -503,7 +515,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         });
         final String qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
-        final long qualityRatingStar = shopInfo.getRatings().getQuality().getRatingStar();
+        final float qualityRatingStar = shopInfo.getRatings().getQuality().getRatingStar();
         qualityRatingBar.setRating(qualityRatingStar);
         qualityRatingBar.setMax(MAX_RATING_STAR);
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
@@ -545,7 +557,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         bottomSheetView.show();
     }
 
-    private void displayQualityInfo(String qualityAverage, long qualityRatingStar) {
+    private void displayQualityInfo(String qualityAverage, float qualityRatingStar) {
         View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.product_quality_bottom_sheet, null);
         RatingBar qualityRatingBar = speedContentBottomSheet.findViewById(R.id.rating_bar_product_quality);
         qualityRatingBar.setRating(qualityRatingStar);
@@ -572,17 +584,25 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void displayAsBuyerShop() {
+        buttonChatSeller.setVisibility(View.VISIBLE);
+        updateFavouriteButtonView();
+    }
+
+    private void displayAsSellerShop() {
         buttonManageShop.setVisibility(View.VISIBLE);
         buttonAddProduct.setVisibility(View.VISIBLE);
     }
 
-    private void displayAsSellerShop() {
-        buttonChatSeller.setVisibility(View.VISIBLE);
-        buttonFavouriteShop.setVisibility(View.VISIBLE);
-    }
-
     private void updateFavouriteButtonView() {
-        buttonFavouriteShop.setText(favouriteShop ? getString(R.string.shop_page_label_already_favorite) : getString(R.string.shop_page_label_favorite));
+        buttonFavouriteShop.setEnabled(true);
+        buttonAlreadyFavouriteShop.setEnabled(true);
+        if (favouriteShop) {
+            buttonFavouriteShop.setVisibility(View.GONE);
+            buttonAlreadyFavouriteShop.setVisibility(View.VISIBLE);
+        } else {
+            buttonFavouriteShop.setVisibility(View.VISIBLE);
+            buttonAlreadyFavouriteShop.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -599,7 +619,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     public void updateReputationSpeed(ReputationSpeed reputationSpeed) {
         final int speedLevel = reputationSpeed.getRecent1Month().getSpeedLevel();
-        final String speedLevelDescription = "";
+        final String speedLevelDescription = reputationSpeed.getRecent1Month().getSpeedLevelDescription();
         speedImageView.setImageResource(getReputationSpeedIcon(speedLevel));
         if (TextUtils.isEmpty(speedLevelDescription)) {
             speedValueTextView.setText(R.string.shop_page_speed_shop_not_available);
@@ -646,10 +666,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public void onSuccessToggleFavourite(boolean successValue) {
         if (successValue) {
             favouriteShop = !favouriteShop;
-            updateFavouriteButtonView();
             updateFavouriteResult();
         }
-        buttonFavouriteShop.setEnabled(true);
+        updateFavouriteButtonView();
     }
 
     private void updateFavouriteResult() {
@@ -660,7 +679,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onErrorToggleFavourite(Throwable e) {
-        buttonFavouriteShop.setEnabled(true);
+        updateFavouriteButtonView();
         if (e instanceof UserNotLoginException) {
             Intent intent = ((ShopModuleRouter) getApplication()).getLoginIntent(this);
             startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);

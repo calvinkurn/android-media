@@ -23,7 +23,7 @@ public class ShopInfoQuality {
     private String oneStarRank;
     @SerializedName("rating_star")
     @Expose
-    private long ratingStar;
+    private float ratingStar;
     @SerializedName("three_star_rank")
     @Expose
     private String threeStarRank;
@@ -71,11 +71,11 @@ public class ShopInfoQuality {
         this.oneStarRank = oneStarRank;
     }
 
-    public long getRatingStar() {
+    public float getRatingStar() {
         return ratingStar;
     }
 
-    public void setRatingStar(long ratingStar) {
+    public void setRatingStar(float ratingStar) {
         this.ratingStar = ratingStar;
     }
 
