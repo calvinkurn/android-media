@@ -126,11 +126,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         if (shopProductListLimitedPresenter.isMyShop(shopId)) {
-            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_owner));
-            emptyModel.setContent(getString(R.string.shop_product_empty_product_content_owner));
+            emptyModel.setTitle(getString(R.string.shop_product_limited_empty_product_title_owner));
+            emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_content_owner));
             emptyModel.setButtonTitle(getString(R.string.shop_page_label_add_product));
         } else {
-            emptyModel.setContent(getString(R.string.shop_product_empty_product_title));
+            emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_title));
         }
         return emptyModel;
     }

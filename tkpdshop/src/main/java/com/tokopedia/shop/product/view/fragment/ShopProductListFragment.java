@@ -17,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
@@ -114,6 +116,15 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     protected BaseListAdapter<ShopProductViewModel, ShopProductAdapterTypeFactory> createAdapterInstance() {
         return new ShopProductAdapter(getAdapterTypeFactory());
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setIconRes(R.drawable.ic_empty_list_search);
+        emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+        emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
+        return emptyModel;
     }
 
     @Override

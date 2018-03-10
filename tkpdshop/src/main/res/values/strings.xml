@@ -55,9 +55,11 @@
     <string name="shop_product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="shop_product_label_wholesale">Grosir</string>
     <string name="shop_product_label_po">PO</string>
-    <string name="shop_product_empty_product_title">Toko ini belum memiliki produk</string>
-    <string name="shop_product_empty_product_title_owner">Toko anda belum memiliki produk</string>
-    <string name="shop_product_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
+    <string name="shop_product_limited_empty_product_title">Toko ini belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner">Toko anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
+    <string name="shop_product_empty_product_title">Tidak ada \"%1$s\" di etalase ini</string>
+    <string name="shop_product_empty_product_title_owner">Ubah kata pencarian anda atau pilih etalase lain</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
