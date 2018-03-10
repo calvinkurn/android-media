@@ -21,6 +21,10 @@ public class GlobalConfig {
     public static Boolean DEBUG = false;
     public static boolean ENABLE_DISTRIBUTION = false;
 
+    public static boolean isCustomerApp() {
+        return APPLICATION_TYPE == CONSUMER_APPLICATION;
+    }
+
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;
     }

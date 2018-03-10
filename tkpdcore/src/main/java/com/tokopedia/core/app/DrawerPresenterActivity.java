@@ -435,7 +435,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
-        if (!GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             unregisterBroadcastReceiverHeaderTokoCash();
             unregisterBroadcastReceiverHeaderTokoCashPending();
             unregisterBroadcastReceiverHeaderTokoPoint();
