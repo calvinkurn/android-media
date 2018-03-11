@@ -17,36 +17,33 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 
 public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewModel> {
 
-    @LayoutRes public static final int LAYOUT = R.layout.item_product_etalase_picker_checked_green;
+    @LayoutRes
+    public static final int LAYOUT = R.layout.item_product_etalase_picker_checked_green;
     private final TextView etalasePickerItemName;
     private final ImageView etalasePickerRadioButton;
     private final ImageView etalaseBadgeImageView;
 
     public ShopEtalaseViewHolder(View itemView) {
         super(itemView);
-
-        etalasePickerItemName = itemView.findViewById(R.id.etalase_picker_item_name);
-        etalasePickerRadioButton = itemView.findViewById(R.id.etalase_picker_radio_button);
-
-        etalaseBadgeImageView = itemView.findViewById(R.id.etalase_badge_image_view);
+        etalasePickerItemName = itemView.findViewById(R.id.text_view_etalase_name);
+        etalasePickerRadioButton = itemView.findViewById(R.id.image_view_etalase_checked);
+        etalaseBadgeImageView = itemView.findViewById(R.id.image_view_etalase_badge);
     }
 
     @Override
     public void bind(ShopEtalaseViewModel shopEtalaseViewModel) {
-
-        if(!TextUtils.isEmpty(shopEtalaseViewModel.getEtalaseBadge())){
+        if (!TextUtils.isEmpty(shopEtalaseViewModel.getEtalaseBadge())) {
             ImageHandler.LoadImage(etalaseBadgeImageView, shopEtalaseViewModel.getEtalaseBadge());
-        }else{
+        } else {
             etalaseBadgeImageView.setVisibility(View.GONE);
         }
 
         etalasePickerItemName.setText(shopEtalaseViewModel.getEtalaseName());
 
-        if(shopEtalaseViewModel.isSelected()){
+        if (shopEtalaseViewModel.isSelected()) {
             etalasePickerRadioButton.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             etalasePickerRadioButton.setVisibility(View.GONE);
         }
-
     }
 }

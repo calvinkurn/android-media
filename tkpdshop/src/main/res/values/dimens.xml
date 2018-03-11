@@ -8,4 +8,8 @@
     <dimen name="image_width_product_list">105dp</dimen>
     <dimen name="price_margin_top">6dp</dimen>
     <dimen name="line_spacng_extra">4sp</dimen>
+    <dimen name="image_width_wishlist_icon">20dp</dimen>
+    <dimen name="image_width_wishlist_container">34dp</dimen>
+
+    <dimen name="shop_badge_min_height">28dp</dimen>
 </resources>

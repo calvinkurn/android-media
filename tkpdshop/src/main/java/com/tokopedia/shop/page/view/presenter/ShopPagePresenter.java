@@ -50,6 +50,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 if (isViewAttached()) {
                     getView().onErrorGetShopPageInfo(e);
                 }

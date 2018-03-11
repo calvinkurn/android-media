@@ -198,7 +198,7 @@ public class ShopPageHeaderViewHolder {
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
-        ImageHandler.loadImageCircle2(shopIconImageView.getContext(), shopIconImageView, shopInfo.getInfo().getShopAvatar());
+        ImageHandler.LoadImage(shopIconImageView, shopInfo.getInfo().getShopAvatar());
 
         if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
             displayAsOfficialStoreView(shopInfo);
@@ -339,7 +339,7 @@ public class ShopPageHeaderViewHolder {
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopInfo.getClosedInfo().getUntil());
-        shopWarningTickerView.setIcon(R.drawable.icon_closed);
+        shopWarningTickerView.setIcon(R.drawable.ic_shop_label_closed);
         shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
         shopWarningTickerView.setDescription(shopInfo.getClosedInfo().getNote());
         shopWarningTickerView.setAction(shopWarningTickerView.getContext().getString(R.string.open_shop), null);

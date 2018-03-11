@@ -24,7 +24,7 @@ public class ShopProductSortViewHolder extends AbstractViewHolder<ShopProductSor
     public ShopProductSortViewHolder(View itemView) {
         super(itemView);
 
-        etalasePickerItemName = itemView.findViewById(R.id.etalase_picker_item_name);
+        etalasePickerItemName = itemView.findViewById(R.id.text_view_etalase_name);
         checkedImageView = itemView.findViewById(R.id.etalase_picker_radio_button_selected);
     }
 

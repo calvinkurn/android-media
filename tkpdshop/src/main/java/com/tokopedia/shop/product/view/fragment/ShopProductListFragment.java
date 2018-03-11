@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -85,7 +86,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String sortId;
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
-    private int page;
+
+    private DividerItemDecoration listDividerItemDecoration;
 
     public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -190,6 +192,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (!TextUtils.isEmpty(keyword)) {
             searchInputView.getSearchTextView().setText(keyword);
         }
+        listDividerItemDecoration = new DividerItemDecoration(getActivity());
     }
 
     @Override
@@ -223,6 +226,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         } else {
             currentLayoutType = layoutType[currentIndex];
         }
+        recyclerView.removeItemDecoration(listDividerItemDecoration);
         switch (currentLayoutType.second) {
             case LAYOUT_GRID_TYPE:
                 layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
@@ -237,8 +241,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 });
                 break;
             default:
-                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false
-                );
+                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+                recyclerView.addItemDecoration(listDividerItemDecoration);
                 break;
         }
         currentIndex++;
