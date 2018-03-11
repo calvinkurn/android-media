@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -86,7 +87,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
+                qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
         }

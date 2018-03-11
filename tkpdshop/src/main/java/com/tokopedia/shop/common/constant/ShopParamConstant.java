@@ -8,4 +8,5 @@ public class ShopParamConstant {
 
     public static final String SHOP_ID = "SHOP_ID";
     public static final String SHOP_NOTE_ID = "SHOP_NOTE_ID";
+    public static final int MAX_RATING_STAR = 5;
 }

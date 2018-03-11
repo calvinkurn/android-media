@@ -145,7 +145,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 .inject(this);
     }
 
-    public void displayProduct(String shopId, String promotionWebViewUrl, String shopName) {
+    public void displayProduct(String shopId, String promotionWebViewUrl) {
         this.shopId = shopId;
         shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
     }
