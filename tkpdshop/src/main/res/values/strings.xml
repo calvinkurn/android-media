@@ -13,6 +13,9 @@
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
 
     <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
+    <string name="shop_page_header_shop_closed_info">Toko tutup sampai dengan %1$s</string>
+    <string name="shop_page_header_shop_in_moderation">Toko Anda dalam status MODERASI</string>
+    <string name="shop_page_header_closed_reason">Alasan : %1$s</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
@@ -91,9 +94,6 @@
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
-    <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
-    <string name="open_shop">Buka Toko</string>
-    <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
-    <string name="dashboard_reason_x">Alasan : %1$s</string>
+
 
 </resources>

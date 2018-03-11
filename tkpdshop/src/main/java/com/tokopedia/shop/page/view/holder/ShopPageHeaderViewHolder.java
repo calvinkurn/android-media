@@ -22,7 +22,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
-import com.tokopedia.shop.product.view.customview.ShopWarningTickerView;
+import com.tokopedia.shop.page.view.widget.ShopWarningTickerView;
 
 /**
  * Created by nathan on 3/10/18.
@@ -340,17 +340,17 @@ public class ShopPageHeaderViewHolder {
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopInfo.getClosedInfo().getUntil());
         shopWarningTickerView.setIcon(R.drawable.ic_shop_label_closed);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.dashboard_your_shop_is_closed_until_xx, shopCloseUntilString));
+        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString));
         shopWarningTickerView.setDescription(shopInfo.getClosedInfo().getNote());
-        shopWarningTickerView.setAction(shopWarningTickerView.getContext().getString(R.string.open_shop), null);
+        shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.green_ticker));
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
     private void showShopModerated(ShopInfo shopInfo) {
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.dashboard_your_shop_is_in_moderation));
-        shopWarningTickerView.setDescription(shopWarningTickerView.getContext().getString(R.string.dashboard_reason_x, shopInfo.getClosedInfo().getReason()));
+        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_in_moderation));
+        shopWarningTickerView.setDescription(shopWarningTickerView.getContext().getString(R.string.shop_page_header_closed_reason, shopInfo.getClosedInfo().getReason()));
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);

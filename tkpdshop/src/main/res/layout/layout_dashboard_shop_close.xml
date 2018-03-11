@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/dashboard_your_shop_is_closed_until_xx" />
+                android:text="@string/shop_page_header_shop_closed_info" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,8 +77,7 @@
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
-                    android:padding="@dimen/margin_ms"
-                    android:text="@string/open_shop" />
+                    android:padding="@dimen/margin_ms" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

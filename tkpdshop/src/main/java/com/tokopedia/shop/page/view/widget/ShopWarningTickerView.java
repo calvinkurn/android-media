@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.customview;
+package com.tokopedia.shop.page.view.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -92,7 +92,6 @@ public class ShopWarningTickerView extends FrameLayout {
             tvAction.setOnClickListener(onClickListener);
             tvAction.setVisibility(View.VISIBLE);
         }
-
     }
 
     public void setTickerColor(int color) {
