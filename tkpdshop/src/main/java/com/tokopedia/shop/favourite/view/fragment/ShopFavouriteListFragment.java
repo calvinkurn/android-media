@@ -1,7 +1,6 @@
 package com.tokopedia.shop.favourite.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringList;
@@ -15,8 +14,6 @@ import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -28,7 +25,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     public static ShopFavouriteListFragment createInstance(String shopId) {
         ShopFavouriteListFragment shopFavouriteListFragment = new ShopFavouriteListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         shopFavouriteListFragment.setArguments(bundle);
         return shopFavouriteListFragment;
     }
@@ -40,7 +37,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
     }
 

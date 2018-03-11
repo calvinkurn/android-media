@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.design.label.LabelView
-        android:id="@+id/label_view_choose_etalase"
+        android:id="@+id/label_view_etalase"
         style="@style/LabelLayout"
         app:lv_content="@string/shop_info_label_choose_etalase"
         app:lv_content_color="@color/tkpd_main_green"

@@ -1,20 +1,18 @@
 package com.tokopedia.shop.etalase.view.fragment;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
 import com.tokopedia.shop.etalase.di.module.ShopEtalaseModule;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
-import com.tokopedia.shop.etalase.view.listener.ShopEtalaseFragmentListener;
 import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.etalase.view.presenter.ShopEtalasePresenter;
@@ -31,20 +29,17 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     public static final int DEFAULT_INDEX_SELECTION = 0;
 
     private String shopId;
-    private String shopDomain;
 
     @Inject
     ShopEtalasePresenter shopEtalasePresenter;
 
-    private ShopEtalaseFragmentListener shopEtlaseFragmentListener;
     private String selectedEtalaseId;
 
-    public static ShopEtalaseFragment createInstance(String shoId, String shopDomain, String selectedEtalaseId) {
+    public static ShopEtalaseFragment createInstance(String shoId, String selectedEtalaseId) {
         ShopEtalaseFragment fragment = new ShopEtalaseFragment();
         Bundle arguments = new Bundle();
-        arguments.putString(ShopParamApiConstant.SHOP_ID, shoId);
-        arguments.putString(ShopParamApiConstant.SHOP_DOMAIN, shopDomain);
-        arguments.putString(ShopParamConstant.SELECTED_ETALASE_ID, selectedEtalaseId);
+        arguments.putString(ShopParamConstant.EXTRA_SHOP_ID, shoId);
+        arguments.putString(ShopParamConstant.EXTRA_ETALASE_ID, selectedEtalaseId);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -52,17 +47,15 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            shopId = getArguments().getString(ShopParamApiConstant.SHOP_ID);
-            shopDomain = getArguments().getString(ShopParamApiConstant.SHOP_DOMAIN);
-            selectedEtalaseId = getArguments().getString(ShopParamConstant.SELECTED_ETALASE_ID);
+            shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
+            selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
         }
-
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void loadData(int i) {
-        shopEtalasePresenter.getShopEtalase(shopId, shopDomain);
+        shopEtalasePresenter.getShopEtalase(shopId);
     }
 
     @Override
@@ -72,9 +65,10 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
 
     @Override
     public void onItemClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
-        if (shopEtlaseFragmentListener != null) {
-            shopEtlaseFragmentListener.select(shopEtalaseViewModel);
-        }
+        Intent intent = new Intent();
+        intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, shopEtalaseViewModel.getEtalaseId());
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -98,14 +92,6 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
                 .build()
                 .inject(this);
         shopEtalasePresenter.attachView(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context != null && context instanceof ShopEtalaseFragmentListener) {
-            shopEtlaseFragmentListener = (ShopEtalaseFragmentListener) context;
-        }
     }
 
     @Override

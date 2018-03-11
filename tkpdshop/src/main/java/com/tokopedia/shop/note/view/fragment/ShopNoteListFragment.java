@@ -17,7 +17,6 @@ import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 
 import javax.inject.Inject;
 
@@ -30,7 +29,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
     public static ShopNoteListFragment createInstance(String shopId) {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         shopNoteListFragment.setArguments(bundle);
         return shopNoteListFragment;
     }
@@ -42,7 +41,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopNoteListPresenter.attachView(this);
     }
 

@@ -22,13 +22,13 @@ public class ShopFavouriteListActivity extends BaseSimpleActivity implements Has
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopFavouriteListActivity.class);
-        intent.putExtra(ShopParamConstant.SHOP_ID, shopId);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
+        shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         super.onCreate(savedInstanceState);
     }
 

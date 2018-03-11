@@ -2,7 +2,6 @@ package com.tokopedia.shop.note.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +38,7 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     public static ShopNoteDetailFragment newInstance(String noteId) {
         ShopNoteDetailFragment shopNoteListFragment = new ShopNoteDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_NOTE_ID, noteId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_NOTE_ID, noteId);
         shopNoteListFragment.setArguments(bundle);
         return shopNoteListFragment;
     }
@@ -47,7 +46,7 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopNoteId = getArguments().getString(ShopParamConstant.SHOP_NOTE_ID);
+        shopNoteId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_NOTE_ID);
         shopNoteDetailPresenter.attachView(this);
         setHasOptionsMenu(true);
     }

@@ -42,7 +42,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     }
 
     public void getShopInfo(String shopId) {
-        getShopPageDataUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopPageViewModel>() {
+        getShopPageDataUseCase.execute(GetShopPageDataUseCase.createRequestParam(shopId), new Subscriber<ShopPageViewModel>() {
             @Override
             public void onCompleted() {
 

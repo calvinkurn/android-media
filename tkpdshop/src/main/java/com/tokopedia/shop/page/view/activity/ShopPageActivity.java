@@ -59,8 +59,8 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
-    private static final String SHOP_ID = "SHOP_ID";
-    private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    private static final String SHOP_ID = "EXTRA_SHOP_ID";
+    private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
 

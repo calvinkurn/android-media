@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +20,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -37,6 +40,7 @@ import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.List;
 
@@ -55,7 +59,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return fragment;
     }
 
-    private static final int REQUEST_CODER_USER_LOGIN = 100;
+    private static final int REQUEST_CODE_USER_LOGIN = 100;
+    private static final int REQUEST_CODE_ETALASE = 200;
 
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -111,7 +116,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
+                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopId, null), REQUEST_CODE_ETALASE);
             }
         }, this, this, promoWebViewListener);
     }
@@ -188,13 +193,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        startActivity(ShopProductListActivity.createIntent(
-                getActivity(),
-                shopId,
-                text,
-                null,
-                null
-        ));
+        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, text, ""));
     }
 
     @Override
@@ -235,7 +234,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void onErrorRemoveFromWishList(Throwable e) {
         if (e instanceof UserNotLoginException) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
@@ -250,7 +249,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void onErrorAddToWishList(Throwable e) {
         if (e instanceof UserNotLoginException) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
@@ -259,6 +258,21 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void onSuccessAddToWishList(String productId, Boolean value) {
         ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_ETALASE:
+                if (resultCode == Activity.RESULT_OK) {
+                    String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, "", etalaseId));
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

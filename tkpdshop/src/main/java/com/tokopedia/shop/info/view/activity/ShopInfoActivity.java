@@ -10,7 +10,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -38,7 +37,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtra(ShopParamConstant.SHOP_ID, shopId);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         return intent;
     }
 
@@ -63,7 +62,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
+        shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO);
         viewPager.setCurrentItem(tabPosition);
     }

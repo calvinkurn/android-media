@@ -19,13 +19,13 @@ public class ShopNoteDetailActivity extends BaseSimpleActivity {
 
     public static Intent createIntent(Context context, String shopNoteId) {
         Intent intent = new Intent(context, ShopNoteDetailActivity.class);
-        intent.putExtra(ShopParamConstant.SHOP_NOTE_ID, shopNoteId);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID, shopNoteId);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        shopNoteId = getIntent().getStringExtra(ShopParamConstant.SHOP_NOTE_ID);
+        shopNoteId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID);
         super.onCreate(savedInstanceState);
     }
 

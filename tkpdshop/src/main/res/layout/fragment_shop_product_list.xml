@@ -21,9 +21,9 @@
             app:layout_scrollFlags="scroll|snap|enterAlways" />
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/label_view_choose_etalase"
+            android:id="@+id/label_view_etalase"
             style="@style/LabelLayout"
-            app:lv_content="@string/shop_info_label_choose_etalase"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_content_color="@color/tkpd_main_green"
             app:lv_title="@string/shop_info_default_etalase_title"
             app:lv_title_text_style="bold" />
@@ -63,7 +63,6 @@
             app:bav_icon_1="@drawable/ic_icon"
             app:bav_icon_2="@drawable/ic_see_grid"
             app:bav_label_1="@string/shop_info_sort_label"
-            app:bav_label_2="@string/shop_info_see_label"
-            />
+            app:bav_label_2="@string/shop_info_see_label" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

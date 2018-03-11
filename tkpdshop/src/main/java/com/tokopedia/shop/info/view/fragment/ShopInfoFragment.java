@@ -78,7 +78,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     public static ShopInfoFragment createInstance(String shopId) {
         ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         shopInfoFragment.setArguments(bundle);
         return shopInfoFragment;
     }
@@ -87,7 +87,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopInfoDetailPresenter.attachView(this);
         shopInfoDetailPresenter.getShopInfo(shopId);
     }
