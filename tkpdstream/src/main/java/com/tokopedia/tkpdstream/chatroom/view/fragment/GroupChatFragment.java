@@ -525,25 +525,33 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessGetPreviousMessage(List<Visitable> listChat) {
-        adapter.addListPrevious(listChat);
-        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+        try {
+            adapter.addListPrevious(listChat);
+            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-        this.mPrevMessageListQuery = previousMessageListQuery;
-        adapter.setList(listChat);
-        if (!listChat.isEmpty()) {
-            adapter.setCursor(listChat.get(0));
-        }
-        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-        scrollToBottom();
+        try {
+            this.mPrevMessageListQuery = previousMessageListQuery;
+            adapter.setList(listChat);
+            if (!listChat.isEmpty()) {
+                adapter.setCursor(listChat.get(0));
+            }
+            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+            scrollToBottom();
 
-        presenter.setHandler(viewModel.getChannelUrl(), this);
+            presenter.setHandler(viewModel.getChannelUrl(), this);
 
-        if (getArguments() != null & getArguments().getBoolean(GroupChatActivity
-                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
-            channelInfoDialog.show();
+            if (getArguments() != null & getArguments().getBoolean(GroupChatActivity
+                    .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+                channelInfoDialog.show();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
     }
@@ -737,7 +745,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
-        }else{
+        } else {
             addIncomingMessage(messageItem);
         }
     }
@@ -856,18 +864,26 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onUserExited(UserActionViewModel userActionViewModel, int participantCount) {
-        viewModel.setTotalParticipant(participantCount);
-        setToolbarParticipantCount();
+        try {
+            viewModel.setTotalParticipant(participantCount);
+            setToolbarParticipantCount();
 //        adapter.addAction(userActionViewModel);
 //        adapter.notifyItemInserted(0);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
-        mChannel = openChannel;
-        viewModel.setTotalParticipant(openChannel.getParticipantCount());
-        setToolbarParticipantCount();
-        presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
+        try {
+            mChannel = openChannel;
+            viewModel.setTotalParticipant(openChannel.getParticipantCount());
+            setToolbarParticipantCount();
+            presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1100,6 +1116,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.removeEmptyState(getView());
             initData();
+            String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
+            replyEditText.setHint(hintText);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

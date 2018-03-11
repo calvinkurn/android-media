@@ -21,6 +21,29 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     private String description;
     private int participant;
 
+    protected ChannelViewModel(Parcel in) {
+        channelUrl = in.readString();
+        id = in.readString();
+        adminName = in.readString();
+        image = in.readString();
+        adminPicture = in.readString();
+        title = in.readString();
+        description = in.readString();
+        participant = in.readInt();
+    }
+
+    public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
+        @Override
+        public ChannelViewModel createFromParcel(Parcel in) {
+            return new ChannelViewModel(in);
+        }
+
+        @Override
+        public ChannelViewModel[] newArray(int size) {
+            return new ChannelViewModel[size];
+        }
+    };
+
     @Override
     public int type(ChannelTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -73,6 +96,10 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.participant = participant;
     }
 
+    public String getChannelUrl() {
+        return channelUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -80,43 +107,14 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.adminName);
-        dest.writeString(this.image);
-        dest.writeString(this.adminPicture);
-        dest.writeString(this.title);
-        dest.writeString(this.description);
-        dest.writeInt(this.participant);
-        dest.writeString(this.channelUrl);
-
-    }
-
-    protected ChannelViewModel(Parcel in) {
-        this.id = in.readString();
-        this.adminName = in.readString();
-        this.image = in.readString();
-        this.adminPicture = in.readString();
-        this.title = in.readString();
-        this.description = in.readString();
-        this.participant = in.readInt();
-        this.channelUrl = in.readString();
-
-    }
-
-    public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
-        @Override
-        public ChannelViewModel createFromParcel(Parcel source) {
-            return new ChannelViewModel(source);
-        }
-
-        @Override
-        public ChannelViewModel[] newArray(int size) {
-            return new ChannelViewModel[size];
-        }
-    };
-
-    public String getChannelUrl() {
-        return channelUrl;
+        dest.writeString(channelUrl);
+        dest.writeString(id);
+        dest.writeString(adminName);
+        dest.writeString(image);
+        dest.writeString(adminPicture);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeInt(participant);
     }
 }
 

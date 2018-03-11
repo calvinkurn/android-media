@@ -37,6 +37,7 @@ public class ChannelInfoViewModel implements Parcelable{
         channelUrl = in.readString();
         bannerUrl = in.readString();
         hasPoll = in.readByte() != 0;
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
     }
 
@@ -110,6 +111,7 @@ public class ChannelInfoViewModel implements Parcelable{
         dest.writeString(channelUrl);
         dest.writeString(bannerUrl);
         dest.writeByte((byte) (hasPoll ? 1 : 0));
+        dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(channelViewModel, flags);
     }
 }

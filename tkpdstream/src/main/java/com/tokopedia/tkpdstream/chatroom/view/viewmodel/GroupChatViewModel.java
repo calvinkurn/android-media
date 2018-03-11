@@ -21,8 +21,9 @@ public class GroupChatViewModel implements Parcelable{
 
     protected GroupChatViewModel(Parcel in) {
         channelUuid = in.readString();
+        channelInfoViewModel = in.readParcelable(ChannelInfoViewModel.class.getClassLoader());
+        timeStampBeforePause = in.readLong();
     }
-
 
     public static final Creator<GroupChatViewModel> CREATOR = new Creator<GroupChatViewModel>() {
         @Override

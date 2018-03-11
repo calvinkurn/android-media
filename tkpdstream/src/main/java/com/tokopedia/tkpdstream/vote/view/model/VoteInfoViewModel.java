@@ -1,5 +1,8 @@
 package com.tokopedia.tkpdstream.vote.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.R;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class VoteInfoViewModel {
+public class VoteInfoViewModel implements Parcelable{
 
 
     public static final int STATUS_ACTIVE = 2;
@@ -51,6 +54,33 @@ public class VoteInfoViewModel {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    protected VoteInfoViewModel(Parcel in) {
+        pollId = in.readString();
+        statusId = in.readInt();
+        voteOptionType = in.readString();
+        voteGiftType = in.readString();
+        voteStatus = in.readString();
+        voteInfoStringResId = in.readInt();
+        voteInfoUrl = in.readString();
+        voted = in.readByte() != 0;
+        title = in.readString();
+        startTime = in.readLong();
+        endTime = in.readLong();
+        participant = in.readString();
+    }
+
+    public static final Creator<VoteInfoViewModel> CREATOR = new Creator<VoteInfoViewModel>() {
+        @Override
+        public VoteInfoViewModel createFromParcel(Parcel in) {
+            return new VoteInfoViewModel(in);
+        }
+
+        @Override
+        public VoteInfoViewModel[] newArray(int size) {
+            return new VoteInfoViewModel[size];
+        }
+    };
 
     public String getVoteOptionType() {
         return voteOptionType;
@@ -136,6 +166,27 @@ public class VoteInfoViewModel {
 
     public void setStatusId(int statusId) {
         this.statusId = statusId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(pollId);
+        dest.writeInt(statusId);
+        dest.writeString(voteOptionType);
+        dest.writeString(voteGiftType);
+        dest.writeString(voteStatus);
+        dest.writeInt(voteInfoStringResId);
+        dest.writeString(voteInfoUrl);
+        dest.writeByte((byte) (voted ? 1 : 0));
+        dest.writeString(title);
+        dest.writeLong(startTime);
+        dest.writeLong(endTime);
+        dest.writeString(participant);
     }
 }
 
