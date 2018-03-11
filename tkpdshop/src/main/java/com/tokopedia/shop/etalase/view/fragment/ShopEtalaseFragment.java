@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamApiConstant;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
 import com.tokopedia.shop.etalase.di.module.ShopEtalaseModule;
@@ -28,10 +29,13 @@ import javax.inject.Inject;
 
 public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAdapterTypeFactory> implements ShopEtalaseView {
     public static final int DEFAULT_INDEX_SELECTION = 0;
-    String shopId, shopDomain;
+
+    private String shopId;
+    private String shopDomain;
 
     @Inject
     ShopEtalasePresenter shopEtalasePresenter;
+
     private ShopEtalaseFragmentListener shopEtlaseFragmentListener;
     private String selectedEtalaseId;
 
@@ -40,7 +44,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         Bundle arguments = new Bundle();
         arguments.putString(ShopParamApiConstant.SHOP_ID, shoId);
         arguments.putString(ShopParamApiConstant.SHOP_DOMAIN, shopDomain);
-        arguments.putString(ShopEtalaseActivity.SELECTED_ETALASE_ID, selectedEtalaseId);
+        arguments.putString(ShopParamConstant.SELECTED_ETALASE_ID, selectedEtalaseId);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -50,7 +54,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         if (savedInstanceState == null) {
             shopId = getArguments().getString(ShopParamApiConstant.SHOP_ID);
             shopDomain = getArguments().getString(ShopParamApiConstant.SHOP_DOMAIN);
-            selectedEtalaseId = getArguments().getString(ShopEtalaseActivity.SELECTED_ETALASE_ID);
+            selectedEtalaseId = getArguments().getString(ShopParamConstant.SELECTED_ETALASE_ID);
         }
 
         super.onViewCreated(view, savedInstanceState);
