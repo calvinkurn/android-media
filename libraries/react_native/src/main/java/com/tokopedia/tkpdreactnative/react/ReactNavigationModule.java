@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
@@ -110,4 +111,10 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         HashMap<String, Object> maps = dataLayer.toHashMap();
         TrackingUtils.eventTrackingEnhancedEcommerce(maps);
     }
+
+    @ReactMethod
+    public void getGraphQLRequestHeader(Promise promise) {
+        promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
+    }
+
 }
