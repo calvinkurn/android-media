@@ -17,7 +17,7 @@
         android:layout_marginStart="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_ms">
 
-        <ImageView
+        <com.tokopedia.shop.product.view.widget.SquareImageView
             android:id="@+id/product_image"
             android:layout_width="@dimen/image_width_product_list"
             android:layout_height="@dimen/image_width_product_list"
