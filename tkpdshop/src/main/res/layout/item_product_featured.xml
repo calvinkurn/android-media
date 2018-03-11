@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.shop.common.SquareImageView
+        <com.tokopedia.shop.product.view.widget.SquareImageView
             android:id="@+id/product_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

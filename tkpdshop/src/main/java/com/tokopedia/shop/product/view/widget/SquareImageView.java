@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common;
+package com.tokopedia.shop.product.view.widget;
 
 
 import android.content.Context;
