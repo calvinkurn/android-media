@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/shop_page_loading_state"
-        layout="@layout/activity_shop_page_loading_state"
+        layout="@layout/partial_shop_page_loading_state"
         android:visibility="gone" />
 
     <include
