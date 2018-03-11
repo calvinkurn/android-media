@@ -122,7 +122,7 @@ public class GroupChatMessagesMapper {
         AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
 
         return new ImageViewModel(
-                pojo.getImageUrl(),
+                pojo.getImageUrl().trim(),
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId()),

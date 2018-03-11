@@ -241,6 +241,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setupToolbar() {
+        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().getDecorView().setSystemUiVisibility(
@@ -248,7 +249,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+            params.height = getActivity().getResources().getDimensionPixelSize(R.dimen.channel_banner_height);
+        }else{
+            params.height = getActivity().getResources().getDimensionPixelSize(R.dimen
+                    .channel_banner_height_without_status);
         }
+
+        channelBanner.setLayoutParams(params);
 
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

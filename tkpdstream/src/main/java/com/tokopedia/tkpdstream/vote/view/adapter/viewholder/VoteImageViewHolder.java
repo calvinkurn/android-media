@@ -68,13 +68,14 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
 
         option.setText(element.getOption());
         percent.setText(element.getPercentage());
-        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
-
-            @Override
-            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
-                imageView.setImageBitmap(arg0);
-            }
-        });
+//        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
+//
+//            @Override
+//            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
+//                imageView.setImageBitmap(arg0);
+//            }
+//        });
+        ImageHandler.LoadImage(imageView, element.getUrl());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

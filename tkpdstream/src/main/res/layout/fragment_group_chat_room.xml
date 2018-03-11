@@ -35,6 +35,8 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
             app:titleTextAppearance="@style/ToolbarGroupChat"
+            tools:title="title"
+            tools:subtitle="subtitle"
 
             tools:layout_height="64dp"/>
 
