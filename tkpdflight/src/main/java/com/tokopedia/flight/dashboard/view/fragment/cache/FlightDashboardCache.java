@@ -10,9 +10,9 @@ import com.google.gson.Gson;
  */
 
 public class FlightDashboardCache {
-    private static final String CACHE_NAME = "FlightDashboardCache";
-    private static final String DEPARTURE = "DEPARTURE";
-    private static final String ARRIVAL = "ARRIVAL";
+    private static final String CACHE_NAME = "FlightDashboardNewCache";
+    private static final String DEPARTURE = "DEPARTURE_AIRPORT_ID";
+    private static final String ARRIVAL = "ARRIVAL_AIRPORT_ID";
     private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
     private static final String RETURN_DATE = "RETURN_DATE";
     private static final String PASSENGER_ADULT = "PASSENGER_ADULT";
