@@ -255,7 +255,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".datepicker.DatePickerTokoCashActivity"
+            android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"

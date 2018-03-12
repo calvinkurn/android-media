@@ -46,6 +46,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -201,6 +202,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_INDEX_HOME;
+    }
+
+    @Override
+    protected void sendScreenAnalytics() {
+        IndexScreenTracking.sendScreen(this, this);
     }
 
     @Override

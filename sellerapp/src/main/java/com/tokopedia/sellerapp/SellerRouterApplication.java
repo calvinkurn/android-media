@@ -29,6 +29,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -38,6 +39,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -47,6 +49,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -63,6 +66,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
@@ -163,21 +167,17 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter {
-
-    private DaggerProductComponent.Builder daggerProductBuilder;
-    private ProductComponent productComponent;
-
-    private DaggerGMComponent.Builder daggerGMBuilder;
-    private GMComponent gmComponent;
-
-    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
-    private TopAdsComponent topAdsComponent;
-
-    private DaggerShopComponent.Builder daggerShopBuilder;
-    private ShopComponent shopComponent;
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter{
 
     protected RemoteConfig remoteConfig;
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private ProductComponent productComponent;
+    private DaggerGMComponent.Builder daggerGMBuilder;
+    private GMComponent gmComponent;
+    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
+    private TopAdsComponent topAdsComponent;
+    private DaggerShopComponent.Builder daggerShopBuilder;
+    private ShopComponent shopComponent;
 
     @Override
     public void onCreate() {
@@ -923,6 +923,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
+        return null;
+    }
+
+    @Override
     public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
@@ -1059,6 +1064,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void unregisterShake() {
     }
 
+    public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
+        Intent intent = new Intent(activity, ContactUsActivity.class);
+        intent.putExtra(InboxRouter.PARAM_URL,
+                URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        return intent;
+    }
+
+    @Override
     public void showForceHockeyAppDialog() {
         ServerErrorHandler.showForceHockeyAppDialog();
     }
@@ -1067,5 +1081,17 @@ public abstract class SellerRouterApplication extends MainApplication
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
 
+    }
+
+
+    @Override
+    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        return intent;
+    }
+
+    @Override
+    public void startAddProduct(Activity activity, String shopId) {
+        goToAddProduct(activity);
     }
 }

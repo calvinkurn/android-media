@@ -119,6 +119,36 @@
                         android:layout_marginTop="@dimen/margin_sm"
                         android:text="@string/flight_booking_passenger_data_label" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/container_same_as_contact"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/TextView.Micro"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="@string/flight_booking_data_pemesan_sama_contact_label"/>
+
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/checkbox"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
+                            android:layout_gravity="center_vertical"
+                            android:theme="@style/checkBoxStyle" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/container_pnr"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:background="@color/black_twenty_percent" />
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_passengers"
                         android:layout_width="match_parent"
