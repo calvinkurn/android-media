@@ -250,7 +250,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             params.height = getActivity().getResources().getDimensionPixelSize(R.dimen.channel_banner_height);
-        }else{
+        } else {
             params.height = getActivity().getResources().getDimensionPixelSize(R.dimen
                     .channel_banner_height_without_status);
         }
@@ -390,6 +390,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 } else {
                     expand(voteBody);
                     analytics.eventClickVoteExpand();
+                    voteAdapter.notifyDataSetChanged();
                 }
                 arrow.animate().rotationBy(180f).start();
             }
@@ -549,6 +550,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 adapter.setCursor(listChat.get(0));
             }
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+            sendButton.setClickable(true);
             scrollToBottom();
 
             presenter.setHandler(viewModel.getChannelUrl(), this);
@@ -807,56 +809,76 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         //TODO : Implement this later
     }
 
-    public static void expand(final View v) {
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
+    public void expand(final View v) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-        v.getLayoutParams().height = 1;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? ViewGroup.LayoutParams.WRAP_CONTENT
-                        : (int) (targetHeight * interpolatedTime);
-                v.requestLayout();
-            }
+            v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            final int targetHeight = v.getMeasuredHeight();
 
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
-    }
-
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
-
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1) {
-                    v.setVisibility(View.GONE);
-                } else {
-                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+            // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+            v.getLayoutParams().height = 1;
+            v.setVisibility(View.VISIBLE);
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    v.getLayoutParams().height = interpolatedTime == 1
+                            ? targetHeight
+                            : (int) (targetHeight * interpolatedTime);
                     v.requestLayout();
                 }
-            }
 
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
+                @Override
+                public boolean willChangeBounds() {
+                    return true;
+                }
+            };
 
-        // 1dp/ms
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+            // 1dp/ms
+            a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+            v.startAnimation(a);
+
+        } else {
+
+            v.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
+    public void collapse(final View v) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+
+            final int initialHeight = v.getMeasuredHeight();
+
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    if (interpolatedTime == 1) {
+                        v.setVisibility(View.GONE);
+                    } else {
+                        v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+                        v.requestLayout();
+                    }
+                }
+
+                @Override
+                public boolean willChangeBounds() {
+                    return true;
+                }
+
+            };
+
+            // 1dp/ms
+            a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+            v.startAnimation(a);
+        } else {
+
+            v.setVisibility(View.GONE);
+
+        }
+
     }
 
     @Override

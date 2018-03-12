@@ -34,4 +34,5 @@
     <dimen name="margin_vote_chat">44dp</dimen>
     <dimen name="label_new_chat_width">120dp</dimen>
     <dimen name="arrow_size">14dp</dimen>
+    <dimen name="vote_image_size">130dp</dimen>
 </resources>
