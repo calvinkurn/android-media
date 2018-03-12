@@ -385,6 +385,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
+
         sendGTMAnalytics(
                 cartDigitalInfoData.getAttributes().getCategoryName(),
                 cartDigitalInfoData.getAttributes().getOperatorName()
@@ -460,7 +462,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderAddToCartData(CartDigitalInfoData cartDigitalInfoData) {
         this.cartDigitalInfoDataState = cartDigitalInfoData;
-        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
         renderCartInfo(cartDigitalInfoData);
     }
 
