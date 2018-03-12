@@ -102,6 +102,7 @@
             android:name=".airport.service.GetAirportListService"
             android:exported="false" />
 
+        <activity android:name=".passenger.view.activity.FlightPassengerUpdateActivity"></activity>
     </application>
 
 </manifest>
