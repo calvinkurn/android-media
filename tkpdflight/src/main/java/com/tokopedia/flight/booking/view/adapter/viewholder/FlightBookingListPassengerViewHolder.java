@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.passenger.view.activity.FlightPassengerUpdateActivity;
 
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
 
@@ -61,6 +63,14 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
             @Override
             public void onClick(View v) {
                 listenerCheckedSavedPassenger.deletePassenger(flightBookingPassengerViewModel.getPassengerId());
+            }
+        });
+
+        imgEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(FlightPassengerUpdateActivity.getCallingIntent(
+                        (Activity) context, flightBookingPassengerViewModel.getPassengerId()));
             }
         });
     }
