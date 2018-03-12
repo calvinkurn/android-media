@@ -255,11 +255,15 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onAllShipmentChosen(List<MultipleAddressShipmentAdapterData> adapterDataList) {
         CartItemPromoHolderData appliedPromo = shipmentAdapter.getAppliedPromo();
         if (appliedPromo != null && appliedPromo.getTypePromo() != CartItemPromoHolderData.TYPE_PROMO_NOT_ACTIVE) {
-            cartShipmentActivity.checkPromoCodeShipment(
-                    presenter.checkPromoSubscription(appliedPromo),
-                    presenter.generateCheckPromoRequest(adapterDataList, appliedPromo)
-            );
+            createPromoRequest(adapterDataList, appliedPromo);
         }
+    }
+
+    private void createPromoRequest(List<MultipleAddressShipmentAdapterData> adapterDataList, CartItemPromoHolderData appliedPromo) {
+        cartShipmentActivity.checkPromoCodeShipment(
+                presenter.checkPromoSubscription(appliedPromo),
+                presenter.generateCheckPromoRequest(adapterDataList, appliedPromo)
+        );
     }
 
     @Override
@@ -302,8 +306,8 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
             startActivityForResult(
                     ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                    getActivity(), "", addressPriceSummaryData.isCouponActive()
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
@@ -313,13 +317,12 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onShowPromo(String promoMessageString) {
         formatPromoMessage(promoMessage, promoMessageString);
         this.promoMessage.setVisibility(View.VISIBLE);
-        shipmentAdapter.showPromoSuggestionVisibility(false);
-        shipmentAdapter.notifyDataSetChanged();
+        shipmentAdapter.hidePromoSuggestion();
     }
 
     @Override
     public void onRemovePromo() {
-        shipmentAdapter.showPromoSuggestionVisibility(true);
+        shipmentAdapter.showPromoSuggestion();
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(null);
         shipmentAdapter.notifyDataSetChanged();
         promoMessage.setText("");
@@ -379,7 +382,75 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                     totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
             }
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            onResultFromRequestCodeLoyalty(resultCode, data);
         }
+    }
+
+    private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String voucherCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                String voucherMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                long voucherDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(voucherCode)
+                        .description(voucherMessage)
+                        .amount((int) voucherDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
+
+                checkAppliedPromo(cartPromo);
+            }
+        } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                String couponTitle = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                String couponMessage = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                String couponCode = bundle.getString(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                long couponDiscountAmount = bundle.getLong(
+                        IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(couponCode)
+                        .couponTitle(couponTitle)
+                        .description(couponMessage)
+                        .amount((int) couponDiscountAmount)
+                        .build();
+                CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
+                cartPromo.setPromoCouponType(
+                        couponTitle, couponCode, couponMessage, couponDiscountAmount
+                );
+
+                checkAppliedPromo(cartPromo);
+            }
+        }
+    }
+
+    private void checkAppliedPromo(CartItemPromoHolderData cartPromo) {
+        shipmentAdapter.setPromo(cartPromo);
+        shipmentAdapter.notifyDataSetChanged();
+        if (hasSelectAllCourier()) {
+            createPromoRequest(shipmentAdapter.getAddressDataList(), cartPromo);
+        }
+    }
+
+    private boolean hasSelectAllCourier() {
+        for (MultipleAddressShipmentAdapterData shipmentAdapterData : shipmentAdapter.getAddressDataList()) {
+            if (shipmentAdapterData.getSelectedShipmentDetailData() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -387,6 +458,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                                  CartItemPromoHolderData cartItemPromoHolderData) {
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(checkPromoCodeCartShipmentResult);
         shipmentAdapter.notifyDataSetChanged();
+        onShowPromo(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
     }
 
     @Override
