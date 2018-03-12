@@ -1,186 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/white">
 
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/toolbar_elevation"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/layout_success_transaction"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_large"
-                android:text="@string/success_payment_header"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fonts" />
-
-            <TextView
-                android:id="@+id/merchant_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fontl"
-                tools:text="Donat Pohon Terang" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/animation_view"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_vs"
-                android:scaleType="centerCrop"
-                app:lottie_autoPlay="true"
-                app:lottie_fileName="qr_success_animation.json"
-                app:lottie_loop="true" />
-
-            <TextView
-                android:id="@+id/amount_transaction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_vs"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontvl"
-                tools:text="Rp. 8.000" />
-
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/layout_success_transaction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_sm">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/success_payment_time"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs" />
-
-                <TextView
-                    android:id="@+id/time_transaction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
-                    android:textStyle="bold"
-                    tools:text="20 Nov 2017 |  2.03 AM" />
-
-                <View
-                    android:id="@+id/separator_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@+id/time_transaction"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@color/separator_grey" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/separator_time"
-                    android:text="@string/success_payment_transaction_id"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs" />
-
-                <TextView
-                    android:id="@+id/transaction_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/separator_time"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
-                    tools:text="214303040607" />
-
-                <View
-                    android:id="@+id/separator_trans_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@+id/transaction_id"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@color/separator_grey" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/separator_trans_id"
-                    android:text="@string/success_payment_balance"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs" />
-
-                <TextView
-                    android:id="@+id/balance_tokocash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/separator_trans_id"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
-                    tools:text="Rp 35.000" />
-
-                <View
-                    android:id="@+id/separator_balance"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@+id/balance_tokocash"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@color/separator_grey" />
-
-                <Button
-                    android:id="@+id/button_back_to_home"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/separator_balance"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/margin_sm"
-                    android:background="@drawable/green_button_rounded_unify"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingLeft="@dimen/margin_large"
-                    android:paddingRight="@dimen/margin_large"
-                    android:paddingTop="@dimen/padding_small"
-                    android:text="@string/btn_back_to_home"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:text="@string/success_payment_header"
+                    android:textColor="@color/black_70"
                     android:textSize="@dimen/fonts" />
 
                 <TextView
-                    android:id="@+id/help_text"
+                    android:id="@+id/merchant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/button_back_to_home"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/margin_large"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
-                    android:visibility="gone" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fontl"
+                    tools:text="Donat Pohon Terang" />
 
-            </RelativeLayout>
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/margin_vs"
+                    android:scaleType="centerCrop"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="qr_success_animation.json"
+                    app:lottie_loop="true" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/amount_transaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/margin_vs"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/fontvl"
+                    tools:text="Rp. 8.000" />
 
-        <LinearLayout
-            android:id="@+id/layout_failed_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_sm">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/success_payment_time"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:id="@+id/time_transaction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs"
+                        android:textStyle="bold"
+                        tools:text="20 Nov 2017 |  2.03 AM" />
+
+                    <View
+                        android:id="@+id/separator_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/time_transaction"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="@color/separator_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/separator_time"
+                        android:text="@string/success_payment_transaction_id"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:id="@+id/transaction_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/separator_time"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs"
+                        tools:text="214303040607" />
+
+                    <View
+                        android:id="@+id/separator_trans_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/transaction_id"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="@color/separator_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/separator_trans_id"
+                        android:text="@string/success_payment_balance"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:id="@+id/balance_tokocash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/separator_trans_id"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs"
+                        tools:text="Rp 35.000" />
+
+                    <View
+                        android:id="@+id/separator_balance"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/balance_tokocash"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="@color/separator_grey" />
+
+                    <Button
+                        android:id="@+id/button_back_to_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/separator_balance"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:background="@drawable/green_button_rounded_unify"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingLeft="@dimen/margin_large"
+                        android:paddingRight="@dimen/margin_large"
+                        android:paddingTop="@dimen/padding_small"
+                        android:text="@string/btn_back_to_home"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fonts" />
+
+                    <TextView
+                        android:id="@+id/help_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/button_back_to_home"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/fontvs"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_failed_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -188,44 +205,46 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:layout_marginTop="@dimen/margin_vl"
-                app:srcCompat="@drawable/ic_failed_transaction" />
+                app:srcCompat="@drawable/history_ic_failed_transaction" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/failed_payment_header"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/font_large" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/failed_payment_header"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/font_large" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_sm"
-                android:text="@string/failed_payment_body"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_sm"
+                    android:text="@string/failed_payment_body"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fontvs" />
 
-            <Button
-                android:id="@+id/button_back_scanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/separator_balance"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_large"
-                android:background="@drawable/green_button_rounded_unify"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingLeft="@dimen/margin_large"
-                android:paddingRight="@dimen/margin_large"
-                android:paddingTop="@dimen/padding_small"
-                android:text="@string/failed_payment_retry"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/fonts" />
+                <Button
+                    android:id="@+id/button_back_scanner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/separator_balance"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:background="@drawable/green_button_rounded_unify"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingLeft="@dimen/margin_large"
+                    android:paddingRight="@dimen/margin_large"
+                    android:paddingTop="@dimen/padding_small"
+                    android:text="@string/failed_payment_retry"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/fonts" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</LinearLayout>

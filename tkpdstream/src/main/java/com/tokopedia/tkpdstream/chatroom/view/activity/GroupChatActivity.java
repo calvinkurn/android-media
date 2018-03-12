@@ -118,9 +118,11 @@ public class GroupChatActivity extends BaseEmptyActivity {
 
     public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
         Intent intent = new Intent(context, GroupChatActivity.class);
-        intent.putExtra(EXTRA_CHANNEL_INFO, channelViewModel);
-        intent.putExtra(EXTRA_CHANNEL_UUID, channelViewModel.getChannelUrl());
-        intent.putExtra(EXTRA_SHOW_BOTTOM_DIALOG, false);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CHANNEL_INFO, channelViewModel);
+        bundle.putString(EXTRA_CHANNEL_UUID, channelViewModel.getChannelUrl());
+        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -131,8 +133,10 @@ public class GroupChatActivity extends BaseEmptyActivity {
      */
     public static Intent getCallingIntent(Context context, String channelId) {
         Intent intent = new Intent(context, GroupChatActivity.class);
-        intent.putExtra(EXTRA_CHANNEL_UUID, channelId);
-        intent.putExtra(EXTRA_SHOW_BOTTOM_DIALOG, true);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CHANNEL_UUID, channelId);
+        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
+        intent.putExtras(bundle);
         return intent;
     }
 

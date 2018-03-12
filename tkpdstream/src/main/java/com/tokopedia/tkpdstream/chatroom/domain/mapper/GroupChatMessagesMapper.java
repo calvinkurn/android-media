@@ -42,10 +42,20 @@ public class GroupChatMessagesMapper {
     public List<Visitable> map(List<BaseMessage> list) {
         List<Visitable> listViewModel = new ArrayList<>();
         for (BaseMessage message : list) {
-            if (mapMessage(message) != null)
+            Visitable mappedMessage = mapMessage(message);
+            if (mappedMessage != null
+                    && !shouldHideMessage(mappedMessage))
                 listViewModel.add(mapMessage(message));
         }
         return listViewModel;
+    }
+
+    private boolean shouldHideMessage(Visitable mappedMessage) {
+        return mappedMessage instanceof VoteAnnouncementViewModel
+                && (((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
+                (VoteAnnouncementViewModel.POLLING_CANCEL)
+                || ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
+                (VoteAnnouncementViewModel.POLLING_UPDATE));
     }
 
     private Visitable mapMessage(BaseMessage message) {
@@ -112,7 +122,7 @@ public class GroupChatMessagesMapper {
         AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
 
         return new ImageViewModel(
-                pojo.getImageUrl(),
+                pojo.getImageUrl().trim(),
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId()),
