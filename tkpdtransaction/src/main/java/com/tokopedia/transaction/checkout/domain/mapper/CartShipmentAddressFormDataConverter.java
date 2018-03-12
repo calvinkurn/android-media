@@ -58,6 +58,8 @@ public class CartShipmentAddressFormDataConverter
 
         singleShipmentData.setError(groupAddress.isError());
         singleShipmentData.setErrorMessage(groupAddress.getErrorMessage());
+        singleShipmentData.setWarning(groupAddress.isWarning());
+        singleShipmentData.setWarningMessage(groupAddress.getWarningMessage());
 
         singleShipmentData.setRecipientAddress(recipientAddressModel);
         singleShipmentData.setCartItem(cartSellerItemModels);
@@ -77,6 +79,11 @@ public class CartShipmentAddressFormDataConverter
 
     private CartSellerItemModel convertFromGroupShop(GroupShop groupShop) {
         CartSellerItemModel sellerItemModel = new CartSellerItemModel();
+
+        sellerItemModel.setError(groupShop.isError());
+        sellerItemModel.setErrorMessage(groupShop.getErrorMessage());
+        sellerItemModel.setWarning(groupShop.isWarning());
+        sellerItemModel.setWarningMessage(groupShop.getWarningMessage());
 
         Shop shop = groupShop.getShop();
         sellerItemModel.setShopId(String.valueOf(shop.getShopId()));

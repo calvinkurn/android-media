@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,15 +17,33 @@ public class SingleShipmentData implements Parcelable {
 
     private boolean isError;
     private String errorMessage;
+    private boolean isWarning;
+    private String warningMessage;
 
     private RecipientAddressModel recipientAddress;
-    private List<CartSellerItemModel> cartItem;
+    private List<CartSellerItemModel> cartItem = new ArrayList<>();
     private ShipmentCostModel shipmentCost;
 
     private SingleShipmentData(Builder builder) {
         recipientAddress = builder.recipientAddress;
         cartItem = builder.cartItem;
         shipmentCost = builder.shipmentCost;
+    }
+
+    public boolean isWarning() {
+        return isWarning;
+    }
+
+    public void setWarning(boolean warning) {
+        isWarning = warning;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
     }
 
     public RecipientAddressModel getRecipientAddress() {
@@ -107,6 +126,8 @@ public class SingleShipmentData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningMessage);
         dest.writeParcelable(this.recipientAddress, flags);
         dest.writeTypedList(this.cartItem);
         dest.writeParcelable(this.shipmentCost, flags);
@@ -115,6 +136,8 @@ public class SingleShipmentData implements Parcelable {
     protected SingleShipmentData(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
+        this.isWarning = in.readByte() != 0;
+        this.warningMessage = in.readString();
         this.recipientAddress = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         this.cartItem = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.shipmentCost = in.readParcelable(ShipmentCostModel.class.getClassLoader());

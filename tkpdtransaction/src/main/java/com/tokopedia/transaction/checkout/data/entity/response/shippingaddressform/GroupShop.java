@@ -14,6 +14,9 @@ public class GroupShop {
     @SerializedName("errors")
     @Expose
     private List<String> errors = new ArrayList<>();
+    @SerializedName("messages")
+    @Expose
+    private List<String> messages = new ArrayList<>();
     @SerializedName("shop")
     @Expose
     private Shop shop;
@@ -38,5 +41,9 @@ public class GroupShop {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public List<String> getMessages() {
+        return messages;
     }
 }
