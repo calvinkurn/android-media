@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/divider_height_thin"
+            android:layout_marginTop="@dimen/dp_2"
             android:orientation="horizontal">
 
             <TextView
@@ -87,7 +87,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_height_thin"
+            android:layout_height="@dimen/dp_2"
             android:background="?android:attr/listDivider" />
 
 

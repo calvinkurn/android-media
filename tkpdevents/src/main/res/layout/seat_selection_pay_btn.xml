@@ -80,7 +80,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height_thin"
+        android:layout_height="@dimen/dp_2"
         android:background="?android:attr/listDivider" />
 
     <RelativeLayout
@@ -142,7 +142,7 @@
         android:layout_margin="@dimen/dp_16"
         app:cardBackgroundColor="@color/green_400"
         app:cardCornerRadius="@dimen/dp_2"
-        app:cardElevation="@dimen/card_corner_default">
+        app:cardElevation="@dimen/dp_2">
 
         <TextView
             android:id="@+id/button_textview"
