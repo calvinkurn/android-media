@@ -452,6 +452,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void initData() {
+        sendButton.setEnabled(false);
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -550,7 +551,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 adapter.setCursor(listChat.get(0));
             }
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-            sendButton.setClickable(true);
+            sendButton.setEnabled(true);
             scrollToBottom();
 
             presenter.setHandler(viewModel.getChannelUrl(), this);
