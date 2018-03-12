@@ -86,9 +86,12 @@ public class EventsHomeActivity extends TActivity
     View indicatorLayout;
 
 
-    int mBannnerPos;
-    int defaultViewPagerPos;
-    String defaultSection;
+    private int mBannnerPos;
+    private int defaultViewPagerPos;
+    private String defaultSection;
+    private final static String THEMEPARK = "themepark";
+    private final static String TOP = "top";
+
 
     public final static String EXTRA_SECTION = "extra_section";
 
@@ -103,9 +106,9 @@ public class EventsHomeActivity extends TActivity
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         if (Constants.Applinks.EVENTS.equals(deepLink)) {
-            destination.putExtra(EXTRA_SECTION, "top");
+            destination.putExtra(EXTRA_SECTION, TOP);
         } else if (Constants.Applinks.EVENTS_HIBURAN.equals(deepLink)) {
-            destination.putExtra(EXTRA_SECTION, "themepark");
+            destination.putExtra(EXTRA_SECTION, THEMEPARK);
         }
         return destination;
     }
@@ -116,7 +119,7 @@ public class EventsHomeActivity extends TActivity
         setContentView(R.layout.activity_events_home_new);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
-            defaultSection = "top";
+            defaultSection = TOP;
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
