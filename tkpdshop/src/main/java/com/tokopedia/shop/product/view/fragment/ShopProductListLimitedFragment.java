@@ -84,18 +84,23 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
-        progressDialog = new ProgressDialog(getActivity());
-        loadingStateView = view.findViewById(R.id.loading_state_view_shop_page_product);
-        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        progressDialog.setMessage(getString(R.string.title_loading));
-        return view;
+        return inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopProductListLimitedPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        progressDialog = new ProgressDialog(getActivity());
+        loadingStateView = view.findViewById(R.id.loading_state_view_shop_page_product);
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        progressDialog.setMessage(getString(R.string.title_loading));
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
     }
 
     @Override
