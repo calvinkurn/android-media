@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -215,12 +216,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             }
         });
 
-        mTvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cartShipmentActivityListener.checkoutCart(generateCheckoutRequest("", 0));
-            }
-        });
+        mTvSelectPaymentMethod.setOnClickListener(getOnClickListenerButtonCheckout());
 
         mTvTotalPayment.setText("-");
         mCvBottomLayout.setVisibility(View.VISIBLE);
@@ -232,6 +228,21 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mSingleAddressShipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
         mSingleAddressShipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
         mSingleAddressShipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickListenerButtonCheckout() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                CheckoutRequest checkoutData = generateCheckoutRequest(
+                        promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
+                                promoCodeAppliedData.getPromoCode() : "", 0
+                );
+                if (checkoutData != null) cartShipmentActivityListener.checkoutCart(checkoutData);
+            }
+        };
     }
 
     @Override
@@ -252,7 +263,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mSingleAddressShipmentAdapter.unSetPickupPoint();
-                        mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton(R.string.title_no, null)
@@ -367,6 +377,20 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         }
     }
 
+    @Override
+    public void onCartDataEnableToCheckout() {
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.white));
+        mTvSelectPaymentMethod.setOnClickListener(getOnClickListenerButtonCheckout());
+    }
+
+    @Override
+    public void onCartDataDisableToCheckout() {
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
+        mTvSelectPaymentMethod.setOnClickListener(null);
+    }
+
 
     @Override
     public void onShowPromoMessage(String promoMessage) {
@@ -412,7 +436,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvPromoMessage.setText("");
         mTvPromoMessage.setVisibility(View.GONE);
         mSingleAddressShipmentAdapter.updatePromo(null);
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -487,15 +510,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             case REQUEST_CHOOSE_PICKUP_POINT:
                 Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
                 mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
-                mSingleAddressShipmentAdapter.notifyDataSetChanged();
                 break;
-
             case REQUEST_CODE_SHIPMENT_DETAIL:
                 ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                 int position = data.getIntExtra(EXTRA_POSITION, 0);
                 mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
-                mSingleAddressShipmentAdapter.notifyDataSetChanged();
-
             default:
                 break;
         }
@@ -541,7 +560,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult
     ) {
         mSingleAddressShipmentAdapter.updatePromo(checkPromoCodeCartShipmentResult.getDataVoucher());
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

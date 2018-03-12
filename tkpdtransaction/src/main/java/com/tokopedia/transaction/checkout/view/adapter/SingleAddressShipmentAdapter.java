@@ -129,30 +129,51 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             if (object instanceof CartItemPromoHolderData) {
                 mShipmentDataList.set(i, cartPromo);
                 notifyItemChanged(i);
+                checkDataForCheckout();
                 return;
             }
+        }
+    }
+
+    private void checkDataForCheckout() {
+        boolean availableCheckout = true;
+        for (Object object : mShipmentDataList) {
+            if (object instanceof CartSellerItemModel) {
+                if (((CartSellerItemModel) object).getSelectedShipmentDetailData() == null) {
+                    availableCheckout = false;
+                }
+            }
+        }
+        if (availableCheckout) {
+            mActionListener.onCartDataEnableToCheckout();
+        } else {
+            mActionListener.onCartDataDisableToCheckout();
         }
     }
 
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
         mShipmentDataList.add(cartItemPromoHolderData);
         notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
         mShipmentDataList.add(cartPromoSuggestion);
         notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddress) {
         mRecipientAddress = recipientAddress;
         mShipmentDataList.add(recipientAddress);
         notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void addCartItemDataList(List<CartSellerItemModel> cartItemList) {
         mShipmentDataList.addAll(cartItemList);
         notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void addShipmentCostData(ShipmentCostModel shipmentCost) {
@@ -163,6 +184,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public void removeData(int position) {
         mShipmentDataList.remove(position);
         notifyItemRemoved(position);
+        checkDataForCheckout();
     }
 
     public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
@@ -172,6 +194,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 mShipmentDataList.set(index, recipientAddress);
                 this.mRecipientAddress = recipientAddress;
                 notifyItemChanged(index);
+                checkDataForCheckout();
                 return;
             }
         }
@@ -210,6 +233,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onFinishChoosingShipment(List<Data> data, List<DataCheckoutRequest> checkoutRequest);
 
+        void onCartDataEnableToCheckout();
+
+        void onCartDataDisableToCheckout();
+
         void onShowPromoMessage(String promoMessage);
 
         void onHidePromoMessage();
@@ -218,14 +245,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     }
 
+
     public void setPickupPoint(Store store) {
         if (mRecipientAddress != null) {
             mRecipientAddress.setStore(store);
         }
+        notifyDataSetChanged();
     }
 
     public void unSetPickupPoint() {
         mRecipientAddress.setStore(null);
+        notifyDataSetChanged();
     }
 
     public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
@@ -242,6 +272,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 }
             }
         }
+        notifyDataSetChanged();
     }
 
     public boolean hasAppliedPromoCode() {
@@ -308,6 +339,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                     requestData.getCheckoutRequestData());
         }
+        notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
