@@ -420,7 +420,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void resetFeedState() {
         presenter.resetPageFeed();
-        if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+        if (getContext() != null && SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
         }
     }

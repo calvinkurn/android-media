@@ -1071,4 +1071,16 @@ public abstract class SellerRouterApplication extends MainApplication
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
+
+
+    @Override
+    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        return intent;
+    }
+
+    @Override
+    public void startAddProduct(Activity activity, String shopId) {
+        goToAddProduct(activity);
+    }
 }
