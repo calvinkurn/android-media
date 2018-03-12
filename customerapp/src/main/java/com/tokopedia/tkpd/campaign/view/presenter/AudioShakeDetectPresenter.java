@@ -12,6 +12,7 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
@@ -93,7 +94,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
                 } else if (e instanceof SocketTimeoutException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
-                    getView().showErrorNetwork(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+                    getView().showErrorNetwork(context.getString(R.string.msg_dialog_wrong_scan));
                 } else if (e instanceof ResponseDataNullException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
