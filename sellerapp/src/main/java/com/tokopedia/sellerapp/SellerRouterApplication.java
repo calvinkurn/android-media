@@ -15,11 +15,13 @@ import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -55,6 +57,17 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
+import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -400,6 +413,21 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
+    }
+
+    @Override
+    public BaseDaggerFragment getKolPostFragment(String userId) {
+        return null;
+    }
+
+    @Override
+    public void doFollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber) {
+
+    }
+
+    @Override
+    public void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber) {
+
     }
 
     @Override
@@ -1050,10 +1078,25 @@ public abstract class SellerRouterApplication extends MainApplication
                     }
                 });
             }
+
+            @Override
+            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                TrackingUtils.eventTrackingEnhancedEcommerce(trackingData);
+            }
         };
     }
 
     @Override
+    public void init() {
+    }
+    @Override
+    public void registerShake(String screenName) {
+    }
+
+    @Override
+    public void unregisterShake() {
+    }
+
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
@@ -1070,5 +1113,21 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return TopProfileActivity.newInstance(context, userId);
+
+    @Override
+    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        return intent;
+    }
+
+    @Override
+    public void startAddProduct(Activity activity, String shopId) {
+        goToAddProduct(activity);
     }
 }

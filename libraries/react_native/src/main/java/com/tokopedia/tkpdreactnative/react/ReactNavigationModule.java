@@ -7,6 +7,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -79,6 +81,14 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         promise.resolve(SessionHandler.getLoginID(context));
     }
 
+
+    @ReactMethod
+    public void getCurrentDeviceId(Promise promise){
+        if(context.getApplicationContext() instanceof AbstractionRouter) {
+            promise.resolve( ((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId() );
+        }
+    }
+
     @ReactMethod
     public void setTitleToolbar(final String title, final Promise promise) {
         runOnUiThread(new Runnable() {
@@ -109,5 +119,12 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
         TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+    }
+
+    @ReactMethod
+    public void finish() {
+        if(getCurrentActivity() != null) {
+            getCurrentActivity().finish();
+        }
     }
 }

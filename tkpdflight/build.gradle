@@ -17,6 +17,11 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
+
+        exclude group: 'com.android.support'
+    }
+
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
@@ -30,4 +35,7 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
 }

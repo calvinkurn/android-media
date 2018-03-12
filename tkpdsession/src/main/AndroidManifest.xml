@@ -138,6 +138,11 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name="com.tokopedia.profile.view.activity.TopProfileActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".login.loginemail.view.activity.ForbiddenActivity"
             android:label="@string/title_activity_forbidden"
             android:screenOrientation="portrait"
