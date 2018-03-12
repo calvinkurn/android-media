@@ -8,10 +8,10 @@ public class Schedule_ {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("provider_schedule_id")
     @Expose
     private String providerScheduleId;
@@ -20,10 +20,10 @@ public class Schedule_ {
     private String title;
     @SerializedName("start_date")
     @Expose
-    private Integer startDate;
+    private int startDate;
     @SerializedName("end_date")
     @Expose
-    private Integer endDate;
+    private int endDate;
     @SerializedName("tnc")
     @Expose
     private String tnc;
@@ -32,7 +32,7 @@ public class Schedule_ {
     private String providerMetaData;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -40,19 +40,19 @@ public class Schedule_ {
     @Expose
     private String updatedAt;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -72,19 +72,19 @@ public class Schedule_ {
         this.title = title;
     }
 
-    public Integer getStartDate() {
+    public int getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Integer startDate) {
+    public void setStartDate(int startDate) {
         this.startDate = startDate;
     }
 
-    public Integer getEndDate() {
+    public int getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Integer endDate) {
+    public void setEndDate(int endDate) {
         this.endDate = endDate;
     }
 
@@ -104,11 +104,11 @@ public class Schedule_ {
         this.providerMetaData = providerMetaData;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
