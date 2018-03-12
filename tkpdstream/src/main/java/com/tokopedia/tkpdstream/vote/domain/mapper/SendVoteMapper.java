@@ -44,7 +44,7 @@ public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>
             list.add(new VoteViewModel(
                     option.getOptionId() != null ? option.getOptionId() : "",
                     option.getOption() != null ? option.getOption() : "",
-                    option.getPercentage(),
+                    String.valueOf(Math.floor(option.getPercentage())),
                     0));
         }
         return list;
