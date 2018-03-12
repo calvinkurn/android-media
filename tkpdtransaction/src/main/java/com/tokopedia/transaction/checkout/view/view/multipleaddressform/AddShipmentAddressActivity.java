@@ -275,9 +275,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 || Integer.parseInt(charSequence.toString()) < 1)
             quantityField.setText("1");
         else {
-            if (!addressLayout.isShown()) {
-                saveChangesButton.setVisibility(View.GONE);
-            } else if (Integer.parseInt(charSequence.toString()) > 10000) {
+            if (Integer.parseInt(charSequence.toString()) > 10000) {
                 saveChangesButton.setVisibility(View.GONE);
                 quantityErrorLayout.setVisibility(View.VISIBLE);
                 quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
@@ -297,6 +295,8 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 quantityErrorLayout.setVisibility(View.VISIBLE);
                 quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                         .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
+            } else if(!addressLayout.isShown()) {
+                saveChangesButton.setVisibility(View.GONE);
             } else {
                 quantityErrorLayout.setVisibility(View.GONE);
                 if(!addAddressErrorTextView.isShown()) {
