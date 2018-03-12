@@ -132,6 +132,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         filterDetailSidebar = (AlphabeticalSideBar) view.findViewById( R.id.filter_detail_sidebar );
         filterDetailEmptySearchResultView = (EmptySearchResultView) view.findViewById( R.id.filter_detail_empty_search_result_view );
         filterResultCountText = view.findViewById(R.id.filter_result_count);
+        initBottomSheetListener();
     }
 
     public void setCallback(Callback callback) {
