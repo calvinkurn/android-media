@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_layout_header_title"
     android:layout_width="match_parent"
@@ -7,80 +8,92 @@
     android:orientation="vertical"
     android:padding="@dimen/margin_ms">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/image_view_shop_icon"
-            android:layout_width="@dimen/image_width_l"
-            android:layout_height="@dimen/image_width_l"
-            android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:src="@drawable/ic_loading_toped" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_loading_toped"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+
+        <ImageView
+            android:id="@+id/image_view_shop_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_badge_shop_gm"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="15dp"
+            tools:layout_conversion_absoluteWidth="15dp"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/text_view_shop_name"
+            style="@style/TextView.Title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/linear_layout_shop_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/image_view_shop_status"
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
-                    android:layout_marginEnd="@dimen/margin_ms"
-                    android:layout_marginRight="@dimen/margin_ms"
-                    android:src="@drawable/ic_badge_shop_gm"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/text_view_shop_name"
-                    style="@style/TextView.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/app_name" />
-            </LinearLayout>
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/shop_info"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_status"
+            app:layout_constraintTop_toTopOf="@+id/image_view_shop_status"
+            tools:layout_conversion_absoluteHeight="21dp"
+            tools:layout_conversion_absoluteWidth="121dp"
+            tools:text="@string/app_name" />
 
 
-            <LinearLayout
-                android:id="@+id/linear_layout_shop_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/image_view_location"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_info_location_grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_shop_name"
+            tools:layout_conversion_absoluteHeight="15dp"
+            tools:layout_conversion_absoluteWidth="15dp" />
 
-                <ImageView
-                    android:id="@+id/image_view_location"
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
-                    android:layout_marginEnd="@dimen/margin_ms"
-                    android:layout_marginRight="@dimen/margin_ms"
-                    android:src="@drawable/ic_info_location_grey" />
+        <TextView
+            android:id="@+id/text_view_location"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="3dp"
+            app:layout_constraintStart_toEndOf="@+id/image_view_location"
+            app:layout_constraintTop_toTopOf="@+id/image_view_location"
+            tools:layout_conversion_absoluteHeight="15dp"
+            tools:layout_conversion_absoluteWidth="90dp"
+            tools:text="@string/app_name" />
 
-                <TextView
-                    android:id="@+id/text_view_location"
-                    style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/app_name" />
-            </LinearLayout>
-        </LinearLayout>
 
         <ImageView
             android:id="@+id/shop_info"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
-            android:src="@drawable/ic_info" />
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_view_shop_name"
+            tools:layout_conversion_absoluteHeight="24dp"
+            tools:layout_conversion_absoluteWidth="24dp" />
+    </android.support.constraint.ConstraintLayout>
 
     <com.tokopedia.shop.page.view.widget.ShopWarningTickerView
         android:id="@+id/shop_warning_ticker_view"
