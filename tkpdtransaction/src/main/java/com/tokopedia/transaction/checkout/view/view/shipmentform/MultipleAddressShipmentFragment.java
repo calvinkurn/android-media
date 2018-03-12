@@ -313,13 +313,13 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onShowPromo(String promoMessageString) {
         formatPromoMessage(promoMessage, promoMessageString);
         this.promoMessage.setVisibility(View.VISIBLE);
-        shipmentAdapter.showPromoSuggestionVisibility(false);
-        shipmentAdapter.notifyDataSetChanged();
+//        shipmentAdapter.showPromoSuggestionVisibility(false);
+//        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onRemovePromo() {
-        shipmentAdapter.showPromoSuggestionVisibility(true);
+//        shipmentAdapter.showPromoSuggestionVisibility(true);
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(null);
         shipmentAdapter.notifyDataSetChanged();
         promoMessage.setText("");
