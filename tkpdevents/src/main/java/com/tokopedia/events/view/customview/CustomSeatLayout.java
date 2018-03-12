@@ -99,7 +99,7 @@ public class CustomSeatLayout extends LinearLayout {
             } else {
                 selectedSeatList.add(columnName);
             }
-            rowids.add("" + rowId);
+            rowids.add(Integer.toString(rowId));
         } else if (individualSeat.isSelected()) {
             individualSeat.setSelected(false);
             individualSeat.setBackgroundResource(R.drawable.seat_bg);
@@ -110,9 +110,11 @@ public class CustomSeatLayout extends LinearLayout {
             } else {
                 selectedSeatList.remove(columnName);
             }
-            rowids.remove("" + rowId);
+            rowids.remove(Integer.toString(rowId));
         } else {
-            Toast.makeText(getContext(), "Cannot select more than " + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),
+                    String.format(getContext().getString(R.string.more_seat_than_tiket_warning_toast), maxCount),
+                    Toast.LENGTH_SHORT).show();
         }
         mPresenter.setTicketPrice(numoFSeats);
         mPresenter.setSeatData();
