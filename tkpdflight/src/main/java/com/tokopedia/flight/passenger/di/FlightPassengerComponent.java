@@ -10,5 +10,5 @@ import dagger.Component;
 
 @FlightPassengerScope
 @Component(modules = FlightPassengerModule.class, dependencies = FlightComponent.class)
-public class FlightPassengerComponent {
+public interface FlightPassengerComponent {
 }
