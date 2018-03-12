@@ -309,26 +309,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         notifyDataSetChanged();
     }
 
-    public void showPromoSuggestion() {
-        for (Object itemView : mShipmentDataList) {
-            if (itemView instanceof CartItemPromoHolderData) {
-                ((CartItemPromoHolderData) itemView).setPromoNotActive();
-            } else if (itemView instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) itemView).setVisible(true);
-            }
-        }
-        notifyDataSetChanged();
-    }
-
-    public void hidePromoSuggestion() {
-        for (Object itemView : mShipmentDataList) {
-            if (itemView instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) itemView).setVisible(false);
-            }
-        }
-        notifyDataSetChanged();
-    }
-
     public boolean hasAppliedPromoCode() {
         for (Object itemAdapter : mShipmentDataList) {
             if (itemAdapter instanceof CartItemPromoHolderData) {
