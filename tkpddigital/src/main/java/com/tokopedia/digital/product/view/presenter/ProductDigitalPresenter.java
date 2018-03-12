@@ -313,7 +313,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (view == null || activity == null) {
+                if (view == null || view.getActivity() == null) {
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -345,7 +345,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                if (view != null && activity != null) {
+               if (view != null && view.getActivity() != null) {
                     view.renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
@@ -516,7 +516,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 && categoryData != null
                 && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
                 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && view.isUserLoggedIn()) {
+                && view.isUserLoggedIn()
+                && view.getActivity() != null) {
             view.removeCheckPulsaCards();
             CategoryData categoryDataState = view.getCategoryDataState();
 

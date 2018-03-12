@@ -17,7 +17,9 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundS
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
+import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloudSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
@@ -114,17 +116,20 @@ public class FlightModule {
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
+                                                    FlightSavedPassengerDataListCloudSource flightSavedPassengerDataListCloudSource,
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
                                                     FlightAirportVersionDBSource flightAirportVersionDBSource,
                                                     FlightOrderDataSource flightOrderDataSource,
-                                                    FlightOrderMapper flightOrderMapper) {
+                                                    FlightOrderMapper flightOrderMapper,
+                                                    FlightPassengerFactorySource flightPassengerFactorySource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
-                flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource, flightBookingDataSource,
-                flightAirportVersionDBSource, flightOrderDataSource, flightOrderMapper);
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
+                flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
+                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
+                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource);
     }
 
     @Provides

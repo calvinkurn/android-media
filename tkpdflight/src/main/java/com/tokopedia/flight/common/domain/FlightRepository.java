@@ -4,7 +4,9 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -83,4 +86,12 @@ public interface FlightRepository {
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
     Observable<Boolean> isSearchCacheExpired(boolean isReturn);
+
+    Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId);
+
+    Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
+
+    Observable<Boolean> deleteAllListPassenger();
+
+    Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
 }
