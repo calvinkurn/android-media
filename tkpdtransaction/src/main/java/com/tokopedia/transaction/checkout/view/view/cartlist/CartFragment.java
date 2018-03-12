@@ -205,13 +205,19 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     protected void setViewListener() {
-        btnToShipment.setOnClickListener(new View.OnClickListener() {
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickButtonToShipmentListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cartListAdapter.notifyDataSetChanged();
+                cartListAdapter.checkForShipmentForm();
                 dPresenter.processToShipmentSingleAddress();
             }
-        });
+        };
     }
 
     @Override
@@ -285,6 +291,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
         data.setVisible(false);
         cartListAdapter.notifyItemChanged(position);
+        cartListAdapter.checkForShipmentForm();
     }
 
     @Override
@@ -308,6 +315,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         cartItemPromoHolderData.setPromoNotActive();
         cartListAdapter.notifyItemChanged(position);
+        cartListAdapter.checkForShipmentForm();
     }
 
     @Override
@@ -328,6 +336,20 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
         showDeleteCartItemDialog(getCartDataList(), new ArrayList<CartItemData>());
+    }
+
+    @Override
+    public void onCartDataEnableToCheckout() {
+        btnToShipment.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        btnToShipment.setTextColor(getResources().getColor(R.color.white));
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+    }
+
+    @Override
+    public void onCartDataDisableToCheckout() {
+        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
+        btnToShipment.setOnClickListener(null);
     }
 
     @Override

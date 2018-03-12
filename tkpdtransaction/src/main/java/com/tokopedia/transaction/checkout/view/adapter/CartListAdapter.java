@@ -407,6 +407,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .getCartItemData().getUpdatedData().increaseQuantity();
         }
         notifyItemChanged(position);
+        checkForShipmentForm();
     }
 
     public void decreaseQuantity(int position) {
@@ -415,6 +416,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .getCartItemData().getUpdatedData().decreaseQuantity();
         }
         notifyItemChanged(position);
+        checkForShipmentForm();
     }
 
     @Override
@@ -435,16 +437,13 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
         cartItemHolderDataList.add(cartPromoSuggestion);
         notifyDataSetChanged();
-    }
-
-    public void deleteItem(List<CartItemData> cartItemDataList) {
-        cartItemHolderDataList.removeAll(cartItemDataList);
-        notifyDataSetChanged();
+        checkForShipmentForm();
     }
 
     public void resetData() {
         cartItemHolderDataList.clear();
         notifyDataSetChanged();
+        checkForShipmentForm();
     }
 
     public void deleteItem(CartItemData cartItemData) {
@@ -460,6 +459,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         if (getDataList().isEmpty()) actionListener.onCartItemListIsEmpty();
+        checkForShipmentForm();
     }
 
     public void updateItemPromoVoucher(CartItemPromoHolderData cartItemPromoHolderData) {
@@ -476,11 +476,30 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
         cartItemHolderDataList.add(cartItemPromoHolderData);
         notifyDataSetChanged();
+        checkForShipmentForm();
     }
 
     public void addCartTickerError(CartItemTickerErrorHolderData cartItemTickerErrorHolderData) {
         cartItemHolderDataList.add(cartItemTickerErrorHolderData);
         notifyDataSetChanged();
+        checkForShipmentForm();
+    }
+
+    public void checkForShipmentForm() {
+        boolean canProcess = true;
+        for (Object object : cartItemHolderDataList) {
+            if (object instanceof CartItemHolderData) {
+                if (((CartItemHolderData) object).getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY
+                        || ((CartItemHolderData) object).getCartItemData().isError()) {
+                    canProcess = false;
+                }
+            }
+        }
+        if (canProcess) {
+            actionListener.onCartDataEnableToCheckout();
+        } else {
+            actionListener.onCartDataDisableToCheckout();
+        }
     }
 
     public interface ActionListener {
@@ -514,6 +533,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemQuantityFormEdited();
 
         void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
+
+        void onCartDataEnableToCheckout();
+
+        void onCartDataDisableToCheckout();
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {

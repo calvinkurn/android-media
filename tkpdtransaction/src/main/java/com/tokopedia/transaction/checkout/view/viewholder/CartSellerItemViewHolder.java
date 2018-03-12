@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -83,6 +84,9 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlSubTotalLayout;
     private ImageView mIvDetailOptionChevron;
     private TextView mTvSubTotal;
+    private LinearLayout errorContainer;
+    private TextView tvError;
+    private TextView tvErrorDetail;
 
     private LinearLayout mLlWarningContainer;
     private TextView mTvWarningText;
@@ -140,13 +144,16 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
         mTvSubTotal = itemView.findViewById(R.id.tv_sub_total_price);
 
-        mLlWarningContainer = itemView.findViewById(R.id.ll_warning_container);
-        mTvWarningText = itemView.findViewById(R.id.tv_warning);
+
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mIvShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
         mTvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
         mTvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
         mTvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
+
+        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
+        this.tvError = itemView.findViewById(R.id.tv_warning);
+        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
     }
 
     public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
@@ -162,6 +169,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
                 recipientAddressModel);
         bindCostDetail(cartSellerItemModel);
+        bindWarnings(cartSellerItemModel);
     }
 
     private void bindFirstCartItem(CartItemModel cartItemModel) {
@@ -235,14 +243,31 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
     }
 
-    private void bindWarnings() {
-        if (getAdapterPosition() % 2 == 1) {
-            // Test show shipment warning
-            showGreyWarning("Terdapat kendala pengiriman pada 1 produk");
-            showShipmentWarning("Produk ini tidak dapat dikirimkan dengan kurir yang dipilih");
+    private void bindWarnings(CartSellerItemModel data) {
+        if (data.isError()) {
+            errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
+            tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.text_cart_item_error_red));
+            tvError.setCompoundDrawables(
+                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_red),
+                    null, null, null);
+            errorContainer.setVisibility(View.VISIBLE);
+            tvError.setVisibility(View.VISIBLE);
+            tvErrorDetail.setVisibility(View.GONE);
+            tvError.setText(data.getErrorMessage());
+        } else if (data.isWarning()) {
+            errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
+            tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.black_54));
+            tvError.setCompoundDrawables(
+                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_grey),
+                    null, null, null);
+            errorContainer.setVisibility(View.VISIBLE);
+            tvError.setVisibility(View.VISIBLE);
+            tvErrorDetail.setVisibility(View.GONE);
+            tvError.setText(data.getWarningMessage());
         } else {
-            // Test show general warning
-            showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
+            errorContainer.setVisibility(View.GONE);
+            tvError.setVisibility(View.GONE);
+            tvErrorDetail.setVisibility(View.GONE);
         }
     }
 
@@ -279,7 +304,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getOtherCartItemsLabel(List<CartItemModel> cartItemList,
-                                              boolean isExpandAllProduct) {
+                                          boolean isExpandAllProduct) {
         return isExpandAllProduct ? "Tutup" :
                 String.format("+%s Produk Lainnya", cartItemList.size());
     }
