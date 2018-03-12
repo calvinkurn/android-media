@@ -44,6 +44,8 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -248,6 +250,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 return recyclerViews.getLayoutManager();
             }
         };
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
+        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
