@@ -71,7 +71,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         this.promoSuggestionData = promoSuggestion;
 
-        if (promoHolderData != null) {
+        if (promoHolderData != null && promoHolderData.getTypePromo() != CartItemPromoHolderData.TYPE_PROMO_NOT_ACTIVE) {
             promoSuggestionData.setVisible(false);
         }
 
@@ -233,14 +233,13 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         multipleAddressShipmentItemList.add(0, cartItemPromoHolderData);
     }
 
-    public void showPromoSuggestionVisibility(boolean visible) {
-//        multipleAddressShipmentItemList.remove(0);
-//        multipleAddressShipmentItemList.add(0, promoSuggestionData);
-        promoSuggestionData.setVisible(visible);
+    public void showPromoSuggestion() {
+        promoSuggestionData.setVisible(true);
+        cartItemPromoHolderData.setPromoNotActive();
     }
 
-    public void removePromo() {
-
+    public void hidePromoSuggestion() {
+        promoSuggestionData.setVisible(false);
     }
 
     public CartItemPromoHolderData getAppliedPromo() {

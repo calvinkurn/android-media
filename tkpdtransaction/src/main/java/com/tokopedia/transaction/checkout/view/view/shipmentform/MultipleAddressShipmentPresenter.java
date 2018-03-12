@@ -269,9 +269,6 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             @Override
             public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
                 if (!checkPromoCodeCartShipmentResult.isError()) {
-                    if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-                    } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
-                    }
                     view.showPromoMessage(checkPromoCodeCartShipmentResult, cartItemPromoHolderData);
                 } else {
                     view.showPromoError(checkPromoCodeCartShipmentResult.getErrorMessage());

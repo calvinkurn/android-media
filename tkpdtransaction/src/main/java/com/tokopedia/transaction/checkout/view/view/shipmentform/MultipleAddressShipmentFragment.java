@@ -313,13 +313,12 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onShowPromo(String promoMessageString) {
         formatPromoMessage(promoMessage, promoMessageString);
         this.promoMessage.setVisibility(View.VISIBLE);
-//        shipmentAdapter.showPromoSuggestionVisibility(false);
-//        shipmentAdapter.notifyDataSetChanged();
+        shipmentAdapter.hidePromoSuggestion();
     }
 
     @Override
     public void onRemovePromo() {
-//        shipmentAdapter.showPromoSuggestionVisibility(true);
+        shipmentAdapter.showPromoSuggestion();
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(null);
         shipmentAdapter.notifyDataSetChanged();
         promoMessage.setText("");
@@ -387,6 +386,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                                  CartItemPromoHolderData cartItemPromoHolderData) {
         shipmentAdapter.getPriceSummaryData().setAppliedPromo(checkPromoCodeCartShipmentResult);
         shipmentAdapter.notifyDataSetChanged();
+        onShowPromo(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
     }
 
     @Override
