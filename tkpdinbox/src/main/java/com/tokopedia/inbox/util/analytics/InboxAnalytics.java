@@ -42,7 +42,7 @@ public class InboxAnalytics {
         String IMPRESSION_SOLUTION_APPEAL_DETAIL_PAGE_CHAT = "impression solusi detail naik banding";
         String IMPRESSION_SOLUTION_EDIT_DETAIL_PAGE_CHAT = "impression solusi detail ubah solusi";
         String IMPRESSION_SOLUTION_EDIT_LIST_PAGE_CHAT = "impression solusi ubah solusi";
-        String IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT = "click solusi detail naik banding";
+        String IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT = "impression solusi detail naik banding";
 
         String CLICK_ACCEPT_SOLUTION = "click terima solusi";
         String CLICK_CANCEL_COMPLAINT = "click batalkan komplain";
