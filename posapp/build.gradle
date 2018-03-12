@@ -214,7 +214,5 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.miscDependencies.frescoGif
-
     compile rootProject.ext.miscDependencies.multiDex
 }

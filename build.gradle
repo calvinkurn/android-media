@@ -48,7 +48,7 @@ okbuck {
     linearAllocHardLimit = [
             customerapp: 10130000,
             sellerapp: 10130000,
-            posapp: 10130000,
+            posapp: 16000000,
     ]
     extraBuckOpts = [
             'customerappDebug': [
@@ -59,6 +59,11 @@ okbuck {
             ],
             'posappDebug': [
                     "android_binary": ["trim_resource_ids = True"]
+            ]
+    ]
+    primaryDexPatterns = [
+            'posapp': [
+                    '^com/facebook/imagepipeline/memory/PooledByteBuffer^'
             ]
     ]
 
