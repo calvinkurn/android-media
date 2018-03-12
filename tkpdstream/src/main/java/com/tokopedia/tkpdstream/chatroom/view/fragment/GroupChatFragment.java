@@ -26,8 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -142,6 +140,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private ShareLayout shareLayout;
 
     private CallbackManager callbackManager;
+    private TextWatcher replyTextWatcher;
 
     @Override
     protected String getScreenName() {
@@ -345,7 +344,22 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
         replyEditText.setHint(hintText);
-        replyEditText.addTextChangedListener(new TextWatcher() {
+
+        voteBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (voteBody.getVisibility() == View.VISIBLE) {
+                    collapse(voteBody);
+                } else {
+                    expand(voteBody);
+                    analytics.eventClickVoteExpand();
+                    voteAdapter.notifyDataSetChanged();
+                }
+                arrow.animate().rotationBy(180f).start();
+            }
+        });
+
+        replyTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -364,41 +378,32 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     setSendButtonEnabled(false);
                 }
             }
-        });
-
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
-                    PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                            (replyEditText.getText().toString(),
-                                    userSession.getUserId(),
-                                    userSession.getName(),
-                                    userSession.getProfilePicture(),
-                                    false);
-                    adapter.addDummyReply(pendingChatViewModel);
-                    presenter.sendReply(pendingChatViewModel, mChannel);
-                }
-            }
-        });
-
-        voteBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (voteBody.getVisibility() == View.VISIBLE) {
-                    collapse(voteBody);
-                } else {
-                    expand(voteBody);
-                    analytics.eventClickVoteExpand();
-                    voteAdapter.notifyDataSetChanged();
-                }
-                arrow.animate().rotationBy(180f).start();
-            }
-        });
+        };
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
-        sendButton.setEnabled(isEnabled);
+        if (isEnabled) {
+            replyEditText.addTextChangedListener(replyTextWatcher);
+
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
+                        PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                                (replyEditText.getText().toString(),
+                                        userSession.getUserId(),
+                                        userSession.getName(),
+                                        userSession.getProfilePicture(),
+                                        false);
+                        adapter.addDummyReply(pendingChatViewModel);
+                        presenter.sendReply(pendingChatViewModel, mChannel);
+                    }
+                }
+            });
+        } else {
+            replyEditText.removeTextChangedListener(replyTextWatcher);
+            sendButton.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -452,7 +457,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void initData() {
-        sendButton.setEnabled(false);
+        setSendButtonEnabled(false);
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -551,7 +556,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 adapter.setCursor(listChat.get(0));
             }
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-            sendButton.setEnabled(true);
+            setSendButtonEnabled(true);
             scrollToBottom();
 
             presenter.setHandler(viewModel.getChannelUrl(), this);
