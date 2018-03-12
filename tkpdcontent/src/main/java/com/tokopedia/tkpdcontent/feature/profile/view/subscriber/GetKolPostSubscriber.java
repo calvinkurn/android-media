@@ -48,35 +48,37 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                     new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
             );
 
-            for (int index = 0; index < kolProfileModel.getKolPostViewModels().size(); index++) {
-                KolPostViewModel kolPostViewModel =
-                        kolProfileModel.getKolPostViewModels().get(index);
-
-                List<KolTracking.Promotion> promotionList = new ArrayList<>();
-                promotionList.add(new KolTracking.Promotion(
-                        kolPostViewModel.getId(),
-                        KolTracking.Promotion.createContentNameKolPost(
-                                kolPostViewModel.getTagsType()),
-                        TextUtils.isEmpty(kolPostViewModel.getName()) ? DASH :
-                                kolPostViewModel.getName(),
-                        index,
-                        TextUtils.isEmpty(kolPostViewModel.getLabel()) ? DASH :
-                                kolPostViewModel.getLabel(),
-                        kolPostViewModel.getContentId(),
-                        TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? DASH :
-                                kolPostViewModel.getContentLink(),
-                        Integer.valueOf(!TextUtils.isEmpty(view.getUserSession().getUserId()) ?
-                                        view.getUserSession().getUserId() : "0")
-                ));
-
-
-                view.getAbstractionRouter()
-                        .getAnalyticTracker()
-                        .sendEnhancedEcommerce(KolTracking.getKolImpressionTracking(promotionList));
-            }
+            doImpressionTracking(kolProfileModel.getKolPostViewModels());
         } else {
             view.onEmptyKolPost();
         }
         view.updateCursor(kolProfileModel.getLastCursor());
+    }
+
+    private void doImpressionTracking(List<KolPostViewModel> kolPostViewModels) {
+        for (int index = 0; index < kolPostViewModels.size(); index++) {
+            KolPostViewModel kolPostViewModel = kolPostViewModels.get(index);
+
+            List<KolTracking.Promotion> promotionList = new ArrayList<>();
+            promotionList.add(new KolTracking.Promotion(
+                    kolPostViewModel.getId(),
+                    KolTracking.Promotion.createContentNameKolPost(
+                            kolPostViewModel.getTagsType()),
+                    TextUtils.isEmpty(kolPostViewModel.getName()) ? DASH :
+                            kolPostViewModel.getName(),
+                    index,
+                    TextUtils.isEmpty(kolPostViewModel.getLabel()) ? DASH :
+                            kolPostViewModel.getLabel(),
+                    kolPostViewModel.getContentId(),
+                    TextUtils.isEmpty(kolPostViewModel.getContentLink()) ? DASH :
+                            kolPostViewModel.getContentLink(),
+                    Integer.valueOf(!TextUtils.isEmpty(view.getUserSession().getUserId()) ?
+                            view.getUserSession().getUserId() : "0")
+            ));
+
+            view.getAbstractionRouter()
+                    .getAnalyticTracker()
+                    .sendEnhancedEcommerce(KolTracking.getKolImpressionTracking(promotionList));
+        }
     }
 }
