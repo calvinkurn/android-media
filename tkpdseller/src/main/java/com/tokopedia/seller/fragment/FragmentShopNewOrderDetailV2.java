@@ -40,6 +40,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
@@ -288,7 +289,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         } catch (NullPointerException e) {
             e.printStackTrace();
             Toast.makeText(activity, activity.getString(R.string.title_verification_timeout) + "\n" + activity.getString(R.string.message_verification_timeout), Toast.LENGTH_LONG).show();
-            Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
+            if(!GlobalConfig.DEBUG) Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
             activity.finish();
         }
     }

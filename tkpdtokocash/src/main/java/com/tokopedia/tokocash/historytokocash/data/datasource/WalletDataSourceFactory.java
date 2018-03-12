@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.historytokocash.data.datasource;
 
-import com.tokopedia.tokocash.apiservice.WalletService;
+import com.google.gson.Gson;
+import com.tokopedia.tokocash.network.api.WalletApi;
 
 import javax.inject.Inject;
 
@@ -10,15 +11,17 @@ import javax.inject.Inject;
 
 public class WalletDataSourceFactory {
 
-    private WalletService walletService;
+    private WalletApi walletApi;
+    private Gson gson;
 
     @Inject
-    public WalletDataSourceFactory(WalletService walletService) {
-        this.walletService = walletService;
+    public WalletDataSourceFactory(WalletApi walletApi, Gson gson) {
+        this.walletApi = walletApi;
+        this.gson = gson;
     }
 
     private WalletDataSource createCloudWalletDataSource() {
-        return new CloudWalletDataSource(walletService);
+        return new CloudWalletDataSource(walletApi, gson);
     }
 
     public WalletDataSource create() {

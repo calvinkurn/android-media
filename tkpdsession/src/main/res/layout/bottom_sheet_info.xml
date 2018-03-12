@@ -21,7 +21,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_black"
+                app:srcCompat="@drawable/ic_close_black"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/close_icon"
                 android:clickable="true"
@@ -66,11 +66,11 @@
             tools:listitem="@layout/item_change_phone_number_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
-            android:layout_marginBottom="24dp"
+            android:paddingTop="@dimen/new_margin_small"
+            android:paddingLeft="@dimen/new_margin_med"
+            android:paddingRight="@dimen/new_margin_med"
+            android:paddingBottom="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/new_margin_small"
             />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

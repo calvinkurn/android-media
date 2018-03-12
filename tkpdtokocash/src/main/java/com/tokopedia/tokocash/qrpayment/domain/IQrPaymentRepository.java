@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.qrpayment.domain;
 
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 
@@ -17,6 +16,4 @@ public interface IQrPaymentRepository {
     Observable<InfoQrTokoCash> getInfoQrTokoCash(HashMap<String, Object> mapParams);
 
     Observable<QrPaymentTokoCash> postQrPayment(HashMap<String, Object> mapParams);
-
-    Observable<BalanceTokoCash> getBalanceTokoCash(HashMap<String, Object> mapParams);
 }

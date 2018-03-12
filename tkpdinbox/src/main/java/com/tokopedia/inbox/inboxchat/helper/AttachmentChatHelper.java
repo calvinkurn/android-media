@@ -26,6 +26,7 @@ public class AttachmentChatHelper {
     private static final String ROLE_OFFICIAL = "Official";
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
+    public static final String PRODUCT_ATTACHED = "3";
 
     public void parse(MyChatViewModel myChatViewModel,ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener
             , boolean dummy, boolean retry, TextView hour, View progressBarSendImage, ImageView chatStatus, String fullTime){ Attachment attachment= element.getAttachment(); String role= element.getRole(); String msg= element.getMsg() ;
@@ -38,6 +39,8 @@ public class AttachmentChatHelper {
                     parseAttachedImage(myChatViewModel, view, message, attachment, viewListener
                             , dummy, retry, action, hour, progressBarSendImage, chatStatus, fullTime);
                     break;
+                case PRODUCT_ATTACHED:
+
                 default:
                     parseDefaultType(view, message, attachment, viewListener);
                     break;
@@ -54,6 +57,8 @@ public class AttachmentChatHelper {
         parse(null, view, message, null, element, viewListener
                 ,false, false, null, null, null, fullTime);
     }
+
+
 
     private void parseAttachedImage(final MyChatViewModel myChatViewModel
             , ImageView view, TextView message, final Attachment attachment
@@ -82,10 +87,15 @@ public class AttachmentChatHelper {
                 }
             });
 
+            String imageUrl = attachment.getAttributes().getImageUrl();
+            if(attachment.getAttributes().getThumbnail()!=null){
+                imageUrl = attachment.getAttributes().getThumbnail();
+            }
+
             if(dummy) {
-                ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl());
+                ImageHandler.loadImageChatBlurred(view, imageUrl);
             }else {
-                ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl());
+                ImageHandler.loadImageChat(view, imageUrl);
                 setVisibility(progressBarSendImage, View.GONE);
             }
             message.setVisibility(View.GONE);

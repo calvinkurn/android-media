@@ -111,6 +111,7 @@
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
     <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
+    <string name="flight_booking_checkbox_same_as_contact_name_empty_error">Harap isi nama kontak terlebih dahulu</string>
     <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 karakter</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
@@ -130,6 +131,7 @@
     <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
+    <string name="activity_label_flight_saved_passenger">Pilih Penumpang</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
     <string name="flight_label_adult">Dewasa x%1$d</string>
     <string name="flight_label_child">Anak x%1$d</string>
@@ -277,7 +279,7 @@
     <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
     <string name="flight_order_departure_schedule">Jadwal Penerbangan</string>
     <string name="flight_label_copy_clipboard">Copy To Clipboard</string>
-    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>/>
+    <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>
     <string name="flight_booking_atc_loading_label">Sedang menyiapkan formulir pemesanan Anda</string>
     <string name="flight_review_failed_checkout_message">Pembayaran gagal</string>
     <string name="flight_review_cancel_checkout_message">Pembayaran dibatalkan</string>
@@ -326,4 +328,10 @@
     <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
     <string name="resend_eticket_success">E-Ticket anda berhasil dikirim.</string>
     <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
+    <string name="flight_booking_data_pemesan_sama_contact_label">Data penumpang sama dengan data pemesan.</string>
+    <string name="flight_booking_passenger_saved_secondary_hint">Penumpang Baru</string>
+    <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
+    <string name="flight_booking_list_passenger_title">Pilih Penumpang</string>
+    <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
+    <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
 </resources>

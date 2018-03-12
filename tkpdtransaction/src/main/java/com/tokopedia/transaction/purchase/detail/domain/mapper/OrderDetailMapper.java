@@ -41,6 +41,7 @@ public class OrderDetailMapper {
         if(responseData.getDetail().getCustomer() != null) {
             viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
             viewData.setBuyerId(responseData.getDetail().getCustomer().getId());
+            viewData.setBuyerLogo(responseData.getDetail().getCustomer().getPicture());
         } else {
             viewData.setBuyerUserName(responseData.getDetail().getReceiver().getName());
             viewData.setBuyerId("");

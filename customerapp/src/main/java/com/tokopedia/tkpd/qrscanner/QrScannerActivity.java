@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.qrscanner;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +12,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
@@ -41,7 +43,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     private CampaignComponent campaignComponent;
     private boolean isTorchOn;
-    private TkpdProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     @Inject
     QrScannerPresenter presenter;
@@ -64,6 +66,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressBar = findViewById(R.id.progress_bar_scanner);
         QrScannerActivityPermissionsDispatcher.isCameraPermissionAvailableWithCheck(this);
     }
 
@@ -108,12 +111,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected int getColorUpScannerLaser() {
-        return R.drawable.digital_gradient_green_up;
+        return R.drawable.qr_gradient_green_up;
     }
 
     @Override
     protected int getColorDownScannerLaser() {
-        return R.drawable.digital_gradient_green_down;
+        return R.drawable.qr_gradient_green_down;
     }
 
     @Override
@@ -122,7 +125,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         presenter.attachView(this);
         updateTitle(getString(R.string.title_scan_qr));
 
-        final ImageView torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
+        final ImageView torch = (ImageView) findViewById(R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
         decoratedBarcodeView.setTorchListener(getListener());
         torch.setOnClickListener(new View.OnClickListener() {
@@ -132,12 +135,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_on));
+                            R.drawable.qr_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_off));
+                            R.drawable.qr_ic_flash_turn_off));
                 }
             }
         });
@@ -174,25 +177,24 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        } else {
-            progressDialog = new TkpdProgressDialog(getApplicationContext(), TkpdProgressDialog.NORMAL_PROGRESS);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void hideProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(com.tokopedia.tokocash.R.string.title_dialog_wrong_scan));
+        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
-        builder.setPositiveButton(getString(com.tokopedia.tokocash.R.string.btn_dialog_wrong_scan),
+        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
@@ -204,7 +206,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void showErrorNetwork(String message) {
+    public void showErrorNetwork(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getApplicationContext(), throwable);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -246,11 +249,18 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+            decoratedBarcodeView.pause();
+            hideAnimation();
             presenter.onScanCompleteAfterLoginQrPayment();
         }
     }

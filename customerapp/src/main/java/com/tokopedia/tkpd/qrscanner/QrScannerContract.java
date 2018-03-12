@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.qrscanner;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -23,11 +24,13 @@ public interface QrScannerContract {
 
         void showErrorGetInfo(String message);
 
-        void showErrorNetwork(String message);
+        void showErrorNetwork(Throwable throwable);
 
         int getRequestCodeForQrPayment();
 
         void interruptToLoginPage();
+
+        Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {
