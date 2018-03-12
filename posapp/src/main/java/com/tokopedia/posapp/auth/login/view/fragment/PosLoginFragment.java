@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.DeveloperOptions;
@@ -33,10 +29,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.di.SessionComponent;
-import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.posapp.PosRouterApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.di.component.DaggerPosLoginComponent;
@@ -44,8 +37,6 @@ import com.tokopedia.posapp.auth.login.view.PosLogin;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.fragment.BaseLoginFragment;
-import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
@@ -53,10 +44,6 @@ import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
-import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author okasurya on 2/23/18.

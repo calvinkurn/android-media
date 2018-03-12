@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,7 +34,9 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -45,12 +49,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -81,9 +90,32 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
  * @author by nisie on 12/18/17.
  */
 
-public class LoginFragment extends BaseLoginFragment
+public class LoginFragment extends BaseDaggerFragment
         implements Login.View {
 
+    private static final String COLOR_WHITE = "#FFFFFF";
+    private static final String FACEBOOK = "facebook";
+    private static final String GPLUS = "gplus";
+    private static final String PHONE_NUMBER = "tokocash";
+
+    private static final int REQUEST_SMART_LOCK = 101;
+    private static final int REQUEST_SAVE_SMART_LOCK = 102;
+    private static final int REQUEST_LOGIN_WEBVIEW = 103;
+    private static final int REQUEST_SECURITY_QUESTION = 104;
+    private static final int REQUEST_LOGIN_PHONE_NUMBER = 105;
+    private static final int REQUESTS_CREATE_PASSWORD = 106;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
+    private static final int REQUEST_VERIFY_PHONE = 108;
+
+
+    public static final int TYPE_SQ_PHONE = 1;
+    public static final int TYPE_SQ_EMAIL = 2;
+
+    public static final String IS_AUTO_LOGIN = "auto_login";
+    public static final String AUTO_LOGIN_METHOD = "method";
+
+    public static final String AUTO_LOGIN_EMAIL = "email";
+    public static final String AUTO_LOGIN_PASS = "pw";
     private static final int MINIMAL_HEIGHT = 1200;
 
     AutoCompleteTextView emailEditText;
@@ -318,6 +350,14 @@ public class LoginFragment extends BaseLoginFragment
         }
     }
 
+    private void showSmartLock() {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SMART_LOCK);
+    }
+
 
     private void goToRegisterInitial() {
         UnifyTracking.eventTracking(LoginAnalytics.goToRegisterFromLogin());
@@ -384,6 +424,18 @@ public class LoginFragment extends BaseLoginFragment
         setWrapperError(wrapperEmail, getString(resId));
         emailEditText.requestFocus();
         UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
+    }
+
+    private void saveSmartLock(int state, String email, String password) {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
+            bundle.putString(SmartLockActivity.USERNAME, email);
+            bundle.putString(SmartLockActivity.PASSWORD, password);
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK);
     }
 
     @Override
@@ -498,7 +550,31 @@ public class LoginFragment extends BaseLoginFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
-        goToSecurityQuestion(securityDomain, fullName, email, phone, cacheManager);
+
+        InterruptVerificationViewModel interruptVerificationViewModel;
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultSmsInterruptPage(phone);
+        } else {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultEmailInterruptPage(email);
+        }
+
+        VerificationPassModel passModel = new
+                VerificationPassModel(phone, email,
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                interruptVerificationViewModel,
+                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE
+        );
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+                securityDomain.getUserCheckSecurity2());
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
     }
 
@@ -664,6 +740,39 @@ public class LoginFragment extends BaseLoginFragment
         );
         phoneNumberBean.setImageResource(R.drawable.ic_phone);
         return phoneNumberBean;
+    }
+
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        if (s == null) {
+            wrapper.setError(null);
+            wrapper.setErrorEnabled(false);
+        } else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
+        }
+    }
+
+    private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(com.tokopedia.core.R.string.error_field_required));
+                }
+            }
+        };
     }
 
     @Override
