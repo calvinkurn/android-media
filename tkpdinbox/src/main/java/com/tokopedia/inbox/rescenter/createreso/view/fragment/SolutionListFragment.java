@@ -210,6 +210,17 @@ public class SolutionListFragment extends BaseDaggerFragment
         adapter = new SolutionListAdapter(getActivity(),
                 solutionResponseViewModel.getSolutionViewModelList(),
                 this);
+        for (SolutionViewModel model : solutionResponseViewModel.getSolutionViewModelList()) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditPage(
+                        editAppealSolutionModel.resolutionId, model.getSolutionName()
+                ));
+            } else {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
+                        editAppealSolutionModel.resolutionId, model.getSolutionName()
+                ));
+            }
+        }
         rvSolution.setAdapter(adapter);
         if (solutionResponseViewModel.getFreeReturn() != null) {
             freeReturnViewModel = solutionResponseViewModel.getFreeReturn();

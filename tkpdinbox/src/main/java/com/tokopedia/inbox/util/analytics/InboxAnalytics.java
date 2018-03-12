@@ -41,6 +41,8 @@ public class InboxAnalytics {
         String IMPRESSION_CANCEL_COMPLAINT_DIALOG_CHAT = "impression from batalkan komplain";
         String IMPRESSION_SOLUTION_APPEAL_DETAIL_PAGE_CHAT = "impression solusi detail naik banding";
         String IMPRESSION_SOLUTION_EDIT_DETAIL_PAGE_CHAT = "impression solusi detail ubah solusi";
+        String IMPRESSION_SOLUTION_EDIT_LIST_PAGE_CHAT = "impression solusi ubah solusi";
+        String IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT = "click solusi detail naik banding";
 
         String CLICK_ACCEPT_SOLUTION = "click terima solusi";
         String CLICK_CANCEL_COMPLAINT = "click batalkan komplain";
@@ -368,6 +370,24 @@ public class InboxAnalytics {
     }
 
     public static EventTracking eventResoChatClickSolutionEditPage(String resolutionId, String solution) {
+        return new EventTracking(
+                Event.EVENT_RESOLUTION_CENTER,
+                Category.RESOLUTION_CENTER_CHAT,
+                Action.IMPRESSION_SOLUTION_EDIT_LIST_PAGE_CHAT,
+                solution
+        ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoChatImpressionSolutionEditPage(String resolutionId, String solution) {
+        return new EventTracking(
+                Event.EVENT_RESOLUTION_CENTER,
+                Category.RESOLUTION_CENTER_CHAT,
+                Action.IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT,
+                solution
+        ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoChatImpressionSolutionAppealPage(String resolutionId, String solution) {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
                 Category.RESOLUTION_CENTER_CHAT,
