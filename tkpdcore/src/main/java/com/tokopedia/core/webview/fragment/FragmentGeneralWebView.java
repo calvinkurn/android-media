@@ -252,7 +252,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     return true;
                 case DeepLinkChecker.TOKOPOINT:
-                    CommonUtils.dumper("tokopoint: " + url);
                     DeepLinkChecker.openTokoPoint(getActivity(), url);
                     return true;
                 default:
