@@ -42,7 +42,9 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
-    compile rootProject.ext.miscDependencies.loaderviewlibrary
+    compile (rootProject.ext.miscDependencies.loaderviewlibrary){
+            exclude group: 'com.android.support'
+    }
     compile (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }

@@ -63,6 +63,8 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resID);
 
+        void showPassengerAdultBirthdateShouldMoreThan12Years(int resID);
+
         void navigateResultUpdatePassengerData(FlightBookingPassengerViewModel currentPassengerViewModel);
 
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
