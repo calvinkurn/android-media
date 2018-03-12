@@ -65,8 +65,6 @@ public class ChatRoomContract {
 
         void addTimeMachine();
 
-        void addUrlToReply(String url);
-
         String getKeyword();
 
         void setResult(ChatRoomViewModel model);
@@ -103,7 +101,7 @@ public class ChatRoomContract {
 
         void onSuccessInitMessage();
 
-        void addDummyInitialMessage();
+        void addInitialMessageBalloon();
 
         void disableAction();
 
@@ -124,12 +122,16 @@ public class ChatRoomContract {
         void scrollToBottomWithCheck();
 
         void setHeaderModel(String nameHeader, String imageHeader);
+
+        void startAttachProductActivity(String shopId, String shopName, boolean isSeller);
+
+        void productClicked(Integer productId, String productName, String productPrice, Long dateTime, String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{
         void getReply(int mode);
 
-        void getAttachProductDialog(String shopId, String senderRole);
+        void getAttachProductDialog(String shopId,String shopName, String senderRole);
 
         void onOpenWebSocket();
 
@@ -139,7 +141,7 @@ public class ChatRoomContract {
 
         void sendMessageWithApi();
 
-        void addDummyMessage(WebSocketResponse response);
+        void addMessageChatBalloon(WebSocketResponse response);
 
         void initMessage(String s, String string, String string1, String string2);
 

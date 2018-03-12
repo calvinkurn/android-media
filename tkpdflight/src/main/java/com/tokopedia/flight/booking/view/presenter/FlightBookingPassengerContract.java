@@ -21,6 +21,8 @@ public interface FlightBookingPassengerContract {
 
         FlightBookingPassengerViewModel getCurrentPassengerViewModel();
 
+        void setCurrentPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
         void renderSpinnerForAdult();
 
         void renderSpinnerForChildAndInfant();
@@ -73,9 +75,13 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
+        void renderSelectedList(String passengerName);
+
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
+
+        void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
 
         int getPassengerTitleId();
 
@@ -100,6 +106,8 @@ public interface FlightBookingPassengerContract {
         String getDepartureDateString();
 
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
+
+        void canGoBack();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -124,5 +132,10 @@ public interface FlightBookingPassengerContract {
 
         void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
+        void onSavedPassengerClicked();
+
+        void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
+
+        void onUnselectPassengerList(String passengerId);
     }
 }
