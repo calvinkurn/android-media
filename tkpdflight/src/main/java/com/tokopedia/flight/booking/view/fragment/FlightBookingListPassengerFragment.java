@@ -104,7 +104,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void loadData(int page) {
-        renderPassengerList();
+        showLoading();
     }
 
     @Override
@@ -124,6 +124,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void renderPassengerList() {
+        hideLoading();
         super.isLoadingInitialData = true;
         renderList(flightBookingPassengerViewModelList);
 
