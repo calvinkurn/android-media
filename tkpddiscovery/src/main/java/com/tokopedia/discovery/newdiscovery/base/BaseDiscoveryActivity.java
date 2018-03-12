@@ -8,7 +8,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
@@ -104,7 +104,7 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse) {
+    public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
     }
 
     @Override

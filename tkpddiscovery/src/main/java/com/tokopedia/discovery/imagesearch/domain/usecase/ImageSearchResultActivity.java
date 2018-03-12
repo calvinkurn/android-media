@@ -6,12 +6,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.discovery.R;
 
 /**
@@ -54,14 +52,14 @@ public class ImageSearchResultActivity extends BaseActivity {
             }
         });
 
-        ImageSearchResponse imageSearchResponse = (ImageSearchResponse) getIntent().getSerializableExtra("Response");
+        NewImageSearchResponse imageSearchResponse = (NewImageSearchResponse) getIntent().getSerializableExtra("Response");
 
 
         if (imageSearchResponse != null) {
-            Log.d("MainActivity", imageSearchResponse.getOasSearch().getTrace().getSearch().getId());
+//            Log.d("MainActivity", imageSearchResponse.getTrace().getSearch().getId());
 
-            if (imageSearchResponse.getOasSearch().getAuctions() != null && imageSearchResponse.getOasSearch().getAuctions().size() > 0) {
-                mAdapter = new AuctionsAdapter(ImageSearchResultActivity.this, imageSearchResponse.getOasSearch().getAuctions());
+            if (imageSearchResponse.getAuctionsArrayList() != null && imageSearchResponse.getAuctionsArrayList().size() > 0) {
+                mAdapter = new AuctionsAdapter(ImageSearchResultActivity.this, imageSearchResponse.getAuctionsArrayList());
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -1,24 +1,20 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.util.Base64;
+import android.util.Log;
 
 import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.http.FormatType;
-import com.aliyuncs.http.HttpResponse;
+import com.aliyuncs.IAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
-import com.tokopedia.discovery.imagesearch.domain.usecase.RoaSearchRequest;
+import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.SearchItemRequestLocal;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
-import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
@@ -72,36 +68,30 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
             @Override
             public Object call() throws Exception {
 
-                IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIgYEAAiMej0WK",
-                        "unN3GIXParljB7J7rPrxD3I47NHhtY");
+                IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIUeEWSvia1KkW",
+                        "eJLV3PJCCEn7sqf5vVrIzaESTfsNdm");
                 // add endpoint, no need to modify
                 DefaultProfile.addEndpoint("ap-southeast-1", "ap-southeast-1",
-                        "IDST", "imagesearch.ap-southeast-1.aliyuncs.com");
+                        "ImageSearch", "imagesearch.ap-southeast-1.aliyuncs.com");
 
-                DefaultAcsClient client = new DefaultAcsClient(profile);
+                IAcsClient client = new DefaultAcsClient(profile);
 
-                RoaSearchRequest req = new RoaSearchRequest();
-                req.setApp("oas_search");
-                req.setS(0);
-                req.setN(30);
+                SearchItemRequestLocal request = new SearchItemRequestLocal();
+                request.setNum(100);
+                request.setStart(0);
+                request.setCatId("0");
+                request.setInstanceName("productsearch01");
+                request.setSearchPicture(imageByteArray);
 
-                req.setHttpContent(Base64.encode(imageByteArray, Base64.NO_CLOSE | Base64.NO_WRAP), null, FormatType.RAW);
-                long begin = System.currentTimeMillis();
+                if (!request.buildPostContent()) {
+                    System.out.println("build post content failed.");
+                    return new NewImageSearchResponse();
+                }
 
-                HttpResponse resp = client.doAction(req);
-                long end = System.currentTimeMillis();
-                System.out.println("search time(ms):" + (end - begin));
+                NewImageSearchResponse response = client.getAcsResponse(request);
 
-                System.out.println(resp.getUrl());
-                String cont = new String(resp.getHttpContent());
-
-                System.out.println(cont);
-
-                Gson gson = new Gson();
-                Type type = new TypeToken<ImageSearchResponse>() {
-                }.getType();
-
-                return gson.fromJson(cont, type);
+                Log.e("ImageSearch Res: ", response.toString());
+                return response;
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

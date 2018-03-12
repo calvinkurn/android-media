@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.imagesearch.domain.model;
 
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
+import com.aliyuncs.imagesearch.model.v20180120.SearchItemResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ImageSearchResultModel {
         return auctionArrayList;
     }
 
-    public void setAuctionArrayList(List<ImageSearchResponse.Auction> auctionArrayList) {
+    public void setAuctionArrayList(List<SearchItemResponse.Auction> auctionArrayList) {
         this.auctionArrayList = (ArrayList) auctionArrayList;
     }
 }

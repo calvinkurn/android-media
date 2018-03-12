@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
@@ -24,7 +24,7 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
-        void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse);
+        void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse);
 
         void onHandleResponseIntermediary(String departmentId);
 

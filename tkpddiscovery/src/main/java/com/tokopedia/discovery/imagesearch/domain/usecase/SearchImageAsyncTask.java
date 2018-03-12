@@ -1,74 +1,93 @@
 package com.tokopedia.discovery.imagesearch.domain.usecase;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Base64;
+import android.util.Log;
 
 import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.http.FormatType;
-import com.aliyuncs.http.HttpResponse;
+import com.aliyuncs.IAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 
-import java.lang.reflect.Type;
-
-import rx.Observable;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by sachinbansal on 1/10/18.
  */
 
-public class SearchImageAsyncTask extends AsyncTask<byte[], Void, ImageSearchResponse> {
+public class SearchImageAsyncTask extends AsyncTask<byte[], Void, NewImageSearchResponse> {
 
     private Context context;
-    private TkpdProgressDialog tkpdProgressDialog;
+//    private TkpdProgressDialog tkpdProgressDialog;
 
     public SearchImageAsyncTask(Context context) {
         this.context = context;
-        tkpdProgressDialog = new TkpdProgressDialog(context, 1);
+//        tkpdProgressDialog = new TkpdProgressDialog(context, 1);
     }
 
 
     @Override
-    protected ImageSearchResponse doInBackground(byte[]... params) {
+    protected NewImageSearchResponse doInBackground(byte[]... params) {
         try {
             // set aliyun accessKeyId and secret
-            IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIgYEAAiMej0WK",
+            /*IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIgYEAAiMej0WK",
                     "unN3GIXParljB7J7rPrxD3I47NHhtY");
             // add endpoint, no need to modify
             DefaultProfile.addEndpoint("ap-southeast-1", "ap-southeast-1",
                     "IDST", "idst.ap-southeast-1.aliyuncs.com");
 
-            DefaultAcsClient client = new DefaultAcsClient(profile);
+            DefaultAcsClient client = new DefaultAcsClient(profile);*/
 
-            RoaSearchRequest req = new RoaSearchRequest();
-            req.setApp("oas_search");
-            req.setS(0);
-            req.setN(30);
+            IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIUeEWSvia1KkW",
+                    "eJLV3PJCCEn7sqf5vVrIzaESTfsNdm");
+            // add endpoint, no need to modify
+            DefaultProfile.addEndpoint("ap-southeast-1", "ap-southeast-1",
+                    "ImageSearch", "imagesearch.ap-southeast-1.aliyuncs.com");
 
-            req.setHttpContent(Base64.encode(params[0], Base64.NO_CLOSE | Base64.NO_WRAP), null, FormatType.RAW);
-            long begin = System.currentTimeMillis();
+            IAcsClient client = new DefaultAcsClient(profile);
 
-            HttpResponse resp = client.doAction(req);
-            long end = System.currentTimeMillis();
-            System.out.println("search time(ms):" + (end - begin));
+//            RoaSearchRequest request = new RoaSearchRequest();
+//            request.setS(0);
+//            request.setN(30);
+//            request.setInstanceName("productsearch01");
 
-            System.out.println(resp.getUrl());
-            String cont = new String(resp.getHttpContent());
+//            request.setHttpContent(Base64.encode(params[0], Base64.DEFAULT), null, FormatType.RAW);
 
-            System.out.println(cont);
+            SearchItemRequestLocal request = new SearchItemRequestLocal();
+            request.setNum(10);
+            request.setStart(0);
+            request.setCatId("0");
+            request.setInstanceName("productsearch01");
+            request.setSearchPicture(params[0]);
 
-            Gson gson = new Gson();
-            Type type = new TypeToken<ImageSearchResponse>() {
-            }.getType();
-            ImageSearchResponse imageSearchResponse =  gson.fromJson(cont, type);
+            /*String encodedString = new String(Base64.encodeBase64(params[0]));
+            String safeString = encodedString.replace('+', '-').replace('/', '_');*/
 
-            return imageSearchResponse;
+            /*request.setHttpContent(Base64.encode(params[0], Base64.DEFAULT), "UTF-8", FormatType.RAW);
+            request.setAcceptFormat(FormatType.JSON);*/
+
+            if (!request.buildPostContent()) {
+                System.out.println("build post content failed.");
+                return new NewImageSearchResponse();
+            }
+
+            NewImageSearchResponse response = client.getAcsResponse(request);
+
+
+
+//            HttpResponse resp = client.doAction(request);
+//            System.out.println(resp.getUrl());
+//            String cont = new String(resp.getHttpContent());
+//            Log.e("ImageSearch Res:", cont);
+//            System.out.println(cont);
+//            Gson gson = new Gson();
+//            Type type = new TypeToken<NewImageSearchResponse>() {
+//            }.getType();
+//
+//            return gson.fromJson(cont, type);
+            return response;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -76,7 +95,7 @@ public class SearchImageAsyncTask extends AsyncTask<byte[], Void, ImageSearchRes
     }
 
     @Override
-    protected void onPostExecute(ImageSearchResponse result) {
+    protected void onPostExecute(NewImageSearchResponse result) {
         /*progressBar.setVisibility(View.GONE);
         infoView.setVisibility(View.GONE);
 
@@ -102,16 +121,37 @@ public class SearchImageAsyncTask extends AsyncTask<byte[], Void, ImageSearchRes
 
         if (context != null) {
 
-            Intent intent = new Intent(context, ImageSearchResultActivity.class);
+            ((DiscoveryActivity) context).onHandleImageSearchResponse(result);
+            /*Intent intent = new Intent(context, ImageSearchResultActivity.class);
             intent.putExtra("Response",result);
             context.startActivity(intent);
-            tkpdProgressDialog.dismiss();
+            tkpdProgressDialog.dismiss();*/
         }
+    }
+
+    private static String buildContent(Map<String, String> kv) {
+        String meta = "";
+        String body = "";
+        int start = 0;
+
+        String value;
+        for (Iterator i$ = kv.entrySet().iterator(); i$.hasNext(); start += value.length()) {
+            Map.Entry<String, String> entry = (Map.Entry) i$.next();
+            value = (String) entry.getValue();
+            if (meta.length() > 0) {
+                meta = meta + "#";
+            }
+
+            meta = meta + (String) entry.getKey() + "," + start + "," + (start + value.length());
+            body = body + value;
+        }
+
+        return meta + "^" + body;
     }
 
     @Override
     protected void onPreExecute() {
-        tkpdProgressDialog.showDialog();
+//        tkpdProgressDialog.showDialog();
         /*progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         infoView.setVisibility(View.VISIBLE);*/

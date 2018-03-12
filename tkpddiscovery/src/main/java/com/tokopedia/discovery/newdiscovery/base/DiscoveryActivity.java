@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -31,11 +32,12 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
+import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
@@ -67,6 +69,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
+    private static final double MIN_SCORE = 10.0;
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -79,6 +82,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private boolean fromCamera;
     private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
+    private final int MAX_WIDTH = 400;
+    private final int MAX_HEIGHT = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -372,6 +377,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleResponseError() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
         showLoadingView(false);
         showContainer(true);
         NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
@@ -455,7 +464,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (imgFile.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-            myBitmap = resize(myBitmap, 400, 400);
+            myBitmap = resize(myBitmap);
 
             if (fromCamera) {
                 addImageToGallery(myBitmap);
@@ -464,11 +473,11 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
 
-            /*SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
-            searchImageAsyncTask.execute(byteArray);*/
+//            SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
+//            searchImageAsyncTask.execute(byteArray);
 
 //            showLoadingView(true);
-
+//
             tkpdProgressDialog = new TkpdProgressDialog(this, 1);
             tkpdProgressDialog.showDialog();
             getPresenter().requestImageSearch(byteArray);
@@ -476,35 +485,54 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
-    public void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse) {
-
-
-        showLoadingView(false);
-
+    public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
+//        showLoadingView(false);
+//        tkpdProgressDialog.dismiss();
         StringBuilder productIDs = new StringBuilder();
-        int productCount = imageSearchResponse.getOasSearch().getAuctions().size();
+
+        if (imageSearchResponse == null || imageSearchResponse.getAuctionsArrayList() == null) {
+            if (tkpdProgressDialog != null) {
+                tkpdProgressDialog.dismiss();
+            }
+            Toast.makeText(this, "Invalid Response", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int productCount = imageSearchResponse.getAuctionsArrayList().size();//getAuctions().getAuction().size();
 
         if (productCount > 100)
             productCount = 100;
 
         for (int i = 0; i < productCount; i++) {
-            productIDs.append(imageSearchResponse.getOasSearch().getAuctions().get(i).getProductId());
-            if (i != productCount - 1) {
-                productIDs.append(",");
+            String[] strings = imageSearchResponse.getAuctionsArrayList().get(i).getSortExprValues().split(";");
+            double score = Double.parseDouble(strings[0]);
+            if (score > MIN_SCORE) {
+                productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
+                if (i != productCount - 1) {
+                    productIDs.append(",");
+                }
+            } else {
+                break;
             }
         }
 
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(productCount);
-        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
-        imageSearchProductParameter.setSource("toppicks");
+        if (StringUtils.isNotBlank(productIDs.toString())) {
 
-        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
+            SearchParameter imageSearchProductParameter = new SearchParameter();
+            imageSearchProductParameter.setStartRow(productCount);
+            imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
+            imageSearchProductParameter.setSource("toppicks");
+            getPresenter().requestImageSearchProduct(imageSearchProductParameter);
         /*Intent intent = new Intent(this, ImageSearchResultActivity.class);
         intent.putExtra("Response", imageSearchResponse);
         startActivity(intent);*/
 
-//        Toast.makeText(this,imageSearchResponse.getOasSearch().getAuctions().size() + " results fetched.", Toast.LENGTH_SHORT).show();
+        } else {
+            if (tkpdProgressDialog != null) {
+                tkpdProgressDialog.dismiss();
+            }
+            Toast.makeText(this, "No Results Found!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -516,25 +544,21 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         finish();
     }
 
-    private Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
-        if (maxHeight > 0 && maxWidth > 0) {
+    private Bitmap resize(Bitmap image) {
             int width = image.getWidth();
             int height = image.getHeight();
             float ratioBitmap = (float) width / (float) height;
-            float ratioMax = (float) maxWidth / (float) maxHeight;
+            float ratioMax = (float) MAX_WIDTH / (float) MAX_HEIGHT;
 
-            int finalWidth = maxWidth;
-            int finalHeight = maxHeight;
+            int finalWidth = MAX_WIDTH;
+            int finalHeight = MAX_HEIGHT;
             if (ratioMax > ratioBitmap) {
-                finalWidth = (int) ((float) maxHeight * ratioBitmap);
+                finalWidth = (int) ((float) MAX_HEIGHT * ratioBitmap);
             } else {
-                finalHeight = (int) ((float) maxWidth / ratioBitmap);
+                finalHeight = (int) ((float) MAX_WIDTH / ratioBitmap);
             }
             image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
             return image;
-        } else {
-            return image;
-        }
     }
 
     public void addImageToGallery(final Bitmap filePath) {

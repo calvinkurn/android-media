@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.imagesearch.data.mapper;
 
+import com.aliyuncs.imagesearch.model.v20180120.SearchItemResponse;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
 
@@ -24,7 +24,7 @@ public class ImageSearchResultMapper implements Func1<Response<String>, ImageSea
     @Override
     public ImageSearchResultModel call(Response<String> response) {
         if (response.isSuccessful()) {
-            ImageSearchResponse imageSearchResponse = gson.fromJson(response.body(), ImageSearchResponse.class);
+            SearchItemResponse imageSearchResponse = gson.fromJson(response.body(), SearchItemResponse.class);
             if (imageSearchResponse != null) {
                 return mappingPojoIntoDomain(imageSearchResponse);
             } else {
@@ -35,9 +35,9 @@ public class ImageSearchResultMapper implements Func1<Response<String>, ImageSea
         }
     }
 
-    private ImageSearchResultModel mappingPojoIntoDomain(ImageSearchResponse imageSearchResponse) {
+    private ImageSearchResultModel mappingPojoIntoDomain(SearchItemResponse imageSearchResponse) {
         ImageSearchResultModel imageSearchResultModel = new ImageSearchResultModel();
-        imageSearchResultModel.setAuctionArrayList(imageSearchResponse.getOasSearch().getAuctions());
+        imageSearchResultModel.setAuctionArrayList(imageSearchResponse.getAuctions());
         return imageSearchResultModel;
     }
 }

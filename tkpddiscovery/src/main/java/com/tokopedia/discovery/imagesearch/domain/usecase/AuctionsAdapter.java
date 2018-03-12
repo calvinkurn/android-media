@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.discovery.R;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
  */
 
 class AuctionsAdapter extends RecyclerView.Adapter<AuctionsAdapter.MyViewHolder> {
-    private List<ImageSearchResponse.Auction> auctionList;
+    private List<Auction> auctionList;
     private Context context;
 
 
@@ -41,7 +40,7 @@ class AuctionsAdapter extends RecyclerView.Adapter<AuctionsAdapter.MyViewHolder>
     }
 
 
-    public AuctionsAdapter(Context context, List<ImageSearchResponse.Auction> moviesList) {
+    public AuctionsAdapter(Context context, List<Auction> moviesList) {
         this.auctionList = moviesList;
         this.context = context;
     }
@@ -56,11 +55,11 @@ class AuctionsAdapter extends RecyclerView.Adapter<AuctionsAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final ImageSearchResponse.Auction auction = auctionList.get(position);
+        final Auction auction = auctionList.get(position);
 
-        holder.productIdTextView.setText("Product Id = " + auction.getProductId());
+        holder.productIdTextView.setText("Product Id = " + auction.getItemId());
         holder.categoryIdTextView.setText("Category Id = " + auction.getCatId());
-        holder.finalScoreTextView.setText("Final Score = " + auction.getCUSTOMFinalScore());
+        holder.finalScoreTextView.setText("Cust Content Score = " + auction.getCustContent());
 
         Glide.with(context)
                 .load("http://img-poc.oss-ap-southeast-1.aliyuncs.com/" + auction.getPicName())
@@ -73,7 +72,7 @@ class AuctionsAdapter extends RecyclerView.Adapter<AuctionsAdapter.MyViewHolder>
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("tokopedia://product/" + auction.getProductId()));
+                intent.setData(Uri.parse("tokopedia://product/" + auction.getItemId()));
                 context.startActivity(intent);
             }
         });
