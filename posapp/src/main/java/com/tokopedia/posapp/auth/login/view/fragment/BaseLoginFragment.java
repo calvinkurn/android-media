@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginemail.view.fragment;
+package com.tokopedia.posapp.auth.login.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
