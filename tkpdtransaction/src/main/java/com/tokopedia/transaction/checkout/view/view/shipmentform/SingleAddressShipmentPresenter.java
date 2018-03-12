@@ -1,37 +1,46 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
-
-import java.util.List;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author Aghny A. Putra on 26/01/18
  */
 
-public class SingleAddressShipmentPresenter
-        extends CartMvpPresenter<ICartSingleAddressView> {
+public class SingleAddressShipmentPresenter {
 
-    private static final String TAG = SingleAddressShipmentPresenter.class.getSimpleName();
+    private final ICartSingleAddressView view;
 
     @Inject
-    public SingleAddressShipmentPresenter() {
-
+    public SingleAddressShipmentPresenter(ICartSingleAddressView view) {
+        this.view = view;
     }
 
-    @Override
-    public void attachView(ICartSingleAddressView mvpView) {
-        super.attachView(mvpView);
-    }
+    Subscriber<CheckPromoCodeCartShipmentResult> getSubscriberCheckPromoShipment() {
+        return new Subscriber<CheckPromoCodeCartShipmentResult>() {
+            @Override
+            public void onCompleted() {
 
-    @Override
-    protected void checkViewAttached() {
-        super.checkViewAttached();
-    }
+            }
 
-    public void setShipmentData(final List<Object> shipmentDataList) {
-        getMvpView().show(shipmentDataList);
-    }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.renderErrorCheckPromoShipmentData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
 
+            @Override
+            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+                if (!checkPromoCodeCartShipmentResult.isError()) {
+                    view.renderCheckPromoShipmentDataSuccess(checkPromoCodeCartShipmentResult);
+                } else {
+                    view.renderErrorCheckPromoShipmentData(checkPromoCodeCartShipmentResult.getErrorMessage());
+                }
+            }
+        };
+    }
 }

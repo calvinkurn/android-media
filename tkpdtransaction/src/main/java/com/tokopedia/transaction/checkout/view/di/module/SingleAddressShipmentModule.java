@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.di.module;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.scope.SingleAddressShipmentScope;
 import com.tokopedia.transaction.checkout.view.mapper.ShipmentDataRequestConverter;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.ICartSingleAddressView;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentPresenter;
 
@@ -16,16 +17,18 @@ import dagger.Provides;
 @Module(includes = {DataModule.class, ConverterDataModule.class, PeopleAddressModule.class})
 public class SingleAddressShipmentModule {
 
-    private SingleAddressShipmentAdapter.ActionListener actionListener;
+    private SingleAddressShipmentAdapter.ActionListener adapterActionListener;
+    private ICartSingleAddressView viewListener;
 
     public SingleAddressShipmentModule(SingleAddressShipmentFragment singleAddressShipmentFragment) {
-        actionListener = singleAddressShipmentFragment;
+        adapterActionListener = singleAddressShipmentFragment;
+        viewListener = singleAddressShipmentFragment;
     }
 
     @Provides
     @SingleAddressShipmentScope
     SingleAddressShipmentPresenter provideCartSingleAddressPresenter() {
-        return new SingleAddressShipmentPresenter();
+        return new SingleAddressShipmentPresenter(viewListener);
     }
 
     @Provides
@@ -37,7 +40,7 @@ public class SingleAddressShipmentModule {
     @Provides
     @SingleAddressShipmentScope
     SingleAddressShipmentAdapter provideCartSingleAddressAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter) {
-        return new SingleAddressShipmentAdapter(actionListener, shipmentDataRequestConverter);
+        return new SingleAddressShipmentAdapter(adapterActionListener, shipmentDataRequestConverter);
     }
 
 }

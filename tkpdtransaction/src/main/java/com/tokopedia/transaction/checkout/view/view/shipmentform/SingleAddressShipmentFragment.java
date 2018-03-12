@@ -59,8 +59,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_POSITION;
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
@@ -70,8 +68,7 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
  */
 
 public class SingleAddressShipmentFragment extends BasePresenterFragment
-        implements ICartSingleAddressView,
-        SingleAddressShipmentAdapter.ActionListener {
+        implements ICartSingleAddressView, SingleAddressShipmentAdapter.ActionListener {
 
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
@@ -132,11 +129,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return TAG;
     }
 
     @Override
@@ -233,7 +225,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvTotalPayment.setText("-");
         mCvBottomLayout.setVisibility(View.VISIBLE);
 
-        mSingleAddressShipmentPresenter.attachView(this);
         mSingleAddressShipmentAdapter.addPromoVoucherData(
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData)
         );
@@ -250,16 +241,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void setActionVar() {
-
-    }
-
-    @Override
-    public void show(List<Object> shipmentDataList) {
-
-    }
-
-    @Override
-    public void showError() {
 
     }
 
@@ -375,41 +356,17 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                                          List<DataCheckoutRequest> checkoutRequestData) {
         mPromoRequestData = promoRequestData;
         mCheckoutRequestData = checkoutRequestData;
-
         if (promoCodeAppliedData != null && mSingleAddressShipmentAdapter.hasAppliedPromoCode()) {
-            if (checkPromoCodeFinal(promoCodeAppliedData.getPromoCode())) {
-                cartShipmentActivityListener.checkPromoCodeShipment(
-                        new Subscriber<CheckPromoCodeCartShipmentResult>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                NetworkErrorHelper.showRedCloseSnackbar(getActivity(), "Terjadi kesalahan");
-                            }
-
-                            @Override
-                            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-                                if (!checkPromoCodeCartShipmentResult.isError()) {
-                                    mSingleAddressShipmentAdapter
-                                            .updatePromo(checkPromoCodeCartShipmentResult
-                                                    .getDataVoucher());
-                                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
-                                } else {
-                                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
-                                            checkPromoCodeCartShipmentResult.getErrorMessage());
-                                }
-                            }
-                        }, new CheckPromoCodeCartShipmentRequest.Builder()
-                                .promoCode(promoCodeAppliedData.getPromoCode())
-                                .data(mPromoRequestData)
-                                .build()
-                );
-            }
+            cartShipmentActivityListener.checkPromoCodeShipment(
+                    mSingleAddressShipmentPresenter.getSubscriberCheckPromoShipment(),
+                    new CheckPromoCodeCartShipmentRequest.Builder()
+                            .promoCode(promoCodeAppliedData.getPromoCode())
+                            .data(mPromoRequestData)
+                            .build()
+            );
         }
     }
+
 
     @Override
     public void onShowPromoMessage(String promoMessage) {
@@ -417,7 +374,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvPromoMessage.setVisibility(View.VISIBLE);
     }
 
-    private Spannable formatPromoMessage(TextView textView, String promoMessage) {
+    private void formatPromoMessage(TextView textView, String promoMessage) {
         String formatText = " Hapus";
         promoMessage += formatText;
         int startSpan = promoMessage.indexOf(formatText);
@@ -443,7 +400,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(formattedPromoMessage);
-        return formattedPromoMessage;
     }
 
     @Override
@@ -566,21 +522,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         }
     }
 
-    public boolean checkPromoCodeFinal(String promoCode) {
-        if (mPromoRequestData == null) {
-            return false;
-        }
-
-        CheckPromoCodeCartShipmentRequest promoCodeRequest =
-                new CheckPromoCodeCartShipmentRequest.Builder()
-                        .promoCode(promoCode)
-                        .data(mPromoRequestData)
-                        .build();
-
-        // Do something here
-        return true;
-    }
-
     private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
         if (mCheckoutRequestData == null) {
             // Show error cant checkout
@@ -595,4 +536,31 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
 
+    @Override
+    public void renderCheckPromoShipmentDataSuccess(
+            CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult
+    ) {
+        mSingleAddressShipmentAdapter.updatePromo(checkPromoCodeCartShipmentResult.getDataVoucher());
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderErrorCheckPromoShipmentData(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorHttpCheckPromoShipmentData(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckPromoShipmentData(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckPromoShipmentData(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
 }
