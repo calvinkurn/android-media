@@ -1,12 +1,8 @@
 package com.tokopedia.tokocash.historytokocash.domain;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tokocash.historytokocash.data.entity.OAuthInfoEntity;
-import com.tokopedia.tokocash.historytokocash.data.entity.ResponseHelpHistoryEntity;
-import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
 import com.tokopedia.tokocash.historytokocash.presentation.model.HelpHistoryTokoCash;
-import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.tokocash.historytokocash.presentation.model.WithdrawSaldo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,15 +15,11 @@ import rx.Observable;
 
 public interface IWalletRepository {
 
-    Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, Object> mapParams);
+    Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, String> mapParams);
 
     Observable<List<HelpHistoryTokoCash>> getHelpHistoryData();
 
-    Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId);
+    Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams);
 
-    Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory);
-
-    Observable<OAuthInfoEntity> getOAuthInfo();
-
-    Observable<Boolean> unlinkAccountTokoCash(String refreshToken, String identifier, String identifierType);
+    Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);
 }

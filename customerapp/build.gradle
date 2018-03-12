@@ -92,7 +92,7 @@ android {
 
     project.ext {
         defaultVersionCode = 218001101;
-        defaultVersionName = "2.18";
+        defaultVersionName = "2.20";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -262,6 +262,7 @@ dependencies {
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
     compile project(rootProject.ext.libraries.reactNative)
+    compile project(rootProject.ext.features.content)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

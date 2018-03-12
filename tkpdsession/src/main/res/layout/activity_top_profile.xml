@@ -1,0 +1,180 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/font_white_primary_70"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <include
+                android:id="@+id/header"
+                layout="@layout/partial_header_top_profile"
+                android:visibility="visible" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="top"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent_white"
+                    android:gravity="start"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_title_toolbar"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_weight="3"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="4sp"
+                        android:maxLines="1"
+                        android:textAppearance="@style/Theme.Tokopedia3"
+                        android:textColor="@color/font_black_primary_70"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        tools:text="Benny Alexandra" />
+
+                    <TextView
+                        android:id="@+id/button_follow_toolbar"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/title_kol_space"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="sans-serif"
+                        android:gravity="end|center_vertical"
+                        android:lineSpacingExtra="2sp"
+                        android:textAppearance="@style/Theme.Tokopedia3"
+                        android:textColor="@color/tkpd_main_green"
+                        android:textSize="@dimen/text_size_14"
+                        android:textStyle="normal"
+                        android:visibility="visible"
+                        tools:text="@string/follow_with_plus" />
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+        <com.tokopedia.design.tab.Tabs
+            android:id="@+id/tab_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/Tabs.Secondary"
+            app:tabType="secondary" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/progress_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/default_big_icon"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_large"
+            app:srcCompat="@drawable/ic_network_error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/new_margin_small"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:text="@string/error_occured"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/server_busy"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/text_size_12"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/button_try_again"
+            android:layout_width="@dimen/default_big_icon"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_green_enabled"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/new_margin_med"
+            android:text="@string/try_again_top_profile"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_13"
+            android:textStyle="normal" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

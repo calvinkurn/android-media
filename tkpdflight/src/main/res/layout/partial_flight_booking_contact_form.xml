@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -91,10 +92,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/selectable_background_tokopedia"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:paddingBottom="7dp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/et_phone_country_code"
                     style="@style/TextView.Title"
                     android:layout_width="wrap_content"
@@ -102,9 +104,8 @@
                     android:layout_marginBottom="1dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/selectable_background_tokopedia"
-                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey"
                     android:drawablePadding="@dimen/padding_small"
-                    android:drawableRight="@drawable/ic_arrow_down_grey"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:textAlignment="center"

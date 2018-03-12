@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -83,7 +82,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         tvChange.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.setOnActionEditSolutionClick();
+                listener.setOnActionEditSolutionClick(false);
             }
         });
     }

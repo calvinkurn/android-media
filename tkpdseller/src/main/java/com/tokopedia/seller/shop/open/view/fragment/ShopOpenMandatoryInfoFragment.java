@@ -30,6 +30,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
@@ -211,7 +212,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-        Crashlytics.logException(t);
+        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         onErrorGetReserveDomain(errorMessage);

@@ -22,8 +22,10 @@ public class ProductPass implements Parcelable {
     private String adR;
     private String productDesc;
     private Bitmap picToShare;
+    private long dateTimeInMilis;
 
     public ProductPass() {
+        dateTimeInMilis = 0;
     }
 
     public String getProductId() {
@@ -122,6 +124,14 @@ public class ProductPass implements Parcelable {
         this.picToShare = picToShare;
     }
 
+    public long getDateTimeInMilis() {
+        return dateTimeInMilis;
+    }
+
+    public void setDateTimeInMilis(long dateTimeInMilis) {
+        this.dateTimeInMilis = dateTimeInMilis;
+    }
+
     public static Creator<ProductPass> getCREATOR() {
         return CREATOR;
     }
@@ -139,6 +149,7 @@ public class ProductPass implements Parcelable {
         adR = in.readString();
         productDesc = in.readString();
         picToShare = (Bitmap) in.readValue(Bitmap.class.getClassLoader());
+        dateTimeInMilis = in.readLong();
     }
 
     @Override
@@ -160,6 +171,7 @@ public class ProductPass implements Parcelable {
         dest.writeString(adR);
         dest.writeString(productDesc);
         dest.writeValue(picToShare);
+        dest.writeLong(dateTimeInMilis);
     }
 
     @SuppressWarnings("unused")
@@ -193,6 +205,7 @@ public class ProductPass implements Parcelable {
         private String adR = "";
         private String productDesc = "";
         private Bitmap picToShare;
+        private long dateTimeInMilis;
 
         private Builder() {
         }
@@ -267,8 +280,13 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setDateTimeInMilis(long dateTimeInMilis){
+            this.dateTimeInMilis = dateTimeInMilis;
+            return this;
+        }
+
         public Builder but() {
-            return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare);
+            return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
 
         public ProductPass build() {
@@ -285,6 +303,7 @@ public class ProductPass implements Parcelable {
             productPass.setAdR(adR);
             productPass.setProductDesc(productDesc);
             productPass.setPicToShare(picToShare);
+            productPass.setDateTimeInMilis(dateTimeInMilis);
             return productPass;
         }
     }

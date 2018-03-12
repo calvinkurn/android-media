@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class FlightSearchReturnDataCacheSource extends DataCacheSource {
 
     private static final String PREF_KEY_NAME = "FLIGHT_SEARCH_RETURN";
-    private static final long ONE_HOUR = TimeUnit.HOURS.toSeconds(1);
+    private static final long FOURTY_FIVE_MINUTES = TimeUnit.MINUTES.toSeconds(45);
 
     @Inject
     public FlightSearchReturnDataCacheSource(@ApplicationContext Context context) {
@@ -30,6 +30,6 @@ public class FlightSearchReturnDataCacheSource extends DataCacheSource {
 
     @Override
     protected long getExpiredTimeInSec() {
-        return ONE_HOUR;
+        return FOURTY_FIVE_MINUTES;
     }
 }

@@ -33,7 +33,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center|top"
-                android:src="@drawable/ic_check_circle_48dp"/>
+                app:srcCompat="@drawable/ic_check_circle_48dp"/>
 
             <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView
                 android:id="@+id/view_glowing"
