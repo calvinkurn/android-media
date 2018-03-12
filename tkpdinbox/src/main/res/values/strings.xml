@@ -305,4 +305,5 @@ yang ditemukan</string>
 
     <string name="title_personal">Personal</string>
     <string name="title_community">Komunitas</string>
+    <string name="chat_title">Chat ( %d )</string>
 </resources>

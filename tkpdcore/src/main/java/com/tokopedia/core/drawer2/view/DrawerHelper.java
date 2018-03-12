@@ -80,10 +80,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
-                        (context);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
+                            (context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
                 intent = InboxRouter.getInboxTalkActivityIntent(context);
@@ -186,11 +188,11 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         return null;
     }
 
-   private void sendReferralGTMNavigationEvent(DrawerItem item){
-        if(context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())){
+    private void sendReferralGTMNavigationEvent(DrawerItem item) {
+        if (context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())) {
             sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
-        }else {
+        } else {
             sendGTMNavigationEvent(AppEventTracking.EventLabel.REFERRAL);
         }
-   }
+    }
 }

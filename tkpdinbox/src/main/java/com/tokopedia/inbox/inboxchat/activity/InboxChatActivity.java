@@ -30,6 +30,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.applink.ApplinkConstant;
+import com.tokopedia.inbox.common.util.SpaceItemDecoration;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
@@ -217,7 +218,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         if (notifUnreads > 0) {
             TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText("Chat (" + notifUnreads + ")");
+            titleTextView.setText(String.format(getString(R.string.chat_title), notifUnreads));
         }
 
         indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
@@ -295,23 +296,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
     public void showIndicators() {
         if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
             indicator.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int space;
-
-        SpaceItemDecoration(int verticalSpaceHeight) {
-            this.space = verticalSpaceHeight;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                                   RecyclerView.State state) {
-
-            outRect.right = space / 2;
-            outRect.left = space / 2;
         }
     }
 }

@@ -79,6 +79,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
 
+
     private final Activity context;
     private final DeepLinkView viewListener;
     private SignInInteractor interactor;
@@ -296,23 +297,20 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openGroupChat(List<String> linkSegment) {
-        if (linkSegment.size() == 2) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getGroupChatIntent(
+        int SEGMENT_GROUPCHAT = 2;
+        Intent intent;
+        if (linkSegment.size() == SEGMENT_GROUPCHAT) {
+            intent = ((TkpdCoreRouter) context).getGroupChatIntent(
                     context, linkSegment.get(1));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            context.finish();
         } else {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getInboxChannelsIntent(
+            intent = ((TkpdCoreRouter) context).getInboxChannelsIntent(
                     context);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            context.finish();
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openDigitalPage(String applink) {
