@@ -177,6 +177,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public void addShipmentCostData(ShipmentCostModel shipmentCost) {
         mShipmentCost = shipmentCost;
         mShipmentDataList.add(shipmentCost);
+        notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void removeData(int position) {
@@ -200,6 +202,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public RecipientAddressModel getSelectedAddressReceipent() {
         return mRecipientAddress;
+    }
+
+    public void clearData() {
+        mShipmentDataList.clear();
+        notifyDataSetChanged();
     }
 
     public interface ActionListener {
