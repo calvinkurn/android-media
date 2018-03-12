@@ -810,75 +810,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     public void expand(final View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-            v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            final int targetHeight = v.getMeasuredHeight();
-
-            // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-            v.getLayoutParams().height = 1;
-            v.setVisibility(View.VISIBLE);
-            Animation a = new Animation() {
-                @Override
-                protected void applyTransformation(float interpolatedTime, Transformation t) {
-                    v.getLayoutParams().height = interpolatedTime == 1
-                            ? targetHeight
-                            : (int) (targetHeight * interpolatedTime);
-                    v.requestLayout();
-                }
-
-                @Override
-                public boolean willChangeBounds() {
-                    return true;
-                }
-            };
-
-            // 1dp/ms
-            a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-            v.startAnimation(a);
-
-        } else {
-
-            v.setVisibility(View.VISIBLE);
-
-        }
-
+        v.setVisibility(View.VISIBLE);
     }
 
     public void collapse(final View v) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-
-            final int initialHeight = v.getMeasuredHeight();
-
-            Animation a = new Animation() {
-                @Override
-                protected void applyTransformation(float interpolatedTime, Transformation t) {
-                    if (interpolatedTime == 1) {
-                        v.setVisibility(View.GONE);
-                    } else {
-                        v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-                        v.requestLayout();
-                    }
-                }
-
-                @Override
-                public boolean willChangeBounds() {
-                    return true;
-                }
-
-            };
-
-            // 1dp/ms
-            a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-            v.startAnimation(a);
-        } else {
-
-            v.setVisibility(View.GONE);
-
-        }
-
+        v.setVisibility(View.GONE);
     }
 
     @Override
