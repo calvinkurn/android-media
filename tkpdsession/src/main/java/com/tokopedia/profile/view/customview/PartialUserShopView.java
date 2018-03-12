@@ -205,23 +205,25 @@ public class PartialUserShopView extends BaseCustomView {
                     new RetrofitInteractor.FaveListener() {
                         @Override
                         public void onSuccess(boolean status) {
-                            if (!isShopFavorite) {
-                                ((AbstractionRouter) getContext().getApplicationContext())
-                                        .getAnalyticTracker()
-                                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                TOP_PROFILE,
-                                                CLICK_ON_FAVORITE,
-                                                "");
-                            } else {
-                                ((AbstractionRouter) getContext().getApplicationContext())
-                                        .getAnalyticTracker()
-                                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                                TOP_PROFILE,
-                                                CLICK_ON_UNFAVORITE,
-                                                "");
-                            }
+                            if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                                if (!isShopFavorite) {
+                                    ((AbstractionRouter) getContext().getApplicationContext())
+                                            .getAnalyticTracker()
+                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                    TOP_PROFILE,
+                                                    CLICK_ON_FAVORITE,
+                                                    "");
+                                } else {
+                                    ((AbstractionRouter) getContext().getApplicationContext())
+                                            .getAnalyticTracker()
+                                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                                    TOP_PROFILE,
+                                                    CLICK_ON_UNFAVORITE,
+                                                    "");
+                                }
 
-                            reverseFavorite();
+                                reverseFavorite();
+                            }
                         }
 
                         @Override

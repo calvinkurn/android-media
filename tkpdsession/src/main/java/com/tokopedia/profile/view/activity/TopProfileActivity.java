@@ -205,7 +205,8 @@ public class TopProfileActivity extends BaseSimpleActivity
             followingLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (topProfileViewModel != null) {
+                    if (topProfileViewModel != null
+                            && getApplicationContext() instanceof TkpdCoreRouter) {
                         startActivity(((TkpdCoreRouter) getApplicationContext())
                                 .getKolFollowingPageIntent(
                                         TopProfileActivity.this,
@@ -234,11 +235,13 @@ public class TopProfileActivity extends BaseSimpleActivity
                 Intent intent = new Intent(TopProfileActivity.this, ManagePeople.class);
                 startActivityForResult(intent, MANAGE_PEOPLE_CODE);
 
-                ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
-                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                                TOP_PROFILE,
-                                CLICK_ON_MANAGE_ACCOUNT,
-                                "");
+                if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                    ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                    TOP_PROFILE,
+                                    CLICK_ON_MANAGE_ACCOUNT,
+                                    "");
+                }
             }
         });
 

@@ -224,11 +224,13 @@ public class PartialUserDataView extends BaseCustomView {
             getContext().startActivity(
                     new Intent(getContext(), ProfileCompletionActivity.class));
 
-            ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
-                    .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
-                            TOP_PROFILE,
-                            CLICK_ON_COMPLETE_NOW,
-                            "");
+            if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                        .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                TOP_PROFILE,
+                                CLICK_ON_COMPLETE_NOW,
+                                "");
+            }
         }
     }
 }
