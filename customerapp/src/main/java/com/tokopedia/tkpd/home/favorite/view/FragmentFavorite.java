@@ -122,8 +122,10 @@ public class FragmentFavorite extends BaseDaggerFragment
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-                    startActivity(intent);
+                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+                        startActivity(intent);
+                    }
                 }
             });
         }
