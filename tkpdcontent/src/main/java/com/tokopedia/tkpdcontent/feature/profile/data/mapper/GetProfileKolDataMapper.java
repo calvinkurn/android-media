@@ -38,28 +38,31 @@ public class GetProfileKolDataMapper
         PostKol postKol = getDataOrError(graphqlResponse);
         ArrayList<KolPostViewModel> kolPostViewModels = new ArrayList<>();
         for (PostKolData postKolData : postKol.postKolData) {
+            PostKolContent content = getPostKolContent(postKolData);
+            TagsFeedKol tag = getKolTag(content);
+
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
                     "",
                     postKolData.userName != null ? postKolData.userName : "",
                     postKolData.userPhoto != null ? postKolData.userPhoto : "",
                     postKolData.userInfo != null ? postKolData.userInfo : "",
                     true,
-                    getImageUrl(postKolData),
-                    getTagCaption(postKolData),
+                    getImageUrl(content),
+                    getTagCaption(tag),
                     postKolData.description != null ? postKolData.description : "",
                     postKolData.isLiked != null ? postKolData.isLiked : false,
                     postKolData.likeCount != null ? postKolData.likeCount : 0,
                     postKolData.commentCount != null ? postKolData.commentCount : 0,
                     0,
                     "",
-                    getTagId(postKolData),
+                    getTagId(tag),
                     postKolData.id != null ? postKolData.id : 0,
                     postKolData.createTime != null ? postKolData.createTime : "",
                     "",
-                    getTagPrice(postKolData),
+                    getTagPrice(tag),
                     false,
-                    getTagType(postKolData),
-                    getTagLink(postKolData),
+                    getTagType(tag),
+                    getTagLink(tag),
                     postKolData.userId != null ? postKolData.userId : 0,
                     postKolData.showComment != null ? postKolData.showComment : true,
                     ""
@@ -88,23 +91,6 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private PostKolContent getPostKolContent(PostKolData postKolData) {
-        try {
-            return postKolData.content.get(0);
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
-    private String getImageUrl(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        if (content != null && content.imageurl != null) {
-            return content.imageurl;
-        } else {
-            return "";
-        }
-    }
-
     private TagsFeedKol getKolTag(PostKolContent content) {
         try {
             return content.tags.get(0);
@@ -113,10 +99,23 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private String getTagCaption(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        TagsFeedKol tag = getKolTag(content);
+    private PostKolContent getPostKolContent(PostKolData postKolData) {
+        try {
+            return postKolData.content.get(0);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
 
+    private String getImageUrl(PostKolContent content) {
+        if (content != null && content.imageurl != null) {
+            return content.imageurl;
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagCaption(TagsFeedKol tag) {
         if (tag != null && tag.caption != null) {
             return tag.caption;
         } else {
@@ -124,10 +123,7 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private int getTagId(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        TagsFeedKol tag = getKolTag(content);
-
+    private int getTagId(TagsFeedKol tag) {
         if (tag != null && tag.id != null) {
             return tag.id;
         } else {
@@ -135,10 +131,7 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private String getTagPrice(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        TagsFeedKol tag = getKolTag(content);
-
+    private String getTagPrice(TagsFeedKol tag) {
         if (tag != null && tag.price != null) {
             return tag.price;
         } else {
@@ -146,10 +139,7 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private String getTagType(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        TagsFeedKol tag = getKolTag(content);
-
+    private String getTagType(TagsFeedKol tag) {
         if (tag != null && tag.type != null) {
             return tag.type;
         } else {
@@ -157,10 +147,7 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private String getTagLink(PostKolData postKolData) {
-        PostKolContent content = getPostKolContent(postKolData);
-        TagsFeedKol tag = getKolTag(content);
-
+    private String getTagLink(TagsFeedKol tag) {
         if (tag != null && tag.link != null) {
             return tag.link;
         } else {
