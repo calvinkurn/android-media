@@ -10,10 +10,10 @@ public class FilterResponseEntity {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("category_id")
     @Expose
-    private Integer categoryId;
+    private int categoryId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -28,10 +28,10 @@ public class FilterResponseEntity {
     private String kind;
     @SerializedName("priority")
     @Expose
-    private Integer priority;
+    private int priority;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("values")
     @Expose
     private List<ValueResponseEntity> values = null;
@@ -42,19 +42,19 @@ public class FilterResponseEntity {
     @Expose
     private Object appliedRange;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -90,19 +90,19 @@ public class FilterResponseEntity {
         this.kind = kind;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

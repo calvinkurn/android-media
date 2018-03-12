@@ -28,6 +28,7 @@ import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -84,6 +85,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     SelectedSeatViewModel selectedSeatViewModel;
 
+    SeatLayoutViewModel seatLayoutViewModel;
+
     int price;
     int maxTickets;
     List<String> areacodes = new ArrayList<>();
@@ -102,6 +105,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         ButterKnife.bind(this);
         executeInjector();
         selectedSeatViewModel = new SelectedSeatViewModel();
+        seatLayoutViewModel = new SeatLayoutViewModel();
 
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -109,7 +113,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
-
 
 
     }
@@ -158,6 +161,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         price = salesPrice;
         this.maxTickets = maxTickets;
+        this.seatLayoutViewModel = viewModel;
         addSeatingPlan(viewModel);
     }
 
@@ -165,8 +169,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     private void addSeatingPlan(SeatLayoutViewModel seatLayoutViewModel) {
 
         if (seatLayoutViewModel.getArea() != null) {
-            areacodes.add(seatLayoutViewModel.getArea().get(0).getId());
-            areaId = seatLayoutViewModel.getArea().get(0).getAreaCode();
+            areaId = seatLayoutViewModel.getArea().get(0).getAreaCode() + "-" + String.valueOf(seatLayoutViewModel.getArea().get(0).getAreaNo());
         }
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
         char prevChr = '\0';
@@ -239,7 +242,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public void setTicketPrice(int numOfTickets) {
         this.quantity = numOfTickets;
         ticketCount.setText("" + numOfTickets);
-        ticketPrice.setText("" + numOfTickets * price);
+        ticketPrice.setText(String.format(CurrencyUtil.RUPIAH_FORMAT,
+                CurrencyUtil.convertToCurrencyString(numOfTickets * price)));
     }
 
     @Override
@@ -254,7 +258,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         this.rowIds = rowIds;
         selectedSeatViewModel.setAreaCodes(areacodes);
         selectedSeatViewModel.setPrice(price);
-        selectedSeatViewModel.setSeatRowIds(rowIds);
+        selectedSeatViewModel.setSeatRowIds(this.rowIds);
         selectedSeatViewModel.setQuantity(quantity);
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
@@ -293,10 +297,13 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 } else {
                     seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
                 }
+                areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             mPresenter.verifySeatSelection(selectedSeatViewModel);
         } else {
-            Toast.makeText(this, "Please Select "+maxTickets+" Seats", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, String.format(getString(R.string.select_max_ticket), maxTickets),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -304,5 +311,11 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     public View getRootView() {
         return mainContent;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode);
     }
 }
