@@ -110,6 +110,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -1424,6 +1425,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void openTokoPoint(Context context, String url) {
+        startActivity(TokoPointWebviewActivity.getIntent(context, url));
+    }
+
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         return intent;
