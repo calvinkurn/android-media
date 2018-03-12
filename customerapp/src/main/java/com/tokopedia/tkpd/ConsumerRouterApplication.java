@@ -112,6 +112,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -159,6 +160,7 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
 import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -1464,6 +1466,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void init() {
+        ShakeDetectManager.getShakeDetectManager().init();
+    }
+    @Override
+    public void registerShake(String screenName) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    }
+
+    @Override
+    public void unregisterShake() {
+        ShakeDetectManager.getShakeDetectManager().unregisterShake();
+    }
+
+    @Override
     public Intent getKolCommentActivity(Context context, String avatarUrl, String name,
                                         String review, String time, String userId,
                                         String productImageUrl, String contentName,
@@ -1551,9 +1567,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+
     }
 
     @Override
+    public void openTokoPoint(Context context, String url) {
+        startActivity(TokoPointWebviewActivity.getIntent(context, url));
+    }
+
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         return intent;

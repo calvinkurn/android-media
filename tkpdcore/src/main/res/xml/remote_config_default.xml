@@ -119,6 +119,15 @@
         <key>app_notp_enabled</key>
         <value>false</value>
     </entry>
+
+    <entry>
+        <key>app_shake_feature_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>audio_campaign_is_audio</key>
+        <value>false</value>
+    </entry>
     <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
