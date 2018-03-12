@@ -504,7 +504,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             productCount = 100;
 
         for (int i = 0; i < productCount; i++) {
-            /*String[] strings = imageSearchResponse.getAuctionsArrayList().get(i).getSortExprValues().split(";");
+            String[] strings = imageSearchResponse.getAuctionsArrayList().get(i).getSortExprValues().split(";");
             double score = Double.parseDouble(strings[0]);
             if (score > MIN_SCORE) {
                 productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
@@ -513,11 +513,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 }
             } else {
                 break;
-            }*/
-
-            productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
-            if (i != productCount - 1) {
-                productIDs.append(",");
             }
         }
 
