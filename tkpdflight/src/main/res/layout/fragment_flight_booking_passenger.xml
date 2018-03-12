@@ -76,6 +76,17 @@
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:text="@string/flight_booking_passenger_data_diri" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
