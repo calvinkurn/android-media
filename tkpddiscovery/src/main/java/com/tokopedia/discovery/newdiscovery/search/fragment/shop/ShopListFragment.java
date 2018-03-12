@@ -436,7 +436,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         showBottomBarNavigation(false);
         loadShopFirstTime();

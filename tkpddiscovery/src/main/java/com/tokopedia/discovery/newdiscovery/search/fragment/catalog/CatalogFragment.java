@@ -544,7 +544,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         catalogAdapter.resetStartFrom();
         catalogAdapter.clearData();
         topAdsRecyclerAdapter.reset();
