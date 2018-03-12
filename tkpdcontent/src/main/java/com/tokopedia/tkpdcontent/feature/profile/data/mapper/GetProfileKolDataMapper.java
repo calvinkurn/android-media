@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetUserKolPostResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
+import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolContent;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKolData;
+import com.tokopedia.tkpdcontent.feature.profile.data.pojo.TagsFeedKol;
 import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
@@ -22,9 +24,9 @@ import rx.functions.Func1;
 
 public class GetProfileKolDataMapper
         implements Func1<Response<GraphqlResponse<GetUserKolPostResponse>>, KolProfileModel> {
-    private static final String ERROR_SERVER = "Server error";
-    private static final String ERROR_NETWORK = "Network call failed";
-    private static final String ERROR_EMPTY_RESPONSE = "Response is empty";
+    private static final String ERROR_SERVER = "ERROR_SERVER";
+    private static final String ERROR_NETWORK = "ERROR_NETWORK";
+    private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
 
     @Inject
     public GetProfileKolDataMapper() {
@@ -32,14 +34,14 @@ public class GetProfileKolDataMapper
 
     @Override
     public KolProfileModel call(Response<GraphqlResponse<GetUserKolPostResponse>>
-                                               graphqlResponse) {
+                                        graphqlResponse) {
         PostKol postKol = getDataOrError(graphqlResponse);
         ArrayList<KolPostViewModel> kolPostViewModels = new ArrayList<>();
         for (PostKolData postKolData : postKol.postKolData) {
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
                     "",
-                    postKolData.userName != null ? postKolData.userName  : "",
-                    postKolData.userPhoto != null ? postKolData.userPhoto  : "",
+                    postKolData.userName != null ? postKolData.userName : "",
+                    postKolData.userPhoto != null ? postKolData.userPhoto : "",
                     postKolData.userInfo != null ? postKolData.userInfo : "",
                     true,
                     getImageUrl(postKolData),
@@ -68,7 +70,7 @@ public class GetProfileKolDataMapper
     }
 
     private PostKol getDataOrError(Response<GraphqlResponse<GetUserKolPostResponse>>
-                                                  graphqlResponse) {
+                                           graphqlResponse) {
         if (graphqlResponse != null
                 && graphqlResponse.body() != null
                 && graphqlResponse.body().getData() != null) {
@@ -86,56 +88,82 @@ public class GetProfileKolDataMapper
         }
     }
 
-    private String getImageUrl(PostKolData postKolData) {
+    private PostKolContent getPostKolContent(PostKolData postKolData) {
         try {
-            return postKolData.content.get(0).imageurl != null ?
-                    postKolData.content.get(0).imageurl : "";
+            return postKolData.content.get(0);
         } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    private String getImageUrl(PostKolData postKolData) {
+        PostKolContent content = getPostKolContent(postKolData);
+        if (content != null && content.imageurl != null) {
+            return content.imageurl;
+        } else {
             return "";
         }
     }
 
-    private String getTagCaption(PostKolData postKolData) {
-        try  {
-            return postKolData.content.get(0).tags.get(0).caption != null ?
-                    postKolData.content.get(0).tags.get(0).caption : "";
+    private TagsFeedKol getKolTag(PostKolContent content) {
+        try {
+            return content.tags.get(0);
         } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    private String getTagCaption(PostKolData postKolData) {
+        PostKolContent content = getPostKolContent(postKolData);
+        TagsFeedKol tag = getKolTag(content);
+
+        if (tag != null && tag.caption != null) {
+            return tag.caption;
+        } else {
             return "";
         }
     }
 
     private int getTagId(PostKolData postKolData) {
-        try  {
-            return postKolData.content.get(0).tags.get(0).id != null ?
-                    postKolData.content.get(0).tags.get(0).id : 0;
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
+        PostKolContent content = getPostKolContent(postKolData);
+        TagsFeedKol tag = getKolTag(content);
+
+        if (tag != null && tag.id != null) {
+            return tag.id;
+        } else {
             return 0;
         }
     }
 
     private String getTagPrice(PostKolData postKolData) {
-        try  {
-            return postKolData.content.get(0).tags.get(0).price != null ?
-                    postKolData.content.get(0).tags.get(0).price : "";
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
+        PostKolContent content = getPostKolContent(postKolData);
+        TagsFeedKol tag = getKolTag(content);
+
+        if (tag != null && tag.price != null) {
+            return tag.price;
+        } else {
             return "";
         }
     }
 
     private String getTagType(PostKolData postKolData) {
-        try  {
-            return postKolData.content.get(0).tags.get(0).type != null ?
-                    postKolData.content.get(0).tags.get(0).type : "";
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
+        PostKolContent content = getPostKolContent(postKolData);
+        TagsFeedKol tag = getKolTag(content);
+
+        if (tag != null && tag.type != null) {
+            return tag.type;
+        } else {
             return "";
         }
     }
 
     private String getTagLink(PostKolData postKolData) {
-        try  {
-            return postKolData.content.get(0).tags.get(0).link != null ?
-                    postKolData.content.get(0).tags.get(0).link : "";
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
+        PostKolContent content = getPostKolContent(postKolData);
+        TagsFeedKol tag = getKolTag(content);
+
+        if (tag != null && tag.link != null) {
+            return tag.link;
+        } else {
             return "";
         }
     }
