@@ -1,6 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+
+    <dimen name="sp_11">11sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_13">13sp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_15">15sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+
     <dimen name="font_headline3">56sp</dimen>
     <dimen name="font_headline2">45sp</dimen>
     <dimen name="font_headline">34sp</dimen>
@@ -50,12 +68,6 @@
     <dimen name="image_width_xl">72dp</dimen>
     <dimen name="image_width_xxl">96dp</dimen>
     <dimen name="image_width_xxxl">128dp</dimen>
-
-    <dimen name="new_margin_tiny">4dp</dimen>
-    <dimen name="new_margin_small">8dp</dimen>
-    <dimen name="new_margin_med">16dp</dimen>
-    <dimen name="new_margin_sm">24dp</dimen>
-    <dimen name="new_margin_big">32dp</dimen>
 
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>

@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_padding_medium"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/white">
 
         <ImageView
@@ -44,7 +44,7 @@
             android:id="@+id/seats_not_available_iv"
             android:layout_width="@dimen/margin_padding_medium"
             android:layout_height="@dimen/margin_padding_medium"
-            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:layout_toRightOf="@+id/tv_seats_available"
             app:srcCompat="@drawable/cannot_select_seat_bg" />
@@ -63,7 +63,7 @@
             android:id="@+id/seats_booking"
             android:layout_width="@dimen/margin_padding_medium"
             android:layout_height="@dimen/margin_padding_medium"
-            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:layout_toRightOf="@+id/tv_seats__not_available"
             app:srcCompat="@drawable/currently_selected_seat_bg" />
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_padding_medium"
-            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_toRightOf="@+id/seats_booking"
             android:text="@string/terpilih"
             android:textColor="@color/black" />
@@ -86,7 +86,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_padding_medium">
 
         <LinearLayout
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/dp_16"
             android:orientation="vertical">
 
             <TextView
@@ -139,7 +139,7 @@
         android:id="@+id/verifySeat"
         android:layout_width="match_parent"
         android:layout_height="@dimen/progbar_height"
-        android:layout_margin="@dimen/new_margin_med"
+        android:layout_margin="@dimen/dp_16"
         app:cardBackgroundColor="@color/green_400"
         app:cardCornerRadius="@dimen/card_corner_default"
         app:cardElevation="@dimen/card_corner_default">

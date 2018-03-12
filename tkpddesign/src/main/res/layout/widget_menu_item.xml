@@ -8,16 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/new_margin_med">
+        android:layout_margin="@dimen/dp_16">
 
         <ImageView
             android:id="@+id/iv_icon_menu"
             android:layout_width="@dimen/image_width_ms"
             android:layout_height="@dimen/image_width_s"
             android:adjustViewBounds="true"
-            android:padding="@dimen/new_margin_small"
-            android:layout_marginEnd="@dimen/new_margin_sm"
-            android:layout_marginRight="@dimen/new_margin_sm"/>
+            android:padding="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"/>
 
         <TextView
             android:textSize="@dimen/font_small"
@@ -30,8 +30,8 @@
     </LinearLayout>
 
     <View
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/grey_300"/>

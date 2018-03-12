@@ -3,12 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/new_margin_med"
-    android:padding="@dimen/new_margin_med">
+    android:layout_margin="@dimen/dp_16"
+    android:padding="@dimen/dp_16">
 
     <TextView
         android:id="@+id/tv_title_dialog"
-        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_title"
@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_desc_dialog"
-        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_marginBottom="@dimen/dp_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_small"/>

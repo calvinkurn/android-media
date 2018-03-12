@@ -28,7 +28,7 @@
             android:id="@+id/tv_movie_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:textColor="@color/green_400"
             android:textSize="@dimen/textsize_large" />
@@ -36,7 +36,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:background="@color/white"
             android:orientation="horizontal"
@@ -44,8 +44,8 @@
 
             <ImageView
                 android:id="@+id/image_holder_small"
-                android:layout_width="@dimen/new_margin_med"
-                android:layout_height="@dimen/new_margin_med"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 android:tint="@color/grey_500"
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_padding_medium"
-            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/divider_height_thin"
             android:orientation="horizontal">
 
@@ -96,9 +96,9 @@
             layout="@layout/include_seating_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/seat_plan_height"
-            android:layout_marginBottom="@dimen/new_margin_med"
-            android:layout_marginRight="@dimen/new_margin_med"
-            android:layout_marginTop="@dimen/new_margin_med" />
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16" />
 
 
     </LinearLayout>

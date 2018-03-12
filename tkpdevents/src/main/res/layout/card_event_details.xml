@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/new_margin_med"
+    android:layout_marginTop="@dimen/dp_16"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -11,8 +11,8 @@
         android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:text="The 90s Festival"
         android:textColor="@color/grey_700"
         android:textSize="@dimen/textsize_large"
@@ -22,7 +22,7 @@
         android:id="@+id/event_display_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_padding_medium"
         android:orientation="horizontal"
         android:visibility="gone" />
@@ -30,8 +30,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_med"
         android:orientation="vertical">
 
@@ -40,21 +40,21 @@
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/new_margin_tiny" />
+            android:layout_marginTop="@dimen/dp_4" />
 
         <include
             android:id="@+id/event_location"
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/new_margin_tiny" />
+            android:layout_marginTop="@dimen/dp_4" />
 
         <include
             android:id="@+id/event_address"
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/new_margin_tiny" />
+            android:layout_marginTop="@dimen/dp_4" />
 
 
     </LinearLayout>
@@ -62,14 +62,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height_thin"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_100" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_med"
         android:text="Deskripsi"
         android:textColor="@color/grey_700"
@@ -80,8 +80,8 @@
         android:id="@+id/tv_expandable_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_padding_medium"
         android:autoLink="web"
         android:ellipsize="end"
@@ -102,9 +102,9 @@
             android:id="@+id/seemorebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/new_margin_med"
-            android:layout_marginLeft="@dimen/new_margin_med"
-            android:layout_marginStart="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:text="@string/expand"
             android:textColor="@color/green_nob"

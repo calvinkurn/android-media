@@ -8,10 +8,10 @@
         android:id="@+id/tv_filter_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/new_margin_med"
-        android:paddingEnd="@dimen/new_margin_med"
-        android:paddingStart="@dimen/new_margin_med"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:textStyle="normal"
         android:textSize="@dimen/font_small" />
 
@@ -19,6 +19,6 @@
         android:id="@+id/rv_filter_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/new_margin_med"
-        android:paddingStart="@dimen/new_margin_med" />
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16" />
 </LinearLayout>

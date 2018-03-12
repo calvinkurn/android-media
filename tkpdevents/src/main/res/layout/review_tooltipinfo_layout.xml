@@ -15,7 +15,7 @@
         android:layout_gravity="top"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/new_margin_med"
+        android:paddingBottom="@dimen/dp_16"
         android:visibility="visible">
 
         <TextView
@@ -23,9 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
-            android:layout_marginEnd="@dimen/new_margin_med"
-            android:layout_marginStart="@dimen/new_margin_med"
-            android:layout_marginTop="@dimen/new_margin_med"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/data_pelanggan_tambahan"
             android:textColor="@color/black_70"
             android:textSize="@dimen/font_small"
@@ -36,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
-            android:layout_marginEnd="@dimen/new_margin_med"
-            android:layout_marginStart="@dimen/new_margin_med"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:text="@string/additionallinfo_text"
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_small" />
@@ -49,11 +49,11 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/additionalinfo"
             android:layout_gravity="bottom"
-            android:layout_marginEnd="@dimen/new_margin_med"
-            android:layout_marginStart="@dimen/new_margin_med"
-            android:layout_marginTop="@dimen/new_margin_med"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             app:cardBackgroundColor="@color/green_nob"
-            app:cardCornerRadius="@dimen/new_margin_tiny"
+            app:cardCornerRadius="@dimen/dp_4"
             app:cardElevation="0dp">
 
             <TextView

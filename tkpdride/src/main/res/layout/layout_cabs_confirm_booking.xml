@@ -168,9 +168,9 @@
                     android:layout_gravity="center|right"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:paddingBottom="@dimen/new_margin_small"
+                    android:paddingBottom="@dimen/dp_8"
                     android:paddingRight="@dimen/margin_small_sm"
-                    android:paddingTop="@dimen/new_margin_small"
+                    android:paddingTop="@dimen/dp_8"
                     android:text="@string/change_payment_method"
                     android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
