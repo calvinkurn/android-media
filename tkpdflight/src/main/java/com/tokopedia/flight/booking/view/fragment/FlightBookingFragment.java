@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -78,6 +79,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final String KEY_CART_DATA = "KEY_CART_DATA";
+    private static final String KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -100,21 +103,27 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatEditText etContactEmail;
     private RelativeLayout contactPhoneNumberLayout;
     private AppCompatTextView contactPhoneNumberLabel;
+    private ProgressDialog progressDialog;
+    private LinearLayout sameAsContactContainer;
+    private CheckBox sameAsContactCheckbox;
     private AppCompatTextView tvPhoneCountryCode;
-    private AppCompatEditText etPhoneNumber;
     private RecyclerView pricelistsRecyclerView;
+    private AppCompatEditText etPhoneNumber;
+
+    private FlightSimpleAdapter priceListAdapter;
+
     private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
     private FlightBookingCartData flightBookingCartData;
     private FlightBookingPassengerAdapter adapter;
-    private FlightSimpleAdapter priceListAdapter;
-    private ProgressDialog progressDialog;
+    private String contactBirthdate;
+    private int contactGender;
 
     public FlightBookingFragment() {
         // Required empty public constructor
     }
 
-    public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
+    public static FlightBookingFragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
         FlightBookingFragment fragment = new FlightBookingFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel);
@@ -127,13 +136,25 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        departureTripId = getArguments().getString(EXTRA_FLIGHT_DEPARTURE_ID);
-        returnTripId = getArguments().getString(EXTRA_FLIGHT_ARRIVAL_ID);
+        Bundle arguments = (savedInstanceState != null) ? savedInstanceState : getArguments();
+
+        departureTripId = arguments.getString(EXTRA_FLIGHT_DEPARTURE_ID);
+        returnTripId = arguments.getString(EXTRA_FLIGHT_ARRIVAL_ID);
         paramViewModel = new FlightBookingParamViewModel();
-        paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
+        paramViewModel.setSearchParam((FlightSearchPassDataViewModel) arguments.getParcelable(EXTRA_SEARCH_PASS_DATA));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramViewModel.getSearchParam());
+        outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureTripId);
+        outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnTripId);
+        outState.putParcelable(KEY_CART_DATA, flightBookingCartData);
+        outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel);
     }
 
     @Override
@@ -158,6 +179,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
         fullPageLoadingLayout = (LinearLayout) view.findViewById(R.id.full_page_loading);
         fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
+        sameAsContactContainer = view.findViewById(R.id.container_same_as_contact);
+        sameAsContactCheckbox = view.findViewById(R.id.checkbox);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +208,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onReturnInfoClicked();
             }
         });
+
+//        sameAsContactContainer.setOnClickListener(getCheckboxClickListener());
+//
+//        sameAsContactCheckbox.setOnClickListener(getCheckboxClickListener());
 
         initializePassengerInfo();
         initializePriceList();
@@ -217,6 +244,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        if (savedInstanceState == null) {
+            presenter.processGetCartData();
+        } else {
+            flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA);
+            paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA);
+            hideFullPageLoading();
+            presenter.renderUi(flightBookingCartData, true);
+        }
+
+        presenter.onGetProfileData();
         presenter.initialize();
     }
 
@@ -239,7 +276,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             departureDate = paramViewModel.getSearchParam().getDepartureDate();
         }
 
-        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, departureDate);
+        presenter.onChangePassengerButtonClicked(viewModel, departureDate);
     }
 
     @Override
@@ -249,6 +286,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         switch (requestCode) {
             case REQUEST_CODE_PASSENGER:
                 if (resultCode == Activity.RESULT_OK) {
+                    // hideSameAsContactContainer();
                     FlightBookingPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightBookingPassengerActivity.EXTRA_PASSENGER);
                     presenter.onPassengerResultReceived(passengerViewModel);
                 }
@@ -320,11 +358,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void setContactEmail(String email) {
-        etContactEmail.setText(email);
-    }
-
-    @Override
     public void showContactEmailEmptyError(@StringRes int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -337,11 +370,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public String getContactPhoneNumber() {
         return etPhoneNumber.getText().toString().trim();
-    }
-
-    @Override
-    public void setContactPhoneNumber(String phone) {
-        etPhoneNumber.setText(phone);
     }
 
     @Override
@@ -360,7 +388,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines, String departureDate) {
+    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel,
+                                              boolean isAirAsiaAirlines, String departureDate,
+                                              String requestId) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         getActivity(),
@@ -370,7 +400,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         flightBookingCartData.getLuggageViewModels(),
                         flightBookingCartData.getMealViewModels(),
                         isAirAsiaAirlines,
-                        departureDate
+                        departureDate,
+                        requestId
                 ),
                 REQUEST_CODE_PASSENGER
         );
@@ -529,8 +560,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                FlightFlowConstant.EXPIRED_JOURNEY
+                        );
                     }
                 });
         dialog.setCancelable(false);
@@ -636,6 +669,36 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void setContactEmail(String email) {
+        etContactEmail.setText(email);
+    }
+
+    @Override
+    public void setContactPhoneNumber(String phone) {
+        etPhoneNumber.setText(phone);
+    }
+
+    @Override
+    public void setContactBirthdate(String birthdate) {
+        contactBirthdate = birthdate;
+    }
+
+    @Override
+    public String getContactBirthdate() {
+        return contactBirthdate;
+    }
+
+    @Override
+    public void setContactGender(int gender) {
+        contactGender = gender;
+    }
+
+    @Override
+    public int getContactGender() {
+        return contactGender;
+    }
+
+    @Override
     public void showContactEmailInvalidSymbolError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -651,5 +714,28 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void closePage() {
         getActivity().finish();
+    }
+
+    public void onBackPressed() {
+        presenter.deleteAllPassengerList();
+    }
+
+    @Override
+    public void setSameAsContactChecked(boolean isChecked) {
+        // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
+    }
+
+//    private View.OnClickListener getCheckboxClickListener() {
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                presenter.toggleSameAsContactCheckbox();
+//                presenter.onSameAsContactClicked(true);
+//            }
+//        };
+//    }
+
+    private void hideSameAsContactContainer() {
+        sameAsContactContainer.setVisibility(View.GONE);
     }
 }

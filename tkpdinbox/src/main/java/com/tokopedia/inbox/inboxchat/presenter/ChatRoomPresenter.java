@@ -16,8 +16,8 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
@@ -28,9 +28,11 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -243,10 +245,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
 
     @Override
-    public void addDummyMessage(WebSocketResponse response) {
+    public void addMessageChatBalloon(WebSocketResponse response) {
         if (getView().isCurrentThread(response.getData().getMsgId())
                 && getView().isMyMessage(response.getData().getFromUid())) {
-            getView().getAdapter().removeLast();
+
             MyChatViewModel item = new MyChatViewModel();
             item.setReplyId(response.getData().getMsgId());
             item.setMsgId(response.getData().getMsgId());
@@ -254,7 +256,19 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             item.setMsg(response.getData().getMessage().getCensoredReply());
             item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
             item.setAttachment(response.getData().getAttachment());
-            getView().getAdapter().addReply(item);
+
+            if(response.getData().getAttachment() != null &&
+                    response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
+                AttachProductViewModel productItem = new AttachProductViewModel(item);
+                Integer productId = response.getData().getAttachment().getAttributes().getProductId();
+                getView().getAdapter().removeLastProductWithId(productId);
+                getView().getAdapter().addReply(productItem);
+            }
+            else {
+
+                getView().getAdapter().removeLast();
+                getView().getAdapter().addReply(item);
+            }
             getView().finishLoading();
             getView().resetReplyColumn();
             getView().scrollToBottom();
@@ -269,7 +283,13 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             if (getView().getAdapter().isTyping()) {
                 getView().getAdapter().removeTyping();
             }
-            getView().getAdapter().addReply(item);
+            if(response.getData().getAttachment() != null &&
+                    response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
+                AttachProductViewModel productItem = new AttachProductViewModel(item);
+                getView().getAdapter().addReply(productItem);
+            }
+            else
+                getView().getAdapter().addReply(item);
             getView().finishLoading();
             getView().scrollToBottomWithCheck();
             try {
@@ -283,7 +303,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
         if (isValidReply()) {
-            getView().addDummyInitialMessage();
+            getView().addInitialMessageBalloon();
             getView().disableAction();
             sendMessageUseCase.execute(SendMessageUseCase.getParam(
                     message,
@@ -401,7 +421,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().hideMainLoading();
         } else {
             getView().getAdapter().addList(replyData.getChatList());
-
         }
         getView().setTextAreaReply(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
@@ -449,6 +468,29 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+    public void sendProductAttachment(String messageId, ResultProduct product) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
+        JSONObject data = new JSONObject();
+        data.put("message_id", Integer.valueOf(messageId));
+        data.put("message", product.getProductUrl());
+        SimpleDateFormat date = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        data.put("start_time", date.format(Calendar.getInstance().getTime()));
+        data.put("attachment_type",3);
+        data.put("product_id", product.getProductId());
+
+        JSONObject productProfile = new JSONObject();
+        productProfile.put("name",product.getName());
+        productProfile.put("price",product.getPrice());
+        productProfile.put("image_url",product.getProductImageThumbnail());
+        productProfile.put("url",product.getProductUrl());
+        data.put("product_profile",productProfile);
+        json.put("data", data);
+        ws.send(json.toString());
+    }
+
     public void sendReply(String messageId, String reply) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
@@ -462,7 +504,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         json.put("data", data);
         ws.send(json.toString());
         flagTyping = false;
-
     }
 
     public void sendImage(String messageId, String path) throws JSONException {
@@ -518,23 +559,19 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void getAttachProductDialog(String shopId, String senderRole) {
+    public void getAttachProductDialog(String shopId,String shopName ,String senderRole) {
         String id = "0";
-
-        if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId))
+        String shopNameLocal = "";
+        if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId)) {
             id = String.valueOf(shopId);
+            shopNameLocal = shopName;
+        }
         else if (!TextUtils.isEmpty(sessionHandler.getShopID())
                 && !sessionHandler.getShopID().equals("0")) {
             id = sessionHandler.getShopID();
+            shopNameLocal = sessionHandler.getShopName();
         }
-
-        GetProductUrlUtil getProd = GetProductUrlUtil.createInstance(getView().getContext(), id);
-        getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
-            @Override
-            public void onGetUrl(String url) {
-                getView().addUrlToReply(url);
-            }
-        });
+        getView().startAttachProductActivity(id,shopNameLocal,senderRole.equals(ROLE_SHOP));
     }
 
     @Override
