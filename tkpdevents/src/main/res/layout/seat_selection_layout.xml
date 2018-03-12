@@ -29,15 +29,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/dp_8"
             android:textColor="@color/green_400"
-            android:textSize="@dimen/textsize_large" />
+            android:textSize="@dimen/sp_16" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@color/white"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -55,7 +55,7 @@
                 android:id="@+id/tv_show_timing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_padding_medium"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:gravity="center"
                 android:text="@string/rp_5980000"
                 android:textColor="@color/black" />
@@ -64,7 +64,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_padding_medium"
+            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/divider_height_thin"
             android:orientation="horizontal">
@@ -80,7 +80,7 @@
                 android:id="@+id/selected_seats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_padding_medium"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:textColor="@color/green_400"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
@@ -116,7 +116,7 @@
             android:id="@+id/small_preview"
             android:layout_width="@dimen/pager_height"
             android:layout_height="@dimen/pager_height"
-            android:padding="@dimen/margin_padding_medium" />
+            android:padding="@dimen/dp_8" />
     </FrameLayout>
 
 

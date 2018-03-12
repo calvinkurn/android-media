@@ -3,9 +3,9 @@
     android:id="@+id/tv_seat"
     android:layout_width="@dimen/margin_large"
     android:layout_height="@dimen/margin_large"
-    android:padding="@dimen/margin_padding_medium"
+    android:padding="@dimen/dp_8"
     android:layout_margin="@dimen/margin_vvvs"
     android:background="@drawable/can_seat_select_bg"
     android:gravity="center"
     android:textColor="@color/black"
-    android:textSize="@dimen/textsize_tiny" />
+    android:textSize="@dimen/sp_10" />

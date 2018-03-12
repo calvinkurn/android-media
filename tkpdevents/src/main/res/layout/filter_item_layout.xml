@@ -6,7 +6,7 @@
     android:paddingBottom="8dp"
     android:paddingEnd="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
-    android:paddingTop="@dimen/margin_padding_medium"
+    android:paddingTop="@dimen/dp_8"
     android:id="@+id/filter_item">
 
     <CheckBox

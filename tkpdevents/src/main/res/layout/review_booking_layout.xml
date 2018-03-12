@@ -42,7 +42,7 @@
                         android:paddingStart="@dimen/dp_16"
                         android:text="@string/detail_tiket"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -182,7 +182,7 @@
                         android:paddingBottom="8dp"
                         android:text="@string/tujuan_pengiriman_tiket"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -324,7 +324,7 @@
                             android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/data_pelanggan_tambahan"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/textsize_huge"
+                            android:textSize="@dimen/sp_22"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -392,7 +392,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
-                        android:paddingBottom="@dimen/margin_padding_medium"
+                        android:paddingBottom="@dimen/dp_8"
                         android:textColor="@color/grey_500"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
@@ -440,8 +440,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingBottom="@dimen/margin_padding_medium"
-                        android:paddingTop="@dimen/margin_padding_medium"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingTop="@dimen/dp_8"
                         android:visibility="gone">
 
                         <EditText
@@ -521,7 +521,7 @@
                             android:layout_gravity="end|center_vertical"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/margin_padding_medium"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="cashback mesage"
@@ -559,13 +559,13 @@
                         android:paddingStart="@dimen/dp_16"
                         android:text="Rincian Harga"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <TextView
@@ -614,7 +614,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <TextView
