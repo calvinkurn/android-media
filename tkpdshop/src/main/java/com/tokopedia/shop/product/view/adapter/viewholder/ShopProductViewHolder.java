@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -86,7 +87,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
+                qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
         }
@@ -95,7 +96,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
-                    R.string.product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
+                    R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);
@@ -107,7 +108,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
         wishlistContainer.setVisibility(shopProductViewModel.isShowWishList() ? View.VISIBLE : View.GONE);
-        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_red : R.drawable.ic_wishlist);
+        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked);
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

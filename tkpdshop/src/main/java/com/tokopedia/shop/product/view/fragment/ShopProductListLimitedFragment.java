@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,14 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -33,6 +39,8 @@ import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
+import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
+import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.List;
 
@@ -43,9 +51,16 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener, ShopProductListLimitedView, ShopProductClickedListener {
+        implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener,
+        ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback {
 
-    private static final int REQUEST_CODER_USER_LOGIN = 100;
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
+
+    private static final int REQUEST_CODE_USER_LOGIN = 100;
+    private static final int REQUEST_CODE_ETALASE = 200;
 
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
@@ -53,10 +68,10 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private LoadingStateView loadingStateView;
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
+    private ShopPagePromoWebView.Listener promoWebViewListener;
 
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
+    public void setPromoWebViewListener(ShopPagePromoWebView.Listener promoWebViewListener) {
+        this.promoWebViewListener = promoWebViewListener;
     }
 
     @Override
@@ -64,6 +79,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         super.onAttach(context);
         if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
             shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+            promoWebViewListener = (ShopPagePromoWebView.Listener) context;
         }
     }
 
@@ -100,15 +116,28 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
+                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopId, null), REQUEST_CODE_ETALASE);
             }
-        }, this);
+        }, this, this, promoWebViewListener);
     }
 
     @NonNull
     @Override
     protected BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> createAdapterInstance() {
         return new ShopProductLimitedAdapter(getAdapterTypeFactory());
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        if (shopProductListLimitedPresenter.isMyShop(shopId)) {
+            emptyModel.setTitle(getString(R.string.shop_product_limited_empty_product_title_owner));
+            emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_content_owner));
+            emptyModel.setButtonTitle(getString(R.string.shop_page_label_add_product));
+        } else {
+            emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_title));
+        }
+        return emptyModel;
     }
 
     @Override
@@ -121,9 +150,19 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 .inject(this);
     }
 
-    public void displayProduct(String shopId, String promotionWebViewUrl, String shopName) {
+    public void displayProduct(String shopId, String promotionWebViewUrl) {
         this.shopId = shopId;
         shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+        ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
     }
 
     @Override
@@ -154,13 +193,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        startActivity(ShopProductListActivity.createIntent(
-                getActivity(),
-                shopId,
-                text,
-                null,
-                null
-        ));
+        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, text, ""));
     }
 
     @Override
@@ -172,6 +205,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void renderList(@NonNull List<ShopProductBaseViewModel> list) {
         super.renderList(list);
         loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        if (list.size() <= 0) {
+            searchInputView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -198,7 +234,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void onErrorRemoveFromWishList(Throwable e) {
         if (e instanceof UserNotLoginException) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
@@ -213,15 +249,30 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void onErrorAddToWishList(Throwable e) {
         if (e instanceof UserNotLoginException) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
     public void onSuccessAddToWishList(String productId, Boolean value) {
         ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_ETALASE:
+                if (resultCode == Activity.RESULT_OK) {
+                    String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, "", etalaseId));
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

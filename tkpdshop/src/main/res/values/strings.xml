@@ -13,7 +13,18 @@
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
 
     <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
+    <string name="shop_page_header_shop_closed_info">Toko tutup sampai dengan %1$s</string>
+    <string name="shop_page_header_shop_in_moderation">Toko Anda dalam status MODERASI</string>
+    <string name="shop_page_header_closed_reason">Alasan : %1$s</string>
 
+    <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
+    <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
+    <string name="shop_page_bottom_sheet_speed_title">"Kecepatan Toko"</string>
+    <string name="shop_page_bottom_sheet_speed_description">Nilai rata-rata kecepatan toko dalam memproses pesanan terhitung sejak pesanan masuk sampai penjual memberikan paket ke logistik</string>
+    <string name="shop_page_bottom_sheet_product_quality_description">Nilai rata-rata dari seluruh penilaian kualitas produk pada toko yang diberikan oleh pembeli</string>
+    <string name="shop_page_bottom_sheet_reputation_description">Nilai toko yang diberikan pembeli</string>
+    <string name="shop_page_bottom_sheet_product_quality_review_info">dari %1$s ulasan</string>
+    <string name="shop_page_bottom_sheet_speed_shop_info_last_12_months">(dihitung dalam 12 bulan terakhir)</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
@@ -38,7 +49,6 @@
     <string name="shop_info_label_open_since">Buka Sejak</string>
     <string name="shop_info_label_total_product">Total Produk</string>
     <string name="shop_info_label_total_etalase">Total Etalase</string>
-
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
     <string name="shop_info_label_shop_owner">Pemilik Toko</string>
     <string name="shop_info_physical_shop_location_count">%1d Lokasi</string>
@@ -46,12 +56,21 @@
     <string name="shop_info_success_percentage">%1$s%%</string>
     <string name="shop_info_label_default_content">-</string>
     <string name="shop_info_label_choose_etalase">Pilih Etalase</string>
-    <string name="shop_product_search_hint">Cari produk di toko ini</string>
 
-    <string name="product_label_variant">Varian</string>
-    <string name="product_manage_item_cashback">Cashback %1$d%%</string>
-    <string name="product_label_wholesale">Grosir</string>
-    <string name="product_label_po">PO</string>
+    <string name="shop_note_empty_note_title">Toko ini belum memiliki catatan</string>
+    <string name="shop_note_empty_note_title_owner">Catatan toko anda kosong</string>
+    <string name="shop_note_empty_note_content_owner">Tambah catatan seputar toko anda sekarang</string>
+    <string name="shop_note_empty_note_button_owner">Tambah Catatan</string>
+
+    <string name="shop_product_search_hint">Cari produk di toko ini</string>
+    <string name="shop_product_manage_item_cashback">Cashback %1$d%%</string>
+    <string name="shop_product_label_wholesale">Grosir</string>
+    <string name="shop_product_label_po">PO</string>
+    <string name="shop_product_limited_empty_product_title">Toko ini belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner">Toko anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
+    <string name="shop_product_empty_product_title">Tidak ada \"%1$s\" di etalase ini</string>
+    <string name="shop_product_empty_product_title_owner">Ubah kata pencarian anda atau pilih etalase lain</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -61,33 +80,20 @@
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
     <string name="shop_info_label_share">Bagikan</string>
     <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
-    <string name="speed_content_desc">
-        nilai rata-rata kecepatan toko dalam memproses pesanan terhitung sejak pesanan masuk sampai penjual memberikan
-        paket ke logistik
-    </string>
-    <string name="product_quality_content_tv_desc">
-        Nilai rata-rata dari seluruh penilaian kualitas produk pada toko yang diberikan oleh pembeli
-    </string>
-    <string name="shop_reputation_desc">Nilai toko yang diberikan pembeli</string>
+
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
-    <string name="shop_reputation_label">Reputasi Toko</string>
-    <string name="product_quality_label">Kualitas Produk</string>
-    <string name="shop_speed_label">"Kecepatan Toko"</string>
+
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
     <string name="favorited_shop_title">Yang Memfavoritkan</string>
-    <string name="speed_shop_not_available">Belum Tersedia (1 bulan terakhir)</string>
+    <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
-    <string name="speed_shop_not_available_format">%1$s (dihitung dalam 12 bulan terakhir)</string>
     <string name="shop_note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
-    <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
-    <string name="open_shop">Buka Toko</string>
-    <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
-    <string name="dashboard_reason_x">Alasan : %1$s</string>
+
 
 </resources>

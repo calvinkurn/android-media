@@ -11,25 +11,13 @@ import java.util.HashMap;
  */
 
 public class ShopEtalaseRequestModel {
-    private String shopId;
-    private String shopDomain;
+
     private static final String SHOW_ALL = "1";
 
-
-    public String getShopId() {
-        return shopId;
-    }
+    private String shopId;
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
-    }
-
-    public String getShopDomain() {
-        return shopDomain;
-    }
-
-    public void setShopDomain(String shopDomain) {
-        this.shopDomain = shopDomain;
     }
 
     public HashMap<String, String> getHashMap() {
@@ -37,12 +25,7 @@ public class ShopEtalaseRequestModel {
         if (!TextUtils.isEmpty(shopId)) {
             hashMap.put(ShopCommonParamApiConstant.SHOP_ID, shopId);
         }
-        if (!TextUtils.isEmpty(shopDomain)) {
-            hashMap.put(ShopCommonParamApiConstant.SHOP_DOMAIN, shopDomain);
-        }
-
         hashMap.put(ShopCommonParamApiConstant.SHOW_ALL, SHOW_ALL);
-
         return hashMap;
     }
 }

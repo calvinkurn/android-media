@@ -10,7 +10,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -33,14 +32,12 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
     private static final String EXTRA_STATE_TAB_POSITION = "extra_tab_position";
     private static final int TAB_POSITION_NOTE = 1;
     private static final int TAB_POSITION_INFO = 0;
-    private String shopName;
     private String shopId;
     private int tabPosition;
 
-    public static Intent createIntent(Context context, String shopId, String name) {
+    public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtra(ShopParamConstant.SHOP_ID, shopId);
-        intent.putExtra(ShopParamConstant.SHOP_NAME, name);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         return intent;
     }
 
@@ -65,12 +62,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
-        shopName = getIntent().getStringExtra(ShopParamConstant.SHOP_NAME);
-
-        if (TextUtils.isEmpty(shopName)) {
-            toolbar.setTitle(shopName);
-        }
+        shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO);
         viewPager.setCurrentItem(tabPosition);
     }

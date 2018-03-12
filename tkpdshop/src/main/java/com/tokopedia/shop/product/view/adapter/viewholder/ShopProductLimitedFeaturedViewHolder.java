@@ -1,11 +1,13 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedFeaturedAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
@@ -42,6 +44,7 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext()));
         adapter.notifyDataSetChanged();
     }
 }

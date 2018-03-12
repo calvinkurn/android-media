@@ -17,6 +17,7 @@
         android:layout_weight="1"
         android:text="@string/shop_page_label_manage_shop"
         android:visibility="gone"
+        android:layout_marginEnd="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
         tools:visibility="visible"/>
 
@@ -35,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_chat_to_seller"
+        android:layout_marginEnd="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
         android:visibility="gone"/>
 
@@ -44,5 +46,13 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_favorite"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/button_already_favourite_shop"
+        style="@style/Button.Shop.Page.Header.Green"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/shop_page_label_already_favorite"
         android:visibility="gone" />
 </LinearLayout>

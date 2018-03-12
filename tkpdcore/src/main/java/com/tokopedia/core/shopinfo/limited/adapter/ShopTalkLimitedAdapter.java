@@ -30,6 +30,7 @@ public class ShopTalkLimitedAdapter extends ShopTalkAdapter {
             case ShopTalkLimited.TYPE:
                 return new ShowMoreViewHolder(LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.item_shop_talk_see_more, viewGroup, false), showMoreListener);
+
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }

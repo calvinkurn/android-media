@@ -5,13 +5,15 @@
     android:layout_height="match_parent"
     android:background="@color/background_apps">
 
-    <include layout="@layout/activity_shop_page_loading_state"
+    <include
         android:id="@+id/shop_page_loading_state"
-        android:visibility="gone"/>
+        layout="@layout/partial_shop_page_loading_state"
+        android:visibility="gone" />
 
-    <include layout="@layout/design_error_network"
+    <include
         android:id="@+id/shop_page_error_state"
-        android:visibility="gone"/>
+        layout="@layout/design_error_network"
+        android:visibility="gone" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -72,7 +74,7 @@
         android:layout_above="@+id/button_submit"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        <com.tokopedia.shop.page.view.widget.ShopPageViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

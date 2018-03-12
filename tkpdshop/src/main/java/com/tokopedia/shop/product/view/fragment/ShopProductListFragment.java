@@ -17,11 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -32,7 +35,6 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
@@ -55,8 +57,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
     public static final int REQUEST_CODE_SORT = 12913;
-    public static final String ETALASE_ID = "ETALASE_ID";
-    public static final String ETALASE_NAME = "ETALASE_NAME";
+
     public static final int LAYOUT_GRID_TYPE = 65;
     public static final int LAYOUT_LIST_TYPE = 97;
     private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
@@ -72,9 +73,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Inject
     ShopProductListPresenter shopProductListPresenter;
-    private LabelView chooseEtalaseLabelView;
+    private LabelView etalaseLabelView;
     private ShopModuleRouter shopModuleRouter;
-    private String etalaseName;
+
     private String etalaseId;
 
     private String shopId;
@@ -85,22 +86,16 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String sortId;
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
-    private String page;
 
-    public static ShopProductListFragment createInstance(String shopId,
-                                                         String keyword,
-                                                         String etalaseId,
-                                                         String etalaseName,
-                                                         String sort,
-                                                         String page) {
+    private DividerItemDecoration listDividerItemDecoration;
+
+    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
-        bundle.putString(ShopProductListActivity.KEYWORD_EXTRAS, keyword);
-        bundle.putString(ShopProductListFragment.ETALASE_ID, etalaseId);
-        bundle.putString(ShopProductListFragment.ETALASE_NAME, etalaseName);
-        bundle.putString(ShopProductListActivity.SORT, sort);
-        bundle.putString(ShopProductListActivity.PAGE, page);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
+        bundle.putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
+        bundle.putString(ShopParamConstant.EXTRA_SORT_ID, sort);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -117,6 +112,15 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setIconRes(R.drawable.ic_empty_list_search);
+        emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+        emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
+        return emptyModel;
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
@@ -127,12 +131,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
-        keyword = getArguments().getString(ShopProductListActivity.KEYWORD_EXTRAS);
-        etalaseId = getArguments().getString(ShopProductListFragment.ETALASE_ID);
-        etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
-        page = getArguments().getString(ShopProductListActivity.PAGE, null);
-        sortName = getArguments().getString(ShopProductListActivity.SORT, Integer.toString(Integer.MIN_VALUE));
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
+        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
+        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
+        sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         shopProductListPresenter.attachView(this);
     }
 
@@ -151,28 +153,22 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!TextUtils.isEmpty(keyword)) {
-            searchInputView.getSearchTextView().setText(keyword);
-        }
-        if (!TextUtils.isEmpty(etalaseName)) {
-            chooseEtalaseLabelView.setContent(etalaseName);
-        }
 
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
         recyclerViews = view.findViewById(R.id.recycler_view);
-        chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
+        etalaseLabelView = view.findViewById(R.id.label_view_etalase);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
 
         setBottomActionViewImage(currentImgBottomNav);
         RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
         recyclerViews.setLayoutManager(layoutManager);
 
-        chooseEtalaseLabelView.setOnClickListener(new View.OnClickListener() {
+        etalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId, false);
-                    ShopProductListFragment.this.startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
+                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
+                    startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
             }
         });
@@ -193,23 +189,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
             }
         });
-
-        if (shopProductListPresenter.getUserSession().getShopId().equals(shopId) && TextUtils.isEmpty(etalaseName)) {
-            chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
-        } else {
-            if (!TextUtils.isEmpty(etalaseName)) {
-                chooseEtalaseLabelView.setContent(etalaseName);
-            } else {
-                chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
-            }
+        if (!TextUtils.isEmpty(keyword)) {
+            searchInputView.getSearchTextView().setText(keyword);
         }
+        listDividerItemDecoration = new DividerItemDecoration(getActivity());
     }
 
     @Override
     public LoadingModel getLoadingModel() {
-        if(isLoadingInitialData) {
+        if (isLoadingInitialData) {
             return new LoadingModelShimmeringGrid();
-        }else{
+        } else {
             return new LoadingModel();
         }
     }
@@ -236,6 +226,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         } else {
             currentLayoutType = layoutType[currentIndex];
         }
+        recyclerView.removeItemDecoration(listDividerItemDecoration);
         switch (currentLayoutType.second) {
             case LAYOUT_GRID_TYPE:
                 layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
@@ -250,8 +241,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 });
                 break;
             default:
-                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false
-                );
+                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+                recyclerView.addItemDecoration(listDividerItemDecoration);
                 break;
         }
         currentIndex++;
@@ -278,9 +269,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        if (this.page != null) {
-            page = Integer.valueOf(this.page);
-        }
         shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
     }
 
@@ -324,10 +312,27 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onSuccessGetShopInfo(String shopName) {
+    public void onSuccessGetShopName(String shopName) {
         ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null)
+        if (actionBar != null) {
             actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
+        }
+    }
+
+    @Override
+    public void onSuccessGetEtalase(String etalaseId, String etalaseName) {
+        if (!etalaseId.equalsIgnoreCase(this.etalaseId)) {
+            this.etalaseId = etalaseId;
+        }
+        if (TextUtils.isEmpty(etalaseName)) {
+            if (shopProductListPresenter.getUserSession().getShopId().equals(shopId)) {
+                etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
+            } else {
+                etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
+            }
+        } else {
+            etalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
+        }
     }
 
     @Override
@@ -349,9 +354,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
-                    etalaseId = data.getStringExtra(ETALASE_ID);
-                    etalaseName = data.getStringExtra(ETALASE_NAME);
-                    chooseEtalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
+                    etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     this.isLoadingInitialData = true;
                     loadInitialData();
                 }

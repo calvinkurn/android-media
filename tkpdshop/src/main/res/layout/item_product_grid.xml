@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -8,55 +7,34 @@
     android:background="@drawable/bg_product_list"
     android:clickable="true">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/image_guide_line_grid" />
-
-    <ImageView
-        android:id="@+id/product_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/margin_ms"
-        android:adjustViewBounds="true"
-        android:gravity="center"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_kupon"
-        tools:visibility="visible" />
-
-    <FrameLayout
-        android:id="@+id/wishlist_button_container"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:background="@drawable/bg_wishlist_circle_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/image_view_wishlist"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_wishlist" />
-
-    </FrameLayout>
-
-    <include
-        layout="@layout/partial_item_product"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        android:layout_margin="@dimen/margin_ms"
+        android:orientation="vertical">
 
+        <com.tokopedia.shop.product.view.widget.SquareImageView
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_kupon"
+            tools:visibility="visible" />
 
-</android.support.constraint.ConstraintLayout>
+        <include
+            layout="@layout/partial_item_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/partial_item_product_wishlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

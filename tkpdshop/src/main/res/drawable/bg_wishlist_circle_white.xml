@@ -5,6 +5,6 @@
     <solid android:color="@android:color/white" />
 
     <size
-        android:width="@dimen/icon_size"
-        android:height="@dimen/icon_size" />
+        android:width="@dimen/image_width_wishlist_container"
+        android:height="@dimen/image_width_wishlist_container" />
 </shape>

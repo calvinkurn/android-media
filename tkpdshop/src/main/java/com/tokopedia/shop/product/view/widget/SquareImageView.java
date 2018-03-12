@@ -1,10 +1,9 @@
-package com.tokopedia.shop.common;
+package com.tokopedia.shop.product.view.widget;
 
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 public class SquareImageView extends AppCompatImageView {
 

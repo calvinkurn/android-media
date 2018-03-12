@@ -122,4 +122,5 @@
     <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
     <string name="product_review_label_by">Oleh</string>
     <string name="review_shop_label_show_more_review">Lihat Ulasan Selengkapnya</string>
+    <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
 </resources>

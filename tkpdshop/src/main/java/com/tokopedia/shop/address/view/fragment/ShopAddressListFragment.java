@@ -27,7 +27,7 @@ public class ShopAddressListFragment extends BaseListFragment<ShopAddressViewMod
     public static ShopAddressListFragment createInstance(String shopId) {
         ShopAddressListFragment shopAddressListFragment = new ShopAddressListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         shopAddressListFragment.setArguments(bundle);
         return shopAddressListFragment;
     }
@@ -39,7 +39,7 @@ public class ShopAddressListFragment extends BaseListFragment<ShopAddressViewMod
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopAddressListPresenter.attachView(this);
     }
 

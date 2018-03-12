@@ -22,21 +22,16 @@ import rx.Subscriber;
 
 public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
-    private static final String TAG = "ShopEtalasePresenter";
-    private GetShopEtalaseUseCase getShopEtalaseUseCase;
+    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
 
     @Inject
     public ShopEtalasePresenter(GetShopEtalaseUseCase getShopEtalaseUseCase) {
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
     }
 
-
-    public void getShopEtalase(String shopId, String shopDomain) {
+    public void getShopEtalase(String shopId) {
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
         shopEtalaseRequestModel.setShopId(shopId);
-        shopEtalaseRequestModel.setShopDomain(shopDomain);
-
-
         RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
         getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override

@@ -4,9 +4,13 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,7 +20,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
@@ -41,6 +47,7 @@ import javax.inject.Inject;
 
 public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView {
 
+    private LoadingStateView loadingStateView;
     private LinearLayout shopInfoStatisticLinearLayout;
     private LinearLayout shopInfoSatisfiedLinearLayout;
     private LabelView transactionSuccessLabelView;
@@ -65,15 +72,16 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private RecyclerView recyclerView;
 
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
+
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
     private String shopId;
-    private long userId;
+    private ShopInfo shopInfo;
 
     public static ShopInfoFragment createInstance(String shopId) {
         ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         shopInfoFragment.setArguments(bundle);
         return shopInfoFragment;
     }
@@ -81,15 +89,17 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        setHasOptionsMenu(true);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopInfoDetailPresenter.attachView(this);
-        shopInfoDetailPresenter.getShopInfo(shopId);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_info, container, false);
+
+        loadingStateView = view.findViewById(R.id.loading_state_view);
         shopInfoStatisticLinearLayout = view.findViewById(R.id.linear_layout_shop_info_statistic);
         shopInfoSatisfiedLinearLayout = view.findViewById(R.id.linear_layout_shop_info_satisfied);
 
@@ -115,16 +125,30 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setNestedScrollingEnabled(false);
+
         return view;
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getShopInfo();
+    }
+
+    private void getShopInfo() {
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        shopInfoDetailPresenter.getShopInfo(shopId);
+    }
+
+    @Override
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         displayBasicShopInfo(shopInfo);
         displayLogisticShopInfo(shopInfo);
     }
 
-    private void displayBasicShopInfo(ShopInfo shopInfo) {
+    private void displayBasicShopInfo(final ShopInfo shopInfo) {
         if (getActivity() instanceof BaseTabActivity) {
             ((BaseTabActivity) getActivity()).updateTitle(shopInfo.getInfo().getShopName());
         }
@@ -133,7 +157,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
         }
 
-        userId = shopInfo.getOwner().getOwnerId();
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
         totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
         productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
@@ -154,6 +177,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
             physicalAddressContent = getString(R.string.shop_info_physical_shop_location_count, shopInfo.getAddress().size());
+            physicalShopLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
             physicalShopLabelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -171,10 +195,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
             public void onClick(View view) {
                 Application application = ShopInfoFragment.this.getActivity().getApplication();
                 if (application instanceof ShopModuleRouter) {
-                    ((ShopModuleRouter) application).goToProfileShop(
-                            ShopInfoFragment.this.getActivity(),
-                            Long.toString(userId)
-                    );
+                    ((ShopModuleRouter) application).goToProfileShop(getActivity(), Long.toString(shopInfo.getOwner().getOwnerId()));
                 }
             }
         });
@@ -192,7 +213,37 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     @Override
     public void onErrorGetShopInfo(Throwable e) {
+        loadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
+        TextView textRetryError = loadingStateView.getErrorView().findViewById(R.id.message_retry);
+        TextView buttonRetryError = loadingStateView.getErrorView().findViewById(R.id.button_retry);
+        textRetryError.setText(ErrorHandler.getErrorMessage(getActivity(), e));
+        buttonRetryError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getShopInfo();
+            }
+        });
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
     }
 
     @Override

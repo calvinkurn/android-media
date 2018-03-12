@@ -41,7 +41,7 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
 
     private void findViews(View view, View.OnClickListener showMoreProductOnclickListener, View.OnClickListener showMoreEtalaseOnclickListener) {
         recyclerView = view.findViewById(R.id.recycler_view);
-        etalaseButton = view.findViewById(R.id.label_view_choose_etalase);
+        etalaseButton = view.findViewById(R.id.label_view_etalase);
         etalaseButton.setOnClickListener(showMoreEtalaseOnclickListener);
         showMoreProductButton = view.findViewById(R.id.button_show_complete_product);
         showMoreProductButton.setOnClickListener(showMoreProductOnclickListener);

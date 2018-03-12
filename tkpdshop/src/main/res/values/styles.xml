@@ -9,4 +9,9 @@
         <item name="android:layout_marginTop">0dp</item>
     </style>
 
+    <style name="Button.Shop.Page.Header.Green">
+        <item name="android:background">@drawable/bg_button_green</item>
+        <item name="android:textColor">@color/text_submit_button</item>
+    </style>
+
 </resources>

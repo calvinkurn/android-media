@@ -1,13 +1,11 @@
 package com.tokopedia.shop.product.util;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,46 +26,61 @@ public class ShopProductOfficialStoreUtils {
     private static final String URL_PATH_ETALASE = "etalase";
     private static final String URL_PATH_PRODUCT = "product";
     private static final String URL_PATH_PAGE = "page";
-    private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
     public static final String HTTP = "http";
 
     public static boolean overrideUrl(Activity activity, String url, String shopId) {
         Uri uri = Uri.parse(url);
         if (uri.getScheme().equals(TOKOPEDIA_HOST)) {
-            List<String> paths = uri.getPathSegments();
-            if (paths.size() > 1) {
-                switch (paths.get(1)) {
-                    case URL_PATH_ETALASE:
-                        String id = uri.getLastPathSegment();
-                        HashMap<String, String> params = getShopProductRequestModel(uri);
-                        activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, params.get(URL_QUERY_KEYWORD), id,
-                                params.get(URL_QUERY_SORT), params.get(URL_QUERY_PAGE)));
-                        break;
-                    case URL_PATH_PRODUCT:
-                        if(activity.getApplication() instanceof ShopModuleRouter){
-                            String productId = uri.getLastPathSegment();
-                            ((ShopModuleRouter)activity.getApplication()).goToProductDetailById(activity, productId);
-                        }
-                        break;
-                    case URL_PATH_PAGE:
-                        String page = uri.getLastPathSegment();
-                        params = getShopProductRequestModel(uri);
-
-                        activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, params.get(URL_QUERY_KEYWORD), null,
-                                params.get(URL_QUERY_SORT), page));
-                        break;
-                }
-            } else {
-                HashMap<String, String> params = getShopProductRequestModel(uri);
-                activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, params.get(URL_QUERY_KEYWORD), null,
-                        params.get(URL_QUERY_SORT), params.get(URL_QUERY_PAGE)));
-            }
+            processUriTokopedia(activity, shopId, uri);
         } else if (uri.getScheme().startsWith(HTTP)) {
-            if(activity.getApplication() instanceof ShopModuleRouter) {
-                ((ShopModuleRouter)activity.getApplication()).goToWebview(url);
+            if (activity.getApplication() instanceof ShopModuleRouter) {
+                ((ShopModuleRouter) activity.getApplication()).goToWebview(url);
             }
         }
         return true;
+    }
+
+    private static void processUriTokopedia(Activity activity, String shopId, Uri uri) {
+        String keyword = "";
+        String page = "";
+        List<String> paths = uri.getPathSegments();
+        if (paths.size() > 1) {
+            switch (paths.get(1)) {
+                case URL_PATH_ETALASE:
+                    String id = uri.getLastPathSegment();
+                    HashMap<String, String> params = getShopProductRequestModel(uri);
+                    if (!TextUtils.isEmpty(params.get(URL_QUERY_KEYWORD))) {
+                        keyword = params.get(URL_QUERY_KEYWORD);
+                    }
+                    // Pointing specific page on apps will be break the page
+                    page = params.get(URL_QUERY_PAGE);
+                    activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, id, params.get(URL_QUERY_SORT)));
+                    break;
+                case URL_PATH_PRODUCT:
+                    if (activity.getApplication() instanceof ShopModuleRouter) {
+                        String productId = uri.getLastPathSegment();
+                        ((ShopModuleRouter) activity.getApplication()).goToProductDetailById(activity, productId);
+                    }
+                    break;
+                case URL_PATH_PAGE:
+                    params = getShopProductRequestModel(uri);
+                    if (!TextUtils.isEmpty(params.get(URL_QUERY_KEYWORD))) {
+                        keyword = params.get(URL_QUERY_KEYWORD);
+                    }
+                    // Pointing specific page on apps will be break the page
+                    page = uri.getLastPathSegment();
+                    activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, null, params.get(URL_QUERY_SORT)));
+                    break;
+            }
+        } else {
+            HashMap<String, String> params = getShopProductRequestModel(uri);
+            // Pointing specific page on apps will be break the page
+            if (!TextUtils.isEmpty(params.get(URL_QUERY_KEYWORD))) {
+                keyword = params.get(URL_QUERY_KEYWORD);
+            }
+            page = params.get(URL_QUERY_PAGE);
+            activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, null, params.get(URL_QUERY_SORT)));
+        }
     }
 
     private static HashMap<String, String> getShopProductRequestModel(Uri uri) {

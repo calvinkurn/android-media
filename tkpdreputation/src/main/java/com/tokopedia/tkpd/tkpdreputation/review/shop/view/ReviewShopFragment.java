@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.app.MainApplication;
@@ -64,6 +66,14 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
         shopReviewFragment.setArguments(bundle);
         return shopReviewFragment;
     }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setContent(getString(R.string.review_shop_empty_list_content));
+        return emptyModel;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

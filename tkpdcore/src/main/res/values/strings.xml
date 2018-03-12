@@ -2182,6 +2182,8 @@ di Tokopedia Sekarang!</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
     <string name="cek_label"> Cek - </string>
     <string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
+    <string name="discussion_shop_label_empty_list_title">Belum ada diskusi di toko ini</string>
+    <string name="discussion_shop_label_empty_list_content">Diskusi memberikan kesempatan tanya jawab oleh pembeli &amp; penjual sebelum melakukan transaksi</string>
 
     <!--QR CODE-->
     <string name="scan_qr">Scan Kode QR</string>

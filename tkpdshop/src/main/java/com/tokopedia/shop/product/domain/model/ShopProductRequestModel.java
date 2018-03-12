@@ -101,15 +101,15 @@ public class ShopProductRequestModel {
 
         hashMap.put(ShopParamApiConstant.PAGE, String.valueOf(page));
 
-        if(orderBy > 0)
+        if (orderBy > 0) {
             hashMap.put(ShopParamApiConstant.ORDER_BY, String.valueOf(orderBy));
-
-        if(perPage > 0)
+        }
+        if (perPage > 0) {
             hashMap.put(ShopParamApiConstant.PER_PAGE, String.valueOf(perPage));
-
-        if(wholesale > 0)
+        }
+        if (wholesale > 0) {
             hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
-
+        }
         return hashMap;
     }
 }

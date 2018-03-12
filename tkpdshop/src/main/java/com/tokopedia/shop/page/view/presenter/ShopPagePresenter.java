@@ -37,12 +37,12 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         this.userSession = userSession;
     }
 
-    public UserSession getUserSession() {
-        return userSession;
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
     }
 
     public void getShopInfo(String shopId) {
-        getShopPageDataUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopPageViewModel>() {
+        getShopPageDataUseCase.execute(GetShopPageDataUseCase.createRequestParam(shopId), new Subscriber<ShopPageViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -50,6 +50,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 if (isViewAttached()) {
                     getView().onErrorGetShopPageInfo(e);
                 }

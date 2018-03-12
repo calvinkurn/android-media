@@ -103,7 +103,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
         if (callInitialLoadAutomatically()) {
             loadInitialData();
-            showLoading();
         }
     }
 
@@ -114,10 +113,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void loadInitialData() {
-        // Note that we don't clear data when load initial
-        // instead, we just set the flag, so that the data is still there
-        // do this flag check on renderList.
+        // Load all from the beginning / reset data
+        // Need to clear all data to avoid invalid data in case of error
         isLoadingInitialData = true;
+        adapter.clearAllElements();
+        showLoading();
         loadData(getDefaultInitialPage());
     }
 
@@ -225,7 +225,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected Visitable getEmptyDataViewModel() {
-        return new EmptyModel();
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setContent(getString(R.string.title_no_result));
+        return emptyModel;
     }
 
     @Override
@@ -246,10 +248,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     private void onGetListErrorWithEmptyData(Throwable throwable) {
-        String message = getMessageFromThrowable(getView().getContext(), throwable);
-        adapter.showErrorNetwork(message, this);
-        if (swipeToRefresh != null) {
-            swipeToRefresh.setEnabled(false);
+        if (getView() != null) {
+            String message = getMessageFromThrowable(getView().getContext(), throwable);
+            adapter.showErrorNetwork(message, this);
+            if (swipeToRefresh != null) {
+                swipeToRefresh.setEnabled(false);
+            }
         }
     }
 

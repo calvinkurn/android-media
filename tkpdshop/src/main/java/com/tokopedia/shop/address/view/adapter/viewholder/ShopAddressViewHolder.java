@@ -9,6 +9,7 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.shop.common.util.TextHtmlUtils;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -42,22 +43,22 @@ public class ShopAddressViewHolder extends AbstractViewHolder<ShopAddressViewMod
     }
 
     @Override
-    public void bind(ShopAddressViewModel element) {
-        titleTextView.setText(element.getName());
-        contentTextView.setText(element.getContent());
-        areaTextView.setText(element.getArea());
+    public void bind(ShopAddressViewModel shopAddressViewModel) {
+        titleTextView.setText(shopAddressViewModel.getName());
+        contentTextView.setText(TextHtmlUtils.getTextFromHtml(shopAddressViewModel.getContent()));
+        areaTextView.setText(TextHtmlUtils.getTextFromHtml(shopAddressViewModel.getArea()));
 
-        if (!TextApiUtils.isTextEmpty(element.getEmail())) {
+        if (!TextApiUtils.isTextEmpty(shopAddressViewModel.getEmail())) {
             emailLabelView.setVisibility(View.VISIBLE);
-            emailLabelView.setTitle(element.getEmail());
+            emailLabelView.setTitle(shopAddressViewModel.getEmail());
         }
-        if (!TextApiUtils.isTextEmpty(element.getPhone())) {
+        if (!TextApiUtils.isTextEmpty(shopAddressViewModel.getPhone())) {
             phoneLabelView.setVisibility(View.VISIBLE);
-            phoneLabelView.setTitle(element.getPhone());
+            phoneLabelView.setTitle(shopAddressViewModel.getPhone());
         }
-        if (!TextApiUtils.isTextEmpty(element.getFax())) {
+        if (!TextApiUtils.isTextEmpty(shopAddressViewModel.getFax())) {
             faxLabelView.setVisibility(View.VISIBLE);
-            faxLabelView.setTitle(element.getFax());
+            faxLabelView.setTitle(shopAddressViewModel.getFax());
         }
     }
 }

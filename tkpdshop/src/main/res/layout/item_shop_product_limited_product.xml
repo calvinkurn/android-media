@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/background_apps"
-    android:orientation="vertical">
+    android:divider="@drawable/bg_line_separator"
+    android:orientation="vertical"
+    android:showDividers="beginning|middle|end">
 
     <com.tokopedia.design.label.LabelView
-        android:id="@+id/label_view_choose_etalase"
+        android:id="@+id/label_view_etalase"
         style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/margin_ms"
         app:lv_content="@string/shop_info_label_choose_etalase"
         app:lv_content_color="@color/tkpd_main_green"
         app:lv_title="@string/shop_info_default_etalase_title"
