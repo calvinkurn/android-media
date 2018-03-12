@@ -8,7 +8,7 @@ public class ShopInfoAccuracyWidth {
 
     @SerializedName("five_star_rank")
     @Expose
-    private long fiveStarRank;
+    private double fiveStarRank;
     @SerializedName("four_star_rank")
     @Expose
     private double fourStarRank;
@@ -22,11 +22,11 @@ public class ShopInfoAccuracyWidth {
     @Expose
     private double twoStarRank;
 
-    public long getFiveStarRank() {
+    public double getFiveStarRank() {
         return fiveStarRank;
     }
 
-    public void setFiveStarRank(long fiveStarRank) {
+    public void setFiveStarRank(double fiveStarRank) {
         this.fiveStarRank = fiveStarRank;
     }
 
