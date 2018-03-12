@@ -48,8 +48,6 @@ import rx.Subscriber;
 
 import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
 
-+
-
 /**
  * @author anggaprasetiyo on 2/24/17.
  */
