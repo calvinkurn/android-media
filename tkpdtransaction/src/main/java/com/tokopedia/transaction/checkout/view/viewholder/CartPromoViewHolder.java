@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
@@ -17,6 +18,7 @@ public class CartPromoViewHolder extends RecyclerView.ViewHolder {
 
     private VoucherPromoView mVoucherCartHachikoView;
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
+    private RecyclerView.LayoutParams layoutParams;
 
     public CartPromoViewHolder(View itemView,
                                SingleAddressShipmentAdapter.ActionListener actionListener) {
@@ -24,6 +26,8 @@ public class CartPromoViewHolder extends RecyclerView.ViewHolder {
 
         mVoucherCartHachikoView = itemView.findViewById(R.id.voucher_cart_holder_view);
         mActionListener = actionListener;
+        layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     public void bindViewHolder(CartItemPromoHolderData cartItemPromoHolderData, int position) {
@@ -34,14 +38,19 @@ public class CartPromoViewHolder extends RecyclerView.ViewHolder {
                     cartItemPromoHolderData.getCouponMessage(),
                     cartItemPromoHolderData.getCouponCode()
             );
+            layoutParams.bottomMargin = 0;
         } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
             mVoucherCartHachikoView.setVoucher(cartItemPromoHolderData.getVoucherCode(),
                     cartItemPromoHolderData.getVoucherMessage()
             );
+            layoutParams.bottomMargin = 0;
         } else {
             mVoucherCartHachikoView.setPromoAndCouponLabel();
             mVoucherCartHachikoView.resetView();
+            layoutParams.bottomMargin = (int) mVoucherCartHachikoView.getContext().getResources()
+                    .getDimension(R.dimen.new_margin_med);
         }
+        itemView.setLayoutParams(layoutParams);
     }
 
     private VoucherCartHachikoView.ActionListener voucherActionListener(final CartItemPromoHolderData cartPromo,
