@@ -154,9 +154,11 @@ public class ProductVariantViewModel implements Parcelable {
                 } else {
                     productVariantCombinationViewModel.setActive(true);
                     if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                        productVariantCombinationViewModel.setSt(1);
+                        if (productVariantCombinationViewModel.getStock() < 1) {
+                            productVariantCombinationViewModel.setStock(1);
+                        }
                     } else {
-                        productVariantCombinationViewModel.setSt(0);
+                        productVariantCombinationViewModel.setStock(0);
                     }
                 }
             }
