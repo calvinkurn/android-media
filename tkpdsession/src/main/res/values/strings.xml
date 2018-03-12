@@ -175,4 +175,39 @@
     <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
     <string name="dialog_cancel">BATAL</string>
 
+    <!-- TopProfile -->
+    <string name="error_occured">Terjadi Kendala Pada Server</string>
+    <string name="server_busy">Untuk saat ini, Tokopedia kepenuhan pengunjung.</string>
+    <string name="try_again_top_profile">Coba lagi</string>
+    <string name="manage_profile">Atur Akun</string>
+    <string name="favorite_shop">Toko Favorit</string>
+    <string name="follow_with_plus">+ Follow</string>
+    <string name="follow">Follow</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="title_user_information">Informasi Pengguna</string>
+    <string name="title_user_information_status">Status</string>
+    <string name="status_verified">Verified Account</string>
+    <string name="title_user_information_reputation">Reputasi</string>
+    <string name="reputation_positive">Positif</string>
+    <string name="reputation_netral">Netral</string>
+    <string name="reputation_negative">Negatif</string>
+    <string name="title_user_data">Data Diri</string>
+    <string name="subtitle_user_data">Info ini hanya bisa dilihat oleh Anda</string>
+    <string name="incomplete_profile">Lengkapi data diri Anda untuk menjadi Verified Account.</string>
+    <string name="incomplete_profile_html"><![CDATA[Lengkapi data diri Anda untuk menjadi <i>Verified Account</i>. <br><font color = "#42b549">Lengkapi Sekarang</font></br>]]></string>
+    <string name="complete_now">Lengkapi sekarang</string>
+    <string name="title_email">Email</string>
+    <string name="title_gender">Jenis Kelamin</string>
+    <string name="title_birth_date">Tanggal Lahir</string>
+    <string name="data_verified">Terverifikasi</string>
+    <string name="fav_shop">Favoritkan</string>
+    <string name="shop_info_title">Informasi Toko</string>
+    <string name="reputation_description">Reputasi pengguna adalah penilaian smiley yang diberikan oleh penjual saat memberi ulasan ke pembeli.</string>
+    <string name="status_description">Status Verified Account adalah status bagi pengguna yang sudah melengkapi data diri, nomor ponsel, dan email yang sudah terverifikasi.</string>
+    <string name="shop_not_favorite">Favoritkan</string>
+    <string name="shop_favorited">Favorit</string>
+    <string name="title_disabled_post">Oops, post belum bisa ditampilkan</string>
+    <string name="subtitle_disabled_post">Anda dapat melihat post ini melalui Tokopedia App</string>
+
 </resources>

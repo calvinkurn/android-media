@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -19,6 +20,8 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
@@ -31,7 +34,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopMode
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopContract;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopPresenter;
 
 import java.util.ArrayList;
@@ -112,9 +114,11 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToProfile(String reviewerId) {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
-        );
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(),
+                            String.valueOf(reviewerId)));
+        }
     }
 
     @Override

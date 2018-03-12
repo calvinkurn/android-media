@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
@@ -52,7 +52,7 @@ public class ShopStatistic extends TActivity {
 	private ArrayList<Integer> StarIconLocation = new ArrayList<Integer>();
 	private String ShopAddrParam;
 	private String ShopId;
-	private String OwnerId;	
+	private String OwnerId;
 	private TextView OwnerName;
 	private TextView OwnerMail;
 	private TextView ShopAddress;
@@ -168,8 +168,8 @@ public class ShopStatistic extends TActivity {
 				else
 					EmailField.setVisibility(View.GONE);
 			if(!Result.isNull("shop_address")){
-			JSONArray ShopAddressList = new JSONArray(Result.getString("shop_address")); 
-			JSONObject MainShopAddr = new JSONObject(ShopAddressList.getString(0)); 
+			JSONArray ShopAddressList = new JSONArray(Result.getString("shop_address"));
+			JSONObject MainShopAddr = new JSONObject(ShopAddressList.getString(0));
 			ShopAddrParam = ShopAddressList.toString();
 			if(ShopAddressList.length() == 1)
 				SeeAllAddr.setVisibility(View.INVISIBLE);
@@ -193,7 +193,7 @@ public class ShopStatistic extends TActivity {
 				AddressLayout.setVisibility(View.GONE);
 			if(Result.getInt("is_owner") != 0)
 				IsOwner = true;
-			
+
 			ShopName.setText(MethodChecker.fromHtml(ShopInfo.getString("shop_name")));
 			ShopTag.setText(getIntent().getExtras().getString("shop_tag"));
 			ShopDesc.setText(getIntent().getExtras().getString("shop_desc"));
@@ -244,7 +244,7 @@ public class ShopStatistic extends TActivity {
 				}
 				AgencyPackage.add(SSCombined);
 				}
-			
+
 			if (!Result.getString("shop_payment").equals("null")) {
 				JSONArray ShopPaymentList = new JSONArray(
 						Result.getString("shop_payment"));
@@ -286,19 +286,20 @@ public class ShopStatistic extends TActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
-		OwnerName.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				startActivity(
-						PeopleInfoNoDrawerActivity.createInstance(getBaseContext(), OwnerId)
-				);
-			}
-		});
-		
-		Favorited.setOnClickListener(new OnClickListener() {
-			
+
+        OwnerName.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (getBaseContext().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getBaseContext().getApplicationContext())
+                            .getTopProfileIntent(getBaseContext(), OwnerId));
+                }
+            }
+        });
+
+        Favorited.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(ShopStatistic.this, ShopFavoritedActivity.class);
@@ -308,9 +309,9 @@ public class ShopStatistic extends TActivity {
 				startActivity(intent);
 			}
 		});
-		
+
 		SeeAllAddr.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Bundle bundle = new Bundle();
@@ -330,7 +331,7 @@ public class ShopStatistic extends TActivity {
 				startActivity(intent);
 			}
 		});
-		
+
 	}
 
 	private int getMedalType(JSONObject jsonObject) throws JSONException {
@@ -346,7 +347,7 @@ public class ShopStatistic extends TActivity {
 	private String getScoreMedal(JSONObject json) throws JSONException {
 		return json.getString("reputation_score");
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -354,12 +355,12 @@ public class ShopStatistic extends TActivity {
 	    case android.R.id.home:
 	    	onBackPressed();
 	        return true;
-			
+
 	    }
-		
+
 	    return super.onOptionsItemSelected(item);
-	    
-		
+
+
 	}
 
 }
