@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
@@ -43,6 +45,11 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingShimmeringGridViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(EmptyModel viewModel) {
         return EmptyViewHolder.LAYOUT;
     }
@@ -61,7 +68,9 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == EmptyViewHolder.LAYOUT) {
+        if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
+            return new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == EmptyViewHolder.LAYOUT) {
             return new EmptyViewHolder(parent, emptyProductOnClickListener);
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);

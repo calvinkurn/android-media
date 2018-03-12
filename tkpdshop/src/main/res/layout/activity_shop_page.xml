@@ -12,7 +12,7 @@
 
     <include
         android:id="@+id/shop_page_error_state"
-        layout="@layout/design_error_network"
+        layout="@layout/partial_empty_page_error"
         android:visibility="gone" />
 
     <android.support.design.widget.AppBarLayout

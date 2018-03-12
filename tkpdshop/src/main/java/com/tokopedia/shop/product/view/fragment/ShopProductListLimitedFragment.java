@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -40,7 +39,6 @@ import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.List;
 

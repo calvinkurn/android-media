@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
@@ -120,6 +118,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         return emptyModel;
     }
 
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -193,15 +193,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             searchInputView.getSearchTextView().setText(keyword);
         }
         listDividerItemDecoration = new DividerItemDecoration(getActivity());
-    }
-
-    @Override
-    public LoadingModel getLoadingModel() {
-        if (isLoadingInitialData) {
-            return new LoadingModelShimmeringGrid();
-        } else {
-            return new LoadingModel();
-        }
     }
 
     @Override
