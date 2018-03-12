@@ -262,8 +262,11 @@ public class FragmentShopStatistic extends V2BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(), String.valueOf(model.owner.ownerId)));
+                if (getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(), String.valueOf(model.owner
+                                    .ownerId)));
+                }
             }
         };
     }

@@ -437,8 +437,10 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onBuyerName() {
-        startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                .getTopProfileIntent(getActivity(), userId));
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
     public void onDetailClick() {

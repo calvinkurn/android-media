@@ -236,10 +236,12 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
 
     @Override
     public void onGoToProfile(String userId) {
-        viewListener.getActivity().startActivity(
-                ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
-                        .getTopProfileIntent(viewListener.getActivity(), userId)
-        );
+        if (viewListener.getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            viewListener.getActivity().startActivity(
+                    ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
+                            .getTopProfileIntent(viewListener.getActivity(), userId)
+            );
+        }
     }
 
     @Override

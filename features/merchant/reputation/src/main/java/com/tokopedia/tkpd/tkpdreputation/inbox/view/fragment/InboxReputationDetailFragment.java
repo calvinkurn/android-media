@@ -462,9 +462,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(int reviewerId) {
-        startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                .getTopProfileIntent(getActivity(),
-                        String.valueOf(reviewerId)));
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(),
+                            String.valueOf(reviewerId)));
+        }
     }
 
     @Override
@@ -514,8 +516,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToPeopleProfile(int userId) {
-        startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                .getTopProfileIntent(getActivity(), String.valueOf(userId)));
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), String.valueOf(userId)));
+        }
     }
 
     private String getReputationSmileyMessage(String name) {

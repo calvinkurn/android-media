@@ -185,9 +185,11 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToProfile(String reviewerId) {
-        startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                .getTopProfileIntent(getActivity(),
-                        String.valueOf(reviewerId)));
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(),
+                            String.valueOf(reviewerId)));
+        }
     }
 
     @Override

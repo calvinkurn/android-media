@@ -185,9 +185,11 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
             @Override
             public void onGoToProfile(ShopTalk shopTalk) {
-                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(),
-                                shopTalk.getTalkUserId()));
+                if (getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    shopTalk.getTalkUserId()));
+                }
             }
         };
     }

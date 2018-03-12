@@ -523,9 +523,11 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(
-                        ((TkpdCoreRouter) context.getApplicationContext())
-                                .getTopProfileIntent(context, userIDTalk));
+                if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                    context.startActivity(
+                            ((TkpdCoreRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, userIDTalk));
+                }
             }
         };
     }

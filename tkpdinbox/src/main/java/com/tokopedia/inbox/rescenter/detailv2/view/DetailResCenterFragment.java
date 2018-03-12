@@ -682,9 +682,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionPeopleDetailClick(String buyerId) {
-        startActivity(
-                ((TkpdInboxRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(), buyerId));
+        if (getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            startActivity(
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(), buyerId));
+        }
     }
 
     @Override

@@ -171,7 +171,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals(OFFICIAL.toLowerCase())) {
+        if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals
+                (OFFICIAL.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");
@@ -179,10 +180,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 getView().startActivity(intent);
             } else {
-                getView().startActivity(
-                        ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
-                                .getTopProfileIntent(getView().getContext(), id)
-                );
+                if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    getView().startActivity(
+                            ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+                                    .getTopProfileIntent(getView().getContext(), id)
+                    );
+                }
             }
 
         }

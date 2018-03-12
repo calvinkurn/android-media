@@ -121,10 +121,12 @@ public class ProductTalkViewAdapter extends TalkViewAdapter{
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 } else {
-                    context.startActivity(
-                            ((TkpdCoreRouter) context.getApplicationContext())
-                                    .getTopProfileIntent(context,
-                                            String.valueOf(talk.getCommentUserId())));
+                    if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                        context.startActivity(
+                                ((TkpdCoreRouter) context.getApplicationContext())
+                                        .getTopProfileIntent(context,
+                                                String.valueOf(talk.getCommentUserId())));
+                    }
                 }
             }
         });
