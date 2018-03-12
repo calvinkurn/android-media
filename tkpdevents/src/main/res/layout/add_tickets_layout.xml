@@ -39,7 +39,7 @@
         android:layout_alignBottom="@+id/frameLayout"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/margin_25"
+        android:layout_marginTop="@dimen/dp_25"
         android:text="Rp 170000"
         android:textColor="@color/price_pdp"
         android:textSize="@dimen/sp_14"
@@ -55,7 +55,7 @@
         android:layout_below="@+id/tv_ticket_description"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/margin_25">
+        android:layout_marginTop="@dimen/dp_25">
 
         <TextView
             android:id="@+id/tv_sold_out"
@@ -80,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/btn_decrement"
-                android:layout_width="@dimen/smallicon_size"
-                android:layout_height="@dimen/smallicon_size"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:background="@drawable/minus_button_layerlist_green"
                 android:scaleType="center"
@@ -89,8 +89,8 @@
 
             <TextView
                 android:id="@+id/tv_ticket_cnt"
-                android:layout_width="@dimen/smallicon_size"
-                android:layout_height="@dimen/smallicon_size"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:background="@drawable/rectangle_transparent"
                 android:gravity="center"
                 android:text="@string/zero"
@@ -100,8 +100,8 @@
 
             <ImageView
                 android:id="@+id/btn_increment"
-                android:layout_width="@dimen/smallicon_size"
-                android:layout_height="@dimen/smallicon_size"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:background="@drawable/add_button_layerlist_green"
                 android:scaleType="center"
                 app:srcCompat="@drawable/ic_add" />

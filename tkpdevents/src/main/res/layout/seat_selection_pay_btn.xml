@@ -141,7 +141,7 @@
         android:layout_height="@dimen/progbar_height"
         android:layout_margin="@dimen/dp_16"
         app:cardBackgroundColor="@color/green_400"
-        app:cardCornerRadius="@dimen/card_corner_default"
+        app:cardCornerRadius="@dimen/dp_2"
         app:cardElevation="@dimen/card_corner_default">
 
         <TextView

@@ -478,7 +478,7 @@
                         <TextView
                             android:id="@+id/batal"
                             android:layout_width="80dp"
-                            android:layout_height="@dimen/icon_size_large"
+                            android:layout_height="@dimen/dp_32"
                             android:layout_alignParentRight="true"
                             android:layout_below="@+id/update_promo"
                             android:layout_gravity="end|center_vertical"

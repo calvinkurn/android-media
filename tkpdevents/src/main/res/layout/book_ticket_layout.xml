@@ -46,7 +46,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_tablayout"
+                android:layout_height="@dimen/dp_76"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
                 android:paddingBottom="@dimen/dp_4"

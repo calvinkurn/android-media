@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/iv_arrow_seating"
-                android:layout_width="@dimen/icon_size_small"
-                android:layout_height="@dimen/icon_size_small"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
@@ -47,7 +47,7 @@
         <ImageView
             android:id="@+id/imgv_seating_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/seatmap_fixed_height"
+            android:layout_height="@dimen/dp_340"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"

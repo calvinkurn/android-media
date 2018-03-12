@@ -7,8 +7,14 @@
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_25">25dp</dimen>
     <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_45">45dp</dimen>
     <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_76">76dp</dimen>
+    <dimen name="dp_340">340dp</dimen>
+    <dimen name="dp_350">350dp</dimen>
 
     <dimen name="sp_8">8sp</dimen>
     <dimen name="sp_10">10sp</dimen>
@@ -139,22 +145,9 @@
 
     <dimen name="layout_bav_width_min">80dp</dimen>
 
-    <!-- Events Dimen. -->
-    <dimen name="icon_size_small">16dp</dimen>
-    <dimen name="smallicon_size">24dp</dimen>
-    <dimen name="icon_size_large">32dp</dimen>
-
     <dimen name="card_corner_default">2dp</dimen>
     <dimen name="divider_height_thin">2dp</dimen>
     <dimen name="banner_height">180dp</dimen>
     <dimen name="progbar_height">50dp</dimen>
-
-    <dimen name="searchview_height">40dp</dimen>
-    <dimen name="margin_25">25dp</dimen>
-    <dimen name="promo_layout_height">45dp</dimen>
-    <dimen name="circle_indicator_height">12dp</dimen>
-    <dimen name="seat_plan_height">350dp</dimen>
-    <dimen name="seatmap_fixed_height">340dp</dimen>
-    <dimen name="height_tablayout">76dp</dimen>
 
 </resources>

@@ -95,7 +95,7 @@
             android:id="@+id/seat_plan"
             layout="@layout/include_seating_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/seat_plan_height"
+            android:layout_height="@dimen/dp_350"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16" />
