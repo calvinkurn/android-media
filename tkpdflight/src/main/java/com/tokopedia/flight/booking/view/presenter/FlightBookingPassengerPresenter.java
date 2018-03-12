@@ -1,7 +1,5 @@
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -16,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -149,9 +145,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
             if (isChildPassenger()) {
-                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
+                getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
             } else if (isInfantPassenger()) {
-                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+                getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
             }
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
@@ -173,7 +169,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
 
         if (newReturnDate.after(maxDate)) {
-            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+            getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             getView().renderBirthdate(birthdateStr);
@@ -382,13 +378,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     private boolean isAlphabetAndSpaceOnly(String expression) {
-        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
-        Matcher matcher = pattern.matcher(expression);
-        return matcher.matches();
+        return expression.matches(new String("^[a-zA-Z\\s]*$"));
     }
 
     private boolean isSingleWord(String passengerLastName) {
-        return TextUtils.split(passengerLastName, " ").length == 1;
+        return passengerLastName != null && passengerLastName.split(" ").length == 1;
     }
 
     private boolean isAdultPassenger() {
