@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,9 +50,6 @@ import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAd
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
-    public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
-    private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
-
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
     @BindView(R2.id.ll_send_to_multiple_address)
@@ -67,7 +65,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @BindView(R2.id.ll_content)
     LinearLayout llContent;
 
-    private ICartAddressChoiceActivityListener cartAddressChoiceListener;
+    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -108,6 +106,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -222,30 +221,25 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
-        FragmentManager fragmentManager = getActivity().getFragmentManager();
-        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
-        String backStateName = fragment.getClass().getName();
-        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-        if (!isFragmentPopped) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .addToBackStack(backStateName)
-                    .commit();
-        }
+        Fragment fragment = ShipmentAddressListFragment.newInstance();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().beginTransaction()
+                .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                .commit();
     }
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
-        cartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
+        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
-        RecipientAddressModel recipientAddressModel
+        RecipientAddressModel recipientAddress
                 = mCartAddressChoicePresenter.getSelectedRecipientAddress();
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddressModel);
+        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddress);
 
         getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
         getActivity().finish();
@@ -260,8 +254,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     public void onEditClick(RecipientAddressModel model) {
         AddressModelMapper mapper = new AddressModelMapper();
 
-        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
-                mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model));
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
     @Override
@@ -283,7 +277,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        cartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
+        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
 
 }

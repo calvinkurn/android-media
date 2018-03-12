@@ -333,10 +333,8 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private void openAddressSelectionPage() {
-        Intent intent = CartAddressChoiceActivity.createInstance(
-                AddShipmentAddressActivity.this,
-                TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST
-        );
+        Intent intent = CartAddressChoiceActivity.createInstance(this,
+                TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -441,10 +439,19 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE_ACTION_SELECT_ADDRESS) {
-            presenter.setEditableModel((RecipientAddressModel) data
-                    .getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA));
-            showAddressLayout();
-            updateAddressView(presenter.getEditableModel());
+            switch (resultCode) {
+                case RESULT_CODE_ACTION_SELECT_ADDRESS:
+                    RecipientAddressModel addressModel =
+                            data.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA);
+                    presenter.setEditableModel(addressModel);
+                    showAddressLayout();
+                    updateAddressView(presenter.getEditableModel());
+                    break;
+
+                default:
+                    finish();
+                    break;
+            }
         }
     }
 

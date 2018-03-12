@@ -6,7 +6,8 @@ import android.view.View;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
+import com.tokopedia.transaction.checkout.view.compoundview.VoucherPromoView;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -14,7 +15,7 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 
 public class CartPromoViewHolder extends RecyclerView.ViewHolder {
 
-    private VoucherCartHachikoView mVoucherCartHachikoView;
+    private VoucherPromoView mVoucherCartHachikoView;
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
 
     public CartPromoViewHolder(View itemView,
@@ -25,17 +26,17 @@ public class CartPromoViewHolder extends RecyclerView.ViewHolder {
         mActionListener = actionListener;
     }
 
-    public void bindViewHolder(CartPromo cartPromo, int position) {
-        mVoucherCartHachikoView.setActionListener(voucherActionListener(cartPromo, position));
+    public void bindViewHolder(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        mVoucherCartHachikoView.setActionListener(voucherActionListener(cartItemPromoHolderData, position));
 
-        if (cartPromo.getTypePromo() == CartPromo.TYPE_PROMO_COUPON) {
-            mVoucherCartHachikoView.setCoupon(cartPromo.getCouponTitle(),
-                    cartPromo.getCouponMessage(),
-                    cartPromo.getCouponCode()
+        if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+            mVoucherCartHachikoView.setCoupon(cartItemPromoHolderData.getCouponTitle(),
+                    cartItemPromoHolderData.getCouponMessage(),
+                    cartItemPromoHolderData.getCouponCode()
             );
-        } else if (cartPromo.getTypePromo() == CartPromo.TYPE_PROMO_VOUCHER) {
-            mVoucherCartHachikoView.setVoucher(cartPromo.getVoucherCode(),
-                    cartPromo.getVoucherMessage()
+        } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+            mVoucherCartHachikoView.setVoucher(cartItemPromoHolderData.getVoucherCode(),
+                    cartItemPromoHolderData.getVoucherMessage()
             );
         } else {
             mVoucherCartHachikoView.setPromoAndCouponLabel();
@@ -43,7 +44,7 @@ public class CartPromoViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private VoucherCartHachikoView.ActionListener voucherActionListener(final CartPromo cartPromo,
+    private VoucherCartHachikoView.ActionListener voucherActionListener(final CartItemPromoHolderData cartPromo,
                                                                         final int position) {
         return new VoucherCartHachikoView.ActionListener() {
             @Override

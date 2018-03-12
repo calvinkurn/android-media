@@ -125,26 +125,13 @@
             tools:text="Rp1.300.000" />
 
         <TextView
-            android:id="@+id/tv_promo_free_shipping"
+            android:id="@+id/tv_promo_message"
             style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_payable_label"
             android:layout_marginTop="9dp"
-            android:text="Anda mendapat gratis ongkir Rp20.000" />
-
-        <TextView
-            android:id="@+id/tv_promo_text_view_remove"
-            style="@style/TextSmallNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_payable_label"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="9dp"
-            android:layout_toEndOf="@id/tv_promo_free_shipping"
-            android:layout_toRightOf="@id/tv_promo_free_shipping"
-            android:text="Hapus" />
+            tools:text="Anda mendapat gratis ongkir Rp20.000" />
 
     </RelativeLayout>
 

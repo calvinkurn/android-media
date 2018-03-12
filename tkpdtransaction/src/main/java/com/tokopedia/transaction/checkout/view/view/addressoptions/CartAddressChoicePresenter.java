@@ -20,6 +20,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static java.lang.Math.min;
+
 /**
  * @author Irfan Khoirul on 05/02/18
  *         Aghny A. Putra on 27/02/18
@@ -27,6 +29,9 @@ import rx.Subscriber;
 
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
+
+    private static final int SHORT_LIST_SIZE = 2;
+    private static final int PRIME_ADDRESS = 2;
 
     private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
 
@@ -118,14 +123,16 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
      * @param recipientAddressList
      * @return
      */
-    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressList) {
-        List<RecipientAddressModel> shortList = new ArrayList<>();
+    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> addressList) {
+        List<RecipientAddressModel> shortList =
+                new ArrayList<>(addressList.subList(0, min(addressList.size(), SHORT_LIST_SIZE)));
 
-        if (mSelectedRecipientAddress == null) {
-            shortList.addAll(recipientAddressList.subList(0, 2));
-        } else {
-            shortList.add(recipientAddressList.get(0));
-            shortList.add(mSelectedRecipientAddress);
+        if (mSelectedRecipientAddress != null) {
+            if (mSelectedRecipientAddress.getAddressStatus() == PRIME_ADDRESS) {
+                shortList.add(0, mSelectedRecipientAddress);
+            } else {
+                shortList.add(addressList.size() - 1, mSelectedRecipientAddress);
+            }
         }
 
         return shortList;

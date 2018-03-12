@@ -1,6 +1,17 @@
 package com.tokopedia.transaction.checkout.view.viewholder;
 
+import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +31,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final NumberFormat CURRENCY_IDR = NumberFormat.getCurrencyInstance(LOCALE_ID);
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
@@ -33,8 +45,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPromoDiscount;
     private TextView mTvGrandTotal;
 
-    private TextView mTvPromoFreeShipping;
-    private TextView mTvPromoTextViewRemove;
+    private TextView mTvPromoMessage;
 
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
 
@@ -50,8 +61,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
         mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
         mTvGrandTotal = itemView.findViewById(R.id.tv_payable);
-        mTvPromoFreeShipping = itemView.findViewById(R.id.tv_promo_free_shipping);
-        mTvPromoTextViewRemove = itemView.findViewById(R.id.tv_promo_text_view_remove);
+        mTvPromoMessage = itemView.findViewById(R.id.tv_promo_message);
 
         mActionListener = actionListener;
     }
@@ -68,8 +78,43 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         mTvGrandTotal.setText(getPriceFormat(shipmentCost.getTotalPrice()));
 
-        mTvPromoFreeShipping.setVisibility(View.VISIBLE);
-        mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
+        if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
+            formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
+            mActionListener.onShowPromoMessage(shipmentCost.getPromoMessage());
+            mTvPromoMessage.setVisibility(View.VISIBLE);
+        } else {
+            mActionListener.onHidePromoMessage();
+            mTvPromoMessage.setVisibility(View.GONE);
+        }
+//        mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
+    }
+
+    private void formatPromoMessage(TextView textView, String promoMessage) {
+        String formatText = " Hapus";
+        promoMessage += formatText;
+        int startSpan = promoMessage.indexOf(formatText);
+        int endSpan = promoMessage.indexOf(formatText) + formatText.length();
+        Spannable formattedPromoMessage = new SpannableString(promoMessage);
+        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_54);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+        formattedPromoMessage.setSpan(new ClickableSpan() {
+            @Override
+            public void updateDrawState(TextPaint textPaint) {
+                textPaint.setColor(color);
+                textPaint.setUnderlineText(false);
+            }
+
+            @Override
+            public void onClick(View widget) {
+                mActionListener.onRemovePromoCode();
+            }
+        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(formattedPromoMessage);
     }
 
     private String getTotalItemLabel(int totalItem) {
@@ -86,8 +131,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void togglePromoText() {
-        mTvPromoFreeShipping.setVisibility(View.GONE);
-        mTvPromoTextViewRemove.setVisibility(View.GONE);
+        mTvPromoMessage.setVisibility(View.GONE);
     }
 
     private View.OnClickListener togglePromoTextListener = new View.OnClickListener() {

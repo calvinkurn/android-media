@@ -1,5 +1,9 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
@@ -19,6 +23,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Grou
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -33,8 +38,10 @@ import rx.Subscriber;
 
 public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter {
 
-    public MultipleAddressShipmentPresenter() {
+    IMultipleAddressShipmentView view;
 
+    public MultipleAddressShipmentPresenter(IMultipleAddressShipmentView view) {
+        this.view = view;
     }
 
     @Override
@@ -168,7 +175,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
     @Override
     public CheckPromoCodeCartShipmentRequest generateCheckPromoRequest(
-            List<MultipleAddressShipmentAdapterData> shipmentData
+            List<MultipleAddressShipmentAdapterData> shipmentData, CartItemPromoHolderData appliedPromo
     ) {
         CheckPromoCodeCartShipmentRequest.Builder checkoutPromoRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder();
@@ -185,10 +192,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     new CheckPromoCodeCartShipmentRequest.ShopProduct.Builder();
 
             List<CheckPromoCodeCartShipmentRequest.ProductData> productDatas = new ArrayList<>();
-            CheckPromoCodeCartShipmentRequest.ProductData.Builder productData=
+            CheckPromoCodeCartShipmentRequest.ProductData.Builder productData =
                     new CheckPromoCodeCartShipmentRequest.ProductData.Builder();
             productData
-                    .productId(Integer.parseInt(shipmentData.get(i).getItemData().getProductId()))
+                    .productId(shipmentData.get(i).getProductId())
                     .productNotes(shipmentData.get(i).getItemData().getProductNotes())
                     .productQuantity(
                             Integer.parseInt(shipmentData.get(i).getItemData().getProductQty()
@@ -202,7 +209,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     .shippingId(shipmentData.get(i).getSelectedShipmentDetailData()
                             .getSelectedCourier().getShipperId())
                     .spId(shipmentData.get(i).getSelectedShipmentDetailData()
-                            .getSelectedShipment().getServiceId());
+                            .getSelectedCourier().getShipperProductId());
 
             shopProduct.productData(productDatas)
                     .shopId(shipmentData.get(i).getShopId())
@@ -211,7 +218,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     .isPreorder(switchValue(shipmentData.get(i).isProductIsPreorder()))
                     .shippingInfo(shipmentInfo.build());
 
-            if(shipmentData.get(i).getSelectedShipmentDetailData().getUseDropshipper()) {
+            if (shipmentData.get(i).getSelectedShipmentDetailData().getUseDropshipper()) {
                 CheckPromoCodeCartShipmentRequest.DropshipData.Builder dropshipData =
                         new CheckPromoCodeCartShipmentRequest.DropshipData.Builder();
 
@@ -230,6 +237,11 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         }
 
         checkoutPromoRequest.data(orderDatas);
+        if (appliedPromo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+            checkoutPromoRequest.promoCode(appliedPromo.getVoucherCode());
+        } else if (appliedPromo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+            checkoutPromoRequest.promoCode(appliedPromo.getCouponCode());
+        }
 
         return checkoutPromoRequest.build();
     }
@@ -242,7 +254,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     }
 
     @Override
-    public Subscriber<CheckPromoCodeCartShipmentResult> checkPromoSubscription() {
+    public Subscriber<CheckPromoCodeCartShipmentResult> checkPromoSubscription(
+            final CartItemPromoHolderData cartItemPromoHolderData) {
         return new Subscriber<CheckPromoCodeCartShipmentResult>() {
             @Override
             public void onCompleted() {
@@ -251,12 +264,20 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                view.showPromoError(null);
             }
 
             @Override
             public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-
+                if (!checkPromoCodeCartShipmentResult.isError()) {
+                    if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                    } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                    }
+                    view.showPromoMessage(checkPromoCodeCartShipmentResult, cartItemPromoHolderData);
+                } else {
+                    view.showPromoError(checkPromoCodeCartShipmentResult.getErrorMessage());
+                }
             }
         };
     }

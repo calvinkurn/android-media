@@ -7,24 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.DropshipData;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ProductData;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShippingInfo;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.ShopProduct;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
-import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
-import com.tokopedia.transaction.checkout.data.entity.request.ProductDataCheckoutRequest;
-import com.tokopedia.transaction.checkout.data.entity.request.ShippingInfoCheckoutRequest;
-import com.tokopedia.transaction.checkout.data.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.mapper.ShipmentDataRequestConverter;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.CartSellerItemViewHolder;
@@ -37,24 +30,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
 public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = SingleAddressShipmentAdapter.class.getSimpleName();
-
-    private static final int ITEM_VIEW_PROMO =
-            R.layout.holder_item_cart_promo;
-    private static final int ITEM_VIEW_PROMO_SUGGESTION =
-            R.layout.view_item_promo_suggestion;
-    private static final int ITEM_VIEW_RECIPIENT_ADDRESS =
-            R.layout.view_item_shipment_recipient_address;
-    private static final int ITEM_VIEW_SHIPMENT_COST =
-            R.layout.view_item_shipment_cost_details;
-    private static final int ITEM_VIEW_CART =
-            R.layout.item_shipped_product_details;
+    private static final int ITEM_VIEW_PROMO = R.layout.holder_item_cart_promo;
+    private static final int ITEM_VIEW_PROMO_SUGGESTION = R.layout.view_item_promo_suggestion;
+    private static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
+    private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
+    private static final int ITEM_VIEW_CART = R.layout.item_shipped_product_details;
 
     private List<Object> mShipmentDataList;
     private ActionListener mActionListener;
@@ -62,10 +49,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private RecipientAddressModel mRecipientAddress;
     private ShipmentCostModel mShipmentCost;
 
+    private ShipmentDataRequestConverter mRequestConverter;
+
     @Inject
-    public SingleAddressShipmentAdapter(ActionListener actionListener) {
+    public SingleAddressShipmentAdapter(ActionListener actionListener,
+                                        ShipmentDataRequestConverter requestConverter) {
         mShipmentDataList = new ArrayList<>();
         mActionListener = actionListener;
+        mRequestConverter = requestConverter;
     }
 
     @Override
@@ -94,7 +85,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         Object data = mShipmentDataList.get(position);
 
         if (viewType == ITEM_VIEW_PROMO) {
-            ((CartPromoViewHolder) viewHolder).bindViewHolder((CartPromo) data, position);
+            ((CartPromoViewHolder) viewHolder).bindViewHolder((CartItemPromoHolderData) data, position);
         } else if (viewType == ITEM_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) viewHolder).bindViewHolder((CartPromoSuggestion) data,
                     position);
@@ -117,7 +108,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public int getItemViewType(int position) {
         Object item = mShipmentDataList.get(position);
 
-        if (item instanceof CartPromo) {
+        if (item instanceof CartItemPromoHolderData) {
             return ITEM_VIEW_PROMO;
         } else if (item instanceof CartPromoSuggestion) {
             return ITEM_VIEW_PROMO_SUGGESTION;
@@ -130,6 +121,64 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         return super.getItemViewType(position);
+    }
+
+    public void updateItemPromoVoucher(CartItemPromoHolderData cartPromo) {
+        for (int i = 0; i < mShipmentDataList.size(); i++) {
+            Object object = mShipmentDataList.get(i);
+            if (object instanceof CartItemPromoHolderData) {
+                mShipmentDataList.set(i, cartPromo);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
+        mShipmentDataList.add(cartItemPromoHolderData);
+        notifyDataSetChanged();
+    }
+
+    public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
+        mShipmentDataList.add(cartPromoSuggestion);
+        notifyDataSetChanged();
+    }
+
+    public void addAddressShipmentData(RecipientAddressModel recipientAddress) {
+        mRecipientAddress = recipientAddress;
+        mShipmentDataList.add(recipientAddress);
+        notifyDataSetChanged();
+    }
+
+    public void addCartItemDataList(List<CartSellerItemModel> cartItemList) {
+        mShipmentDataList.addAll(cartItemList);
+        notifyDataSetChanged();
+    }
+
+    public void addShipmentCostData(ShipmentCostModel shipmentCost) {
+        mShipmentCost = shipmentCost;
+        mShipmentDataList.add(shipmentCost);
+    }
+
+    public void removeData(int position) {
+        mShipmentDataList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
+        for (Object item : mShipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                int index = mShipmentDataList.indexOf(item);
+                mShipmentDataList.set(index, recipientAddress);
+                this.mRecipientAddress = recipientAddress;
+                notifyItemChanged(index);
+                return;
+            }
+        }
+    }
+
+    public RecipientAddressModel getSelectedAddressReceipent() {
+        return mRecipientAddress;
     }
 
     public interface ActionListener {
@@ -149,23 +198,24 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position);
 
-        void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position);
+        void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position);
 
-        void onCartPromoCancelVoucherPromoClicked(CartPromo cartPromo, int position);
+        void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position);
 
-        void onCartPromoTrackingSuccess(CartPromo cartPromo, int position);
+        void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position);
 
-        void onCartPromoTrackingCancelled(CartPromo cartPromo, int position);
+        void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position);
 
         void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
 
         void onFinishChoosingShipment(List<Data> data, List<DataCheckoutRequest> checkoutRequest);
 
-    }
+        void onShowPromoMessage(String promoMessage);
 
-    public void changeDataSet(List<Object> shipmentDataList) {
-        mShipmentDataList = shipmentDataList;
-        initVariable();
+        void onHidePromoMessage();
+
+        void onRemovePromoCode();
+
     }
 
     public void setPickupPoint(Store store) {
@@ -178,9 +228,30 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mRecipientAddress.setStore(null);
     }
 
-    public void updatePromo(double promo) {
-        // TODO update promo price here
-        mShipmentCost.setPromoPrice(promo);
+    public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
+        if (dataVoucher != null) {
+            mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
+            mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+        } else {
+            mShipmentCost.setPromoPrice(0);
+            mShipmentCost.setPromoMessage(null);
+            for (Object itemAdapter : mShipmentDataList) {
+                if (itemAdapter instanceof CartItemPromoHolderData) {
+                    ((CartItemPromoHolderData) itemAdapter).setPromoNotActive();
+                    break;
+                }
+            }
+        }
+    }
+
+    public boolean hasAppliedPromoCode() {
+        for (Object itemAdapter : mShipmentDataList) {
+            if (itemAdapter instanceof CartItemPromoHolderData) {
+                return ((CartItemPromoHolderData) itemAdapter).getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER ||
+                        ((CartItemPromoHolderData) itemAdapter).getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON;
+            }
+        }
+        return false;
     }
 
     public void updateSelectedShipment(int position, ShipmentDetailData shipmentDetailData) {
@@ -200,13 +271,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 // Item which its courier has been updated
                 if (counter == position) {
                     CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
-                    boolean isUseInsurance = shipmentDetailData.getUseInsurance() != null
-                            && shipmentDetailData.getUseInsurance();
 
                     cartSellerItem.setSelectedShipmentDetailData(shipmentDetailData);
                     cartSellerItem.setShippingFee(courierItemData.getDeliveryPrice()
                             + courierItemData.getAdditionalPrice());
-                    if (isUseInsurance) {
+
+                    if (shipmentDetailData.getUseInsurance()) {
                         cartSellerItem.setInsuranceFee(courierItemData.getInsurancePrice());
                     }
 
@@ -233,136 +303,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mActionListener.onTotalPaymentChange(mShipmentCost);
 
         if (isCourierComplete) {
-            RequestData requestData = generateRequestData(cartSellerItemList);
-            mActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(), requestData.getCheckoutRequestData());
+            RequestData requestData = mRequestConverter.generateRequestData(cartSellerItemList,
+                    mRecipientAddress);
+            mActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
+                    requestData.getCheckoutRequestData());
         }
-    }
-
-    private RequestData generateRequestData(List<CartSellerItemModel> cartSellerItemList) {
-        List<ShopProductCheckoutRequest> shopProductCheckoutRequest = new ArrayList<>();
-        List<ShopProduct> shopProductPromoRequest = new ArrayList<>();
-
-        for (CartSellerItemModel cartSellerItem : cartSellerItemList) {
-            shopProductCheckoutRequest.add(getProductCheckoutRequest(cartSellerItem));
-            shopProductPromoRequest.add(getShopProductPromoRequest(cartSellerItem));
-        }
-
-        RequestData requestData = new RequestData();
-
-        requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequest));
-        requestData.setPromoRequestData(createPromoRequestData(shopProductPromoRequest));
-
-        return requestData;
-    }
-
-    private ShopProductCheckoutRequest getProductCheckoutRequest(CartSellerItemModel cartSellerItem) {
-        ShipmentDetailData shipmentDetailData = cartSellerItem.getSelectedShipmentDetailData();
-        CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
-
-        // Create shop product model for shipment
-        ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
-                .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder(cartSellerItem.getIsPreOrder())
-                .finsurance(cartSellerItem.getIsFinsurance())
-                .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
-                        .shippingId(courierItemData.getShipperId())
-                        .spId(courierItemData.getShipperProductId())
-                        .build())
-                .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
-
-        if (shipmentDetailData.getUseDropshipper() != null
-                && shipmentDetailData.getUseDropshipper()) {
-            shopProductCheckoutBuilder
-                    .isDropship(1)
-                    .dropshipData(new DropshipDataCheckoutRequest.Builder()
-                            .name(shipmentDetailData.getDropshipperName())
-                            .telpNo(shipmentDetailData.getDropshipperPhone())
-                            .build());
-        } else {
-            shopProductCheckoutBuilder.isDropship(0);
-        }
-
-        return shopProductCheckoutBuilder.build();
-    }
-
-    private ShopProduct getShopProductPromoRequest(CartSellerItemModel cartSellerItem) {
-        ShipmentDetailData shipmentDetailData = cartSellerItem.getSelectedShipmentDetailData();
-        CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
-
-        // Create shop product model for promo request
-        ShopProduct.Builder shopProductBuilder = new ShopProduct.Builder()
-                .shopId(Integer.valueOf(cartSellerItem.getShopId()))
-                .isPreorder(cartSellerItem.getIsPreOrder())
-                .finsurance(cartSellerItem.getIsFinsurance())
-                .shippingInfo(new ShippingInfo.Builder()
-                        .shippingId(courierItemData.getShipperId())
-                        .spId(courierItemData.getShipperProductId())
-                        .build())
-                .productData(convertToProductData(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
-
-        if (shipmentDetailData.getUseDropshipper() != null
-                && shipmentDetailData.getUseDropshipper()) {
-            shopProductBuilder.dropshipData(new DropshipData.Builder()
-                    .name(shipmentDetailData.getDropshipperName())
-                    .telpNo(shipmentDetailData.getDropshipperPhone())
-                    .build());
-        }
-
-        return shopProductBuilder.build();
-    }
-
-    private List<ProductDataCheckoutRequest> convertToProductDataCheckout(List<CartItemModel> cartItems) {
-        List<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
-        for (CartItemModel cartItem : cartItems) {
-            productDataList.add(convertToProductDataCheckout(cartItem));
-        }
-
-        return productDataList;
-    }
-
-    private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
-        return new ProductDataCheckoutRequest.Builder()
-                .productId(cartItem.getId())
-                .build();
-    }
-
-    private List<DataCheckoutRequest> createCheckoutRequestData(List<ShopProductCheckoutRequest> shopProducts) {
-        List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
-        checkoutRequestData.add(new DataCheckoutRequest.Builder()
-                .addressId(Integer.valueOf(mRecipientAddress.getId()))
-                .shopProducts(shopProducts)
-                .build());
-
-        return checkoutRequestData;
-    }
-
-    private List<ProductData> convertToProductData(List<CartItemModel> cartItems) {
-        List<ProductData> productDataList = new ArrayList<>();
-        for (CartItemModel cartItem : cartItems) {
-            productDataList.add(convertToProductData(cartItem));
-        }
-
-        return productDataList;
-    }
-
-    private ProductData convertToProductData(CartItemModel cartItem) {
-        return new ProductData.Builder()
-                .productId(cartItem.getId())
-                .productNotes(cartItem.getNoteToSeller())
-                .productQuantity(cartItem.getQuantity())
-                .build();
-    }
-
-    private List<Data> createPromoRequestData(List<ShopProduct> shopProducts) {
-        List<Data> promoRequestData = new ArrayList<>();
-        promoRequestData.add(new Data.Builder()
-                .addressId(Integer.valueOf(mRecipientAddress.getId()))
-                .shopProducts(shopProducts)
-                .build());
-
-        return promoRequestData;
     }
 
     private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
@@ -373,22 +318,13 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 - shipmentCost.getPromoPrice();
     }
 
-    private void initVariable() {
-        for (Object item : mShipmentDataList) {
-            if (item instanceof RecipientAddressModel) {
-                mRecipientAddress = (RecipientAddressModel) item;
-            } else if (item instanceof ShipmentCostModel) {
-                mShipmentCost = (ShipmentCostModel) item;
-            }
-        }
-    }
-
-    private class RequestData {
+    public static class RequestData {
 
         private List<Data> mPromoRequestData;
         private List<DataCheckoutRequest> mCheckoutRequestData;
 
-        RequestData() {
+        @Inject
+        public RequestData() {
             mPromoRequestData = new ArrayList<>();
             mCheckoutRequestData = new ArrayList<>();
         }
@@ -397,7 +333,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return mPromoRequestData;
         }
 
-        void setPromoRequestData(List<Data> promoRequestData) {
+        public void setPromoRequestData(List<Data> promoRequestData) {
             this.mPromoRequestData = promoRequestData;
         }
 
@@ -405,10 +341,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return mCheckoutRequestData;
         }
 
-        void setCheckoutRequestData(List<DataCheckoutRequest> checkoutRequestData) {
+        public void setCheckoutRequestData(List<DataCheckoutRequest> checkoutRequestData) {
             this.mCheckoutRequestData = checkoutRequestData;
         }
 
     }
-
 }

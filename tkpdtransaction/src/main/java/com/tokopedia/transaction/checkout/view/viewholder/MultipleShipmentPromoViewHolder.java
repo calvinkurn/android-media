@@ -5,15 +5,16 @@ import android.view.View;
 
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.compoundview.VoucherPromoView;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
  */
 
-public class MultipleShipmentPromoViewHolder extends RecyclerView.ViewHolder{
+public class MultipleShipmentPromoViewHolder extends RecyclerView.ViewHolder {
 
-    private VoucherCartHachikoView voucherCartHachikoView;
+    private VoucherPromoView voucherCartHachikoView;
 
     public MultipleShipmentPromoViewHolder(View itemView) {
         super(itemView);
