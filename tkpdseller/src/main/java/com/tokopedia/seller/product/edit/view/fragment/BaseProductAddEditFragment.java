@@ -95,8 +95,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected T presenter;
 
     public static final String SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model";
-    public static final String SAVED_HAS_ORIGINAL_VARIANT_LV1 = "svd_has_var_lv1";
-    public static final String SAVED_HAS_ORIGINAL_VARIANT_LV2 = "svd_has_var_lv2";
 
     protected ProductScoreViewHolder productScoreViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
@@ -171,9 +169,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             productManageViewHolder.onViewStateRestored(savedInstanceState);
             productDescriptionViewHolder.onViewStateRestored(savedInstanceState);
             productDeliveryInfoViewHolder.onViewStateRestored(savedInstanceState);
-
-            hasOriginalVariantLevel1 = savedInstanceState.getBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV1);
-            hasOriginalVariantLevel2 = savedInstanceState.getBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV2);
         }
         if (currentProductViewModel == null) {
             currentProductViewModel = new ProductViewModel();
@@ -454,6 +449,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public final void onEtalaseViewClicked(long etalaseId) {
         Intent intent = EtalasePickerActivity.createInstance(getContext(), etalaseId);
         startActivityForResult(intent, ProductInfoViewHolder.REQUEST_CODE_ETALASE);
+    }
+
+    @Override
+    public boolean hasVariant() {
+        return currentProductViewModel.hasVariant();
     }
 
     @CallSuper
@@ -855,7 +855,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
+        // to disable or enable price/wholesale/etc
         productPriceViewHolder.renderData(currentProductViewModel);
+
+        //to disable or enable category and category recommendation
+        productInfoViewHolder.renderByVariant(currentProductViewModel.hasVariant());
     }
 
     @Override
@@ -874,8 +878,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         super.onSaveInstanceState(outState);
         currentProductViewModel = collectDataFromView();
         outState.putParcelable(SAVED_PRODUCT_VIEW_MODEL, currentProductViewModel);
-        outState.putBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1);
-        outState.putBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2);
     }
 
     @TargetApi(23)

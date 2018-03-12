@@ -34,7 +34,7 @@
     <string name="product_add_sku_hint">Tulis SKU Produk</string>
     <string name="product_add_sku_allowed_character">123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
-    <string name="product_label_enter_product_description">Tulis dengan lenkap dan jelas deskripsi produk anda</string>
+    <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
     <string name="product_label_upload_and_add_new_product">Upload dan Tambah Produk Baru</string>
     <string name="product_label_upload_this_product">Upload Produk Ini</string>
     <string name="product_default_counter_text">0</string>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
@@ -46,6 +47,9 @@ public class ProductAddDescriptionPickerFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_description, container, false);
+        TextView tvTitleTips = view.findViewById(R.id.tv_title_tips);
+        tvTitleTips.setText(MethodChecker.fromHtml(getString(R.string.product_description_tips_title)));
+
         descriptionEditText = view.findViewById(R.id.edit_text_description);
         tipsView = view.findViewById(R.id.linear_layout_tips);
         tipsView.setOnClickListener(new View.OnClickListener() {

@@ -145,7 +145,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         refreshAllItem();
     }
 
-    private void setupSizeChart(View rootView){
+    private void setupSizeChart(View rootView) {
         vgSizechart = rootView.findViewById(R.id.vg_sizechart);
         ivSizeChart = vgSizechart.findViewById(R.id.image_view_sizechart);
         refreshImageView();
@@ -205,8 +205,8 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
     }
 
-    private void initSizeChart(){
-        if (isCatalogHasProductSizeChart() && productVariantViewModel!= null) {
+    private void initSizeChart() {
+        if (isCatalogHasProductSizeChart() && productVariantViewModel != null) {
             ProductVariantOptionParent productVariantOptionParent =
                     productVariantViewModel.getVariantOptionParent(indexOptionParentSizeChart);
             if (productVariantOptionParent != null && productVariantOptionParent.hasProductVariantOptionChild()) {
@@ -220,7 +220,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     }
 
 
-    public ProductPictureViewModel getInputtedSizeChart(){
+    public ProductPictureViewModel getInputtedSizeChart() {
         if (vgSizechart.getVisibility() == View.VISIBLE) {
             return productSizeChart;
         }
@@ -285,7 +285,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         intent.putExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL,
                 productVariantViewModel == null ? null : productVariantViewModel.getVariantOptionParent(level - 1));
         intent.putExtra(ProductVariantPickerActivity.EXTRA_HAS_ORIGINAL_VARIANT,
-                getActivity().getIntent().getBooleanExtra(level == 1? EXTRA_HAS_ORIGINAL_VARIANT_LV1: EXTRA_HAS_ORIGINAL_VARIANT_LV2,
+                getActivity().getIntent().getBooleanExtra(level == 1 ? EXTRA_HAS_ORIGINAL_VARIANT_LV1 : EXTRA_HAS_ORIGINAL_VARIANT_LV2,
                         false));
         startActivityForResult(intent, level);
     }
@@ -317,7 +317,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         if (productSizeChart == null || TextUtils.isEmpty(productSizeChart.getUriOrPath())) {
             ivSizeChart.setImageResource(R.drawable.ic_add_product);
         } else {
-            ImageHandler.LoadImage(ivSizeChart,productSizeChart.getUriOrPath());
+            ImageHandler.LoadImage(ivSizeChart, productSizeChart.getUriOrPath());
         }
     }
 
@@ -351,19 +351,23 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
         ProductVariantOptionParent productVariantOptionParent =
                 data.getParcelableExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
+
+        if (productVariantViewModel == null) {
+            productVariantViewModel = new ProductVariantViewModel();
+        }
+
         if (requestCodeLevel == 1 && (productVariantOptionParent == null || !productVariantOptionParent.hasProductVariantOptionChild())) {
-            productVariantViewModel.getVariantOptionParent(0).setProductVariantOptionChild(null);
-            if (productVariantViewModel.getVariantOptionParent(1) != null) {
-                productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
+            if (productVariantViewModel.getVariantOptionParent(0) != null) {
+                productVariantViewModel.getVariantOptionParent(0).setProductVariantOptionChild(null);
+                if (productVariantViewModel.getVariantOptionParent(1) != null) {
+                    productVariantViewModel.getVariantOptionParent(1).setProductVariantOptionChild(null);
+                }
             }
             productVariantViewModel.setProductVariant(null);
             refreshAllItem();
             return;
         }
 
-        if (productVariantViewModel == null) {
-            productVariantViewModel = new ProductVariantViewModel();
-        }
         productVariantViewModel.replaceVariantOptionParentFor(requestCodeLevel, productVariantOptionParent);
 
         // get current selection for item level 1, level 2, and the matrix combination
@@ -425,7 +429,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         refreshAllItem();
     }
 
-    private void refreshAllItem(){
+    private void refreshAllItem() {
         initVariantLabel();
         initSizeChart();
         updateVariantItemListView();
