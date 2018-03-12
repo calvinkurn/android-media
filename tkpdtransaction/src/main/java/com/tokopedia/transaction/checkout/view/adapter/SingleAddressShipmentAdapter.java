@@ -63,7 +63,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
-
         if (viewType == ITEM_VIEW_PROMO) {
             return new CartPromoViewHolder(view, mActionListener);
         } else if (viewType == ITEM_VIEW_PROMO_SUGGESTION) {
@@ -75,7 +74,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, mActionListener);
         }
-
         return null;
     }
 
@@ -179,6 +177,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     public void addShipmentCostData(ShipmentCostModel shipmentCost) {
         mShipmentCost = shipmentCost;
         mShipmentDataList.add(shipmentCost);
+        notifyDataSetChanged();
+        checkDataForCheckout();
     }
 
     public void removeData(int position) {
@@ -202,6 +202,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public RecipientAddressModel getSelectedAddressReceipent() {
         return mRecipientAddress;
+    }
+
+    public void clearData() {
+        mShipmentDataList.clear();
+        notifyDataSetChanged();
     }
 
     public interface ActionListener {
@@ -431,4 +436,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
     }
+
+
 }

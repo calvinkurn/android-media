@@ -50,6 +50,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 GroupAddress groupAddressResult = new GroupAddress();
                 groupAddressResult.setError(!mapperUtil.isEmpty(groupAddress.getErrors()));
                 groupAddressResult.setErrorMessage(mapperUtil.convertToString(groupAddress.getErrors()));
+                groupAddressResult.setWarning(!mapperUtil.isEmpty(groupAddress.getMessages()));
+                groupAddressResult.setWarningMessage(mapperUtil.convertToString(groupAddress.getMessages()));
 
                 if (groupAddress.getUserAddress() != null) {
                     com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.UserAddress userAddressResult =
@@ -84,6 +86,8 @@ public class ShipmentMapper implements IShipmentMapper {
 
                         groupShopResult.setError(!mapperUtil.isEmpty(groupShop.getErrors()));
                         groupShopResult.setErrorMessage(mapperUtil.convertToString(groupShop.getErrors()));
+                        groupShopResult.setWarning(!mapperUtil.isEmpty(groupShop.getMessages()));
+                        groupShopResult.setWarningMessage(mapperUtil.convertToString(groupShop.getMessages()));
 
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();

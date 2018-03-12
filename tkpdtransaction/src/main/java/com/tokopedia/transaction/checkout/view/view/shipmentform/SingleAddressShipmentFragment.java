@@ -231,6 +231,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mSingleAddressShipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
         mSingleAddressShipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
         mSingleAddressShipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
+
     }
 
     @NonNull
@@ -238,12 +239,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                CheckoutRequest checkoutData = generateCheckoutRequest(
-                        promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
-                                promoCodeAppliedData.getPromoCode() : "", 0
-                );
-                if (checkoutData != null) cartShipmentActivityListener.checkoutCart(checkoutData);
+                mSingleAddressShipmentPresenter.processCheckShipmentPrepareCheckout();
             }
         };
     }
@@ -604,6 +600,67 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void renderErrorTimeoutConnectionCheckPromoShipmentData(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderCheckShipmentPrepareCheckoutSuccess() {
+        CheckoutRequest checkoutData = generateCheckoutRequest(
+                promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
+                        promoCodeAppliedData.getPromoCode() : "", 0
+        );
+        if (checkoutData != null) cartShipmentActivityListener.checkoutCart(checkoutData);
+    }
+
+    @Override
+    public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+            CartShipmentAddressFormData cartShipmentAddressFormData
+    ) {
+        SingleShipmentData singleShipmentData = mCartShipmentAddressFormDataConverter.convert(
+                cartShipmentAddressFormData
+        );
+        this.singleShipmentData.setError(singleShipmentData.isError());
+        this.singleShipmentData.setErrorMessage(singleShipmentData.getErrorMessage());
+        this.singleShipmentData.setWarning(singleShipmentData.isWarning());
+        this.singleShipmentData.setWarningMessage(singleShipmentData.getWarningMessage());
+
+        List<CartSellerItemModel> cartItem = singleShipmentData.getCartItem();
+        for (int i = 0, cartItemSize = cartItem.size(); i < cartItemSize; i++) {
+            CartSellerItemModel data = cartItem.get(i);
+            this.singleShipmentData.getCartItem().get(i).setError(data.isError());
+            this.singleShipmentData.getCartItem().get(i).setErrorMessage(data.getErrorMessage());
+            this.singleShipmentData.getCartItem().get(i).setWarning(data.isWarning());
+            this.singleShipmentData.getCartItem().get(i).setWarningMessage(data.getWarningMessage());
+        }
+
+        mSingleAddressShipmentAdapter.clearData();
+
+        mSingleAddressShipmentAdapter.addPromoVoucherData(
+                CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData)
+        );
+        mSingleAddressShipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+        mSingleAddressShipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
+        mSingleAddressShipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
+        mSingleAddressShipmentAdapter.addShipmentCostData(singleShipmentData.getShipmentCost());
+    }
+
+    @Override
+    public void renderErrorCheckShipmentPrepareCheckout(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorHttpCheckShipmentPrepareCheckout(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckShipmentPrepareCheckout(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 }
