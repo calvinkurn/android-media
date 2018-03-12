@@ -34,4 +34,6 @@ public interface IMultipleAddressShipmentPresenter {
 
     Subscriber<CheckPromoCodeCartShipmentResult> checkPromoSubscription(
             CartItemPromoHolderData cartItemPromoHolderData);
+
+    void processCheckShipmentFormPrepareCheckout();
 }

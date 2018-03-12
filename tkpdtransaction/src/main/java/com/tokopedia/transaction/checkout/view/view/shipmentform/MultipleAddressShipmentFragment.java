@@ -80,6 +80,9 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestion;
+    private ViewGroup totalPaymentLayout;
+    private ViewGroup confirmButton;
+    private RecyclerView orderAddressList;
 
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -143,6 +146,15 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     protected void initView(View view) {
+        totalPayment = view.findViewById(R.id.total_payment_text_view);
+        promoMessage = view.findViewById(R.id.tv_promo_message);
+        totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
+        confirmButton = view.findViewById(R.id.confirm_payment_button);
+        orderAddressList = view.findViewById(R.id.order_shipment_list);
+    }
+
+    @Override
+    protected void setViewListener() {
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
         if (promoCodeAppliedData != null) {
             if (promoCodeAppliedData.getTypeVoucher() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
@@ -158,11 +170,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                         promoCodeAppliedData.getAmount());
             }
         }
-        totalPayment = view.findViewById(R.id.total_payment_text_view);
-        promoMessage = view.findViewById(R.id.tv_promo_message);
-        ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
-        ViewGroup confirmButton = view.findViewById(R.id.confirm_payment_button);
-        RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
                 cartPromoSuggestion,
@@ -172,14 +179,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
-        confirmButton.setOnClickListener(onConfirmedButtonClicked(
-                shipmentAdapter.getAddressDataList(),
-                shipmentAdapter.getPriceSummaryData()));
-    }
-
-    @Override
-    protected void setViewListener() {
-
+        confirmButton.setOnClickListener(onConfirmedButtonClicked());
     }
 
     @Override
@@ -223,16 +223,14 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         alert.show();
     }
 
-    private View.OnClickListener onConfirmedButtonClicked(
-            final List<MultipleAddressShipmentAdapterData> addressDataList,
-            final MultipleAddressPriceSummaryData data) {
+    private View.OnClickListener onConfirmedButtonClicked() {
 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartShipmentActivity.checkoutCart(
-                        presenter.generateCheckoutRequest(addressDataList, data)
-                );
+
+                presenter.processCheckShipmentFormPrepareCheckout();
+
             }
         };
 
@@ -465,6 +463,42 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void showPromoError(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                 !TextUtils.isEmpty(message) ? message : "Terjadi kesalahan");
+    }
+
+    @Override
+    public void renderCheckShipmentPrepareCheckoutSuccess() {
+        cartShipmentActivity.checkoutCart(
+                presenter.generateCheckoutRequest(shipmentAdapter.getAddressDataList(),
+                        shipmentAdapter.getPriceSummaryData())
+        );
+    }
+
+    @Override
+    public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+            CartShipmentAddressFormData cartShipmentAddressFormData
+    ) {
+        this.cartShipmentAddressFormData = cartShipmentAddressFormData;
+        setViewListener();
+    }
+
+    @Override
+    public void renderErrorCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message) {
+
     }
 
     private Spannable formatPromoMessage(TextView textView, String promoMessage) {
