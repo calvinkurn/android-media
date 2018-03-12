@@ -262,6 +262,8 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         } else if (Integer.parseInt(charSequence.toString()) == 1) {
             decreaseButton.setClickable(false);
             decreaseButton.setEnabled(false);
+            increaseButton.setClickable(true);
+            increaseButton.setEnabled(true);
         } else {
             decreaseButton.setClickable(true);
             decreaseButton.setEnabled(true);
