@@ -60,7 +60,9 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             ProductDataCheckoutRequest.Builder productDataCheckoutRequest =
                     new ProductDataCheckoutRequest.Builder();
             productDataCheckoutRequests.add(productDataCheckoutRequest
-                    .productId(currentShipmentAdapterData.getProductId()).build());
+                    .productId(Integer.parseInt(
+                            currentShipmentAdapterData.getItemData().getProductId())
+                    ).build());
 
             ShopProductCheckoutRequest.Builder shopCheckoutBuilder;
             shopCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
@@ -122,7 +124,6 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     Product currentProduct = productList.get(productIndex);
                     adapterData.setInvoicePosition(adapterDataList.size());
                     adapterData.setShopId(currentGroupShop.getShop().getShopId());
-                    adapterData.setProductId(currentProduct.getProductId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
                     adapterData.setProductPrice(formatRupiah(currentProduct.getProductPrice()));
@@ -131,6 +132,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     MultipleAddressItemData addressItemData = new MultipleAddressItemData();
                     addressItemData.setCartPosition(productIndex);
                     addressItemData.setAddressPosition(0);
+                    addressItemData.setProductId(String.valueOf(currentProduct.getProductId()));
                     addressItemData.setProductWeight(currentProduct.getProductWeightFmt());
                     addressItemData.setProductRawWeight(currentProduct.getProductWeight());
                     addressItemData.setProductNotes(currentProduct.getProductNotes());

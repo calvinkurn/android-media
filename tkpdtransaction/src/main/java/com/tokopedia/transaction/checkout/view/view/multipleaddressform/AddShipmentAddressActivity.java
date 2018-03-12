@@ -55,6 +55,8 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private TextView saveChangesButton;
     private TextView addAddressErrorTextView;
     private ViewGroup chooseAddressButton;
+    private ViewGroup quantityErrorLayout;
+    private TextView quantityErrorTextView;
 
     @Inject
     IAddShipmentAddressPresenter presenter;
@@ -168,6 +170,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         TextView insertNotesButton = findViewById(R.id.insert_notes_button);
         notesLayout = findViewById(R.id.notes_layout);
         notesEditText = findViewById(R.id.notes_edit_text);
+        notesEditText.addTextChangedListener(notesTextWatcher(itemData));
         if (itemData.getProductNotes().isEmpty()) {
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
@@ -180,6 +183,8 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private void setProductQuantityView(MultipleAddressItemData itemData) {
+        quantityErrorLayout = findViewById(R.id.quantity_error_layout);
+        quantityErrorTextView = findViewById(R.id.quantity_error_text_view);
         quantityField = findViewById(R.id.quantity_field);
         ImageView decreaseButton = findViewById(R.id.decrease_quantity);
         ImageView increaseButton = findViewById(R.id.increase_quantity);
@@ -192,6 +197,10 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         ));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
+        if(itemData.getProductQty().equals("1")) {
+            decreaseButton.setEnabled(false);
+            decreaseButton.setClickable(false);
+        }
     }
 
     private void setProductView(MultipleAddressAdapterData productData, TextView senderName) {
@@ -242,29 +251,6 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         };
     }
 
-    private void setEditButtonVisibility(CharSequence charSequence, MultipleAddressItemData data) {
-        if (charSequence.toString().isEmpty()
-                || Integer.parseInt(charSequence.toString()) < 1)
-            quantityField.setText("1");
-        else {
-            if (!addressLayout.isShown()) {
-                saveChangesButton.setVisibility(View.GONE);
-            } else if (Integer.parseInt(charSequence.toString()) > 10000) {
-                saveChangesButton.setVisibility(View.GONE);
-                //TODO show error message
-            } else if (Integer.parseInt(charSequence.toString()) < 1) {
-                saveChangesButton.setVisibility(View.GONE);
-                //TODO show error message
-            } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
-                saveChangesButton.setVisibility(View.GONE);
-                //TODO show overquantity Error Message
-            } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
-                saveChangesButton.setVisibility(View.GONE);
-                //TODO show lack quantity Error Message
-            } else saveChangesButton.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void setQuantityButtonAvailability(CharSequence charSequence,
                                                ImageView decreaseButton,
                                                ImageView increaseButton) {
@@ -281,6 +267,59 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             decreaseButton.setEnabled(true);
             increaseButton.setClickable(true);
             increaseButton.setEnabled(true);
+        }
+    }
+
+    private void setEditButtonVisibility(CharSequence charSequence, MultipleAddressItemData data) {
+        if (charSequence.toString().isEmpty()
+                || Integer.parseInt(charSequence.toString()) < 1)
+            quantityField.setText("1");
+        else {
+            if (!addressLayout.isShown()) {
+                saveChangesButton.setVisibility(View.GONE);
+            } else if (Integer.parseInt(charSequence.toString()) > 10000) {
+                saveChangesButton.setVisibility(View.GONE);
+                quantityErrorLayout.setVisibility(View.VISIBLE);
+                quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                        .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
+            } else if (Integer.parseInt(charSequence.toString()) < 1) {
+                saveChangesButton.setVisibility(View.GONE);
+                quantityErrorLayout.setVisibility(View.VISIBLE);
+                quantityErrorTextView.setText(data.getErrorProductMinQuantity()
+                        .replace("{{value}}", String.valueOf(data.getMinQuantity())));
+            } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                saveChangesButton.setVisibility(View.GONE);
+                quantityErrorLayout.setVisibility(View.VISIBLE);
+                quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                        .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
+            } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
+                saveChangesButton.setVisibility(View.GONE);
+                quantityErrorLayout.setVisibility(View.VISIBLE);
+                quantityErrorTextView.setText(data.getErrorProductMinQuantity()
+                        .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
+            } else {
+                quantityErrorLayout.setVisibility(View.GONE);
+                if(!addAddressErrorTextView.isShown()) {
+                    saveChangesButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    private void setNotesSubmitButtonVisibility(
+            String notes,
+            MultipleAddressItemData data
+    ) {
+        if(notes.length() > data.getMaxRemark()) {
+            addAddressErrorTextView.setVisibility(View.VISIBLE);
+            addAddressErrorTextView.setText(data.getErrorFieldMaxChar()
+                    .replace("{{value}}", String.valueOf(data.getMaxRemark())));
+            saveChangesButton.setVisibility(View.GONE);
+        } else {
+            addAddressErrorTextView.setVisibility(View.GONE);
+            if(!quantityErrorLayout.isShown()) {
+                saveChangesButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -355,6 +394,25 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         };
     }
 
+    private TextWatcher notesTextWatcher(final MultipleAddressItemData data) {
+       return new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable editable) {
+               setNotesSubmitButtonVisibility(editable.toString(), data);
+           }
+       };
+    }
+
     private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,
                                             final ImageView decreaseButton,
                                             final ImageView increaseButton) {
@@ -380,7 +438,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE_ACTION_SELECT_ADDRESS) {
             switch (resultCode) {
                 case RESULT_CODE_ACTION_SELECT_ADDRESS:
                     RecipientAddressModel addressModel =

@@ -58,6 +58,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
                 + ", " + itemData.getAddressCityName()
                 + ", " + itemData.getAddressProvinceName()
                 + ", " + itemData.getRecipientPhoneNumber());
+        holder.pseudoEditButton.setVisibility(View.GONE);
         holder.editButton.setOnClickListener(onEditOrderClickedListener(itemData));
         holder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(position));
         holder.addressLayout.setOnClickListener(
@@ -79,7 +80,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
         private TextView shippingIndex;
 
-        private TextView editButton;
+        private ImageView editButton;
+
+        private TextView pseudoEditButton;
 
         private ImageView deleteButton;
 
@@ -106,7 +109,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             shippingIndex = itemView.findViewById(R.id.shipping_index);
 
-            editButton = itemView.findViewById(R.id.tv_change_address);
+            editButton = itemView.findViewById(R.id.edit_button);
+
+            pseudoEditButton = itemView.findViewById(R.id.tv_change_address);
 
             deleteButton = itemView.findViewById(R.id.delete_button);
 

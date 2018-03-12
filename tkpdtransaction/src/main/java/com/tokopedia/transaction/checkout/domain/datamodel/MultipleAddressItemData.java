@@ -9,7 +9,7 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressItemData implements Parcelable {
+public class MultipleAddressItemData implements Parcelable{
 
     private int cartPosition;
 
@@ -61,6 +61,24 @@ public class MultipleAddressItemData implements Parcelable {
 
     private int minQuantity;
 
+    private String errorCheckoutPriceLimit;
+
+    private String errorFieldBetween;
+
+    private String errorFieldMaxChar;
+
+    private String errorFieldRequired;
+
+    private String errorProductAvailableStock;
+
+    private String errorProductAvailableStockDetail;
+
+    private String errorProductMaxQuantity;
+
+    private String errorProductMinQuantity;
+
+    private int maxRemark;
+
     public MultipleAddressItemData() {
     }
 
@@ -71,6 +89,7 @@ public class MultipleAddressItemData implements Parcelable {
         addressStatus = in.readInt();
         productId = in.readString();
         productWeight = in.readString();
+        productRawWeight = in.readInt();
         productQty = in.readString();
         productNotes = in.readString();
         addressId = in.readString();
@@ -89,7 +108,15 @@ public class MultipleAddressItemData implements Parcelable {
         store = in.readParcelable(Store.class.getClassLoader());
         maxQuantity = in.readInt();
         minQuantity = in.readInt();
-        productRawWeight = in.readInt();
+        errorCheckoutPriceLimit = in.readString();
+        errorFieldBetween = in.readString();
+        errorFieldMaxChar = in.readString();
+        errorFieldRequired = in.readString();
+        errorProductAvailableStock = in.readString();
+        errorProductAvailableStockDetail = in.readString();
+        errorProductMaxQuantity = in.readString();
+        errorProductMinQuantity = in.readString();
+        maxRemark = in.readInt();
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
@@ -304,6 +331,78 @@ public class MultipleAddressItemData implements Parcelable {
         this.productRawWeight = productRawWeight;
     }
 
+    public String getErrorCheckoutPriceLimit() {
+        return errorCheckoutPriceLimit;
+    }
+
+    public void setErrorCheckoutPriceLimit(String errorCheckoutPriceLimit) {
+        this.errorCheckoutPriceLimit = errorCheckoutPriceLimit;
+    }
+
+    public String getErrorFieldBetween() {
+        return errorFieldBetween;
+    }
+
+    public void setErrorFieldBetween(String errorFieldBetween) {
+        this.errorFieldBetween = errorFieldBetween;
+    }
+
+    public String getErrorFieldMaxChar() {
+        return errorFieldMaxChar;
+    }
+
+    public void setErrorFieldMaxChar(String errorFieldMaxChar) {
+        this.errorFieldMaxChar = errorFieldMaxChar;
+    }
+
+    public String getErrorFieldRequired() {
+        return errorFieldRequired;
+    }
+
+    public void setErrorFieldRequired(String errorFieldRequired) {
+        this.errorFieldRequired = errorFieldRequired;
+    }
+
+    public String getErrorProductAvailableStock() {
+        return errorProductAvailableStock;
+    }
+
+    public void setErrorProductAvailableStock(String errorProductAvailableStock) {
+        this.errorProductAvailableStock = errorProductAvailableStock;
+    }
+
+    public String getErrorProductAvailableStockDetail() {
+        return errorProductAvailableStockDetail;
+    }
+
+    public void setErrorProductAvailableStockDetail(String errorProductAvailableStockDetail) {
+        this.errorProductAvailableStockDetail = errorProductAvailableStockDetail;
+    }
+
+    public String getErrorProductMaxQuantity() {
+        return errorProductMaxQuantity;
+    }
+
+    public void setErrorProductMaxQuantity(String errorProductMaxQuantity) {
+        this.errorProductMaxQuantity = errorProductMaxQuantity;
+    }
+
+    public String getErrorProductMinQuantity() {
+        return errorProductMinQuantity;
+    }
+
+    public void setErrorProductMinQuantity(String errorProductMinQuantity) {
+        this.errorProductMinQuantity = errorProductMinQuantity;
+    }
+
+    public int getMaxRemark() {
+        return maxRemark;
+    }
+
+    public void setMaxRemark(int maxRemark) {
+        this.maxRemark = maxRemark;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -317,6 +416,7 @@ public class MultipleAddressItemData implements Parcelable {
         parcel.writeInt(addressStatus);
         parcel.writeString(productId);
         parcel.writeString(productWeight);
+        parcel.writeInt(productRawWeight);
         parcel.writeString(productQty);
         parcel.writeString(productNotes);
         parcel.writeString(addressId);
@@ -335,6 +435,14 @@ public class MultipleAddressItemData implements Parcelable {
         parcel.writeParcelable(store, i);
         parcel.writeInt(maxQuantity);
         parcel.writeInt(minQuantity);
-        parcel.writeInt(productRawWeight);
+        parcel.writeString(errorCheckoutPriceLimit);
+        parcel.writeString(errorFieldBetween);
+        parcel.writeString(errorFieldMaxChar);
+        parcel.writeString(errorFieldRequired);
+        parcel.writeString(errorProductAvailableStock);
+        parcel.writeString(errorProductAvailableStockDetail);
+        parcel.writeString(errorProductMaxQuantity);
+        parcel.writeString(errorProductMinQuantity);
+        parcel.writeInt(maxRemark);
     }
 }

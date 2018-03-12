@@ -10,8 +10,6 @@ public class MultipleAddressShipmentAdapterData {
 
     private int invoicePosition;
 
-    private int productId;
-
     private int shopId;
 
     private String senderName;
@@ -64,14 +62,6 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setInvoicePosition(int invoicePosition) {
         this.invoicePosition = invoicePosition;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public int getShopId() {
