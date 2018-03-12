@@ -382,7 +382,7 @@ public class InboxAnalytics {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
                 Category.RESOLUTION_CENTER_CHAT,
-                Action.IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT,
+                Action.IMPRESSION_SOLUTION_EDIT_LIST_PAGE_CHAT,
                 solution
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
     }
@@ -391,7 +391,7 @@ public class InboxAnalytics {
         return new EventTracking(
                 Event.EVENT_RESOLUTION_CENTER,
                 Category.RESOLUTION_CENTER_CHAT,
-                Action.CLICK_SOLUTION_EDIT_PAGE_CHAT,
+                Action.IMPRESSION_SOLUTION_APPEAL_LIST_PAGE_CHAT,
                 solution
         ).setCustomEvent(ResoDimension.RESOLUTION_ID, resolutionId);
     }
