@@ -199,7 +199,7 @@ public class GroupChatMessagesMapper {
                     activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
                     VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
-                    "https://tokopedia.com",
+                    activePollPojo.getWinnerUrl().trim(),
                     activePollPojo.getStartTime(),
                     activePollPojo.getEndTime()
             );

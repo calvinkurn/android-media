@@ -71,7 +71,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                     activePollPojo.getStatusId(),
                     activePollPojo.isIsAnswered(),
                     VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
-                    "https://tokopedia.com/poll",
+                    activePollPojo.getWinnerUrl().trim(),
                     activePollPojo.getStartTime(),
                     activePollPojo.getEndTime()
             );

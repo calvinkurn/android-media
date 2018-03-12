@@ -52,6 +52,9 @@ public class ActivePoll {
     @SerializedName("is_answered")
     @Expose
     private boolean isAnswered;
+    @SerializedName("winner_url")
+    @Expose
+    private String winnerUrl;
 
     public int getPollId() {
         return pollId;
@@ -171,6 +174,14 @@ public class ActivePoll {
 
     public void setIsAnswered(boolean isAnswered) {
         this.isAnswered = isAnswered;
+    }
+
+    public String getWinnerUrl() {
+        return winnerUrl;
+    }
+
+    public void setWinnerUrl(String winnerUrl) {
+        this.winnerUrl = winnerUrl;
     }
 
 }
