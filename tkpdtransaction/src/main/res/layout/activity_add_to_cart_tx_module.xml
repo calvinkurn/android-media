@@ -407,7 +407,7 @@
                             android:ellipsize="end"
                             android:focusable="false"
                             android:hint="@string/choose_location"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
                     </RelativeLayout>
 

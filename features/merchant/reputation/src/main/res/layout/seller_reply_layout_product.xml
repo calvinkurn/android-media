@@ -129,13 +129,13 @@
                         android:paddingRight="@dimen/padding_vs"
                         android:paddingTop="@dimen/padding_vvvs"
                         android:text="@string/seller"
-                        android:textSize="@dimen/font_micro" />
+                        android:textSize="@dimen/sp_12" />
 
 
                     <TextView
                         android:id="@+id/seller_reply_time"
                         style="@style/TextView.Micro.BlackDisabled"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         tools:text="31 Jul 2016, pukul 11:48" />
                 </LinearLayout>
 

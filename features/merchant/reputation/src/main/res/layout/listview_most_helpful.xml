@@ -114,7 +114,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
@@ -150,7 +150,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -222,7 +222,7 @@
                     android:singleLine="true"
                     android:text="Username1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date1"
@@ -378,7 +378,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
@@ -414,7 +414,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -486,7 +486,7 @@
                     android:singleLine="true"
                     android:text="Username2"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date2"
@@ -642,7 +642,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
                     </LinearLayout>
 
                     <View
@@ -678,7 +678,7 @@
                             android:gravity="center"
                             android:paddingTop="@dimen/padding_vs"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small" />
+                            android:textSize="@dimen/sp_14" />
 
 
                     </LinearLayout>
@@ -750,7 +750,7 @@
                     android:singleLine="true"
                     android:text="Username3"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/date3"

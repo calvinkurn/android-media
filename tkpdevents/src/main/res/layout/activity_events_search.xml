@@ -82,7 +82,7 @@
                 android:paddingStart="@dimen/dp_16"
                 android:text="@string/top_events"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="bold"
                 android:visibility="gone" />
 

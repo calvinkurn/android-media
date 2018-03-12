@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         tools:text="main picture"
         android:background="#AA000000"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textColor="@android:color/white"
         android:gravity="center"
         android:layout_gravity="center_horizontal|bottom" />

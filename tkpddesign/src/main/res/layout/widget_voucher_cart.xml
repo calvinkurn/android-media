@@ -27,7 +27,7 @@
                 android:buttonTint="@color/tkpd_main_green"
                 android:gravity="center"
                 android:textColor="@color/font_voucher"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="bold"
                 tools:ignore="UnusedAttribute"/>
 
@@ -71,7 +71,7 @@
                     android:layout_below="@id/edittext_voucher"
                     android:text="@string/error_voucher"
                     android:textColor="@color/font_error_voucher"
-                    android:textSize="@dimen/font_small_caption_voucher"
+                    android:textSize="@dimen/sp_14_caption_voucher"
                     android:visibility="gone"
                     tools:visibility="visible"/>
 

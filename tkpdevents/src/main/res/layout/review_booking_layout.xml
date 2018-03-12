@@ -64,7 +64,7 @@
                         android:paddingRight="@dimen/dp_16"
                         android:text="@string/rp_5980000"
                         android:textColor="@color/grey_150"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="bold" />
 
                     <include
@@ -107,7 +107,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="@string/tiket"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -151,7 +151,7 @@
                             android:layout_marginRight="100dp"
                             android:layout_marginTop="@dimen/dp_4"
                             android:textColor="@color/black_54"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -215,7 +215,7 @@
                         android:padding="@dimen/divider_height_thin"
                         android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="bold" />
 
                     <TextView
@@ -228,7 +228,7 @@
                         android:layout_marginStart="@dimen/dp_16"
                         android:text="@string/email"
                         android:textColor="@color/grey_700"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
                     <EditText
@@ -241,7 +241,7 @@
                         android:layout_marginStart="12dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
 
                     <TextView
@@ -262,7 +262,7 @@
                         android:padding="@dimen/divider_height_thin"
                         android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="bold" />
 
                     <TextView
@@ -275,7 +275,7 @@
                         android:layout_marginStart="@dimen/dp_16"
                         android:text="No. Telepon"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
                     <EditText
@@ -288,7 +288,7 @@
                         android:paddingBottom="8dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
                 </RelativeLayout>
 
@@ -348,7 +348,7 @@
                         android:layout_marginStart="@dimen/dp_16"
                         android:text="Informasi ini akan digunakan pada saat penukaran tiket"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
 
                     <EditText
@@ -358,7 +358,7 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -370,7 +370,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -382,7 +382,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -394,7 +394,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="@dimen/margin_padding_medium"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -431,7 +431,7 @@
                             android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/promo_section"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -456,7 +456,7 @@
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
                             android:paddingStart="0dp"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
 
                         <TextView
@@ -472,7 +472,7 @@
                             android:gravity="center"
                             android:text="@string/cek_kode"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -490,7 +490,7 @@
                             android:gravity="center"
                             android:text="Batal"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -508,7 +508,7 @@
                             android:gravity="center"
                             android:text="Anda mendapatkan promo:"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -526,7 +526,7 @@
                             android:gravity="center"
                             android:text="cashback mesage"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -576,7 +576,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Base Fare"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -591,7 +591,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -607,7 +607,7 @@
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingStart="@dimen/dp_16"
                             android:text="@string/rp_5980000"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
@@ -624,7 +624,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Biaya Layanan"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -639,7 +639,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
@@ -663,7 +663,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Pembayaran Anda"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="bold" />
 
                         <TextView
@@ -701,7 +701,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/some_info"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_micro" />
+                    android:textSize="@dimen/sp_12" />
 
                 <include
                     android:id="@+id/btn_go_to_payment"

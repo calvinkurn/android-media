@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_qty"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/sp_14"/>
 
             <EditText
                 android:id="@+id/et_quantity_product"
@@ -157,7 +157,7 @@
                 android:minWidth="@dimen/margin_med"
                 android:padding="@dimen/padding_vs"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="2"/>
 
         </LinearLayout>
@@ -175,5 +175,5 @@
         android:paddingBottom="@dimen/margin_small"
         android:textColor="@color/black"
         android:textColorHint="@color/grey_400"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 </LinearLayout>

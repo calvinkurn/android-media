@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/product_variant_status"
-        app:title_text_size="@dimen/font_micro"
+        app:title_text_size="@dimen/sp_12"
         app:lv_title_color="@color/font_black_secondary_54"
-        app:content_text_size="@dimen/font_title"
+        app:content_text_size="@dimen/sp_16"
         app:content_color="@color/font_black_primary_70"
         style="@style/LabelLayout"/>
 

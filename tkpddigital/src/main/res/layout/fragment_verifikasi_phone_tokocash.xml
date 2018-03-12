@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:lineSpacingExtra="5sp"
         android:text="@string/tokocash_desc_request_otp" />
 

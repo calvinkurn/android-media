@@ -11,7 +11,7 @@
         android:paddingLeft="@dimen/padding_vvs"
         android:textColor="@color/digital_voucher_notes"
         android:text="@string/title_nominal"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <Spinner
         android:id="@+id/spinner_nominal"

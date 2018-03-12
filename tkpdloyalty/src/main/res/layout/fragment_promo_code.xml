@@ -50,7 +50,7 @@
             android:padding="@dimen/margin_small"
             android:text="@string/button_use_code"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
     </LinearLayout>

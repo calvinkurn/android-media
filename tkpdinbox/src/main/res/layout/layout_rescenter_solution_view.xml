@@ -135,7 +135,7 @@
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
         android:textColor="@color/tkpd_main_green"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         />
 </LinearLayout>

@@ -23,7 +23,7 @@
             android:layout_alignTop="@+id/linearLayout2"
             android:text="Mulai dari harga:"
             android:textColor="@color/grey_500"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_below="@+id/textView3"
             android:text="Rp 552.00"
             android:textColor="@color/orange"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
 

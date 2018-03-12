@@ -30,7 +30,7 @@
         android:layout_below="@+id/donasi_popup_title"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         tools:text="@string/placeholder_text"/>
 
     <ImageView

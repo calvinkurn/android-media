@@ -53,7 +53,7 @@
                     android:gravity="center"
                     android:paddingBottom="@dimen/margin_med"
                     android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     tools:text="Kode verifikasi telah dikirimkan ke nomor 08788574394534"/>
 
                 <TextView
@@ -66,7 +66,7 @@
                     android:paddingBottom="@dimen/margin_med"
                     android:text="@string/label_hint_input_otp_digital_module"
                     android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
                 <com.tkpd.library.ui.widget.PinEntryEditText
                     android:id="@+id/et_input_otp"
@@ -153,7 +153,7 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:text="@string/label_or_call_otp_digital_module"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
                 <TextView
                     android:id="@+id/btn_request_otp_call"
@@ -163,7 +163,7 @@
                     android:layout_marginRight="@dimen/margin_vs"
                     android:text="@string/label_btn_call_otp_digital_module"
                     android:textColor="@color/tkpd_main_green"
-                    android:textSize="@dimen/font_small"/>
+                    android:textSize="@dimen/sp_14"/>
 
             </LinearLayout>
         </LinearLayout>

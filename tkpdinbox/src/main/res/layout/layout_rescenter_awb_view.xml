@@ -110,7 +110,7 @@
         android:gravity="center_vertical"
         android:text="@string/action_see_more_awb"
         android:textColor="@color/tkpd_main_green"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif-medium"
         />
 

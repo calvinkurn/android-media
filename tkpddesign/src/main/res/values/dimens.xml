@@ -1,15 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_48">48dp</dimen>
 
+    <dimen name="sp_8">8sp</dimen>
     <dimen name="sp_11">11sp</dimen>
     <dimen name="sp_12">12sp</dimen>
     <dimen name="sp_13">13sp</dimen>
@@ -25,9 +26,6 @@
     <dimen name="font_sub_headline">24sp</dimen>
     <dimen name="font_title_big">20sp</dimen>
     <dimen name="font_title">16sp</dimen>
-    <dimen name="font_small">14sp</dimen>
-    <dimen name="font_micro">12sp</dimen>
-    <dimen name="font_nano">8sp</dimen>
 
     <dimen name="font_line_spacing_headline">38sp</dimen>
     <dimen name="font_line_spacing_subheadline">28sp</dimen>
@@ -102,7 +100,7 @@
     <dimen name="image_medal_size">20dp</dimen>
 
     <dimen name="height_button_voucher">44dp</dimen>
-    <dimen name="font_small_caption_voucher">10dp</dimen>
+    <dimen name="sp_14_caption_voucher">10dp</dimen>
 
     <dimen name="image_smiley_size">35dp</dimen>
 

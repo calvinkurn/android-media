@@ -239,7 +239,7 @@
                                 android:gravity="center"
                                 android:text="Pilih metode pembayaran dulu"
                                 android:textColor="@color/href_link"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/sp_14"
                                 android:textStyle="bold"
                                 tools:ignore="HardcodedText" />
 
@@ -312,7 +312,7 @@
                             android:gravity="center"
                             android:text="@string/tittle_checkout"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="bold" />
 
                         <include
@@ -350,7 +350,7 @@
                                 android:padding="@dimen/margin_small"
                                 android:text="@string/title_check"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/sp_14"
                                 android:textStyle="bold" />
 
                             <android.support.design.widget.TextInputLayout

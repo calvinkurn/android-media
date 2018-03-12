@@ -11,7 +11,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_m"
-        android:layout_height="@dimen/font_micro"
+        android:layout_height="@dimen/sp_12"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -22,7 +22,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_s"
-        android:layout_height="@dimen/font_micro"
+        android:layout_height="@dimen/sp_12"
         android:layout_gravity="end"
         android:layout_marginTop="@dimen/margin_sm"
         app:use_gradient="true" />

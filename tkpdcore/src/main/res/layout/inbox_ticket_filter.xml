@@ -54,14 +54,14 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:checked="true"
                 android:text="@string/item_all"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <RadioButton
                 android:id="@+id/radio_unread"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_unread"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
         </RadioGroup>
 
     </LinearLayout>

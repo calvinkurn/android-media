@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/label_card_number"
         android:textColor="@color/grey_700"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
 
     <EditText
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_expiration_date"
                 android:textColor="@color/grey_700"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <com.tokopedia.design.component.EditTextCompat
@@ -72,7 +72,7 @@
                 android:inputType="date"
                 android:text="@string/label_cvv"
                 android:textColor="@color/grey_700"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <com.tokopedia.design.component.EditTextCompat
@@ -97,7 +97,7 @@
         android:inputType="date"
         android:text="@string/label_country"
         android:textColor="@color/grey_700"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -26,7 +26,7 @@
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
         android:paddingTop="@dimen/padding_small"
-        android:textSize="@dimen/font_title"
+        android:textSize="@dimen/sp_16"
         android:visibility="gone"
         tools:text="Pemindahan Dana ke Saldo Tokopedia Gagal"
         tools:visibility="visible" />
@@ -39,7 +39,7 @@
         android:gravity="center"
         android:lineSpacingExtra="5sp"
         android:padding="@dimen/padding_small"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:visibility="gone"
         tools:text="Rp. 500.000"
         tools:visibility="visible" />

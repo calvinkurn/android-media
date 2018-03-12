@@ -43,7 +43,7 @@
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginBottom="1dp"
         android:textStyle="bold"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textColor="@color/black_70"
         />
 
@@ -112,7 +112,7 @@
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginBottom="1dp"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/black_70"
             />
 

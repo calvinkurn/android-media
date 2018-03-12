@@ -27,7 +27,7 @@
         android:textColor="@color/black_70"
         android:text="Admin Tokopedia memberikan solusi awal.\nMenunggu respond penjual &amp; pembeli."
         android:textStyle="bold"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         />
 
     <RelativeLayout
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Lihat diskusi terakhir"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />

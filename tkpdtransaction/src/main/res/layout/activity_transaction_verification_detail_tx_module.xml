@@ -31,7 +31,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@id/txtTanggalTransaksi"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tools:text="21 Oktober 2014"/>
 
@@ -55,7 +55,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtTotalPembayaran"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tools:text="Rp 200.000,-"/>
 
@@ -115,7 +115,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/txtNoRekeningAsal"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tools:text="No Rekening Asal"/>
 
@@ -126,7 +126,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtNoRekeningTujuan"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tools:text="No Rekening Tujuan"/>
     </RelativeLayout>
@@ -163,7 +163,7 @@
                 android:gravity="center"
                 android:text="@string/label_button_purchase_edit_payment"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold"/>
 
             <TextView
@@ -177,7 +177,7 @@
                 android:gravity="center"
                 android:text="@string/label_button_purchase_upload_proof"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:visibility="visible"/>
         </LinearLayout>
 

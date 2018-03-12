@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+s<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:layout_toLeftOf="@+id/but_overflow"
         android:layout_toStartOf="@+id/but_overflow"
         android:textColor="@color/tkpd_light_green"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <TextView
         android:id="@+id/date"

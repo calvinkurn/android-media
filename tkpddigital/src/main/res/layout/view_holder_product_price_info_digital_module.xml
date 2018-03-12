@@ -16,7 +16,7 @@
         android:paddingRight="@null"
         android:paddingStart="@dimen/padding_vvs"
         android:text="@string/label_title_price_info_digital"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:paddingLeft="@dimen/padding_vvs"
             android:paddingRight="@null"
             android:paddingStart="@dimen/padding_vvs"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             tools:text="Rp.100.000"/>
 
         <TextView

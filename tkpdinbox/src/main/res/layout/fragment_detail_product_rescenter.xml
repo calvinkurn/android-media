@@ -71,7 +71,7 @@
                         android:maxLines="2"
                         context:text="Lihat Semua produk yang dikomplain"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         />
 
                     <TextView
@@ -86,7 +86,7 @@
                         context:text="Rp 1.275.000"
                         android:textColor="@color/tkpd_dark_red"
                         android:textStyle="bold"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         />
 
                 </RelativeLayout>
@@ -99,7 +99,7 @@
                 android:layout_marginTop="@dimen/margin_med"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:text="@string/label_buyer_complaint"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color"
                 />
 
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_med"
                 context:text="Produk Rusak"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 />
 
             <TextView
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:text="@string/label_reason_complaint"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color"
                 />
 
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_med"
                 context:text="Pas dicolok ga bisa bunyi, pas saya eh kenapa kenapa kabelnya"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 />
 
             <LinearLayout
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
                     android:text="@string/label_complaint_attachment"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textColor="@color/label_text_color"
                     />
 

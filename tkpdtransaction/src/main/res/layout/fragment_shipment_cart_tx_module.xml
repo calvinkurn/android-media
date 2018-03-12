@@ -191,7 +191,7 @@
                             android:paddingLeft="@dimen/margin_vs"
                             android:paddingRight="@dimen/margin_vs"
                             android:paddingStart="@dimen/margin_vs"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </RelativeLayout>
 

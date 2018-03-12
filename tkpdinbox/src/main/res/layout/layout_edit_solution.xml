@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/string_edit_title"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:textColor="@color/black_70"
             android:gravity="center"
             />
@@ -38,7 +38,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_edit_message"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/black_54"/>
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:textColor="@color/black_54"/>
 

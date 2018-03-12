@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:text="@string/app_share_referral_label_desc"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal" />
 
         <TextView
@@ -72,7 +72,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_small"
             android:lineSpacingExtra="@dimen/font_medium"
-            android:padding="@dimen/font_small"
+            android:padding="@dimen/sp_14"
             android:text="@string/title_app_referral_howitworks"
             android:textColor="@color/green_btn"
             android:textSize="@dimen/font_medium"

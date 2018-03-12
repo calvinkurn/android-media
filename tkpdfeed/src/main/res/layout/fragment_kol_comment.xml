@@ -28,7 +28,7 @@
             android:paddingLeft="@dimen/padding_small_sm"
             android:paddingRight="@dimen/padding_small_sm"
             android:paddingStart="@dimen/padding_small_sm"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"/>
 
         <ImageView

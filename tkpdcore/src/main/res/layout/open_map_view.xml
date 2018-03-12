@@ -34,7 +34,7 @@
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_alignParentTop="true"
             android:ellipsize="end"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:focusable="false"
             android:clickable="true"
             android:hint="@string/choose_location"/>

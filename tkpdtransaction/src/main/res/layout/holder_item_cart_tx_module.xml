@@ -95,7 +95,7 @@
         android:padding="@dimen/margin_small"
         android:text="@string/title_send_as_dropship"
         android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         app:backgroundTint="@color/colorPrimary" />
 
     <LinearLayout
@@ -158,7 +158,7 @@
             android:padding="@dimen/margin_small"
             android:text="@string/title_details_info"
             android:textColor="@color/label_color"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <ImageView
@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_shipping_to"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/tv_shipping_address"
@@ -210,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:textColor="@color/href_link"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="Test RPX" />
 
             <TextView
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_shipping_agency"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/tv_shipment"
@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:textColor="@color/href_link"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="JNE - YES" />
 
             <LinearLayout
@@ -239,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_use_insurance"
                     android:textColor="@color/label_color"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <ImageView
                     android:id="@+id/img_insurance_info"
@@ -258,7 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <TextView
@@ -266,7 +266,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_left_stock"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <Spinner
                 android:id="@+id/sp_shipment_option_choosen"
@@ -274,7 +274,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <LinearLayout
                 android:id="@+id/calculation_layout"
@@ -295,7 +295,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_total_item"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tv_weight"
@@ -305,7 +305,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         tools:text="1 Kg" />
 
                 </LinearLayout>
@@ -322,7 +322,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_sub_total"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tv_sub_total"
@@ -332,7 +332,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         tools:text="Rp 20.000,-" />
 
                 </LinearLayout>
@@ -349,7 +349,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_shipping_cost"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tv_shipping_cost"
@@ -359,7 +359,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         tools:text="Rp 20.000,-" />
                 </LinearLayout>
 
@@ -375,7 +375,7 @@
                         android:layout_weight="1"
                         android:text="@string/title_additional_cost"
                         android:textColor="@color/label_color"
-                        android:textSize="@dimen/font_small" />
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tv_additional_cost"
@@ -385,7 +385,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         tools:text="Rp 20.000,-" />
                 </LinearLayout>
 
@@ -408,7 +408,7 @@
             android:layout_weight="1"
             android:text="@string/title_total"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <ProgressBar
@@ -423,7 +423,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:visibility="gone"
             tools:text="Rp 20.000,-" />

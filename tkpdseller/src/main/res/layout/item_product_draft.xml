@@ -41,7 +41,7 @@
             android:singleLine="true"
             tools:text="Nama Produk"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/tv_completion_percentage"

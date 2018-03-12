@@ -27,7 +27,7 @@
         android:maxLines="2"
         context:text="Lihat Semua produk yang dikomplain"
         android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         />
 
 </LinearLayout>

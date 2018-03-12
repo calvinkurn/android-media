@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/dp_24"/>
 
         <TextView
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:id="@+id/tv_title_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -70,7 +70,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="7sp"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             tools:text="INV/20170116/XVII/65862137"
             />
@@ -120,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/avatar"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             tools:text="Pretty Sugar Shop"
             />
 

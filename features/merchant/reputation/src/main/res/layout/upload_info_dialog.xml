@@ -37,7 +37,7 @@
         android:lineSpacingExtra="7sp"
         android:text="@string/upload_product_info"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         android:layout_marginBottom="@dimen/margin_small"
         />

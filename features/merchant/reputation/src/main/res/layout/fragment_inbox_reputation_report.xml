@@ -21,7 +21,7 @@
         android:lineSpacingExtra="7sp"
         android:text="@string/send"
         android:textColor="@color/grey_700"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         />
 
@@ -68,7 +68,7 @@
                     android:lineSpacingExtra="7sp"
                     android:text="@string/report_option_spam"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal"/>
 
                 <RadioButton
@@ -80,7 +80,7 @@
                     android:lineSpacingExtra="7sp"
                     android:text="@string/report_option_sara"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal"/>
 
                 <RadioButton
@@ -91,7 +91,7 @@
                     android:lineSpacingExtra="7sp"
                     android:text="@string/report_option_others"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal"/>
 
                 <EditText

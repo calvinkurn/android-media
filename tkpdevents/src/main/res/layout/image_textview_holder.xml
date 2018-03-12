@@ -24,7 +24,7 @@
         android:paddingStart="@dimen/dp_16"
         android:text="25 Nov 2017 Pukul"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal" />
 
 </LinearLayout>

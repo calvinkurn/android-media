@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             tools:text="12" />
 
         <View

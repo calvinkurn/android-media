@@ -33,7 +33,7 @@
         android:layout_marginRight="@dimen/margin_large"
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <ImageView
         android:id="@+id/image"
@@ -53,5 +53,5 @@
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
         android:gravity="center"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 </RelativeLayout>

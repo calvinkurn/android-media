@@ -23,7 +23,7 @@
                 android:background="@drawable/bg_title_system"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 context:text="sistem tokopedia"
                 android:paddingLeft="@dimen/padding_ms"
                 android:paddingRight="@dimen/padding_ms"

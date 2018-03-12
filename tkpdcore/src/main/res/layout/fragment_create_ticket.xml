@@ -42,7 +42,7 @@
                 android:enabled="false"
                 android:gravity="top"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:text="Saya pasien > Walalala" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:gravity="top"
                 android:inputType="textCapWords"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:visibility="gone"/>
 
             <TextView
@@ -92,7 +92,7 @@
                 android:gravity="top"
                 android:inputType="textEmailAddress"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 tools:visibility="gone"/>
 
             <TextView
@@ -116,7 +116,7 @@
                 android:gravity="top"
                 android:minLines="5"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/phone_text"
@@ -139,7 +139,7 @@
                 android:gravity="top"
                 android:inputType="phone"
                 android:padding="@dimen/padding_small"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/attachment_text"
@@ -160,7 +160,7 @@
                 android:layout_below="@id/attachment_text"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="italic"
                 android:visibility="gone"
                 tools:text="Mohon lampirkan bukti resi pengiriman Anda."

@@ -103,7 +103,7 @@
             android:layout_marginTop="3dp"
             android:text="1 x Festival"
             android:textColor="@color/green_nob"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             android:textStyle="bold" />
 
         <TextView
@@ -132,7 +132,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:text="TOTAL:"
             android:textColor="@color/price_pdp"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             android:textStyle="bold" />
 
 

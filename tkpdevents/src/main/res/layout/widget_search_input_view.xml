@@ -36,7 +36,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <ImageButton
             android:id="@+id/image_button_close"

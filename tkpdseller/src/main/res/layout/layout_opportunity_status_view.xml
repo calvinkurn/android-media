@@ -42,7 +42,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reputation_value"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textColor="@color/label_text_color" />
                     <ImageView
                         android:layout_width="16dp"
@@ -82,7 +82,7 @@
                 android:id="@+id/value_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/black"
                 tools:text="Jakarta Barat" />
 
@@ -95,13 +95,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cashback_for_buyer"
                 android:textColor="@color/label_text_color"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/value_cashback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/black"
                 tools:text="Rp50.000" />
         </LinearLayout>
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/respond_deadline"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color" />
 
             <TextView
@@ -145,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/shipping"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color" />
 
             <TextView
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 tools:text="Gojek - Go send"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/sp_14"/>
 
         </LinearLayout>
 

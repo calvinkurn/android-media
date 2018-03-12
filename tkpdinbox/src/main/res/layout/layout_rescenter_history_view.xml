@@ -49,5 +49,5 @@
         android:text="@string/action_see_more_history"
         android:textColor="@color/tkpd_main_green"
         android:fontFamily="sans-serif-medium"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 </LinearLayout>

@@ -63,7 +63,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/black_38"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     tools:text="kacamata kualitas premium / line @towns_fashion" />
             </LinearLayout>
 

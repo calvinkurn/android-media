@@ -15,7 +15,7 @@
         android:lineSpacingExtra="8sp"
         android:text="@string/buyer_reputation"
         android:textColor="@color/font_black_primary_70"
-        android:textSize="@dimen/font_title"
+        android:textSize="@dimen/sp_16"
         android:textStyle="normal"
         />
 
