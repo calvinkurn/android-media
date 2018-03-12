@@ -12,7 +12,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -173,7 +173,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals(OFFICIAL.toLowerCase())) {
+        if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals
+                (OFFICIAL.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");
@@ -181,9 +182,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 getView().startActivity(intent);
             } else {
-                getView().startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(id))
-                );
+                if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                    getView().startActivity(
+                            ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+                                    .getTopProfileIntent(getView().getContext(), id)
+                    );
+                }
             }
 
         }
