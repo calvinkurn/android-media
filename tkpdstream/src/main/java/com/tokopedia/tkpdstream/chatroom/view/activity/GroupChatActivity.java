@@ -11,14 +11,13 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
@@ -30,7 +29,7 @@ import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
  * @author by nisie on 2/6/18.
  */
 
-public class GroupChatActivity extends BaseEmptyActivity {
+public class GroupChatActivity extends BaseSimpleActivity {
 
     private static final int KEYBOARD_TRESHOLD = 100;
 
@@ -74,9 +73,9 @@ public class GroupChatActivity extends BaseEmptyActivity {
                 int heightDiff = rootView.getRootView().getHeight() - rootView.getHeight();
 
                 if (heightDiff > KEYBOARD_TRESHOLD) {
-                   removePaddingIfKeyboardIsShowing();
+                    removePaddingIfKeyboardIsShowing();
                 } else {
-                   addPaddingIfKeyboardIsClosed();
+                    addPaddingIfKeyboardIsClosed();
                 }
             }
         });
@@ -124,6 +123,8 @@ public class GroupChatActivity extends BaseEmptyActivity {
         bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
         intent.putExtras(bundle);
         return intent;
+
+
     }
 
     /**
@@ -168,5 +169,21 @@ public class GroupChatActivity extends BaseEmptyActivity {
                 return 0;
         }
         return 0;
+    }
+
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        setContentView(getLayoutRes());
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected void setupStatusBar() {
+
     }
 }
