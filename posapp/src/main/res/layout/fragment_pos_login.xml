@@ -102,6 +102,13 @@
                     android:textColor="@android:color/white"
                     />
 
+                <Button
+                    android:id="@+id/button_devopt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Developer Options"
+                    android:visibility="gone"/>
+
             </LinearLayout>
         </ScrollView>
 

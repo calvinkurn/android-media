@@ -7,10 +7,14 @@ import android.widget.TextView;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.di.component.CartComponent;
@@ -35,6 +39,7 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initDrawer();
         reactInstanceManager = ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager();
     }
 
@@ -113,5 +118,14 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
                 tvNotif.setVisibility(View.GONE);
             }
         }
+    }
+
+    protected void initDrawer() {
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(setDrawerPosition());
     }
 }

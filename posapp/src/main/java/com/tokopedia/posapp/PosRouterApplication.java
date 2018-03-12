@@ -36,7 +36,7 @@ import com.tokopedia.posapp.di.component.ReactNativeComponent;
 import com.tokopedia.posapp.di.module.PosReactNativeModule;
 import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
-import com.tokopedia.posapp.product.productlist.view.ProductListActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.base.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;

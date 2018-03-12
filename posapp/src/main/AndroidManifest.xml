@@ -70,7 +70,7 @@
             android:name=".payment.cardscanner.view.activity.CardDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.productlist.view.ProductListActivity"
+            android:name=".product.productlist.view.activity.ProductListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
@@ -96,6 +96,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".payment.invoice.InvoiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.management.view.activity.ProductManagementActivity"
             android:screenOrientation="portrait" />
     </application>
 

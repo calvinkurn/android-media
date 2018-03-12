@@ -20,16 +20,6 @@ import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
 
 public class TransactionHistoryActivity extends ReactDrawerPresenterActivity {
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        sessionHandler = new SessionHandler(this);
-        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
-        drawerHelper.initDrawer(this);
-        drawerHelper.setEnabled(true);
-    }
-
-    @Override
     protected void setupURIPass(Uri data) {
 
     }

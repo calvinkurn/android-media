@@ -21,7 +21,7 @@ import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.outlet.view.Outlet;
 import com.tokopedia.posapp.shop.view.Shop;
-import com.tokopedia.posapp.product.productlist.view.ProductListActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.outlet.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.outlet.view.presenter.OutletPresenter;

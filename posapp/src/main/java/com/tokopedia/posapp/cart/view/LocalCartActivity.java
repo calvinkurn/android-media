@@ -11,7 +11,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.react.PosReactConst;
-import com.tokopedia.posapp.product.productlist.view.ProductListActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 

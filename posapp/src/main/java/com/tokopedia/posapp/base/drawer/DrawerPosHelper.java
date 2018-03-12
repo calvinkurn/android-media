@@ -18,7 +18,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
-import com.tokopedia.posapp.product.productlist.view.ProductListActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.transaction.TransactionHistoryActivity;
 import com.tokopedia.posapp.auth.validatepassword.view.fragment.ValidatePasswordFragment;
 

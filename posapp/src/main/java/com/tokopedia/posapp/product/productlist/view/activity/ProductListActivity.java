@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.view;
+package com.tokopedia.posapp.product.productlist.view.activity;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -42,12 +42,6 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
         Intent intent = new Intent(context, ProductListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initDrawer();
     }
 
     @Override
@@ -126,14 +120,5 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void initDrawer() {
-        sessionHandler = new SessionHandler(this);
-        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
-        drawerHelper.initDrawer(this);
-        drawerHelper.setEnabled(true);
-        drawerHelper.setSelectedPosition(0);
     }
 }

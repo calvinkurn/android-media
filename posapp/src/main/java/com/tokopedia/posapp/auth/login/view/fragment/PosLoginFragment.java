@@ -16,13 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -68,6 +71,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
     private TextView loginButton;
     private TkpdHintTextInputLayout wrapperEmail;
     private TkpdHintTextInputLayout wrapperPassword;
+    private Button buttonDevOpt;
 
     @Inject
     PosLogin.Presenter presenter;
@@ -115,6 +119,16 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
         loginButton = view.findViewById(R.id.accounts_sign_in);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
+        if(GlobalConfig.DEBUG) {
+            buttonDevOpt = view.findViewById(R.id.button_devopt);
+            buttonDevOpt.setVisibility(View.VISIBLE);
+            buttonDevOpt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getActivity(), DeveloperOptions.class));
+                }
+            });
+        }
     }
 
     private void setViewListener() {
