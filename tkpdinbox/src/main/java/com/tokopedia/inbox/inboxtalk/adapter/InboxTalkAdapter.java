@@ -295,9 +295,11 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
 
             @Override
             public void onClick(View v) {
-                context.startActivity(
-                        ((TkpdInboxRouter) context.getApplicationContext())
-                                .getTopProfileIntent(context, talkUserId));
+                if (context.getApplicationContext() instanceof TkpdInboxRouter) {
+                    context.startActivity(
+                            ((TkpdInboxRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, talkUserId));
+                }
             }
         };
     }

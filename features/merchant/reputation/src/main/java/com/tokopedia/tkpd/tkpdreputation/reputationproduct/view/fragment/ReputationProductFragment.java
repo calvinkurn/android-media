@@ -782,9 +782,11 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(),
-                                model.getReviewUserId()));
+                if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+                    startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    model.getReviewUserId()));
+                }
             }
         };
     }

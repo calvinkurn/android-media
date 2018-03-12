@@ -489,8 +489,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void actionOpenBuyer() {
-        startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                .getTopProfileIntent(getActivity(), userId));
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
 

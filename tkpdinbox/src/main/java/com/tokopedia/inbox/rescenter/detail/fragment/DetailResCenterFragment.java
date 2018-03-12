@@ -529,9 +529,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void openPeople(String url) {
-        startActivity(
-                ((TkpdInboxRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(), Uri.parse(url).getQueryParameter("id")));
+        if (getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            startActivity(
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(
+                                    getActivity(),
+                                    Uri.parse(url).getQueryParameter("id")));
+        }
     }
 
     @Override

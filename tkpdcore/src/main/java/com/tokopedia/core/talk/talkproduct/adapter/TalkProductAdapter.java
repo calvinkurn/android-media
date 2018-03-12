@@ -256,9 +256,11 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
 
             @Override
             public void onClick(View v) {
-                context.startActivity(
-                        ((TkpdCoreRouter) context.getApplicationContext())
-                                .getTopProfileIntent(context, talkUserId));
+                if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                    context.startActivity(
+                            ((TkpdCoreRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, talkUserId));
+                }
             }
         };
     }

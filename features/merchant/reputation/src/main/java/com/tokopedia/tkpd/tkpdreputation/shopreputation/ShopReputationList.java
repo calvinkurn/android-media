@@ -272,9 +272,11 @@ public class ShopReputationList extends V2BaseFragment {
 
             @Override
             public void onUserClick(int pos) {
-                startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(),
-                                listReputation.get(pos).userId));
+                if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+                    startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    listReputation.get(pos).userId));
+                }
             }
 
             @Override

@@ -331,9 +331,11 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(),
-                                presenter.getInvoiceData().getUserId()));
+                if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+                    startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    presenter.getInvoiceData().getUserId()));
+                }
             }
         };
     }

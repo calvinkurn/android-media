@@ -469,9 +469,11 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(
-                        ((ReputationRouter) context.getApplicationContext())
-                                .getTopProfileIntent(context, reviewUserId));
+                if (context.getApplicationContext() instanceof ReputationRouter) {
+                    context.startActivity(
+                            ((ReputationRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, reviewUserId));
+                }
             }
         };
     }

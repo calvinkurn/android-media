@@ -429,9 +429,11 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void onBuyerClick() {
-        startActivity(((SellerModuleRouter) this.getApplicationContext())
-                .getTopProfileIntent(this,
-                        userId));
+        if (this.getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) this.getApplicationContext())
+                    .getTopProfileIntent(this,
+                            userId));
+        }
     }
 
     private void Loading() {
