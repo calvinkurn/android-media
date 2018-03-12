@@ -14,8 +14,10 @@
 
     <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
     <string name="shop_page_header_shop_closed_info">Toko tutup sampai dengan %1$s</string>
-    <string name="shop_page_header_shop_in_moderation">Toko Anda dalam status MODERASI</string>
+    <string name="shop_page_header_shop_in_moderation">Toko dalam status MODERASI</string>
     <string name="shop_page_header_closed_reason">Alasan : %1$s</string>
+    <string name="shop_page_header_shop_not_active_title">Toko tidak aktif selama lebih dari 7 hari</string>
+    <string name="shop_page_header_shop_not_active_description">Untuk kenyamanan bertransaksi, kami menyarankan anda untuk memastikan terlebih dahulu toko dalam keadan aktif</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
