@@ -214,8 +214,11 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     public void setProductSizeChart(ProductPictureViewModel productPictureViewModel) {
+        // if supply with null, it will create new list as default.
         this.productSizeChart = new ArrayList<>();
-        productSizeChart.add(productPictureViewModel);
+        if (productPictureViewModel != null) {
+            productSizeChart.add(productPictureViewModel);
+        }
     }
 
     public long getProductCondition() {
@@ -406,8 +409,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     public boolean hasVariant(){
-        return productVariant!= null && productVariant.getProductVariant()!= null &&
-                productVariant.getProductVariant().size() > 0;
+        return productVariant!= null && productVariant.hasSelectedVariant();
     }
 
     public ProductVariantViewModel getProductVariant() {

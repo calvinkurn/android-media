@@ -53,6 +53,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         void fetchCategory(long categoryId);
 
         void onEtalaseViewClicked(long etalaseId);
+
+        boolean hasVariant();
     }
 
     private static final String BUNDLE_CATALOG_SHOWN = "BUNDLE_CATALOG_SHOWN";
@@ -167,6 +169,16 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         } else {
             setEtalaseId(DEFAULT_ETALASE_ID);
             setEtalaseName(null);
+        }
+        renderByVariant(model.hasVariant());
+    }
+
+    public void renderByVariant(boolean hasVariant){
+        if (hasVariant) {
+            categoryRecommView.setVisibility(View.GONE);
+            categoryLabelView.setEnabled(false);
+        } else {
+            categoryLabelView.setEnabled(true);
         }
     }
 
@@ -313,7 +325,9 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             radioButton.setId(categoryPredictionList.get(i).getLastCategoryId());
         }
         this.categoryPredictionList = (ArrayList) categoryPredictionList;
-        categoryRecommView.setVisibility(View.VISIBLE);
+        if (!listener.hasVariant()) {
+            categoryRecommView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void processCategoryFromActivityResult(Intent data) {

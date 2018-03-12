@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddDescriptionPickerFragment;
 
 /**
@@ -31,7 +31,8 @@ public class ProductAddDescriptionPickerActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        productAddDescriptionPickerFragment = ProductAddDescriptionPickerFragment.newInstance(getIntent().getExtras().getString(PRODUCT_DESCRIPTION));
+        productAddDescriptionPickerFragment = ProductAddDescriptionPickerFragment.newInstance(
+                getIntent().getExtras().getString(PRODUCT_DESCRIPTION));
         return productAddDescriptionPickerFragment;
     }
 
@@ -41,5 +42,10 @@ public class ProductAddDescriptionPickerActivity extends BaseSimpleActivity {
         intent.putExtra(PRODUCT_DESCRIPTION, productAddDescriptionPickerFragment.getDescriptionText());
         setResult(RESULT_OK, intent);
         super.onBackPressed();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

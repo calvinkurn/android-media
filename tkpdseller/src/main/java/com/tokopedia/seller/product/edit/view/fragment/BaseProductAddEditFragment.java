@@ -110,6 +110,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected ProductViewModel currentProductViewModel;
 
     private Listener listener;
+    private boolean hasOriginalVariantLevel1;
+    private boolean hasOriginalVariantLevel2;
 
     public interface Listener {
         void startUploadProduct(long productId);
@@ -197,7 +199,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected void saveAndAddDraft() {
         ProductViewModel viewModel = collectDataFromView();
         sendAnalyticsAddMore(viewModel);
-        if (viewModel.getProductVariant()!= null) {
+        if (viewModel.getProductVariant() != null) {
             viewModel.getProductVariant().generateTid();
         }
         presenter.saveDraftAndAdd(viewModel);
@@ -427,7 +429,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 productPriceViewHolder.isOfficialStore(),
                 productManageViewHolder.getSkuText(),
                 isEdittingDraft(),
-                currentProductViewModel.getProductSizeChart());
+                currentProductViewModel.getProductSizeChart(),
+                hasOriginalVariantLevel1,
+                hasOriginalVariantLevel2);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -447,6 +451,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         startActivityForResult(intent, ProductInfoViewHolder.REQUEST_CODE_ETALASE);
     }
 
+    @Override
+    public boolean hasVariant() {
+        return currentProductViewModel.hasVariant();
+    }
+
     @CallSuper
     public void onSuccessLoadProduct(ProductViewModel model) {
         if (model == null) {
@@ -464,8 +473,17 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDescriptionViewHolder.renderData(currentProductViewModel);
         productDeliveryInfoViewHolder.renderData(currentProductViewModel);
 
-        if (currentProductViewModel.getProductCategory()!= null) {
+        if (currentProductViewModel.getProductCategory() != null) {
             onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
+        }
+        checkOriginalVariant(model);
+    }
+
+    private void checkOriginalVariant(ProductViewModel model) {
+        if (isEditStatus() && model.hasVariant()) {
+            ProductVariantViewModel productVariantViewModel = model.getProductVariant();
+            hasOriginalVariantLevel1 = (productVariantViewModel.getVariantOptionParent(0) != null);
+            hasOriginalVariantLevel2 = (productVariantViewModel.getVariantOptionParent(1) != null);
         }
     }
 
@@ -648,7 +666,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         if (isUploading) {
             sendAnalyticsAdd(viewModel);
         }
-        if (viewModel.getProductVariant()!= null) {
+        if (viewModel.getProductVariant() != null) {
             viewModel.getProductVariant().generateTid();
         }
         presenter.saveDraft(viewModel, isUploading);
@@ -837,7 +855,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
+        // to disable or enable price/wholesale/etc
         productPriceViewHolder.renderData(currentProductViewModel);
+
+        //to disable or enable category and category recommendation
+        productInfoViewHolder.renderByVariant(currentProductViewModel.hasVariant());
     }
 
     @Override

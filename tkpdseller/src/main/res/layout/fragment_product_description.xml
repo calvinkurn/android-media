@@ -3,19 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linear_layout_tips"
         style="@style/LabelLayout"
-        android:background="@color/grey_550"
-        android:orientation="vertical">
-
+        android:orientation="horizontal"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning|end">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_tips_bulb"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+        <TextView
+            android:id="@+id/tv_title_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Micro"
+            tools:text="@string/product_description_tips_title"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
     </LinearLayout>
 
     <LinearLayout
         style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/margin_sm">
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning|end">
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_layout_description"
