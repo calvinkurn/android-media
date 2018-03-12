@@ -41,6 +41,22 @@ public class GroupShop implements Parcelable {
         this.products = products;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public GroupShop() {
     }
 

@@ -82,6 +82,9 @@ public class ShipmentMapper implements IShipmentMapper {
                         com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop groupShopResult =
                                 new com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop();
 
+                        groupShopResult.setError(!mapperUtil.isEmpty(groupShop.getErrors()));
+                        groupShopResult.setErrorMessage(mapperUtil.convertToString(groupShop.getErrors()));
+
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();
 

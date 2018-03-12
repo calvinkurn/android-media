@@ -14,6 +14,9 @@ import java.util.List;
 
 public class CartSellerItemModel implements Parcelable {
 
+    private boolean isError;
+    private String errorMessage;
+
     private String shopId;
     private String shopName;
     private List<CartItemModel> cartItemModels;
@@ -32,6 +35,22 @@ public class CartSellerItemModel implements Parcelable {
 
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public String getShopId() {
         return shopId;
@@ -153,6 +172,9 @@ public class CartSellerItemModel implements Parcelable {
         this.selectedShipmentDetailData = selectedShipmentDetailData;
     }
 
+    public CartSellerItemModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -160,6 +182,8 @@ public class CartSellerItemModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
         dest.writeTypedList(this.cartItemModels);
@@ -177,10 +201,9 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeParcelable(this.selectedShipmentDetailData, flags);
     }
 
-    public CartSellerItemModel() {
-    }
-
     protected CartSellerItemModel(Parcel in) {
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.shopId = in.readString();
         this.shopName = in.readString();
         this.cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
@@ -209,5 +232,4 @@ public class CartSellerItemModel implements Parcelable {
             return new CartSellerItemModel[size];
         }
     };
-
 }
