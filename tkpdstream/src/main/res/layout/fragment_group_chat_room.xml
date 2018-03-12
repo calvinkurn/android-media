@@ -40,6 +40,13 @@
             android:alpha="0.9"
             tools:layout_height="64dp"/>
 
+        <include
+            android:id="@+id/vote_bar"
+            layout="@layout/layout_vote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/channel_banner"/>
+
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
@@ -64,13 +71,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"
             app:srcCompat="@drawable/ic_send_24dp_green"/>
-
-        <include
-            android:id="@+id/vote_bar"
-            layout="@layout/layout_vote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/channel_banner"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chat_list"

@@ -1,14 +1,14 @@
 package com.tokopedia.tkpdstream.vote.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -42,25 +42,32 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
         percent = itemView.findViewById(R.id.percent);
         percentLayout = itemView.findViewById(R.id.percent_layout);
         icon = itemView.findViewById(R.id.icon);
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            params.height = itemView.getContext().getResources().getDimensionPixelSize(R.dimen
+                    .vote_icon_size);
+            imageView.setLayoutParams(params);
+        }
     }
 
     @Override
     public void bind(final VoteViewModel element) {
         Context context = itemView.getContext();
-        if(element.getSelected() == VoteViewModel.DEFAULT){
+        if (element.getSelected() == VoteViewModel.DEFAULT) {
             percent.setVisibility(View.GONE);
             percentLayout.setVisibility(View.GONE);
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_default));
             icon.setVisibility(View.GONE);
-        }else{
+        } else {
             percent.setVisibility(View.VISIBLE);
             percentLayout.setVisibility(View.VISIBLE);
             progressBar.setProgress(element.getPercentageInteger());
-            if(element.getSelected() == VoteViewModel.SELECTED) {
+            if (element.getSelected() == VoteViewModel.SELECTED) {
                 icon.setVisibility(View.VISIBLE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_selected));
-            }else if(element.getSelected() == VoteViewModel.UNSELECTED) {
+            } else if (element.getSelected() == VoteViewModel.UNSELECTED) {
                 icon.setVisibility(View.GONE);
                 progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_unselected));
             }

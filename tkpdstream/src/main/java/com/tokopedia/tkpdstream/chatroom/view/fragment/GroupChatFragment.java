@@ -27,8 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -144,6 +142,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private ShareLayout shareLayout;
 
     private CallbackManager callbackManager;
+    private TextWatcher replyTextWatcher;
 
     @Override
     protected String getScreenName() {
@@ -252,7 +251,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             params.height = getActivity().getResources().getDimensionPixelSize(R.dimen.channel_banner_height);
-        }else{
+        } else {
             params.height = getActivity().getResources().getDimensionPixelSize(R.dimen
                     .channel_banner_height_without_status);
         }
@@ -354,7 +353,24 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
         replyEditText.setHint(hintText);
-        replyEditText.addTextChangedListener(new TextWatcher() {
+
+        voteBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (voteBody.getVisibility() == View.VISIBLE) {
+                    collapse(voteBody);
+                    arrow.setRotation(0f);
+                } else {
+                    expand(voteBody);
+                    KeyboardHandler.DropKeyboard(getActivity(), getView());
+                    analytics.eventClickVoteExpand();
+                    voteAdapter.notifyDataSetChanged();
+                    arrow.setRotation(180f);
+                }
+            }
+        });
+
+        replyTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -373,50 +389,40 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     setSendButtonEnabled(false);
                 }
             }
-        });
-
-        replyEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                collapse(voteBody);
-                arrow.setRotation(0f);
-            }
-        });
-
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
-                    PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
-                            (replyEditText.getText().toString(),
-                                    userSession.getUserId(),
-                                    userSession.getName(),
-                                    userSession.getProfilePicture(),
-                                    false);
-                    adapter.addDummyReply(pendingChatViewModel);
-                    presenter.sendReply(pendingChatViewModel, mChannel);
-                }
-            }
-        });
-
-        voteBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (voteBody.getVisibility() == View.VISIBLE) {
-                    collapse(voteBody);
-                    arrow.setRotation(0f);
-                } else {
-                    expand(voteBody);
-                    KeyboardHandler.DropKeyboard(getActivity(), getView());
-                    analytics.eventClickVoteExpand();
-                    arrow.setRotation(180f);
-                }
-            }
-        });
+        };
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
-        sendButton.setEnabled(isEnabled);
+        if (isEnabled) {
+            replyEditText.addTextChangedListener(replyTextWatcher);
+
+            replyEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    collapse(voteBody);
+                    arrow.setRotation(0f);
+                }
+            });
+
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(replyEditText.getText().toString().trim())) {
+                        PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                                (replyEditText.getText().toString(),
+                                        userSession.getUserId(),
+                                        userSession.getName(),
+                                        userSession.getProfilePicture(),
+                                        false);
+                        adapter.addDummyReply(pendingChatViewModel);
+                        presenter.sendReply(pendingChatViewModel, mChannel);
+                    }
+                }
+            });
+        } else {
+            replyEditText.removeTextChangedListener(replyTextWatcher);
+            sendButton.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -470,6 +476,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void initData() {
+        setSendButtonEnabled(false);
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -568,6 +575,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 adapter.setCursor(listChat.get(0));
             }
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+            setSendButtonEnabled(true);
             scrollToBottom();
 
             presenter.setHandler(viewModel.getChannelUrl(), this);
@@ -833,56 +841,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         //TODO : Implement this later
     }
 
-    public static void expand(final View v) {
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-        v.getLayoutParams().height = 1;
+    public void expand(final View v) {
         v.setVisibility(View.VISIBLE);
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? ViewGroup.LayoutParams.WRAP_CONTENT
-                        : (int) (targetHeight * interpolatedTime);
-                v.requestLayout();
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
-
-        Animation a = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1) {
-                    v.setVisibility(View.GONE);
-                } else {
-                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-                    v.requestLayout();
-                }
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+    public void collapse(final View v) {
+        v.setVisibility(View.GONE);
     }
 
     @Override
@@ -1094,6 +1058,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public void hideVoteLayout() {
         voteBar.setVisibility(View.GONE);
+        voteBody.setVisibility(View.GONE);
     }
 
     public void setVoteHasEnded() {
