@@ -13,9 +13,9 @@ import java.util.Map;
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainPopularStationSpecification implements DbFlowSpecification, DbFlowWithOrderSpecification, NetworkSpecification {
+public class TrainPopularStationSpecificationCloud implements DbFlowSpecification, DbFlowWithOrderSpecification, CloudNetworkSpecification {
 
-    public TrainPopularStationSpecification() {
+    public TrainPopularStationSpecificationCloud() {
     }
 
     @Override

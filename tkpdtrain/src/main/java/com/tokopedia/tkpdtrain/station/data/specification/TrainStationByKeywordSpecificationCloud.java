@@ -1,23 +1,20 @@
 package com.tokopedia.tkpdtrain.station.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb_Table;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainStationByKeywordSpecification implements DbFlowSpecification, NetworkSpecification {
+public class TrainStationByKeywordSpecificationCloud implements DbFlowSpecification, CloudNetworkSpecification {
 
     private String keyword;
 
-    public TrainStationByKeywordSpecification(String keyword) {
+    public TrainStationByKeywordSpecificationCloud(String keyword) {
         this.keyword = keyword;
     }
 

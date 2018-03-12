@@ -3,7 +3,7 @@ package com.tokopedia.tkpdtrain.station.data;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
-import com.tokopedia.tkpdtrain.station.data.specification.NetworkSpecification;
+import com.tokopedia.tkpdtrain.station.data.specification.CloudNetworkSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.Specification;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class TrainStationCloudDataStore {
     }
 
     public Observable<List<TrainStationIslandEntity>> getDatas(Specification specification) {
-        return trainApi.stationsInIsland(((NetworkSpecification) specification).networkParam()).map(new Func1<DataResponse<List<TrainStationIslandEntity>>, List<TrainStationIslandEntity>>() {
+        return trainApi.stationsInIsland(((CloudNetworkSpecification) specification).networkParam()).map(new Func1<DataResponse<List<TrainStationIslandEntity>>, List<TrainStationIslandEntity>>() {
             @Override
             public List<TrainStationIslandEntity> call(DataResponse<List<TrainStationIslandEntity>> listDataResponse) {
                 return listDataResponse.getData();

@@ -7,6 +7,6 @@ import java.util.Map;
  * @author by alvarisi on 3/7/18.
  */
 
-public interface NetworkSpecification extends Specification {
+public interface CloudNetworkSpecification extends Specification {
     Map<String, Object> networkParam();
 }
