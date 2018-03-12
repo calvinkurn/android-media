@@ -72,8 +72,6 @@ public class SingleAddressShipmentPresenter {
                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
                         boolean isEnableCheckout = true;
                         for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                            groupAddress.getGroupShop().get(0).setError(true);
-                            groupAddress.getGroupShop().get(0).setErrorMessage("Error YA BROO !!");
                             if (groupAddress.isError() || groupAddress.isWarning())
                                 isEnableCheckout = false;
                             for (GroupShop groupShop : groupAddress.getGroupShop()) {
