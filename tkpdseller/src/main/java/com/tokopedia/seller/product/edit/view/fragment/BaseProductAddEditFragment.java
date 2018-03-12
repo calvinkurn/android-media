@@ -95,6 +95,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected T presenter;
 
     public static final String SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model";
+    public static final String SAVED_HAS_ORIGINAL_VARIANT_LV1 = "svd_has_var_lv1";
+    public static final String SAVED_HAS_ORIGINAL_VARIANT_LV2 = "svd_has_var_lv2";
 
     protected ProductScoreViewHolder productScoreViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
@@ -110,6 +112,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected ProductViewModel currentProductViewModel;
 
     private Listener listener;
+    private boolean hasOriginalVariantLevel1;
+    private boolean hasOriginalVariantLevel2;
 
     public interface Listener {
         void startUploadProduct(long productId);
@@ -167,6 +171,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             productManageViewHolder.onViewStateRestored(savedInstanceState);
             productDescriptionViewHolder.onViewStateRestored(savedInstanceState);
             productDeliveryInfoViewHolder.onViewStateRestored(savedInstanceState);
+
+            hasOriginalVariantLevel1 = savedInstanceState.getBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV1);
+            hasOriginalVariantLevel2 = savedInstanceState.getBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV2);
         }
         if (currentProductViewModel == null) {
             currentProductViewModel = new ProductViewModel();
@@ -197,7 +204,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     protected void saveAndAddDraft() {
         ProductViewModel viewModel = collectDataFromView();
         sendAnalyticsAddMore(viewModel);
-        if (viewModel.getProductVariant()!= null) {
+        if (viewModel.getProductVariant() != null) {
             viewModel.getProductVariant().generateTid();
         }
         presenter.saveDraftAndAdd(viewModel);
@@ -427,7 +434,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 productPriceViewHolder.isOfficialStore(),
                 productManageViewHolder.getSkuText(),
                 isEdittingDraft(),
-                currentProductViewModel.getProductSizeChart());
+                currentProductViewModel.getProductSizeChart(),
+                hasOriginalVariantLevel1,
+                hasOriginalVariantLevel2);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -464,8 +473,17 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDescriptionViewHolder.renderData(currentProductViewModel);
         productDeliveryInfoViewHolder.renderData(currentProductViewModel);
 
-        if (currentProductViewModel.getProductCategory()!= null) {
+        if (currentProductViewModel.getProductCategory() != null) {
             onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
+        }
+        checkOriginalVariant(model);
+    }
+
+    private void checkOriginalVariant(ProductViewModel model) {
+        if (isEditStatus() && model.hasVariant()) {
+            ProductVariantViewModel productVariantViewModel = model.getProductVariant();
+            hasOriginalVariantLevel1 = (productVariantViewModel.getVariantOptionParent(0) != null);
+            hasOriginalVariantLevel2 = (productVariantViewModel.getVariantOptionParent(1) != null);
         }
     }
 
@@ -648,7 +666,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         if (isUploading) {
             sendAnalyticsAdd(viewModel);
         }
-        if (viewModel.getProductVariant()!= null) {
+        if (viewModel.getProductVariant() != null) {
             viewModel.getProductVariant().generateTid();
         }
         presenter.saveDraft(viewModel, isUploading);
@@ -856,6 +874,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         super.onSaveInstanceState(outState);
         currentProductViewModel = collectDataFromView();
         outState.putParcelable(SAVED_PRODUCT_VIEW_MODEL, currentProductViewModel);
+        outState.putBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1);
+        outState.putBoolean(SAVED_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2);
     }
 
     @TargetApi(23)

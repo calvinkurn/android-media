@@ -68,6 +68,8 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
         void removeAllItemFromSearch();
 
+        boolean hasOriginalVariant();
+
     }
 
     public static ProductVariantPickerSearchFragment newInstance() {
@@ -224,21 +226,28 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setVisibility(View.VISIBLE);
             unitSpinnerTextView.setSpinnerValue(String.valueOf(selectedVariantUnitId));
 
-            unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
-                @Override
-                public void onItemChanged(int position, String entry, String value) {
-                    int unitIdTarget = Integer.parseInt(value);
-                    if (selectedVariantUnitId != unitIdTarget) {
-                        searchInputView.getSearchTextView().setText("");
-                        productVariantOptionParent.setProductVariantOptionChild(new ArrayList<ProductVariantOptionChild>());
-                        productVariantOptionParent.setVu(unitIdTarget);
-                        onProductVariantPickerSearchNewFragmentListener.removeAllItemFromSearch();
-                        productVariantPickerSearchListNewAdapter.resetCheckedItemSet();
-                        selectVariantUnitId(unitIdTarget);
-                        resetPageAndSearch();
+            // if user already select the unit before, it cannot be changed later.
+            if (onProductVariantPickerSearchNewFragmentListener.hasOriginalVariant()) {
+                unitSpinnerTextView.setEnabled(false);
+            } else {
+                unitSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+                    @Override
+                    public void onItemChanged(int position, String entry, String value) {
+                        int unitIdTarget = Integer.parseInt(value);
+                        if (selectedVariantUnitId != unitIdTarget) {
+                            searchInputView.getSearchTextView().setText("");
+                            productVariantOptionParent.setProductVariantOptionChild(new ArrayList<ProductVariantOptionChild>());
+                            productVariantOptionParent.setVu(unitIdTarget);
+                            onProductVariantPickerSearchNewFragmentListener.removeAllItemFromSearch();
+                            productVariantPickerSearchListNewAdapter.resetCheckedItemSet();
+                            selectVariantUnitId(unitIdTarget);
+                            resetPageAndSearch();
+                        }
                     }
-                }
-            });
+                });
+                unitSpinnerTextView.setEnabled(true);
+            }
+
         } else {
             unitSpinnerTextView.setVisibility(View.GONE);
         }

@@ -11,7 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
@@ -43,18 +43,21 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
     public static final String EXTRA_PRODUCT_VARIANT_CATEGORY_LEVEL = "extra_product_variant_cat_level";
     public static final String EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL = "extra_product_variant_smt_level";
+    public static final String EXTRA_HAS_ORIGINAL_VARIANT = "extra_has_original_variant";
 
     // store the catalog
     private ProductVariantByCatModel productVariantByCatModel;
 
     // store what currently selected
     private ProductVariantOptionParent productVariantOptionParent;
+    private boolean hasOriVariant;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         productVariantByCatModel = getIntent().getParcelableExtra(EXTRA_PRODUCT_VARIANT_CATEGORY_LEVEL);
         if (savedInstanceState == null) {
             productVariantOptionParent = getIntent().getParcelableExtra(EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
+            hasOriVariant = getIntent().getBooleanExtra(EXTRA_HAS_ORIGINAL_VARIANT, false);
             if (productVariantOptionParent == null) {
                 productVariantOptionParent = new ProductVariantOptionParent();
                 productVariantOptionParent.setProductVariantOptionChild(new ArrayList<ProductVariantOptionChild>());
@@ -113,6 +116,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void removeAllItemFromSearch() {
         ((ProductVariantPickerCacheFragment) getCacheListFragment()).removeAllItem();
         updateBottomSheetInfo();
+    }
+
+    @Override
+    public boolean hasOriginalVariant() {
+        return hasOriVariant;
     }
 
     @Override
@@ -189,11 +197,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     private void createMap(List<ProductVariantOptionChild> productVariantOptionChildList,
-                           HashMap<String, Integer> hashMapValueToIndex){
+                           HashMap<String, Integer> hashMapValueToIndex) {
         if (productVariantOptionChildList == null) {
             return;
         }
-        for (int i = 0, sizei = productVariantOptionChildList.size(); i< sizei; i++) {
+        for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
             hashMapValueToIndex.put(productVariantOptionChildList.get(i).getValue(), i);
         }
     }
@@ -257,6 +265,17 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     protected int getSubmitTextRes() {
         return R.string.title_save;
+    }
+
+    @Override
+    protected void submitButtonClicked() {
+        //validate the variant, if it has already got the variant
+        // (for example: user already select variant for "color", then for the next edit, this color minimum must be 1)
+        if (hasOriVariant && getCacheListSize() == 0) {
+            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.product_variant_option_cannot_empty));
+            return;
+        }
+        super.submitButtonClicked();
     }
 
     @Override

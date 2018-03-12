@@ -228,5 +228,6 @@
     <string name="sku_helper_info">SKU adalah kode unik yang diberikan kepada setiap item barang</string>
     <string name="product_sizechart_optional">Panduan Ukuran (Optional)</string>
     <string name="product_sizechart_info">Tambah gambar panduan atau tabel ukuran agar pembeli mengetahui dimensi produk setiap varian.</string>
+    <string name="product_variant_option_cannot_empty">Minimum 1 opsi varian harus dipilih</string>
 
 </resources>

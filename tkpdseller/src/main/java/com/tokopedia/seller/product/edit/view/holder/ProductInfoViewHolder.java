@@ -168,6 +168,15 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             setEtalaseId(DEFAULT_ETALASE_ID);
             setEtalaseName(null);
         }
+        renderByVariant(model.hasVariant());
+    }
+
+    public void renderByVariant(boolean hasVariant){
+        if (hasVariant) {
+            // disable category (or show popup)
+        } else {
+            // enable category
+        }
     }
 
     @Override

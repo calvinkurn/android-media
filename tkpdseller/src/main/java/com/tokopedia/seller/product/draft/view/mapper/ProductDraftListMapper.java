@@ -8,22 +8,18 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
 
-/**
- * Created by User on 6/21/2017.
- */
-
 public class ProductDraftListMapper {
 
-    public static final int MAX_COMPLETION_COUNT = 5;
-    public static final int MIN_COMPLETION_PERCENT = 5;
-    public static final int MAX_COMPLETION_PERCENT = 95;
+    private static final int MAX_COMPLETION_COUNT = 5;
+    private static final int MIN_COMPLETION_PERCENT = 5;
+    private static final int MAX_COMPLETION_PERCENT = 95;
 
     public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel, long draftId) {
         String primaryPhotoUrl = null;
         List<ProductPictureViewModel> imageProductInputDomainModelList = domainModel.getProductPictureViewModelList();
         if (imageProductInputDomainModelList != null && imageProductInputDomainModelList.size() > 0) {
             ProductPictureViewModel imageProductInputDomainModel = imageProductInputDomainModelList.get(0);
-            primaryPhotoUrl = imageProductInputDomainModel.getUrlOriginal();
+            primaryPhotoUrl = imageProductInputDomainModel.getUriOrPath();
         } else {
             primaryPhotoUrl = null;
         }

@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV1;
+import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV2;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
@@ -282,6 +284,9 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                 productVariantByCatModelList.get(level - 1));
         intent.putExtra(ProductVariantPickerActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL,
                 productVariantViewModel == null ? null : productVariantViewModel.getVariantOptionParent(level - 1));
+        intent.putExtra(ProductVariantPickerActivity.EXTRA_HAS_ORIGINAL_VARIANT,
+                getActivity().getIntent().getBooleanExtra(level == 1? EXTRA_HAS_ORIGINAL_VARIANT_LV1: EXTRA_HAS_ORIGINAL_VARIANT_LV2,
+                        false));
         startActivityForResult(intent, level);
     }
 

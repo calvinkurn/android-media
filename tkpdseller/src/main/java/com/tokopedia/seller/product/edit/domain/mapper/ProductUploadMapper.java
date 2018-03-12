@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.seller.product.common.utils.CollectionAdapterUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
@@ -29,6 +30,7 @@ public class ProductUploadMapper {
     public ProductViewModel convertUnusedParamToNull(ProductViewModel productFromServer, ProductViewModel productFromDraft) {
         ProductPreOrderViewModel productPreorderViewModel = productFromDraft.getProductPreorder();
         ProductCatalogViewModel productCatalogViewModel = productFromDraft.getProductCatalog();
+        ProductPictureViewModel productDraftSizeChart = productFromDraft.getProductSizeChart();
         if (productFromServer.getProductPreorder() == null &&
                 productPreorderViewModel.getPreorderProcessTime() == 0 &&
                 productPreorderViewModel.getPreorderStatus() == 0 &&
@@ -39,6 +41,10 @@ public class ProductUploadMapper {
                 productCatalogViewModel.getCatalogId() == 0 &&
                 productCatalogViewModel.getCatalogStatus() == 0) {
             productFromDraft.setProductCatalog(null);
+        }
+        if (productFromServer.getProductSizeChart() == null &&
+                productDraftSizeChart == null) {
+            productFromDraft.setProductSizeChart(null);
         }
         return productFromDraft;
     }
