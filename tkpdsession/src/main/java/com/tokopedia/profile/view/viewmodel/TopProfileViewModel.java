@@ -38,6 +38,8 @@ public class TopProfileViewModel {
     private String shopLocation;
     private String shopLogo;
     private String shopBadge;
+    private String shopTooltip;
+    private int shopScore;
     private int shopBadgeLevel;
     private String shopLastOnline;
     private String shopAppLink;
@@ -295,6 +297,22 @@ public class TopProfileViewModel {
 
     public void setGoldBadge(boolean goldBadge) {
         isGoldBadge = goldBadge;
+    }
+
+    public String getShopTooltip() {
+        return shopTooltip;
+    }
+
+    public void setShopTooltip(String shopTooltip) {
+        this.shopTooltip = shopTooltip;
+    }
+
+    public int getShopScore() {
+        return shopScore;
+    }
+
+    public void setShopScore(int shopScore) {
+        this.shopScore = shopScore;
     }
 
     public int getShopBadgeLevel() {

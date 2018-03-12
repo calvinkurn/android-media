@@ -82,6 +82,8 @@ public class TopProfileDataMapper
         model.setShopLocation(data.getLocation());
         model.setShopLogo(data.getLogo());
         model.setShopBadge(data.getReputationBadge());
+        model.setShopTooltip(data.getShopReputation().getTooltip());
+        model.setShopScore(data.getShopReputation().getScore());
         model.setShopBadgeLevel(data.getShopReputation().getBadgeLevel());
         model.setShopLastOnline(data.getLastOnline());
         model.setShopAppLink(data.getApplink());

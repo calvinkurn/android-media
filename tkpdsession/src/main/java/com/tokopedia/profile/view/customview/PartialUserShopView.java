@@ -2,6 +2,8 @@ package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -11,9 +13,12 @@ import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -121,6 +126,8 @@ public class PartialUserShopView extends BaseCustomView {
             ivGoldShop.setVisibility(model.isGoldShop() && model.isGoldBadge() ? VISIBLE : GONE);
             switchOfficialStoreBadge(model.isOfficialShop());
             ImageHandler.LoadImage(ivReputationMedal, model.getShopBadge());
+            ivReputationMedal.setOnClickListener(
+                    new ClickShopBadge(ivReputationMedal.getContext(), model));
             tvShopName.setText(MethodChecker.fromHtml(model.getShopName()));
             tvShopLocation.setText(model.getShopLocation());
             tvLastOnline.setText(model.getShopLastOnline());
@@ -255,4 +262,36 @@ public class PartialUserShopView extends BaseCustomView {
             getContext().startActivity(intent);
         }
     }
+
+    private class ClickShopBadge implements OnClickListener {
+
+        private final Context context;
+        private final TopProfileViewModel model;
+
+        ClickShopBadge(Context context, TopProfileViewModel model) {
+            this.context = context;
+            this.model = model;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            View popup = View.inflate(context, com.tokopedia.core.R.layout.popup_reputation, null);
+            TextView point = popup.findViewById(com.tokopedia.core.R.id.point);
+            point.setText(String.format("%s Poin", model.getShopScore()));
+            final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams
+                    .WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            popWindow.setOutsideTouchable(true);
+            popWindow.setFocusable(false);
+            popWindow.showAsDropDown(v);
+            popWindow.setTouchInterceptor(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    popWindow.dismiss();
+                    return true;
+                }
+            });
+        }
+    }
+
 }
