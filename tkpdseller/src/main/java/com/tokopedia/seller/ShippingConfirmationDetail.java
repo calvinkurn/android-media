@@ -111,7 +111,7 @@ ShippingConfirmationDetail extends TActivity {
     OrderShippingList orderData;
     String invoice_uri;
     String invoice_pdf;
-    String UserID;
+    String userId;
 
     private String OrderId;
 
@@ -160,7 +160,7 @@ ShippingConfirmationDetail extends TActivity {
         OrderStatus.setAdapter(OrderAdapter);
 
         orderData = Parcels.unwrap(getIntent().getExtras().getParcelable(ORDER));
-        UserID = getIntent().getExtras().getString(USER_ID);
+        userId = getIntent().getExtras().getString(USER_ID);
         invoice_uri = getIntent().getExtras().getString(INVOICE_URI1);
         invoice_pdf = getIntent().getExtras().getString(INVOICE_PDF1);
 
@@ -431,7 +431,7 @@ ShippingConfirmationDetail extends TActivity {
     public void onBuyerClick() {
         startActivity(((SellerModuleRouter) this.getApplicationContext())
                 .getTopProfileIntent(this,
-                        UserID));
+                        userId));
     }
 
     private void Loading() {

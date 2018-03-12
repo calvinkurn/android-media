@@ -67,32 +67,40 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
+
     private Toolbar toolbar;
+
     private Tabs tabLayout;
+
     private ViewPager viewPager;
+
     private ImageView avatar;
-    private TextView name;
-    private LinearLayout buttonManageAccount;
-    private LinearLayout buttonFollow;
     private ImageView buttonFollowImage;
+
+    private TextView name;
     private TextView buttonFollowText;
     private TextView title;
     private TextView description;
-    private LinearLayout followingLayout;
     private TextView followingValue;
-    private LinearLayout followersLayout;
     private TextView followersValue;
-    private View followersSeparator;
-    private View tabSeparator;
-    private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
-    private View header;
-    private View progressView;
-    private View errorView;
     private TextView errorText;
     private TextView buttonTryAgain;
     private TextView buttonFollowToolbar;
     private TextView tvTitleToolbar;
+
+    private LinearLayout buttonManageAccount;
+    private LinearLayout buttonFollow;
+    private LinearLayout followingLayout;
+    private LinearLayout followersLayout;
+    private LinearLayout favoriteShopLayout;
+
+    private View followersSeparator;
+    private View tabSeparator;
+    private View header;
+    private View progressView;
+    private View errorView;
+
     private String userId;
     private TopProfileViewModel topProfileViewModel;
 

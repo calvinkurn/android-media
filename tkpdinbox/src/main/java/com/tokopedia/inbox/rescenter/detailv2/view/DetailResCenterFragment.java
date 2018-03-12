@@ -681,10 +681,10 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setOnActionPeopleDetailClick(String buyerID) {
+    public void setOnActionPeopleDetailClick(String buyerId) {
         startActivity(
                 ((TkpdInboxRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(), buyerID));
+                        .getTopProfileIntent(getActivity(), buyerId));
     }
 
     @Override
