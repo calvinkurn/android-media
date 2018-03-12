@@ -170,7 +170,10 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String EVENT_RESOLUTION_CENTER = "resolutionCenter";
+        String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
         String ADD_TO_CART_PDP = "addToCart";
+        String EVENT_CHECKOUT = "checkout";
         String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
     }
 
@@ -286,6 +289,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
@@ -294,6 +298,7 @@ public interface AppEventTracking {
         String LONG_PRESS = "Long Press";
 
         String HOME_BOTTOM_NAV = "bottom nav";
+        String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
     }
 
@@ -459,6 +464,9 @@ public interface AppEventTracking {
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
 
+        String CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL = "click back arrow from masukkan alamat";
+        String CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL = "click back arrow from ubah alamat";
+
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
         String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
 
@@ -484,6 +492,7 @@ public interface AppEventTracking {
         String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
 
         String LOGIN_NOW = "masuk sekarang";
+        String CHECKOUT = "Checkout";
     }
 
     interface ImageEditor{
@@ -1073,5 +1082,9 @@ public interface AppEventTracking {
     interface Branch {
         String EMAIL="email";
         String PHONE="phone";
+    }
+
+    interface ResoDimension {
+        String RESOLUTION_ID = "resolutionId";
     }
 }

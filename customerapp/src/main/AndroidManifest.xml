@@ -7,7 +7,7 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
@@ -255,9 +255,12 @@
             android:exported="false" />
 
         <activity
-            android:name=".datepicker.DatePickerTokoCashActivity"
+            android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
+        <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/DialogTheme"></activity>
 
         <activity
             android:name=".qrscanner.QrScannerActivity"
@@ -265,11 +268,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+
+        <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@style/DialogTheme"/>
+
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"
             android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>
