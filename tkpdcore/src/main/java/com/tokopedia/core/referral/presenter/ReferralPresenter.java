@@ -13,7 +13,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -55,7 +55,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private SessionHandler sessionHandler;
 
     @Inject
-    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase , SessionHandler sessionHandler) {
+    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
         this.getReferralDataUseCase = getReferralDataUseCase;
         this.tokoCashUseCase = tokoCashUseCase;
         this.sessionHandler = sessionHandler;
@@ -223,7 +223,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
      * This function fetches the tokocash balance and then check Voucher code
      */
     private void fetchTokoCashBalance() {
-        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashModel>() {
+        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -235,15 +235,14 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             }
 
             @Override
-            public void onNext(TokoCashModel tokoCashModel) {
+            public void onNext(TokoCashData tokoCashData) {
                 if(!isViewAttached()){
                     return;
                 }
-                if (tokoCashModel != null
-                        && tokoCashModel.isSuccess()
-                        && tokoCashModel.getData() != null
-                        && tokoCashModel.getData().getAction() != null) {
-                    if (tokoCashModel.getData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+
+                if (tokoCashData != null
+                        && tokoCashData.getAction() != null) {
+                    if (tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
                         getReferralVoucherCode();
                     } else {
 
@@ -251,8 +250,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                                 getView().getActivity().getApplication(),
                                 getView().getActivity(),
                                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashModel.getData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getData().getAction().getmAppLinks(),
-                                tokoCashModel.getData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getData().getAction().getRedirectUrl(),
+                                tokoCashData.getAction().getmAppLinks() == null ?
+                                        "" : tokoCashData.getAction().getmAppLinks(),
+                                tokoCashData.getAction().getRedirectUrl() == null ?
+                                        "" : tokoCashData.getAction().getRedirectUrl(),
                                 new Bundle()
                         );
                     }

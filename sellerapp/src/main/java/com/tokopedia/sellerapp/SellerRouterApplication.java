@@ -29,6 +29,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -922,6 +923,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
+        return null;
+    }
+
+    @Override
     public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
@@ -1064,5 +1070,17 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+    }
+
+
+    @Override
+    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        return intent;
+    }
+
+    @Override
+    public void startAddProduct(Activity activity, String shopId) {
+        goToAddProduct(activity);
     }
 }
