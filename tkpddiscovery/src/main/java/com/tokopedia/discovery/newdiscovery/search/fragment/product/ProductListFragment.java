@@ -241,14 +241,7 @@ public class ProductListFragment extends SearchSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    ((SearchActivity) getActivity()).closeFilterBottomSheet();
-                }
-            }
-        });
+        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
     }
 
     @Override
@@ -366,10 +359,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void showBottomBarNavigation(boolean show) {
-        boolean isBottomSheetShown = ((SearchActivity) getActivity()).isBottomSheetShown();
-        if (show && isBottomSheetShown) {
-            return;
-        }
         super.showBottomBarNavigation(show);
     }
 
@@ -718,15 +707,11 @@ public class ProductListFragment extends SearchSectionFragment
         }
     }
 
-    @Override
-    public void setTotalSearchResultCount(String formattedResultCount) {
-        ((SearchActivity) getActivity()).setFilterResultCount(formattedResultCount);
-    }
-
+    /*
     @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
-            /*String preFilteredSc = getSearchParameter().getDepartmentId();
+            String preFilteredSc = getSearchParameter().getDepartmentId();
             if (!TextUtils.isEmpty(preFilteredSc)) {
                 addPreFilteredCategory(preFilteredSc);
             }
@@ -734,18 +719,12 @@ public class ProductListFragment extends SearchSectionFragment
                     getActivity(), getScreenNameId(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);*/
+            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
             ((SearchActivity) getActivity()).launchFilterBottomSheet();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
         }
-    }
-
-    @Override
-    public void renderDynamicFilter(DynamicFilterModel pojo) {
-        super.renderDynamicFilter(pojo);
-        ((SearchActivity) getActivity()).loadFilterItems(getFilters());
-    }
+    }*/
 
     private void addPreFilteredCategory(String categoryId) {
         if (getFlagFilterHelper() == null) {

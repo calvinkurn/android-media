@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -27,7 +28,9 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -60,6 +63,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
 
     private BottomNavigationListener bottomNavigationListener;
+    private BottomSheetListener bottomSheetListener;
     private RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
@@ -149,6 +153,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         super.onAttach(context);
         if (context instanceof BottomNavigationListener) {
             this.bottomNavigationListener = (BottomNavigationListener) context;
+            this.bottomSheetListener = (BottomSheetListener) context;
         }
         if (context instanceof RedirectionListener) {
             this.redirectionListener = (RedirectionListener) context;
@@ -177,6 +182,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void showBottomBarNavigation(boolean show) {
+        boolean isBottomSheetShown = bottomSheetListener.isBottomSheetShown();
+        if (show && isBottomSheetShown) {
+            return;
+        }
+
         this.showBottomBar = show;
 
         if (!getUserVisibleHint()) {
@@ -347,11 +357,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
-            Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getScreenName(), getFlagFilterHelper()
-            );
-            startActivityForResult(intent, getFilterRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+            bottomSheetListener.launchFilterBottomSheet();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
         }
@@ -395,6 +401,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
         showBottomBarNavigation(true);
+        bottomSheetListener.loadFilterItems(getFilters());
     }
 
     @Override
@@ -441,7 +448,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
     }
 
-    protected abstract void reloadData();
+    public abstract void reloadData();
 
     protected abstract int getFilterRequestCode();
 
@@ -478,5 +485,21 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
         setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
+    }
+
+    @Override
+    public void setTotalSearchResultCount(String formattedResultCount) {
+        bottomSheetListener.setFilterResultCount(formattedResultCount);
+    }
+
+    protected RecyclerView.OnScrollListener getRecyclerViewBottomSheetScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    bottomSheetListener.closeFilterBottomSheet();
+                }
+            }
+        };
     }
 }

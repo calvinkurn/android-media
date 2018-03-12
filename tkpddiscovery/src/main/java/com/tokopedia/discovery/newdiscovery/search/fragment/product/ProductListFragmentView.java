@@ -51,6 +51,4 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void setSearchParameter(SearchParameter searchParameter);
 
     void backToTop();
-
-    void setTotalSearchResultCount(String formattedResultCount);
 }

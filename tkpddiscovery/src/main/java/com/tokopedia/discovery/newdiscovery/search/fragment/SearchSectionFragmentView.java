@@ -31,4 +31,6 @@ public interface SearchSectionFragmentView extends CustomerView {
     void hideRefreshLayout();
 
     String getScreenNameId();
+
+    void setTotalSearchResultCount(String formattedResultCount);
 }
