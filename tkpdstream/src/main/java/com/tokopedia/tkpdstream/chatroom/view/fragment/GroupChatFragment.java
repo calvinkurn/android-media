@@ -348,7 +348,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 }
 
                 collapse(voteBody);
-                arrow.animate().rotationBy(180f).start();
+                arrow.setRotation(0f);
             }
         });
 
@@ -375,6 +375,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             }
         });
 
+        replyEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapse(voteBody);
+                arrow.setRotation(0f);
+            }
+        });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -396,12 +404,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             public void onClick(View view) {
                 if (voteBody.getVisibility() == View.VISIBLE) {
                     collapse(voteBody);
+                    arrow.setRotation(0f);
                 } else {
                     expand(voteBody);
                     KeyboardHandler.DropKeyboard(getActivity(), getView());
                     analytics.eventClickVoteExpand();
+                    arrow.setRotation(180f);
                 }
-                arrow.animate().rotationBy(180f).start();
             }
         });
     }
@@ -1174,7 +1183,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             if (voteBody.getVisibility() == View.GONE) {
                 expand(voteBody);
                 KeyboardHandler.DropKeyboard(getActivity(), getView());
-                arrow.animate().rotationBy(180f).start();
+                arrow.setRotation(180f);
             }
         }
     }
