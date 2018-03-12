@@ -16,7 +16,7 @@
                     android:endColor="@color/second_white_image"
                     android:startColor="@color/first_white_image" />
             </shape>
-        </clip>g
+        </clip>
     </item>
 </layer-list>
 
