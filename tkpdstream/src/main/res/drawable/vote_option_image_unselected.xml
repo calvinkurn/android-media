@@ -12,14 +12,11 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners
-                    android:bottomRightRadius="8dp"
-                    android:topRightRadius="8dp" />
                 <gradient
                     android:endColor="@color/second_white_image"
                     android:startColor="@color/first_white_image" />
             </shape>
-        </clip>
+        </clip>g
     </item>
 </layer-list>
 

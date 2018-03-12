@@ -37,7 +37,7 @@
             app:titleTextAppearance="@style/ToolbarGroupChat"
             tools:title="title"
             tools:subtitle="subtitle"
-
+            android:alpha="0.9"
             tools:layout_height="64dp"/>
 
         <include

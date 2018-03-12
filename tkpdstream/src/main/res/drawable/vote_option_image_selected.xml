@@ -12,9 +12,6 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners
-                    android:bottomRightRadius="8dp"
-                    android:topRightRadius="8dp" />
                 <gradient
                     android:endColor="@color/second_green"
                     android:startColor="@color/first_green" />
