@@ -165,6 +165,13 @@ public class ProductViewModel implements ItemType, Parcelable {
         return productPrice;
     }
 
+    public double getPrdPriceOrMinVariantProductPrice() {
+        if (hasVariant()) {
+            return productVariant.getMinVariantProductPrice();
+        }
+        return productPrice;
+    }
+
     public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }

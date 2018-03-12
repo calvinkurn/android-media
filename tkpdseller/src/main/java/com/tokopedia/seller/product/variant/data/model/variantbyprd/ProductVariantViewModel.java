@@ -165,6 +165,21 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
+    public double getMinVariantProductPrice() {
+        double minPrice = Double.MAX_VALUE;
+        for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
+            double price = productVariantCombinationViewModel.getPriceVar();
+            if (price < minPrice) {
+                minPrice = price;
+            }
+        }
+        if (minPrice == Double.MAX_VALUE) {
+            return 0;
+        }
+        return minPrice;
+    }
+
+
     /**
      * function to convert the pvo to tid and custom values to tid
      * if all are already converted to tid (means pvo == 0), the result should be same.

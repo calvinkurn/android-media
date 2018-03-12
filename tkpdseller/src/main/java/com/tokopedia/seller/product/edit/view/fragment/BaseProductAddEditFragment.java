@@ -215,8 +215,16 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         return (productInfoViewHolder.isDataValid() &&
                 productPriceViewHolder.isDataValid() &&
                 productManageViewHolder.isDataValid() &&
-                (!productManageViewHolder.isStockAvailable() || productImageViewHolder.isDataValid()) &&
+                isImageValid() &&
                 productDeliveryInfoViewHolder.isDataValid());
+    }
+
+    private boolean isImageValid() {
+        // if it has catalog, image is valid (because no image needed)
+        // if no catalog, check stock, if the stock is not empty, it should have picture.
+        return productInfoViewHolder.getCatalogId() > 0 ||
+                !productManageViewHolder.isStockAvailable() ||
+                productImageViewHolder.isDataValid();
     }
 
     private void getCategoryRecommendation(String productName) {

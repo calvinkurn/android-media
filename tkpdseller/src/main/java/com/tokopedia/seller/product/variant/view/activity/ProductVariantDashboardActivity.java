@@ -22,7 +22,8 @@ import java.util.List;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantDashboardActivity extends BaseSimpleActivity {
+public class ProductVariantDashboardActivity extends BaseSimpleActivity
+        implements ProductVariantDashboardFragment.OnProductVariantDashboardFragmentListener {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
@@ -40,7 +41,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
                                    double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
                                    boolean needRetainImage, ProductPictureViewModel productSizeChart,
-                                   boolean hasOriVarLv1, boolean hasOriVarLv2){
+                                   boolean hasOriVarLv1, boolean hasOriVarLv2) {
         Intent intent = new Intent(context, ProductVariantDashboardActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
@@ -62,50 +63,17 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        if (getFragment() != null && getFragment() instanceof ProductVariantDashboardFragment) {
-            if (!validateVariantPrice()) {
-                return;
-            }
-            Intent intent = new Intent();
-            ProductVariantDashboardFragment productVariantDashboardFragment = ((ProductVariantDashboardFragment) getFragment());
-            if (productVariantDashboardFragment != null) {
-                intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                        productVariantDashboardFragment.getProductVariantViewModel());
-                intent.putExtra(EXTRA_PRODUCT_SIZECHART,
-                        productVariantDashboardFragment.getInputtedSizeChart());
-                setResult(RESULT_OK, intent);
-            }
-            this.finish();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    private boolean validateVariantPrice() {
-        ProductVariantViewModel productVariantViewModel =
-                ((ProductVariantDashboardFragment) getFragment()).getProductVariantViewModel();
-        if (productVariantViewModel == null) {
-            return true;
-        }
-        if (!productVariantViewModel.hasSelectedVariant()) {
-            return true;
-        }
-        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
-                productVariantViewModel.getProductVariant();
-
-        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
-            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-            if (productVariantCombinationViewModel.getPriceVar() == 0) {
-                NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.product_variant_price_must_be_filled));
-                return false;
-            }
-        }
+    protected boolean isToolbarWhite() {
         return true;
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
+    public void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
+                                      ProductPictureViewModel productPictureViewModel) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        intent.putExtra(EXTRA_PRODUCT_SIZECHART, productPictureViewModel);
+        setResult(RESULT_OK, intent);
+        this.finish();
     }
 }
