@@ -1090,6 +1090,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     public void hideVoteLayout() {
         voteBar.setVisibility(View.GONE);
+        voteBody.setVisibility(View.GONE);
     }
 
     public void setVoteHasEnded() {
