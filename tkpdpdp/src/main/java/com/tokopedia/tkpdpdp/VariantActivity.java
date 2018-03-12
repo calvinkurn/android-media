@@ -264,16 +264,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        int option1 = defaultChild.getOptionIds().get(0);
-        if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
-                && getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-            option1 = ((Option) getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)).getId();
-        }
-        for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-            variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(
-                    productVariant.isOptionAvailable(variantOptionAdapterLevel1.getVariantOptions().get(i)));
-            if (option1 == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
-                variantOptionAdapterLevel1.setSelectedPosition(i);
+        if (defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {
+            int option1 = defaultChild.getOptionIds().get(0);
+            if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
+                    && getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                option1 = ((Option) getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)).getId();
+            }
+
+            for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(
+                        productVariant.isOptionAvailable(variantOptionAdapterLevel1.getVariantOptions().get(i)));
+                if (option1 == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                    variantOptionAdapterLevel1.setSelectedPosition(i);
+                }
             }
         }
 
