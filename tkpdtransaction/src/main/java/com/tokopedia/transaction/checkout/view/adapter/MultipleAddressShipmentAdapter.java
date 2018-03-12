@@ -228,11 +228,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return allFilled;
     }
 
-    public void showCouponView() {
-        multipleAddressShipmentItemList.remove(0);
-        multipleAddressShipmentItemList.add(0, cartItemPromoHolderData);
-    }
-
     public void showPromoSuggestion() {
         promoSuggestionData.setVisible(true);
         cartItemPromoHolderData.setPromoNotActive();
@@ -240,6 +235,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     public void hidePromoSuggestion() {
         promoSuggestionData.setVisible(false);
+    }
+
+    public void setPromo(CartItemPromoHolderData promo){
+        cartItemPromoHolderData = promo;
+        hidePromoSuggestion();
     }
 
     public CartItemPromoHolderData getAppliedPromo() {
@@ -265,7 +265,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             @Override
             public void disableVoucherDiscount() {
                 cartItemPromoHolderData.setPromoNotActive();
-                notifyDataSetChanged();
+                listener.onRemovePromo();
             }
 
             @Override
