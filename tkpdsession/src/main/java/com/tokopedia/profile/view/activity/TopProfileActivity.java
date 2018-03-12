@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -55,7 +56,7 @@ import static com.tokopedia.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_
  * @author by milhamj on 08/02/18.
  */
 
-public class TopProfileActivity extends BaseEmptyActivity
+public class TopProfileActivity extends BaseSimpleActivity
         implements TopProfileActivityListener.View {
 
     private static final String EXTRA_PARAM_USER_ID = "user_id";
@@ -130,6 +131,16 @@ public class TopProfileActivity extends BaseEmptyActivity
         setupToolbar();
         setViewListener();
         presenter.initView(userId);
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_top_profile;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 
     private void initInjector() {
@@ -236,11 +247,6 @@ public class TopProfileActivity extends BaseEmptyActivity
                 followUnfollowKol();
             }
         });
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_top_profile;
     }
 
     @Override
