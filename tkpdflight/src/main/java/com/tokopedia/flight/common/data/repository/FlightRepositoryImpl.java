@@ -1,5 +1,8 @@
 package com.tokopedia.flight.common.data.repository;
 
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -46,6 +49,7 @@ import java.util.Map;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by zulfikarrahman on 10/25/17.
@@ -112,8 +116,27 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
-        return flightAirportDataListSource.getAirportList(query, idCountry);
+    public Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params) {
+        return flightAirportDataListSource.getAirport(params);
+    }
+
+    @Override
+    public Observable<List<FlightAirportDB>> getAirportList(final String query, final String idCountry) {
+        if (query != null && query.length() > 0 && idCountry != null && idCountry.length() > 0) {
+            return flightAirportDataListSource.getAirportList(query, idCountry);
+        } else {
+            return flightAirportDataListSource.getAirportCount(query, idCountry)
+                    .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
+                        @Override
+                        public Observable<List<FlightAirportDB>> call(Integer airportTotal) {
+                            if (airportTotal == 0) {
+                                flightAirportDataListSource.deleteCache();
+                                flightAirlineDataListSource.setCacheExpired();
+                            }
+                            return flightAirportDataListSource.getAirportList(query, idCountry);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -129,6 +152,29 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<SendEmailEntity> sendEmail(Map<String, Object> params) {
         return flightOrderDataSource.sendEmail(params);
+    }
+
+    @Override
+    public Observable<Boolean> isSearchCacheExpired(boolean isReturn) {
+        if (isReturn) {
+            return flightSearchReturnDataListSource.isCacheExpired()
+                    .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
+                                }
+                            });
+        } else {
+            return flightSearchSingleDataListSource.isCacheExpired()
+                    .zipWith(flightSearchSingleDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
+                                    return isExpired && isLocalDataAvailable;
+                                }
+                            });
+        }
     }
 
     @Override

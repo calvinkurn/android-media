@@ -1,10 +1,5 @@
 package com.tokopedia.flight.search.view.model;
 
-import android.content.Context;
-import android.text.TextUtils;
-
-import com.tokopedia.flight.R;
-
 /**
  * Created by User on 11/17/2017.
  */

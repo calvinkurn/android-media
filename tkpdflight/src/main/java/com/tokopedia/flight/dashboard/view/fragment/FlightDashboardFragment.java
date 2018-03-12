@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -35,6 +37,7 @@ import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
@@ -79,6 +82,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     TextInputView returnDateTextInputView;
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
+    ProgressBar progressBar;
+    NestedScrollView formContainerLayout;
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
@@ -87,6 +92,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Inject
     FlightDashboardPresenter presenter;
     private FlightDashboardViewModel viewModel;
+    private FlightDashboardPassDataViewModel passData;
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
@@ -128,6 +134,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         returnDateSeparatorView = view.findViewById(R.id.separator_date_return);
         bannerLayout = view.findViewById(R.id.banner_layout);
         bannerView = view.findViewById(R.id.banner);
+        progressBar = view.findViewById(R.id.progress_bar);
+        formContainerLayout = view.findViewById(R.id.dashboard_container);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +259,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
@@ -294,6 +303,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public String getClassArguments() {
         return getArguments().getString(EXTRA_CLASS);
+    }
+
+    @Override
+    public FlightDashboardPassDataViewModel getDashboardPassData() {
+        return passData;
+    }
+
+    @Override
+    public void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel) {
+        this.passData = flightDashboardPassDataViewModel;
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFormContainer() {
+        formContainerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

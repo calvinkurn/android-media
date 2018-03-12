@@ -199,6 +199,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
@@ -627,6 +628,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .newInstance(getFlightConsumerComponent())
                 .inject()
                 .getProfileInfoPrefillBooking();
+    }
+
+    @Override
+    public Interceptor getChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
     }
 
     @Override
