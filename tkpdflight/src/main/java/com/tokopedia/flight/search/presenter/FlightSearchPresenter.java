@@ -8,6 +8,7 @@ import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.domain.FlightSearchExpiredUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
@@ -50,6 +51,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private CompositeSubscription compositeSubscription;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private FlightAnalytics flightAnalytics;
+    private FlightSearchExpiredUseCase flightSearchExpiredUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -58,7 +60,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                  FlightSearchMetaUseCase flightSearchMetaUseCase,
                                  DeleteFlightCacheUseCase deleteFlightCacheUseCase,
-                                 FlightAnalytics flightAnalytics) {
+                                 FlightAnalytics flightAnalytics,
+                                 FlightSearchExpiredUseCase flightSearchExpiredUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
@@ -66,6 +69,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         this.flightSearchMetaUseCase = flightSearchMetaUseCase;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.flightAnalytics = flightAnalytics;
+        this.flightSearchExpiredUseCase = flightSearchExpiredUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
@@ -83,7 +87,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             true,
                             flightFilterModel,
                             sortOptionId),
-                    getSubscriberSearchFlightCache(sortOptionId));
+                    getSubscriberSortFlight(sortOptionId));
         } else {
             flightSearchMetaUseCase.execute(
                     FlightSearchUseCase.generateRequestParams(
@@ -149,6 +153,35 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getView().onSuccessDeleteFlightCache();
             }
         });
+    }
+
+    public void checkCacheExpired() {
+        flightSearchExpiredUseCase.execute(flightSearchExpiredUseCase.createRequestParams(
+                getView().isReturning()),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            getView().finishFragment();
+                        } else {
+                            if (getView().isNeedRefreshFromCache()) {
+                                getView().reloadDataFromCache();
+                                getView().setUIMarkFilter();
+                                getView().setNeedRefreshFromCache(false);
+                            }
+                        }
+                    }
+                });
     }
 
     private void addSubscription(Subscription subscription) {
@@ -236,33 +269,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         };
     }
 
-    private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlightCache(final int sortOptionId) {
-        return new Subscriber<List<FlightSearchViewModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().hideSortRouteLoading();
-                getView().showGetListError(e);
-            }
-
-            @Override
-            public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
-                getView().hideSortRouteLoading();
-                getView().onSuccessGetDataFromCache(flightSearchViewModels);
-                if (flightSearchViewModels.size() > 0) {
-                    getView().showFilterAndSortView();
-                } else {
-                    getView().hideFilterAndSortView();
-                }
-                getView().setSelectedSortItem(sortOptionId);
-            }
-        };
-    }
-
     private Subscriber<FlightSearchWithMetaViewModel> getSubscriberSearchFlightCloud() {
         return new Subscriber<FlightSearchWithMetaViewModel>() {
             @Override
@@ -301,12 +307,22 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
-                getView().hideSortRouteLoading();
-                getView().onSuccessGetDataFromCache(flightSearchViewModels);
                 if (flightSearchViewModels.size() > 0) {
                     getView().showFilterAndSortView();
-                } else {
-                    getView().hideFilterAndSortView();
+                    getView().hideSortRouteLoading();
+                    getView().clearAdapterData();
+                    getView().renderFlightSearchFromCache(flightSearchViewModels);
+                    getView().addBottomPaddingForSortAndFilterActionButton();
+                    getView().addToolbarElevation();
+                } else if (flightSearchViewModels.size() == 0) {
+                    getView().removeBottomPaddingForSortAndFilterActionButton();
+                    if (getView().isAlreadyFullLoadData()) {
+                        getView().clearAdapterData();
+                        getView().showEmptyFlightStateView();
+                    } else {
+                        getView().showSortRouteLoading();
+                        getView().hideFilterAndSortView();
+                    }
                 }
                 getView().setSelectedSortItem(sortOptionId);
             }
