@@ -395,10 +395,12 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 
     @Override
     public void goToProfile(int userId) {
-        viewListener.startActivity(
-                ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
-                        .getTopProfileIntent(viewListener.getActivity(), String.valueOf(userId))
-        );
+        if (viewListener.getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+            viewListener.startActivity(
+                    ((TkpdInboxRouter) viewListener.getActivity().getApplicationContext())
+                            .getTopProfileIntent(viewListener.getActivity(), String.valueOf(userId))
+            );
+        }
     }
 
     @Override

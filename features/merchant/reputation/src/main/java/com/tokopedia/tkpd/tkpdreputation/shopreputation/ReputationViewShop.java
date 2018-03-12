@@ -417,9 +417,11 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(((ReputationRouter) getBaseContext().getApplicationContext())
-                        .getTopProfileIntent(getBaseContext(),
-                                model.userId));
+                if (getBaseContext().getApplicationContext() instanceof ReputationRouter) {
+                    startActivity(((ReputationRouter) getBaseContext().getApplicationContext())
+                            .getTopProfileIntent(getBaseContext(),
+                                    model.userId));
+                }
             }
         };
     }
