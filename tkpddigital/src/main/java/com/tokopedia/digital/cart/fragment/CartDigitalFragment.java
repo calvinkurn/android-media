@@ -460,6 +460,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderAddToCartData(CartDigitalInfoData cartDigitalInfoData) {
         this.cartDigitalInfoDataState = cartDigitalInfoData;
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
         renderCartInfo(cartDigitalInfoData);
     }
 
