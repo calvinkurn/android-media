@@ -18,11 +18,11 @@
         android:id="@+id/close_button"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
-        android:padding="@dimen/padding_small"
         app:layout_constraintBottom_toTopOf="@+id/view_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close"/>
+        app:srcCompat="@drawable/ic_close_dialog_stream"
+        android:padding="@dimen/space_med"/>
 
     <FrameLayout
         android:id="@+id/container"

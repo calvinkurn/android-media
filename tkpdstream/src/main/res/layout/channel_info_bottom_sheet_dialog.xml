@@ -76,8 +76,8 @@
 
             <ImageView
                 android:id="@+id/prof_pict"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/groupchat_avatar_size_large"
+                android:layout_height="@dimen/groupchat_avatar_size_large"
                 android:layout_marginRight="@dimen/space_small"
                 tools:src="@drawable/ic_badge_diamond" />
 
@@ -116,6 +116,7 @@
                 android:textColor="@color/black_38"
                 android:textSize="12sp"
                 android:textStyle="normal"
+                android:layout_marginLeft="@dimen/space_mini"
                 tools:text="2.546.000" />
 
         </RelativeLayout>

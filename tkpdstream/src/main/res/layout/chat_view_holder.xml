@@ -3,7 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/new_margin_med"
+    android:layout_marginStart="@dimen/new_margin_med"
+    android:layout_marginRight="@dimen/new_margin_med"
+    android:layout_marginEnd="@dimen/new_margin_med"
+    >
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -27,8 +32,7 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/groupchat_avatar_size"
         android:layout_height="@dimen/groupchat_avatar_size"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/space_mini"
         android:layout_below="@id/header_time"
         tools:src="@color/background_notification"/>
 
