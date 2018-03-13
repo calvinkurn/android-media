@@ -156,7 +156,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             totalPaymentHolder.bindFooterTotalPayment(
                     addressDataList,
                     priceSummaryData,
-                    totalPriceData
+                    totalPriceData,
+                    cartItemPromoHolderData
             );
         }
     }
@@ -172,7 +173,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private void bindFooterView(MultipleAddressShipmentFooterViewHolder footerHolder) {
-        footerHolder.bindFooterView(addressDataList, priceSummaryData);
+        footerHolder.bindFooterView(addressDataList, priceSummaryData, cartItemPromoHolderData);
     }
 
     private void bindItems(MultipleShippingAddressViewHolder holder, int position) {
@@ -251,7 +252,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         for (int i = 0; i < addressDataList.size(); i++) {
             totalPayment = totalPayment + addressDataList.get(i).getSubTotal();
         }
-        return totalPayment;
+        return totalPayment - getDiscountData(cartItemPromoHolderData);
+    }
+
+    private long getDiscountData(CartItemPromoHolderData promoHolderData) {
+        if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
+            return promoHolderData.getCouponDiscountAmount();
+        else if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
+            return promoHolderData.getVoucherDiscountAmount();
+        else return 0;
     }
 
     private VoucherCartHachikoView.ActionListener voucherClickedListener(
