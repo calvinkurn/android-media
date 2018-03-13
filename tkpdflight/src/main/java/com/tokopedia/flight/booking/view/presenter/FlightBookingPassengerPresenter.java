@@ -276,6 +276,20 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
+    public void onNewPassengerChoosed() {
+        FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView().getCurrentPassengerViewModel();
+        flightBookingPassengerViewModel.setPassengerId("");
+        flightBookingPassengerViewModel.setPassengerFirstName("");
+        flightBookingPassengerViewModel.setPassengerLastName("");
+        flightBookingPassengerViewModel.setPassengerBirthdate("");
+        flightBookingPassengerViewModel.setPassengerTitle("");
+
+        getView().renderSelectedList(getView().getString(R.string.flight_booking_passenger_saved_secondary_hint));
+        getView().renderPassengerName("", "");
+        getView().renderBirthdate("");
+    }
+
+    @Override
     public void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger) {
         getView().renderSelectedList(String.format("%s %s",
                 selectedPassenger.getPassengerFirstName(),
