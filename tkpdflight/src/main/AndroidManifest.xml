@@ -102,7 +102,10 @@
             android:name=".airport.service.GetAirportListService"
             android:exported="false" />
 
-        <activity android:name=".passenger.view.activity.FlightPassengerUpdateActivity"></activity>
+        <activity android:name=".passenger.view.activity.FlightPassengerUpdateActivity"
+            android:label="@string/flight_passenger_update_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
     </application>
 
 </manifest>
