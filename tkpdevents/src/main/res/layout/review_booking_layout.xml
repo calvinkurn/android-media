@@ -114,14 +114,14 @@
                             android:id="@+id/tv_ticket_cnt_type"
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="100dp"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_16"
                             android:layout_marginTop="@dimen/dp_16"
+                            android:layout_toRightOf="@+id/tv_ticket_summary"
                             android:text="@string/rp_5980000"
                             android:textColor="@color/green_nob"
                             android:textSize="12sp"
-                            android:textStyle="normal"
-                            android:layout_marginEnd="100dp" />
+                            android:textStyle="normal" />
 
                     </RelativeLayout>
 
@@ -133,7 +133,7 @@
 
                         <TextView
                             android:id="@+id/event_total_tickets"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_4"
                             android:paddingLeft="@dimen/dp_16"
@@ -147,9 +147,11 @@
                             android:id="@+id/seat_numbers"
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="100dp"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_16"
                             android:layout_marginTop="@dimen/dp_4"
+                            android:layout_toRightOf="@+id/event_total_tickets"
+                            android:text="@string/rp_5980000"
                             android:textColor="@color/black_54"
                             android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
@@ -233,12 +235,13 @@
 
                     <EditText
                         android:id="@+id/tv_visitor_names"
-                        android:layout_width="296dp"
+                        android:layout_width="@dimen/edittext_width"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv2"
                         android:layout_marginBottom="@dimen/dp_16"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
+                        android:focusableInTouchMode="true"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
                         android:textSize="@dimen/sp_14"
@@ -280,11 +283,12 @@
 
                     <EditText
                         android:id="@+id/tv_telephone"
-                        android:layout_width="296dp"
+                        android:layout_width="@dimen/edittext_width"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv3"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
+                        android:focusableInTouchMode="true"
                         android:paddingBottom="8dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
@@ -500,30 +504,31 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@+id/update_promo"
-                            android:layout_gravity="end|center_vertical"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="Anda mendapatkan promo:"
                             android:textColor="@color/grey_700"
                             android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
-                            android:visibility="gone" />
+                            android:visibility="visible" />
 
                         <TextView
                             android:id="@+id/tv_promo_cashback_msg"
-                            android:layout_width="wrap_content"
+                            android:layout_width="20dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@+id/tv_promo_success_msg"
-                            android:layout_gravity="end|center_vertical"
                             android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_8"
                             android:layout_marginStart="@dimen/dp_16"
                             android:layout_marginTop="@dimen/dp_8"
+                            android:layout_toLeftOf="@+id/batal"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
+                            android:maxLines="2"
                             android:text="cashback mesage"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/sp_12"

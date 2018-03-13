@@ -14,6 +14,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
@@ -428,7 +433,7 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .fitCenter()
                 .into(imageView);
     }
@@ -539,6 +544,52 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .override(80,80)
+                    .centerCrop()
+                    .into(imageView);
+        }
+
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Glide
+                    .with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                            Bitmap blurredBitmap = blur(context, resource);
+                            imageView.setImageBitmap(blurredBitmap);
+                        }
+                    });
+        }
+    }
+
+    public static Bitmap blur(Context context, Bitmap image) {
+        final float BITMAP_SCALE = 0.4f;
+        final float BLUR_RADIUS = 7.5f;
+
+        int width = Math.round(image.getWidth() * BITMAP_SCALE);
+        int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+        RenderScript rs = RenderScript.create(context);
+        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+        theIntrinsic.setRadius(BLUR_RADIUS);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+
+        return outputBitmap;
+    }
     public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
         Glide.with(context)
                 .load(url)

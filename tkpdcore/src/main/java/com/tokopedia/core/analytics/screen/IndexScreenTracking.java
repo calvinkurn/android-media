@@ -42,9 +42,7 @@ public class IndexScreenTracking extends TrackingUtils {
 
     private static String getCIData(Context context) {
         GlobalCacheManager cache = new GlobalCacheManager();
-        if (cache.get(CI_DATA) != null
-                && !cache.isExpired(CI_DATA)
-                && !cache.get(CI_DATA).isEmpty()) {
+        if (!cache.isExpired(CI_DATA)) {
             return cache.get(CI_DATA);
         } else {
             String value = getCurrentInstalledList(context);

@@ -10,5 +10,6 @@ public interface CampaignURL {
     String BASE_URL = ConsumerAppBaseUrl.TOKO_CAMPAIGN_URL;
 
     String BARCODE_CAMPAIGN = "campaign/qr/verify";
+    String SHAKE_CAMPAIGN = "campaign/av/verify";
 
 }

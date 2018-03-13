@@ -8,12 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
-
-import static com.moe.pushlibrary.utils.MoEHelperUtils.getDate;
 
 /**
  * Created by hangnadi on 3/13/17.
@@ -103,7 +100,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
             } else if (view.getId() == R.id.action_awb_more) {
                 listener.setOnActionAwbHistoryClick();
             } else if (view.getId() == R.id.action_add) {
-                listener.setOnActionInputAwbNumberClick();
+                listener.setOnActionInputAwbNumberClick(false);
             }
         }
     }

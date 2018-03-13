@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
@@ -24,6 +26,7 @@ import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.BookingQualifier;
+import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -40,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -51,6 +55,10 @@ import retrofit2.Retrofit;
 @FlightScope
 @Module
 public class FlightModule {
+    private static final int NET_READ_TIMEOUT = 30;
+    private static final int NET_WRITE_TIMEOUT = 30;
+    private static final int NET_CONNECT_TIMEOUT = 30;
+    private static final int NET_RETRY = 1;
 
     @FlightScope
     @Provides
@@ -61,19 +69,34 @@ public class FlightModule {
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
+
+    @FlightScope
+    @Provides
+    @FlightChuckQualifier
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        if (context instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
+    }
+
     @FlightScope
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            FlightAuthInterceptor flightAuthInterceptor) {
-        OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy();
-        return new OkHttpClient.Builder()
+                                            FlightAuthInterceptor flightAuthInterceptor,
+                                            @FlightChuckQualifier Interceptor chuckIntereptor,
+                                            @FlightQualifier OkHttpRetryPolicy okHttpRetryPolicy) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(flightAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))
-                .build();
+                .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class));
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckIntereptor);
+        }
+        return builder.build();
     }
 
     @FlightScope
@@ -102,7 +125,7 @@ public class FlightModule {
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightPassengerFactorySource flightPassengerFactorySource) {
-        return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource,flightAirlineDataListSource,
+        return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
                 flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
@@ -119,5 +142,12 @@ public class FlightModule {
     @Provides
     public FlightApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit) {
         return retrofit.create(FlightApi.class);
+    }
+
+    @FlightScope
+    @FlightQualifier
+    @Provides
+    public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return new OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY);
     }
 }

@@ -40,6 +40,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
@@ -250,6 +251,11 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override
