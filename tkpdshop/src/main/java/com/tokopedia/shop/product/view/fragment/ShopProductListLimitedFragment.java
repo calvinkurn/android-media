@@ -52,14 +52,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener,
         ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback {
 
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
-    }
-
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_ETALASE = 200;
-
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private ProgressDialog progressDialog;
@@ -67,6 +61,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
+
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
 
     public void setPromoWebViewListener(ShopPagePromoWebView.Listener promoWebViewListener) {
         this.promoWebViewListener = promoWebViewListener;
