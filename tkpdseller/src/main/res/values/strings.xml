@@ -232,5 +232,8 @@
     <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
     <string name="change">Ubah</string>
+    <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
+    <string name="product_price_locked">Harga Produk Terkunci</string>
+    <string name="product_price_locked_desc">Atur harga di masing-masing varian atau ubah semua harga varian dengan mengisi kolom di bawah ini.</string>
 
 </resources>

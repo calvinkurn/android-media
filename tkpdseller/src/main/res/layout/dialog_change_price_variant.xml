@@ -9,19 +9,23 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.TitleBig"/>
+        style="@style/TextView.TitleBig"
+        android:text="@string/product_price_locked"/>
 
-    <!--<com.tokopedia.design.text.CounterInputView-->
-        <!--android:id="@+id/counter_input_view_min_quantity"-->
-        <!--style="@style/LabelLayout.NoPadding"-->
-        <!--android:layout_marginTop="@dimen/margin_med"-->
-        <!--app:counter_hint="@string/product_label_minimum_whole_sale" />-->
+    <TextView
+        style="@style/TextView.Title"
+        android:text="@string/product_price_locked_desc"/>
 
-    <!--<com.tokopedia.design.text.DecimalInputView-->
-        <!--android:id="@+id/decimal_input_view_price"-->
-        <!--style="@style/LabelLayout.NoPadding"-->
-        <!--android:layout_marginTop="@dimen/margin_med"-->
-        <!--app:decimal_input_hint="@string/product_label_price_whole_sale" />-->
+    <com.tokopedia.design.text.SpinnerCounterInputView
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:id="@+id/spinner_counter_input_view_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spinner_decimal_entries="@array/product_currency_entries"
+        app:spinner_decimal_hint="@string/product_label_product_price"
+        app:spinner_decimal_max_length="@integer/product_max_counter_length"
+        app:spinner_decimal_show_counter_button="false"
+        app:spinner_decimal_values="@array/product_currency_values" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,7 +33,7 @@
         android:layout_marginTop="32dp">
 
         <TextView
-            android:id="@+id/string_picker_dialog_confirm"
+            android:id="@+id/string_picker_dialog_change"
             style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +43,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:text="@string/label_add" />
+            android:text="@string/change" />
 
         <TextView
             android:id="@+id/string_picker_dialog_cancel"
@@ -52,7 +56,7 @@
             android:layout_marginStart="16dp"
             android:layout_toLeftOf="@id/string_picker_dialog_confirm"
             android:layout_toStartOf="@id/string_picker_dialog_confirm"
-            android:text="@string/product_etalase_picker_add_etalase_cancel_button_dialog" />
+            android:text="@string/close" />
 
     </RelativeLayout>
 

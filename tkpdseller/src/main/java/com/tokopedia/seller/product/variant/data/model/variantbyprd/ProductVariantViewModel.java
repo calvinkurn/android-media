@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
@@ -161,6 +162,15 @@ public class ProductVariantViewModel implements Parcelable {
                         productVariantCombinationViewModel.setStock(0);
                     }
                 }
+            }
+        }
+    }
+
+    public void changePriceTo(double value){
+        if (hasSelectedVariant()) {
+            List<ProductVariantCombinationViewModel> combinationViewModelList = productVariant;
+            for (ProductVariantCombinationViewModel combinationViewModel: combinationViewModelList) {
+                combinationViewModel.setPriceVar(value);
             }
         }
     }

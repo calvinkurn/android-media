@@ -48,8 +48,6 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     private static final int MAX_WHOLESALE = 5;
 
-    private final Locale dollarLocale = Locale.US;
-
     private WholesaleAdapter wholesaleAdapter;
     private ImageButton editPriceImageButton;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
@@ -62,15 +60,13 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private Listener listener;
-    @CurrencyTypeDef
-    private int currencyType = CurrencyTypeDef.TYPE_IDR;
     private NumberFormat formatter;
     private boolean officialStore;
     private final View vWholeSaleVariantInfo;
 
     public ProductPriceViewHolder(View view, Listener listener) {
 
-        determineFormatter();
+        formatter = NumberFormat.getNumberInstance(Locale.US);
         editPriceImageButton = view.findViewById(R.id.image_button_edit_price);
         vWholeSaleVariantInfo = view.findViewById(R.id.v_wholesale_variant_info);
         priceSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
@@ -104,16 +100,14 @@ public class ProductPriceViewHolder extends ProductViewHolder
             }
 
             private void setTextWatcher(String spinnerValue) {
+                // To reset/change from idr <==> USD, vice versa.
                 priceSpinnerCounterInputView.removeTextChangedListener(idrTextWatcher);
                 priceSpinnerCounterInputView.removeTextChangedListener(usdTextWatcher);
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
-                    currencyType = CurrencyTypeDef.TYPE_IDR;
                 } else {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
-                    currencyType = CurrencyTypeDef.TYPE_USD;
                 }
-                determineFormatter();
             }
         });
 
@@ -174,7 +168,8 @@ public class ProductPriceViewHolder extends ProductViewHolder
             @Override
             public void onClick(View v) {
                 if (ProductPriceViewHolder.this.listener != null) {
-                    ProductPriceViewHolder.this.listener.startAddWholeSaleDialog(currencyType, getPreviousValue(), officialStore);
+                    ProductPriceViewHolder.this.listener.startAddWholeSaleDialog(
+                            getCurrencyType(), getPreviousValue(), officialStore);
                 }
             }
         });
@@ -228,26 +223,30 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     private void showEditPriceDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
-                R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
-        builder.setMessage(R.string.product_confirmation_change_wholesale_price);
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                expandWholesale(false);
-                clearWholesaleItems();
-                dialog.cancel();
-            }
-        });
-        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+        if (listener.hasVariant()) {
+            listener.showDialogEditPriceVariant();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
+                    R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
+            builder.setMessage(R.string.product_confirmation_change_wholesale_price);
+            builder.setCancelable(true);
+            builder.setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    expandWholesale(false);
+                    clearWholesaleItems();
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
 
-        AlertDialog alert = builder.create();
-        alert.show();
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void updateWholesaleButton() {
@@ -270,6 +269,10 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public void setGoldMerchant(boolean goldMerchant) {
         this.goldMerchant = goldMerchant;
+    }
+
+    public boolean isGoldMerchant() {
+        return goldMerchant;
     }
 
     public int getPriceUnit() {
@@ -325,7 +328,8 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     public @NonNull List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        if (!wholesaleExpandableOptionSwitch.isExpanded()) {
+        if (wholesaleExpandableOptionSwitch.getVisibility() != View.VISIBLE ||
+                !wholesaleExpandableOptionSwitch.isExpanded()) {
             return new ArrayList<>();
         }
         return wholesaleAdapter.getProductWholesaleViewModels();
@@ -354,10 +358,6 @@ public class ProductPriceViewHolder extends ProductViewHolder
         }
     }
 
-    private void determineFormatter() {
-        formatter = NumberFormat.getNumberInstance(dollarLocale);
-    }
-
     @Override
     public void notifySizeChanged(int currentSize) {
         updateWholesaleButton();
@@ -365,7 +365,12 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     @Override
     public int getCurrencyType() {
-        return currencyType;
+        if (priceSpinnerCounterInputView.getSpinnerTextView().getSpinnerValue()
+                .equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
+            return CurrencyTypeDef.TYPE_IDR;
+        } else {
+            return CurrencyTypeDef.TYPE_USD;
+        }
     }
 
     @Override
@@ -439,5 +444,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
         void showDialogMoveToGM(@StringRes int message);
 
         boolean hasVariant();
+
+        void showDialogEditPriceVariant();
     }
 }

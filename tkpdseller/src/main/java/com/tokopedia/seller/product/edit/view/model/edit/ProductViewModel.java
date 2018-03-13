@@ -8,7 +8,9 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -433,6 +435,14 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     public boolean isProductNameEditable() {
         return productNameEditable;
+    }
+
+    public void changePriceTo(@CurrencyTypeDef int currencyType, double value){
+        if (productVariant.hasSelectedVariant()) {
+            productVariant.changePriceTo(value);
+        }
+        productPriceCurrency = currencyType;
+        productPrice = value;
     }
 
     @Override

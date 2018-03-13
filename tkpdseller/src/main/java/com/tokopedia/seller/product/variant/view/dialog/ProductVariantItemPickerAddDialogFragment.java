@@ -18,7 +18,7 @@ import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import java.util.ArrayList;
 
 /**
- * @author sebastianuskh on 4/5/17.
+ * @author hendry on 4/5/17.
  */
 
 public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDialogFragment {
@@ -70,12 +70,6 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
             textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_length_to_long, MAX_VARIANT_NAME_LENGTH));
             return;
         }
-//        for (String reservedTitle : reservedTitleList) {
-//            if (reservedTitle.equalsIgnoreCase(text.trim())) {
-//                textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
-//                return;
-//            }
-//        }
         if (onProductVariantItemPickerAddDialogFragmentListener.doesVariantOptionAlreadyExist(text)) {
             textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
             return;

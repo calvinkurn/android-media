@@ -145,7 +145,7 @@
     <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
     <string name="product_quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
-    <string name="product_wholesale_range_format">%1$s buah</string>
+    <string name="product_wholesale_range_format">≥%1$s buah</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
     <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
