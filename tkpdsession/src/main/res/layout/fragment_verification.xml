@@ -125,7 +125,7 @@
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="@dimen/margin_med"
                     android:layout_marginRight="@dimen/margin_sm"
-                    android:src="@drawable/ic_cancel_red"
+                    app:srcCompat="@drawable/ic_cancel_red"
                     android:visibility="invisible"
                     tools:visibility="visible"/>
             </LinearLayout>

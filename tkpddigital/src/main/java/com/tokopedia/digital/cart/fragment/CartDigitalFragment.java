@@ -385,6 +385,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
+
         sendGTMAnalytics(
                 cartDigitalInfoData.getAttributes().getCategoryName(),
                 cartDigitalInfoData.getAttributes().getOperatorName()

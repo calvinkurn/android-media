@@ -1,19 +1,11 @@
 package com.tokopedia.ride.common.ride.di;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
-import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -189,33 +181,9 @@ public class RideModule {
 
     @Provides
     @RideScope
-    TokoCashSourceFactory provideTokoCashSourceFactory() {
-        Bundle bundle = new Bundle();
-        String authKey = SessionHandler.getAccessToken();
-        authKey = "Bearer " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-        AccountsService accountsService = new AccountsService(bundle);
-        GlobalCacheManager walletCache = new GlobalCacheManager();
-
-        return new TokoCashSourceFactory(
-                MainApplication.getAppContext(),
-                accountsService,
-                new TokoCashMapper(),
-                walletCache);
-
-    }
-
-    @Provides
-    @RideScope
-    TokoCashRepository provideTokoCashRepository(TokoCashSourceFactory tokoCashSourceFactory) {
-        return new TokoCashRepositoryImpl(tokoCashSourceFactory);
-    }
-
-    @Provides
-    @RideScope
     GetLocationAddressUseCase provideGetLocationAddressUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             PlaceRepository placeRepository) {
+                                                               PostExecutionThread postExecutionThread,
+                                                               PlaceRepository placeRepository) {
         return new GetLocationAddressUseCase(threadExecutor, postExecutionThread, placeRepository);
     }
 

@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="@dimen/margin_16"
+    android:layout_marginRight="@dimen/margin_16"
+    android:layout_marginTop="@dimen/margin_8"
+    android:layout_marginBottom="@dimen/margin_8"
+    android:background="@drawable/bg_flight_search_item"
     android:clickable="true"
-    android:layout_marginTop="@dimen/margin_ms"
-    android:layout_marginLeft="@dimen/margin_ms"
-    android:layout_marginRight="@dimen/margin_ms"
-    android:foreground="?attr/selectableItemBackground"
-    android:orientation="vertical"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:elevation="@dimen/flight_elevation_level"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,13 +33,13 @@
             tools:text="Garuda" />
 
         <com.tokopedia.flight.common.view.FlightMultiAirlineView
+            android:id="@+id/view_multi_airline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@id/tv_airline"
             android:layout_toRightOf="@id/tv_airline"
-            android:layout_centerVertical="true"
-            android:id="@+id/view_multi_airline" />
+            android:orientation="horizontal" />
 
         <TextView
             android:id="@+id/airline_refundable_info"
@@ -58,9 +62,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/margin_vs"
         android:background="@color/grey_200" />
 
     <LinearLayout
@@ -87,7 +91,7 @@
                 android:layout_marginEnd="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
 
             <ImageView
@@ -99,7 +103,7 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:src="@drawable/selector_flight_detail" />
+                app:srcCompat="@drawable/selector_flight_detail" />
 
             <View
                 android:layout_width="1dp"
@@ -181,18 +185,19 @@
                 style="@style/TextView.Micro.BlackSecondary"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:textSize="10sp"
-                tools:text="Rp25000"/>
+                android:visibility="gone"
+                tools:text="Rp25000"
+                tools:visibility="visible" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/margin_vvvs"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin">
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/total_price"
                     style="@style/TextView.Title.Bold"
@@ -202,38 +207,32 @@
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/total_price"
                     android:layout_toEndOf="@id/total_price"
                     android:layout_toRightOf="@id/total_price"
-                    android:layout_alignBaseline="@id/total_price"
-                    android:textSize="10sp"
-                    android:text="/org" />
+                    android:text="/org"
+                    android:textSize="10sp" />
             </RelativeLayout>
 
-            <FrameLayout
+
+            <LinearLayout
+                android:id="@+id/container_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingStart="@dimen/padding_ms">
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/padding_vvs">
 
-                <LinearLayout
-                    android:id="@+id/container_detail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/padding_vvs">
+                <TextView
+                    style="@style/TextView.Micro.Green"
+                    android:text="@string/flight_label_see_detail" />
 
-                    <TextView
-                        style="@style/TextView.Micro.Green"
-                        android:text="@string/flight_label_see_detail"/>
+            </LinearLayout>
 
-                </LinearLayout>
-            </FrameLayout>
 
         </LinearLayout>
     </LinearLayout>

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 

@@ -46,6 +46,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -86,6 +87,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -200,6 +202,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_INDEX_HOME;
+    }
+
+    @Override
+    protected void sendScreenAnalytics() {
+        IndexScreenTracking.sendScreen(this, this);
     }
 
     @Override
@@ -542,24 +549,22 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-//            case R.id.action_search:
-//                return onSearchOptionSelected();
-            case R.id.action_cart:
-                if (!SessionHandler.isV4Login(getBaseContext())) {
-                    UnifyTracking.eventClickCart();
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(this);
-                    startActivity(intent);
-                } else {
-                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-                }
-                return true;
-            case R.id.action_barcode_scan:
-                startActivity(QrScannerActivity.newInstance(this));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_cart) {
+            if (!SessionHandler.isV4Login(getBaseContext())) {
+                UnifyTracking.eventClickCart();
+                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                        .getLoginIntent(this);
+                startActivity(intent);
+            } else {
+                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+            }
+            return true;
+        } else if (item.getItemId() == R.id.action_barcode_scan) {
+            startActivity(QrScannerActivity.newInstance(this));
+            CampaignTracking.eventQRButtonClick();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
 
     }

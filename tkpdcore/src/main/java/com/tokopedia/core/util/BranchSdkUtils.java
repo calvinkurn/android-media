@@ -62,7 +62,7 @@ public class BranchSdkUtils {
 
     public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
-        if (isBranchUrlActivated(activity, data.getType())) {
+        if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
             LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
             branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
@@ -87,7 +87,7 @@ public class BranchSdkUtils {
         String desktopUrl = null;
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
-        } else if (isAppShowReferralButtonActivated(activity) && ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
             deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
         } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
@@ -114,7 +114,7 @@ public class BranchSdkUtils {
     }
 
     private static boolean isBranchUrlActivated(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) || ShareData.REFERRAL_TYPE.equalsIgnoreCase(type) ) {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);

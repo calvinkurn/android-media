@@ -32,18 +32,22 @@ abstract class BaseToolbarActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
-        }
+        setupStatusBar();
         setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
         setupActionBarHomeIndicatorIcon();
     }
 
+    protected void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
+        }
+    }
+
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
         }
     }
 
@@ -51,7 +55,6 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return false;
     }
 
-    @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(R.id.toolbar);

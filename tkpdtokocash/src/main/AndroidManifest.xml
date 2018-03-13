@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.tokocash" >
+    package="com.tokopedia.tokocash">
 
     <application
         android:allowBackup="true"
@@ -7,15 +7,66 @@
         android:supportsRtl="true">
 
         <activity
+            android:name=".qrpayment.presentation.activity.SuccessPaymentQRActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".qrpayment.presentation.activity.NominalQrPaymentActivity"
+            android:label="@string/title_input_nominal"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activation.presentation.activity.ActivateTokoCashActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".activation.presentation.activity.SuccessActivateTokoCashActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
             android:name=".historytokocash.presentation.activity.HistoryTokoCashActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".qrpayment.presentation.activity.CustomScannerTokoCashActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".qrpayment.presentation.activity.SuccessPaymentQRActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".qrpayment.presentation.activity.NominalQrPaymentActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait" />
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.HomeTokoCashActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.DetailTransactionActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.WaitingTransactionActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.HelpHistoryDetailActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.MoveToSaldoActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".historytokocash.presentation.activity.ThankYouMoveToSaldoActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".accountsetting.presentation.activity.AccountSettingActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 
 </manifest>

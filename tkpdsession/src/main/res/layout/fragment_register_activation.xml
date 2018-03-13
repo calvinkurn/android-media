@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/icon_register" />
+                app:srcCompat="@drawable/icon_register" />
 
             <TextView
                 android:id="@+id/title_verify"

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -18,7 +19,6 @@ import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,22 +32,17 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
-        @BindView(R.id.hotprod_name)
         TextView mNameOfProduct;
-        @BindView(R.id.hotprod_price)
         TextView mPrice;
-        @BindView(R.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mImageofProduct = (ImageView) itemView.findViewById(R.id.hotprod_img);
+            mNameOfProduct = (TextView) itemView.findViewById(R.id.hotprod_name);
+            mPrice = (TextView) itemView.findViewById(R.id.hotprod_price);
+            cardView = (CardView) itemView.findViewById(R.id.hot_list_cardview_listproduct);
         }
 
         public Context getContext() {
@@ -83,7 +78,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        UnifyTracking.eventHotlist(hotListModel.getHotListName());
+                        trackingEnhanceEccommerce(hotListModel);
                         TrackingUtils.sendMoEngageClickHotListEvent(hotListModel);
                         hotList.moveToOtherActivity(hotListModel);
                     }
@@ -93,6 +88,29 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 super.onBindViewHolder(viewHolder, position);
                 break;
         }
+    }
+
+    private void trackingEnhanceEccommerce(HotListModel model) {
+        UnifyTracking.eventTrackingEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", "promoClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "hotlist tab - banner click",
+                        "eventLabel", model.getHotListName(),
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "id", model.getHotListId(),
+                                                        "name", model.getTrackerEnhanceName(),
+                                                        "creative", model.getHotListName(),
+                                                        "position", String.valueOf(model.getTrackerEnhancePosition())
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
 

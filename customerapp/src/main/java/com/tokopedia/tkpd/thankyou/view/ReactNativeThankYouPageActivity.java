@@ -11,11 +11,17 @@ import android.view.KeyEvent;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.AppRatingDialog;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
@@ -23,9 +29,14 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
+import org.json.JSONArray;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {

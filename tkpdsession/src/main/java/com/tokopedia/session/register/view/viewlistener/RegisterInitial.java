@@ -46,6 +46,8 @@ public interface RegisterInitial {
         void onGoToPhoneVerification();
 
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {
