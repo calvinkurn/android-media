@@ -26,8 +26,6 @@ import com.tokopedia.posapp.product.productlist.view.fragment.ReactProductListFr
  */
 
 public class ProductListActivity extends ReactDrawerPresenterActivity {
-    LocalCacheHandler drawerCache;
-    DrawerHelper drawerHelper;
 
     @DeepLink(PosAppLink.PRODUCT_LIST)
     public static Intent getApplinkIntent(Context context, Bundle extras) {

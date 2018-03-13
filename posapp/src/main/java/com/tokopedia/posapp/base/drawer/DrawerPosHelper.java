@@ -18,6 +18,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
+import com.tokopedia.posapp.product.management.view.activity.ProductManagementActivity;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.transaction.TransactionHistoryActivity;
 import com.tokopedia.posapp.auth.validatepassword.view.fragment.ValidatePasswordFragment;
@@ -70,10 +71,13 @@ public class DrawerPosHelper extends DrawerHelper
                     TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY,
                     true));
         }
-
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_choose_outlet),
                 R.drawable.ic_store,
                 TkpdState.DrawerPosition.POS_OUTLET,
+                true));
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_product_management),
+                R.drawable.ic_product_management,
+                TkpdState.DrawerPosition.POS_PRODUCT_MANAGEMENET,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.icon_logout,
@@ -161,6 +165,23 @@ public class DrawerPosHelper extends DrawerHelper
                                     dialog.dismiss();
                                     startIntent(context, OutletActivity.class);
                                     context.finish();
+                                }
+
+                                @Override
+                                public void onError(String message) {
+
+                                }
+                            }
+                    );
+                    break;
+                case TkpdState.DrawerPosition.POS_PRODUCT_MANAGEMENET:
+                    posSessionHandler.showPasswordDialog(
+                            context.getString(R.string.drawer_title_pos_product_management),
+                            new ValidatePasswordFragment.PasswordListener() {
+                                @Override
+                                public void onSuccess(ValidatePasswordFragment dialog) {
+                                    dialog.dismiss();
+                                    startIntent(context, ProductManagementActivity.class);
                                 }
 
                                 @Override

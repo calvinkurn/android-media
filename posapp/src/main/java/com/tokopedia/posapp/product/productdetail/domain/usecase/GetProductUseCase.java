@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.posapp.product.ProductRepository;
+import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
 
 import rx.Observable;
 

@@ -1,8 +1,9 @@
-package com.tokopedia.posapp.product;
+package com.tokopedia.posapp.product.common.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
+import com.tokopedia.posapp.product.ProductFactory;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import rx.Observable;

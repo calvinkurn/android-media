@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productdetail.view.viewmodel;
+package com.tokopedia.posapp.product.common.view.viewmodel;
 
 /**
  * Created by okasurya on 8/10/17.

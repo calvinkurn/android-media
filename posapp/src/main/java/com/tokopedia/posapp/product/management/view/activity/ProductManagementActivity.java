@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
 import com.tokopedia.posapp.product.management.view.fragment.ProductManagementFragment;
@@ -44,7 +45,6 @@ public class ProductManagementActivity extends ReactDrawerPresenterActivity {
 
     @Override
     protected void initView() {
-        super.initView();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(
@@ -68,6 +68,6 @@ public class ProductManagementActivity extends ReactDrawerPresenterActivity {
 
     @Override
     protected int setDrawerPosition() {
-        return 0;
+        return TkpdState.DrawerPosition.POS_PRODUCT_MANAGEMENET;
     }
 }

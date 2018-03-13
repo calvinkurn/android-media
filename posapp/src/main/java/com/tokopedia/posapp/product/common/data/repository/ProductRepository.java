@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product;
+package com.tokopedia.posapp.product.common.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;

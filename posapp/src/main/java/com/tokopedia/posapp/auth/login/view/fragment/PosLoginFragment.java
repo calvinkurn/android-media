@@ -158,33 +158,6 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
         });
     }
 
-
-//     if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-//        view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
-//                .getGetUserInfoDomainData());
-//    } else if (loginEmailDomain.getLoginResult() != null
-//            && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-//            && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
-//        view.dismissLoadingLogin();
-//        view.setSmartLock();
-//        view.onSuccessLoginEmail();
-//    } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
-//            && !isMsisdnVerified(loginEmailDomain.getInfo())) {
-//        view.setSmartLock();
-//        view.onGoToPhoneVerification();
-//    } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-//        view.setSmartLock();
-//        view.onGoToSecurityQuestion(
-//                loginEmailDomain.getLoginResult().getSecurityDomain(),
-//                loginEmailDomain.getLoginResult().getFullName(),
-//                loginEmailDomain.getInfo().getGetUserInfoDomainData().getEmail(),
-//                loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
-//    } else {
-//        view.dismissLoadingLogin();
-//        view.resetToken();
-//        view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
-//    }
-
     @Override
     public void resetError() {
 

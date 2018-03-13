@@ -53,4 +53,5 @@
     <string name="transaction_error_message">Dana Anda tidak terpotong</string>
     <string name="error_password_wrong">Password yang anda masukan salah.</string>
     <string name="error_password_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi.</string>
+    <string name="drawer_title_pos_product_management">Manajemen Produk</string>
 </resources>
