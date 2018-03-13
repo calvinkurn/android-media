@@ -18,6 +18,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceS
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressTotalPriceHolderData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -47,19 +48,33 @@ public class MultipleAddressShipmentFooterTotalPayment extends RecyclerView.View
     public void bindFooterTotalPayment(
             List<MultipleAddressShipmentAdapterData> addressDataList,
             MultipleAddressPriceSummaryData priceSummaryData,
-            MultipleAddressTotalPriceHolderData totalPriceHolderData) {
+            MultipleAddressTotalPriceHolderData totalPriceHolderData,
+            CartItemPromoHolderData itemPromoHolderData) {
+
         totalPriceHolderData.setTotalPriceHolderData(totalPriceChecker(
                 getTotalPayment(addressDataList),
-                priceSummaryData.getTotalShippingPrice()));
+                priceSummaryData.getTotalShippingPrice()
+                        - getDiscountData(itemPromoHolderData)));
+
         totalPayment.setText(totalPriceHolderData.getTotalPriceHolderData());
         if (priceSummaryData.getAppliedPromo() != null) {
-            String promoMessageString = priceSummaryData.getAppliedPromo().getDataVoucher().getVoucherPromoDesc();
+            String promoMessageString = priceSummaryData
+                    .getAppliedPromo()
+                    .getDataVoucher().getVoucherPromoDesc();
             formatPromoMessage(promoMessage, promoMessageString);
             promoMessage.setVisibility(View.VISIBLE);
             listener.onShowPromo(promoMessageString);
         } else {
             promoMessage.setVisibility(View.GONE);
         }
+    }
+
+    private long getDiscountData(CartItemPromoHolderData promoHolderData) {
+        if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
+            return promoHolderData.getCouponDiscountAmount();
+        else if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
+            return promoHolderData.getVoucherDiscountAmount();
+        else return 0;
     }
 
     private String totalPriceChecker(String totalPriceText, long shipmentPrice) {

@@ -19,8 +19,6 @@ public class MultipleAddressPriceSummaryData {
 
     private long additionalFee;
 
-    private long promoDiscount;
-
     private long totalPayment;
 
     private String totalProductPriceText = "";
@@ -75,14 +73,6 @@ public class MultipleAddressPriceSummaryData {
 
     public void setAdditionalFee(long additionalFee) {
         this.additionalFee = additionalFee;
-    }
-
-    public long getPromoDiscount() {
-        return promoDiscount;
-    }
-
-    public void setPromoDiscount(long promoDiscount) {
-        this.promoDiscount = promoDiscount;
     }
 
     public long getTotalPayment() {
