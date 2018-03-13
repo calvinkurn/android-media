@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -134,16 +136,19 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                 if (isTorchOn) {
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
-                    torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.drawable.qr_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
-                    torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.drawable.qr_ic_flash_turn_off));
                 }
+                torch.setImageDrawable(iconQr(isTorchOn));
             }
         });
+    }
+
+    private Drawable iconQr(boolean isTorchOn) {
+        return (isTorchOn) ?
+                AppCompatResources.getDrawable(this, R.drawable.qr_ic_flash_turn_on) :
+                AppCompatResources.getDrawable(this, R.drawable.qr_ic_flash_turn_off);
     }
 
     @Override
