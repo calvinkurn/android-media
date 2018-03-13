@@ -74,6 +74,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
 
     /**
@@ -565,9 +566,9 @@ public class AuthUtil {
     public static String getHeaderRequestReactNative(Context context) {
         SessionHandler session = new SessionHandler(context);
         Map<String, String> header = new HashMap<>();
-        header.put("Tkpd-SessionId", FCMCacheManager.getRegistrationIdWithTemp(context));
-        header.put("Tkpd-UserId", session.isV4Login() ? session.getLoginID() : "0");
-        header.put("Accounts-Authorization", String.format("Bearer %s", SessionHandler.getAccessToken(context)));
+        header.put(HEADER_TKPD_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
+        header.put(HEADER_TKPD_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
+        header.put(HEADER_ACCOUNTS_AUTHORIZATION, String.format("Bearer %s", SessionHandler.getAccessToken(context)));
         header.put(PARAM_OS_TYPE, "1");
         header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
         header.put(HEADER_USER_ID, session.isV4Login() ? session.getLoginID() : "0");
