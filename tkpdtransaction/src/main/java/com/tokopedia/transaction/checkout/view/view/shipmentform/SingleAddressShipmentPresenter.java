@@ -54,6 +54,7 @@ public class SingleAddressShipmentPresenter {
     }
 
     void processCheckShipmentPrepareCheckout() {
+        view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
         cartListInteractor.getShipmentForm(
@@ -66,6 +67,7 @@ public class SingleAddressShipmentPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        view.hideProgressLoading();
                     }
 
                     @Override

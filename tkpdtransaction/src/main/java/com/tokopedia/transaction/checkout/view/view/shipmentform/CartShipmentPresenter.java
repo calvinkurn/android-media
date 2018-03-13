@@ -46,6 +46,7 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
 
     @Override
     public void processCheckout(CheckoutRequest checkoutRequest) {
+        cartShipmentActivity.showProgressLoading();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
         compositeSubscription.add(
@@ -114,11 +115,14 @@ public class CartShipmentPresenter implements ICartShipmentPresenter {
 
             @Override
             public void onError(Throwable e) {
+                cartShipmentActivity.hideProgressLoading();
                 e.printStackTrace();
+
             }
 
             @Override
             public void onNext(CheckoutData checkoutData) {
+                cartShipmentActivity.hideProgressLoading();
                 if (!checkoutData.isError()) {
                     cartShipmentActivity.renderCheckoutCartSuccess(checkoutData);
                 } else {

@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -64,6 +65,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Inject
     CompositeSubscription compositeSubscription;
     private CheckoutData checkoutData;
+    private TkpdProgressDialog progressDialogNormal;
 
 
     public static Intent createInstanceSingleAddress(Context context,
@@ -129,6 +131,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     protected void initView() {
+        progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof MultipleAddressFragment)
                 || (fragment instanceof SingleAddressShipmentFragment))) {
@@ -138,7 +141,6 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                                 cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
                         )).commit();
             } else {
-                //TODO Change Later
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
                                 cartShipmentAddressFormData, promoCodeAppliedData, cartPromoSuggestionData
@@ -279,12 +281,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public void showProgressLoading() {
-
+        if (!progressDialogNormal.isProgress()) progressDialogNormal.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
     }
 
     @Override
@@ -314,7 +316,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
 
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
-        return null;
+        return originParams == null
+                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this)
+                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(this,
+                originParams);
     }
 
     @Override

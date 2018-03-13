@@ -1,12 +1,13 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public interface ICartSingleAddressView {
+public interface ICartSingleAddressView extends IBaseView {
 
 
     void renderCheckPromoShipmentDataSuccess(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult);

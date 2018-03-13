@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
@@ -637,5 +640,63 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+
+    }
+
+    @Override
+    public void showProgressLoading() {
+        cartShipmentActivityListener.showProgressLoading();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        cartShipmentActivityListener.hideProgressLoading();
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(int resId) {
+        return null;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+        return originParams == null
+                ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
+                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(),
+                originParams);
+    }
+
+    @Override
+    public void closeView() {
+
     }
 }
