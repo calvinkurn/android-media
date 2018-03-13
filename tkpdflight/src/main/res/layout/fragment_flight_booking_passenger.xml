@@ -86,7 +86,7 @@
                 android:paddingRight="@dimen/padding_16"
                 android:paddingStart="@dimen/padding_16"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:text="@string/flight_booking_passenger_data_diri" />
+                android:text="@string/flight_passenger_data_diri_label" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
