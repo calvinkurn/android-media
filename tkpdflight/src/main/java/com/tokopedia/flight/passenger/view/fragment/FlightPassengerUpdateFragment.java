@@ -24,7 +24,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     public static final String EXTRA_PASSENGER_ID = "EXTRA_PASSENGER_ID";
 
     @Inject
-    private FlightPassengerUpdatePresenter presenter;
+    FlightPassengerUpdatePresenter presenter;
     private FlightBookingPassengerViewModel flightBookingPassengerViewModel;
 
     public FlightPassengerUpdateFragment() {
