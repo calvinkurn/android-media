@@ -17,14 +17,13 @@ import java.util.Date;
 import javax.inject.Inject;
 
 /**
- * @author by Rizky on 21/02/18.
+ * @author Rizky on 21/02/18.
  */
 
 public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepageView> implements TrainHomepagePresenter {
 
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
     private final int MAX_BOOKING_DAYS_FROM_TODAY = 100;
-
 
     @Inject
     public TrainHomepagePresenterImpl() {
@@ -146,8 +145,8 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         if (validateFields()){
             TrainHomepageViewModel viewModel = getView().getHomepageViewModel();
             TrainSearchPassDataViewModel passDataViewModel = new TrainSearchPassDataViewModel();
-            passDataViewModel.setAdult(viewModel.getKaiPassengerViewModel().getAdult());
-            passDataViewModel.setInfant(viewModel.getKaiPassengerViewModel().getInfant());
+            passDataViewModel.setAdult(viewModel.getTrainPassengerViewModel().getAdult());
+            passDataViewModel.setInfant(viewModel.getTrainPassengerViewModel().getInfant());
             passDataViewModel.setDepartureDate(viewModel.getDepartureDate());
             passDataViewModel.setReturnDate(viewModel.getReturnDate());
             passDataViewModel.setDestinationStationCode(viewModel.getDestinationStation().getStationCode());
@@ -156,6 +155,15 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
             passDataViewModel.setOriginCityName(viewModel.getOriginStation().getStationName());
             getView().navigateToSearchPage(passDataViewModel);
         }
+    }
+
+    @Override
+    public void onTrainPassengerChange(TrainPassengerViewModel trainPassengerViewModel) {
+        TrainHomepageViewModel trainHomepageViewModel = getView().getHomepageViewModel();
+        trainHomepageViewModel.setTrainPassengerViewModel(trainPassengerViewModel);
+        trainHomepageViewModel.setPassengerFmt(buildPassengerTextFormatted(trainPassengerViewModel));
+        getView().setHomepageViewModel(trainHomepageViewModel);
+        renderUi();
     }
 
     private boolean validateFields() {
@@ -185,7 +193,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         String passengerFmt = buildPassengerTextFormatted(passData);
 
         TrainHomepageViewModel viewModel = new TrainHomepageViewModel.Builder()
-                .setKAIPassengerViewModel(passData)
+                .setTrainPassengerViewModel(passData)
                 .setIsOneWay(true)
                 .setDepartureDate(departureDateString)
                 .setReturnDate(returnDateString)

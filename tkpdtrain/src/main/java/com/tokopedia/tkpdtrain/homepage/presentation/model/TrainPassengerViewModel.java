@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Rizky on 21/02/18.
+ * @author Rizky on 21/02/18.
  */
 
 public class TrainPassengerViewModel implements Parcelable, Cloneable {

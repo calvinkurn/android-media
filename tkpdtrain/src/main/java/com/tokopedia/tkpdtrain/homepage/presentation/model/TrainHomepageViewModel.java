@@ -13,7 +13,7 @@ import android.text.style.RelativeSizeSpan;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 /**
- * Created by Rizky on 21/02/18.
+ * @author Rizky on 21/02/18.
  */
 
 public class TrainHomepageViewModel implements Parcelable, Cloneable {
@@ -25,7 +25,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
     private String departureDateFmt;
     private String returnDate;
     private String returnDateFmt;
-    private TrainPassengerViewModel kaiPassengerViewModel;
+    private TrainPassengerViewModel trainPassengerViewModel;
     private String passengerFmt;
 
     public TrainHomepageViewModel() {
@@ -38,7 +38,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
                                   String departureDateFmt,
                                   String returnDate,
                                   String returnDateFmt,
-                                  TrainPassengerViewModel kaiPassengerViewModel,
+                                  TrainPassengerViewModel trainPassengerViewModel,
                                   String passengerFmt
     ) {
         this.isOneWay = isOneWay;
@@ -48,7 +48,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         this.departureDateFmt = departureDateFmt;
         this.returnDate = returnDate;
         this.returnDateFmt = returnDateFmt;
-        this.kaiPassengerViewModel = kaiPassengerViewModel;
+        this.trainPassengerViewModel = trainPassengerViewModel;
         this.passengerFmt = passengerFmt;
     }
 
@@ -60,7 +60,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         departureDateFmt = in.readString();
         returnDate = in.readString();
         returnDateFmt = in.readString();
-        kaiPassengerViewModel = in.readParcelable(TrainPassengerViewModel.class.getClassLoader());
+        trainPassengerViewModel = in.readParcelable(TrainPassengerViewModel.class.getClassLoader());
         passengerFmt = in.readString();
     }
 
@@ -132,12 +132,12 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         this.returnDateFmt = returnDateFmt;
     }
 
-    public TrainPassengerViewModel getKaiPassengerViewModel() {
-        return kaiPassengerViewModel;
+    public TrainPassengerViewModel getTrainPassengerViewModel() {
+        return trainPassengerViewModel;
     }
 
-    public void setKaiPassengerViewModel(TrainPassengerViewModel kaiPassengerViewModel) {
-        this.kaiPassengerViewModel = kaiPassengerViewModel;
+    public void setTrainPassengerViewModel(TrainPassengerViewModel trainPassengerViewModel) {
+        this.trainPassengerViewModel = trainPassengerViewModel;
     }
 
     public String getPassengerFmt() {
@@ -217,7 +217,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         parcel.writeString(returnDate);
         parcel.writeString(returnDateFmt);
         parcel.writeByte((byte) (isOneWay ? 1 : 0));
-        parcel.writeParcelable(kaiPassengerViewModel, i);
+        parcel.writeParcelable(trainPassengerViewModel, i);
         parcel.writeParcelable(originStation, i);
         parcel.writeParcelable(destinationStation, i);
     }
@@ -228,7 +228,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         private String returnDate;
         private String returnDateFmt;
         private boolean isOneWay;
-        private TrainPassengerViewModel kaiPassengerViewModel;
+        private TrainPassengerViewModel trainPassengerViewModel;
         private TrainStationViewModel originStation;
         private TrainStationViewModel destinationStation;
         private String passengerFmt;
@@ -271,8 +271,8 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setKAIPassengerViewModel(TrainPassengerViewModel kaiPassengerViewModel) {
-            this.kaiPassengerViewModel = kaiPassengerViewModel;
+        public Builder setTrainPassengerViewModel(TrainPassengerViewModel trainPassengerViewModel) {
+            this.trainPassengerViewModel = trainPassengerViewModel;
             return this;
         }
 
@@ -290,10 +290,11 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
                     departureDateFmt,
                     returnDate,
                     returnDateFmt,
-                    kaiPassengerViewModel,
+                    trainPassengerViewModel,
                     passengerFmt
             );
         }
 
     }
+    
 }
