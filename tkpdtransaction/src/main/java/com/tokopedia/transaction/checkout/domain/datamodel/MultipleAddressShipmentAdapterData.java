@@ -1,16 +1,22 @@
 package com.tokopedia.transaction.checkout.domain.datamodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressShipmentAdapterData {
+public class MultipleAddressShipmentAdapterData implements Parcelable {
+
+    private boolean isError;
+    private String errorMessage;
+    private boolean isWarning;
+    private String warningMessage;
 
     private int invoicePosition;
-
-    private int productId;
 
     private int shopId;
 
@@ -66,13 +72,6 @@ public class MultipleAddressShipmentAdapterData {
         this.invoicePosition = invoicePosition;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
 
     public int getShopId() {
         return shopId;
@@ -186,6 +185,38 @@ public class MultipleAddressShipmentAdapterData {
         this.shipmentCartData = shipmentCartData;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public boolean isWarning() {
+        return isWarning;
+    }
+
+    public void setWarning(boolean warning) {
+        isWarning = warning;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
+    }
+
     public long getSubTotal() {
         return subTotal;
     }
@@ -257,4 +288,87 @@ public class MultipleAddressShipmentAdapterData {
     public void setSelectedShipmentDetailData(ShipmentDetailData selectedShipmentDetailData) {
         this.selectedShipmentDetailData = selectedShipmentDetailData;
     }
+
+    public MultipleAddressShipmentAdapterData() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningMessage);
+        dest.writeInt(this.invoicePosition);
+        dest.writeInt(this.shopId);
+        dest.writeString(this.senderName);
+        dest.writeString(this.productImageUrl);
+        dest.writeString(this.productPrice);
+        dest.writeString(this.productName);
+        dest.writeParcelable(this.itemData, flags);
+        dest.writeString(this.courier);
+        dest.writeString(this.subTotalAmount);
+        dest.writeString(this.destinationDistrictId);
+        dest.writeString(this.destinationDistrictName);
+        dest.writeString(this.tokenPickup);
+        dest.writeString(this.unixTime);
+        dest.writeParcelable(this.store, flags);
+        dest.writeParcelable(this.shipmentCartData, flags);
+        dest.writeParcelable(this.selectedShipmentDetailData, flags);
+        dest.writeLong(this.subTotal);
+        dest.writeLong(this.productPriceNumber);
+        dest.writeString(this.freeReturnLogo);
+        dest.writeByte(this.productIsPreorder ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productIsFreeReturns ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productReturnable ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productFinsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productFcancelPartial ? (byte) 1 : (byte) 0);
+    }
+
+    protected MultipleAddressShipmentAdapterData(Parcel in) {
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
+        this.isWarning = in.readByte() != 0;
+        this.warningMessage = in.readString();
+        this.invoicePosition = in.readInt();
+        this.shopId = in.readInt();
+        this.senderName = in.readString();
+        this.productImageUrl = in.readString();
+        this.productPrice = in.readString();
+        this.productName = in.readString();
+        this.itemData = in.readParcelable(MultipleAddressItemData.class.getClassLoader());
+        this.courier = in.readString();
+        this.subTotalAmount = in.readString();
+        this.destinationDistrictId = in.readString();
+        this.destinationDistrictName = in.readString();
+        this.tokenPickup = in.readString();
+        this.unixTime = in.readString();
+        this.store = in.readParcelable(Store.class.getClassLoader());
+        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        this.selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
+        this.subTotal = in.readLong();
+        this.productPriceNumber = in.readLong();
+        this.freeReturnLogo = in.readString();
+        this.productIsPreorder = in.readByte() != 0;
+        this.productIsFreeReturns = in.readByte() != 0;
+        this.productReturnable = in.readByte() != 0;
+        this.productFinsurance = in.readByte() != 0;
+        this.productFcancelPartial = in.readByte() != 0;
+    }
+
+    public static final Creator<MultipleAddressShipmentAdapterData> CREATOR = new Creator<MultipleAddressShipmentAdapterData>() {
+        @Override
+        public MultipleAddressShipmentAdapterData createFromParcel(Parcel source) {
+            return new MultipleAddressShipmentAdapterData(source);
+        }
+
+        @Override
+        public MultipleAddressShipmentAdapterData[] newArray(int size) {
+            return new MultipleAddressShipmentAdapterData[size];
+        }
+    };
 }

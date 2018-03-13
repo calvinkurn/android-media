@@ -55,6 +55,7 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
     }
 
     void processCheckShipmentPrepareCheckout() {
+        view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
         cartListInteractor.getShipmentForm(
@@ -67,6 +68,7 @@ public class SingleAddressShipmentPresenter implements ISingleAddressShipmentPre
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        view.hideProgressLoading();
                     }
 
                     @Override

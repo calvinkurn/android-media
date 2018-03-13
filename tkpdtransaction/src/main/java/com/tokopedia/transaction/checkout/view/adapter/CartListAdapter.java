@@ -336,9 +336,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (data.getCartItemData().isError()) {
             holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
             holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.text_cart_item_error_red));
-            holderView.tvError.setCompoundDrawables(
-                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_red),
-                    null, null, null);
+            holderView.tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
+                    0, 0, 0);
             holderView.errorContainer.setVisibility(View.VISIBLE);
             holderView.tvError.setVisibility(View.VISIBLE);
             holderView.tvErrorDetail.setVisibility(View.GONE);
@@ -346,9 +345,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (data.getCartItemData().isWarning()) {
             holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
             holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.black_54));
-            holderView.tvError.setCompoundDrawables(
-                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_grey),
-                    null, null, null);
+            holderView.tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
+                    0, 0, 0);
             holderView.errorContainer.setVisibility(View.VISIBLE);
             holderView.tvError.setVisibility(View.VISIBLE);
             holderView.tvErrorDetail.setVisibility(View.GONE);
@@ -502,7 +500,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public interface ActionListener {
+    public interface ActionListener extends CartAdapterActionListener {
 
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
 
@@ -516,27 +514,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark);
 
-        void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position);
-
-        void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position);
-
         void onCartItemListIsEmpty();
-
-        void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position);
-
-        void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position);
-
-        void onCartPromoTrackingSuccess(CartItemPromoHolderData cartItemPromoHolderData, int position);
-
-        void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position);
 
         void onCartItemQuantityFormEdited();
 
-        void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
-
-        void onCartDataEnableToCheckout();
-
-        void onCartDataDisableToCheckout();
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {
