@@ -33,7 +33,7 @@
                 android:paddingLeft="@dimen/padding_16"
                 android:paddingRight="@dimen/padding_16"
                 android:paddingStart="@dimen/padding_16"
-                android:text="@string/flight_booking_passenger_data_diri" />
+                android:text="@string/flight_passenger_data_diri_label" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_saved_passenger"
@@ -142,6 +142,146 @@
 
                 <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/et_birth_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:text="@string/flight_passenger_data_passport_label" />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:text="@string/flight_passenger_data_passport_description" />
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_passport_no"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_passenger_passport_number_hint"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_passport_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_passport_expiration_date"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_passenger_passport_expiration_hint"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16">
+
+                <com.tokopedia.design.component.EditTextCompat
+                    android:id="@+id/et_passport_expiration_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_nationality"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_passenger_nationality_hint"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16">
+
+                <com.tokopedia.design.component.EditTextCompat
+                    android:id="@+id/et_nationality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_passport_issuer_country"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_passenger_passport_issuer_country_hint"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16">
+
+                <com.tokopedia.design.component.EditTextCompat
+                    android:id="@+id/et_passport_issuer_country"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"

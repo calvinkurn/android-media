@@ -335,6 +335,12 @@
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
-    <string name="flight_booking_passenger_data_diri">DATA DIRI</string>
+    <string name="flight_passenger_data_diri_label">DATA DIRI</string>
     <string name="flight_passenger_tipe_penumpang_hint">Tipe Penumpang</string>
+    <string name="flight_passenger_data_passport_label">DATA PASSPORT</string>
+    <string name="flight_passenger_data_passport_description">Data passport diperlukan untuk penerbangan internasional</string>
+    <string name="flight_passenger_passport_number_hint">Nomor Passport</string>
+    <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Passport</string>
+    <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
+    <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Passport</string>
 </resources>
