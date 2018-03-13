@@ -57,6 +57,7 @@ import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
@@ -66,6 +67,7 @@ import com.tokopedia.session.register.data.mapper.RegisterPhoneNumberMapper;
 import com.tokopedia.session.register.data.source.CheckMsisdnSource;
 import com.tokopedia.session.register.data.source.CloudRegisterPhoneNumberSource;
 import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.domain.interactor.registerphonenumber.LoginRegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.domain.interactor.registerphonenumber.RegisterPhoneNumberUseCase;
 
 import javax.inject.Named;
@@ -321,9 +323,11 @@ SessionModule {
     @SessionScope
     @Provides
     CloudRegisterPhoneNumberSource provideCloudRegisterPhoneNumberSource(
+            @ApplicationContext Context context,
             @Named(HMAC_SERVICE) AccountsService accountsService,
-            RegisterPhoneNumberMapper mapper) {
-        return new CloudRegisterPhoneNumberSource(accountsService, mapper);
+            RegisterPhoneNumberMapper mapper,
+            SessionHandler sessionHandler) {
+        return new CloudRegisterPhoneNumberSource(context, accountsService, mapper, sessionHandler);
     }
 
     @SessionScope
@@ -334,6 +338,14 @@ SessionModule {
             @ApplicationContext Context context,
             CloudRegisterPhoneNumberSource source) {
         return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
+    }
+
+    @SessionScope
+    @Provides
+    LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
+            RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+            MakeLoginUseCase makeLoginUseCase) {
+        return new LoginRegisterPhoneNumberUseCase(registerPhoneNumberUseCase, makeLoginUseCase);
     }
 
     @SessionScope

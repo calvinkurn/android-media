@@ -28,9 +28,9 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
+import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 import java.util.ArrayList;
 
@@ -295,10 +295,10 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showSuccessRegisterPhoneNumber(RegisterPhoneNumberModel model) {
+    public void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
-        if (model.isSuccess())
-            presenter.loginWithPhoneNumber(phoneNumber.getText().toString(), model);
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override

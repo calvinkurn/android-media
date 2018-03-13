@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
+import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 /**
  * @author by yfsx on 26/2/18.
@@ -29,7 +29,7 @@ public interface RegisterPhoneNumber {
 
         void showAlreadyRegisteredDialog(String phoneNumber);
 
-        void showSuccessRegisterPhoneNumber(RegisterPhoneNumberModel model);
+        void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model);
 
         void showErrorRegisterPhoneNumber(String message);
 
@@ -43,6 +43,5 @@ public interface RegisterPhoneNumber {
 
         void registerPhoneNumber(String phoneNumber);
 
-        void loginWithPhoneNumber(String phoneNumber, RegisterPhoneNumberModel registerPhoneNumberModel);
     }
 }

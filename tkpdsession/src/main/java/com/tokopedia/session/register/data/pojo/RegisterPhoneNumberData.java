@@ -2,6 +2,7 @@ package com.tokopedia.session.register.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 
 /**
  * @author yfsx on 28/2/18.
@@ -21,6 +22,10 @@ public class RegisterPhoneNumberData {
     @SerializedName("is_success")
     @Expose
     private int isSuccess;
+    @SerializedName("t_info")
+    @Expose
+    private TokenViewModel tokenModel;
+
 
     public int getuId() {
         return uId;
@@ -52,5 +57,13 @@ public class RegisterPhoneNumberData {
 
     public void setIsSuccess(int isSuccess) {
         this.isSuccess = isSuccess;
+    }
+
+    public TokenViewModel getTokenModel() {
+        return tokenModel;
+    }
+
+    public void setTokenModel(TokenViewModel tokenModel) {
+        this.tokenModel = tokenModel;
     }
 }
