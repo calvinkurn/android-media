@@ -9,6 +9,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,7 +90,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().hideKeyboard();
         if (validateFields(getView().getDepartureDateString())) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
-            getView().getCurrentPassengerViewModel().setPassengerTitleId(getView().getPassengerTitleId());
+            getView().getCurrentPassengerViewModel().setPassengerTitleId(getPassengerTitleId());
             getView().getCurrentPassengerViewModel().setPassengerFirstName(getView().getPassengerFirstName());
             getView().getCurrentPassengerViewModel().setPassengerBirthdate(
                     FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getView().getPassengerBirthDate())
@@ -395,5 +396,22 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     private boolean isInfantPassenger() {
         return getView().getCurrentPassengerViewModel().getType() == FlightBookingPassenger.INFANT;
+    }
+
+    private int getPassengerTitleId() {
+        switch (getView().getTitleSpinnerPosition()) {
+            case 0:
+                return FlightPassengerTitleType.TUAN;
+            case 1:
+                if (isChildPassenger() || isInfantPassenger()) {
+                    return FlightPassengerTitleType.NONA;
+                } else {
+                    return FlightPassengerTitleType.NYONYA;
+                }
+            case 2:
+                return FlightPassengerTitleType.NONA;
+            default:
+                return 0;
+        }
     }
 }

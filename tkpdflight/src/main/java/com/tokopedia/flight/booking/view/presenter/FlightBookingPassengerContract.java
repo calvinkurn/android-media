@@ -85,7 +85,7 @@ public interface FlightBookingPassengerContract {
 
         void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
 
-        int getPassengerTitleId();
+        int getTitleSpinnerPosition();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
@@ -139,5 +139,6 @@ public interface FlightBookingPassengerContract {
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
         void onUnselectPassengerList(String passengerId);
+
     }
 }

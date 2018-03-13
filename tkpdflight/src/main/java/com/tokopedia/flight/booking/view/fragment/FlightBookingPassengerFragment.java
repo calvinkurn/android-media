@@ -340,17 +340,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public int getPassengerTitleId() {
-        switch (spTitle.getSpinnerPosition()) {
-            case 0:
-                return FlightPassengerTitleType.TUAN;
-            case 1:
-                return FlightPassengerTitleType.NYONYA;
-            case 2:
-                return FlightPassengerTitleType.NONA;
-            default:
-                return 0;
-        }
+    public int getTitleSpinnerPosition() {
+        return spTitle.getSpinnerPosition();
     }
 
     @Override
