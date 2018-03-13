@@ -200,7 +200,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             CheckPromoCodeCartShipmentRequest.ProductData.Builder productData =
                     new CheckPromoCodeCartShipmentRequest.ProductData.Builder();
             productData
-                    .productId(shipmentData.get(i).getProductId())
+                    .productId(Integer.parseInt(shipmentData.get(i).getItemData().getProductId()))
                     .productNotes(shipmentData.get(i).getItemData().getProductNotes())
                     .productQuantity(
                             Integer.parseInt(shipmentData.get(i).getItemData().getProductQty()
