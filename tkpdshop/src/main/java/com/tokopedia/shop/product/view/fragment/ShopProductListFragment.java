@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
@@ -45,6 +43,8 @@ import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,8 +87,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
 
-    private DividerItemDecoration listDividerItemDecoration;
-
     public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
@@ -119,6 +117,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
         return emptyModel;
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -192,16 +192,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (!TextUtils.isEmpty(keyword)) {
             searchInputView.getSearchTextView().setText(keyword);
         }
-        listDividerItemDecoration = new DividerItemDecoration(getActivity());
-    }
-
-    @Override
-    public LoadingModel getLoadingModel() {
-        if (isLoadingInitialData) {
-            return new LoadingModelShimmeringGrid();
-        } else {
-            return new LoadingModel();
-        }
     }
 
     @Override
@@ -226,7 +216,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         } else {
             currentLayoutType = layoutType[currentIndex];
         }
-        recyclerView.removeItemDecoration(listDividerItemDecoration);
         switch (currentLayoutType.second) {
             case LAYOUT_GRID_TYPE:
                 layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
@@ -242,7 +231,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 break;
             default:
                 layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-                recyclerView.addItemDecoration(listDividerItemDecoration);
                 break;
         }
         currentIndex++;
@@ -257,6 +245,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 return recyclerViews.getLayoutManager();
             }
         };
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
+        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/padding_ms"
-    android:background="@drawable/rect_green_rounded">
+    android:background="@drawable/bg_rect_green_rounded">
 
     <LinearLayout
         android:layout_width="match_parent"

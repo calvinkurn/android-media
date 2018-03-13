@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.holder;
 
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -328,7 +329,7 @@ public class ShopPageHeaderViewHolder {
                 showShopModerated(shopInfo);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
-                shopWarningTickerView.setVisibility(View.GONE);
+                showShopNotActive(shopInfo);
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
@@ -339,19 +340,31 @@ public class ShopPageHeaderViewHolder {
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopInfo.getClosedInfo().getUntil());
-        shopWarningTickerView.setIcon(R.drawable.ic_shop_label_closed);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString));
-        shopWarningTickerView.setDescription(shopInfo.getClosedInfo().getNote());
-        shopWarningTickerView.setAction(null, null);
-        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.green_ticker));
-        shopWarningTickerView.setVisibility(View.VISIBLE);
+        showShopStatusTicker(R.drawable.ic_shop_label_closed,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString),
+                shopInfo.getClosedInfo().getNote(),
+                R.color.green_ticker);
     }
 
     private void showShopModerated(ShopInfo shopInfo) {
-        shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_in_moderation));
-        shopWarningTickerView.setDescription(shopWarningTickerView.getContext().getString(R.string.shop_page_header_closed_reason, shopInfo.getClosedInfo().getReason()));
-        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.yellow_ticker));
+        showShopStatusTicker(R.drawable.ic_info_moderation,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_in_moderation),
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_closed_reason, shopInfo.getClosedInfo().getReason()),
+                R.color.yellow_ticker);
+    }
+
+    private void showShopNotActive(ShopInfo shopInfo) {
+        showShopStatusTicker(R.drawable.ic_info_inactive,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_title),
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description),
+                R.color.yellow_ticker);
+    }
+
+    private void showShopStatusTicker(@DrawableRes int iconRes, String title, String description, @ColorRes int colorRes) {
+        shopWarningTickerView.setIcon(iconRes);
+        shopWarningTickerView.setTitle(title);
+        shopWarningTickerView.setDescription(description);
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), colorRes));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
