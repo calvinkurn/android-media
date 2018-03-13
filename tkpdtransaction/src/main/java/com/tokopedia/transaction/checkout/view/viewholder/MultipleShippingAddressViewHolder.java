@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.checkout.view.viewholder;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,8 @@ import java.util.Locale;
  */
 
 public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
+
+    private final Context context;
 
     private TextView senderName;
 
@@ -74,8 +78,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCashbackText;
 
+    private LinearLayout errorContainer;
+    private TextView tvError;
+    private TextView tvErrorDetail;
+
     public MultipleShippingAddressViewHolder(View itemView) {
         super(itemView);
+        this.context = itemView.getContext();
 
         senderName = itemView.findViewById(R.id.sender_name);
 
@@ -131,6 +140,10 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
         ivChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
 
+        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
+        this.tvError = itemView.findViewById(R.id.tv_warning);
+        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+
     }
 
     public void bindItems(MultipleAddressShipmentAdapterData data,
@@ -143,7 +156,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         productPrice.setText(data.getProductPrice());
         productWeight.setText(itemData.getProductWeight());
         productQty.setText(itemData.getProductQty());
-        if(itemData.getProductNotes().isEmpty()) {
+        if (itemData.getProductNotes().isEmpty()) {
             notesToSellerLayout.setVisibility(View.GONE);
         } else {
             notesToSellerLayout.setVisibility(View.VISIBLE);
@@ -180,6 +193,30 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
             chooseCourierButton.setVisibility(View.VISIBLE);
         }
 
+
+        if (data.isError()) {
+            errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
+            tvError.setTextColor(context.getResources().getColor(R.color.text_cart_item_error_red));
+            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
+                    0, 0, 0);
+            errorContainer.setVisibility(View.VISIBLE);
+            tvError.setVisibility(View.VISIBLE);
+            tvErrorDetail.setVisibility(View.GONE);
+            tvError.setText(data.getErrorMessage());
+        } else if (data.isWarning()) {
+            errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
+            tvError.setTextColor(context.getResources().getColor(R.color.black_54));
+            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
+                    0, 0, 0);
+            errorContainer.setVisibility(View.VISIBLE);
+            tvError.setVisibility(View.VISIBLE);
+            tvErrorDetail.setVisibility(View.GONE);
+            tvError.setText(data.getWarningMessage());
+        } else {
+            errorContainer.setVisibility(View.GONE);
+            tvError.setVisibility(View.GONE);
+            tvErrorDetail.setVisibility(View.GONE);
+        }
 //        renderPickupPoint(itemViewHolder, data);
     }
 
@@ -224,10 +261,11 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
             }
         };
     }
+
     private View.OnClickListener getChooseCourierClickListener(
             final MultipleAddressShipmentAdapterData data,
-                                                               final int position,
-                                                               final MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener listener) {
+            final int position,
+            final MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener listener) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,7 +293,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in","ID");
+        Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(unformattedPrice);
     }

@@ -123,10 +123,22 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             for (int shopIndex = 0; shopIndex < groupShopList.size(); shopIndex++) {
                 GroupShop currentGroupShop = groupShopList.get(shopIndex);
                 List<Product> productList = currentGroupShop.getProducts();
+
+                boolean isErrorGroupShop = currentGroupShop.isError();
+                String errorMessageGroupShop = currentGroupShop.getErrorMessage();
+                boolean isWarningGroupShop = currentGroupShop.isWarning();
+                String warningMessageGroupShop = currentGroupShop.getWarningMessage();
+
                 for (int productIndex = 0; productIndex < productList.size(); productIndex++) {
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
+
+                    adapterData.setError(isErrorGroupShop);
+                    adapterData.setErrorMessage(errorMessageGroupShop);
+                    adapterData.setWarning(isWarningGroupShop);
+                    adapterData.setWarningMessage(warningMessageGroupShop);
+
                     adapterData.setInvoicePosition(adapterDataList.size());
                     adapterData.setShopId(currentGroupShop.getShop().getShopId());
                     adapterData.setProductName(currentProduct.getProductName());

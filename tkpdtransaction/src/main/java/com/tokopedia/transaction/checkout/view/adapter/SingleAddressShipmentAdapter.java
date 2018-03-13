@@ -209,7 +209,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         notifyDataSetChanged();
     }
 
-    public interface ActionListener {
+    public interface ActionListener extends CartAdapterActionListener {
 
         void onAddOrChangeAddress();
 
@@ -222,25 +222,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onEditPickupPoint(RecipientAddressModel addressAdapterData);
 
-        void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position);
-
-        void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position);
-
-        void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position);
-
-        void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position);
-
-        void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position);
-
-        void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position);
-
         void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
 
         void onFinishChoosingShipment(List<Data> data, List<DataCheckoutRequest> checkoutRequest);
-
-        void onCartDataEnableToCheckout();
-
-        void onCartDataDisableToCheckout();
 
         void onShowPromoMessage(String promoMessage);
 

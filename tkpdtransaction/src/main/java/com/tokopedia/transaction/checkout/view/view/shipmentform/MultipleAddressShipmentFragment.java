@@ -40,6 +40,7 @@ import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddres
 import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -528,5 +529,50 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(formattedPromoMessage);
         return formattedPromoMessage;
+    }
+
+    @Override
+    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+
+    }
+
+    @Override
+    public void onCartDataEnableToCheckout() {
+
+    }
+
+    @Override
+    public void onCartDataDisableToCheckout() {
+
     }
 }

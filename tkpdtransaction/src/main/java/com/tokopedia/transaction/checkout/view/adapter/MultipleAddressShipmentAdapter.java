@@ -237,7 +237,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         promoSuggestionData.setVisible(false);
     }
 
-    public void setPromo(CartItemPromoHolderData promo){
+    public void setPromo(CartItemPromoHolderData promo) {
         cartItemPromoHolderData = promo;
         hidePromoSuggestion();
     }
@@ -280,7 +280,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         };
     }
 
-    public interface MultipleAddressShipmentAdapterListener {
+    public interface MultipleAddressShipmentAdapterListener extends CartAdapterActionListener {
 
         void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 

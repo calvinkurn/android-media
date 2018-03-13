@@ -51,6 +51,7 @@ import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressS
 import com.tokopedia.transaction.checkout.view.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.SingleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -397,6 +398,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_grey_button_rounded);
         mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
         mTvSelectPaymentMethod.setOnClickListener(null);
+    }
+
+    @Override
+    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+        
     }
 
 
