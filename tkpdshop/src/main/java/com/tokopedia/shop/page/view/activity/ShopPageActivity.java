@@ -139,17 +139,17 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initInjector();
-        shopPagePresenter.attachView(this);
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
-        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
-        viewPager.setCurrentItem(tabPosition);
-        getShopInfo();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
         }
+        super.onCreate(savedInstanceState);
+        initInjector();
+        shopPagePresenter.attachView(this);
+        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
+        viewPager.setCurrentItem(tabPosition);
+        getShopInfo();
         updateShopDiscussionIntent();
     }
 
