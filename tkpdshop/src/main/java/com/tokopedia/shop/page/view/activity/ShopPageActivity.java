@@ -58,7 +58,7 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
-    public static final String OLD_EXTRA_SHOP_ID = "shop_id";
+    public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
@@ -112,7 +112,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(OLD_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -122,7 +122,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(OLD_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -132,7 +132,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(OLD_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }

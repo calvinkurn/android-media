@@ -34,6 +34,7 @@ public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewMod
     public void bind(ShopEtalaseViewModel shopEtalaseViewModel) {
         if (!TextUtils.isEmpty(shopEtalaseViewModel.getEtalaseBadge())) {
             ImageHandler.LoadImage(etalaseBadgeImageView, shopEtalaseViewModel.getEtalaseBadge());
+            etalaseBadgeImageView.setVisibility(View.VISIBLE);
         } else {
             etalaseBadgeImageView.setVisibility(View.GONE);
         }

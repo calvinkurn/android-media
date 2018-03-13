@@ -44,7 +44,6 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext()));
         adapter.notifyDataSetChanged();
     }
 }

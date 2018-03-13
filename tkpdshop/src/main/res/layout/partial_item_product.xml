@@ -10,7 +10,6 @@
         style="@style/TextView.Small.BlackSecondary"
         android:ellipsize="end"
         android:lineSpacingExtra="5sp"
-        android:minLines="2"
         tools:text="@string/app_name" />
 
     <TextView
@@ -28,6 +27,6 @@
         android:id="@+id/badges_container"
         layout="@layout/partial_shop_product_badge"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/shop_badge_min_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_ms" />
 </LinearLayout>

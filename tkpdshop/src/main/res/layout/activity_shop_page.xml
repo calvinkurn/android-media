@@ -12,14 +12,14 @@
 
     <include
         android:id="@+id/shop_page_error_state"
-        layout="@layout/design_error_network"
+        layout="@layout/partial_empty_page_error"
         android:visibility="gone" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stateListAnimator="@drawable/appbar_always_elevated"
+        android:stateListAnimator="@drawable/anim_appbar_always_elevated"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
