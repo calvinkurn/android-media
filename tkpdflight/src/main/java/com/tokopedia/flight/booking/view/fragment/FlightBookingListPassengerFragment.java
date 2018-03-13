@@ -20,6 +20,7 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerCon
 import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.passenger.view.activity.FlightPassengerUpdateActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,6 +188,13 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public void deletePassenger(String passengerId) {
         presenter.deletePassenger(passengerId);
+    }
+
+    @Override
+    public void editPassenger(String passengerId) {
+        startActivity(
+                FlightPassengerUpdateActivity.getCallingIntent(getActivity(), passengerId)
+        );
     }
 
     private void addNewPassengerElement() {
