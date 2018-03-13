@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
@@ -78,6 +77,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     private View buttonClose;
     private View bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
+    private View rootView;
 
     private Callback callback;
 
@@ -116,23 +116,22 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.filter_bottom_sheet, this);
-        filterMainRecyclerView = (RecyclerView) view.findViewById(R.id.dynamic_filter_recycler_view);
-        buttonClose = view.findViewById(R.id.top_bar_close_button);
-        buttonReset = (TextView) view.findViewById(R.id.top_bar_button_reset);
+        rootView = inflate(getContext(), R.layout.filter_bottom_sheet, this);
+        filterMainRecyclerView = (RecyclerView) rootView.findViewById(R.id.dynamic_filter_recycler_view);
+        buttonClose = rootView.findViewById(R.id.top_bar_close_button);
+        buttonReset = (TextView) rootView.findViewById(R.id.top_bar_button_reset);
         bottomSheetLayout = this;
-        bottomSheetFilterMain = (LinearLayout) view.findViewById( R.id.bottom_sheet_filter_main );
-        bottomSheetFilterDetail = (LinearLayout) view.findViewById( R.id.bottom_sheet_filter_detail );
-        filterDetailTopBarCloseButton = (ImageButton) view.findViewById( R.id.filter_detail_top_bar_close_button );
-        filterDetailTopBarTitle = (TextView) view.findViewById( R.id.filter_detail_top_bar_title );
-        filterDetailTopBarButtonReset = (TextView) view.findViewById( R.id.filter_detail_top_bar_button_reset );
-        filterDetailSearchContainer = (FrameLayout) view.findViewById( R.id.filter_detail_search_container );
-        filterDetailSearch = (EditText) view.findViewById( R.id.filter_detail_search );
-        filterDetailRecyclerView = (RecyclerView) view.findViewById( R.id.filter_detail_recycler_view );
-        filterDetailSidebar = (AlphabeticalSideBar) view.findViewById( R.id.filter_detail_sidebar );
-        filterDetailEmptySearchResultView = (EmptySearchResultView) view.findViewById( R.id.filter_detail_empty_search_result_view );
-        filterResultCountText = view.findViewById(R.id.filter_result_count);
-        initBottomSheetListener();
+        bottomSheetFilterMain = (LinearLayout) rootView.findViewById( R.id.bottom_sheet_filter_main );
+        bottomSheetFilterDetail = (LinearLayout) rootView.findViewById( R.id.bottom_sheet_filter_detail );
+        filterDetailTopBarCloseButton = (ImageButton) rootView.findViewById( R.id.filter_detail_top_bar_close_button );
+        filterDetailTopBarTitle = (TextView) rootView.findViewById( R.id.filter_detail_top_bar_title );
+        filterDetailTopBarButtonReset = (TextView) rootView.findViewById( R.id.filter_detail_top_bar_button_reset );
+        filterDetailSearchContainer = (FrameLayout) rootView.findViewById( R.id.filter_detail_search_container );
+        filterDetailSearch = (EditText) rootView.findViewById( R.id.filter_detail_search );
+        filterDetailRecyclerView = (RecyclerView) rootView.findViewById( R.id.filter_detail_recycler_view );
+        filterDetailSidebar = (AlphabeticalSideBar) rootView.findViewById( R.id.filter_detail_sidebar );
+        filterDetailEmptySearchResultView = (EmptySearchResultView) rootView.findViewById( R.id.filter_detail_empty_search_result_view );
+        filterResultCountText = rootView.findViewById(R.id.filter_result_count);
     }
 
     public void setCallback(Callback callback) {
@@ -159,7 +158,8 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     public void closeView() {
-        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+        if (bottomSheetBehavior != null
+                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
@@ -349,7 +349,9 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     public void launchFilterBottomSheet() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
     }
 
     public void loadFilterItems(List<Filter> filterList) {
