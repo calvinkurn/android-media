@@ -27,6 +27,8 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     FlightPassengerUpdatePresenter presenter;
     private FlightBookingPassengerViewModel flightBookingPassengerViewModel;
 
+
+
     public FlightPassengerUpdateFragment() {
     }
 

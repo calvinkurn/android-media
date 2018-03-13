@@ -21,7 +21,7 @@ public interface FlightPassengerUpdateContract {
 
     interface Presenter {
 
-
+        void onViewCreated();
 
     }
 

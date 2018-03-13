@@ -1,6 +1,7 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
 
 import javax.inject.Inject;
 
@@ -11,7 +12,16 @@ import javax.inject.Inject;
 public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPassengerUpdateContract.View>
         implements FlightPassengerUpdateContract.Presenter{
 
+    FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase;
+
     @Inject
-    public FlightPassengerUpdatePresenter() {
+    public FlightPassengerUpdatePresenter(FlightBookingGetSavedPassengerUseCase flightBookingGetSavedPassengerUseCase) {
+        this.flightBookingGetSavedPassengerUseCase = flightBookingGetSavedPassengerUseCase;
     }
+
+    @Override
+    public void onViewCreated() {
+
+    }
+
 }
