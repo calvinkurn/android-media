@@ -1054,6 +1054,16 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void init() {
+    }
+    @Override
+    public void registerShake(String screenName) {
+    }
+
+    @Override
+    public void unregisterShake() {
+    }
+
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
@@ -1070,6 +1080,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
+
     }
 
 
