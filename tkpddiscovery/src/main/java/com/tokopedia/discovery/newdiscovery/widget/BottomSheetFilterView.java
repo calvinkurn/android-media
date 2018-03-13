@@ -76,7 +76,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     private OptionSearchFilter searchFilter;
     private TextView buttonReset;
     private View buttonClose;
-    private RelativeLayout bottomSheetLayout;
+    private View bottomSheetLayout;
     private BottomSheetBehavior bottomSheetBehavior;
 
     private Callback callback;
@@ -120,7 +120,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
         filterMainRecyclerView = (RecyclerView) view.findViewById(R.id.dynamic_filter_recycler_view);
         buttonClose = view.findViewById(R.id.top_bar_close_button);
         buttonReset = (TextView) view.findViewById(R.id.top_bar_button_reset);
-        bottomSheetLayout = view.findViewById(R.id.bottomSheet);
+        bottomSheetLayout = this;
         bottomSheetFilterMain = (LinearLayout) view.findViewById( R.id.bottom_sheet_filter_main );
         bottomSheetFilterDetail = (LinearLayout) view.findViewById( R.id.bottom_sheet_filter_detail );
         filterDetailTopBarCloseButton = (ImageButton) view.findViewById( R.id.filter_detail_top_bar_close_button );

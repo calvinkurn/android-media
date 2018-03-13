@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/filter_bottom_sheet_height"
-    android:orientation="vertical"
-    android:focusableInTouchMode="true"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="@dimen/filter_bottom_sheet_height"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <LinearLayout android:id="@+id/bottom_sheet_filter_main"
         android:orientation="vertical"

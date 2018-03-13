@@ -83,6 +83,9 @@
     <com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="@dimen/filter_bottom_sheet_height"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="@dimen/filter_bottom_sheet_height"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
