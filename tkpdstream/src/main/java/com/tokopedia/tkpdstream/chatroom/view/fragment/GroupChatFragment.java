@@ -361,8 +361,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     collapse(voteBody);
                     arrow.setRotation(0f);
                 } else {
-                    expand(voteBody);
                     KeyboardHandler.DropKeyboard(getActivity(), getView());
+                    expand(voteBody);
                     analytics.eventClickVoteExpand();
                     voteAdapter.notifyDataSetChanged();
                     arrow.setRotation(180f);

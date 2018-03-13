@@ -13,6 +13,7 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
@@ -22,6 +23,9 @@ import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 
 import java.io.File;
 
@@ -124,7 +128,7 @@ public class MethodChecker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
         else
-            return context.getResources().getDrawable(resId);
+            return AppCompatResources.getDrawable(context, resId);
     }
 
     public static boolean isTimezoneNotAutomatic(Context context) {
@@ -158,4 +162,14 @@ public class MethodChecker {
         return smsIntent;
     }
 
+    public static void loadImageFitCenter(ImageView imageView, String url) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ImageHandler.loadImageFitCenter(imageView.getContext(), imageView, url);
+        } else {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .into(imageView);
+        }
+    }
 }

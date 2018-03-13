@@ -163,8 +163,11 @@
             android:name=".inboxchat.activity.EditTemplateChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
-        <activity android:name=".contactus.activity.ContactUsCreateTicketActivity"/>
+        <activity android:name=".attachproduct.view.activity.AttachProductActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".contactus.activity.ContactUsCreateTicketActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

@@ -166,6 +166,8 @@ public interface TkpdCoreRouter {
 
     Observable<TokoCashData> getTokoCashBalance();
 
+    Intent getTopProfileIntent(Context context, String userId);
+
     Intent getGroupChatIntent(Context context, String channelUrl);
 
     Intent getInboxChannelsIntent(Context context);

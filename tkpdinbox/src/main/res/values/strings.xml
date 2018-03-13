@@ -303,6 +303,13 @@ yang ditemukan</string>
     <string name="date_error_overflow">Tidak dapat memilih tanggal melebihi hari ini.</string>
     <string name="date_error">Tanggal yang dipilih tidak valid.</string>
 
+    <string name="string_attach_product_add_product_now">Tambah Produk Sekarang</string>
+    <string name="string_attach_product_empty_product">Toko Anda belum memiliki produk</string>
+    <string name="string_attach_product_warning_max_product_format">Maksimal melampirkan %1$s produk</string>
+    <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
+    <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
+    <string name="string_attach_product_activity_title">Lampirkan Produk</string>
+
     <string name="title_personal">Personal</string>
     <string name="title_community">Komunitas</string>
     <string name="chat_title">Chat ( %d )</string>

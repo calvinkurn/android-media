@@ -125,6 +125,7 @@ public class LoginFragment extends BaseDaggerFragment
     View rootView;
     TextView forgotPass;
     LinearLayout loginLayout;
+    LinearLayout loginButtonsContainer;
     TextView loginButton;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
@@ -231,6 +232,7 @@ public class LoginFragment extends BaseDaggerFragment
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
         loadMoreFab = view.findViewById(R.id.btn_load_more);
+        loginButtonsContainer = view.findViewById(R.id.login_buttons_container);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -491,6 +493,7 @@ public class LoginFragment extends BaseDaggerFragment
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 15);
+        loginButtonsContainer.removeAllViews();
         for (int i = 0; i < listProvider.size(); i++) {
             int colorInt = Color.parseColor(COLOR_WHITE);
             LoginTextView tv = new LoginTextView(getActivity(), colorInt);
@@ -503,8 +506,8 @@ public class LoginFragment extends BaseDaggerFragment
             tv.setRoundCorner(10);
 
             setDiscoverListener(listProvider.get(i), tv);
-            if (loginLayout != null) {
-                loginLayout.addView(tv, loginLayout.getChildCount(), layoutParams);
+            if (loginButtonsContainer != null) {
+                loginButtonsContainer.addView(tv, loginButtonsContainer.getChildCount(), layoutParams);
             }
         }
 

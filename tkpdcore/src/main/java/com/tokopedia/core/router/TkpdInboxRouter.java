@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+
 /**
  * @author by nisie on 9/14/17.
  */
@@ -51,6 +53,12 @@ public interface TkpdInboxRouter {
     Intent getLoginIntent(Context context);
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getProductDetailIntent(Context context, ProductPass productPass);
+
+    void startAddProduct(Activity activity, String shopId);
 
     boolean isEnabledGroupChat();
 }
