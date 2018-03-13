@@ -10,6 +10,10 @@ import com.tokopedia.tkpdtrain.common.constant.TrainUrl;
 import com.tokopedia.tkpdtrain.common.data.TrainDataStoreFactory;
 import com.tokopedia.tkpdtrain.common.data.TrainRepositoryImpl;
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.search.data.TrainScheduleCacheDataStore;
+import com.tokopedia.tkpdtrain.search.data.TrainScheduleCloudDataStore;
+import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
+import com.tokopedia.tkpdtrain.search.data.TrainScheduleDbDataStore;
 import com.tokopedia.tkpdtrain.station.data.TrainStationCacheDataStore;
 import com.tokopedia.tkpdtrain.station.data.TrainStationCloudDataStore;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
@@ -90,7 +94,35 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainRepository provideTrainRepository(TrainDataStoreFactory trainDataStoreFactory, TrainStationDataStoreFactory trainStationDataStoreFactory) {
-        return new TrainRepositoryImpl(trainDataStoreFactory, trainStationDataStoreFactory);
+    public TrainRepository provideTrainRepository(TrainDataStoreFactory trainDataStoreFactory,
+                                                  TrainStationDataStoreFactory trainStationDataStoreFactory,
+                                                  TrainScheduleDataStoreFactory scheduleDataStoreFactory) {
+        return new TrainRepositoryImpl(trainDataStoreFactory, trainStationDataStoreFactory, scheduleDataStoreFactory);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainScheduleDbDataStore provideTrainScheduleDbDataStore() {
+        return new TrainScheduleDbDataStore();
+    }
+
+    @TrainScope
+    @Provides
+    public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi) {
+        return new TrainScheduleCloudDataStore(trainApi);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainScheduleCacheDataStore provideTrainScheduleCacheDataStore(@ApplicationContext Context context) {
+        return new TrainScheduleCacheDataStore(context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainScheduleDataStoreFactory provideTrainScheduleDataStoreFactory(TrainScheduleDbDataStore trainScheduleDbDataStore,
+                                                                              TrainScheduleCloudDataStore trainScheduleCloudDataStore,
+                                                                              TrainScheduleCacheDataStore trainScheduleCacheDataStore) {
+        return new TrainScheduleDataStoreFactory(trainScheduleDbDataStore, trainScheduleCacheDataStore, trainScheduleCloudDataStore);
     }
 }
