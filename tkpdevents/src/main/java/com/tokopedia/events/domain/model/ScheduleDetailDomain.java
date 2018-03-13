@@ -3,31 +3,31 @@ package com.tokopedia.events.domain.model;
 
 public class ScheduleDetailDomain {
 
-    private Integer id;
-    private Integer productId;
+    private int id;
+    private int productId;
     private String providerScheduleId;
     private String title;
-    private Integer startDate;
-    private Integer endDate;
+    private int startDate;
+    private int endDate;
     private String tnc;
     private String providerMetaData;
-    private Integer status;
+    private int status;
     private String createdAt;
     private String updatedAt;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -47,19 +47,19 @@ public class ScheduleDetailDomain {
         this.title = title;
     }
 
-    public Integer getStartDate() {
+    public int getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Integer startDate) {
+    public void setStartDate(int startDate) {
         this.startDate = startDate;
     }
 
-    public Integer getEndDate() {
+    public int getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Integer endDate) {
+    public void setEndDate(int endDate) {
         this.endDate = endDate;
     }
 
@@ -79,11 +79,11 @@ public class ScheduleDetailDomain {
         this.providerMetaData = providerMetaData;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

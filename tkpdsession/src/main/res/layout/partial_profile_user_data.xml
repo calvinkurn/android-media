@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_margin_med">
+
+        <TextView
+            android:id="@+id/tv_title_user_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="8sp"
+            android:text="@string/title_user_data"
+            android:textColor="@color/font_black_primary_70"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_subtitle_user_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title_user_data"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/subtitle_user_data"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/text_size_12"
+            android:textStyle="normal" />
+
+        <RelativeLayout
+            android:id="@+id/rl_incomplete_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_subtitle_user_data"
+            android:layout_marginBottom="21dp"
+            android:background="@color/background_yellow_incomplete"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rv_progress"
+                    android:layout_width="@dimen/progbar_height"
+                    android:layout_height="@dimen/progbar_height"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginStart="@dimen/new_margin_med">
+
+                    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/circular_progress_bar"
+                        style="@style/ProgressBar.Tokopedia"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/circular_progress_bar"
+                        android:rotation="-90"
+                        tools:progress="55" />
+
+                    <TextView
+                        android:id="@+id/tv_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="13sp"
+                        android:textStyle="normal"
+                        tools:text="55%" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="7sp"
+                        android:text="@string/incomplete_profile"
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="@dimen/text_size_13"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_incomplete_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/complete_now"
+                        android:textColor="@color/tkpd_main_green"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_incomplete_profile"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med">
+
+            <LinearLayout
+                android:id="@+id/ll_title_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_title_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="2sp"
+                    android:text="@string/phone_number"
+                    android:textColor="@color/font_black_secondary_54"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="normal" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_verified_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
+                    android:drawablePadding="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
+                    android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
+                    android:text="@string/data_verified"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/text_size_11"
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_title_phone_number"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="normal"
+                tools:text="085643933312" />
+
+            <View
+                android:id="@+id/separator_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@id/tv_phone_number"
+                android:layout_marginTop="13dp"
+                android:background="@color/separator_color" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_phone_number"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med">
+
+            <LinearLayout
+                android:id="@+id/ll_title_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_title_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="2sp"
+                    android:text="@string/title_email"
+                    android:textColor="@color/font_black_secondary_54"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="normal" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_verified_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
+                    android:drawablePadding="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingEnd="8.5dp"
+                    android:paddingLeft="6.5dp"
+                    android:paddingRight="8.5dp"
+                    android:paddingStart="6.5dp"
+                    android:text="@string/data_verified"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/text_size_11"
+                    android:textStyle="normal"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_title_email"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="normal"
+                tools:text="benny_alexandra@hotmail.com" />
+
+            <View
+                android:id="@+id/separator_email"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@id/tv_email"
+                android:layout_marginTop="13dp"
+                android:background="@color/separator_color" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_email"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med">
+
+            <TextView
+                android:id="@+id/tv_title_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="2sp"
+                android:text="@string/title_gender"
+                android:textColor="@color/font_black_secondary_54"
+                android:textSize="@dimen/text_size_12"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tv_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title_gender"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="normal"
+                tools:text="Pria" />
+
+            <View
+                android:id="@+id/separator_gender"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@id/tv_gender"
+                android:layout_marginTop="13dp"
+                android:background="@color/separator_color" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_birth_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_gender"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_med"
+            android:layout_marginStart="@dimen/space_med">
+
+            <TextView
+                android:id="@+id/tv_title_birth_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="2sp"
+                android:text="@string/title_birth_date"
+                android:textColor="@color/font_black_secondary_54"
+                android:textSize="@dimen/text_size_12"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tv_birth_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title_birth_date"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="normal"
+                tools:text="7 Sep 1991" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

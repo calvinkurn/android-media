@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName;
 public class EventLocationResponseEntity {
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("category_id")
     @Expose
-    private Integer categoryId;
+    private int categoryId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -31,27 +31,27 @@ public class EventLocationResponseEntity {
     private String country;
     @SerializedName("is_searchable")
     @Expose
-    private Integer isSearchable;
+    private int isSearchable;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("icon")
     @Expose
     private String icon;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -95,19 +95,19 @@ public class EventLocationResponseEntity {
         this.country = country;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
