@@ -32,7 +32,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -246,9 +245,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 presenter.processCheckShipmentFormPrepareCheckout();
-
             }
         };
 
@@ -305,29 +302,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
-    }
-
-    @Override
-    public void onPromoSuggestionClicked(CartPromoSuggestion cartPromoSuggestion) {
-        presenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode());
-    }
-
-    @Override
-    public void onPromoSuggestionCancelled(CartPromoSuggestion cartPromoSuggestion) {
-        cartPromoSuggestion.setVisible(false);
-        shipmentAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onHachikoClicked(MultipleAddressPriceSummaryData addressPriceSummaryData) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), true
-                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-            );
-        }
     }
 
     @Override
@@ -580,22 +554,30 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
-
+        presenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode());
     }
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
-
+        cartPromoSuggestion.setVisible(false);
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+            );
+        }
     }
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
-
+        onRemovePromo();
     }
 
     @Override

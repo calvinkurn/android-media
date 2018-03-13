@@ -120,22 +120,24 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     /**
      * Logic for creating short listed address
      *
-     * @param recipientAddressList
+     * @param addressList
      * @return
      */
-    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> addressList) {
-        List<RecipientAddressModel> shortList =
-                new ArrayList<>(addressList.subList(0, min(addressList.size(), SHORT_LIST_SIZE)));
+    private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList) {
+        final int shortListSize = min(addressList.size(), SHORT_LIST_SIZE);
+
+        List<RecipientAddressModel> shortList = new ArrayList<RecipientAddressModel>() {{
+            addAll(addressList.subList(0, shortListSize));
+        }};
 
         if (mSelectedRecipientAddress != null) {
             if (mSelectedRecipientAddress.getAddressStatus() == PRIME_ADDRESS) {
-                shortList.add(0, mSelectedRecipientAddress);
+                shortList.set(0, mSelectedRecipientAddress);
             } else {
-                shortList.add(addressList.size() - 1, mSelectedRecipientAddress);
+                shortList.set(shortListSize - 1, mSelectedRecipientAddress);
             }
         }
 
         return shortList;
     }
-
 }

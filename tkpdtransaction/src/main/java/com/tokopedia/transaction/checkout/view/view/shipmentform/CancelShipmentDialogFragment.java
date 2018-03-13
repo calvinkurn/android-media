@@ -46,7 +46,7 @@ public class CancelShipmentDialogFragment extends BaseValidationDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
             }
         };
     }

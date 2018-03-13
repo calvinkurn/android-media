@@ -9,7 +9,7 @@ import java.util.List;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapterData implements Parcelable{
+public class MultipleAddressAdapterData implements Parcelable {
 
     private String senderName;
 

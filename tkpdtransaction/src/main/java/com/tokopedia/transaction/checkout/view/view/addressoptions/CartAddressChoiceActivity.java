@@ -146,5 +146,5 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
         setResult(RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM);
         finish();
     }
-    
+
 }
