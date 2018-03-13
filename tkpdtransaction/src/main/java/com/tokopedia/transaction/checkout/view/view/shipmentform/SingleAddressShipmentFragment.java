@@ -227,6 +227,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mSingleAddressShipmentAdapter.addPromoVoucherData(
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData)
         );
+        if (promoCodeAppliedData != null) {
+            cartPromoSuggestion.setVisible(false);
+        }
         mSingleAddressShipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
         mSingleAddressShipmentAdapter.addAddressShipmentData(singleShipmentData.getRecipientAddress());
         mSingleAddressShipmentAdapter.addCartItemDataList(singleShipmentData.getCartItem());
@@ -340,8 +343,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+        onRemovePromoCode();
         cartPromo.setPromoNotActive();
-        mSingleAddressShipmentAdapter.notifyItemChanged(position);
+        mSingleAddressShipmentAdapter.updatePromo(null);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -366,14 +371,18 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         mPromoRequestData = promoRequestData;
         mCheckoutRequestData = checkoutRequestData;
         if (promoCodeAppliedData != null && mSingleAddressShipmentAdapter.hasAppliedPromoCode()) {
-            cartShipmentActivityListener.checkPromoCodeShipment(
-                    mSingleAddressShipmentPresenter.getSubscriberCheckPromoShipment(),
-                    new CheckPromoCodeCartShipmentRequest.Builder()
-                            .promoCode(promoCodeAppliedData.getPromoCode())
-                            .data(mPromoRequestData)
-                            .build()
-            );
+            requestPromo();
         }
+    }
+
+    private void requestPromo() {
+        cartShipmentActivityListener.checkPromoCodeShipment(
+                mSingleAddressShipmentPresenter.getSubscriberCheckPromoShipment(),
+                new CheckPromoCodeCartShipmentRequest.Builder()
+                        .promoCode(promoCodeAppliedData.getPromoCode())
+                        .data(mPromoRequestData)
+                        .build()
+        );
     }
 
     @Override
@@ -475,6 +484,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
                 mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
+                if (mSingleAddressShipmentAdapter.hasSetAllCourier()) {
+                    SingleAddressShipmentAdapter.RequestData requestData =
+                            mSingleAddressShipmentAdapter.getRequestPromoData(
+                                    mSingleAddressShipmentAdapter.getCartSellerItemModelList());
+                    mPromoRequestData = requestData.getPromoRequestData();
+                    requestPromo();
+                }
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
             }
         } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
             Bundle bundle = data.getExtras();
@@ -500,6 +517,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 );
 
                 mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
+                if (mSingleAddressShipmentAdapter.hasSetAllCourier()) {
+                    SingleAddressShipmentAdapter.RequestData requestData =
+                            mSingleAddressShipmentAdapter.getRequestPromoData(
+                                    mSingleAddressShipmentAdapter.getCartSellerItemModelList());
+                    mPromoRequestData = requestData.getPromoRequestData();
+                    requestPromo();
+                }
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
             }
         }
     }

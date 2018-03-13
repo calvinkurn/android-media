@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -85,8 +87,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     ScrollView scrollViewContent;
     @BindView(R2.id.ll_network_error_view)
     LinearLayout llNetworkErrorView;
-    @BindView(R2.id.pb_loading)
-    ProgressBar pbLoading;
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeToRefresh swipeRefreshLayout;
     @BindView(R2.id.img_bt_close_ticker)
     ImageButton imgBtCloseTicker;
     @BindView(R2.id.ll_shipment_info_ticker)
@@ -266,6 +268,15 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
         presenter.loadShipmentData(
                 (ShipmentDetailData) getArguments().getParcelable(ARG_SHIPMENT_DETAIL_DATA));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (llNetworkErrorView.getVisibility() == View.VISIBLE) {
+                    presenter.loadShipmentData((ShipmentDetailData) getArguments()
+                            .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
+                }
+            }
+        });
     }
 
     private void initializeInjector() {
@@ -298,18 +309,22 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     public void showLoading() {
         scrollViewContent.setVisibility(View.GONE);
-        pbLoading.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.GONE);
         scrollViewContent.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
     public void showNoConnection(@NonNull String message) {
         scrollViewContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setEnabled(true);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -449,7 +464,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
-    public void renderSelectedCourier(CourierItemData courierItemData){
+    public void renderSelectedCourier(CourierItemData courierItemData) {
         setText(tvDeliveryFeeTotal, currencyId.format(
                 presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
         setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));

@@ -126,9 +126,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             Object object = mShipmentDataList.get(i);
             if (object instanceof CartItemPromoHolderData) {
                 mShipmentDataList.set(i, cartPromo);
-                notifyItemChanged(i);
                 checkDataForCheckout();
-                return;
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(false);
             }
         }
     }
@@ -263,17 +263,46 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         notifyDataSetChanged();
     }
 
+    public boolean hasSetAllCourier() {
+        for (Object itemData : mShipmentDataList) {
+            if (itemData instanceof CartSellerItemModel) {
+                if (((CartSellerItemModel) itemData).getSelectedShipmentDetailData() == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<CartSellerItemModel> getCartSellerItemModelList() {
+        List<CartSellerItemModel> cartSellerItemModels = new ArrayList<>();
+        for (Object itemView : mShipmentDataList) {
+            if (itemView instanceof CartSellerItemModel) {
+                cartSellerItemModels.add((CartSellerItemModel) itemView);
+            }
+        }
+
+        return cartSellerItemModels;
+    }
+
     public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
         if (dataVoucher != null) {
             mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
             mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+            for (Object itemAdapter : mShipmentDataList) {
+                if (itemAdapter instanceof CartPromoSuggestion) {
+                    ((CartPromoSuggestion) itemAdapter).setVisible(false);
+                    break;
+                }
+            }
         } else {
             mShipmentCost.setPromoPrice(0);
             mShipmentCost.setPromoMessage(null);
             for (Object itemAdapter : mShipmentDataList) {
                 if (itemAdapter instanceof CartItemPromoHolderData) {
                     ((CartItemPromoHolderData) itemAdapter).setPromoNotActive();
-                    break;
+                } else if (itemAdapter instanceof CartPromoSuggestion) {
+                    ((CartPromoSuggestion) itemAdapter).setVisible(true);
                 }
             }
         }
@@ -339,13 +368,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         mActionListener.onTotalPaymentChange(mShipmentCost);
 
         if (isCourierComplete) {
-            RequestData requestData = mRequestConverter.generateRequestData(cartSellerItemList,
-                    mRecipientAddress);
+            RequestData requestData = getRequestPromoData(cartSellerItemList);
             mActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                     requestData.getCheckoutRequestData());
         }
         notifyDataSetChanged();
         checkDataForCheckout();
+    }
+
+    public RequestData getRequestPromoData(List<CartSellerItemModel> cartSellerItemList) {
+        return mRequestConverter.generateRequestData(cartSellerItemList, mRecipientAddress);
     }
 
     private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
@@ -367,7 +399,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mCheckoutRequestData = new ArrayList<>();
         }
 
-        List<Data> getPromoRequestData() {
+        public List<Data> getPromoRequestData() {
             return mPromoRequestData;
         }
 
@@ -375,7 +407,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             this.mPromoRequestData = promoRequestData;
         }
 
-        List<DataCheckoutRequest> getCheckoutRequestData() {
+        public List<DataCheckoutRequest> getCheckoutRequestData() {
             return mCheckoutRequestData;
         }
 
