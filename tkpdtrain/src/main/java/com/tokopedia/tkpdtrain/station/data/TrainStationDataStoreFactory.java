@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdtrain.station.data;
 
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
-import com.tokopedia.tkpdtrain.station.data.specification.Specification;
+import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 
 import java.util.List;
