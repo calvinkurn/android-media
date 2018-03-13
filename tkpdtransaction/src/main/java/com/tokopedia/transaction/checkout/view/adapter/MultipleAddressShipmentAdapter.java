@@ -294,7 +294,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         void onPromoSuggestionClicked(CartPromoSuggestion cartPromoSuggestion);
 
-        void onPromoSuggestionCancelled();
+        void onPromoSuggestionCancelled(CartPromoSuggestion cartPromoSuggestion);
 
         void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData);
 

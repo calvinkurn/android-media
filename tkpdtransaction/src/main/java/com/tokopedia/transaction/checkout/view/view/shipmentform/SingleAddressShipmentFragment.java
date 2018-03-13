@@ -369,7 +369,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-        mSingleAddressShipmentAdapter.removeData(position);
+        data.setVisible(false);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
