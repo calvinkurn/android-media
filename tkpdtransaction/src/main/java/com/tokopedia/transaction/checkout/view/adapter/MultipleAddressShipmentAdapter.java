@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -13,10 +12,10 @@ import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressTotalP
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.viewholder.CartPromoSuggestionViewHolder;
+import com.tokopedia.transaction.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleAddressShipmentFooterTotalPayment;
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleAddressShipmentFooterViewHolder;
-import com.tokopedia.transaction.checkout.view.viewholder.MultipleShipmentPromoSuggestionViewHolder;
-import com.tokopedia.transaction.checkout.view.viewholder.MultipleShipmentPromoViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleShippingAddressViewHolder;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
@@ -32,10 +31,6 @@ import java.util.Locale;
 public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         <RecyclerView.ViewHolder> {
 
-    private static final int TYPE_VIEW_PROMO_SUGGESTION =
-            R.layout.holder_item_cart_potential_promo;
-    private static final int TYPE_VIEW_PROMO =
-            R.layout.holder_item_cart_promo;
     private static final int MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT =
             R.layout.multiple_address_shipment_footer;
     private static final int MULTIPLE_ADDRESS_FOOTER_TOTAL_PAYMENT =
@@ -106,9 +101,9 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     @Override
     public int getItemViewType(int position) {
         if (multipleAddressShipmentItemList.get(position) instanceof CartPromoSuggestion)
-            return TYPE_VIEW_PROMO_SUGGESTION;
+            return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
         else if (multipleAddressShipmentItemList.get(position) instanceof CartItemPromoHolderData)
-            return TYPE_VIEW_PROMO;
+            return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
         else if (multipleAddressShipmentItemList.get(position)
                 instanceof MultipleAddressShipmentAdapterData)
             return MULTIPLE_ADDRESS_ADAPTER_SHIPMENT_LAYOUT;
@@ -127,10 +122,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == TYPE_VIEW_PROMO)
-            return new MultipleShipmentPromoViewHolder(itemView);
-        else if (viewType == TYPE_VIEW_PROMO_SUGGESTION)
-            return new MultipleShipmentPromoSuggestionViewHolder(itemView);
+        if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO)
+            return new CartVoucherPromoViewHolder(itemView, listener);
+        else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION)
+            return new CartPromoSuggestionViewHolder(itemView, listener);
         else if (viewType == MULTIPLE_ADDRESS_ADAPTER_SHIPMENT_LAYOUT)
             return new MultipleShippingAddressViewHolder(itemView);
         else if (viewType == MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT)
@@ -144,10 +139,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == MULTIPLE_ADDRESS_ADAPTER_SHIPMENT_LAYOUT) {
             bindItems((MultipleShippingAddressViewHolder) holder, position);
-        } else if (getItemViewType(position) == TYPE_VIEW_PROMO) {
-            bindPromoView((MultipleShipmentPromoViewHolder) holder);
-        } else if (getItemViewType(position) == TYPE_VIEW_PROMO_SUGGESTION) {
-            bindPromoSuggestion((MultipleShipmentPromoSuggestionViewHolder) holder);
+        } else if (getItemViewType(position) == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
+            ((CartVoucherPromoViewHolder) holder).bindData(
+                    (CartItemPromoHolderData) multipleAddressShipmentItemList.get(position), position
+            );
+        } else if (getItemViewType(position)
+                == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
+            ((CartPromoSuggestionViewHolder) holder).bindData(
+                    (CartPromoSuggestion) multipleAddressShipmentItemList.get(position), position
+            );
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT) {
             bindFooterView((MultipleAddressShipmentFooterViewHolder) holder);
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_TOTAL_PAYMENT) {
@@ -159,16 +159,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                     totalPriceData
             );
         }
-    }
-
-    private void bindPromoView(MultipleShipmentPromoViewHolder promoHolder) {
-        promoHolder.bindPromoView(cartItemPromoHolderData, voucherClickedListener(cartItemPromoHolderData));
-    }
-
-    private void bindPromoSuggestion(
-            MultipleShipmentPromoSuggestionViewHolder promoSuggestionHolder
-    ) {
-        promoSuggestionHolder.bindPromoSuggestionView(promoSuggestionData, listener);
     }
 
     private void bindFooterView(MultipleAddressShipmentFooterViewHolder footerHolder) {
@@ -254,32 +244,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return totalPayment;
     }
 
-    private VoucherCartHachikoView.ActionListener voucherClickedListener(
-            final CartItemPromoHolderData cartItemPromoHolderData) {
-        return new VoucherCartHachikoView.ActionListener() {
-            @Override
-            public void onClickUseVoucher() {
-                listener.onHachikoClicked(priceSummaryData);
-            }
-
-            @Override
-            public void disableVoucherDiscount() {
-                cartItemPromoHolderData.setPromoNotActive();
-                listener.onRemovePromo();
-            }
-
-            @Override
-            public void trackingSuccessVoucher(String voucherName) {
-
-            }
-
-            @Override
-            public void trackingCancelledVoucher() {
-
-            }
-        };
-    }
-
     public interface MultipleAddressShipmentAdapterListener extends CartAdapterActionListener {
 
         void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData, int position);
@@ -291,12 +255,6 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         void onClearPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
 
         void onEditPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
-
-        void onPromoSuggestionClicked(CartPromoSuggestion cartPromoSuggestion);
-
-        void onPromoSuggestionCancelled(CartPromoSuggestion cartPromoSuggestion);
-
-        void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData);
 
         void onShowPromo(String promoMessage);
 
