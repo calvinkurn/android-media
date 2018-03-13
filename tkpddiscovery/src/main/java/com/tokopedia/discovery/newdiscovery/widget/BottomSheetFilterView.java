@@ -325,6 +325,7 @@ public class BottomSheetFilterView extends BaseCustomView implements DynamicFilt
     }
 
     public void initFilterBottomSheet(Bundle savedInstanceState) {
+        initBottomSheetListener();
         initFilterMainRecyclerView();
         loadLastFilterState(savedInstanceState);
     }

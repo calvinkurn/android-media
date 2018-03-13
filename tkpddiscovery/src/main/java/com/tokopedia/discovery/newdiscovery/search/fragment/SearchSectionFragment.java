@@ -357,6 +357,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
+            bottomSheetListener.loadFilterItems(getFilters());
             bottomSheetListener.launchFilterBottomSheet();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
@@ -401,7 +402,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
         showBottomBarNavigation(true);
-        bottomSheetListener.loadFilterItems(getFilters());
     }
 
     @Override
