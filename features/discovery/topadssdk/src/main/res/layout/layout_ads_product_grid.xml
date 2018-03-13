@@ -92,6 +92,7 @@
         android:id="@id/shop_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/badges_container"
         android:layout_below="@id/rating_review_container"
         android:layout_marginBottom="@dimen/product_grid_padding"
         android:layout_marginLeft="@dimen/product_grid_padding"

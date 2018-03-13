@@ -213,7 +213,7 @@ ext {
             discovery       : ":tkpddiscovery",
             transaction     : ":tkpdtransaction",
             session         : ":tkpdsession",
-            topAdsSdk       : ":tkpdtopadssdk",
+            topAdsSdk       : ":features:discovery:topadssdk",
             payment         : ":features:payment:payment",
             productDetail   : ":tkpdpdp",
             seller          : ":tkpdseller",
