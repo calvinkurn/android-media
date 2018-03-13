@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdtrain.common.domain;
 
 
-import com.tokopedia.tkpdtrain.search.domain.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 
 import java.util.List;

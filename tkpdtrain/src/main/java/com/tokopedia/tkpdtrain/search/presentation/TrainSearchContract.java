@@ -2,7 +2,7 @@ package com.tokopedia.tkpdtrain.search.presentation;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tkpdtrain.search.domain.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
 
 import java.util.List;
 

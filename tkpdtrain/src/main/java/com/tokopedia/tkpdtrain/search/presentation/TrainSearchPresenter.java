@@ -3,7 +3,7 @@ package com.tokopedia.tkpdtrain.search.presentation;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.tkpdtrain.search.domain.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 
 import java.util.List;

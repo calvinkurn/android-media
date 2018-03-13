@@ -13,8 +13,8 @@ import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.common.TrainDataDBSource;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainScheduleEntity;
-import com.tokopedia.tkpdtrain.search.domain.TrainSchedule;
-import com.tokopedia.tkpdtrain.search.domain.TrainScheduleMapper;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.domain.mapper.TrainScheduleMapper;
 
 import java.util.ArrayList;
 import java.util.List;

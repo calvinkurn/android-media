@@ -2,8 +2,8 @@ package com.tokopedia.tkpdtrain.search.data;
 
 import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainListSchedulesEntity;
-import com.tokopedia.tkpdtrain.search.domain.AvailabilityKeySchedule;
-import com.tokopedia.tkpdtrain.search.domain.AvailabilityKeysMapper;
+import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
 
 import java.util.List;
 
