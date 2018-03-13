@@ -60,10 +60,9 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/indicator"
-            style="?tabThemeWhite"
+            style="?tabTheme"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabTextAppearance="@style/TitlePageWhiteIndicator" />
+            android:layout_height="wrap_content"/>
 
     </android.support.design.widget.AppBarLayout>
 

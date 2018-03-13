@@ -53,7 +53,7 @@ public class ShopWarningTickerView extends FrameLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_dashboard_shop_close, this, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.partial_shop_info_ticker, this, false);
         container = view.findViewById(R.id.vg_shop_close);
         ivIcon = (ImageView) view.findViewById(R.id.iv_icon);
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
