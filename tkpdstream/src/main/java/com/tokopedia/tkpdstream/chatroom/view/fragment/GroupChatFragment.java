@@ -394,8 +394,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void setSendButtonEnabled(boolean isEnabled) {
         if (isEnabled) {
-            replyEditText.addTextChangedListener(replyTextWatcher);
-
             replyEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
@@ -420,7 +418,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 }
             });
         } else {
-            replyEditText.removeTextChangedListener(replyTextWatcher);
             sendButton.setOnClickListener(null);
         }
     }
@@ -576,6 +573,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             }
             adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
             setSendButtonEnabled(true);
+            replyEditText.addTextChangedListener(replyTextWatcher);
             scrollToBottom();
 
             presenter.setHandler(viewModel.getChannelUrl(), this);
