@@ -24,10 +24,13 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
@@ -44,6 +47,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.Ca
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.SingleShipmentData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.domain.mapper.CartShipmentAddressFormDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
@@ -94,6 +98,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private TextView mTvTotalPayment;
     private TextView mTvPromoMessage;
     private CardView mCvBottomLayout;
+    private TkpdProgressDialog progressDialogNormal;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
@@ -191,6 +196,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         mRvCartOrderDetails = view.findViewById(R.id.rv_cart_order_details);
         mTvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         mLlTotalPaymentLayout = view.findViewById(R.id.ll_total_payment_layout);
@@ -258,6 +264,45 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     }
 
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return originParams == null ? AuthUtil.generateParamsNetwork(getActivity()) :
+                AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialogNormal.showDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialogNormal.dismiss();
+    }
+
+    @Override
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+        this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                .promoCode(promoCodeCartListData.getDataVoucher().getCode())
+                .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
+                .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
+                .build();
+        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
+                promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
+        updateAppliedPromo(cartItemPromoHolderData);
+    }
+
+    @Override
+    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
     private void showCancelPickupBoothDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.label_dialog_title_cancel_pickup)
@@ -322,12 +367,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
-
+        mSingleAddressShipmentPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode());
     }
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-        mSingleAddressShipmentAdapter.removeData(position);
+        data.setVisible(false);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -402,7 +448,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
-        
+
     }
 
 
@@ -489,15 +535,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 CartItemPromoHolderData cartPromo = new CartItemPromoHolderData();
                 cartPromo.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
-                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
-                if (mSingleAddressShipmentAdapter.hasSetAllCourier()) {
-                    SingleAddressShipmentAdapter.RequestData requestData =
-                            mSingleAddressShipmentAdapter.getRequestPromoData(
-                                    mSingleAddressShipmentAdapter.getCartSellerItemModelList());
-                    mPromoRequestData = requestData.getPromoRequestData();
-                    requestPromo();
-                }
-                mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                updateAppliedPromo(cartPromo);
             }
         } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
             Bundle bundle = data.getExtras();
@@ -522,17 +560,21 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                         couponTitle, couponCode, couponMessage, couponDiscountAmount
                 );
 
-                mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
-                if (mSingleAddressShipmentAdapter.hasSetAllCourier()) {
-                    SingleAddressShipmentAdapter.RequestData requestData =
-                            mSingleAddressShipmentAdapter.getRequestPromoData(
-                                    mSingleAddressShipmentAdapter.getCartSellerItemModelList());
-                    mPromoRequestData = requestData.getPromoRequestData();
-                    requestPromo();
-                }
-                mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                updateAppliedPromo(cartPromo);
             }
         }
+    }
+
+    private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
+        mSingleAddressShipmentAdapter.updateItemPromoVoucher(cartPromo);
+        if (mSingleAddressShipmentAdapter.hasSetAllCourier()) {
+            SingleAddressShipmentAdapter.RequestData requestData =
+                    mSingleAddressShipmentAdapter.getRequestPromoData(
+                            mSingleAddressShipmentAdapter.getCartSellerItemModelList());
+            mPromoRequestData = requestData.getPromoRequestData();
+            requestPromo();
+        }
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {

@@ -21,6 +21,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Grou
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
@@ -340,6 +341,36 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(rupiahAmount);
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+        view.showLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideLoading();
+            }
+
+            @Override
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
+                view.hideLoading();
+                if (!promoCodeCartListData.isError()) {
+                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                } else {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                }
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
     }
 
 }

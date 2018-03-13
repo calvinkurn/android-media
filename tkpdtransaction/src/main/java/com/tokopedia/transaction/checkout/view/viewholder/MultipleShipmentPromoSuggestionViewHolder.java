@@ -67,7 +67,7 @@ public class MultipleShipmentPromoSuggestionViewHolder extends RecyclerView.View
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onPromoSuggestionCancelled();
+                    listener.onPromoSuggestionCancelled(data);
                 }
             });
             rlPromoSuggestionLayout.setVisibility(View.VISIBLE);
