@@ -92,7 +92,6 @@
         android:id="@id/shop_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@+id/badges_container"
         android:layout_below="@id/rating_review_container"
         android:layout_marginBottom="@dimen/product_grid_padding"
         android:layout_marginLeft="@dimen/product_grid_padding"
@@ -138,26 +137,34 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/location"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
-            android:gravity="center_vertical"
-            android:minHeight="25dp"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/text_size_xsmall"
-            tools:text="Jakarta" />
+            android:orientation="horizontal">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                app:drawableLeftCompat="@drawable/ic_place_grey_24dp"
+                android:gravity="center_vertical"
+                android:minHeight="25dp"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall"
+                tools:text="Jakarta" />
+
+            <LinearLayout
+                android:id="@+id/badges_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/shop_detail_container"
+                android:layout_alignBottom="@id/shop_detail_container"
+                android:orientation="horizontal" />
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/badges_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/shop_detail_container"
-        android:layout_alignRight="@id/shop_detail_container"
-        android:orientation="horizontal" />
 
 </RelativeLayout>
