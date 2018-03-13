@@ -1,7 +1,10 @@
 package com.tokopedia.seller.product.variant.view.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -17,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -84,6 +88,14 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private View vgSizechart;
     private ImageView ivSizeChart;
 
+    private OnProductVariantDashboardFragmentListener listener;
+
+    public interface OnProductVariantDashboardFragmentListener {
+        void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
+                                   ProductPictureViewModel productPictureViewModel);
+        void onVariantChangedFromResult();
+    }
+
     public static ProductVariantDashboardFragment newInstance() {
         Bundle args = new Bundle();
         ProductVariantDashboardFragment fragment = new ProductVariantDashboardFragment();
@@ -135,8 +147,44 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(productVariantDashboardNewAdapter);
 
+        View buttonSave = view.findViewById(R.id.button_save);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!validateVariantPrice()) {
+                    return;
+                }
+                listener.onProductVariantSaved(productVariantViewModel, getInputtedSizeChart());
+            }
+        });
+
         setupSizeChart(view);
         return view;
+    }
+
+    public ProductVariantViewModel getProductVariantViewModel() {
+        return productVariantViewModel;
+    }
+
+    private boolean validateVariantPrice() {
+        if (productVariantViewModel == null) {
+            return true;
+        }
+        if (!productVariantViewModel.hasSelectedVariant()) {
+            return true;
+        }
+        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
+                productVariantViewModel.getProductVariant();
+
+        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+            if (productVariantCombinationViewModel.getPriceVar() == 0) {
+                NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                        getString(R.string.product_variant_price_must_be_filled));
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -332,12 +380,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 onActivityResultFromItemPicker(requestCode, data);
+                listener.onVariantChangedFromResult();
                 break;
             case ProductVariantDetailLevel1ListActivity.VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE:
                 onActivityResultFromDetail(data);
+                listener.onVariantChangedFromResult();
                 break;
             case ProductVariantDetailLevelLeafActivity.VARIANT_EDIT_LEAF_REQUEST_CODE:
                 onActivityResultFromLeaf(data);
+                listener.onVariantChangedFromResult();
                 break;
         }
     }
@@ -520,7 +571,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
     private void updateVariantItemListView() {
         if (productVariantViewModel == null || !productVariantViewModel.hasSelectedVariant()) {
-            recyclerView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.INVISIBLE);
             return;
         }
         generateToDashboardViewModel();
@@ -578,17 +629,31 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         onItemClicked(model);
     }
 
-
-    public ProductVariantViewModel getProductVariantViewModel() {
-        return productVariantViewModel;
-    }
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
         outState.putParcelable(EXTRA_PRODUCT_SIZECHART, productSizeChart);
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachActivity(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachActivity(activity);
+        }
+    }
+
+    protected void onAttachActivity(Context context) {
+        listener = (OnProductVariantDashboardFragmentListener) context;
     }
 
 

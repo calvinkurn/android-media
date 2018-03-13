@@ -1,10 +1,17 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -22,7 +29,8 @@ import java.util.List;
  * Created by nathan on 8/2/17.
  */
 
-public class ProductVariantDashboardActivity extends BaseSimpleActivity {
+public class ProductVariantDashboardActivity extends BaseSimpleActivity
+        implements ProductVariantDashboardFragment.OnProductVariantDashboardFragmentListener {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
@@ -35,12 +43,15 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
     public static final String EXTRA_PRODUCT_SIZECHART = "EXTRA_SIZECHART";
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV1 = "EXTRA_HAS_ORI_VAR_LV1";
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2";
+    public static final String SAVED_VARIANT_CHANGE_FROM_RESULT = "sdv_var_chg";
+
+    private boolean hasVariantChangedFromResult;
 
     public static Intent getIntent(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                    ProductVariantViewModel productVariantViewModel, @CurrencyTypeDef int currencyType,
                                    double defaultPrice, @StockTypeDef int stockType, boolean isOfficialStore, String defaultSku,
                                    boolean needRetainImage, ProductPictureViewModel productSizeChart,
-                                   boolean hasOriVarLv1, boolean hasOriVarLv2){
+                                   boolean hasOriVarLv1, boolean hasOriVarLv2) {
         Intent intent = new Intent(context, ProductVariantDashboardActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
@@ -57,55 +68,64 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected Fragment getNewFragment() {
-        return ProductVariantDashboardFragment.newInstance();
-    }
-
-    @Override
     public void onBackPressed() {
-        if (getFragment() != null && getFragment() instanceof ProductVariantDashboardFragment) {
-            if (!validateVariantPrice()) {
-                return;
-            }
-            Intent intent = new Intent();
-            ProductVariantDashboardFragment productVariantDashboardFragment = ((ProductVariantDashboardFragment) getFragment());
-            if (productVariantDashboardFragment != null) {
-                intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                        productVariantDashboardFragment.getProductVariantViewModel());
-                intent.putExtra(EXTRA_PRODUCT_SIZECHART,
-                        productVariantDashboardFragment.getInputtedSizeChart());
-                setResult(RESULT_OK, intent);
-            }
-            this.finish();
+        if (hasVariantChangedFromResult) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.product_dialog_cancel_title))
+                    .setMessage(getString(R.string.product_dialog_cancel_message))
+                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ProductVariantDashboardActivity.super.onBackPressed();
+                        }
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
         } else {
             super.onBackPressed();
         }
     }
 
-    private boolean validateVariantPrice() {
-        ProductVariantViewModel productVariantViewModel =
-                ((ProductVariantDashboardFragment) getFragment()).getProductVariantViewModel();
-        if (productVariantViewModel == null) {
-            return true;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState!= null) {
+            hasVariantChangedFromResult = savedInstanceState.getBoolean(SAVED_VARIANT_CHANGE_FROM_RESULT);
         }
-        if (!productVariantViewModel.hasSelectedVariant()) {
-            return true;
-        }
-        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
-                productVariantViewModel.getProductVariant();
+    }
 
-        for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
-            ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
-            if (productVariantCombinationViewModel.getPriceVar() == 0) {
-                NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.product_variant_price_must_be_filled));
-                return false;
-            }
-        }
-        return true;
+    @Override
+    protected Fragment getNewFragment() {
+        return ProductVariantDashboardFragment.newInstance();
     }
 
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
+                                      ProductPictureViewModel productPictureViewModel) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        intent.putExtra(EXTRA_PRODUCT_SIZECHART, productPictureViewModel);
+        setResult(RESULT_OK, intent);
+        this.finish();
+    }
+
+    @Override
+    public void onVariantChangedFromResult() {
+        hasVariantChangedFromResult = true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_VARIANT_CHANGE_FROM_RESULT, hasVariantChangedFromResult);
     }
 }

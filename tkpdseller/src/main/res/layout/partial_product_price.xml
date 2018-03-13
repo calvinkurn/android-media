@@ -67,6 +67,21 @@
             <include layout="@layout/partial_product_wholesale" />
         </com.tokopedia.expandable.ExpandableOptionSwitch>
 
+        <FrameLayout
+            android:id="@+id/v_wholesale_variant_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            style="@style/LabelLayout">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/product_grosir_not_available_if_has_variant"
+                style="@style/TextView.Micro.BlackDisabled" />
+        </FrameLayout>
+
+
     </LinearLayout>
 
 </merge>

@@ -124,19 +124,19 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
-                R.styleable.TextInputLayoutv2, defStyleAttr, android.support.design.R.style.Widget_Design_TextInputLayout);
-        mHintEnabled = a.getBoolean(R.styleable.TextInputLayoutv2_hintEnabled, true);
-        mHint = a.getText(R.styleable.TextInputLayoutv2_android_hint);
+                R.styleable.TkpdHintTextInputLayout, defStyleAttr, android.support.design.R.style.Widget_Design_TextInputLayout);
+        mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true);
+        mHint = a.getText(R.styleable.TkpdHintTextInputLayout_android_hint);
         mHintAnimationEnabled = a.getBoolean(
-                R.styleable.TextInputLayoutv2_hintAnimationEnabled, true);
+                R.styleable.TkpdHintTextInputLayout_hintAnimationEnabled, true);
 
-        if (a.hasValue(R.styleable.TextInputLayoutv2_android_textColorHint)) {
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_android_textColorHint)) {
             mDefaultHintTextColor = mFocusedHintTextColor = mDisabledHintTextColor =
-                    a.getColorStateList(R.styleable.TextInputLayoutv2_android_textColorHint);
+                    a.getColorStateList(R.styleable.TkpdHintTextInputLayout_android_textColorHint);
         }
 
         mHintAppearance = a.getResourceId(
-                R.styleable.TextInputLayoutv2_hintTextAppearance, -1);
+                R.styleable.TkpdHintTextInputLayout_hintTextAppearance, -1);
         if (mHintAppearance != -1) {
             TintTypedArray hintArr = TintTypedArray.obtainStyledAttributes(getContext(), mHintAppearance,
                     android.support.v7.appcompat.R.styleable.TextAppearance);
@@ -155,37 +155,36 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             hintArr.recycle();
         }
 
-        mErrorEnabled = a.getBoolean(R.styleable.TextInputLayoutv2_errorEnabled, false);
-        mErrorTextAppearance = a.getResourceId(R.styleable.TextInputLayoutv2_errorTextAppearance, 0);
+        mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false);
+        mErrorTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0);
 
-        mHelperEnabled = a.getBoolean(R.styleable.TextInputLayoutv2_helperEnabled, false);
-        mHelperTextAppearance = a.getResourceId(R.styleable.TextInputLayoutv2_helperTextAppearance,
+        mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false);
+        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
                 R.style.helperTextAppearance);
-        mHelperText = a.getText(
-                R.styleable.TextInputLayoutv2_helper);
+        mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper);
 
-        mSuccessEnabled = a.getBoolean(R.styleable.TextInputLayoutv2_successEnabled, false);
-        mSuccessTextAppearance = a.getResourceId(R.styleable.TextInputLayoutv2_successTextAppearance,
+        mSuccessEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false);
+        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance,
                 R.style.successTextAppearance);
 
         mCounterEnabled = a.getBoolean(
-                R.styleable.TextInputLayoutv2_counterEnabled, false);
-        mCounterMaxLength = a.getInt(R.styleable.TextInputLayoutv2_counterMaxLength, INVALID_MAX_LENGTH);
+                R.styleable.TkpdHintTextInputLayout_counterEnabled, false);
+        mCounterMaxLength = a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH);
         mCounterTextAppearance = a.getResourceId(
-                R.styleable.TextInputLayoutv2_counterTextAppearance, 0);
+                R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0);
         mCounterOverflowTextAppearance = a.getResourceId(
-                R.styleable.TextInputLayoutv2_counterOverflowTextAppearance, 0);
+                R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0);
 
         mPasswordToggleEnabled = a.getBoolean(
-                R.styleable.TextInputLayoutv2_passwordToggleEnabled, true);
+                R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true);
         mPasswordToggleDrawable = a.getDrawable(
-                R.styleable.TextInputLayoutv2_passwordToggleDrawable);
+                R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable);
         mPasswordToggleContentDesc = a.getText(
-                R.styleable.TextInputLayoutv2_passwordToggleContentDescription);
-        if (a.hasValue(R.styleable.TextInputLayoutv2_passwordToggleTint)) {
+                R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription);
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
             mHasPasswordToggleTintList = true;
             mPasswordToggleTintList = a.getColorStateList(
-                    R.styleable.TextInputLayoutv2_passwordToggleTint);
+                    R.styleable.TkpdHintTextInputLayout_passwordToggleTint);
         }
         /*if (a.hasValue(R.styleable.TextInputLayoutv2_passwordToggleTintMode)) {
             mHasPasswordToggleTintMode = true;
@@ -209,21 +208,21 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         }
 
         boolean hasNormalValue = false;
-        if (a.hasValue(R.styleable.TextInputLayoutv2_defaultTextColorLabel)) {
-            mDefaultHintTextColor = a.getColorStateList(R.styleable.TextInputLayoutv2_defaultTextColorLabel);
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_defaultTextColorLabel)) {
+            mDefaultHintTextColor = a.getColorStateList(R.styleable.TkpdHintTextInputLayout_defaultTextColorLabel);
             hasNormalValue = true;
         }
-        if (a.hasValue(R.styleable.TextInputLayoutv2_focusedTextColorLabel)) {
-            mFocusedHintTextColor = a.getColorStateList(R.styleable.TextInputLayoutv2_focusedTextColorLabel);
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_focusedTextColorLabel)) {
+            mFocusedHintTextColor = a.getColorStateList(R.styleable.TkpdHintTextInputLayout_focusedTextColorLabel);
         } else if (hasNormalValue) {
             mFocusedHintTextColor = mDefaultHintTextColor;
         }
-        if (a.hasValue(R.styleable.TextInputLayoutv2_disabledTextColorLabel)) {
-            mDisabledHintTextColor = a.getColorStateList(R.styleable.TextInputLayoutv2_disabledTextColorLabel);
+        if (a.hasValue(R.styleable.TkpdHintTextInputLayout_disabledTextColorLabel)) {
+            mDisabledHintTextColor = a.getColorStateList(R.styleable.TkpdHintTextInputLayout_disabledTextColorLabel);
         } else if (hasNormalValue) {
             mDisabledHintTextColor = mDefaultHintTextColor;
         }
-        String prefixString = a.getString(R.styleable.TextInputLayoutv2_prefixString);
+        String prefixString = a.getString(R.styleable.TkpdHintTextInputLayout_prefixString);
         mPrefixLength = prefixString == null ? 0 : prefixString.length();
         if (mCounterEnabled && mPrefixLength > 0) {
             setCounterMaxLength(mCounterMaxLength + mPrefixLength);

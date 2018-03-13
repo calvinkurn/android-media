@@ -39,20 +39,15 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class ProductPriceViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
-    public static final String IS_ENABLE_WHOLESALE = "IS_ENABLE_WHOLESALE";
-    private static final String IS_WHOLESALE_VISIBLE = "IS_WHOLE_VISIBLE";
-
     private static final int MAX_WHOLESALE = 5;
 
-    private final Locale dollarLocale = Locale.US;
-
-    private RecyclerView recyclerViewWholesale;
     private WholesaleAdapter wholesaleAdapter;
     private ImageButton editPriceImageButton;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
@@ -65,15 +60,15 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private Listener listener;
-    @CurrencyTypeDef
-    private int currencyType = CurrencyTypeDef.TYPE_IDR;
     private NumberFormat formatter;
     private boolean officialStore;
+    private final View vWholeSaleVariantInfo;
 
     public ProductPriceViewHolder(View view, Listener listener) {
 
-        determineFormatter();
+        formatter = NumberFormat.getNumberInstance(Locale.US);
         editPriceImageButton = view.findViewById(R.id.image_button_edit_price);
+        vWholeSaleVariantInfo = view.findViewById(R.id.v_wholesale_variant_info);
         priceSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
         wholesaleExpandableOptionSwitch = view.findViewById(R.id.expandable_option_switch_wholesale);
         minimumOrderCounterInputView = view.findViewById(R.id.counter_input_view_minimum_order);
@@ -105,16 +100,14 @@ public class ProductPriceViewHolder extends ProductViewHolder
             }
 
             private void setTextWatcher(String spinnerValue) {
+                // To reset/change from idr <==> USD, vice versa.
                 priceSpinnerCounterInputView.removeTextChangedListener(idrTextWatcher);
                 priceSpinnerCounterInputView.removeTextChangedListener(usdTextWatcher);
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
-                    currencyType = CurrencyTypeDef.TYPE_IDR;
                 } else {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
-                    currencyType = CurrencyTypeDef.TYPE_USD;
                 }
-                determineFormatter();
             }
         });
 
@@ -175,11 +168,12 @@ public class ProductPriceViewHolder extends ProductViewHolder
             @Override
             public void onClick(View v) {
                 if (ProductPriceViewHolder.this.listener != null) {
-                    ProductPriceViewHolder.this.listener.startAddWholeSaleDialog(currencyType, getPreviousValue(), officialStore);
+                    ProductPriceViewHolder.this.listener.startAddWholeSaleDialog(
+                            getCurrencyType(), getPreviousValue(), officialStore);
                 }
             }
         });
-        recyclerViewWholesale = (RecyclerView) view.findViewById(R.id.recycler_view_wholesale);
+        RecyclerView recyclerViewWholesale = (RecyclerView) view.findViewById(R.id.recycler_view_wholesale);
         recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
         wholesaleAdapter = new WholesaleAdapter();
         wholesaleAdapter.setListener(this);
@@ -190,43 +184,69 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     @Override
     public void renderData(ProductViewModel model) {
+        boolean hasVariant = model.hasVariant();
+
+        double price = model.getPrdPriceOrMinVariantProductPrice();
+
+        // to sync price variant with the price in the main product.
+        model.setProductPrice(price);
+
         setPriceUnit((int) model.getProductPriceCurrency());
-        if (model.getProductPrice() > 0) {
-            setPriceValue(model.getProductPrice());
-        }
-        if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
-            expandWholesale(false);
+        setPriceValue(price);
+
+        if (hasVariant) {
+            model.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
+
+            wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+            vWholeSaleVariantInfo.setVisibility(View.VISIBLE);
+
+            priceSpinnerCounterInputView.setEnabled(false);
+            editPriceImageButton.setVisibility(View.VISIBLE);
         } else {
-            expandWholesale(true);
-            setWholesalePrice(model.getProductWholesale());
+            vWholeSaleVariantInfo.setVisibility(View.GONE);
+            if (price > 0) {
+                if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
+                    expandWholesale(false);
+                } else {
+                    expandWholesale(true);
+                    setWholesalePrice(model.getProductWholesale());
+                }
+                wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
+            } else {
+                wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+            }
         }
+
         if (model.getProductMinOrder() > 0) {
             setMinimumOrder((int) model.getProductMinOrder());
         }
-        //TODO check for the variant
     }
 
     private void showEditPriceDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
-                R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
-        builder.setMessage(R.string.product_confirmation_change_wholesale_price);
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                expandWholesale(false);
-                clearWholesaleItems();
-                dialog.cancel();
-            }
-        });
-        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+        if (listener.hasVariant()) {
+            listener.showDialogEditPriceVariant();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
+                    R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
+            builder.setMessage(R.string.product_confirmation_change_wholesale_price);
+            builder.setCancelable(true);
+            builder.setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    expandWholesale(false);
+                    clearWholesaleItems();
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
 
-        AlertDialog alert = builder.create();
-        alert.show();
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     private void updateWholesaleButton() {
@@ -249,6 +269,10 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public void setGoldMerchant(boolean goldMerchant) {
         this.goldMerchant = goldMerchant;
+    }
+
+    public boolean isGoldMerchant() {
+        return goldMerchant;
     }
 
     public int getPriceUnit() {
@@ -303,34 +327,35 @@ public class ProductPriceViewHolder extends ProductViewHolder
         updateWholesaleButton();
     }
 
-    public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        if (!wholesaleExpandableOptionSwitch.isExpanded()) {
-            return null;
+    public @NonNull List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+        if (wholesaleExpandableOptionSwitch.getVisibility() != View.VISIBLE ||
+                !wholesaleExpandableOptionSwitch.isExpanded()) {
+            return new ArrayList<>();
         }
         return wholesaleAdapter.getProductWholesaleViewModels();
     }
 
     private boolean isPriceValid() {
-        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
-                priceSpinnerCounterInputView.getContext(),
-                Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()), officialStore);
-
-        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
-            priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
-                    formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
-            wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
-            return false;
-        } else if (minMaxPrice.first == getPriceValue()) {
-            wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+        if (listener.hasVariant()) {
+            return true;
         } else {
-            wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
-        }
-        priceSpinnerCounterInputView.setCounterError(null);
-        return true;
-    }
+            Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
+                    priceSpinnerCounterInputView.getContext(),
+                    Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()), officialStore);
 
-    private void determineFormatter() {
-        formatter = NumberFormat.getNumberInstance(dollarLocale);
+            if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
+                priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
+                        formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
+                wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+                return false;
+            } else if (minMaxPrice.first == getPriceValue()) {
+                wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+            } else {
+                wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
+            }
+            priceSpinnerCounterInputView.setCounterError(null);
+            return true;
+        }
     }
 
     @Override
@@ -340,7 +365,12 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     @Override
     public int getCurrencyType() {
-        return currencyType;
+        if (priceSpinnerCounterInputView.getSpinnerTextView().getSpinnerValue()
+                .equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
+            return CurrencyTypeDef.TYPE_IDR;
+        } else {
+            return CurrencyTypeDef.TYPE_USD;
+        }
     }
 
     @Override
@@ -359,25 +389,21 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+
+    }
+
+    @Override
     public void updateModel(ProductViewModel model) {
         model.setProductPriceCurrency(getPriceUnit());
         model.setProductPrice(getPriceValue());
         model.setProductMinOrder(getMinimumOrder());
         model.setProductWholesale(getProductWholesaleViewModels());
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(IS_ENABLE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
-        savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
-    }
-
-    @Override
-    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-        wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ENABLE_WHOLESALE));
-
-        boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
-        wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible ? View.VISIBLE : View.GONE);
     }
 
     public boolean isMinOrderValid() {
@@ -416,5 +442,9 @@ public class ProductPriceViewHolder extends ProductViewHolder
         void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void showDialogMoveToGM(@StringRes int message);
+
+        boolean hasVariant();
+
+        void showDialogEditPriceVariant();
     }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -90,8 +90,24 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/padding_ms"
         android:paddingTop="@dimen/padding_ms" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/LabelLayout"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning">
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.Submit.Green"
+            android:layout_margin="0dp"
+            android:text="@string/label_variant_save" />
+    </LinearLayout>
+
 </LinearLayout>

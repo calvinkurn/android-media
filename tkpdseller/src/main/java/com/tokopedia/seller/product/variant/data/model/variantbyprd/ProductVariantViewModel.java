@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
@@ -154,14 +155,40 @@ public class ProductVariantViewModel implements Parcelable {
                 } else {
                     productVariantCombinationViewModel.setActive(true);
                     if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                        productVariantCombinationViewModel.setSt(1);
+                        if (productVariantCombinationViewModel.getStock() < 1) {
+                            productVariantCombinationViewModel.setStock(1);
+                        }
                     } else {
-                        productVariantCombinationViewModel.setSt(0);
+                        productVariantCombinationViewModel.setStock(0);
                     }
                 }
             }
         }
     }
+
+    public void changePriceTo(double value){
+        if (hasSelectedVariant()) {
+            List<ProductVariantCombinationViewModel> combinationViewModelList = productVariant;
+            for (ProductVariantCombinationViewModel combinationViewModel: combinationViewModelList) {
+                combinationViewModel.setPriceVar(value);
+            }
+        }
+    }
+
+    public double getMinVariantProductPrice() {
+        double minPrice = Double.MAX_VALUE;
+        for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
+            double price = productVariantCombinationViewModel.getPriceVar();
+            if (price < minPrice) {
+                minPrice = price;
+            }
+        }
+        if (minPrice == Double.MAX_VALUE) {
+            return 0;
+        }
+        return minPrice;
+    }
+
 
     /**
      * function to convert the pvo to tid and custom values to tid

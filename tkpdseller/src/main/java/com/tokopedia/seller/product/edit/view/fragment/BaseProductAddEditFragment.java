@@ -44,6 +44,8 @@ import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActiv
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditProductDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddWholesaleDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductDeliveryInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDescriptionViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
@@ -67,6 +69,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -89,7 +92,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         implements ProductAddView,
         ProductScoreViewHolder.Listener, ProductDeliveryInfoViewHolder.Listener,
         ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener,
-        ProductManageViewHolder.Listener, ProductPriceViewHolder.Listener, ProductDescriptionViewHolder.Listener {
+        ProductManageViewHolder.Listener, ProductPriceViewHolder.Listener,
+        ProductDescriptionViewHolder.Listener {
 
     @Inject
     protected T presenter;
@@ -215,8 +219,16 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         return (productInfoViewHolder.isDataValid() &&
                 productPriceViewHolder.isDataValid() &&
                 productManageViewHolder.isDataValid() &&
-                (!productManageViewHolder.isStockAvailable() || productImageViewHolder.isDataValid()) &&
+                isImageValid() &&
                 productDeliveryInfoViewHolder.isDataValid());
+    }
+
+    private boolean isImageValid() {
+        // if it has catalog, image is valid (because no image needed)
+        // if no catalog, check stock, if the stock is not empty, it should have picture.
+        return productInfoViewHolder.getCatalogId() > 0 ||
+                !productManageViewHolder.isStockAvailable() ||
+                productImageViewHolder.isDataValid();
     }
 
     private void getCategoryRecommendation(String productName) {
@@ -454,6 +466,38 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public boolean hasVariant() {
         return currentProductViewModel.hasVariant();
+    }
+
+    @Override
+    public void showDialogEditPriceVariant() {
+        ProductChangeVariantPriceDialogFragment dialogFragment =
+                ProductChangeVariantPriceDialogFragment.newInstance(productPriceViewHolder.getCurrencyType(),
+                        productPriceViewHolder.isGoldMerchant(),
+                        productPriceViewHolder.getPriceValue(),
+                        productPriceViewHolder.isOfficialStore());
+        dialogFragment.show(getActivity().getSupportFragmentManager(),
+                ProductChangeVariantPriceDialogFragment.TAG);
+        dialogFragment.setOnDismissListener(new ProductChangeVariantPriceDialogFragment.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        View view = getActivity().getCurrentFocus();
+                        if (view != null) {
+                            CommonUtils.hideSoftKeyboard(view);
+                            view.clearFocus();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {
+        currentProductViewModel.setProductPriceCurrency(productPriceViewHolder.getCurrencyType());
+        currentProductViewModel.changePriceTo(currencyType, currencyValue);
+        productPriceViewHolder.renderData(currentProductViewModel);
     }
 
     @CallSuper

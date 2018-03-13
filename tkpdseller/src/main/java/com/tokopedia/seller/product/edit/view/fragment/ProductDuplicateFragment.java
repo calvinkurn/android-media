@@ -15,8 +15,6 @@ import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
 
 public class ProductDuplicateFragment extends ProductEditFragment implements ProductEditView {
 
-    private String productNameBeforeCopy;
-
     public static ProductDuplicateFragment createInstance(String productId) {
         ProductDuplicateFragment fragment = new ProductDuplicateFragment();
         Bundle args = new Bundle();
@@ -49,13 +47,6 @@ public class ProductDuplicateFragment extends ProductEditFragment implements Pro
     public void onSuccessLoadProduct(ProductViewModel productViewModel) {
         super.onSuccessLoadProduct(productViewModel);
         productViewModel.setProductId("");
-        productNameBeforeCopy = productViewModel.getProductName();
-    }
-
-    @Override
-    protected boolean isDataValid() {
-        return productInfoViewHolder.checkWithPreviousNameBeforeCopy(productNameBeforeCopy) &&
-                super.isDataValid();
     }
 
 }

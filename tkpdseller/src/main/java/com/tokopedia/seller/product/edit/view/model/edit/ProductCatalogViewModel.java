@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductCatalogViewModel implements Parcelable {
 
+    public static final int ACTIVE_STATUS = 1;
     @SerializedName("catalog_id")
     @Expose
     private long catalogId;
@@ -20,7 +21,7 @@ public class ProductCatalogViewModel implements Parcelable {
     private String catalogUrl;
     @SerializedName("catalog_status")
     @Expose
-    private long catalogStatus;
+    private long catalogStatus = ACTIVE_STATUS;
 
     public long getCatalogId() {
         return catalogId;
