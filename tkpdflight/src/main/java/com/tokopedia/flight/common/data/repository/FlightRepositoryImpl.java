@@ -380,7 +380,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId) {
+    public Observable<List<FlightPassengerDb>> getPassengerList(String passengerId) {
         return flightPassengerFactorySource.getPassengerList(passengerId);
     }
 

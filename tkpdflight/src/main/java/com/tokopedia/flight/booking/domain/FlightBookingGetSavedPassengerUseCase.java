@@ -33,7 +33,7 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
 
     @Override
     public Observable<List<FlightBookingPassengerViewModel>> createObservable(RequestParams requestParams) {
-        return flightRepository.getSavedPassenger(requestParams.getString(PARAM_PASSENGER_ID, ""))
+        return flightRepository.getPassengerList(requestParams.getString(PARAM_PASSENGER_ID, ""))
                 .map(new Func1<List<FlightPassengerDb>, List<FlightBookingPassengerViewModel>>() {
                     @Override
                     public List<FlightBookingPassengerViewModel> call(List<FlightPassengerDb> flightPassengerDbs) {

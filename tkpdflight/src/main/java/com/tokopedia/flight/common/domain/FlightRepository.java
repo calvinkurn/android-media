@@ -87,7 +87,7 @@ public interface FlightRepository {
 
     Observable<Boolean> isSearchCacheExpired(boolean isReturn);
 
-    Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId);
+    Observable<List<FlightPassengerDb>> getPassengerList(String passengerId);
 
     Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
 
