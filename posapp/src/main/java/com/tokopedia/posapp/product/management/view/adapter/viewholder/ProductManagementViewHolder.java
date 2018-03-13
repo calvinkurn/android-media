@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.product.common.view.viewmodel.ProductViewModel;
-import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
+import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
+import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 
 public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewModel> {
     @LayoutRes
@@ -25,9 +25,9 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
     private EditText editOutletPrice;
     private ImageButton buttonEdit;
     private SwitchCompat switchStatus;
-    private ProductManagementAdapterTypeFactory.Listener listener;
+    private ProductManagementTypeFactory.Listener listener;
 
-    public ProductManagementViewHolder(View view, ProductManagementAdapterTypeFactory.Listener listener) {
+    public ProductManagementViewHolder(View view, ProductManagementTypeFactory.Listener listener) {
         super(view);
         imageThumbnail = view.findViewById(R.id.image_thumbnail);
         textProductName = view.findViewById(R.id.text_product_name);

@@ -3,9 +3,13 @@ package com.tokopedia.posapp.product.management.view.fragment;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.posapp.base.fragment.PosBaseListFragment;
-import com.tokopedia.posapp.product.common.view.viewmodel.ProductViewModel;
+import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
+import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewModel;
+import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementAdapterTypeFactory;
+import com.tokopedia.posapp.product.management.view.adapter.viewholder.ProductManagementViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +18,10 @@ import java.util.List;
  * @author okasurya on 3/12/18.
  */
 
-public class ProductManagementFragment extends PosBaseListFragment<ProductViewModel, ProductManagementAdapterTypeFactory> implements ProductManagementAdapterTypeFactory.Listener {
+public class ProductManagementFragment
+        extends PosBaseListFragment<Visitable, ProductManagementAdapterTypeFactory>
+        implements ProductManagementTypeFactory.Listener {
+
     public static final String TAG = ProductManagementFragment.class.getSimpleName();
 
     public static Fragment newInstance() {
@@ -32,13 +39,9 @@ public class ProductManagementFragment extends PosBaseListFragment<ProductViewMo
     }
 
     @Override
-    public void onItemClicked(ProductViewModel productViewModel) {
-
-    }
-
-    @Override
     public void loadData(int page) {
-        List<ProductViewModel> list = new ArrayList<>();
+        List<Visitable> list = new ArrayList<>();
+        list.add(new ProductHeaderViewModel());
         list.add(mockProduct(1));
         list.add(mockProduct(2));
         list.add(mockProduct(3));
@@ -71,5 +74,12 @@ public class ProductManagementFragment extends PosBaseListFragment<ProductViewMo
     @Override
     public void onShowProductCheckedChange(ProductViewModel element, boolean isChecked) {
 
+    }
+
+    @Override
+    public void onItemClicked(Visitable visitable) {
+        if(visitable instanceof ProductManagementViewHolder) {
+
+        }
     }
 }

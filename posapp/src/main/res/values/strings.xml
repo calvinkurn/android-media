@@ -54,4 +54,8 @@
     <string name="error_password_wrong">Password yang anda masukan salah.</string>
     <string name="error_password_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi.</string>
     <string name="drawer_title_pos_product_management">Manajemen Produk</string>
+    <string name="product_name_label">Nama Produk</string>
+    <string name="product_online_price_label">Harga Online</string>
+    <string name="product_outlet_price_label">Harga Outlet</string>
+    <string name="product_shown_status">Status</string>
 </resources>
