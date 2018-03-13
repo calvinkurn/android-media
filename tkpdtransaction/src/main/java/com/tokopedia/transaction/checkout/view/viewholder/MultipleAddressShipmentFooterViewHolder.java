@@ -85,15 +85,15 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
     }
 
     private long getDiscountData(CartItemPromoHolderData promoHolderData) {
-        if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
+        if (promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
             return promoHolderData.getCouponDiscountAmount();
-        else if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
+        else if (promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
             return promoHolderData.getVoucherDiscountAmount();
         else return 0;
     }
 
     private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in","ID");
+        Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(unformattedPrice);
     }
@@ -123,7 +123,7 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
             if (isShipmentDataInitiated(addressDataList.get(i))) {
                 totalShipmentPrice = totalShipmentPrice
                         + getGeneratedShipmentCartData(addressDataList.get(i))
-                                .getDeliveryPriceTotal()
+                        .getDeliveryPriceTotal()
                         - getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice()
                         - getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
             }

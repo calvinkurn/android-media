@@ -12,9 +12,9 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.viewholder.CartListItemViewHolder;
-import com.tokopedia.transaction.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.transaction.checkout.view.viewholder.CartTickerErrorViewHolder;
+import com.tokopedia.transaction.checkout.view.viewholder.CartVoucherPromoViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -154,7 +154,7 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
         CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult = new CheckPromoCodeCartShipmentResult();
         checkPromoCodeCartShipmentResult.setError(promoCodeCartShipmentData.isError());
         checkPromoCodeCartShipmentResult.setErrorMessage(promoCodeCartShipmentData.getErrorMessage());
-        if(!mapperUtil.isEmpty(promoCodeCartShipmentData.getDataVoucher())){
+        if (!mapperUtil.isEmpty(promoCodeCartShipmentData.getDataVoucher())) {
             CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher =
                     new CheckPromoCodeCartShipmentResult.DataVoucher();
             dataVoucher.setVoucherAmount(promoCodeCartShipmentData.getDataVoucher().getVoucherAmount());

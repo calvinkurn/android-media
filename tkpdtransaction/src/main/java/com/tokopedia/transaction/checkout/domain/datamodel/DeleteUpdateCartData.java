@@ -53,16 +53,16 @@ public class DeleteUpdateCartData implements Parcelable {
 
     public static final Creator<DeleteUpdateCartData> CREATOR =
             new Creator<DeleteUpdateCartData>() {
-        @Override
-        public DeleteUpdateCartData createFromParcel(Parcel source) {
-            return new DeleteUpdateCartData(source);
-        }
+                @Override
+                public DeleteUpdateCartData createFromParcel(Parcel source) {
+                    return new DeleteUpdateCartData(source);
+                }
 
-        @Override
-        public DeleteUpdateCartData[] newArray(int size) {
-            return new DeleteUpdateCartData[size];
-        }
-    };
+                @Override
+                public DeleteUpdateCartData[] newArray(int size) {
+                    return new DeleteUpdateCartData[size];
+                }
+            };
 
     public static final class Builder {
         private boolean success;

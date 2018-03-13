@@ -69,7 +69,7 @@ public class CartRemoveItemDialog extends DialogFragment {
                                     dismiss();
                                 }
                             }
-                })
+                        })
                 .setNegativeButton(hasSingleElement ? "Hapus" : "Hapus Semua",
                         new DialogInterface.OnClickListener() {
                             @Override

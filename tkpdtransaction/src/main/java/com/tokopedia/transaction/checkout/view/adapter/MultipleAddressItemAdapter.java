@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class MultipleAddressItemAdapter extends RecyclerView.Adapter
-        <MultipleAddressItemAdapter.MultipleAddressItemViewHolder>{
+        <MultipleAddressItemAdapter.MultipleAddressItemViewHolder> {
 
     private List<MultipleAddressItemData> itemDataList;
 
@@ -64,9 +64,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         holder.addressLayout.setOnClickListener(
                 onAddressLayoutClickedListener(itemData)
         );
-        if(itemDataList.size() == 1) holder.deleteButton.setVisibility(View.GONE);
+        if (itemDataList.size() == 1) holder.deleteButton.setVisibility(View.GONE);
         else holder.deleteButton.setVisibility(View.VISIBLE);
-        if(position == itemDataList.size() - 1) holder.borderLine.setVisibility(View.GONE);
+        if (position == itemDataList.size() - 1) holder.borderLine.setVisibility(View.GONE);
         else holder.borderLine.setVisibility(View.VISIBLE);
 
     }

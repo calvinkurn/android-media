@@ -13,7 +13,6 @@ import com.tokopedia.transaction.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
-import com.tokopedia.transaction.checkout.view.di.scope.CartListScope;
 import com.tokopedia.transaction.checkout.view.di.scope.CartRemoveProductScope;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductFragment;

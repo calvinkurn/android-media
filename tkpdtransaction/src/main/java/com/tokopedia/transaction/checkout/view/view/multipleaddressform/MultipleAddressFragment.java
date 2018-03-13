@@ -15,7 +15,6 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressComponent;
@@ -102,7 +101,7 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onAddNewShipmentAddress(int addressPositionToAdd, MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
         startActivityForResult(AddShipmentAddressActivity
-                .createIntent(getActivity(), data, addressData, ADD_MODE),
+                        .createIntent(getActivity(), data, addressData, ADD_MODE),
                 ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
@@ -110,16 +109,16 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onItemChoosen(MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
         startActivityForResult(AddShipmentAddressActivity
-                .createIntent(getActivity(),
-                        productData,
-                        addressData, EDIT_MODE),
+                        .createIntent(getActivity(),
+                                productData,
+                                addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE
+        if (requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             MultipleAddressItemData editedAddressData = data
                     .getParcelableExtra(ADDRESS_DATA_RESULT);
