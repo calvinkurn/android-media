@@ -46,7 +46,7 @@
             android:background="@color/background_yellow_incomplete"
             android:paddingBottom="14dp"
             android:paddingTop="14dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,7 +127,8 @@
             android:layout_below="@id/rl_incomplete_profile"
             android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
-            android:layout_marginStart="@dimen/space_med">
+            android:layout_marginStart="@dimen/space_med"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/ll_title_phone_number"
@@ -195,7 +196,8 @@
             android:layout_below="@id/rl_phone_number"
             android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
-            android:layout_marginStart="@dimen/space_med">
+            android:layout_marginStart="@dimen/space_med"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/ll_title_email"
@@ -263,7 +265,8 @@
             android:layout_below="@id/rl_email"
             android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
-            android:layout_marginStart="@dimen/space_med">
+            android:layout_marginStart="@dimen/space_med"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_title_gender"
@@ -300,12 +303,13 @@
 
         <RelativeLayout
             android:id="@+id/rl_birth_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_gender"
             android:layout_marginBottom="@dimen/new_margin_med"
             android:layout_marginLeft="@dimen/space_med"
-            android:layout_marginStart="@dimen/space_med">
+            android:layout_marginStart="@dimen/space_med"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_title_birth_date"
