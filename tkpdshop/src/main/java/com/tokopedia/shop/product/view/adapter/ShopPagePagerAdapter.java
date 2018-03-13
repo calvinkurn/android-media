@@ -15,12 +15,12 @@ import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
  */
 
 public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
+    private final String[] title;
+    private final ShopModuleRouter shopModuleRouter;
+    private final ShopPagePromoWebView.Listener listener;
+    private final String shopId;
+    private final String shopDomain;
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<Fragment>();
-    private String[] title;
-    private ShopModuleRouter shopModuleRouter;
-    private ShopPagePromoWebView.Listener listener;
-    private String shopId;
-    private String shopDomain;
 
     public ShopPagePagerAdapter(FragmentManager fm,
                                 String[] title,
