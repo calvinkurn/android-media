@@ -77,9 +77,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
                 IAcsClient client = new DefaultAcsClient(profile);
 
                 SearchItemRequestLocal request = new SearchItemRequestLocal();
-                request.setNum(100);
-                request.setStart(0);
-                request.setCatId("0");
                 request.setInstanceName("productsearch01");
                 request.setSearchPicture(imageByteArray);
 
@@ -88,9 +85,14 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
                     return new NewImageSearchResponse();
                 }
 
-                NewImageSearchResponse response = client.getAcsResponse(request);
+                NewImageSearchResponse response = null;
+                try {
+                    response = client.getAcsResponse(request);
+                    Log.e("ImageSearch Res: ", response.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                Log.e("ImageSearch Res: ", response.toString());
                 return response;
             }
         }).subscribeOn(Schedulers.io())

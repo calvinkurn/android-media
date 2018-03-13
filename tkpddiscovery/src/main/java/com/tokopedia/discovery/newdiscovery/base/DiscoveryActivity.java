@@ -486,33 +486,26 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
-//        showLoadingView(false);
-//        tkpdProgressDialog.dismiss();
-        StringBuilder productIDs = new StringBuilder();
-
         if (imageSearchResponse == null || imageSearchResponse.getAuctionsArrayList() == null) {
             if (tkpdProgressDialog != null) {
                 tkpdProgressDialog.dismiss();
             }
+
+            // TODO: 3/13/18 show appropriate error
             Toast.makeText(this, "Invalid Response", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int productCount = imageSearchResponse.getAuctionsArrayList().size();//getAuctions().getAuction().size();
+        int productCount = imageSearchResponse.getAuctionsArrayList().size();
+        StringBuilder productIDs = new StringBuilder();
 
         if (productCount > 100)
             productCount = 100;
 
         for (int i = 0; i < productCount; i++) {
-            String[] strings = imageSearchResponse.getAuctionsArrayList().get(i).getSortExprValues().split(";");
-            double score = Double.parseDouble(strings[0]);
-            if (score > MIN_SCORE) {
-                productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
-                if (i != productCount - 1) {
-                    productIDs.append(",");
-                }
-            } else {
-                break;
+            productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
+            if (i != productCount - 1) {
+                productIDs.append(",");
             }
         }
 
@@ -521,11 +514,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             SearchParameter imageSearchProductParameter = new SearchParameter();
             imageSearchProductParameter.setStartRow(productCount);
             imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
+
+            // TODO: 3/13/18 need to confirm the value of source
             imageSearchProductParameter.setSource("toppicks");
             getPresenter().requestImageSearchProduct(imageSearchProductParameter);
-        /*Intent intent = new Intent(this, ImageSearchResultActivity.class);
-        intent.putExtra("Response", imageSearchResponse);
-        startActivity(intent);*/
 
         } else {
             if (tkpdProgressDialog != null) {

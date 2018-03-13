@@ -131,6 +131,8 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 
+    compile rootProject.ext.alibabaDependencies.coreLib
+
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 

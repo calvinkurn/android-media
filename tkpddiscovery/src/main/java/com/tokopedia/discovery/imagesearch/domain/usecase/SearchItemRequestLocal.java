@@ -28,7 +28,7 @@ public class SearchItemRequestLocal extends RoaAcsRequest<NewImageSearchResponse
         this.setUriPattern("/item/search");
         this.setMethod(MethodType.POST);
         this.start = 0;
-        this.num = 10;
+        this.num = 100;
         this.catId = "";
     }
 

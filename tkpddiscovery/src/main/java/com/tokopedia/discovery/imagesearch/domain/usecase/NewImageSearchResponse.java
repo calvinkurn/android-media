@@ -2,7 +2,6 @@
 package com.tokopedia.discovery.imagesearch.domain.usecase;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.aliyuncs.transform.UnmarshallerContext;
 import com.google.gson.annotations.Expose;
@@ -57,11 +56,6 @@ public class NewImageSearchResponse extends com.aliyuncs.AcsResponse implements 
      */
     public NewImageSearchResponse() {
     }
-
-    /*@Override
-    public AcsResponse getInstance(UnmarshallerContext unmarshallerContext) throws ClientException, ServerException {
-        return null;
-    }*/
 
     public NewImageSearchResponse getInstance(UnmarshallerContext context) {
         return NewImageSearchResponseUnmarshaller.unmarshall(this, context);

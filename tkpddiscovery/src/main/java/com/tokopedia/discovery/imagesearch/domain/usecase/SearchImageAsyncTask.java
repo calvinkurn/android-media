@@ -56,10 +56,6 @@ public class SearchImageAsyncTask extends AsyncTask<byte[], Void, NewImageSearch
 //            request.setHttpContent(Base64.encode(params[0], Base64.DEFAULT), null, FormatType.RAW);
 
             SearchItemRequestLocal request = new SearchItemRequestLocal();
-            request.setNum(10);
-            request.setStart(0);
-            request.setCatId("0");
-            request.setInstanceName("productsearch01");
             request.setSearchPicture(params[0]);
 
             /*String encodedString = new String(Base64.encodeBase64(params[0]));
