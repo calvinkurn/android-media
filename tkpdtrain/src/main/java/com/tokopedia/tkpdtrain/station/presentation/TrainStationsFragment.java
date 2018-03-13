@@ -101,7 +101,7 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
 
     @Override
     public void onItemClicked(Visitable visitable) {
-        if (visitable instanceof TrainStationViewModel){
+        if (visitable instanceof TrainStationViewModel) {
             onStationClicked((TrainStationViewModel) visitable);
         }
     }
@@ -119,6 +119,21 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     }
 
     @Override
+    public void clearStationList() {
+        getAdapter().clearAllElements();
+    }
+
+    @Override
+    public void showLoading() {
+        super.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideLoading();
+    }
+
+    @Override
     public void onStationClicked(TrainStationViewModel viewModel) {
         if (interactionListener != null) interactionListener.onStationClicked(viewModel);
     }
@@ -128,7 +143,7 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
         super.onAttachActivity(context);
         if (context instanceof OnFragmentInteractionListener) {
             interactionListener = (OnFragmentInteractionListener) context;
-        }else {
+        } else {
             throw new RuntimeException("Activity must implement " + OnFragmentInteractionListener.class.getSimpleName());
         }
     }

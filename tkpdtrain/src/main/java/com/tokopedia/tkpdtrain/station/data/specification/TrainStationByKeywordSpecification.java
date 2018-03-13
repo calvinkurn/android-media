@@ -10,16 +10,16 @@ import java.util.Map;
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainStationByKeywordSpecificationCloud implements DbFlowSpecification, CloudNetworkSpecification {
+public class TrainStationByKeywordSpecification implements DbFlowSpecification, CloudNetworkSpecification {
 
     private String keyword;
 
-    public TrainStationByKeywordSpecificationCloud(String keyword) {
+    public TrainStationByKeywordSpecification(String keyword) {
         this.keyword = keyword;
     }
 
     @Override
-    public ConditionGroup toCondition() {
+    public ConditionGroup getCondition() {
         String query = "%" + keyword + "%";
         ConditionGroup conditions = ConditionGroup.clause();
         conditions.or(TrainStationDb_Table.station_code.like(query));

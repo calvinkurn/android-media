@@ -16,4 +16,6 @@ public interface TrainRepository {
     Observable<List<TrainStation>> getPopularStations();
 
     Observable<List<TrainStation>> getStationsByKeyword(String keyword);
+
+    Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword);
 }

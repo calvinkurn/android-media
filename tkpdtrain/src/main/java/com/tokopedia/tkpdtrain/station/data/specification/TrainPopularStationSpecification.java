@@ -13,13 +13,13 @@ import java.util.Map;
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainPopularStationSpecificationCloud implements DbFlowSpecification, DbFlowWithOrderSpecification, CloudNetworkSpecification {
+public class TrainPopularStationSpecification implements DbFlowSpecification, DbFlowWithOrderSpecification, CloudNetworkSpecification {
 
-    public TrainPopularStationSpecificationCloud() {
+    public TrainPopularStationSpecification() {
     }
 
     @Override
-    public ConditionGroup toCondition() {
+    public ConditionGroup getCondition() {
         ConditionGroup conditions = ConditionGroup.clause();
         conditions.and(TrainStationDb_Table.popularity_order.greaterThan(0));
         return conditions;

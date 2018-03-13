@@ -6,17 +6,16 @@ import com.tokopedia.tkpdtrain.station.presentation.adapter.TrainStationTypeFact
 import java.util.List;
 
 /**
- * @author  by Rizky on 21/02/18.
+ * @author by alvarisi on 3/13/18.
  */
 
-public class TrainPopularStationViewModel implements Visitable<TrainStationTypeFactory> {
+public class TrainStationGroupViewModel implements Visitable<TrainStationTypeFactory> {
     private List<TrainStationViewModel> stations;
 
     @Override
     public int type(TrainStationTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
-
 
     public List<TrainStationViewModel> getStations() {
         return stations;

@@ -10,20 +10,20 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * @author by alvarisi on 3/8/18.
+ * @author by alvarisi on 3/12/18.
  */
 
-public class GetStationsByKeywordUseCase extends UseCase<List<TrainStation>> {
+public class TrainGetStationCitiesByKeywordUseCase extends UseCase<List<TrainStation>> {
     private static final String PARAM_KEYWORD = "PARAM_KEYWORD";
     private TrainRepository trainRepository;
 
-    public GetStationsByKeywordUseCase(TrainRepository trainRepository) {
+    public TrainGetStationCitiesByKeywordUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
 
     @Override
     public Observable<List<TrainStation>> createObservable(RequestParams requestParams) {
-        return trainRepository.getStationsByKeyword(requestParams.getString(PARAM_KEYWORD, ""));
+        return this.trainRepository.getStationCitiesByKeyword(requestParams.getString(PARAM_KEYWORD, ""));
     }
 
     public RequestParams createRequest(String keyword) {

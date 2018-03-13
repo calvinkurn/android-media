@@ -17,6 +17,12 @@ public interface TrainStationsContract {
         void renderStationList(Visitable visitable);
 
         void renderStationList(List<Visitable> visitables);
+
+        void clearStationList();
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

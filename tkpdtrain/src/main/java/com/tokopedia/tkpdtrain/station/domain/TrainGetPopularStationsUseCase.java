@@ -13,10 +13,10 @@ import rx.Observable;
  * @author by alvarisi on 3/7/18.
  */
 
-public class GetPopularStationsUseCase extends UseCase<List<TrainStation>> {
+public class TrainGetPopularStationsUseCase extends UseCase<List<TrainStation>> {
     private TrainRepository trainRepository;
 
-    public GetPopularStationsUseCase(TrainRepository trainRepository) {
+    public TrainGetPopularStationsUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
 

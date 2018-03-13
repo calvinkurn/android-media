@@ -6,11 +6,14 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainCityEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
+import com.tokopedia.tkpdtrain.station.data.specification.DbFlowGroupBySpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.DbFlowWithOrderSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.Specification;
@@ -134,19 +137,25 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
             public void call(Subscriber<? super List<TrainStationDb>> subscriber) {
                 ConditionGroup conditions = ConditionGroup.clause();
                 if (specification instanceof DbFlowSpecification) {
-                    conditions = ((DbFlowSpecification) specification).toCondition();
+                    conditions = ((DbFlowSpecification) specification).getCondition();
                 }
                 List<OrderBy> orderBies = new ArrayList<>();
                 if (specification instanceof DbFlowWithOrderSpecification) {
                     orderBies = ((DbFlowWithOrderSpecification) specification).toOrder();
                 }
-                List<TrainStationDb> flightAirportDBList = new Select()
+
+                Where<TrainStationDb> query = new Select()
                         .from(TrainStationDb.class)
                         .where(conditions)
-                        .orderByAll(orderBies)
-                        .queryList();
+                        .orderByAll(orderBies);
+                if (specification instanceof DbFlowGroupBySpecification){
+                    IProperty[] properties = ((DbFlowGroupBySpecification) specification).getProperty();
+                    query.groupBy(properties);
+                }
 
-                subscriber.onNext(flightAirportDBList);
+                List<TrainStationDb> stationDbs = query.queryList();
+
+                subscriber.onNext(stationDbs);
             }
         }).map(new TrainStationDbMapper());
     }
@@ -163,19 +172,19 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
             public void call(Subscriber<? super TrainStationDb> subscriber) {
                 ConditionGroup conditions = ConditionGroup.clause();
                 if (specification instanceof DbFlowSpecification) {
-                    conditions = ((DbFlowSpecification) specification).toCondition();
+                    conditions = ((DbFlowSpecification) specification).getCondition();
                 }
                 List<OrderBy> orderBies = new ArrayList<>();
                 if (specification instanceof DbFlowWithOrderSpecification) {
                     orderBies = ((DbFlowWithOrderSpecification) specification).toOrder();
                 }
-                TrainStationDb flightAirportDBList = new Select()
+                TrainStationDb trainStationDb = new Select()
                         .from(TrainStationDb.class)
                         .where(conditions)
                         .orderByAll(orderBies)
                         .querySingle();
 
-                subscriber.onNext(flightAirportDBList);
+                subscriber.onNext(trainStationDb);
             }
         }).map(new Func1<TrainStationDb, TrainStation>() {
             @Override
