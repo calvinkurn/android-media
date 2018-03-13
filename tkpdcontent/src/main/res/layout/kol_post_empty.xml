@@ -26,9 +26,9 @@
             app:srcCompat="@drawable/ic_empty_state_cactus"
             android:adjustViewBounds="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/new_margin_sm"
-            android:layout_marginLeft="@dimen/new_margin_big" android:layout_marginStart="@dimen/new_margin_big"
-            android:layout_marginRight="@dimen/new_margin_big" android:layout_marginEnd="@dimen/new_margin_big"/>
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_32" android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,10 +39,10 @@
             android:textSize="@dimen/font_title"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/new_margin_small"
-            android:layout_marginBottom="@dimen/new_margin_sm"
-            android:layout_marginLeft="@dimen/new_margin_big" android:layout_marginStart="@dimen/new_margin_big"
-            android:layout_marginRight="@dimen/new_margin_big" android:layout_marginEnd="@dimen/new_margin_big"/>
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_32" android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"/>
     </LinearLayout>
 
 </LinearLayout>

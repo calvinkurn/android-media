@@ -15,7 +15,7 @@
         style="@style/LabelLayout"
         app:lv_content_color="@color/tkpd_main_green"
         app:lv_title="@string/mitra_toppers_preapprove_limit"
-        app:lv_title_text_size="@dimen/font_small"
+        app:lv_title_text_size="@dimen/sp_14"
         app:lv_title_text_style="bold" />
 
 </LinearLayout>
