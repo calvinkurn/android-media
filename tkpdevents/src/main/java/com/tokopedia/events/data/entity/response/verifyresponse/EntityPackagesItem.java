@@ -1,181 +1,440 @@
 package com.tokopedia.events.data.entity.response.verifyresponse;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class EntityPackagesItem{
+import java.util.List;
 
-	@SerializedName("error_message")
-	private String errorMessage;
+public class EntityPackagesItem {
 
-	@SerializedName("price_per_seat")
-	private int pricePerSeat;
+    @SerializedName("address")
+    @Expose
+    private String address;
+    @SerializedName("area_code")
+    @Expose
+    private List<String> areaCode = null;
+    @SerializedName("barcode")
+    @Expose
+    private List<String> barcode = null;
+    @SerializedName("area_id")
+    @Expose
+    private String areaId;
+    @SerializedName("base_price")
+    @Expose
+    private int basePrice;
+    @SerializedName("city")
+    @Expose
+    private String city;
+    @SerializedName("commision")
+    @Expose
+    private float commision;
+    @SerializedName("commision_type")
+    @Expose
+    private String commisionType;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    @SerializedName("dimension")
+    @Expose
+    private String dimension;
+    @SerializedName("display_name")
+    @Expose
+    private String displayName;
+    @SerializedName("error_message")
+    @Expose
+    private String errorMessage;
+    @SerializedName("group_id")
+    @Expose
+    private int groupId;
+    @SerializedName("group_name")
+    @Expose
+    private String groupName;
+    @SerializedName("invoice_expiry")
+    @Expose
+    private String invoiceExpiry;
+    @SerializedName("invoice_status")
+    @Expose
+    private String invoiceStatus;
+    @SerializedName("package_id")
+    @Expose
+    private int packageId;
+    @SerializedName("package_price")
+    @Expose
+    private int packagePrice;
+    @SerializedName("payment_type")
+    @Expose
+    private String paymentType;
+    @SerializedName("price_per_seat")
+    @Expose
+    private int pricePerSeat;
+    @SerializedName("product_id")
+    @Expose
+    private int productId;
+    @SerializedName("provider_group_id")
+    @Expose
+    private String providerGroupId;
+    @SerializedName("provider_invoice_code")
+    @Expose
+    private String providerInvoiceCode;
+    @SerializedName("provider_invoice_indentifier")
+    @Expose
+    private String providerInvoiceIndentifier;
+    @SerializedName("provider_order_id")
+    @Expose
+    private String providerOrderId;
+    @SerializedName("provider_schedule_id")
+    @Expose
+    private String providerScheduleId;
+    @SerializedName("provider_ticket_id")
+    @Expose
+    private String providerTicketId;
+    @SerializedName("provider_unhash_ticket_id")
+    @Expose
+    private String providerUnhashTicketId;
+    @SerializedName("quantity")
+    @Expose
+    private int quantity;
+    @SerializedName("schedule_id")
+    @Expose
+    private int scheduleId;
+    @SerializedName("seat_ids")
+    @Expose
+    private List<String> seatIds = null;
+    @SerializedName("seat_physical_row_ids")
+    @Expose
+    private List<String> seatPhysicalRowIds = null;
+    @SerializedName("seat_row_ids")
+    @Expose
+    private List<String> seatRowIds = null;
+    @SerializedName("show_date")
+    @Expose
+    private String showDate;
+    @SerializedName("tkp_invoice_id")
+    @Expose
+    private int tkpInvoiceId;
+    @SerializedName("tkp_invoice_item_id")
+    @Expose
+    private int tkpInvoiceItemId;
+    @SerializedName("total_ticket_count")
+    @Expose
+    private int totalTicketCount;
+    @SerializedName("venue_detail")
+    @Expose
+    private String venueDetail;
+    @SerializedName("vouchers")
+    @Expose
+    private String vouchers = null;
 
-	@SerializedName("address")
-	private String address;
+    public String getAddress() {
+        return address;
+    }
 
-	@SerializedName("quantity")
-	private int quantity;
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	@SerializedName("city")
-	private String city;
+    public List<String> getAreaCode() {
+        return areaCode;
+    }
 
-	@SerializedName("package_id")
-	private int packageId;
+    public void setAreaCode(List<String> areaCode) {
+        this.areaCode = areaCode;
+    }
 
-	@SerializedName("display_name")
-	private String displayName;
+    public List<String> getBarcode() {
+        return barcode;
+    }
 
-	@SerializedName("package_price")
-	private int packagePrice;
+    public void setBarcode(List<String> barcode) {
+        this.barcode = barcode;
+    }
 
-	@SerializedName("group_id")
-	private int groupId;
+    public String getAreaId() {
+        return areaId;
+    }
 
-	@SerializedName("product_id")
-	private int productId;
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
 
-	@SerializedName("base_price")
-	private int basePrice;
+    public int getBasePrice() {
+        return basePrice;
+    }
 
-	@SerializedName("commission")
-	private int commission;
+    public void setBasePrice(int basePrice) {
+        this.basePrice = basePrice;
+    }
 
-	@SerializedName("schedule_id")
-	private int scheduleId;
+    public String getCity() {
+        return city;
+    }
 
-	@SerializedName("total_ticket_count")
-	private int totalTicketCount;
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public void setErrorMessage(String errorMessage){
-		this.errorMessage = errorMessage;
-	}
+    public float getCommision() {
+        return commision;
+    }
 
-	public String getErrorMessage(){
-		return errorMessage;
-	}
+    public void setCommision(float commision) {
+        this.commision = commision;
+    }
 
-	public void setPricePerSeat(int pricePerSeat){
-		this.pricePerSeat = pricePerSeat;
-	}
+    public String getCommisionType() {
+        return commisionType;
+    }
 
-	public int getPricePerSeat(){
-		return pricePerSeat;
-	}
+    public void setCommisionType(String commisionType) {
+        this.commisionType = commisionType;
+    }
 
-	public void setAddress(String address){
-		this.address = address;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getAddress(){
-		return address;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setQuantity(int quantity){
-		this.quantity = quantity;
-	}
+    public String getDimension() {
+        return dimension;
+    }
 
-	public int getQuantity(){
-		return quantity;
-	}
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
 
-	public void setCity(String city){
-		this.city = city;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public String getCity(){
-		return city;
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-	public void setPackageId(int packageId){
-		this.packageId = packageId;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public int getPackageId(){
-		return packageId;
-	}
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
-	public void setDisplayName(String displayName){
-		this.displayName = displayName;
-	}
+    public int getGroupId() {
+        return groupId;
+    }
 
-	public String getDisplayName(){
-		return displayName;
-	}
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 
-	public void setPackagePrice(int packagePrice){
-		this.packagePrice = packagePrice;
-	}
+    public String getGroupName() {
+        return groupName;
+    }
 
-	public int getPackagePrice(){
-		return packagePrice;
-	}
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
-	public void setGroupId(int groupId){
-		this.groupId = groupId;
-	}
+    public String getInvoiceExpiry() {
+        return invoiceExpiry;
+    }
 
-	public int getGroupId(){
-		return groupId;
-	}
+    public void setInvoiceExpiry(String invoiceExpiry) {
+        this.invoiceExpiry = invoiceExpiry;
+    }
 
-	public void setProductId(int productId){
-		this.productId = productId;
-	}
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
 
-	public int getProductId(){
-		return productId;
-	}
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
 
-	public void setBasePrice(int basePrice){
-		this.basePrice = basePrice;
-	}
+    public int getPackageId() {
+        return packageId;
+    }
 
-	public int getBasePrice(){
-		return basePrice;
-	}
+    public void setPackageId(int packageId) {
+        this.packageId = packageId;
+    }
 
-	public void setCommission(int commission){
-		this.commission = commission;
-	}
+    public int getPackagePrice() {
+        return packagePrice;
+    }
 
-	public int getCommission(){
-		return commission;
-	}
+    public void setPackagePrice(int packagePrice) {
+        this.packagePrice = packagePrice;
+    }
 
-	public void setScheduleId(int scheduleId){
-		this.scheduleId = scheduleId;
-	}
+    public String getPaymentType() {
+        return paymentType;
+    }
 
-	public int getScheduleId(){
-		return scheduleId;
-	}
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
 
-	public void setTotalTicketCount(int totalTicketCount){
-		this.totalTicketCount = totalTicketCount;
-	}
+    public int getPricePerSeat() {
+        return pricePerSeat;
+    }
 
-	public int getTotalTicketCount(){
-		return totalTicketCount;
-	}
+    public void setPricePerSeat(int pricePerSeat) {
+        this.pricePerSeat = pricePerSeat;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"EntityPackagesItem{" + 
-			"error_message = '" + errorMessage + '\'' + 
-			",price_per_seat = '" + pricePerSeat + '\'' + 
-			",address = '" + address + '\'' + 
-			",quantity = '" + quantity + '\'' + 
-			",city = '" + city + '\'' + 
-			",package_id = '" + packageId + '\'' + 
-			",display_name = '" + displayName + '\'' + 
-			",package_price = '" + packagePrice + '\'' + 
-			",group_id = '" + groupId + '\'' + 
-			",product_id = '" + productId + '\'' + 
-			",base_price = '" + basePrice + '\'' + 
-			",commission = '" + commission + '\'' + 
-			",schedule_id = '" + scheduleId + '\'' + 
-			",total_ticket_count = '" + totalTicketCount + '\'' + 
-			"}";
-		}
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public String getProviderGroupId() {
+        return providerGroupId;
+    }
+
+    public void setProviderGroupId(String providerGroupId) {
+        this.providerGroupId = providerGroupId;
+    }
+
+    public String getProviderInvoiceCode() {
+        return providerInvoiceCode;
+    }
+
+    public void setProviderInvoiceCode(String providerInvoiceCode) {
+        this.providerInvoiceCode = providerInvoiceCode;
+    }
+
+    public String getProviderInvoiceIndentifier() {
+        return providerInvoiceIndentifier;
+    }
+
+    public void setProviderInvoiceIndentifier(String providerInvoiceIndentifier) {
+        this.providerInvoiceIndentifier = providerInvoiceIndentifier;
+    }
+
+    public String getProviderOrderId() {
+        return providerOrderId;
+    }
+
+    public void setProviderOrderId(String providerOrderId) {
+        this.providerOrderId = providerOrderId;
+    }
+
+    public String getProviderScheduleId() {
+        return providerScheduleId;
+    }
+
+    public void setProviderScheduleId(String providerScheduleId) {
+        this.providerScheduleId = providerScheduleId;
+    }
+
+    public String getProviderTicketId() {
+        return providerTicketId;
+    }
+
+    public void setProviderTicketId(String providerTicketId) {
+        this.providerTicketId = providerTicketId;
+    }
+
+    public String getProviderUnhashTicketId() {
+        return providerUnhashTicketId;
+    }
+
+    public void setProviderUnhashTicketId(String providerUnhashTicketId) {
+        this.providerUnhashTicketId = providerUnhashTicketId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public List<String> getSeatIds() {
+        return seatIds;
+    }
+
+    public void setSeatIds(List<String> seatIds) {
+        this.seatIds = seatIds;
+    }
+
+    public List<String> getSeatPhysicalRowIds() {
+        return seatPhysicalRowIds;
+    }
+
+    public void setSeatPhysicalRowIds(List<String> seatPhysicalRowIds) {
+        this.seatPhysicalRowIds = seatPhysicalRowIds;
+    }
+
+    public List<String> getSeatRowIds() {
+        return seatRowIds;
+    }
+
+    public void setSeatRowIds(List<String> seatRowIds) {
+        this.seatRowIds = seatRowIds;
+    }
+
+    public String getShowDate() {
+        return showDate;
+    }
+
+    public void setShowDate(String showDate) {
+        this.showDate = showDate;
+    }
+
+    public int getTkpInvoiceId() {
+        return tkpInvoiceId;
+    }
+
+    public void setTkpInvoiceId(int tkpInvoiceId) {
+        this.tkpInvoiceId = tkpInvoiceId;
+    }
+
+    public int getTkpInvoiceItemId() {
+        return tkpInvoiceItemId;
+    }
+
+    public void setTkpInvoiceItemId(int tkpInvoiceItemId) {
+        this.tkpInvoiceItemId = tkpInvoiceItemId;
+    }
+
+    public int getTotalTicketCount() {
+        return totalTicketCount;
+    }
+
+    public void setTotalTicketCount(int totalTicketCount) {
+        this.totalTicketCount = totalTicketCount;
+    }
+
+    public String getVenueDetail() {
+        return venueDetail;
+    }
+
+    public void setVenueDetail(String venueDetail) {
+        this.venueDetail = venueDetail;
+    }
+
+    public String getVouchers() {
+        return vouchers;
+    }
+
+    public void setVouchers(String vouchers) {
+        this.vouchers = vouchers;
+    }
+
 }

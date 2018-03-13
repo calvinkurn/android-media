@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
@@ -88,7 +89,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         }
     }
 
-    private void onScanCompleteGetInfoQrCampaign(String idCampaign) {
+    private void onScanCompleteGetInfoQrCampaign(final String idCampaign) {
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(CAMPAIGN_ID, idCampaign);
@@ -105,6 +106,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 } else {
                     getView().showErrorNetwork(e);
                 }
+                CampaignTracking.eventScanQRCode("fail",idCampaign,"");
             }
 
             @Override
@@ -113,6 +115,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 getView().startActivity(intent);
+                CampaignTracking.eventScanQRCode("success",idCampaign,s.getUrl());
             }
         });
     }

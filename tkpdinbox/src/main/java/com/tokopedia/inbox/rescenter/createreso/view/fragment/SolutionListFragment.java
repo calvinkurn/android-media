@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -23,6 +24,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
@@ -34,6 +36,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeRetu
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import javax.inject.Inject;
 
@@ -169,6 +172,17 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void onItemClicked(SolutionViewModel solutionViewModel) {
         presenter.solutionClicked(solutionViewModel);
+        if (isEditAppeal) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
+                        editAppealSolutionModel.resolutionId,
+                        solutionViewModel.getSolutionName()));
+            } else {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
+                        editAppealSolutionModel.resolutionId,
+                        solutionViewModel.getSolutionName()));
+            }
+        }
     }
 
     @Override
@@ -196,6 +210,17 @@ public class SolutionListFragment extends BaseDaggerFragment
         adapter = new SolutionListAdapter(getActivity(),
                 solutionResponseViewModel.getSolutionViewModelList(),
                 this);
+        for (SolutionViewModel model : solutionResponseViewModel.getSolutionViewModelList()) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditPage(
+                        editAppealSolutionModel.resolutionId, model.getSolutionName()
+                ));
+            } else {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
+                        editAppealSolutionModel.resolutionId, model.getSolutionName()
+                ));
+            }
+        }
         rvSolution.setAdapter(adapter);
         if (solutionResponseViewModel.getFreeReturn() != null) {
             freeReturnViewModel = solutionResponseViewModel.getFreeReturn();

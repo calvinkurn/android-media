@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/new_margin_lilbig"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_forbidden"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_marginTop="@dimen/new_margin_sm"
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_title"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_marginTop="@dimen/new_margin_small"
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_small"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btn_retry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_marginStart="@dimen/new_margin_big" android:layout_marginLeft="@dimen/new_margin_big"
+            android:layout_marginEnd="@dimen/new_margin_big" android:layout_marginRight="@dimen/new_margin_big"
+            style="@style/Button.Primary.Big"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

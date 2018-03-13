@@ -30,8 +30,6 @@ public class EventsContract {
 
         RequestParams getParams();
 
-        int getBannerPosition();
-
         android.view.View getRootView();
 
         void showProgressBar();
