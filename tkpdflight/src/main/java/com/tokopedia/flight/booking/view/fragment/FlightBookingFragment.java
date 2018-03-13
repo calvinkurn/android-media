@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -95,7 +96,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView priceTotalAppCompatTextView;
     private CardWithActionView departureInfoView;
     private CardWithActionView returnInfoView;
-    private RecyclerView passengerRecyclerView;
+    private VerticalRecyclerView passengerRecyclerView;
     private AppCompatButton submitButton;
     private TkpdHintTextInputLayout tilContactName;
     private AppCompatEditText etContactName;
@@ -166,7 +167,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
-        passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
+        passengerRecyclerView = (VerticalRecyclerView) view.findViewById(R.id.rv_passengers);
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
         tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);
