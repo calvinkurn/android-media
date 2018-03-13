@@ -226,7 +226,8 @@ ext {
             flightNoOp      : ":features:digital:flight_no_op",
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
-            home            : ":tkpdhome"
+            home            : ":tkpdhome",
+            content         : ":tkpdcontent"
     ]
 
     libraries = [

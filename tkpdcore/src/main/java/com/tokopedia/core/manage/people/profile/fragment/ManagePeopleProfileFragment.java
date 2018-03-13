@@ -22,7 +22,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.manage.people.profile.customview.AvatarView;
 import com.tokopedia.core.manage.people.profile.customview.ContactView;
@@ -536,5 +535,11 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                         ),
                 REQUEST_CHANGE_PHONE_NUMBER
         );
+    }
+
+    @Override
+    public void storeImageToUserSession(String userImage) {
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        sessionHandler.setProfilePicture(userImage);
     }
 }

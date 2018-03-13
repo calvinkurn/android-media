@@ -24,10 +24,10 @@ public class FragmentAddTickets extends Fragment {
     private int mTicketTypeCount;
     private List<PackageViewModel> mPackages;
 
-    EventBookTicketPresenter mPresenter;
-    SpaceItemDecoration dividerItemDecoration;
-    RecyclerView scrollView;
-
+    private EventBookTicketPresenter mPresenter;
+    private SpaceItemDecoration dividerItemDecoration;
+    private RecyclerView scrollView;
+    private AddTicketAdapter ticketAdapter;
 
     public FragmentAddTickets() {
         // Required empty public constructor
@@ -58,9 +58,10 @@ public class FragmentAddTickets extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ticketAdapter = new AddTicketAdapter(getActivity(), mPackages, mPresenter);
         scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        scrollView.setAdapter(new AddTicketAdapter(getActivity(), mPackages, mPresenter));
+        scrollView.setAdapter(ticketAdapter);
         scrollView.setHasFixedSize(true);
         dividerItemDecoration = new SpaceItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
@@ -122,8 +123,13 @@ public class FragmentAddTickets extends Fragment {
         }
     }
 
-    public void scrollToLast(){
+    public void scrollToLast() {
         scrollView.smoothScrollToPosition(scrollView.getBottom());
+    }
+
+    public void resetAdapter() {
+        ticketAdapter.setData(mPackages);
+        ticketAdapter.notifyDataSetChanged();
     }
 
 }

@@ -18,8 +18,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -185,11 +185,12 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
             @Override
             public void onGoToProfile(ShopTalk shopTalk) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(), shopTalk.getTalkUserId())
-                );
+                if (getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    shopTalk.getTalkUserId()));
+                }
             }
-
         };
     }
 
