@@ -32,7 +32,7 @@
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
         android:textColor="#ffffff"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="@+id/icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="30"/>
@@ -45,7 +45,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

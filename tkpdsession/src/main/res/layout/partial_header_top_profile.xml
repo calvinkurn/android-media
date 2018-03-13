@@ -186,7 +186,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/following"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -222,7 +222,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/followers"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -259,7 +259,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/favorite_shop"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
