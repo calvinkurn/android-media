@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical"
     android:padding="@dimen/padding_med">
 
@@ -48,10 +49,10 @@
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/image_passenger_edit"
-        android:layout_toStartOf="@+id/image_passenger_edit"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
+        android:layout_toLeftOf="@+id/image_passenger_edit"
+        android:layout_toStartOf="@+id/image_passenger_edit"
         android:padding="@dimen/padding_vvs"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_flight_delete" />
