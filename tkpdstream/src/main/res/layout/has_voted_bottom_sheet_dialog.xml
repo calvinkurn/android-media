@@ -55,7 +55,7 @@
             android:maxLines="4"
             android:text="@string/wait_voting_winner_info"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             android:gravity="center"
             tools:text="@string/wait_voting_winner_info" />

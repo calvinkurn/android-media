@@ -16,7 +16,7 @@
         android:gravity="center"
         android:textAllCaps="true"
         android:textColor="@color/font_black_disabled_38"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +28,8 @@
         android:layout_width="@dimen/groupchat_avatar_size"
         android:layout_height="@dimen/groupchat_avatar_size"
         android:layout_below="@id/header_time"
-        android:layout_marginLeft="@dimen/new_margin_med"
-        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_vs"
         tools:src="@color/background_notification" />
 

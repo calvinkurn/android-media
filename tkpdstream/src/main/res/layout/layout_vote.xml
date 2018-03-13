@@ -40,7 +40,7 @@
                 android:text="@string/vote_has_ended"
                 android:textAllCaps="true"
                 android:textColor="@color/medium_green"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
 
                 android:textStyle="normal" android:paddingTop="@dimen/space_med"
                 android:paddingBottom="@dimen/space_med"/>
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sudah\nMemilih"
-                    android:textSize="@dimen/font_micro"/>
+                    android:textSize="@dimen/sp_12"/>
 
             </LinearLayout>
 

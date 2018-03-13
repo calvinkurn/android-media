@@ -59,7 +59,7 @@
             android:lineSpacingExtra="6sp"
             android:maxLines="4"
             android:textColor="@color/black_55"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             tools:text="Hai para pecinta sepak bola, Ramaikan piala dunia 2018 bersama Tokopedia! Ikuti quiznya dan menangkan Tokocash senilai jutaan rupiah. Buruan, jangan sampai kelewatan!" />
 
@@ -90,7 +90,7 @@
                 android:layout_toRightOf="@+id/prof_pict"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Darius Sinathrya" />
 
@@ -145,7 +145,7 @@
             android:gravity="center"
             android:padding="@dimen/space_med"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             tools:text="Ikutan Vote" />
 
     </android.support.v7.widget.CardView>

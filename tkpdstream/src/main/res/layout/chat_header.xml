@@ -31,7 +31,7 @@
         android:paddingBottom="@dimen/padding_vvs"
         android:paddingTop="@dimen/padding_vvs"
         android:textColor="@color/font_black_disabled_38"
-        android:textSize="@dimen/font_micro"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/influencer_badge"
