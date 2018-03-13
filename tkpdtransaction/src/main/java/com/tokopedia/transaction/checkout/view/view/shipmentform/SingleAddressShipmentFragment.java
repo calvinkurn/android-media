@@ -30,7 +30,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
@@ -262,14 +261,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
-    ) {
-        return originParams == null ? AuthUtil.generateParamsNetwork(getActivity()) :
-                AuthUtil.generateParamsNetwork(getActivity(), originParams);
     }
 
     @Override
