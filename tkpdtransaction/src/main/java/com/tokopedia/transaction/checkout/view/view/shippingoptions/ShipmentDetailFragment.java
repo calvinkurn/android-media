@@ -29,7 +29,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -80,7 +79,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         ShipmentChoiceBottomSheet.ActionListener {
 
     private static final int REQUEST_CODE_PINPOINT = 22;
-    private static final int DELAY_IN_MILISECOND = 500;
+    private static final int DELAY_IN_MILISECOND = 300;
     private static final String ARG_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
 
     @BindView(R2.id.scroll_view_content)
@@ -271,10 +270,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (llNetworkErrorView.getVisibility() == View.VISIBLE) {
-                    presenter.loadShipmentData((ShipmentDetailData) getArguments()
-                            .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
-                }
+                presenter.loadShipmentData((ShipmentDetailData) getArguments()
+                        .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
             }
         });
     }
