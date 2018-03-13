@@ -52,7 +52,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
     RecyclerView mRvRecipientAddressList;
     SearchInputView mSvAddressSearchBox;
-    TextView mTvAddNewAddress;
     SwipeToRefresh swipeToRefreshLayout;
     LinearLayout llNetworkErrorView;
     RelativeLayout rlContent;
@@ -166,7 +165,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     protected void initView(View view) {
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
-        mTvAddNewAddress = view.findViewById(R.id.tv_add_new_address);
         swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         rlContent = view.findViewById(R.id.rl_content);
