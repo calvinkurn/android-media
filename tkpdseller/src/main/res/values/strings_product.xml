@@ -118,8 +118,8 @@
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_title_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
-    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus saat harga diubah.</string>
+    <string name="product_title_confirmation_change_wholesale_price">Harga Produk Terkunci</string>
+    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus. Anda yakin untuk mengubah harga Produk?</string>
     <string name="product_confirmation_delete_video">Anda akan menghapus Video ini, lanjutkan?</string>
     <string name="product_title_confirmation_delete_video">Hapus Video</string>
 
@@ -180,8 +180,6 @@
     <string name="product_variant_stock_empty">Kosong</string>
     <string name="product_variant_stock_available">Tersedia</string>
     <string name="product_variant_stock_always_available">Selalu Tersedia</string>
-    <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
-    <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
     <string name="product_variant_status">Status Produk</string>
     <string name="product_variant_status_available">Tersedia</string>
     <string name="product_variant_status_not_available">Kosong</string>

@@ -249,7 +249,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         }
     }
 
-    public ProductPreOrderViewModel getPreOrder() {
+    public @NonNull ProductPreOrderViewModel getPreOrder() {
         ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
         if (getPreOrderValue() > 0) {
             productPreorderViewModel.setPreorderStatus(STATUS_PRE_ORDER_ACTIVE);

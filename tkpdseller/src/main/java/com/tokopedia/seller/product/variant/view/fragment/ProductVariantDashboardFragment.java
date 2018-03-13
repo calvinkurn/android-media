@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -94,6 +93,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     public interface OnProductVariantDashboardFragmentListener {
         void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
                                    ProductPictureViewModel productPictureViewModel);
+        void onVariantChangedFromResult();
     }
 
     public static ProductVariantDashboardFragment newInstance() {
@@ -160,6 +160,10 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
         setupSizeChart(view);
         return view;
+    }
+
+    public ProductVariantViewModel getProductVariantViewModel() {
+        return productVariantViewModel;
     }
 
     private boolean validateVariantPrice() {
@@ -376,12 +380,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 onActivityResultFromItemPicker(requestCode, data);
+                listener.onVariantChangedFromResult();
                 break;
             case ProductVariantDetailLevel1ListActivity.VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE:
                 onActivityResultFromDetail(data);
+                listener.onVariantChangedFromResult();
                 break;
             case ProductVariantDetailLevelLeafActivity.VARIANT_EDIT_LEAF_REQUEST_CODE:
                 onActivityResultFromLeaf(data);
+                listener.onVariantChangedFromResult();
                 break;
         }
     }
@@ -564,7 +571,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
     private void updateVariantItemListView() {
         if (productVariantViewModel == null || !productVariantViewModel.hasSelectedVariant()) {
-            recyclerView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.INVISIBLE);
             return;
         }
         generateToDashboardViewModel();

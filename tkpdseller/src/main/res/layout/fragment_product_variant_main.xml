@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -96,10 +96,18 @@
         android:paddingBottom="@dimen/padding_ms"
         android:paddingTop="@dimen/padding_ms" />
 
-    <Button
-        android:id="@+id/button_save"
-        style="@style/Button.Submit.Green"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/label_variant_save" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/LabelLayout"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning">
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.Submit.Green"
+            android:layout_margin="0dp"
+            android:text="@string/label_variant_save" />
+    </LinearLayout>
+
 </LinearLayout>

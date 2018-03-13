@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.data.mapper;
 
+import android.support.annotation.NonNull;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -209,7 +210,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         return productCategoryViewModel;
     }
 
-    private ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
+    private @NonNull ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
         ProductCatalogViewModel productCatalogViewModel = new ProductCatalogViewModel();
         productCatalogViewModel.setCatalogId(draftModel.getProductCatalogId());
         return productCatalogViewModel;
@@ -247,7 +248,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             domainModel.setMinQty(draftModel.getQtyMin());
             domainModels.add(domainModel);
         }
-        return domainModels.size() == 0 ? null : domainModels;
+        return domainModels;
     }
 
     private List<ProductPictureViewModel> mapPhotosDraftToProductViewModel(List<ImageProductInputDraftModel> photos) {

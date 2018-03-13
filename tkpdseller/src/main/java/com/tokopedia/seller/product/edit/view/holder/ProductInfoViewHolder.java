@@ -286,7 +286,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return catalogId;
     }
 
-    public ProductCatalogViewModel getProductCatalog() {
+    public @NonNull ProductCatalogViewModel getProductCatalog() {
         ProductCatalogViewModel productCatalog = new ProductCatalogViewModel();
         if(catalogId != DEFAULT_CATALOG_ID) {
             productCatalog.setCatalogId(catalogId);

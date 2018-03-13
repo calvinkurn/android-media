@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.holder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +39,7 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -198,6 +200,8 @@ public class ProductPriceViewHolder extends ProductViewHolder
         setPriceValue(price);
 
         if (hasVariant) {
+            model.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
+
             wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
             vWholeSaleVariantInfo.setVisibility(View.VISIBLE);
 
@@ -229,14 +233,14 @@ public class ProductPriceViewHolder extends ProductViewHolder
         builder.setTitle(R.string.product_title_confirmation_change_wholesale_price);
         builder.setMessage(R.string.product_confirmation_change_wholesale_price);
         builder.setCancelable(true);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 expandWholesale(false);
                 clearWholesaleItems();
                 dialog.cancel();
             }
         });
-        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
@@ -320,9 +324,9 @@ public class ProductPriceViewHolder extends ProductViewHolder
         updateWholesaleButton();
     }
 
-    public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+    public @NonNull List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         if (!wholesaleExpandableOptionSwitch.isExpanded()) {
-            return null;
+            return new ArrayList<>();
         }
         return wholesaleAdapter.getProductWholesaleViewModels();
     }
