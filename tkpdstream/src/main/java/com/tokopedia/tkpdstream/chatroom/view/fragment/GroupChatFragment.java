@@ -1144,8 +1144,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             analytics.eventClickVoteComponent(type, name);
             if (voteBody.getVisibility() == View.GONE) {
-                expand(voteBody);
                 KeyboardHandler.DropKeyboard(getActivity(), getView());
+                expand(voteBody);
                 arrow.setRotation(180f);
             }
         }
