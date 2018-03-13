@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -232,10 +231,11 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
-        Fragment fragment = ShipmentAddressListFragment.newInstance();
+        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
 
@@ -290,4 +290,5 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         super.onAttach(activity);
         mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
+
 }
