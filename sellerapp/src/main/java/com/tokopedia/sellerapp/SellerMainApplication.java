@@ -36,8 +36,6 @@ import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
 
-import rx.Subscriber;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -199,4 +197,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 cacheApiWhiteListDomains,
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
+
+
 }

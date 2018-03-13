@@ -20,5 +20,9 @@ public interface UserSession {
 
     boolean hasShop();
 
+    String getName();
+
+    String getProfilePicture();
+
     boolean isMsisdnVerified();
 }

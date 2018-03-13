@@ -92,12 +92,13 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -666,45 +667,30 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                    customSubject, customMessage, source, avatar);
-        else
-            return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
-                    customSubject, customMessage, source);
+        return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source, avatar);
     }
 
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+
             return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
-        else
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source);
+
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
-        else
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, source);
-
+        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
 
     }
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
-        else
-            return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
-
-
+        return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
     }
 
     @Override
@@ -868,16 +854,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTimeMachineIntent(Context context) {
-        return TimeMachineActivity.getCallingIntent(context, TkpdBaseURL.User.URL_INBOX_MESSAGE_TIME_MACHINE);
-    }
-
-    @Override
     public Intent getInboxMessageIntent(Context context) {
-        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return InboxChatActivity.getCallingIntent(context);
-        else
-            return InboxMessageActivity.getCallingIntent(context);
+        return InboxChatActivity.getCallingIntent(context);
     }
 
     @Override
@@ -1087,6 +1065,28 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getGroupChatIntent(Context context, String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxChannelsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Fragment getChannelFragment(Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public String getChannelFragmentTag() {
+        return "";
+    }
+
+
+
+    @Override
     public void init() {
     }
     @Override
@@ -1129,5 +1129,9 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void startAddProduct(Activity activity, String shopId) {
         goToAddProduct(activity);
+    }
+    @Override
+    public boolean isEnabledGroupChat() {
+        return false;
     }
 }

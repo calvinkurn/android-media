@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/header_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="@color/font_black_disabled_38"
+        android:textSize="@dimen/font_micro"
+        android:textStyle="normal"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="HARI INI" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/groupchat_avatar_size"
+        android:layout_height="@dimen/groupchat_avatar_size"
+        android:layout_below="@id/header_time"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/margin_vs"
+        tools:src="@color/background_notification" />
+
+    <include
+        android:id="@+id/chat_header"
+        layout="@layout/chat_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_time"
+        android:layout_marginLeft="@dimen/space_small"
+        android:layout_marginStart="@dimen/space_small"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/content_image"
+        android:layout_width="@dimen/max_size_bubble"
+        android:layout_height="@dimen/max_size_bubble"
+        android:layout_below="@id/chat_header"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_toEndOf="@id/avatar"
+        android:padding="@dimen/space_average"
+        android:layout_marginTop="@dimen/space_mini"
+        android:layout_marginLeft="@dimen/space_small"
+        android:layout_marginStart="@dimen/space_small"
+        android:background="@drawable/chat_vote_background"
+        tools:src="@drawable/ic_loading_image"/>
+
+</RelativeLayout>

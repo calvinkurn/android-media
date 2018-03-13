@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Telephony;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
@@ -51,10 +53,15 @@ public class MethodChecker {
     }
 
     public static int getColor(Context context, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.getColor(context, id);
-        } else {
-            return context.getResources().getColor(id);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return ContextCompat.getColor(context, id);
+            } else {
+                return context.getResources().getColor(id);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

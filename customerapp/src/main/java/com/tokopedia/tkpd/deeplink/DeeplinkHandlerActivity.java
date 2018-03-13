@@ -46,6 +46,8 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
+import com.tokopedia.tkpdstream.common.applink.StreamApplinkModule;
+import com.tokopedia.tkpdstream.common.applink.StreamApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -73,7 +75,8 @@ import io.branch.referral.BranchError;
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
-        LoyaltyAppLinkModule.class
+        LoyaltyAppLinkModule.class,
+        StreamApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -96,7 +99,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
-                new LoyaltyAppLinkModuleLoader()
+                new LoyaltyAppLinkModuleLoader(),
+                new StreamApplinkModuleLoader()
         );
     }
 

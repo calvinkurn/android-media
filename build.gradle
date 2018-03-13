@@ -29,6 +29,7 @@ allprojects {
         maven { url 'https://dl.bintray.com/guardian/android' }
         maven { url "https://maven.google.com" }
         maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA'}
+        maven { url "https://raw.githubusercontent.com/smilefam/SendBird-SDK-Android/master/" }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
