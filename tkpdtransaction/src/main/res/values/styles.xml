@@ -46,7 +46,7 @@
     </style>
 
     <style name="TextSmallMedium" parent="TextSmall">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="TextSmallMediumBlack38" parent="TextSmallMedium">
