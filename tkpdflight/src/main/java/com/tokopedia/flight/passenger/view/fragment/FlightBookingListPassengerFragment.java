@@ -37,22 +37,25 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     public static final int IS_SELECTING = 1;
     public static final int IS_NOT_SELECTING = 0;
 
     private String selectedPassengerId;
     private String requestId;
+    private String departureDate;
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
     FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
 
     public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
-                                                                    String requestId) {
+                                                                    String requestId, String departureDate) {
         FlightBookingListPassengerFragment flightBookingListPassengerFragment = new FlightBookingListPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SELECTED_PASSENGER, selectedPassenger);
         bundle.putString(EXTRA_REQUEST_ID, requestId);
+        bundle.putString(EXTRA_DEPARTURE_DATE, departureDate);
         flightBookingListPassengerFragment.setArguments(bundle);
         return flightBookingListPassengerFragment;
     }
@@ -65,6 +68,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         super.onCreate(savedInstanceState);
         selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
+        departureDate = getArguments().getString(EXTRA_DEPARTURE_DATE);
         selectedPassengerId = (selectedPassenger.getPassengerId() != null) ? selectedPassenger.getPassengerId() : "";
         flightBookingPassengerViewModelList = new ArrayList<>();
     }
@@ -179,6 +183,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public void onGetListError(Throwable throwable) {
         super.showGetListError(throwable);
+    }
+
+    @Override
+    public String getDepartureDate() {
+        return departureDate;
     }
 
     private void onSelectNewPassenger() {

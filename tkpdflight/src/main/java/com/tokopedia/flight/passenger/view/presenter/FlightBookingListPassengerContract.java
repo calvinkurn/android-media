@@ -34,6 +34,8 @@ public interface FlightBookingListPassengerContract {
         String getRequestId();
 
         void onGetListError(Throwable throwable);
+
+        String getDepartureDate();
     }
 
     interface Presenter {

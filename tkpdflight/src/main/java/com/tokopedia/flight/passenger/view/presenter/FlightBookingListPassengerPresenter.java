@@ -288,9 +288,9 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private int getType(String birthdate) {
         if (birthdate != null) {
-            Date now = FlightDateUtil.getCurrentDate();
+            Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDate());
             Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = birth.getTime() - now.getTime();
+            long diff = birth.getTime() - departureDate.getTime();
             if (diff < 0) {
                 diff *= -1;
             }
@@ -322,9 +322,12 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
     private int getImageRes(String birthdate, int salutationId) {
         if (birthdate != null) {
-            Date now = FlightDateUtil.getCurrentDate();
+            Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDate());
             Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = now.getTime() - birth.getTime();
+            long diff = departureDate.getTime() - birth.getTime();
+            if (diff < 0) {
+                diff *= -1;
+            }
 
             if (diff > (TWELVE_YEARS_IN_MILLIS)) {
                 if (salutationId == TUAN) {
