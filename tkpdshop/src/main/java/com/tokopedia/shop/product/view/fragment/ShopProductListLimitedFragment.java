@@ -24,6 +24,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -58,7 +59,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private ProgressDialog progressDialog;
     private LoadingStateView loadingStateView;
-    private String shopId;
+    private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
 
@@ -104,7 +105,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void loadData(int i) {
-
+        if (shopInfo != null) {
+            shopProductListLimitedPresenter.getProductLimitedList(shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopOfficialTop());
+        }
     }
 
     @NonNull
@@ -113,12 +116,12 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
+                startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId()));
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopId, null), REQUEST_CODE_ETALASE);
+                startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), null), REQUEST_CODE_ETALASE);
             }
         }, this, this, promoWebViewListener);
     }
@@ -132,7 +135,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        if (shopProductListLimitedPresenter.isMyShop(shopId)) {
+        if (shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             emptyModel.setTitle(getString(R.string.shop_product_limited_empty_product_title_owner));
             emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_content_owner));
             emptyModel.setButtonTitle(getString(R.string.shop_page_label_add_product));
@@ -152,9 +155,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 .inject(this);
     }
 
-    public void displayProduct(String shopId, String promotionWebViewUrl) {
-        this.shopId = shopId;
-        shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
+    public void displayProduct(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        loadInitialData();
     }
 
     @Override
@@ -187,7 +190,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void promoClicked(String url) {
-        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url, shopId);
+        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url, shopInfo.getInfo().getShopId());
     }
 
     @Override
@@ -195,7 +198,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, text, ""));
+        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), text, ""));
     }
 
     @Override
@@ -268,7 +271,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
                     String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopId, "", etalaseId));
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", etalaseId));
                 }
                 break;
             default:
