@@ -99,6 +99,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.management.view.activity.ProductManagementActivity"
+            android:theme="@style/Theme.Green"
             android:screenOrientation="portrait" />
     </application>
 

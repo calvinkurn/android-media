@@ -4,13 +4,12 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.text.DecimalInputView;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.product.management.view.adapter.ProductManagementTypeFactory;
 import com.tokopedia.posapp.product.management.view.viewmodel.ProductViewModel;
@@ -21,9 +20,9 @@ public class ProductManagementViewHolder extends AbstractViewHolder<ProductViewM
 
     private ImageView imageThumbnail;
     private TextView textProductName;
-    private EditText editOnlinePrice;
-    private EditText editOutletPrice;
-    private ImageButton buttonEdit;
+    private DecimalInputView editOnlinePrice;
+    private DecimalInputView editOutletPrice;
+    private ImageView buttonEdit;
     private SwitchCompat switchStatus;
     private ProductManagementTypeFactory.Listener listener;
 

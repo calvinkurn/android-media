@@ -13,7 +13,7 @@ import com.tokopedia.posapp.product.management.view.viewmodel.ProductHeaderViewM
 
 public class ProductManagementHeaderViewHolder extends AbstractViewHolder<ProductHeaderViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.header_product_management;
+    public static final int LAYOUT = R.layout.item_header_product_management;
 
     public ProductManagementHeaderViewHolder(View itemView) {
         super(itemView);
