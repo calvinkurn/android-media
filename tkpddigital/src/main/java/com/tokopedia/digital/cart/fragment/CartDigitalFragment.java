@@ -696,7 +696,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onClickUseVoucher() {
         if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
             Intent intent;
-            if( cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE){
+            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
                 intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
             } else {
                 intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
