@@ -30,7 +30,7 @@ public class ViewUtils {
     private static final double MIN_IDR = 100;
     private static final double MAX_IDR = 100000000;
     private static final double MIN_USD = 1;
-    private static final double MAX_USD = 7500;
+    private static final double MAX_USD = 7400;
     private static final double MAX_IDR_OS = 500000000;
     private static final double MAX_USD_OS = 37000;
 

@@ -40,6 +40,8 @@ import java.util.List;
 
 public class ProductInfoViewHolder extends ProductViewHolder implements RadioGroup.OnCheckedChangeListener {
 
+    private final TextWatcher nameTextWatcher;
+
     public interface Listener {
         void onCategoryPickerClicked(long categoryId);
 
@@ -48,6 +50,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         void onProductNameChanged(String productName);
 
         void onCategoryChanged(long categoryId);
+
+        void onCatalogPicked(boolean isCatalogExist);
 
         void fetchCategory(long categoryId);
 
@@ -82,7 +86,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private LabelView etalaseLabelView;
     private long etalaseId;
 
-    private ArrayList <ProductCategoryPredictionViewModel> categoryPredictionList;
+    private ArrayList<ProductCategoryPredictionViewModel> categoryPredictionList;
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -115,7 +119,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                 }
             }
         });
-        TextWatcher nameTextWatcher = new TextWatcher() {
+        nameTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -154,7 +158,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     @Override
     public void renderData(ProductViewModel model) {
         setName(model.getProductName(), model.isProductNameEditable());
-        if (model.getProductCategory()!= null) {
+        if (model.getProductCategory() != null) {
             setCategoryId(model.getProductCategory().getCategoryId());
         } else {
             setCategoryId(DEFAULT_CATEGORY_ID);
@@ -164,7 +168,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         } else {
             setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
         }
-        if (model.getProductEtalase()!= null && model.getProductEtalase().getEtalaseId() > 0) {
+        if (model.getProductEtalase() != null && model.getProductEtalase().getEtalaseId() > 0) {
             setEtalaseId(model.getProductEtalase().getEtalaseId());
             setEtalaseName(model.getProductEtalase().getEtalaseName());
         } else {
@@ -174,7 +178,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         renderByVariant(model.hasVariant());
     }
 
-    public void renderByVariant(boolean hasVariant){
+    public void renderByVariant(boolean hasVariant) {
         if (hasVariant) {
             categoryRecommView.setVisibility(View.GONE);
             categoryLabelView.setEnabled(false);
@@ -192,7 +196,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         model.setProductNameEditable(isNameEditable());
     }
 
-    public boolean isNameEditable(){
+    public boolean isNameEditable() {
         return nameEditText.isEnabled();
     }
 
@@ -225,7 +229,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        if(checkedId < 0){
+        if (checkedId < 0) {
             return;
         }
 
@@ -257,9 +261,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     public void setName(String name, boolean isNameEditable) {
-        nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
-        nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
+        nameEditText.removeTextChangedListener(nameTextWatcher);
+        nameEditText.setText(name == null ? null : MethodChecker.fromHtml(name));
+        nameEditText.setSelection(nameEditText.getText() == null ? 0 : nameEditText.getText().length());
         nameEditText.setEnabled(isNameEditable);
+        nameEditText.addTextChangedListener(nameTextWatcher);
     }
 
     public String getCatalogName() {
@@ -272,7 +278,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public ProductCategoryViewModel getProductCategory() {
         ProductCategoryViewModel productCategory = new ProductCategoryViewModel();
-        if(categoryId != DEFAULT_CATEGORY_ID) {
+        if (categoryId != DEFAULT_CATEGORY_ID) {
             productCategory.setCategoryId(categoryId);
             productCategory.setCategoryFullName(categoryLabelView.getContent());
         }
@@ -287,9 +293,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return catalogId;
     }
 
-    public @NonNull ProductCatalogViewModel getProductCatalog() {
+    public @NonNull
+    ProductCatalogViewModel getProductCatalog() {
         ProductCatalogViewModel productCatalog = new ProductCatalogViewModel();
-        if(catalogId != DEFAULT_CATALOG_ID) {
+        if (catalogId != DEFAULT_CATALOG_ID) {
             productCatalog.setCatalogId(catalogId);
             productCatalog.setCatalogName(getCatalogName());
         }
@@ -343,11 +350,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             }
             // reselect the id if exist on the radio button
             // unselect if the id not exist
-            selectRadioByCategoryId((int)categoryId);
+            selectRadioByCategoryId((int) categoryId);
         }
     }
 
-    private void selectRadioByCategoryId(int categoryId){
+    private void selectRadioByCategoryId(int categoryId) {
         radioGroupCategoryRecomm.setOnCheckedChangeListener(null);
         RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById(categoryId);
         if (radioButton == null) {
@@ -378,11 +385,14 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         categoryRecommView.setVisibility(View.GONE);
     }
 
-    public void successFetchCatalogData(List<Catalog> catalogViewModelList) {
+    public void successFetchCatalogData(String keyword, long departmentId, List<Catalog> catalogViewModelList) {
         if (catalogViewModelList == null || catalogViewModelList.size() < 1) {
             hideAndClearCatalog();
         } else {
-            catalogId = -1;
+            // if the keyword or the categorry is different with the value in view, then reset the catalog.
+            if (!keyword.equalsIgnoreCase(getName()) || departmentId != categoryId) {
+                this.catalogId = -1;
+            }
             catalogLabelView.setVisibility(View.VISIBLE);
         }
     }
@@ -396,8 +406,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     public void setCatalog(long catalogId, String name) {
         this.catalogId = catalogId;
         if (catalogId <= 0) {
+            listener.onCatalogPicked(false);
             catalogLabelView.setContent(catalogLabelView.getContext().getString(R.string.product_label_choose));
         } else {
+            listener.onCatalogPicked(true);
             catalogLabelView.setContent(name);
             catalogLabelView.setVisibility(View.VISIBLE);
         }
@@ -447,7 +459,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         if (categoryId < 0) {
             Activity activity = listener.getActivity();
             NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.product_error_product_category_empty));
-            categoryLabelView.getParent().requestChildFocus(categoryLabelView,categoryLabelView);
+            categoryLabelView.getParent().requestChildFocus(categoryLabelView, categoryLabelView);
             UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
             return false;
         }
@@ -482,6 +494,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         List<ProductCategoryPredictionViewModel> productCategoryPredictionViewModelList = savedInstanceState.getParcelableArrayList(BUNDLE_CAT_RECOMM);
         successGetCategoryRecommData(productCategoryPredictionViewModelList);
 
-        selectRadioByCategoryId((int)categoryId);
+        selectRadioByCategoryId((int) categoryId);
     }
 }

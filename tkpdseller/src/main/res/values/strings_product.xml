@@ -98,7 +98,7 @@
     <string name="product_maximum_price_rp_general">100,000,000</string>
     <string name="product_minimum_price_usd">1</string>
     <string name="product_maximum_price_usd_official_store">37,000</string>
-    <string name="product_maximum_price_usd_general">7,500</string>
+    <string name="product_maximum_price_usd_general">7,400</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_weight_gram">1</string>
     <string name="product_maximum_weight_gram">500,000</string>

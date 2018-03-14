@@ -85,13 +85,6 @@ public class ProductUploadMapper {
             productFromDraft.setProductVideo(null);
         }
 
-        ProductBrandViewModel productBrandViewModel = productFromDraft.getProductBrand();
-        if (productFromServer.getProductBrand() == null &&
-                productBrandViewModel != null &&
-                productBrandViewModel.getBrandId() <= 0) {
-            productFromDraft.setProductBrand(null);
-        }
-
         ProductVariantViewModel productVariantViewModel = productFromDraft.getProductVariant();
         if (productFromServer.getProductVariant() == null &&
                 productVariantViewModel != null &&
