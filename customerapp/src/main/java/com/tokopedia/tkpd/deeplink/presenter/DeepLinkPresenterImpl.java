@@ -229,7 +229,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
-                    openCatalogProduct(linkSegment, uriData);
+                    openCatalogDetail(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
@@ -510,9 +510,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.hideActionBar();
     }
 
-    private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
+    private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), "TAG_FRAGMENT_CATALOG_DETAIL");
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
