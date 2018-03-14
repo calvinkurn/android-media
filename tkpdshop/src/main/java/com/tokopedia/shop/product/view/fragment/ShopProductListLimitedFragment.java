@@ -93,17 +93,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        searchInputView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopId);
-            }
-        });
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopProductListLimitedPresenter.attachView(this);
@@ -117,6 +106,12 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         progressDialog.setMessage(getString(R.string.title_loading));
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
+        searchInputView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopId);
+            }
+        });
     }
 
     @Override
@@ -239,7 +234,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel).getShopProductViewModelList());
             }else if(shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel){
                 shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                        ((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel).getShopProductViewModelList(),
+                        ((ShopProductLimitedProductViewModel)shopProductBaseViewModel).getShopProductViewModelList(),
                         true);
             }
         }
@@ -265,7 +260,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition, true);
+                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, true);
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
@@ -342,13 +337,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition);
+                shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition);
     }
 
     @Override
     public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product),shopProductViewModel.getName(),
-                shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition);
+                shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition);
     }
 
     @Override

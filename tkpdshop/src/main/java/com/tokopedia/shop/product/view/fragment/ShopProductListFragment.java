@@ -299,7 +299,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition, false);
+                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, false);
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
