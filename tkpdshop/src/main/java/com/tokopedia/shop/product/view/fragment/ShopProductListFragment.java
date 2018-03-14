@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -307,9 +308,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSuccessGetShopName(String shopName) {
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopName).toString());
         }
     }
 
