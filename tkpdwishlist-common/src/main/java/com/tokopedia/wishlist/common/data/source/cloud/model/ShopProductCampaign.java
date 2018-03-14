@@ -1,8 +1,5 @@
 package com.tokopedia.wishlist.common.data.source.cloud.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,25 +7,14 @@ import com.google.gson.annotations.SerializedName;
  * Created by brilliant.oka on 29/03/17.
  */
 
-public class ShopProductCampaign implements Parcelable {
+public class ShopProductCampaign {
 
-    public static final Creator<ShopProductCampaign> CREATOR = new Creator<ShopProductCampaign>() {
-        @Override
-        public ShopProductCampaign createFromParcel(Parcel source) {
-            return new ShopProductCampaign(source);
-        }
-
-        @Override
-        public ShopProductCampaign[] newArray(int size) {
-            return new ShopProductCampaign[size];
-        }
-    };
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("percentage_amount")
     @Expose
-    private int percentageAmount;
+    private String percentageAmount;
     @SerializedName("discounted_price")
     @Expose
     private String discountedPrice;
@@ -45,32 +31,19 @@ public class ShopProductCampaign implements Parcelable {
     @Expose
     private String discountedPriceIdr;
 
-    public ShopProductCampaign() {
-    }
-
-    protected ShopProductCampaign(Parcel in) {
-        this.productId = in.readInt();
-        this.percentageAmount = in.readInt();
-        this.discountedPrice = in.readString();
-        this.endDate = in.readString();
-        this.originalPrice = in.readString();
-        this.originalPriceIdr = in.readString();
-        this.discountedPriceIdr = in.readString();
-    }
-
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
-    public int getPercentageAmount() {
+    public String getPercentageAmount() {
         return percentageAmount;
     }
 
-    public void setPercentageAmount(int percentageAmount) {
+    public void setPercentageAmount(String percentageAmount) {
         this.percentageAmount = percentageAmount;
     }
 
@@ -112,21 +85,5 @@ public class ShopProductCampaign implements Parcelable {
 
     public void setDiscountedPriceIdr(String discountedPriceIdr) {
         this.discountedPriceIdr = discountedPriceIdr;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.productId);
-        dest.writeInt(this.percentageAmount);
-        dest.writeString(this.discountedPrice);
-        dest.writeString(this.endDate);
-        dest.writeString(this.originalPrice);
-        dest.writeString(this.originalPriceIdr);
-        dest.writeString(this.discountedPriceIdr);
     }
 }

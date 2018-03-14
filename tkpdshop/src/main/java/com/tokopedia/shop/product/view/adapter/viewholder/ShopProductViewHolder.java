@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
@@ -25,18 +26,19 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public static final int SPAN_LOOK_UP = 1;
 
     private final ShopProductClickedListener shopProductClickedListener;
+    private ImageView wishlistImageView;
+    private FrameLayout wishlistContainer;
+    private ImageView productImageView;
     private TextView titleTextView;
-    private TextView priceTextView;
+    private TextView displayedPriceTextView;
+    private TextView originalPriceTextView;
+    private TextView discountPercentageTextView;
     private TextView cashBackTextView;
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
-    private ImageView freeReturnImageView, productImageView;
-    private ImageView wishlistImageView;
-    private FrameLayout wishlistContainer;
+    private ImageView freeReturnImageView;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
-    private TextView originalPriceTextView;
-    private TextView discountPriceTextView;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
@@ -46,9 +48,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void findViews(View view) {
         titleTextView = view.findViewById(R.id.title);
-        priceTextView = view.findViewById(R.id.price);
-        originalPriceTextView = view.findViewById(R.id.text_original_price);
-        discountPriceTextView = view.findViewById(R.id.text_discount);
+        displayedPriceTextView = view.findViewById(R.id.text_view_displayed_price);
+        originalPriceTextView = view.findViewById(R.id.text_view_original_price);
+        discountPercentageTextView = view.findViewById(R.id.text_view_discount_percentage);
 
         cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
@@ -97,21 +99,18 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updatePrice(final ShopProductViewModel shopProductViewModel) {
-        if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice()) && !TextUtils.isEmpty(shopProductViewModel.getDiscountPrice())) {
+        if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice())) {
+            originalPriceTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             originalPriceTextView.setVisibility(View.VISIBLE);
-            discountPriceTextView.setVisibility(View.VISIBLE);
-            priceTextView.setVisibility(View.GONE);
-
             originalPriceTextView.setText(shopProductViewModel.getOriginalPrice());
-            discountPriceTextView.setText(shopProductViewModel.getDiscountPrice());
-        } else {
-            originalPriceTextView.setVisibility(View.GONE);
-            discountPriceTextView.setVisibility(View.GONE);
-            priceTextView.setVisibility(View.VISIBLE);
         }
-
-        if (priceTextView != null) {
-            priceTextView.setText(shopProductViewModel.getPrice());
+        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
+            discountPercentageTextView.setVisibility(View.VISIBLE);
+            discountPercentageTextView.setText(discountPercentageTextView.getContext().
+                    getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));
+        }
+        if (displayedPriceTextView != null) {
+            displayedPriceTextView.setText(shopProductViewModel.getDisplayedPrice());
         }
     }
 
