@@ -60,6 +60,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
         this.userSession = userSession;
     }
 
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
+    }
+
     @NonNull
     private static ShopProductRequestModel getShopProductRequestModel(
             String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
@@ -214,10 +218,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     public void clearProductCache() {
         deleteShopProductUseCase.executeSync();
-    }
-
-    public UserSession getUserSession() {
-        return userSession;
     }
 
     @Override

@@ -420,6 +420,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
         setViewState(VIEW_CONTENT);
         shopInfo = shopPageViewModel.getShopInfo();
+        shopId = shopInfo.getInfo().getShopId();
+        shopDomain = shopInfo.getInfo().getShopDomain();
         shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
 
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {

@@ -329,7 +329,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             this.etalaseId = etalaseId;
         }
         if (TextUtils.isEmpty(etalaseName)) {
-            if (shopProductListPresenter.getUserSession().getShopId().equals(shopId)) {
+            if (shopProductListPresenter.isMyShop(shopId)) {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
             } else {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
