@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
-            android:padding="@dimen/dp_10_sm"
+            android:padding="@dimen/dp_12"
             android:text="@string/my_phone_number_is_inactive"
             android:textColor="@color/medium_green"
             android:textSize="13sp"

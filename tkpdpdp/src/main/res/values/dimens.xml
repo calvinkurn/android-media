@@ -15,22 +15,8 @@
     <dimen name="fontvvs">10sp</dimen>
 
     <dimen name="page_with_pad">290dp</dimen>
-    <dimen name="dp_5">5dp</dimen>
-    <dimen name="dp_8">8dp</dimen>
-    <dimen name="dp_3">3.3dp</dimen>
-    <dimen name="dp_2">2dp</dimen>
-    <dimen name="dp_10">10dp</dimen>
-    <dimen name="dp_15">15dp</dimen>
-    <dimen name="dp_20">20dp</dimen>
-    <dimen name="dp_30">30dp</dimen>
-    <dimen name="dp_40">40dp</dimen>
-    <dimen name="dp_5">5dp</dimen>
-    <dimen name="dp_3">3dp</dimen>
-    <dimen name="dp_2">2dp</dimen>
-    <dimen name="dp_10">10dp</dimen>
     <dimen name="padding_vl">40dp</dimen>
     <dimen name="med_dp">20dp</dimen>
-    <dimen name="dp_30">30dp</dimen>
     <dimen name="margin_2">2dp</dimen>
 
     <dimen name="half_screen">160dp</dimen>
@@ -71,10 +57,6 @@
     <dimen name="message_width">300dp</dimen>
     <dimen name="message_corner">12dp</dimen>
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="dp_16">16dp</dimen>
-    <dimen name="dp_16">16dp</dimen>
-
     <!-- Fragment Shop -->
     <dimen name="tx_list_search_btn">80dp</dimen>
     <dimen name="tx_list_search_btn_h">30dp</dimen>
@@ -88,7 +70,6 @@
     <dimen name="loading_img">30dp</dimen>
     <dimen name="loading_img_big">150dp</dimen>
     <dimen name="pager_height">200dp</dimen>
-    <dimen name="dp_20">20dp</dimen>
     <dimen name="img_thumb_s">15dp</dimen>
     <dimen name="screen_per_3_pad">90dp</dimen>
     <dimen name="shop_cover_height">220dp</dimen>
