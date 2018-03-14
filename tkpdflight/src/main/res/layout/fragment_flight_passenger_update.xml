@@ -36,7 +36,7 @@
                 android:text="@string/flight_passenger_data_diri_label" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/til_saved_passenger"
+                android:id="@+id/til_passenger_type"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,10 +50,10 @@
                 android:paddingStart="@dimen/padding_16">
 
                 <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/et_saved_passenger"
+                    android:id="@+id/et_passenger_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:drawableEnd="@drawable/ic_arrow_down_grey"
                     android:drawableRight="@drawable/ic_arrow_down_grey"
                     android:focusable="false"
@@ -61,7 +61,7 @@
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:text="@string/flightbooking_price_adult_label"
-                    android:textColor="@color/font_black_primary_70" />
+                    android:textColor="@color/font_black_disabled_38" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <com.tokopedia.design.text.SpinnerTextView
