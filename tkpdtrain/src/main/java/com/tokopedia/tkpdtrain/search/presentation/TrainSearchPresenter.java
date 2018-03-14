@@ -33,8 +33,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     @Override
     public void getTrainSchedules() {
-        getScheduleUseCase.execute(getScheduleUseCase.createRequest("2018-01-01",
-                1, 0, "BD", "Bandung", "PSE", "Jakarta"),
+        getScheduleUseCase.execute(getView().getRequestParam(),
                 new Subscriber<List<AvailabilityKeySchedule>>() {
                     @Override
                     public void onCompleted() {
@@ -73,6 +72,9 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             @Override
             public void onNext(List<TrainSchedule> trainSchedules) {
                 Log.d(TAG, "onNext size: " + trainSchedules.size());
+                if (trainSchedules != null) {
+                    getView().showSearchResult(trainSchedules);
+                }
             }
         });
     }
