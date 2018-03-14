@@ -109,7 +109,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
             List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
             if (segments != null && segments.size() > 0) {
                 Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), segments.get(0));
-                startActivity(intent);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
             }
