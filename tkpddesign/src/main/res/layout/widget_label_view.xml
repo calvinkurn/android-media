@@ -11,7 +11,7 @@
         android:id="@+id/title_text_view"
         style="@style/TextView.Title"
         android:maxLines="1"
-        android:minWidth="@dimen/lv_min_title_width"
+        android:minWidth="@dimen/dp_100"
         tools:text="@string/app_name" />
 
     <TextView

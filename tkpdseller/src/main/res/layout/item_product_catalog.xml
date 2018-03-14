@@ -13,8 +13,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_catalog"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         tools:src="@mipmap/ic_launcher"/>
     <TextView
         android:id="@+id/text_catalog_name"

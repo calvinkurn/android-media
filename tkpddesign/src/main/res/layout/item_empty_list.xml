@@ -28,7 +28,7 @@
         style="@style/TextView.Title"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:maxWidth="@dimen/empty_max_width"
+        android:maxWidth="@dimen/dp_250"
         tools:text="@string/app_name" />
 
     <TextView
@@ -55,8 +55,8 @@
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"
         android:layout_marginTop="@dimen/margin_sm"
-        android:maxWidth="@dimen/empty_max_width"
-        android:minWidth="@dimen/empty_min_width"
+        android:maxWidth="@dimen/dp_250"
+        android:minWidth="@dimen/dp_200"
         tools:text="@string/app_name" />
 
     <View

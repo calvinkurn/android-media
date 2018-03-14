@@ -37,7 +37,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_widget_ticker"
+    android:layout_height="@dimen/dp_90"
     android:background="@drawable/bg_ticker"
     android:paddingTop="@dimen/padding_vvvs"
     android:paddingBottom="@dimen/padding_vvvs"

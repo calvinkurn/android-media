@@ -39,6 +39,6 @@
         android:id="@+id/checkbox"
         android:theme="@style/checkBoxStyle"
         android:layout_gravity="center_vertical"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size" />
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36" />
 </LinearLayout>

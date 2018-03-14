@@ -40,7 +40,7 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/image_expendable_passenger"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/medal_size"
+            android:layout_height="@dimen/dp_20"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_arrow_up" />
 

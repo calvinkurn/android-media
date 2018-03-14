@@ -11,7 +11,7 @@
         android:id="@+id/title_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/font_black_secondary_54"

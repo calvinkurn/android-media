@@ -13,7 +13,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:background="@drawable/shape_copy_voucher_code_right_default">
 
         <ImageView
@@ -48,7 +48,7 @@
         android:layout_toLeftOf="@+id/button_copy"
         android:layout_toStartOf="@+id/button_copy"
         android:background="@drawable/shape_copy_voucher_code_left_default"
-        android:minHeight="@dimen/height_button_voucher"
+        android:minHeight="@dimen/dp_44"
         android:textAlignment="center"
         android:gravity="center"
         android:textColor="@color/tkpd_main_orange"

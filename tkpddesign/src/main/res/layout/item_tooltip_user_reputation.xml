@@ -16,15 +16,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="@dimen/image_smiley_size"
-            android:layout_height="@dimen/image_smiley_size"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             app:srcCompat="@drawable/ic_smiley_positive" />
 
         <TextView
             android:id="@+id/text_view_positive"
             style="@style/TextView.Small"
             android:gravity="center"
-            android:minWidth="@dimen/image_smiley_size"
+            android:minWidth="@dimen/dp_35"
             android:paddingTop="@dimen/padding_vs"
             android:text="0" />
     </LinearLayout>
@@ -37,15 +37,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="@dimen/image_smiley_size"
-            android:layout_height="@dimen/image_smiley_size"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             app:srcCompat="@drawable/ic_smiley_neutral" />
 
         <TextView
             android:id="@+id/text_view_neutral"
             style="@style/TextView.Small"
             android:gravity="center"
-            android:minWidth="@dimen/image_smiley_size"
+            android:minWidth="@dimen/dp_35"
             android:paddingTop="@dimen/padding_vs"
             android:text="0" />
     </LinearLayout>
@@ -56,15 +56,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="@dimen/image_smiley_size"
-            android:layout_height="@dimen/image_smiley_size"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             app:srcCompat="@drawable/ic_smiley_negative" />
 
         <TextView
             android:id="@+id/text_view_negative"
             style="@style/TextView.Small"
             android:gravity="center"
-            android:minWidth="@dimen/image_smiley_size"
+            android:minWidth="@dimen/dp_35"
             android:paddingTop="@dimen/padding_vs"
             android:text="0" />
     </LinearLayout>

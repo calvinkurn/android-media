@@ -144,7 +144,7 @@ public class ShopReputationView extends BaseCustomView {
     private ImageView getGeneratedMedalImage(@DrawableRes int imageResource) {
         ImageView imageView = new ImageView(getContext());
         imageView.setAdjustViewBounds(true);
-        int size = getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size);
+        int size = getContext().getResources().getDimensionPixelSize(R.dimen.dp_20);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, size);
         imageView.setLayoutParams(param);
         imageView.setImageResource(imageResource);

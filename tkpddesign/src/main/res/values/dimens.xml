@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+    <dimen name="dp_minus8">-8dp</dimen> <!-- not recommended -->
+    <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
+    <dimen name="dp_minus4">-4dp</dimen> <!-- not recommended -->
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_7">7dp</dimen>
@@ -14,13 +17,17 @@
     <dimen name="dp_25">25dp</dimen> <!-- not recommended -->
     <dimen name="dp_30">30dp</dimen> <!-- not recommended -->
     <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_44">44dp</dimen>
     <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
     <dimen name="dp_72">72dp</dimen> <!-- not recommended -->
     <dimen name="dp_76">76dp</dimen> <!-- not recommended -->
     <dimen name="dp_80">80dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
@@ -28,6 +35,7 @@
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
     <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
     <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
+    <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
     <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
@@ -65,26 +73,6 @@
     <dimen name="padding_med">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
-    <dimen name="small_icon_size">24dp</dimen>
-    <dimen name="icon_size">36dp</dimen>
-    <dimen name="large_icon_size">48dp</dimen>
-
-    <dimen name="text_input_margin_offset">-4dp</dimen>
-    <dimen name="text_input_margin_top_offset">-8dp</dimen>
-    <dimen name="text_input_margin_bottom_offset">-6dp</dimen>
-    <dimen name="text_input_horizontal_padding">4dp</dimen>
-    <dimen name="text_input_counter_horizontal_padding">2dp</dimen>
-
-    <dimen name="spinner_decimal_spinner_width">80dp</dimen>
-
-    <dimen name="height_widget_ticker">90dp</dimen>
-    <dimen name="image_medal_size">20dp</dimen>
-
-    <dimen name="height_button_voucher">44dp</dimen>
-    <dimen name="sp_14_caption_voucher">10dp</dimen>
-
-    <dimen name="image_smiley_size">35dp</dimen>
-
     <dimen name="price_seekbar_button_size">30dp</dimen>
     <dimen name="price_range_separator_margin">16dp</dimen>
     <dimen name="deletable_item_button_size">30dp</dimen>
@@ -99,21 +87,8 @@
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
 
-    <dimen name="medal_size">20dp</dimen>
-    <dimen name="smiley_reputation_size">24dp</dimen>
-    <dimen name="reputation_view_smiley">14dp</dimen>
-
-    <dimen name="lv_min_title_width">100dp</dimen>
-
-    <dimen name="empty_min_width">200dp</dimen>
-    <dimen name="empty_max_width">250dp</dimen>
-
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="toolbar_elevation">4dp</dimen>
-
-    <dimen name="range_input_margin_input_text">-4dp</dimen>
 
 </resources>
