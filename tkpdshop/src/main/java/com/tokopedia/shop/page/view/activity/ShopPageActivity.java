@@ -203,15 +203,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         textRetryError = findViewById(R.id.message_retry);
         buttonRetryError = findViewById(R.id.button_retry);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //handle tracking back pressed on toolbar
-                shopPageTracking.eventBackPressed(getTitlePage(viewPager.getCurrentItem()), shopId,
-                        shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-            }
-        });
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -238,6 +229,13 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         collapsingToolbarLayout.setTitle(" ");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        shopPageTracking.eventBackPressed(getTitlePage(viewPager.getCurrentItem()), shopId,
+                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {

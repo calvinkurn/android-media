@@ -87,13 +87,12 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         super.setupLayout(savedInstanceState);
         tabLayout.addOnTabSelectedListener(getTabsListener());
         tabLayout.setupWithViewPager(viewPager);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //handle backpressed analytic
-                shopPageTracking.eventBackPressedShopInfo(shopId);
-            }
-        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        shopPageTracking.eventBackPressedShopInfo(shopId);
     }
 
     @NonNull
