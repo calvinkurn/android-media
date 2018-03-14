@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:padding="@dimen/dp_16">
 
         <View
             android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
             android:id="@+id/loading_state_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/dp_30"
             android:minHeight="@dimen/dp_128">
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_rect_stroke_lighter_gray"
-                    android:padding="@dimen/margin_vs">
+                    android:padding="@dimen/dp_5">
 
                     <ImageView
                         android:id="@+id/image_view_shop_icon"
@@ -52,7 +52,7 @@
                     style="@style/TextView.TitleBig.Green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:gravity="center_horizontal"
                     tools:text="@string/app_name" />
             </LinearLayout>
@@ -67,16 +67,16 @@
             android:id="@+id/appCompatTextView"
             style="@style/TextView.TitleBig"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:text="@string/shop_open_shop_has_been_active" />
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Small"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             android:text="@string/shop_open_shop_create_success_ask_add_product" />
 
         <View
@@ -88,7 +88,7 @@
             style="@style/Button.Submit.Green"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/title_add_product_lowercase" />
 

@@ -4,17 +4,17 @@
     android:layout_height="wrap_content"
     xmlns:context="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
     android:background="@color/white">
 
     <TextView
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:id="@+id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/indicator_container"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:text="@string/template_history_additional_information"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_14"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_date"
         android:layout_toRightOf="@id/indicator_container"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:gravity="center_vertical"
         android:maxLines="2"
         android:ellipsize="end"
@@ -41,8 +41,8 @@
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         android:layout_alignTop="@id/tv_date"
         android:layout_alignBottom="@id/tv_action_text">
 

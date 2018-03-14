@@ -27,12 +27,12 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small">
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/rep_icon"
@@ -43,7 +43,7 @@
                 android:id="@+id/rep_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:gravity="center_vertical"
                 android:textColor="@color/tkpd_dark_green"
                 android:textSize="@dimen/fontvs" />
@@ -58,8 +58,8 @@
             android:layout_toLeftOf="@id/reputation_view"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
             android:singleLine="true" />
 
     </RelativeLayout>
@@ -79,21 +79,21 @@
             android:id="@+id/list_template"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vvs"
-            android:layout_marginRight="@dimen/margin_vvs"
-            android:layout_marginTop="@dimen/margin_vvs" />
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_3"
+            android:layout_marginTop="@dimen/dp_3" />
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:background="@drawable/cards_ui_chat"
             android:elevation="300dp"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingLeft="@dimen/padding_vs"
-            android:paddingRight="@dimen/padding_vs"
-            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_5"
             android:visibility="visible">
 
 
@@ -104,7 +104,7 @@
                 android:layout_alignBottom="@+id/new_comment"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_attach" />
 
             <ImageView
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/add_url"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_image_picker" />
 
             <ImageView
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/image_picker"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_maximize"
                 android:visibility="gone" />
 
@@ -133,7 +133,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
-                android:padding="@dimen/padding_ms"
+                android:padding="@dimen/dp_8"
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_centerVertical="true"
                 app:srcCompat="@drawable/ic_send_24dp_green" />
@@ -152,10 +152,10 @@
                 android:hint="@string/chat_edit_text"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small_sm"
-                android:paddingRight="@dimen/padding_small_sm"
-                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10_sm"
+                android:paddingRight="@dimen/dp_10_sm"
+                android:paddingTop="@dimen/dp_10"
                 android:textSize="@dimen/font_medium"
                 tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd" />
 
@@ -200,7 +200,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_yellow_border_yelow"
         android:gravity="center_horizontal"
-        android:padding="@dimen/padding_vs"
+        android:padding="@dimen/dp_5"
         android:singleLine="true"
         android:visibility="gone" />
 

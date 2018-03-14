@@ -87,7 +87,7 @@
             android:background="@drawable/shadow_background"
             android:visibility="gone"
                 tools:visibility="visible"
-                android:paddingTop="@dimen/activity_vertical_margin">
+                android:paddingTop="@dimen/dp_16">
             <TextView
                 android:id="@+id/template_list"
                 android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                 android:textColor="@color/black_70"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
-                android:paddingLeft="@dimen/activity_vertical_margin" />
+                android:paddingLeft="@dimen/dp_16" />
 
                 <ImageView
                     android:id="@+id/template_list_info"

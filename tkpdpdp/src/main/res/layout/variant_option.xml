@@ -17,6 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layoutDirection="ltr"
-        android:layout_marginTop="@dimen/margin_sm"/>
+        android:layout_marginTop="@dimen/dp_15"/>
 
 </LinearLayout>

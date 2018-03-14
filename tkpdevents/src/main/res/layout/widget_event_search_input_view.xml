@@ -11,10 +11,10 @@
         android:background="@drawable/rect_white_rounded_stroke_gray"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/image_view_search"
@@ -27,8 +27,8 @@
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"

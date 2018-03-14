@@ -22,9 +22,9 @@
         android:layout_width="@dimen/dp_8"
         android:layout_height="@dimen/dp_8"
         android:layout_alignBottom="@id/market_insight_number"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginEnd="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:layout_toLeftOf="@id/market_insight_number"
         app:srcCompat="@drawable/ic_search_white" />
 
@@ -33,8 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_16"
         android:layout_below="@id/market_insight_keyword"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
         app:rcBackgroundColor="@color/black_12"
         app:rcBackgroundPadding="2dp"
         app:rcMax="100"

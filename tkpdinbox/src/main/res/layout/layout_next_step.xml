@@ -10,7 +10,7 @@
     app:cardBackgroundColor="@color/white">
 
     <LinearLayout
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -25,7 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms"
+            android:layout_marginTop="@dimen/dp_8"
             android:orientation="horizontal">
 
             <ImageView
@@ -50,8 +50,8 @@
                 android:gravity="center|left"
                 android:textSize="@dimen/fonts"
                 android:text="asdad asd"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
                 android:textColor="@color/black_87"/>
 
             <ImageView

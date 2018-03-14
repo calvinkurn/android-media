@@ -5,15 +5,15 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_med">
+    android:paddingTop="@dimen/dp_20">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_small">
+            android:paddingLeft="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/tv_email"
@@ -38,7 +38,7 @@
                 android:id="@+id/tv_registered_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_vs"
+                android:paddingTop="@dimen/dp_5"
                 android:textColor="@color/digital_voucher_notes"
                 android:textSize="@dimen/fontvs"
                 tools:text="Terhubung sejak dahulu kala" />
@@ -59,13 +59,13 @@
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_med" />
+        android:layout_height="@dimen/dp_20" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
         android:background="@color/digital_separator" />
 
 </LinearLayout>

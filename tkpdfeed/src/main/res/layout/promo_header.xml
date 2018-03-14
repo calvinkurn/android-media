@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/user_ava"
@@ -20,8 +20,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_toEndOf="@id/user_ava"
         android:layout_toRightOf="@id/user_ava">
 

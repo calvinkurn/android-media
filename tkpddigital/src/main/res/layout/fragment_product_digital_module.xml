@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/digital_padding_16"
-                android:padding="@dimen/padding_vvvs"/>
+                android:padding="@dimen/dp_2"/>
 
         </LinearLayout>
 

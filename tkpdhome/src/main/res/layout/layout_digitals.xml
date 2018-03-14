@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_marginTop="@dimen/margin_ms"
-    android:layout_marginBottom="@dimen/margin_ms"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@+id/dummy_view_1"
@@ -83,7 +83,7 @@
             android:layout_below="@id/dummy_view_1"
             android:layout_marginLeft="@dimen/keyline_1"
             android:layout_marginRight="@dimen/keyline_1"
-            android:layout_marginTop="@dimen/margin_small_sm"
+            android:layout_marginTop="@dimen/dp_10_sm"
             android:background="@color/grey_200" />
 
     </RelativeLayout>

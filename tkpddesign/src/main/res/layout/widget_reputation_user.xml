@@ -24,8 +24,8 @@
         android:id="@+id/text_view_percentage"
         style="@style/TextView.Micro"
         android:textColor="@color/tkpd_main_green"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
         android:gravity="center_vertical"
         android:visibility="visible"
         tools:text="100%"/>

@@ -33,8 +33,8 @@
         android:layout_width="@dimen/dp_8"
         android:layout_height="@dimen/dp_16"
         android:layout_gravity="center_vertical|end"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginStart="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_arrow_right_default"
         tools:visibility="visible" />

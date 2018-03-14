@@ -22,8 +22,8 @@
 
         android:background="@color/green_btn"
         android:gravity="center"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
         android:text="@string/cari"
         android:textColor="@color/white" />
 

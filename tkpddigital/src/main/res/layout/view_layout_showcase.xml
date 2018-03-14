@@ -11,9 +11,9 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/margin_small_sm"
-        android:paddingRight="@dimen/margin_small_sm"
-        android:paddingTop="@dimen/padding_ms"
+        android:paddingLeft="@dimen/dp_10_sm"
+        android:paddingRight="@dimen/dp_10_sm"
+        android:paddingTop="@dimen/dp_8"
         android:textStyle="bold"
         tools:textSize="@dimen/font_medium" />
 
@@ -22,15 +22,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4dp"
-        android:paddingBottom="@dimen/padding_ms"
-        android:paddingLeft="@dimen/margin_small_sm"
-        android:paddingRight="@dimen/margin_small_sm"
-        android:paddingTop="@dimen/padding_ms" />
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_10_sm"
+        android:paddingRight="@dimen/dp_10_sm"
+        android:paddingTop="@dimen/dp_8" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/padding_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/grey_600" />
 
     <android.support.v7.widget.LinearLayoutCompat
@@ -45,9 +45,9 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="left"
-            android:paddingBottom="@dimen/margin_small_sm"
-            android:paddingLeft="@dimen/margin_small_sm"
-            android:paddingTop="@dimen/margin_small_sm" />
+            android:paddingBottom="@dimen/dp_10_sm"
+            android:paddingLeft="@dimen/dp_10_sm"
+            android:paddingTop="@dimen/dp_10_sm" />
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/view_group_indicator"
@@ -66,9 +66,9 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="right"
-            android:paddingBottom="@dimen/margin_small_sm"
-            android:paddingRight="@dimen/margin_small_sm"
-            android:paddingTop="@dimen/margin_small_sm" />
+            android:paddingBottom="@dimen/dp_10_sm"
+            android:paddingRight="@dimen/dp_10_sm"
+            android:paddingTop="@dimen/dp_10_sm" />
     </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v7.widget.LinearLayoutCompat>

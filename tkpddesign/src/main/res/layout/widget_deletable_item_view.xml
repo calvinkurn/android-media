@@ -16,8 +16,8 @@
             android:id="@+id/item_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="@dimen/deletable_item_max_height"
-            android:maxWidth="@dimen/deletable_item_max_width"
+            android:maxHeight="@dimen/dp_14"
+            android:maxWidth="@dimen/dp_78"
             android:visibility="gone" />
 
         <TextView

@@ -12,8 +12,8 @@
         style="@style/Small.RatingBar"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginEnd="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
         android:layout_height="wrap_content"
         android:isIndicator="true"/>
 
@@ -27,8 +27,8 @@
             android:layout_width="0dp"
             android:layout_height="5dp"
             android:layout_weight="5"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginEnd="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
             app:rcBackgroundColor="@color/grey_200"
             app:rcMax="100"
             app:rcProgress="0"

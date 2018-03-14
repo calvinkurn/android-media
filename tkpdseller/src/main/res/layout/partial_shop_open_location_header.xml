@@ -21,8 +21,8 @@
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
         android:text="@string/shop_open_shipping_location_text_desc"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:layout_marginTop="16dp" />
 
     <TextView

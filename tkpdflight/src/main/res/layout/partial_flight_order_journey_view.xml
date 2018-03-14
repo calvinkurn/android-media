@@ -21,8 +21,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         app:srcCompat="@drawable/ic_arrow_right_flight" />
 
     <android.support.v7.widget.AppCompatTextView

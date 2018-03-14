@@ -14,8 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:padding="@dimen/padding_small"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:padding="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_5"
             android:layout_alignParentRight="true"
             android:text="@string/action_edit"
             android:textColor="@color/tkpd_main_green"
@@ -35,10 +35,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
+                android:layout_marginTop="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
                 android:text="@string/title_section_address_retur"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_s_medium"
@@ -47,9 +47,9 @@
             <View
                 android:layout_width="20dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@color/deep_orange_500"
                 />
         </LinearLayout>
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@+id/tv_address"
@@ -70,7 +70,7 @@
             android:text="CGK1234567890"
             android:textColor="@color/black_87"
             android:textSize="@dimen/text_size_s_medium"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
             />
 
         <TextView
@@ -93,7 +93,7 @@
         android:id="@+id/action_address_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:gravity="center_vertical"
         android:text="@string/action_see_more_address"
         android:textColor="@color/tkpd_main_green"

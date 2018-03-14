@@ -55,7 +55,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/margin_small_sm"
+            android:paddingTop="@dimen/dp_10_sm"
             android:text="@string/change_destination_insufficient_balance_message"
             android:textColor="@color/grey_500"
             android:textSize="@dimen/sp_14" />
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/iv_arrow"
                     android:layout_toStartOf="@+id/iv_arrow"
-                    android:padding="@dimen/padding_vs"
+                    android:padding="@dimen/dp_5"
                     android:text="250000"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_14" />
@@ -145,7 +145,7 @@
                 android:id="@+id/btn_topup_tokocash"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/rounded_filled_green_bttn"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"

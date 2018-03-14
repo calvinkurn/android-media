@@ -10,9 +10,9 @@
     <FrameLayout
         android:layout_width="@dimen/dp_72"
         android:layout_height="@dimen/dp_72"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm">
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_15">
 
         <ImageView
             android:id="@+id/image_view_product"
@@ -29,7 +29,7 @@
             android:layout_gravity="bottom"
             android:background="@color/colorStockEmpty"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:text="@string/product_manage_stock_empty"
             android:visibility="gone" />
 
@@ -49,7 +49,7 @@
             <TextView
                 style="@style/TextView.Micro.WhitePrimary"
                 android:layout_gravity="bottom|center"
-                android:padding="@dimen/padding_vs"
+                android:padding="@dimen/dp_5"
                 android:text="@string/product_manage_label_supervision"
                 android:textSize="10sp" />
         </FrameLayout>
@@ -58,10 +58,10 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginStart="@dimen/margin_ms"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -73,37 +73,37 @@
         <TextView
             android:id="@+id/text_view_stock"
             style="@style/TextView.Small.BlackDisabled"
-            android:layout_marginTop="@dimen/margin_ms"
+            android:layout_marginTop="@dimen/dp_8"
             android:visibility="gone"
             tools:text="@string/app_name" />
 
         <TextView
             android:id="@+id/text_view_price"
             style="@style/TextView.Small.Orange"
-            android:layout_marginTop="@dimen/margin_ms"
+            android:layout_marginTop="@dimen/dp_8"
             tools:text="@string/app_name" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms"
+            android:layout_marginTop="@dimen/dp_8"
             android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/image_view_featured"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 app:srcCompat="@drawable/ic_featured_product" />
 
             <TextView
                 android:id="@+id/text_view_variant"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"
-                android:padding="@dimen/padding_vvs"
+                android:padding="@dimen/dp_3"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:text="@string/product_label_variant" />
@@ -111,10 +111,10 @@
             <TextView
                 android:id="@+id/text_view_cashback"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/bg_rect_stroke_green"
-                android:padding="@dimen/padding_vvs"
+                android:padding="@dimen/dp_3"
                 android:textColor="@android:color/white"
                 android:visibility="gone"
                 tools:text="@string/product_manage_item_cashback" />
@@ -122,20 +122,20 @@
             <TextView
                 android:id="@+id/text_view_wholesale"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"
-                android:padding="@dimen/padding_vvs"
+                android:padding="@dimen/dp_3"
                 android:text="@string/product_label_wholesale"
                 android:visibility="gone" />
 
             <TextView
                 android:id="@+id/text_view_pre_order"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"
-                android:padding="@dimen/padding_vvs"
+                android:padding="@dimen/dp_3"
                 android:text="@string/product_label_po" />
 
             <ImageView
@@ -157,15 +157,15 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:foreground="?selectableItemBackground"
-            android:paddingLeft="@dimen/padding_ms"
-            android:paddingRight="@dimen/padding_ms"
-            android:paddingStart="@dimen/padding_ms">
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8">
 
             <ImageView
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/padding_vvvs"
+                android:layout_marginTop="@dimen/dp_2"
                 app:srcCompat="@drawable/ic_more_vert_grey"
                 tools:src="@drawable/ic_more_vert_grey" />
         </FrameLayout>
@@ -176,7 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/dp_8"
             android:theme="@style/checkBoxStyleSeller"
             android:visibility="gone"
             tools:visibility="visible" />

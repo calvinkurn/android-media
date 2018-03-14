@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_default"
@@ -23,6 +23,6 @@
     <TextView
         android:id="@+id/text_amenity"
         style="@style/TextView.Small.BlackSecondary"
-        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginLeft="@dimen/dp_15"
         tools:text="Wi-fi" />
 </LinearLayout>

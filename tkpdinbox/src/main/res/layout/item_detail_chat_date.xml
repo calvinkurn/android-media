@@ -9,7 +9,7 @@
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vvvs"
+        android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/black_38"
         android:textSize="@dimen/text_size_xsmall"
         android:fontFamily="sans-serif"

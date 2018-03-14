@@ -4,18 +4,18 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:context="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/margin_small">
+    android:paddingBottom="@dimen/dp_10">
 
     <RelativeLayout
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small">
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10">
 
         <FrameLayout
             android:id="@+id/fl_button"
@@ -53,14 +53,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/margin_vs">
+        android:layout_marginTop="@dimen/dp_5">
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/indicator_container"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
             android:text="@string/template_history_additional_information"
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_14"
@@ -85,7 +85,7 @@
             android:id="@+id/attachment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_below="@id/tv_history_text"
             android:layout_toRightOf="@id/indicator_container">
 
@@ -95,7 +95,7 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_below="@id/attachment"
             android:layout_toRightOf="@id/indicator_container"
             android:orientation="horizontal">
@@ -104,10 +104,10 @@
                 android:id="@+id/action_track"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
                 android:background="@color/tkpd_main_green"
                 android:layout_gravity="center"
                 android:gravity="center"
@@ -120,11 +120,11 @@
                 android:id="@+id/action_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
                 android:background="@drawable/btn_transparent_disable"
                 android:layout_gravity="center"
                 android:gravity="center"

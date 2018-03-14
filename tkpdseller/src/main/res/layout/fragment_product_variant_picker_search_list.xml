@@ -22,8 +22,8 @@
             android:id="@+id/spinner_text_view_variant_unit"
             style="@style/LabelLayout"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:paddingBottom="@dimen/margin_ms"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_8"
             android:visibility="gone" />
 
     </android.support.design.widget.AppBarLayout>

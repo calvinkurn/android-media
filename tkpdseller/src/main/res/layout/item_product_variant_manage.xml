@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingLeft="@dimen/margin_sm"
-    android:paddingRight="@dimen/margin_sm"
-    android:paddingTop="@dimen/margin_small">
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingLeft="@dimen/dp_15"
+    android:paddingRight="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_vvs"
+            android:padding="@dimen/dp_3"
             android:background="@drawable/bg_rect_stroke_lighter_gray">
             <ImageView
                 android:id="@+id/image_view"
@@ -35,8 +35,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_weight="1"
             android:orientation="vertical">
 

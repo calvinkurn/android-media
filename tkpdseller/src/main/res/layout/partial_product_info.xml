@@ -40,7 +40,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:divider="@color/grey_300"
         android:orientation="vertical">
 
@@ -84,7 +84,7 @@
         android:id="@+id/label_view_catalog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:visibility="gone"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"

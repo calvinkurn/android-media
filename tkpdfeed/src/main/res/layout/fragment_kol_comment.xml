@@ -24,10 +24,10 @@
             android:hint="@string/write_comment"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:paddingEnd="@dimen/padding_small_sm"
-            android:paddingLeft="@dimen/padding_small_sm"
-            android:paddingRight="@dimen/padding_small_sm"
-            android:paddingStart="@dimen/padding_small_sm"
+            android:paddingEnd="@dimen/dp_10_sm"
+            android:paddingLeft="@dimen/dp_10_sm"
+            android:paddingRight="@dimen/dp_10_sm"
+            android:paddingStart="@dimen/dp_10_sm"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"/>
 
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             app:srcCompat="@drawable/ic_send_24dp_green"/>
 
     </LinearLayout>

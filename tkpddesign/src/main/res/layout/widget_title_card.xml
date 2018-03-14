@@ -20,8 +20,8 @@
             android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:orientation="horizontal">
 
             <ImageView
@@ -29,8 +29,8 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:visibility="gone"
                 tools:src="@drawable/ic_empty_state"
                 tools:visibility="visible" />

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:padding="@dimen/padding_vs">
+        android:padding="@dimen/dp_5">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
@@ -20,15 +20,15 @@
             android:clickable="true"
             android:gravity="center"
             android:minHeight="@dimen/dp_32"
-            android:paddingLeft="@dimen/padding_vs"
-            android:paddingRight="@dimen/padding_vs">
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5">
 
             <ImageView
                 android:id="@+id/image_view_icon_1"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:layout_marginEnd="@dimen/padding_vs"
-                android:layout_marginRight="@dimen/padding_vs"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:src="@drawable/ic_badge_bronze" />
 
             <TextView
@@ -40,8 +40,8 @@
                 android:id="@+id/v_mark_1"
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 android:background="@drawable/circle_red"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -51,8 +51,8 @@
             android:id="@+id/view_separator"
             android:layout_width="2dp"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@color/grey_300"
             android:visibility="visible" />
 
@@ -65,8 +65,8 @@
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/dp_32"
-            android:paddingLeft="@dimen/padding_vs"
-            android:paddingRight="@dimen/padding_vs"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -74,8 +74,8 @@
                 android:id="@+id/image_view_icon_2"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:layout_marginEnd="@dimen/padding_vs"
-                android:layout_marginRight="@dimen/padding_vs"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 tools:src="@drawable/ic_badge_bronze" />
 
             <TextView
@@ -87,8 +87,8 @@
                 android:id="@+id/v_mark_2"
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 android:background="@drawable/circle_red"
                 android:visibility="gone"
                 tools:visibility="visible" />

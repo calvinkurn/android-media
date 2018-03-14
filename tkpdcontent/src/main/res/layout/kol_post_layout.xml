@@ -59,8 +59,8 @@
                     android:fontFamily="sans-serif-medium"
                     android:paddingLeft="@dimen/dp_16" android:paddingStart="@dimen/dp_16"
                     android:paddingRight="@dimen/dp_24" android:paddingEnd="@dimen/dp_24"
-                    android:paddingBottom="@dimen/padding_ms"
-                    android:paddingTop="@dimen/padding_ms"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
@@ -75,7 +75,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tooltip_image"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
@@ -113,7 +113,7 @@
                     android:layout_width="@dimen/kol_post_icon_size"
                     android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_thumb" />
 
                 <TextView
@@ -148,7 +148,7 @@
                     android:layout_width="@dimen/kol_post_icon_size"
                     android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_comment" />
 
                 <TextView

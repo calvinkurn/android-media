@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/credit_card_detail_content_height"
-            android:layout_margin="@dimen/margin_med"
+            android:layout_margin="@dimen/dp_20"
             android:layout_gravity="bottom">
 
             <ImageView android:id="@+id/iv_cc_chip_thumb"
@@ -36,7 +36,7 @@
             <TextView android:id="@+id/tv_credit_card_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_below="@id/iv_cc_chip_thumb"
                 android:gravity="center_horizontal"
                 tools:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3"
@@ -76,7 +76,7 @@
     <Button android:id="@+id/btn_delete_cc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_below="@id/rl_large_cc_container"
         android:background="@drawable/button_edge"
         android:text="@string/label_button_delete_cc"

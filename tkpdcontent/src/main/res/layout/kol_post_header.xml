@@ -10,10 +10,10 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_15"
         android:background="@drawable/container_circle_corners_border"
         tools:src="@drawable/ic_check_green_24dp"/>
 
@@ -27,9 +27,9 @@
             android:id="@+id/kol_badge"
             android:layout_width="@dimen/kol_post_badge_size"
             android:layout_height="@dimen/kol_post_badge_size"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginEnd="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvvs"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_2"
             app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
@@ -72,9 +72,9 @@
             android:layout_width="@dimen/kol_post_icon_size"
             android:layout_height="@dimen/kol_post_icon_size"
             android:layout_centerVertical="true"
-            android:padding="@dimen/padding_vs"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginEnd="@dimen/margin_vs"
+            android:padding="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
             app:srcCompat="@drawable/ic_plus_green"
             />
 
@@ -83,8 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginEnd="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginEnd="@dimen/dp_15"
             android:layout_toEndOf="@id/follow_icon"
             android:layout_toRightOf="@id/follow_icon"
             android:fontFamily="sans-serif-medium"

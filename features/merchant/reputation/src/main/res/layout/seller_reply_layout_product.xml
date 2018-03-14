@@ -15,10 +15,10 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/padding_small">
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_10">
 
             <LinearLayout
                 android:id="@+id/container_like"
@@ -31,8 +31,8 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     app:srcCompat="@drawable/ic_like_normal" />
 
                 <TextView
@@ -64,8 +64,8 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginStart="@dimen/dp_5"
                     app:srcCompat="@drawable/ic_arrow_down_grey" />
             </LinearLayout>
 
@@ -75,12 +75,12 @@
             android:id="@+id/reply_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_small"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
-            android:paddingLeft="@dimen/margin_med"
+            android:paddingLeft="@dimen/dp_20"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -98,7 +98,7 @@
 
                     <TextView
                         style="@style/TextView.Small.BlackSecondary"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:text="@string/product_review_label_by" />
 
                     <TextView
@@ -114,20 +114,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/margin_vvs"
+                    android:layout_marginTop="@dimen/dp_3"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.WhitePrimary"
-                        android:layout_marginEnd="@dimen/margin_vs"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:background="@drawable/label_seller"
                         android:gravity="center_horizontal"
-                        android:paddingBottom="@dimen/padding_vvvs"
-                        android:paddingLeft="@dimen/padding_vs"
-                        android:paddingRight="@dimen/padding_vs"
-                        android:paddingTop="@dimen/padding_vvvs"
+                        android:paddingBottom="@dimen/dp_2"
+                        android:paddingLeft="@dimen/dp_5"
+                        android:paddingRight="@dimen/dp_5"
+                        android:paddingTop="@dimen/dp_2"
                         android:text="@string/seller"
                         android:textSize="@dimen/sp_12" />
 
@@ -143,7 +143,7 @@
                 <TextView
                     android:id="@+id/seller_reply"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:enabled="true"
                     android:focusable="true"
                     android:fontFamily="sans-serif"

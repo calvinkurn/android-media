@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="@dimen/padding_med"
+    android:padding="@dimen/dp_20"
     android:background="@color/white">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.TextInputLayout"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
         android:hint="@string/title_phone_number">
 
         <EditText
@@ -34,6 +34,6 @@
         android:gravity="center"
         android:text="@string/change_number"
         android:fontFamily="sans-serif-medium"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:textColor="@color/white" />
 </LinearLayout>

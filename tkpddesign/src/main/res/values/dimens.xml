@@ -1,10 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <dimen name="dp_minus8">-8dp</dimen> <!-- not recommended -->
+    <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
-    <dimen name="dp_minus4">-4dp</dimen> <!-- not recommended -->
+    <dimen name="dp_minus4">-4dp</dimen>
     <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_7">7dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_10">10dp</dimen>
@@ -24,14 +26,16 @@
     <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
-    <dimen name="dp_72">72dp</dimen> <!-- not recommended -->
+    <dimen name="dp_72">72dp</dimen>
+    <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
     <dimen name="dp_76">76dp</dimen> <!-- not recommended -->
     <dimen name="dp_80">80dp</dimen>
-    <dimen name="dp_90">90dp</dimen>
+    <dimen name="dp_90">90dp</dimen> <!-- not recommended -->
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
+    <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
     <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
     <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
@@ -55,40 +59,5 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen> <!-- not recommended -->
-
-    <dimen name="margin_vs">5dp</dimen>
-    <dimen name="margin_ms">8dp</dimen>
-    <dimen name="margin_vvs">3.3dp</dimen>
-    <dimen name="margin_vvvs">2dp</dimen>
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_sm">15dp</dimen>
-    <dimen name="margin_med">20dp</dimen>
-    <dimen name="margin_large">30dp</dimen>
-    <dimen name="margin_vl">40dp</dimen>
-    <dimen name="padding_vs">5dp</dimen>
-    <dimen name="padding_vvs">3dp</dimen>
-    <dimen name="padding_vvvs">2dp</dimen>
-    <dimen name="padding_ms">8dp</dimen>
-    <dimen name="padding_small">10dp</dimen>
-    <dimen name="padding_med">20dp</dimen>
-    <dimen name="large_dp">30dp</dimen>
-
-    <dimen name="price_seekbar_button_size">30dp</dimen>
-    <dimen name="price_range_separator_margin">16dp</dimen>
-    <dimen name="deletable_item_button_size">30dp</dimen>
-    <dimen name="deletable_item_max_width">78dp</dimen>
-    <dimen name="deletable_item_max_height">14dp</dimen>
-    <dimen name="empty_search_result_icon_height">145dp</dimen>
-    <dimen name="empty_search_result_padding_side">45dp</dimen>
-    <dimen name="empty_search_result_padding_top">80dp</dimen>
-    <dimen name="empty_search_result_title_margin_top">16dp</dimen>
-    <dimen name="empty_search_result_content_margin_top">8dp</dimen>
-    <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
-    <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
-    <dimen name="alphabetical_section_header_padding">16dp</dimen>
-
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

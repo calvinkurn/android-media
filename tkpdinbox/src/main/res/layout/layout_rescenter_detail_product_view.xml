@@ -8,10 +8,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:text="@string/title_section_product_resolution"
         android:textColor="@color/black_70"
         android:textSize="@dimen/text_size_s_medium"
@@ -20,9 +20,9 @@
     <View
         android:layout_width="20dp"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         android:background="@color/deep_orange_500"
         />
 
@@ -34,7 +34,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_product"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -44,7 +44,7 @@
         android:id="@+id/action_see_more_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:gravity="center_vertical"
         android:text="@string/action_see_more_product_complaint"
         android:textColor="@color/tkpd_main_green"

@@ -18,8 +18,8 @@
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/text_input_layout"
         style="@style/HintTextInputLayout"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginStart="@dimen/margin_ms">
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/edit_text"

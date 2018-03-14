@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="@dimen/margin_vvs"
-    android:layout_marginRight="@dimen/margin_vvvs"
-    android:layout_marginLeft="@dimen/margin_vvvs">
+    android:layout_marginTop="@dimen/dp_3"
+    android:layout_marginRight="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/dp_2">
 
     <TextView
         android:id="@+id/dummy"
@@ -25,8 +25,8 @@
         android:background="@drawable/interactive_label_template_chat"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_small"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:textSize="@dimen/text_size_small"

@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:divider="@drawable/bg_line_separator"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingTop="@dimen/margin_small"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_10"
     android:showDividers="beginning|middle|end">
 
     <com.tokopedia.design.label.LabelView

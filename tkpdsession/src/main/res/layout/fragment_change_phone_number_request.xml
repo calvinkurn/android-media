@@ -24,14 +24,14 @@
                 android:id="@+id/photo_id_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/id_photo"
                     android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/info_id_photo"
                     android:textColor="@color/grey_500"
                     android:textSize="@dimen/fontvs" />
@@ -53,8 +53,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_med"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_add_photo"
                     android:visibility="visible"
                     tools:visibility="visible" />
@@ -65,10 +65,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_large"
-                    android:layout_marginLeft="@dimen/margin_med"
-                    android:layout_marginRight="@dimen/margin_med"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@drawable/cards_ui_2"
                     android:visibility="gone"
                     tools:visibility="gone">
@@ -89,7 +89,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
                         android:background="@drawable/cards_ui"
-                        android:padding="@dimen/padding_vs"
+                        android:padding="@dimen/dp_5"
                         app:srcCompat="@drawable/ic_edit" />
 
                 </RelativeLayout>
@@ -101,14 +101,14 @@
                 android:id="@+id/account_id_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/saving_book_photo_or_transaction_proof"
                     android:textStyle="bold" />
 
@@ -120,7 +120,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/info_bank_account"
                     android:textColor="@color/grey_500"
                     android:textSize="@dimen/fontvs" />
@@ -130,8 +130,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_large"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_add_photo"
                     android:visibility="visible"
                     tools:visibility="visible" />
@@ -141,10 +141,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/margin_large"
-                    android:layout_marginLeft="@dimen/margin_med"
-                    android:layout_marginRight="@dimen/margin_med"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@drawable/cards_ui_2"
                     android:visibility="gone"
                     tools:visibility="gone">
@@ -164,7 +164,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
                         android:background="@drawable/cards_ui"
-                        android:padding="@dimen/padding_vs"
+                        android:padding="@dimen/dp_5"
                         app:srcCompat="@drawable/ic_edit" />
 
                 </RelativeLayout>
@@ -175,7 +175,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_margin="@dimen/dp_10"
                 android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -239,7 +239,7 @@
                 android:id="@+id/button_submit"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/grey_button_rounded"
                 android:text="@string/button_continue"
                 android:textColor="@color/grey_500" />

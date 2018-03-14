@@ -4,9 +4,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/margin_small"
-    android:layout_marginLeft="@dimen/margin_small"
-    android:padding="@dimen/padding_small"
+    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_10"
+    android:padding="@dimen/dp_10"
     android:background="#F0F0F0">
     <ImageView
         android:id="@+id/image_free_return"
@@ -20,7 +20,7 @@
         android:id="@+id/text_free_return"
         android:gravity="left"
         android:layout_width="0dp"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/dp_10"
         android:textSize="@dimen/text_size_xsmall"
         android:layout_gravity="center_vertical"
         android:layout_height="wrap_content"

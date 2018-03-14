@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_vvs"
-    android:paddingBottom="@dimen/padding_vvs"
+    android:paddingTop="@dimen/dp_3"
+    android:paddingBottom="@dimen/dp_3"
     android:orientation="horizontal">
 
     <RelativeLayout
@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_ms"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/padding_ms">
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8">
 
         <LinearLayout
             android:id="@+id/content_layout"
@@ -34,8 +34,8 @@
                 style="@style/TextView.Micro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:layout_marginStart="@dimen/margin_vvs"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_3"
                 android:ellipsize="end"
                 android:maxLines="1"
                 tools:text="(Jum, 03 Nov 2017)" />
@@ -62,8 +62,8 @@
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_subcontent_info"
                 style="@style/TextView.Micro"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:layout_marginStart="@dimen/margin_vvs"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_3"
                 android:ellipsize="end"
                 android:maxLines="1"
                 tools:text="| Langsung | 06:00 CGK - 07:30 SUB" />
@@ -73,8 +73,8 @@
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/widget_card_with_action_separator" />
 
     <RelativeLayout

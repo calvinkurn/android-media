@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_med">
+        android:layout_marginTop="@dimen/new_dp_20">
 
         <TextView
             android:id="@+id/tv_title_user_data"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title_user_data"
-            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginBottom="@dimen/dp_20"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:lineSpacingExtra="6sp"
@@ -58,8 +58,8 @@
                     android:id="@+id/rv_progress"
                     android:layout_width="@dimen/dp_50"
                     android:layout_height="@dimen/dp_50"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginStart="@dimen/new_margin_med">
+                    android:layout_marginLeft="@dimen/new_dp_20"
+                    android:layout_marginStart="@dimen/new_dp_20">
 
                     <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
@@ -125,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_incomplete_profile"
-            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/new_dp_20"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:visibility="gone">
@@ -194,7 +194,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_phone_number"
-            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/new_dp_20"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:visibility="gone">
@@ -263,7 +263,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_email"
-            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/new_dp_20"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:visibility="gone">
@@ -306,7 +306,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_gender"
-            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginBottom="@dimen/new_dp_20"
             android:layout_marginLeft="@dimen/space_med"
             android:layout_marginStart="@dimen/space_med"
             android:visibility="gone">

@@ -22,7 +22,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_vs" />
+            android:layout_marginRight="@dimen/dp_5" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -60,10 +60,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
-                android:paddingBottom="@dimen/padding_ms"
+                android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/padding_16"
                 android:paddingRight="@dimen/padding_16"
-                android:paddingTop="@dimen/padding_ms"
+                android:paddingTop="@dimen/dp_8"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Refundable"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/container_header"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/padding_16"
@@ -88,13 +88,13 @@
 
         <TextView
             style="@style/TextView.Small.BlackSecondary"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             android:text="@string/flight_label_booking_code_pnr" />
 
         <TextView
             android:id="@+id/pnr_code"
             style="@style/TextView.Small.Green"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             tools:text="323088926194" />
 
         <ImageView
@@ -108,6 +108,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@color/black_twenty_percent" />
 </RelativeLayout>

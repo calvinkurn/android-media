@@ -11,7 +11,7 @@
         android:layout_width="@dimen/dp_72"
         android:layout_height="@dimen/dp_72"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/margin_small">
+        android:layout_marginRight="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/image_product_picker_search"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/bg_ribbon"
             android:gravity="center|top"
             android:paddingTop="2dp"
@@ -50,7 +50,7 @@
         <TextView
             android:id="@+id/text_product_price"
             style="@style/TextView.Small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             tools:text="Rp. 500" />
 
     </LinearLayout>

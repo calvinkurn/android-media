@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="@dimen/new_margin_med"
-    android:paddingStart="@dimen/new_margin_med"
-    android:paddingBottom="@dimen/new_margin_med"
-    android:paddingRight="@dimen/new_margin_med"
-    android:paddingEnd="@dimen/new_margin_med"
-    android:paddingTop="@dimen/margin_small_header"
+    android:paddingLeft="@dimen/new_dp_20"
+    android:paddingStart="@dimen/new_dp_20"
+    android:paddingBottom="@dimen/new_dp_20"
+    android:paddingRight="@dimen/new_dp_20"
+    android:paddingEnd="@dimen/new_dp_20"
+    android:paddingTop="@dimen/dp_10_header"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -17,8 +17,8 @@
         android:id="@+id/title_shop_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/new_margin_med"
+        android:layout_marginBottom="@dimen/new_dp_20"
+        android:layout_marginTop="@dimen/new_dp_20"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="8sp"
         android:text="@string/shop_info_title"
@@ -34,8 +34,8 @@
             android:id="@+id/iv_shop_profile"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:contentDescription="@string/image_product_desc"
             android:scaleType="centerCrop" />
 
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:layout_toEndOf="@+id/iv_shop_profile"
             android:layout_toRightOf="@+id/iv_shop_profile"
             android:baselineAligned="false"
@@ -58,27 +58,27 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/iv_gold_shop"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
-                        android:layout_marginEnd="@dimen/margin_vs"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_5"
                         app:srcCompat="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/iv_official"
-                        android:layout_width="@dimen/large_dp"
-                        android:layout_height="@dimen/large_dp"
-                        android:layout_marginEnd="@dimen/margin_vs"
-                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_5"
                         app:srcCompat="@drawable/ic_badge_official"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
@@ -106,9 +106,9 @@
                     <ImageView
                         android:id="@+id/iv_medal"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/new_margin_med"
+                        android:layout_height="@dimen/new_dp_20"
                         android:layout_gravity="start"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:layout_weight="1"
                         android:gravity="start" />
                 </LinearLayout>
@@ -122,7 +122,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -131,10 +131,10 @@
             android:id="@+id/ll_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_weight="0.40"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/margin_small">
+            android:paddingBottom="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -151,8 +151,8 @@
                     android:id="@+id/tv_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginStart="@dimen/dp_5"
                     android:fontFamily="sans-serif"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/fontvs"
@@ -163,7 +163,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -176,8 +176,8 @@
                     android:id="@+id/tv_last_online"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginStart="@dimen/dp_5"
                     android:fontFamily="sans-serif"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/fontvs"

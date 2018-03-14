@@ -19,14 +19,14 @@
             android:id="@+id/main_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:background="@color/white"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 android:text="@string/title_section_product_resolution"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_s_medium"
@@ -35,8 +35,8 @@
             <View
                 android:layout_width="20dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_20"
                 android:background="@color/deep_orange_500"
                 />
 
@@ -50,7 +50,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small">
+                    android:padding="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/iv_product_image"
@@ -63,9 +63,9 @@
                         android:id="@+id/tv_product_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vs"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:layout_marginBottom="@dimen/dp_5"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:layout_toRightOf="@id/iv_product_image"
                         android:gravity="center_vertical"
                         android:maxLines="2"
@@ -79,7 +79,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_product_name"
-                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:layout_toRightOf="@id/iv_product_image"
                         android:gravity="center_vertical"
                         android:maxLines="2"
@@ -96,8 +96,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:text="@string/label_buyer_complaint"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color"
@@ -107,7 +107,7 @@
                 android:id="@+id/complaint_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginBottom="@dimen/dp_20"
                 context:text="Produk Rusak"
                 android:textSize="@dimen/sp_14"
                 />
@@ -115,7 +115,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:text="@string/label_reason_complaint"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/label_text_color"
@@ -125,7 +125,7 @@
                 android:id="@+id/complaint_reason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginBottom="@dimen/dp_20"
                 context:text="Pas dicolok ga bisa bunyi, pas saya eh kenapa kenapa kabelnya"
                 android:textSize="@dimen/sp_14"
                 />
@@ -139,7 +139,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:text="@string/label_complaint_attachment"
                     android:textSize="@dimen/sp_14"
                     android:textColor="@color/label_text_color"

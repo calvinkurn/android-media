@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:text="@string/bca_one_click" />
 
     </LinearLayout>
@@ -71,7 +71,7 @@
                     android:id="@+id/account_holder_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     tools:text="Jeremy Teti" />
 
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:id="@+id/daily_limit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     tools:text="Rp 1.000.000" />
 
             </LinearLayout>
@@ -123,7 +123,7 @@
                     android:id="@+id/account_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     tools:text="8626 1786 1862" />
 
             </LinearLayout>
@@ -139,8 +139,8 @@
                 android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
                 android:layout_weight="1"
                 android:background="@drawable/card_thick_edge"
                 android:gravity="center"
@@ -150,8 +150,8 @@
                 android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 android:layout_weight="1"
                 android:background="@drawable/card_thick_edge"
                 android:gravity="center"

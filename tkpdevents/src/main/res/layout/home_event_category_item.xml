@@ -81,10 +81,10 @@
             <!--android:layout_alignBottom="@+id/linearLayout2"-->
             <!--android:layout_alignParentRight="true"-->
             <!--android:background="@drawable/rounded_filled_theme_bttn_orange"-->
-            <!--android:paddingBottom="@dimen/padding_vs"-->
-            <!--android:paddingLeft="@dimen/padding_med"-->
-            <!--android:paddingRight="@dimen/padding_med"-->
-            <!--android:paddingTop="@dimen/padding_vs"-->
+            <!--android:paddingBottom="@dimen/dp_5"-->
+            <!--android:paddingLeft="@dimen/dp_20"-->
+            <!--android:paddingRight="@dimen/dp_20"-->
+            <!--android:paddingTop="@dimen/dp_5"-->
             <!--android:text="Beli Ticket"-->
             <!--android:textColor="@color/white"-->
             <!--android:textSize="@dimen/sp_14" />-->

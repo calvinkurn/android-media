@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ProgressBar
             android:id="@+id/pb_main_loading"
@@ -24,10 +24,10 @@
             android:id="@+id/tv_ticker_gtm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/bg_yellow_border_yelow"
             android:maxLines="3"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:visibility="gone"
             tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd"
             tools:visibility="visible" />
@@ -50,7 +50,7 @@
                     android:id="@+id/promo_code_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:cardCornerRadius="4dp">
 
                     <include
@@ -64,10 +64,10 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small">
+                    app:contentPadding="@dimen/dp_10">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -78,10 +78,10 @@
                             android:id="@+id/holder_error"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_10"
                             android:background="@color/holder_error"
                             android:orientation="vertical"
-                            android:padding="@dimen/padding_small"
+                            android:padding="@dimen/dp_10"
                             android:visibility="gone"
                             tools:visibility="visible">
 
@@ -90,7 +90,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:layout_marginBottom="@dimen/dp_5"
                                 android:gravity="center"
                                 android:text="@string/label_error_message_1_count_notif"
                                 android:textColor="@color/tkpd_dark_red"
@@ -109,8 +109,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
-                            android:layout_marginTop="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_5"
+                            android:layout_marginTop="@dimen/dp_10"
                             android:orientation="horizontal">
 
                             <TextView
@@ -151,8 +151,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/et_tkpd_balance"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:layout_marginRight="@dimen/margin_small"
+                                android:layout_marginEnd="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
                                 android:text="@string/label_transaction_info_deposit_tokopedia"
                                 android:textColor="@color/label_color"
                                 android:textSize="@dimen/fontvs" />
@@ -172,7 +172,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingBottom="@dimen/margin_vs">
+                            android:paddingBottom="@dimen/dp_5">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -185,8 +185,8 @@
                                 android:id="@+id/cart_loyalty_point_balance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:layout_marginRight="@dimen/margin_small"
+                                android:layout_marginEnd="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
                                 android:textSize="@dimen/fontvs"
                                 android:visibility="gone" />
 
@@ -202,18 +202,18 @@
 
                         <android.support.v4.widget.Space
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/margin_med" />
+                            android:layout_height="@dimen/dp_20" />
 
                         <RelativeLayout
                             android:id="@+id/btn_payment_method"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/saldo_left_wrapper"
-                            android:layout_marginBottom="@dimen/margin_small"
-                            android:layout_marginTop="@dimen/margin_med"
+                            android:layout_marginBottom="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_20"
                             android:background="@drawable/cards_ui_selected"
                             android:gravity="center"
-                            android:padding="@dimen/padding_small"
+                            android:padding="@dimen/dp_10"
                             android:visibility="gone">
 
                             <ImageView
@@ -221,8 +221,8 @@
                                 android:layout_width="55sp"
                                 android:layout_height="28sp"
                                 android:layout_centerVertical="true"
-                                android:layout_marginEnd="@dimen/margin_vs"
-                                android:layout_marginRight="@dimen/margin_vs"
+                                android:layout_marginEnd="@dimen/dp_5"
+                                android:layout_marginRight="@dimen/dp_5"
                                 android:layout_toLeftOf="@+id/tv_desc_btn_payment_method"
                                 android:layout_toStartOf="@+id/tv_desc_btn_payment_method"
                                 android:visibility="gone"
@@ -235,7 +235,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_centerInParent="true"
-                                android:drawablePadding="@dimen/padding_small"
+                                android:drawablePadding="@dimen/dp_10"
                                 android:gravity="center"
                                 android:text="Pilih metode pembayaran dulu"
                                 android:textColor="@color/href_link"
@@ -247,8 +247,8 @@
                                 android:layout_width="@dimen/small_dp"
                                 android:layout_height="@dimen/small_dp"
                                 android:layout_centerVertical="true"
-                                android:layout_marginLeft="@dimen/margin_vs"
-                                android:layout_marginStart="@dimen/margin_vs"
+                                android:layout_marginLeft="@dimen/dp_5"
+                                android:layout_marginStart="@dimen/dp_5"
                                 android:layout_toEndOf="@+id/tv_desc_btn_payment_method"
                                 android:layout_toRightOf="@+id/tv_desc_btn_payment_method"
                                 android:background="@drawable/overflow_selected"
@@ -260,9 +260,9 @@
                             android:id="@+id/tv_info_payment_method"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_10"
                             android:background="@color/green_200"
-                            android:padding="@dimen/margin_vs"
+                            android:padding="@dimen/dp_5"
                             android:visibility="gone"
                             tools:text="Tidak dikenakan biaya" />
 
@@ -273,8 +273,8 @@
                             android:layout_below="@+id/payment_label"
                             android:gravity="center"
                             android:orientation="horizontal"
-                            android:paddingBottom="@dimen/margin_vs"
-                            android:paddingTop="@dimen/margin_small"
+                            android:paddingBottom="@dimen/dp_5"
+                            android:paddingTop="@dimen/dp_10"
                             android:visibility="gone">
 
                             <TextView
@@ -300,7 +300,7 @@
                             android:id="@+id/tv_insurance_terms"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_10"
                             android:visibility="gone"
                             tools:text="Dengan membayar, saya menyetujui syarat dan ketentuan asuransi" />
 
@@ -323,7 +323,7 @@
                             android:id="@+id/cb_use_voucher"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/btn_height"
-                            android:layout_marginTop="@dimen/margin_small"
+                            android:layout_marginTop="@dimen/dp_10"
                             android:text="@string/title_use_promo_code"
                             android:textColor="@color/black"
                             android:textSize="@dimen/fontvs"
@@ -340,14 +340,14 @@
                             <TextView
                                 android:id="@+id/btn_check_voucher"
                                 android:layout_width="wrap_content"
-                                android:layout_height="@dimen/margin_vl"
+                                android:layout_height="@dimen/dp_40"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginLeft="@dimen/margin_small"
-                                android:layout_marginStart="@dimen/margin_small"
+                                android:layout_marginLeft="@dimen/dp_10"
+                                android:layout_marginStart="@dimen/dp_10"
                                 android:background="@drawable/green_button_rounded"
                                 android:gravity="center"
-                                android:padding="@dimen/margin_small"
+                                android:padding="@dimen/dp_10"
                                 android:text="@string/title_check"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/sp_14"
@@ -363,7 +363,7 @@
                                 <EditText
                                     android:id="@+id/et_voucher_code"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/margin_vl"
+                                    android:layout_height="@dimen/dp_40"
                                     android:hint="@string/label_transaction_hint_form_voucher_code"
                                     android:lines="1" />
 
@@ -387,11 +387,11 @@
                     android:id="@+id/instant_promo_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small"
+                    app:contentPadding="@dimen/dp_10"
                     tools:visibility="gone">
 
                     <LinearLayout
@@ -420,11 +420,11 @@
                     android:id="@+id/cv_cash_back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small"
+                    app:contentPadding="@dimen/dp_10"
                     tools:visibility="visible">
 
                     <RelativeLayout
@@ -459,10 +459,10 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small">
+                    app:contentPadding="@dimen/dp_10">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -494,7 +494,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/btn_height"
                             android:layout_below="@id/donasi_title"
-                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginLeft="@dimen/dp_10"
                             android:layout_toRightOf="@id/donasi_checkbox">
 
                             <ImageView

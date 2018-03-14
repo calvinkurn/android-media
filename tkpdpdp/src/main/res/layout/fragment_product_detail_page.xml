@@ -67,10 +67,10 @@
                 android:id="@+id/tv_ticker_gtm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/padding_vs"
+                android:layout_margin="@dimen/dp_5"
                 android:background="@drawable/bg_yellow_border_yelow"
                 android:maxLines="3"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:visibility="gone"
                 tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd" />
 
@@ -79,13 +79,13 @@
                 android:id="@+id/view_error_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.ErrorProductView
                 android:id="@+id/view_error_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <ProgressBar
                 android:id="@+id/view_progress"
@@ -111,20 +111,20 @@
                 android:id="@+id/view_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.PriceSimulationView
                 android:id="@+id/view_price_simulation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.PromoWidgetView
                 android:id="@+id/view_promo_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.TransactionDetailView
                 android:id="@+id/view_transaction_detail"
@@ -135,33 +135,33 @@
                 android:id="@+id/view_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"/>
+                android:layout_marginBottom="@dimen/dp_10"/>
 
             <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
                 android:id="@+id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
                 android:id="@+id/view_most_helpful"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.LatestTalkView
                 android:id="@+id/view_latest_discussion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.OtherProductsView
                 android:id="@+id/view_other_products"
@@ -180,7 +180,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/margin_med"/>
+                android:layout_marginBottom="@dimen/dp_20"/>
 
         </LinearLayout>
 

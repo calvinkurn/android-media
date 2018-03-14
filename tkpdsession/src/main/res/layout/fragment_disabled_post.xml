@@ -26,13 +26,13 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/new_margin_med"
+                android:layout_marginBottom="@dimen/new_dp_20"
                 app:srcCompat="@drawable/ic_disabled_page" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/title_disabled_post"

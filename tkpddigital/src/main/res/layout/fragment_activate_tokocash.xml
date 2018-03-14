@@ -17,13 +17,13 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
-            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginBottom="@dimen/dp_15"
             android:padding="@dimen/padding_detail">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/digital_voucher"
                 android:lineSpacingExtra="5sp"
@@ -32,8 +32,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_15"
                 android:text="@string/tokocash_phone_number"
                 android:textColor="@color/digital_voucher_notes"
                 android:textSize="@dimen/fontvs"/>
@@ -43,14 +43,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/font_medium"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginBottom="@dimen/margin_vs" />
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/separator_tokocash"
-                android:layout_marginBottom="@dimen/margin_sm"/>
+                android:layout_marginBottom="@dimen/dp_15"/>
 
             <Button
                 android:id="@+id/activation_btn"
@@ -67,8 +67,8 @@
                 android:id="@+id/syarat_ketentuan_tokocash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center_horizontal"
                 android:textSize="@dimen/fontvs"
                 android:textColor="@color/digital_voucher_notes"

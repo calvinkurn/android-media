@@ -15,10 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_small">
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10">
 
             <CheckBox
                 android:id="@+id/checkbox_voucher"
@@ -38,7 +38,7 @@
                 android:layout_alignLeft="@+id/text_checkedbox"
                 android:layout_alignStart="@+id/text_checkedbox"
                 android:layout_below="@+id/checkbox_voucher"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -46,11 +46,11 @@
                     android:id="@+id/button_voucher"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
                     android:background="@drawable/bg_button_green_enabled"
                     android:gravity="center"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/use_voucher"
                     style="@style/TextView.Small.WhitePrimary.Bold"/>
 
@@ -80,8 +80,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/error_voucher"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notes_voucher"
                     style="@style/TextView.Micro.BlackDisabled"
                     android:visibility="gone"/>
@@ -93,8 +93,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/holder_input_voucher"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -107,12 +107,12 @@
                     android:id="@+id/button_cancel"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@drawable/bg_button_white_stroke_gray"
                     android:gravity="center"
-                    android:padding="@dimen/padding_small"
+                    android:padding="@dimen/dp_10"
                     android:text="@string/button_cancel_voucher"
                     style="@style/TextView.Small.BlackDisabled"/>
 
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_toLeftOf="@+id/button_cancel"
                     android:layout_toStartOf="@+id/button_cancel"
                     android:text="@string/title_success_get_voucher"
@@ -135,7 +135,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/textview_title_voucher"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:layout_toLeftOf="@+id/button_cancel"
                     android:layout_toStartOf="@+id/button_cancel"
                     android:textColor="@color/tkpd_main_green"

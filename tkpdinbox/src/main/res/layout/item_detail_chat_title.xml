@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_vs">
+    android:layout_marginTop="@dimen/dp_5">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,8 +25,8 @@
                 android:gravity="center"
                 android:textSize="@dimen/sp_12"
                 context:text="sistem tokopedia"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingRight="@dimen/padding_ms"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 android:textAllCaps="false"
                 android:textColor="@color/black_38"/>
 
@@ -34,12 +34,12 @@
                 android:layout_width="5dp"
                 android:layout_height="5dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:background="@drawable/bg_circle_warm_grey"/>
 
             <TextView
                 android:id="@+id/tv_username"
-                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center|left"

@@ -323,7 +323,7 @@
                             android:id="@+id/tv_more_info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_ms"
+                            android:layout_marginBottom="@dimen/dp_8"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/data_pelanggan_tambahan"

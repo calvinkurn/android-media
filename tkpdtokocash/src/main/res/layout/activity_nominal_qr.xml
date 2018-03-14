@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_detail"
                 android:background="@drawable/qrpayment_bg_white_border_shadow"
-                android:padding="@dimen/margin_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:id="@+id/field_merchant"
@@ -50,8 +50,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/merchant_name"
                     android:layout_below="@+id/merchant_name"
-                    android:layout_marginTop="@dimen/margin_ms"
-                    android:drawablePadding="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:drawablePadding="@dimen/dp_5"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/fontvs"
                     app:drawableLeftCompat="@drawable/ic_shop_phone"
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/value_nominal"
-                    android:layout_marginTop="@dimen/margin_ms"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:background="@color/separator_grey" />
 
                 <TextView
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/separator"
-                    android:layout_marginTop="@dimen/margin_ms"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:gravity="center_vertical"
                     android:text="TokoCash Balance : Rp. 75.000"
                     android:textColor="@color/grey_text"
@@ -127,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tokocash_value"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:text="Catatan (opsional)"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs" />
@@ -137,7 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title_notes"
-                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:background="@color/transparent"
                     android:hint="Masukkan catatan" />
 
@@ -145,7 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/notes_value"
-                    android:layout_marginTop="@dimen/margin_ms"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:background="@color/separator_grey" />
 
             </RelativeLayout>

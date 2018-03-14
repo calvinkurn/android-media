@@ -6,7 +6,7 @@
         android:id="@+id/bottom_action_filter_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
         app:bav_1_display="true"
         app:bav_2_display="true"
         app:bav_icon_1="@drawable/ic_flight_search_filter"

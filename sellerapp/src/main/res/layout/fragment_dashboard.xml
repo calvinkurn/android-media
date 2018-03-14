@@ -20,10 +20,10 @@
                 android:id="@+id/ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_sm"
-                android:layout_marginLeft="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
                 android:visibility="gone"
                 app:tckv_indicator_off_color="@color/grey"
                 app:tckv_indicator_on_color="@color/tkpd_main_green" />
@@ -48,7 +48,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_med">
+                android:layout_marginBottom="@dimen/dp_20">
 
                 <com.tokopedia.design.loading.LoadingStateView
                     android:id="@+id/loading_state_view_footer"

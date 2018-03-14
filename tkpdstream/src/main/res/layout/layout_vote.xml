@@ -182,7 +182,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/badge"
                 android:fontFamily="sans-serif-medium"
-                android:paddingLeft="@dimen/padding_small"
+                android:paddingLeft="@dimen/dp_10"
                 android:text="Info Hadiah"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"

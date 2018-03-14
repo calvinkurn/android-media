@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:padding="@dimen/padding_med"
+            android:padding="@dimen/dp_20"
             android:visibility="gone">
 
             <ProgressBar
@@ -28,7 +28,7 @@
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/dp_15"
                 android:gravity="center"
                 android:text="@string/flight_review_checkout_loading_label" />
         </LinearLayout>
@@ -49,12 +49,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/padding_med"
+                    android:paddingBottom="@dimen/dp_20"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_med">
+                    android:paddingTop="@dimen/dp_20">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.Micro.BlackSecondary"
@@ -84,9 +84,9 @@
                         android:layout_width="match_parent"
                         android:layout_marginLeft="@dimen/margin_16"
                         android:layout_marginRight="@dimen/margin_16"
-                        android:layout_marginTop="@dimen/margin_med"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:background="@drawable/bg_stroke_dash_green_flight"
-                        android:padding="@dimen/padding_small"
+                        android:padding="@dimen/dp_10"
                         android:text="@string/flight_label_warn_to_check_again" />
 
                     <RelativeLayout
@@ -115,14 +115,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_small" />
+                        android:paddingBottom="@dimen/dp_10" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/container_flight_return"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -152,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingBottom="@dimen/dp_10"
                         android:paddingLeft="@dimen/padding_16"
                         android:paddingRight="@dimen/padding_16" />
                 </LinearLayout>
@@ -160,7 +160,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -174,23 +174,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_small"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_20"
+                        android:paddingRight="@dimen/dp_20" />
                 </LinearLayout>
 
                 <com.tokopedia.design.voucher.VoucherCartView
                     android:id="@+id/voucher_check_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med">
+                    android:layout_marginTop="@dimen/dp_20">
 
                 </com.tokopedia.design.voucher.VoucherCartView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -216,7 +216,7 @@
                         android:paddingLeft="@dimen/padding_16"
                         android:paddingRight="@dimen/padding_16"
                         android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_med">
+                        android:paddingTop="@dimen/dp_20">
 
                         <View
                             android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_med">
+                            android:layout_marginTop="@dimen/dp_20">
 
                             <TextView
                                 style="@style/TextView.Small"
@@ -272,20 +272,20 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginEnd="@dimen/margin_med"
-                        android:layout_marginLeft="@dimen/margin_med"
-                        android:layout_marginRight="@dimen/margin_med"
-                        android:layout_marginStart="@dimen/margin_med"
-                        android:layout_marginTop="@dimen/margin_med"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:layout_marginRight="@dimen/dp_20"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:background="@drawable/bg_line_separator" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginBottom="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:orientation="horizontal"
-                        android:padding="@dimen/padding_med">
+                        android:padding="@dimen/dp_20">
 
                         <android.support.v7.widget.AppCompatTextView
                             style="@style/TextView.Title.Bold"
@@ -311,8 +311,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/background_apps"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingTop="@dimen/padding_small">
+                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingTop="@dimen/dp_10">
 
                     <Button
                         android:id="@+id/button_submit"

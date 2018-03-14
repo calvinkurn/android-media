@@ -112,10 +112,10 @@
     </style>
 
     <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
-        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingTop">@dimen/margin_small_sm</item>
-        <item name="android:paddingBottom">@dimen/margin_small_sm</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_10_sm</item>
+        <item name="android:paddingBottom">@dimen/dp_10_sm</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 

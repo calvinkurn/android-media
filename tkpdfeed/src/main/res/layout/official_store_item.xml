@@ -17,9 +17,9 @@
             android:id="@+id/product_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/image_product_desc"
@@ -32,10 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_image"
-            android:layout_marginBottom="@dimen/unified_margin_vvs"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/unified_dp_3"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
@@ -49,9 +49,9 @@
             android:id="@+id/text_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unified_margin_vvs"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/unified_dp_3"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_14"
@@ -62,9 +62,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:orientation="horizontal">
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginRight="@dimen/dp_10"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/orange_red"
                 android:textSize="@dimen/unify_font_normal"
@@ -103,9 +103,9 @@
             android:id="@+id/labels"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:orientation="horizontal"
             android:scrollbars="none"
             android:visibility="gone"
@@ -120,7 +120,7 @@
         android:background="@drawable/dotted_top_border"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
             android:id="@id/shop_ava"
@@ -129,7 +129,7 @@
             android:background="@drawable/feed_container_rounded_corners_border"/>
 
         <android.support.v4.widget.Space
-            android:layout_width="@dimen/margin_vs"
+            android:layout_width="@dimen/dp_5"
             android:layout_height="wrap_content"/>
 
         <TextView
@@ -152,7 +152,7 @@
             android:layout_width="@dimen/badge_size"
             android:layout_height="@dimen/badge_size"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             android:gravity="center_vertical"
             app:srcCompat="@drawable/ic_badge_free_return"
             android:visibility="visible"/>

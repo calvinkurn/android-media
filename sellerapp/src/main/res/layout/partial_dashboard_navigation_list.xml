@@ -10,7 +10,7 @@
     <com.tokopedia.design.text.TitleGroupView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         app:tgv_icon="@drawable/icon_penjualan"
         app:tgv_title="@string/drawer_title_seller" />
 
@@ -45,7 +45,7 @@
     <com.tokopedia.design.text.TitleGroupView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         app:tgv_icon="@drawable/icon_inbox"
         app:tgv_title="@string/drawer_title_inbox" />
 
