@@ -28,7 +28,6 @@ public interface TrainApi {
     Observable<DataResponse<TrainListSchedulesEntity>> schedulesTrain(@Body Map<String, Object> params);
 
     @GET("kereta-api/schedules/availabilities/{idTrain}")
-    Observable<DataResponse<List<ScheduleAvailabilityEntity>>> availabilityTrain(Map<String, Object> params,
-                                                                                 @Path("idTrain") String idTrain);
+    Observable<DataResponse<List<ScheduleAvailabilityEntity>>> availabilityTrain(@Path("idTrain") String idTrain);
 
 }

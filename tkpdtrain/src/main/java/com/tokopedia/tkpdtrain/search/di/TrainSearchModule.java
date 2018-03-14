@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdtrain.search.di;
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.search.domain.GetAvailabilityScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 
 import dagger.Module;
@@ -15,5 +16,10 @@ public class TrainSearchModule {
     @Provides
     GetScheduleUseCase provideGetScheduleUseCase(TrainRepository trainRepository) {
         return new GetScheduleUseCase(trainRepository);
+    }
+
+    @Provides
+    GetAvailabilityScheduleUseCase provideGetAvailabilityScheduleUseCase(TrainRepository trainRepository) {
+        return new GetAvailabilityScheduleUseCase(trainRepository);
     }
 }

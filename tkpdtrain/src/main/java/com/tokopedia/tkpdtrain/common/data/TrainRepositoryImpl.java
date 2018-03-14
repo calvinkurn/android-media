@@ -2,9 +2,11 @@ package com.tokopedia.tkpdtrain.common.data;
 
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.search.data.TrainAvailabilitySpecification;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
 import com.tokopedia.tkpdtrain.station.data.specification.TrainPopularStationSpecification;
 import com.tokopedia.tkpdtrain.station.data.specification.TrainStationByKeywordSpecification;
@@ -51,5 +53,10 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword) {
         return trainStationDataStoreFactory.getStations(new TrainStationCityByKeywordSpecification(keyword));
+    }
+
+    @Override
+    public Observable<List<TrainSchedule>> getAvailabilitySchedule(String idTrain) {
+        return trainScheduleDataStoreFactory.getAvailabilitySchedule(idTrain);
     }
 }

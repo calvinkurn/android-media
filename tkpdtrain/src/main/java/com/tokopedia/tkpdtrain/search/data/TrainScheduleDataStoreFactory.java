@@ -1,14 +1,15 @@
 package com.tokopedia.tkpdtrain.search.data;
 
 import com.tokopedia.tkpdtrain.common.specification.Specification;
+import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainListSchedulesEntity;
-import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
+import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -43,13 +44,7 @@ public class TrainScheduleDataStoreFactory {
     }
 
     private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification) {
-        return cloudDataStore.getDatas(specification)
-                .doOnNext(new Action1<TrainListSchedulesEntity>() {
-                    @Override
-                    public void call(TrainListSchedulesEntity trainListSchedulesEntity) {
-                        dbDataStore.insertAll(trainListSchedulesEntity.getTrainSchedules());
-                    }
-                })
+        return cloudDataStore.getDatasSchedule(specification)
                 .flatMap(new Func1<TrainListSchedulesEntity, Observable<List<AvailabilityKeySchedule>>>() {
                     @Override
                     public Observable<List<AvailabilityKeySchedule>> call(final TrainListSchedulesEntity trainListSchedulesEntity) {
@@ -62,6 +57,26 @@ public class TrainScheduleDataStoreFactory {
                                         } else {
                                             return Observable.just(trainListSchedulesEntity.getAvailabilityKeys())
                                                     .map(new AvailabilityKeysMapper());
+                                        }
+                                    }
+                                });
+                    }
+                });
+    }
+
+    public Observable<List<TrainSchedule>> getAvailabilitySchedule(String idTrain) {
+        return cloudDataStore.getDatasAvailability(idTrain)
+                .flatMap(new Func1<List<ScheduleAvailabilityEntity>, Observable<List<TrainSchedule>>>() {
+                    @Override
+                    public Observable<List<TrainSchedule>> call(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
+                        return dbDataStore.updateDataAvailability(scheduleAvailabilityEntities)
+                                .flatMap(new Func1<Boolean, Observable<List<TrainSchedule>>>() {
+                                    @Override
+                                    public Observable<List<TrainSchedule>> call(Boolean isSuccessSavedData) {
+                                        if (!isSuccessSavedData) {
+                                            return Observable.empty();
+                                        } else {
+                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities));
                                         }
                                     }
                                 });

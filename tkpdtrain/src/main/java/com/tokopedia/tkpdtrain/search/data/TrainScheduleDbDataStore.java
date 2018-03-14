@@ -12,9 +12,12 @@ import com.tokopedia.tkpdtrain.common.specification.DbFlowWithOrderSpecification
 import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.common.TrainDataDBSource;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable;
+import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainScheduleEntity;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
 import com.tokopedia.tkpdtrain.search.domain.mapper.TrainScheduleMapper;
+
+import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,32 +151,30 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         return null;
     }
 
-//    public Observable<Boolean> updateDataAvailability(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities,
-//                                                      Specification specification) {
-//        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-//            @Override
-//            public void call(Subscriber<? super Boolean> subscriber) {
-//                for (ScheduleAvailabilityEntity scheduleAvailability : scheduleAvailabilityEntities) {
-//
-//                }
-//
-//
-//            }
-//
-//            private void updateAvailability(ScheduleAvailabilityEntity scheduleAvailabilityEntity,
-//                                            String idSchedule) {
-//                ConditionGroup conditions = ConditionGroup.clause();
-//                conditions.and(TrainScheduleDbTable_Table.eq(flightAirportDB.getCountryId()));
-//                TrainScheduleDbTable result = new Select()
-//                        .from(TrainScheduleDbTable.class)
-//                        .where(conditions)
-//                        .querySingle();
-//                if (result != null) {
-//                    result.setAvailableSeat();
-//                }
-//            }
-//        });
-//    }
+    public Observable<Boolean> updateDataAvailability(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                for (ScheduleAvailabilityEntity scheduleAvailability : scheduleAvailabilityEntities) {
+                    updateAvailability(scheduleAvailability);
+                }
+                subscriber.onNext(true);
+            }
+
+            private void updateAvailability(ScheduleAvailabilityEntity scheduleAvailabilityEntity) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                conditions.and(TrainScheduleDbTable_Table.schedule_id.eq(scheduleAvailabilityEntity.getIdSchedule()));
+                TrainScheduleDbTable result = new Select()
+                        .from(TrainScheduleDbTable.class)
+                        .where(conditions)
+                        .querySingle();
+                if (result != null) {
+                    result.setAvailableSeat(scheduleAvailabilityEntity.getAvailableSeat());
+                    result.save();
+                }
+            }
+        });
+    }
 
     @Override
     public Observable<TrainSchedule> getData(final Specification specification) {
