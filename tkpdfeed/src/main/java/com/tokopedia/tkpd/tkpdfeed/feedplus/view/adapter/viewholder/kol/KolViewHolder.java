@@ -14,7 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 
@@ -249,10 +249,10 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
     private void tooltipAreaClicked(KolViewModel element) {
         UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
-        List<KolTracking.Promotion> list = new ArrayList<>();
-        list.add(new KolTracking.Promotion(
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
                 element.getId(),
-                KolTracking.Promotion.createContentName(
+                FeedEnhancedTracking.Promotion.createContentName(
                         element.getTagsType(),
                         element.getCardType())
                 ,
@@ -263,7 +263,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 element.getContentLink().equals("")? "-" : element.getContentLink()
         ));
 
-        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
+        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking.getKolClickTracking(list,
                 Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))));
 
         viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),

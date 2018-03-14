@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_CLICK;
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_VIEW;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
 
 /**
  * @author by nisie on 1/2/18.
  */
 
-public class KolTracking {
+public class FeedEnhancedTracking {
 
     private static final String EVENT = "event";
     private static final String KEY_USER_ID = "userId";

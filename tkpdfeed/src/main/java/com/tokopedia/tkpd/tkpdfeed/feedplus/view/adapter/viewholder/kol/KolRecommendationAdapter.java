@@ -13,7 +13,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
@@ -88,17 +88,17 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                     } else {
                         UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
 
-                        List<KolTracking.Promotion> list = new ArrayList<>();
+                        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                         KolRecommendItemViewModel recItem = data.getListRecommend().get(getAdapterPosition());
-                        list.add(new KolTracking.Promotion(
+                        list.add(new FeedEnhancedTracking.Promotion(
                                 recItem.getId(),
-                                KolTracking.Promotion.createContentNameRecommendation(),
+                                FeedEnhancedTracking.Promotion.createContentNameRecommendation(),
                                 recItem.getName().equals("") ? "-" : recItem.getName(),
                                 data.getRowNumber(),
                                 recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
                                 recItem.getId(),
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
-                        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
                                 .getKolClickTracking(list,
                                         Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))
                                 ));

@@ -28,8 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
@@ -308,10 +307,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             KolViewModel kolViewModel = convertToKolViewModel(domain);
                             listFeedView.add(kolViewModel);
 
-                            List<KolTracking.Promotion> list = new ArrayList<>();
-                            list.add(new KolTracking.Promotion(
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                            list.add(new FeedEnhancedTracking.Promotion(
                                     kolViewModel.getId(),
-                                    KolTracking.Promotion.createContentName(
+                                    FeedEnhancedTracking.Promotion.createContentName(
                                             kolViewModel.getTagsType(),
                                             kolViewModel.getCardType())
                                     ,
@@ -321,7 +320,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     kolViewModel.getContentId(),
                                     kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
                             ));
-                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking
+                            TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking.getKolImpressionTracking
                                     (list, Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
                         }
                         break;
@@ -336,11 +335,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
                             listFeedView.add(kolRecommendationViewModel);
 
-                            List<KolTracking.Promotion> list = new ArrayList<>();
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             for (KolRecommendItemViewModel recItem : kolRecommendationViewModel.getListRecommend()) {
-                                list.add(new KolTracking.Promotion(
+                                list.add(new FeedEnhancedTracking.Promotion(
                                         recItem.getId(),
-                                        KolTracking.Promotion.createContentNameRecommendation(),
+                                        FeedEnhancedTracking.Promotion.createContentNameRecommendation(),
                                         recItem.getName().equals("") ? "-" : recItem.getName(),
                                         listFeedView.size(),
                                         recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
@@ -348,7 +347,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                         recItem.getUrl().equals("") ? "-" : recItem.getUrl()
                                 ));
                             }
-                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                            TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
                                     .getKolImpressionTracking(list,
                                             Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
                         }
