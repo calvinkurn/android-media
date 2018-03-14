@@ -42,6 +42,7 @@
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_physical_shop"
             style="@style/LabelLayout"
+            android:visibility="gone"
             app:lv_content="@string/shop_info_label_default_content"
             app:lv_title="@string/shop_info_label_physical_shop" />
 

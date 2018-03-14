@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.adapter;
+package com.tokopedia.shop.page.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
