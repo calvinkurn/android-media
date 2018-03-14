@@ -203,13 +203,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void renderList(@NonNull List<ShopProductViewModel> list) {
-        super.renderList(list);
-        shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                list,false);
-    }
-
-    @Override
     public void onSwipeRefresh() {
         shopProductListPresenter.clearProductCache();
         super.onSwipeRefresh();
@@ -266,6 +259,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
         bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
+
+        shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+                list,false);
     }
 
     private int getNextIndex(int currentIndex, int max) {
