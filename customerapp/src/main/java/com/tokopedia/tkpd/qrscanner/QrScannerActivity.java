@@ -146,7 +146,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     private Drawable iconQr(boolean isTorchOn) {
-        return (isTorchOn) ?
+        return (!isTorchOn) ?
                 AppCompatResources.getDrawable(this, R.drawable.qr_ic_flash_turn_on) :
                 AppCompatResources.getDrawable(this, R.drawable.qr_ic_flash_turn_off);
     }
