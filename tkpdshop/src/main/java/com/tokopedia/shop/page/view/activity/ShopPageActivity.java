@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -328,20 +329,19 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void displayQualityInfo(String qualityAverage, float qualityRatingStar, String totalReview) {
-        View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_product_quality, null);
-        RatingBar qualityRatingBar = speedContentBottomSheet.findViewById(R.id.rating_bar_product_quality);
-        qualityRatingBar.setRating(qualityRatingStar);
-        qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
+    public void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview) {
+        View qualityContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_product_quality, null);
+        ImageView ratingBarImageView = qualityContentBottomSheet.findViewById(R.id.image_view_rating_bar);
+        ratingBarImageView.setImageResource(qualityRatingStarImageRes);
 
-        TextView averageTextView = speedContentBottomSheet.findViewById(R.id.text_view_product_quality);
+        TextView averageTextView = qualityContentBottomSheet.findViewById(R.id.text_view_product_quality);
         averageTextView.setText(qualityAverage);
 
-        TextView reviewInfoTextView = speedContentBottomSheet.findViewById(R.id.text_view_review_info);
+        TextView reviewInfoTextView = qualityContentBottomSheet.findViewById(R.id.text_view_review_info);
         reviewInfoTextView.setText(getString(R.string.shop_page_bottom_sheet_product_quality_review_info, totalReview));
 
         BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(this);
-        bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
+        bottomSheetView.setCustomContentLayout(qualityContentBottomSheet);
         bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getString(R.string.shop_page_bottom_sheet_product_quality_title))
