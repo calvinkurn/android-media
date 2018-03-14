@@ -2,10 +2,14 @@ package com.tokopedia.session.register.domain.interactor.registerphonenumber;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -18,8 +22,12 @@ public class LoginRegisterPhoneNumberUseCase extends UseCase<LoginRegisterPhoneN
     private RegisterPhoneNumberUseCase registerPhoneNumberUseCase;
     private MakeLoginUseCase makeLoginUseCase;
 
-    public LoginRegisterPhoneNumberUseCase(RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+    @Inject
+    public LoginRegisterPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                           PostExecutionThread postExecutionThread,
+                                           RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
                                            MakeLoginUseCase makeLoginUseCase) {
+        super(threadExecutor, postExecutionThread);
         this.registerPhoneNumberUseCase = registerPhoneNumberUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
     }

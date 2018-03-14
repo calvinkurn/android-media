@@ -5,6 +5,8 @@ import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -13,6 +15,10 @@ import rx.functions.Func1;
  */
 
 public class RegisterPhoneNumberMapper implements Func1<Response<TkpdResponse>, RegisterPhoneNumberModel> {
+
+    @Inject
+    public RegisterPhoneNumberMapper() {
+    }
 
     private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
 

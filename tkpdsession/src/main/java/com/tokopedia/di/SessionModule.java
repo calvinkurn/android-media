@@ -343,9 +343,11 @@ SessionModule {
     @SessionScope
     @Provides
     LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
             RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
             MakeLoginUseCase makeLoginUseCase) {
-        return new LoginRegisterPhoneNumberUseCase(registerPhoneNumberUseCase, makeLoginUseCase);
+        return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, makeLoginUseCase);
     }
 
     @SessionScope

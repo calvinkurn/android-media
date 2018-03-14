@@ -34,8 +34,10 @@ public class CloudRegisterPhoneNumberSource {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<RegisterPhoneNumberModel> registerPhoneNumber(Context context, TKPDMapParam<String, Object> params) {
-        return accountsService.getApi().registerPhoneNumber(AuthUtil.generateParamsNetwork2(context, params))
+    public Observable<RegisterPhoneNumberModel> registerPhoneNumber(
+            Context context, TKPDMapParam<String, Object> params) {
+        return accountsService.getApi()
+                .registerPhoneNumber(AuthUtil.generateParamsNetwork2(context, params))
                 .map(registerPhoneNumberMapper)
                 .doOnNext(saveAccessToken());
     }
