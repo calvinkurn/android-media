@@ -62,10 +62,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     TextView seemorebuttonTnC;
     @BindView(R2.id.down_arrow)
     ImageView ivArrowSeating;
-    @BindView(R2.id.btn_show_seating)
-    LinearLayout btnShowSeating;
-    @BindView(R2.id.imgv_seating_layout)
-    ImageView imgvSeatingLayout;
     @BindView(R2.id.tv_expandable_tnc)
     ExpandableTextView tvExpandableTermsNCondition;
     @BindView(R2.id.app_bar)
@@ -78,8 +74,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     LinearLayout addressView;
     @BindView(R2.id.text_view_title)
     TextView textViewTitle;
-    @BindView(R2.id.seating_layout_card)
-    View seatingLayoutCard;
     @BindView(R2.id.btn_book)
     View btnBook;
     @BindView(R2.id.progress_bar_layout)
@@ -196,14 +190,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
         String dateRange = "";
 
-        if (homedata.getMinStartDate() == 0) {
-            timeView.setVisibility(View.GONE);
-        } else if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
-            dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+        if (homedata.getMinStartDate() > 0) {
+            if (homedata.getMinStartDate() == homedata.getMaxEndDate()) {
+                dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+            } else {
+                dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
+                        + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+            }
         } else {
-            dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
-                    + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+            timeView.setVisibility(View.GONE);
         }
+
         setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
@@ -238,7 +235,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void renderSeatmap(String url) {
-        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
+//        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
     }
 
     @Override
@@ -252,29 +249,29 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             timeView.setVisibility(View.GONE);
 
         setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, data.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
+        setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
         textViewTitle.setText(data.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
-        String splitArray[] = tnc.split("~");
-        int flag = 1;
+        if (Utils.isNotNullOrEmpty(tnc)) {
+            String splitArray[] = tnc.split("~");
+            int flag = 1;
 
-        StringBuilder tncBuffer = new StringBuilder();
+            StringBuilder tncBuffer = new StringBuilder();
 
-        for (String line : splitArray) {
-            if (flag == 1) {
-                tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
-                flag = 2;
-            } else {
-                tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
-                flag = 1;
+            for (String line : splitArray) {
+                if (flag == 1) {
+                    tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
+                    flag = 2;
+                } else {
+                    tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
+                    flag = 1;
+                }
             }
+            tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
         }
-        tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
 
-        if (data.getHasSeatLayout() != 1)
-            seatingLayoutCard.setVisibility(View.GONE);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 

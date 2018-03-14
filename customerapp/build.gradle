@@ -261,6 +261,7 @@ dependencies {
     compile project(rootProject.ext.features.tokoCash)
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
+    compile project(':tkpdstream')
     compile project(rootProject.ext.libraries.reactNative)
     compile project(rootProject.ext.features.content)
 

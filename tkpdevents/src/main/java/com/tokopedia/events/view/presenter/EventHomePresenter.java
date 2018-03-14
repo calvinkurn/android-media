@@ -141,6 +141,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper("enter error");
+                e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -199,7 +200,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     public void onClickBanner() {
-        CategoryItemsViewModel categoryItemsViewModel = carousel.getItems().get(getView().getBannerPosition());
+        CategoryItemsViewModel categoryItemsViewModel = carousel.getItems().get(currentPage);
         if (categoryItemsViewModel.getUrl().contains("www.tokopedia.com")
                 || categoryItemsViewModel.getUrl().contains("docs.google.com")) {
             startGeneralWebView(categoryItemsViewModel.getUrl());

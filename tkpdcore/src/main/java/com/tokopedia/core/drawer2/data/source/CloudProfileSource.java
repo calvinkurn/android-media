@@ -72,6 +72,8 @@ public class CloudProfileSource {
                     if (profileModel.getProfileData().getShopInfo() != null &&
                             profileModel.getProfileData().getShopInfo().getShopDomain() != null)
                         sessionHandler.setShopDomain(context, profileModel.getProfileData().getShopInfo().getShopDomain());
+
+                    sessionHandler.setProfilePicture(profileModel.getProfileData().getUserInfo().getUserImage());
                 }
             }
         };
