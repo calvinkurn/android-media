@@ -61,6 +61,7 @@ import com.tokopedia.transaction.checkout.view.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 
@@ -72,6 +73,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -465,6 +468,13 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
+    public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+    }
+
+    @Override
     public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
         if (shipmentAddressFormData.isMultiple()) {
             Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
@@ -479,7 +489,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             );
             startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
         }
-
     }
 
     @Override
@@ -750,12 +759,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == CartShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
             onResultFromRequestCodeMultipleAddressForm(resultCode);
+        } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
+            onResultFromRequestCodeAddressChoiceActivity(resultCode);
         }
     }
 
@@ -824,6 +836,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
                 cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
             }
+        }
+    }
+
+    private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
+        if (resultCode == RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
+            dPresenter.processToShipmentForm();
         }
     }
 

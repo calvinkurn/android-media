@@ -311,7 +311,11 @@ public class CartListPresenter implements ICartListPresenter {
                     public void onNext(UpdateToSingleAddressShipmentData data) {
                         view.hideProgressLoading();
                         if (data.getUpdateCartData().isSuccess() && !data.getShipmentAddressFormData().isError()) {
-                            view.renderToShipmentFormSuccess(data.getShipmentAddressFormData());
+                            if (data.getShipmentAddressFormData().getGroupAddress().isEmpty()) {
+                                view.renderNoRecipientAddressShipmentForm(data.getShipmentAddressFormData());
+                            } else {
+                                view.renderToShipmentFormSuccess(data.getShipmentAddressFormData());
+                            }
                         } else {
                             String messageError = !data.getShipmentAddressFormData().getErrorMessage().isEmpty()
                                     ? data.getShipmentAddressFormData().getErrorMessage()

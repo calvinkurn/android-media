@@ -38,6 +38,8 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
 
+    void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
+
     void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
 
     void renderErrorToShipmentForm(String message);
