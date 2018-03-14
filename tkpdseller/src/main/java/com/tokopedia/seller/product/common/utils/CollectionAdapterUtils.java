@@ -16,7 +16,7 @@ public class CollectionAdapterUtils implements JsonSerializer<Collection<?>> {
 
     @Override
     public JsonElement serialize(Collection<?> src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src == null || src.isEmpty())
+        if (src == null )
             return null;
         JsonArray array = new JsonArray();
         for (Object child : src) {

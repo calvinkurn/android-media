@@ -426,7 +426,11 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     public void setProductVariant(ProductVariantViewModel productVariant) {
-        this.productVariant = productVariant;
+        if (productVariant != null && !productVariant.hasSelectedVariant()) {
+            this.productVariant = null;
+        } else {
+            this.productVariant = productVariant;
+        }
     }
 
     public void setProductNameEditable(boolean productNameEditable) {
