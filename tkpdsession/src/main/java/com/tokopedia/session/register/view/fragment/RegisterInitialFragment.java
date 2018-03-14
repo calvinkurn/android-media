@@ -75,9 +75,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private static final int REQUEST_REGISTER_WEBVIEW = 100;
     private static final int REQUEST_REGISTER_EMAIL = 101;
-    private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
+    private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";

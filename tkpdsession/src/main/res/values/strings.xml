@@ -202,4 +202,10 @@
     <string name="email_title_top">Pastikan email Anda aktif untuk keamanan\n dan kemudahan transaksi.</string>
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan email kode verifikasi</string>
     <string name="button_continue">Lanjutkan</string>
+
+    <!--WELCOME PAGE-->
+    <string name="title_welcome">Selamat Bergabung di Tokopedia</string>
+    <string name="sub_title_welcome">Silahkan lanjut belanja atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>!</string>
+    <string name="welcome_button_continue">Lanjut Belanja</string>
+    <string name="welcome_button_complete">Lengkapi Profil</string>
 </resources>

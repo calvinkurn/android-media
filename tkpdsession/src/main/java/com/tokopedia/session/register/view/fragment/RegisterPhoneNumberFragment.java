@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -21,12 +22,14 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
@@ -44,6 +47,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         implements RegisterPhoneNumber.View {
 
     private static final int REQUEST_VERIFY_PHONE = 101;
+    private static final int REQUEST_WELCOME_PAGE = 102;
 
     EditText phoneNumber;
     TextView nextButton;
@@ -289,6 +293,12 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
             doRegisterPhoneNumber();
+        } else if (requestCode == REQUEST_WELCOME_PAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToProfileCompletionPage();
+            } else {
+                getActivity().finish();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -316,6 +326,16 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    private void goToProfileCompletionPage() {
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+        Intent parentIntent = ((TkpdCoreRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity());
+        parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent childIntent = new Intent(getActivity(), ProfileCompletionActivity.class);
+        stackBuilder.addNextIntent(parentIntent);
+        stackBuilder.addNextIntent(childIntent);
+        getActivity().startActivities(stackBuilder.getIntents());
     }
 
     private void enableButton(TextView button) {
