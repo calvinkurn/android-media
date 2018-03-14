@@ -95,7 +95,8 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp">
 
             <TextView
                 android:id="@+id/tv_text_shipment"
@@ -103,6 +104,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
                 android:text="@string/label_courier" />
 
             <TextView
@@ -110,12 +113,12 @@
                 style="@style/TextSmallMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/green_button_rounded_unify"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="9dp"
-                android:paddingLeft="27dp"
-                android:paddingRight="27dp"
-                android:paddingTop="9dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
                 android:text="@string/label_button_choose_courier"
                 android:textColor="@color/white" />
 
@@ -123,9 +126,10 @@
                 android:id="@+id/ll_selected_courier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="?selectableItemBackground"
+                android:paddingBottom="16dp"
                 android:paddingLeft="@dimen/padding_ms"
                 android:paddingRight="@dimen/padding_ms"
+                android:paddingTop="16dp"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -134,16 +138,12 @@
                     style="@style/TextSmallNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="9dp"
-                    android:paddingTop="9dp"
                     android:textColor="@color/medium_green"
                     tools:text="Alfatrex" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="match_parent"
-                    android:paddingBottom="9dp"
-                    android:paddingTop="9dp"
                     android:src="@drawable/ic_chevron_right"
                     android:tint="@color/medium_green"
                     tools:ignore="ContentDescription" />

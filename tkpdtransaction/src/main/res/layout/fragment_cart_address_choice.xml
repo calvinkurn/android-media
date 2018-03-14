@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/new_margin_med"
-                android:layout_marginTop="@dimen/new_margin_med"
+                android:layout_marginTop="32dp"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="@dimen/card_elevation_checkout">
 
@@ -110,14 +110,17 @@
 
         <Button
             android:id="@+id/bt_send_to_current_address"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/margin_ms"
-            android:background="@drawable/bg_button_green_enabled"
+            android:background="@drawable/bg_grey_button_rounded"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/button_label_send_to_current_address"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/grey_500"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/ll_network_error_view"

@@ -110,6 +110,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public void setSelectedRecipientAddress(RecipientAddressModel recipientAddress) {
         this.mSelectedRecipientAddress = recipientAddress;
+        getView().renderSaveButtonEnabled();
     }
 
     @Override
