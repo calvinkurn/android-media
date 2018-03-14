@@ -31,7 +31,7 @@ public class FlightDashboardCache {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
 
-    public FlightDashboardCache(Context context, Gson gson) {
+    public FlightDashboardCache(Context context) {
         this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         this.editor = sharedPrefs.edit();
     }
@@ -114,6 +114,10 @@ public class FlightDashboardCache {
 
     public boolean isRoundTrip() {
         return sharedPrefs.getBoolean(IS_ROUND_TRIP, DEFAULT_IS_ROUND_TRIP);
+    }
+
+    public boolean clearCache(){
+        return sharedPrefs.edit().clear().commit();
     }
 
 }

@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/margin_sm"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:text="@string/app_share_referral_label_desc"
+            android:text="@string/referral_welcome_desc"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal" />

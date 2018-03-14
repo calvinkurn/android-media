@@ -286,7 +286,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         flightSearchPresenter.attachView(this);
 
         flightSearchPresenter.checkCacheExpired();
-        loadInitialData();
     }
 
     @Override
