@@ -14,6 +14,4 @@ public class ShopParamConstant {
     public static final String EXTRA_SORT_ID = "EXTRA_SORT_ID";
     public static final String EXTRA_PAGE = "EXTRA_PAGE";
     public static final String EXTRA_SHOP_NOTE_ID = "EXTRA_SHOP_NOTE_ID";
-
-    public static final int MAX_RATING_STAR = 5;
 }
