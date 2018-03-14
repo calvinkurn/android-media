@@ -14,7 +14,7 @@
 
     <include
         android:id="@+id/badges_container"
-        layout="@layout/partial_item_product_price"
+        layout="@layout/partial_shop_product_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_ms" />

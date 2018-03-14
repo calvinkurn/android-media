@@ -22,7 +22,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_product_grid;
+    public static final int LAYOUT = R.layout.item_shop_product_grid;
     public static final int SPAN_LOOK_UP = 1;
 
     private final ShopProductClickedListener shopProductClickedListener;
