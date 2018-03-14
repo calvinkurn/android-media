@@ -99,6 +99,7 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
+import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -753,6 +754,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onLogout(AppComponent appComponent) {
         new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
+        new FlightDeleteDashboardCacheUseCase(appComponent.context()).executeSync();
     }
 
     @Override
