@@ -148,12 +148,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
         if (isFromSavedInstance) {
             getView().renderPassengersList(getView().getCurrentBookingParamViewModel().getPassengerViewModels());
+            getView().setContactName(getView().getCurrentBookingParamViewModel().getContactName());
+            getView().setContactEmail(getView().getCurrentBookingParamViewModel().getContactEmail());
+            getView().setContactPhoneNumber(getView().getCurrentBookingParamViewModel().getContactPhone());
+            Date expiredDate = getView().getExpiredTransactionDate();
+            if (expiredDate != null) {
+                getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
+                getView().renderFinishTimeCountDown(expiredDate);
+            }
+        } else {
+            Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, flightBookingCartData.getRefreshTime());
+            getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
+            getView().renderFinishTimeCountDown(expiredDate);
         }
         getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(flightBookingCartData.getDefaultPhoneCode());
         getView().renderPhoneCodeView(String.format("+%s", getView().getCurrentBookingParamViewModel().getPhoneCodeViewModel().getCountryPhoneCode()));
-        Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, flightBookingCartData.getRefreshTime());
-        getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
-        getView().renderFinishTimeCountDown(expiredDate);
+
         int oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
         int resultTotalPrice = 0;
         resultTotalPrice = oldTotalPrice;
