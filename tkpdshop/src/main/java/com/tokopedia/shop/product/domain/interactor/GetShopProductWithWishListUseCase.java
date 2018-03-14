@@ -33,7 +33,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     private final GetWishListUseCase getWishListUseCase;
     private final UserSession userSession;
     private final ShopProductMapper shopProductMapper;
-    private GetProductCampaignsUseCase getProductCampaignsUseCase;
+    private final GetProductCampaignsUseCase getProductCampaignsUseCase;
 
     @Inject
     public GetShopProductWithWishListUseCase(GetShopProductListUseCase getShopProductListUseCase,
@@ -83,10 +83,8 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     }
 
     private PagingList<ShopProductViewModel> getShopProductViewModelList(
-            ShopProductCampaignResponse shopProductCampaignResponse,
-            PagingList<ShopProduct> shopProductPagingList,
-            List<String> productIdList,
-            boolean showWishList) {
+            ShopProductCampaignResponse shopProductCampaignResponse, PagingList<ShopProduct> shopProductPagingList,
+            List<String> productIdList, boolean showWishList) {
         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
         pagingList.setTotalData(shopProductPagingList.getTotalData());
         pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList, showWishList));

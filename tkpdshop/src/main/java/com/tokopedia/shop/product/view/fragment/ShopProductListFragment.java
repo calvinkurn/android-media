@@ -251,7 +251,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
+        showBottomActionView();
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+        showBottomActionView();
+    }
+
+    private void showBottomActionView() {
+        bottomActionView.setVisibility(getAdapter().getDataSize() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
