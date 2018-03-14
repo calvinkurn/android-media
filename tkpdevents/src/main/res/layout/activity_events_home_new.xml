@@ -55,7 +55,7 @@
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/banner_height" />
+                            android:layout_height="@dimen/dp_180" />
 
                         <FrameLayout
                             android:id="@+id/indicator_promo_layout"
@@ -148,8 +148,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/progbar_height"
-            android:layout_height="@dimen/progbar_height"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>

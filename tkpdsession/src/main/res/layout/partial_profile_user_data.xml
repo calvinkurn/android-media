@@ -56,8 +56,8 @@
 
                 <RelativeLayout
                     android:id="@+id/rv_progress"
-                    android:layout_width="@dimen/progbar_height"
-                    android:layout_height="@dimen/progbar_height"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
                     android:layout_marginLeft="@dimen/new_margin_med"
                     android:layout_marginStart="@dimen/new_margin_med">
 
