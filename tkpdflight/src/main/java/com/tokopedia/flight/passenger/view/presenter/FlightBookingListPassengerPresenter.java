@@ -295,9 +295,9 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                 diff *= -1;
             }
 
-            if (diff > TWELVE_YEARS_IN_MILLIS) {
+            if (diff >= TWELVE_YEARS_IN_MILLIS) {
                 return ADULT;
-            } else if (diff > TWO_YEARS_IN_MILLIS) {
+            } else if (diff >= TWO_YEARS_IN_MILLIS) {
                 return CHILDREN;
             } else if (diff < TWO_YEARS_IN_MILLIS) {
                 return INFANT;
@@ -329,13 +329,13 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                 diff *= -1;
             }
 
-            if (diff > (TWELVE_YEARS_IN_MILLIS)) {
+            if (diff >= (TWELVE_YEARS_IN_MILLIS)) {
                 if (salutationId == TUAN) {
                     return R.drawable.ic_passenger_male;
                 } else {
                     return R.drawable.ic_passenger_female;
                 }
-            } else if (diff > (TWO_YEARS_IN_MILLIS)) {
+            } else if (diff >= (TWO_YEARS_IN_MILLIS)) {
                 return R.drawable.ic_passenger_childreen;
             } else if (diff < (TWO_YEARS_IN_MILLIS)) {
                 return R.drawable.ic_passenger_infant;
