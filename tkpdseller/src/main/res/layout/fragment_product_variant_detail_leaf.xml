@@ -85,15 +85,21 @@
 
             <LinearLayout
                 style="@style/LabelLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical"
+                android:id="@+id/vg_sku">
+
+                <TextView
+                    android:id="@+id/tv_sku_helper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextView.Title"
+                    android:text="@string/product_add_sku_hint"/>
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/text_input_layout_sku"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
-                    android:hint="@string/product_add_label_sku"
-                    app:helper="@string/sku_helper_info">
+                    android:hint="@string/sku_helper_info">
 
                     <EditText
                         android:id="@+id/edit_text_sku"

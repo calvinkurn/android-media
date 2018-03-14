@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.newgallery.GalleryActivity;
@@ -46,6 +47,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         void onImageEditor(String uriOrPath);
 
         void onRemovePreviousPath(String uri);
+
+        Activity getActivity();
     }
 
     public static final int MIN_IMG_RESOLUTION = 300;
@@ -213,9 +216,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
     @Override
     public boolean isDataValid() {
         if (getProductPhotoList().size() < 1) {
-            Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
-                    .show();
+            Activity activity = listener.getActivity();
+            NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.product_error_product_picture_empty));
             UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE);
             return false;
         }

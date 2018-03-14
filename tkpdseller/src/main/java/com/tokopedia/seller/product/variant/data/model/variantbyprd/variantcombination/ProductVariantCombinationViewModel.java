@@ -55,6 +55,14 @@ public class ProductVariantCombinationViewModel implements Parcelable{
         return st == ACTIVE_STATUS && stock == 0;
     }
 
+    public boolean isLimitedStock(){
+        return st == ACTIVE_STATUS && stock > 0;
+    }
+
+    public boolean isEmptyStock(){
+        return st == NOT_ACTIVE_STATUS;
+    }
+
     public int getSt() {
         return st;
     }
