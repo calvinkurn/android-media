@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relative_layout_product_scoring"
     style="@style/LabelLayout.BorderBottom"
-    android:paddingTop="@dimen/dp_10_sm"
-    android:paddingBottom="@dimen/dp_10_sm"
+    android:paddingTop="@dimen/margin_small_sm"
+    android:paddingBottom="@dimen/margin_small_sm"
     app:layout_scrollFlags="scroll|snap|enterAlways">
 
     <LinearLayout

@@ -169,7 +169,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:paddingBottom="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_10_sm"
+                    android:paddingRight="@dimen/margin_small_sm"
                     android:paddingTop="@dimen/dp_8"
                     android:text="@string/change_payment_method"
                     android:textColor="@color/colorPrimary"

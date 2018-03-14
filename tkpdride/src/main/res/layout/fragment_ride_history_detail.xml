@@ -108,8 +108,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/top_header_container"
-                    android:layout_marginLeft="@dimen/dp_10_sm"
-                    android:layout_marginRight="@dimen/dp_10_sm">
+                    android:layout_marginLeft="@dimen/margin_small_sm"
+                    android:layout_marginRight="@dimen/margin_small_sm">
 
                     <ImageView
                         android:id="@+id/crux_cabs_src_dest_line"
@@ -141,11 +141,10 @@
                             android:layout_toEndOf="@id/crux_cabs_source_icon"
                             android:layout_toRightOf="@id/crux_cabs_source_icon"
                             android:ellipsize="marquee"
-                            android:maxLines="1"
-                            android:paddingBottom="@dimen/dp_10_sm"
-                            android:paddingEnd="@dimen/dp_10_sm"
+                            android:paddingBottom="@dimen/margin_small_sm"
+                            android:paddingEnd="@dimen/margin_small_sm"
                             android:paddingLeft="@dimen/dp_20"
-                            android:paddingRight="@dimen/dp_10_sm"
+                            android:paddingRight="@dimen/margin_small_sm"
                             android:paddingStart="@dimen/dp_20"
                             android:paddingTop="12dp"
                             android:singleLine="true"
@@ -183,10 +182,10 @@
                             android:layout_centerVertical="true"
                             android:layout_toRightOf="@id/crux_cabs_destination_icon"
                             android:ellipsize="marquee"
-                            android:paddingBottom="@dimen/dp_10_sm"
+                            android:paddingBottom="@dimen/margin_small_sm"
                             android:paddingLeft="@dimen/dp_20"
                             android:paddingStart="@dimen/dp_20"
-                            android:paddingTop="@dimen/dp_10_sm"
+                            android:paddingTop="@dimen/margin_small_sm"
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textColorHint="@color/pdp_rating_color_new"

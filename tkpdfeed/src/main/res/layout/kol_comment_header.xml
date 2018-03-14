@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:padding="@dimen/dp_10_sm"
+        android:padding="@dimen/padding_small_sm"
         android:text="@string/see_more_comments"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/text_size_xsmall"
