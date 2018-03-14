@@ -28,8 +28,8 @@
 
     <ImageView
         android:id="@+id/arrow_left"
-        android:layout_width="@dimen/image_width_xxxs"
-        android:layout_height="@dimen/image_width_xxs"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:layout_gravity="center_vertical|end"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"

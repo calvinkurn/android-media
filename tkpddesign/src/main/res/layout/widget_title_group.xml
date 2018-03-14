@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/image_view_icon"
-        android:layout_width="@dimen/image_width_xs"
-        android:layout_height="@dimen/image_width_xs"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
         tools:src="@drawable/ic_search_grey" />

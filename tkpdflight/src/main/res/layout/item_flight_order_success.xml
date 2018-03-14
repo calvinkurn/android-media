@@ -36,8 +36,8 @@
                 android:padding="@dimen/padding_small">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="@dimen/image_width_m"
-                    android:layout_height="@dimen/image_width_m"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     card_view:srcCompat="@drawable/ic_flight_round" />
 
                 <LinearLayout

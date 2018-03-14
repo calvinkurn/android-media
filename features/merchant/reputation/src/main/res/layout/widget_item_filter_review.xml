@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/image_rating"
-        android:layout_width="@dimen/image_width_xxs"
-        android:layout_height="@dimen/image_width_xxs"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_rating"/>
 </LinearLayout>

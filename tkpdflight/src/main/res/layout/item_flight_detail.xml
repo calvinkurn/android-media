@@ -41,8 +41,8 @@
 
             <ImageView
                 android:id="@+id/departure_time_circle"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="@dimen/margin_sm"
@@ -65,8 +65,8 @@
 
             <ImageView
                 android:id="@+id/arrival_time_circle"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignBottom="@+id/arrival_time"
                 android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_marginBottom="@dimen/margin_vs"
@@ -109,8 +109,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
                     android:layout_marginRight="@dimen/margin_vs"
                     app:srcCompat="@drawable/ic_clock_flight" />
 

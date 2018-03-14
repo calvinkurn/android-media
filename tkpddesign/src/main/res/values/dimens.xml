@@ -18,10 +18,13 @@
     <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
+    <dimen name="dp_72">72dp</dimen> <!-- not recommended -->
     <dimen name="dp_76">76dp</dimen> <!-- not recommended -->
     <dimen name="dp_80">80dp</dimen>
+    <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
+    <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
     <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
     <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
@@ -44,18 +47,6 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen> <!-- not recommended -->
-
-    <dimen name="image_width_xxxs">8dp</dimen>
-    <dimen name="image_width_xxs">16dp</dimen>
-    <dimen name="image_width_xs">24dp</dimen>
-    <dimen name="image_width_s">32dp</dimen>
-    <dimen name="image_width_ms">33dp</dimen>
-    <dimen name="image_width_m">40dp</dimen>
-    <dimen name="image_width_l">48dp</dimen>
-    <dimen name="image_width_xl">72dp</dimen>
-    <dimen name="image_width_xll">72dp</dimen>
-    <dimen name="image_width_xxl">96dp</dimen>
-    <dimen name="image_width_xxxl">128dp</dimen>
 
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>

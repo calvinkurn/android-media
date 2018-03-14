@@ -7,8 +7,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_seller_info"
-        android:layout_width="@dimen/image_width_xxl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="@dimen/dp_96"
+        android:layout_height="@dimen/dp_72"
         android:layout_marginTop="@dimen/margin_sm"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginLeft="@dimen/margin_sm"

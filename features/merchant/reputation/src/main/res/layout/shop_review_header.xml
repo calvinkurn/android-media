@@ -12,8 +12,8 @@
 
     <com.tokopedia.core.customView.RoundedCornerImageView
         android:id="@+id/product_image"
-        android:layout_width="@dimen/image_width_l"
-        android:layout_height="@dimen/image_width_l"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         android:layout_gravity="center_vertical"
         tools:src="@color/black" />
 

@@ -34,8 +34,8 @@
 
                 <ImageView
                     android:id="@+id/icon_status"
-                    android:layout_width="@dimen/image_width_m"
-                    android:layout_height="@dimen/image_width_m"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     android:layout_marginRight="@dimen/margin_vs"
                     app:srcCompat="@drawable/ic_flight_round" />
 
@@ -209,8 +209,8 @@
 
                     <ImageView
                         android:id="@+id/copy_order_id"
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
                         app:srcCompat="@drawable/ic_copy_order" />
                 </LinearLayout>
 

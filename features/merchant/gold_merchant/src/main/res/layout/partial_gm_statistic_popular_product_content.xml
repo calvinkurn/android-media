@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/image_popular_product"
-            android:layout_width="@dimen/image_width_xxl"
-            android:layout_height="@dimen/image_width_xxl"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_96"
 
             android:layout_marginTop="@dimen/margin_vs"
             tools:src="@mipmap/ic_launcher" />

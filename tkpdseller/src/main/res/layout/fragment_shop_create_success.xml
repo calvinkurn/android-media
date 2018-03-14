@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            android:minHeight="@dimen/image_width_xxxl">
+            android:minHeight="@dimen/dp_128">
 
             <LinearLayout
                 android:id="@+id/vg_shop_info"
@@ -41,8 +41,8 @@
 
                     <ImageView
                         android:id="@+id/image_view_shop_icon"
-                        android:layout_width="@dimen/image_width_xxxl"
-                        android:layout_height="@dimen/image_width_xxxl"
+                        android:layout_width="@dimen/dp_128"
+                        android:layout_height="@dimen/dp_128"
                         android:scaleType="centerCrop"
                         tools:src="@mipmap/ic_launcher" />
                 </FrameLayout>

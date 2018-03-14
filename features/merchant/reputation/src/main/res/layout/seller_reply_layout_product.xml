@@ -28,8 +28,8 @@
 
                 <ImageView
                     android:id="@+id/icon_like"
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
@@ -61,8 +61,8 @@
 
                 <ImageView
                     android:id="@+id/reply_chevron"
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxxs"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"

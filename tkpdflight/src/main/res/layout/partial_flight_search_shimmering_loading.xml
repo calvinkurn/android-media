@@ -69,8 +69,8 @@
 
             <View
                 android:id="@+id/circle_top"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="@dimen/margin_sm"
@@ -81,8 +81,8 @@
 
             <View
                 android:id="@+id/circle_bottom"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/margin_vs"

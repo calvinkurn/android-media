@@ -23,8 +23,8 @@
         android:paddingTop="@dimen/padding_ms">
 
         <ImageView
-            android:layout_width="@dimen/image_width_s"
-            android:layout_height="@dimen/image_width_s"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/padding_med"
             android:layout_marginRight="@dimen/padding_med"

@@ -77,8 +77,8 @@
 
             <ImageView
                 android:id="@+id/image_view_arrow"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:scaleType="fitCenter"

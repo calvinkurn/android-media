@@ -99,8 +99,8 @@
 
         <ImageView
             android:id="@+id/copy_pnr"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             app:srcCompat="@drawable/ic_copy_order" />
     </LinearLayout>
 

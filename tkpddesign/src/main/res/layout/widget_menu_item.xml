@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/iv_icon_menu"
             android:layout_width="@dimen/image_width_ms"
-            android:layout_height="@dimen/image_width_s"
+            android:layout_height="@dimen/dp_32"
             android:adjustViewBounds="true"
             android:padding="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_24"

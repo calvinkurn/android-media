@@ -28,9 +28,9 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_checked"
-        android:layout_width="@dimen/image_width_xs"
+        android:layout_width="@dimen/dp_24"
         android:layout_margin="@dimen/margin_sm"
-        android:layout_height="@dimen/image_width_xs"
+        android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_check"
         android:visibility="gone"

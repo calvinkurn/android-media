@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxHeight="@dimen/image_width_xxl"
+            android:maxHeight="@dimen/dp_96"
             android:padding="@dimen/padding_small"
             android:adjustViewBounds="true"
             tools:src="@drawable/ic_badge_gold"/>
@@ -59,7 +59,7 @@
     <TextView
         android:id="@+id/button_opsi_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_m"
+        android:layout_height="@dimen/dp_40"
         android:layout_margin="@dimen/margin_small"
         android:gravity="center"
         android:background="@drawable/rect_white_rounded_stroke_gray"
@@ -69,7 +69,7 @@
     <TextView
         android:id="@+id/button_close_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_m"
+        android:layout_height="@dimen/dp_40"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/bg_button_green_enabled"
         android:gravity="center"

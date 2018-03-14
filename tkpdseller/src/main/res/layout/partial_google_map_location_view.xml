@@ -19,7 +19,7 @@
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_xxxl"
+        android:layout_height="@dimen/dp_128"
         android:visibility="visible">
 
         <android.support.v7.widget.AppCompatImageView
@@ -60,7 +60,7 @@
     <FrameLayout
         android:id="@+id/mapview_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_xxxl"
+        android:layout_height="@dimen/dp_128"
         android:visibility="gone">
 
         <com.google.android.gms.maps.MapView
@@ -76,7 +76,7 @@
          <Button
             android:id="@+id/delete_pinpoint"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/image_width_s"
+            android:layout_height="@dimen/dp_32"
             android:text="@string/action_delete"
             android:background="@drawable/white_button_rounded"
             style="@style/TextView.Micro"

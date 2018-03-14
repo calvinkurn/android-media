@@ -19,14 +19,14 @@
             android:minWidth="@dimen/dp_80"
             android:clickable="true"
             android:gravity="center"
-            android:minHeight="@dimen/image_width_s"
+            android:minHeight="@dimen/dp_32"
             android:paddingLeft="@dimen/padding_vs"
             android:paddingRight="@dimen/padding_vs">
 
             <ImageView
                 android:id="@+id/image_view_icon_1"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 tools:src="@drawable/ic_badge_bronze" />
@@ -38,8 +38,8 @@
 
             <View
                 android:id="@+id/v_mark_1"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"
@@ -50,7 +50,7 @@
         <View
             android:id="@+id/view_separator"
             android:layout_width="2dp"
-            android:layout_height="@dimen/image_width_s"
+            android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
             android:background="@color/grey_300"
@@ -64,7 +64,7 @@
             android:minWidth="@dimen/dp_80"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:minHeight="@dimen/image_width_s"
+            android:minHeight="@dimen/dp_32"
             android:paddingLeft="@dimen/padding_vs"
             android:paddingRight="@dimen/padding_vs"
             android:visibility="gone"
@@ -72,8 +72,8 @@
 
             <ImageView
                 android:id="@+id/image_view_icon_2"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 tools:src="@drawable/ic_badge_bronze" />
@@ -85,8 +85,8 @@
 
             <View
                 android:id="@+id/v_mark_2"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"

@@ -18,8 +18,8 @@
         android:paddingTop="@dimen/margin_ms">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginStart="@dimen/margin_vs"
@@ -99,8 +99,8 @@
         android:paddingTop="@dimen/margin_ms">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginStart="@dimen/margin_vs"

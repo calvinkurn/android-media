@@ -8,15 +8,15 @@
 
     <RelativeLayout
         android:id="@+id/container_image_product"
-        android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small">
 
         <ImageView
             android:id="@+id/image_product_picker_search"
-            android:layout_width="@dimen/image_width_xl"
-            android:layout_height="@dimen/image_width_xl" />
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72" />
 
         <TextView
             android:id="@+id/stock_empty_tag"

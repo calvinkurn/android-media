@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/image_view_search"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_xxs"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             app:srcCompat="@drawable/ic_search_grey" />
 
         <EditText
@@ -44,8 +44,8 @@
 
         <ImageButton
             android:id="@+id/image_button_close"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_xxs"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:background="@null"
             app:srcCompat="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />

@@ -83,8 +83,8 @@
 
             <ImageView
                 android:id="@+id/iv_setting"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_gravity="top"
                 android:layout_marginTop="@dimen/margin_ms"
                 android:background="?attr/selectableItemBackgroundBorderless"

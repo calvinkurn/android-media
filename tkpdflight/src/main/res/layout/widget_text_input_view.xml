@@ -10,8 +10,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/image_width_s"
-        android:layout_height="@dimen/image_width_s"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_smiley_positive" />
 

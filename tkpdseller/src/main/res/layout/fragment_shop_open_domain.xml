@@ -14,7 +14,7 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <ImageView
-            android:layout_width="@dimen/image_width_xxxl"
+            android:layout_width="@dimen/dp_128"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"

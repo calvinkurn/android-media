@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_gravity="center_vertical"
@@ -48,7 +48,7 @@
             android:orientation="horizontal">
 
             <View
-                android:layout_width="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs" />

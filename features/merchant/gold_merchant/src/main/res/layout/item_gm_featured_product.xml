@@ -28,8 +28,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ic_gm_featured_product"
-        android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_toEndOf="@id/ic_drag_and_drop_gm_featured_product_container"

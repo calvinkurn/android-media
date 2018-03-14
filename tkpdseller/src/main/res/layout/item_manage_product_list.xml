@@ -8,16 +8,16 @@
     android:orientation="horizontal">
 
     <FrameLayout
-        android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_sm">
 
         <ImageView
             android:id="@+id/image_view_product"
-            android:layout_width="@dimen/image_width_xl"
-            android:layout_height="@dimen/image_width_xl"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
             android:layout_gravity="center"
             app:srcCompat="@drawable/tkpd_address_card" />
 
@@ -35,14 +35,14 @@
 
         <FrameLayout
             android:id="@+id/view_product_on_supervision"
-            android:layout_width="@dimen/image_width_xl"
-            android:layout_height="@dimen/image_width_xl"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
             android:background="@drawable/bg_rect_red_round"
             android:visibility="gone">
 
             <ImageView
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_lock_icon_again" />
 
@@ -91,8 +91,8 @@
 
             <ImageView
                 android:id="@+id/image_view_featured"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
                 app:srcCompat="@drawable/ic_featured_product" />
@@ -140,8 +140,8 @@
 
             <ImageView
                 android:id="@+id/image_view_free_return"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 app:srcCompat="@drawable/ic_free_return" />
         </LinearLayout>
 
@@ -162,8 +162,8 @@
             android:paddingStart="@dimen/padding_ms">
 
             <ImageView
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_l"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/padding_vvvs"
                 app:srcCompat="@drawable/ic_more_vert_grey"
