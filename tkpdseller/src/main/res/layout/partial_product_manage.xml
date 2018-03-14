@@ -57,9 +57,11 @@
 
         <LinearLayout
             style="@style/LabelLayout"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/vg_sku">
 
             <TextView
+                android:id="@+id/tv_sku_helper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextView.Title"

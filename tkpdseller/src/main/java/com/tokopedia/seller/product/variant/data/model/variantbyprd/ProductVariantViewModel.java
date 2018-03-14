@@ -94,6 +94,25 @@ public class ProductVariantViewModel implements Parcelable {
         return productVariant != null && productVariant.size() > 0;
     }
 
+    public @StockTypeDef int getCalculateProductStatus() {
+        boolean hasAnyAlwaysAvailable = false;
+        for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
+            // once we get the limited, we assume the status is all limited.
+            if (productVariantCombinationViewModel.isLimitedStock()) {
+                return StockTypeDef.TYPE_ACTIVE_LIMITED;
+            }
+            // get "always available", we will continue loop. We want to differentiate between active or active limited.
+            if (productVariantCombinationViewModel.alwaysAvailable()) {
+                hasAnyAlwaysAvailable = true;
+            }
+        }
+        if (hasAnyAlwaysAvailable) {
+            return StockTypeDef.TYPE_ACTIVE;
+        }
+        // no any available or limited. so it is always empty.
+        return StockTypeDef.TYPE_WAREHOUSE;
+    }
+
     public void setProductVariant(List<ProductVariantCombinationViewModel> productVariant) {
         this.productVariant = productVariant;
     }

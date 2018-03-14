@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
@@ -55,6 +54,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         void onEtalaseViewClicked(long etalaseId);
 
         boolean hasVariant();
+
+        Activity getActivity();
     }
 
     private static final String BUNDLE_CATALOG_SHOWN = "BUNDLE_CATALOG_SHOWN";
@@ -444,18 +445,16 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             return false;
         }
         if (categoryId < 0) {
-            Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(categoryLabelView.getContext(), R.color.green_400))
-                    .show();
+            Activity activity = listener.getActivity();
+            NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.product_error_product_category_empty));
             categoryLabelView.getParent().requestChildFocus(categoryLabelView,categoryLabelView);
             UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
             return false;
         }
         if (getEtalaseId() < 0) {
             etalaseLabelView.getParent().requestChildFocus(etalaseLabelView, etalaseLabelView);
-            Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
-                    .show();
+            Activity activity = listener.getActivity();
+            NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.product_error_product_etalase_empty));
             UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE);
             return false;
         }

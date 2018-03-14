@@ -36,6 +36,7 @@ import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
@@ -899,6 +900,19 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
+        // if has any variant, we want to get summary of stock, then update to the parent model.
+        if (productVariantViewModel!= null && productVariantViewModel.hasSelectedVariant()) {
+            @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
+            currentProductViewModel.setProductStatus(stockType);
+            if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
+                currentProductViewModel.setProductStock(1);
+            } else {
+                currentProductViewModel.setProductStock(0);
+            }
+        }
+        // refresh the stock and variant label.
+        productManageViewHolder.renderData(currentProductViewModel);
+
         // to disable or enable price/wholesale/etc
         productPriceViewHolder.renderData(currentProductViewModel);
 

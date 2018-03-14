@@ -41,6 +41,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
     private EditText skuEditText;
     private ArrayList<ProductVariantByCatModel> productVariantByCatModelList;
     private Listener listener;
+    private final View vSku;
 
     public ProductManageViewHolder(View view, Listener listener) {
         setListener(listener);
@@ -78,6 +79,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
             }
         });
 
+        vSku = view.findViewById(R.id.vg_sku);
         skuEditText = view.findViewById(R.id.edit_text_sku);
     }
 
@@ -185,7 +187,6 @@ public class ProductManageViewHolder extends ProductViewHolder {
                             ProductVariantViewModel productVariantViewModel =
                                     data.getParcelableExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
                             listener.updateVariantModel(productVariantViewModel);
-                            setUiVariantSelection();
                         }
                         if (data.hasExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART)) {
                             ProductPictureViewModel productPictureViewModel =
@@ -224,6 +225,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
                 stockTotalCounterInputView.setVisibility(View.GONE);
             }
             //enable SKU
+            vSku.setVisibility(View.VISIBLE);
             skuEditText.setEnabled(true);
 
         } else { // product has selected variants
@@ -245,7 +247,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
 
             // disable stock total counter
             stockTotalCounterInputView.setVisibility(View.GONE);
+
             // disable SKU
+            vSku.setVisibility(View.GONE);
             skuEditText.setEnabled(false);
         }
     }

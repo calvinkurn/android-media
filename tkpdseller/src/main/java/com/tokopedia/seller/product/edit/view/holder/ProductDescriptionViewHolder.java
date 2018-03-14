@@ -43,6 +43,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     public static final int STATUS_PRE_ORDER_INACTIVE = 0;
     public static final int STATUS_PRE_ORDER_ACTIVE = 1;
 
+    public static final int PREORDER_DAY = 1; // from api
+
     private LabelView descriptionLabelView;
     private LabelView labelAddVideoView;
     private ExpandableOptionSwitch preOrderExpandableOptionSwitch;
@@ -245,7 +247,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         if (preOrderExpandableOptionSwitch.isExpanded()) {
             return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
         } else {
-            return STATUS_PRE_ORDER_INACTIVE;
+            return PREORDER_DAY;
         }
     }
 
@@ -257,6 +259,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
         } else {
             productPreorderViewModel.setPreorderStatus(STATUS_PRE_ORDER_INACTIVE);
+            productPreorderViewModel.setPreorderTimeUnit(PREORDER_DAY);
         }
         return productPreorderViewModel;
     }

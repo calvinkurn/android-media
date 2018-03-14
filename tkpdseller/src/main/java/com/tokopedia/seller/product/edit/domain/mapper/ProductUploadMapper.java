@@ -41,9 +41,7 @@ public class ProductUploadMapper {
         ProductPreOrderViewModel productPreorderViewModel = productFromDraft.getProductPreorder();
         if (productFromServer.getProductPreorder() == null &&
                 productPreorderViewModel != null &&
-                productPreorderViewModel.getPreorderProcessTime() == 0 &&
-                productPreorderViewModel.getPreorderStatus() == 0 &&
-                productPreorderViewModel.getPreorderTimeUnit() == 0) {
+                productPreorderViewModel.getPreorderStatus() == 0) {
             productFromDraft.setProductPreorder(null);
         }
 
