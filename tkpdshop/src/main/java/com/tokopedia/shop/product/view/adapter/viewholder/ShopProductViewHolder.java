@@ -1,7 +1,9 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -10,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -21,18 +22,21 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_product_grid;
+    public static final int LAYOUT = R.layout.item_shop_product_grid;
     public static final int SPAN_LOOK_UP = 1;
 
     private final ShopProductClickedListener shopProductClickedListener;
+    private ImageView wishlistImageView;
+    private FrameLayout wishlistContainer;
+    protected ImageView productImageView;
     protected TextView titleTextView;
-    private TextView priceTextView;
+    private TextView displayedPriceTextView;
+    private TextView originalPriceTextView;
+    private TextView discountPercentageTextView;
     private TextView cashBackTextView;
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
-    protected ImageView freeReturnImageView, productImageView;
-    private ImageView wishlistImageView;
-    private FrameLayout wishlistContainer;
+    private ImageView freeReturnImageView;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
 
@@ -44,7 +48,10 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void findViews(View view) {
         titleTextView = view.findViewById(R.id.title);
-        priceTextView = view.findViewById(R.id.price);
+        displayedPriceTextView = view.findViewById(R.id.text_view_displayed_price);
+        originalPriceTextView = view.findViewById(R.id.text_view_original_price);
+        discountPercentageTextView = view.findViewById(R.id.text_view_discount_percentage);
+
         cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
@@ -75,7 +82,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         });
 
         titleTextView.setText(shopProductViewModel.getName());
-        priceTextView.setText(shopProductViewModel.getPrice());
+        updatePrice(shopProductViewModel);
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
     }
 
@@ -90,9 +97,24 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void updatePrice(final ShopProductViewModel shopProductViewModel) {
+        if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice())) {
+            originalPriceTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            originalPriceTextView.setVisibility(View.VISIBLE);
+            originalPriceTextView.setText(shopProductViewModel.getOriginalPrice());
+        }
+        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
+            discountPercentageTextView.setVisibility(View.VISIBLE);
+            discountPercentageTextView.setText(discountPercentageTextView.getContext().
+                    getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));
+        }
+        if (displayedPriceTextView != null) {
+            displayedPriceTextView.setText(shopProductViewModel.getDisplayedPrice());
         }
     }
 

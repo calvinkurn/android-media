@@ -14,7 +14,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_product_featured;
+    public static final int LAYOUT = R.layout.item_shop_product_featured;
 
     private ShopProductFeaturedListener shopProductFeaturedListener;
 

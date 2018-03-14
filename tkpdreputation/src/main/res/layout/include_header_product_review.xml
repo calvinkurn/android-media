@@ -41,7 +41,7 @@
             android:id="@+id/product_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Small.RatingBar"
+            style="@style/RatingBar.Small"
             android:isIndicator="true"
             android:numStars="5"
             android:rating="3" />

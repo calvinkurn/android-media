@@ -17,11 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringGrid;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
@@ -93,8 +92,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
 
-    private DividerItemDecoration listDividerItemDecoration;
-
     public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
@@ -125,6 +122,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
         return emptyModel;
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -201,7 +200,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (!TextUtils.isEmpty(keyword)) {
             searchInputView.getSearchTextView().setText(keyword);
         }
-        listDividerItemDecoration = new DividerItemDecoration(getActivity());
     }
 
     @Override
@@ -209,15 +207,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         super.renderList(list);
         shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                 list,false);
-    }
-
-    @Override
-    public LoadingModel getLoadingModel() {
-        if (isLoadingInitialData) {
-            return new LoadingModelShimmeringGrid();
-        } else {
-            return new LoadingModel();
-        }
     }
 
     @Override
@@ -242,7 +231,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         } else {
             currentLayoutType = layoutType[currentIndex];
         }
-        recyclerView.removeItemDecoration(listDividerItemDecoration);
         switch (currentLayoutType.second) {
             case LAYOUT_GRID_TYPE:
                 layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
@@ -258,7 +246,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 break;
             default:
                 layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-                recyclerView.addItemDecoration(listDividerItemDecoration);
                 break;
         }
         currentIndex++;
@@ -273,6 +260,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 return recyclerViews.getLayoutManager();
             }
         };
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
+        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -332,9 +325,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSuccessGetShopName(String shopName) {
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopName).toString());
         }
     }
 

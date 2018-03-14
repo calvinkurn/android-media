@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.holder;
 
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -46,7 +45,7 @@ public class ShopPageHeaderViewHolder {
 
         void onToggleFavouriteShop(boolean favouriteShop);
 
-        void displayQualityInfo(String qualityAverage, float qualityRatingStar, String totalReview);
+        void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview);
 
         void displayReputationInfo(int reputationMedalType, int reputationLevel, String reputationScore);
 
@@ -83,7 +82,7 @@ public class ShopPageHeaderViewHolder {
     private ShopReputationView reputationView;
     private TextView totalFavouriteTextView;
     private TextView totalProductTextView;
-    private RatingBar qualityRatingBar;
+    private ImageView ratingBarImageView;
     private TextView qualityValueTextView;
     private ImageView speedImageView;
     private TextView speedValueTextView;
@@ -126,7 +125,7 @@ public class ShopPageHeaderViewHolder {
 
         totalFavouriteTextView = view.findViewById(R.id.text_view_total_favourite);
         totalProductTextView = view.findViewById(R.id.text_view_total_product);
-        qualityRatingBar = view.findViewById(R.id.rating_bar_product_quality);
+        ratingBarImageView = view.findViewById(R.id.image_view_rating_bar);
         qualityValueTextView = view.findViewById(R.id.text_view_product_quality_value);
         speedImageView = view.findViewById(R.id.image_view_speed);
         speedValueTextView = view.findViewById(R.id.text_view_speed_value);
@@ -277,13 +276,12 @@ public class ShopPageHeaderViewHolder {
         });
         final String qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
-        final float qualityRatingStar = shopInfo.getRatings().getQuality().getRatingStar();
-        qualityRatingBar.setRating(qualityRatingStar);
-        qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
+        final int intRatingDrawableRes =  getRatingImageRes(Math.round(shopInfo.getRatings().getQuality().getRatingStar()));
+        ratingBarImageView.setImageResource(intRatingDrawableRes);
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.displayQualityInfo(qualityAverage, qualityRatingStar, shopInfo.getRatings().getQuality().getCountTotal());
+                listener.displayQualityInfo(qualityAverage, intRatingDrawableRes, shopInfo.getRatings().getQuality().getCountTotal());
             }
         });
     }
@@ -355,7 +353,7 @@ public class ShopPageHeaderViewHolder {
                 showShopModerated(shopInfo);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
-                shopWarningTickerView.setVisibility(View.GONE);
+                showShopNotActive(shopInfo);
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
@@ -366,20 +364,56 @@ public class ShopPageHeaderViewHolder {
         String shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopInfo.getClosedInfo().getUntil());
-        shopWarningTickerView.setIcon(R.drawable.ic_shop_label_closed);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString));
-        shopWarningTickerView.setDescription(shopInfo.getClosedInfo().getNote());
-        shopWarningTickerView.setAction(null, null);
-        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.green_ticker));
-        shopWarningTickerView.setVisibility(View.VISIBLE);
+        showShopStatusTicker(R.drawable.ic_shop_label_closed,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString),
+                shopInfo.getClosedInfo().getNote(),
+                R.color.green_ticker);
     }
 
     private void showShopModerated(ShopInfo shopInfo) {
-        shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
-        shopWarningTickerView.setTitle(shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_in_moderation));
-        shopWarningTickerView.setDescription(shopWarningTickerView.getContext().getString(R.string.shop_page_header_closed_reason, shopInfo.getClosedInfo().getReason()));
-        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), R.color.yellow_ticker));
+        showShopStatusTicker(R.drawable.ic_info_moderation,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_in_moderation),
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_closed_reason, shopInfo.getClosedInfo().getReason()),
+                R.color.yellow_ticker);
+    }
+
+    private void showShopNotActive(ShopInfo shopInfo) {
+        showShopStatusTicker(R.drawable.ic_info_inactive,
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_title),
+                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description),
+                R.color.yellow_ticker);
+    }
+
+    private void showShopStatusTicker(@DrawableRes int iconRes, String title, String description, @ColorRes int colorRes) {
+        shopWarningTickerView.setIcon(iconRes);
+        shopWarningTickerView.setTitle(title);
+        shopWarningTickerView.setDescription(description);
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), colorRes));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Temporary solution to provide very small rating bar on shop page, hard to implement on various screen dimension
+     * @param rating
+     * @return
+     */
+    @Deprecated
+    @DrawableRes
+    private int getRatingImageRes(int rating) {
+        switch (rating) {
+            case 1:
+                return R.drawable.ic_rating_small_one;
+            case 2:
+                return R.drawable.ic_rating_small_two;
+            case 3:
+                return R.drawable.ic_rating_small_three;
+            case 4:
+                return R.drawable.ic_rating_small_four;
+            case 5:
+                return R.drawable.ic_rating_small_five;
+            default:
+                return R.drawable.ic_rating_small_none;
+        }
     }
 }

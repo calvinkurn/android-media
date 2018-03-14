@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.common.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
+import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.model.WishListData;
 
 import java.util.List;
@@ -36,5 +37,9 @@ public class WishListCommonDataSource {
 
     public Observable<Boolean> removeFromWishList(String userId, String productId) {
         return wishListCommonCloudDataSource.removeFromWishList(userId, productId);
+    }
+
+    public Observable<ShopProductCampaignResponse> getProductCampaigns(String ids) {
+        return wishListCommonCloudDataSource.getProductCampaigns(ids);
     }
 }

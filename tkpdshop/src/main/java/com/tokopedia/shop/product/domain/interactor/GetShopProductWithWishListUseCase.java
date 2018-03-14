@@ -8,6 +8,8 @@ import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
+import com.tokopedia.wishlist.common.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 2/23/18.
@@ -30,16 +33,25 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     private final GetWishListUseCase getWishListUseCase;
     private final UserSession userSession;
     private final ShopProductMapper shopProductMapper;
+    private GetProductCampaignsUseCase getProductCampaignsUseCase;
 
     @Inject
     public GetShopProductWithWishListUseCase(GetShopProductListUseCase getShopProductListUseCase,
                                              GetWishListUseCase getWishListUseCase,
+                                             GetProductCampaignsUseCase getProductCampaignsUseCase,
                                              UserSession userSession,
                                              ShopProductMapper shopProductMapper) {
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.getWishListUseCase = getWishListUseCase;
+        this.getProductCampaignsUseCase = getProductCampaignsUseCase;
         this.userSession = userSession;
         this.shopProductMapper = shopProductMapper;
+    }
+
+    public static RequestParams createRequestParam(ShopProductRequestModel shopProductRequestModel) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(SHOP_REQUEST, shopProductRequestModel);
+        return requestParams;
     }
 
     @Override
@@ -50,36 +62,39 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
             public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
                 // Show shop product list without wish list
                 if (shopProductPagingList.getList().size() <= 0 || isShopOwner(shopProductRequestModel.getShopId())) {
-                    return getShopProductViewModelList(shopProductPagingList, new ArrayList<String>(), false);
+                    return Observable.just(getShopProductViewModelList(new ShopProductCampaignResponse(), shopProductPagingList, new ArrayList<String>(), false));
                 }
                 final List<String> productIdList = new ArrayList<>();
                 for (ShopProduct shopProduct : shopProductPagingList.getList()) {
                     productIdList.add(shopProduct.getProductId());
                 }
-                return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
+
+                Observable<List<String>> wishlist = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
+                Observable<ShopProductCampaignResponse> campaigns = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
+
+                return Observable.zip(wishlist, campaigns, new Func2<List<String>, ShopProductCampaignResponse, PagingList<ShopProductViewModel>>() {
                     @Override
-                    public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
-                        return getShopProductViewModelList(shopProductPagingList, productWishList, true);
+                    public PagingList<ShopProductViewModel> call(List<String> productWishList, ShopProductCampaignResponse shopProductCampaignResponse) {
+                        return getShopProductViewModelList(shopProductCampaignResponse, shopProductPagingList, productWishList, true);
                     }
                 });
             }
         });
     }
 
-    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(PagingList<ShopProduct> shopProductPagingList, List<String> productIdList, boolean showWishList) {
+    private PagingList<ShopProductViewModel> getShopProductViewModelList(
+            ShopProductCampaignResponse shopProductCampaignResponse,
+            PagingList<ShopProduct> shopProductPagingList,
+            List<String> productIdList,
+            boolean showWishList) {
         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
         pagingList.setTotalData(shopProductPagingList.getTotalData());
         pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList, showWishList));
-        return Observable.just(pagingList);
+        pagingList.setList(shopProductMapper.convertFromProductCampaigns(pagingList.getList(), shopProductCampaignResponse));
+        return pagingList;
     }
 
     private boolean isShopOwner(String shopId) {
         return userSession.getShopId().equals(shopId);
-    }
-
-    public static RequestParams createRequestParam(ShopProductRequestModel shopProductRequestModel) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(SHOP_REQUEST, shopProductRequestModel);
-        return requestParams;
     }
 }

@@ -23,7 +23,7 @@
 
     <Button
         android:id="@+id/button_add_product"
-        style="@style/Button.Shop.Page.Header"
+        style="@style/Button.Shop.Page.Header.Green"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_add_product"
@@ -42,7 +42,7 @@
 
     <Button
         android:id="@+id/button_favourite_shop"
-        style="@style/Button.Shop.Page.Header"
+        style="@style/Button.Shop.Page.Header.Green"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_favorite"
@@ -50,7 +50,7 @@
 
     <Button
         android:id="@+id/button_already_favourite_shop"
-        style="@style/Button.Shop.Page.Header.Green"
+        style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_already_favorite"

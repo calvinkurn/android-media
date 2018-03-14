@@ -56,14 +56,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         implements ShopProductLimitedPromoViewHolder.PromoViewHolderListener,
         ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback, ShopProductFeaturedViewHolder.ShopProductFeaturedListener {
 
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
-    }
-
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_ETALASE = 200;
-
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     @Inject
@@ -73,6 +67,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private String shopId;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
+
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
 
     public void setPromoWebViewListener(ShopPagePromoWebView.Listener promoWebViewListener) {
         this.promoWebViewListener = promoWebViewListener;
@@ -90,12 +89,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
-        progressDialog = new ProgressDialog(getActivity());
-        loadingStateView = view.findViewById(R.id.loading_state_view_shop_page_product);
-        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
-        progressDialog.setMessage(getString(R.string.title_loading));
-        return view;
+        return inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
     }
 
     @Override
@@ -113,6 +107,16 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopProductListLimitedPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        progressDialog = new ProgressDialog(getActivity());
+        loadingStateView = view.findViewById(R.id.loading_state_view_shop_page_product);
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        progressDialog.setMessage(getString(R.string.title_loading));
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
     }
 
     @Override

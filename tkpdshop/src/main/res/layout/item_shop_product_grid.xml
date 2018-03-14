@@ -23,15 +23,35 @@
             tools:src="@drawable/ic_kupon"
             tools:visibility="visible" />
 
-        <include
-            layout="@layout/partial_item_product"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/TextView.Small.BlackSecondary"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5sp"
+                android:lines="2"
+                tools:text="@string/app_name" />
+
+            <include
+                layout="@layout/partial_shop_product_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_ms" />
+
+            <include
+                layout="@layout/partial_shop_product_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/shop_badge_min_height"
+                android:layout_marginTop="@dimen/margin_ms" />
+        </LinearLayout>
     </LinearLayout>
 
     <include
-        layout="@layout/partial_item_product_wishlist"
+        layout="@layout/partial_shop_product_item_wishlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

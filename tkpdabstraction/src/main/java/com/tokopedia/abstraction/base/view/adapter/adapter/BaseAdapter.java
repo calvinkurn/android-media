@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected List<Visitable> visitables;
     private F adapterTypeFactory;
     protected LoadingModel loadingModel = new LoadingModel();
+    protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
@@ -68,8 +70,11 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         //use last index for performance since loading is in the last item position
         // note: do not use flag, because loading model can be removed from anywhere
         if (visitables.lastIndexOf(loadingModel) == -1) {
-            loadingModel.setFullScreen(visitables.size() == 0);
-            visitables.add(loadingModel);
+            if (visitables.size() == 0) {
+                visitables.add(loadingModel);
+            } else {
+                visitables.add(loadingMoreModel);
+            }
             notifyItemInserted(visitables.size());
         }
     }
@@ -77,10 +82,15 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     public void hideLoading() {
         //use last index for performance since loading is in the last item position
         // note: do not use flag, because loading model can be removed from anywhere
-        int index = visitables.lastIndexOf(loadingModel);
-        if (index != -1) {
-            visitables.remove(index);
-            notifyItemRemoved(index);
+        int indexLoading = visitables.lastIndexOf(loadingModel);
+        if (indexLoading != -1) {
+            visitables.remove(indexLoading);
+            notifyItemRemoved(indexLoading);
+        }
+        int indexLoadMore = visitables.lastIndexOf(loadingMoreModel);
+        if (indexLoadMore != -1) {
+            visitables.remove(indexLoadMore);
+            notifyItemRemoved(indexLoadMore);
         }
     }
 

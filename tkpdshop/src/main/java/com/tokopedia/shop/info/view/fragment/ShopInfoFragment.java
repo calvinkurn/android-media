@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
@@ -153,11 +155,12 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     private void displayBasicShopInfo(final ShopInfo shopInfo) {
         if (getActivity() instanceof BaseTabActivity) {
-            ((BaseTabActivity) getActivity()).updateTitle(shopInfo.getInfo().getShopName());
+            ((BaseTabActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         }
         if (!TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
             shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
+            physicalShopLabelView.setVisibility(View.VISIBLE);
         }
 
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));

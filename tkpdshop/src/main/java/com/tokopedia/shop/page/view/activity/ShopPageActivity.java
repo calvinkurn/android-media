@@ -9,8 +9,6 @@ import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.AppCompatImageView;
@@ -19,7 +17,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RatingBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -37,7 +35,6 @@ import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopAppLink;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
@@ -50,6 +47,7 @@ import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
@@ -61,11 +59,11 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
+    public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
-
     private static final int REQUEST_CODER_USER_LOGIN = 100;
     private static final int PAGE_LIMIT = 3;
     private static final int TAB_POSITION_HOME = 0;
@@ -74,13 +72,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private static final int VIEW_CONTENT = 1;
     private static final int VIEW_LOADING = 2;
     private static final int VIEW_ERROR = 3;
-
     @Inject
     ShopPagePresenter shopPagePresenter;
     @Inject
     ShopPageTracking shopPageTracking;
-
-    private ShopProductListLimitedFragment shopProductListLimitedFragment;
 
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -120,7 +115,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -130,7 +125,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -140,24 +135,24 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
-                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initInjector();
-        shopPagePresenter.attachView(this);
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
-        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
-        viewPager.setCurrentItem(tabPosition);
-        getShopInfo();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
         }
+        super.onCreate(savedInstanceState);
+        initInjector();
+        shopPagePresenter.attachView(this);
+        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
+        viewPager.setCurrentItem(tabPosition);
+        getShopInfo();
         updateShopDiscussionIntent();
     }
 
@@ -239,8 +234,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
-        shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
-        shopProductListLimitedFragment.setPromoWebViewListener(this);
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
@@ -300,37 +293,17 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     protected PagerAdapter getViewPagerAdapter() {
-        return new FragmentPagerAdapter(getSupportFragmentManager()) {
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return getTitlePage(position);
-            }
-
-            @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0:
-                        return shopProductListLimitedFragment;
-                    case 1:
-                        if (shopModuleRouter != null) {
-                            return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
-                        }
-                        break;
-                    case 2:
-                        if (shopModuleRouter != null) {
-                            return shopModuleRouter.getShopTalkFragment();
-                        }
-                        break;
-                }
-                return shopProductListLimitedFragment;
-            }
-
-            @Override
-            public int getCount() {
-                return PAGE_LIMIT;
-            }
+        String title[] = {
+                getString(R.string.shop_info_title_tab_product),
+                getString(R.string.shop_info_title_tab_review),
+                getString(R.string.shop_info_title_tab_discussion)
         };
+        return new ShopPagePagerAdapter(getSupportFragmentManager(),
+                title,
+                shopModuleRouter,
+                this,
+                shopId,
+                shopDomain);
     }
 
     @Override
@@ -413,20 +386,19 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void displayQualityInfo(String qualityAverage, float qualityRatingStar, String totalReview) {
-        View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_product_quality, null);
-        RatingBar qualityRatingBar = speedContentBottomSheet.findViewById(R.id.rating_bar_product_quality);
-        qualityRatingBar.setRating(qualityRatingStar);
-        qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
+    public void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview) {
+        View qualityContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_product_quality, null);
+        ImageView ratingBarImageView = qualityContentBottomSheet.findViewById(R.id.image_view_rating_bar);
+        ratingBarImageView.setImageResource(qualityRatingStarImageRes);
 
-        TextView averageTextView = speedContentBottomSheet.findViewById(R.id.text_view_product_quality);
+        TextView averageTextView = qualityContentBottomSheet.findViewById(R.id.text_view_product_quality);
         averageTextView.setText(qualityAverage);
 
-        TextView reviewInfoTextView = speedContentBottomSheet.findViewById(R.id.text_view_review_info);
+        TextView reviewInfoTextView = qualityContentBottomSheet.findViewById(R.id.text_view_review_info);
         reviewInfoTextView.setText(getString(R.string.shop_page_bottom_sheet_product_quality_review_info, totalReview));
 
         BottomSheetCustomContentView bottomSheetView = new BottomSheetCustomContentView(this);
-        bottomSheetView.setCustomContentLayout(speedContentBottomSheet);
+        bottomSheetView.setCustomContentLayout(qualityContentBottomSheet);
         bottomSheetView.renderBottomSheet(new BottomSheetCustomContentView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getString(R.string.shop_page_bottom_sheet_product_quality_title))
@@ -516,7 +488,12 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         setViewState(VIEW_CONTENT);
         shopInfo = shopPageViewModel.getShopInfo();
         shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
-        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
+
+        if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
+            ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
+            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0))
+                    .displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
+        }
         shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
         shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId);
     }

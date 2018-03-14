@@ -4,7 +4,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
@@ -26,6 +28,11 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.shopProductClickedListener = shopProductClickedListener;
     }
 
+    @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingShimmeringGridViewHolder.LAYOUT;
+    }
+
     public int type(ShopProductViewModel shopProductViewModel) {
         if (typeFactoryListener != null) {
             return typeFactoryListener.getType(shopProductViewModel);
@@ -35,17 +42,17 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
-        AbstractViewHolder viewHolder;
-        if (viewType == ShopProductViewHolder.LAYOUT) {
-            viewHolder = new ShopProductViewHolder(view, shopProductClickedListener);
+        if (viewType == LoadingShimmeringGridViewHolder.LAYOUT) {
+            return new LoadingShimmeringGridViewHolder(view);
+        } else if (viewType == ShopProductViewHolder.LAYOUT) {
+            return new ShopProductViewHolder(view, shopProductClickedListener);
         } else if (viewType == ShopProductListViewHolder.LAYOUT) {
-            viewHolder = new ShopProductListViewHolder(view, shopProductClickedListener);
+            return new ShopProductListViewHolder(view, shopProductClickedListener);
         } else if (viewType == ShopProductSingleViewHolder.LAYOUT) {
-            viewHolder = new ShopProductSingleViewHolder(view, shopProductClickedListener);
+            return new ShopProductSingleViewHolder(view, shopProductClickedListener);
         } else {
-            viewHolder = super.createViewHolder(view, viewType);
+            return super.createViewHolder(view, viewType);
         }
-        return viewHolder;
     }
 
     public interface TypeFactoryListener<E> {

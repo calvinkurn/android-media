@@ -4,7 +4,7 @@
     android:id="@+id/loading_state_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:lsv_error_layout="@layout/design_error_network"
+    app:lsv_error_layout="@layout/partial_empty_page_error"
     app:lsv_loading_layout="@layout/partial_shop_info_loading_state">
 
     <android.support.v4.widget.NestedScrollView

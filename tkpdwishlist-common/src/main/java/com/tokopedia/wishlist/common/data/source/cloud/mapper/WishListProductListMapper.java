@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WishListProductListMapper {
 
-    public String convertCommaValue(List<String> productIdList) {
+    public static String convertCommaValue(List<String> productIdList) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < productIdList.size(); i++) {
             stringBuilder.append(productIdList.get(i));
