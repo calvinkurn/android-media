@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -17,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -47,7 +45,7 @@ public class ShopPageHeaderViewHolder {
 
         void onToggleFavouriteShop();
 
-        void displayQualityInfo(String qualityAverage, float qualityRatingStar, String totalReview);
+        void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview);
 
         void displayReputationInfo(int reputationMedalType, int reputationLevel, String reputationScore);
 
@@ -78,7 +76,7 @@ public class ShopPageHeaderViewHolder {
     private ShopReputationView reputationView;
     private TextView totalFavouriteTextView;
     private TextView totalProductTextView;
-    private RatingBar qualityRatingBar;
+    private ImageView ratingBarImageView;
     private TextView qualityValueTextView;
     private ImageView speedImageView;
     private TextView speedValueTextView;
@@ -119,7 +117,7 @@ public class ShopPageHeaderViewHolder {
 
         totalFavouriteTextView = view.findViewById(R.id.text_view_total_favourite);
         totalProductTextView = view.findViewById(R.id.text_view_total_product);
-        qualityRatingBar = view.findViewById(R.id.rating_bar_product_quality);
+        ratingBarImageView = view.findViewById(R.id.image_view_rating_bar);
         qualityValueTextView = view.findViewById(R.id.text_view_product_quality_value);
         speedImageView = view.findViewById(R.id.image_view_speed);
         speedValueTextView = view.findViewById(R.id.text_view_speed_value);
@@ -251,13 +249,12 @@ public class ShopPageHeaderViewHolder {
         });
         final String qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
-        final float qualityRatingStar = shopInfo.getRatings().getQuality().getRatingStar();
-        qualityRatingBar.setRating(qualityRatingStar);
-        qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
+        final int intRatingDrawableRes =  getRatingImageRes(Math.round(shopInfo.getRatings().getQuality().getRatingStar()));
+        ratingBarImageView.setImageResource(intRatingDrawableRes);
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.displayQualityInfo(qualityAverage, qualityRatingStar, shopInfo.getRatings().getQuality().getCountTotal());
+                listener.displayQualityInfo(qualityAverage, intRatingDrawableRes, shopInfo.getRatings().getQuality().getCountTotal());
             }
         });
     }
@@ -367,5 +364,29 @@ public class ShopPageHeaderViewHolder {
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(shopWarningTickerView.getContext(), colorRes));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Temporary solution to provide very small rating bar on shop page, hard to implement on various screen dimension
+     * @param rating
+     * @return
+     */
+    @Deprecated
+    @DrawableRes
+    private int getRatingImageRes(int rating) {
+        switch (rating) {
+            case 1:
+                return R.drawable.ic_rating_small_one;
+            case 2:
+                return R.drawable.ic_rating_small_two;
+            case 3:
+                return R.drawable.ic_rating_small_three;
+            case 4:
+                return R.drawable.ic_rating_small_four;
+            case 5:
+                return R.drawable.ic_rating_small_five;
+            default:
+                return R.drawable.ic_rating_small_none;
+        }
     }
 }

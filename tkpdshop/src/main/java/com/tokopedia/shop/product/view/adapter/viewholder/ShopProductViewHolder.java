@@ -87,7 +87,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setMax(ShopParamConstant.MAX_RATING_STAR);
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
         }
