@@ -462,4 +462,9 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             return notesEditText.getText().toString();
         else return "";
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

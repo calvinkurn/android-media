@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Total Pembayaran " />
+                    android:text="@string/label_payment_total" />
 
                 <TextView
                     android:id="@+id/tv_total_payment"
@@ -75,7 +75,7 @@
                 android:layout_margin="@dimen/margin_small"
                 android:background="@drawable/bg_grey_button_rounded"
                 android:gravity="center"
-                android:text="Pilih Metode Pembayaran"
+                android:text="@string/label_button_choose_payment_method"
                 android:textAllCaps="false"
                 android:textColor="@color/grey_500"
                 android:textSize="13sp" />

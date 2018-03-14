@@ -117,8 +117,10 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/green_button_rounded_unify"
                 android:foreground="?selectableItemBackground"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
+                android:paddingLeft="27dp"
+                android:paddingBottom="9dp"
+                android:paddingTop="9dp"
+                android:paddingRight="27dp"
                 android:text="@string/label_button_choose_courier"
                 android:textColor="@color/white" />
 

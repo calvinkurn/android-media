@@ -3,7 +3,8 @@
     android:id="@+id/go_to_courier_page_button"
     android:layout_width="match_parent"
     android:layout_height="@dimen/btn_height"
-    android:layout_margin="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/new_margin_small"
+    android:layout_marginTop="@dimen/new_margin_small"
     android:background="@drawable/green_button_rounded_unify"
     android:gravity="center"
     android:orientation="vertical">
