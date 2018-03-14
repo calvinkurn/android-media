@@ -166,6 +166,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
@@ -1124,6 +1125,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
         return ProductInfoActivity.createInstance(context, productPass);
+    }
+
+    @Override
+    public Interceptor getChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
     }
 
     @Override
