@@ -20,6 +20,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -95,6 +98,9 @@ public class ProductListFragment extends SearchSectionFragment
     private ProductListTypeFactory productListTypeFactory;
     private SearchParameter searchParameter;
     private boolean forceSearch;
+
+    private List<Option> quickFilterOptions;
+    private HeaderViewModel headerViewModel;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -225,15 +231,10 @@ public class ProductListFragment extends SearchSectionFragment
 
     private List<Visitable> initMappingProduct() {
         List<Visitable> list = new ArrayList<>();
-        HeaderViewModel headerViewModel = new HeaderViewModel();
+        headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-
-        if (headerViewModel.hasHeader()) {
-            list.add(headerViewModel);
-        }
-
+        list.add(headerViewModel);
         list.addAll(productViewModel.getProductList());
-
         return list;
     }
 
@@ -436,6 +437,7 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         getDynamicFilter();
+        getQuickFilter();
         getGuidedSearch();
     }
 
@@ -739,6 +741,28 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
         adapter.setGuidedSearch(guidedSearchViewModel);
+    }
+
+    @Override
+    public void getQuickFilter() {
+        presenter.requestQuickFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
+    }
+
+    @Override
+    public void renderQuickFilter(DynamicFilterModel dynamicFilterModel) {
+        quickFilterOptions = getOptionList(dynamicFilterModel);
+        headerViewModel.setQuickFilterList(quickFilterOptions);
+        adapter.notifyDataSetChanged();
+    }
+
+    private List<Option> getOptionList(DynamicFilterModel dynamicFilterModel) {
+        List<Option> optionList = new ArrayList<>();
+        for (Filter filter : dynamicFilterModel.getData().getFilter()) {
+            for (Option option : filter.getOptions()) {
+                optionList.add(option);
+            }
+        }
+        return optionList;
     }
 
     @Override

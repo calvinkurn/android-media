@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -38,6 +42,9 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author by errysuprayogi on 11/7/17.
  */
@@ -48,6 +55,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public static final int LAYOUT = R.layout.search_header_layout;
     public static final String DEFAULT_ITEM_VALUE = "1";
     private LinearLayout suggestionContainer;
+    private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
     public static final String KEYWORD = "keyword";
@@ -60,6 +68,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         this.clickListener = clickListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
+        quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         initTopAds(topAdsConfig);
     }
 
@@ -112,7 +121,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
             suggestionContainer.addView(suggestionView);
         }
+        bindQuickFilter(element.getQuickFilterList());
+    }
 
+    private void bindQuickFilter(List<Option> quickFilterList) {
+        QuickFilterAdapter adapter = new QuickFilterAdapter();
+        adapter.setOptionList(quickFilterList);
+        quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        quickFilterListView.setAdapter(adapter);
     }
 
     private void goToUrl(String url) {
@@ -154,4 +170,49 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         }
     }
 
+    private static class QuickFilterAdapter extends RecyclerView.Adapter<QuickFilterItemViewHolder> {
+
+        private List<Option> optionList = new ArrayList<>();
+
+        public void setOptionList(List<Option> optionList) {
+            this.optionList.clear();
+            this.optionList.addAll(optionList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public QuickFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
+            return new QuickFilterItemViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(QuickFilterItemViewHolder holder, int position) {
+            holder.bind(optionList.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return optionList.size();
+        }
+    }
+
+    private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView quickFilterText;
+
+        public QuickFilterItemViewHolder(View itemView) {
+            super(itemView);
+            quickFilterText = itemView.findViewById(R.id.quick_filter_text);
+        }
+
+        public void bind(Option option) {
+            quickFilterText.setText(option.getName());
+            quickFilterText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
+    }
 }
