@@ -43,9 +43,12 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewH
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -202,6 +205,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
+    public void renderList(@NonNull List<ShopProductViewModel> list) {
+        super.renderList(list);
+        shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+                list,false);
+    }
+
+    @Override
     public LoadingModel getLoadingModel() {
         if (isLoadingInitialData) {
             return new LoadingModelShimmeringGrid();
@@ -294,7 +304,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+        shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
+                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition, false);
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 

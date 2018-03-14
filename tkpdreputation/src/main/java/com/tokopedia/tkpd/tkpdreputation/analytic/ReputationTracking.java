@@ -2,6 +2,8 @@ package com.tokopedia.tkpd.tkpdreputation.analytic;
 
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 
+import java.util.HashMap;
+
 /**
  * Created by zulfikarrahman on 3/13/18.
  */
@@ -15,23 +17,26 @@ public class ReputationTracking {
     }
 
     private void eventShopPageOfficialStore(String category, String action, String label, String shopId){
-        reputationRouter.sendEventTrackingShopPage(
-                ReputationTrackingConstant.CLICK_OFFICIAL_STORE,
-                category,
-                action,
-                label,
-                shopId
-        );
+        HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, category,
+                action, label);
+        eventMap.put(ReputationTrackingConstant.SHOP_ID, shopId);
+        reputationRouter.sendEventTrackingShopPage(eventMap);
     }
 
     private void eventShopPageOfficialStoreProductId(String category, String action, String label, String productId){
-        reputationRouter.sendEventTrackingShopPage(
-                ReputationTrackingConstant.CLICK_OFFICIAL_STORE,
-                category,
-                action,
-                label,
-                productId
-        );
+        HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, category,
+                action, label);
+        eventMap.put(ReputationTrackingConstant.PRODUCT_ID, productId);
+        reputationRouter.sendEventTrackingShopPage(eventMap);
+    }
+
+    private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ReputationTrackingConstant.EVENT, event);
+        eventMap.put(ReputationTrackingConstant.EVENT_CATEGORY, category);
+        eventMap.put(ReputationTrackingConstant.EVENT_ACTION, action);
+        eventMap.put(ReputationTrackingConstant.EVENT_LABEL, label);
+        return eventMap;
     }
 
     public void eventClickLikeDislikeReview(String titlePage, boolean status, int position, String shopId) {

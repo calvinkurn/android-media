@@ -39,6 +39,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
@@ -125,7 +126,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickSeeMoreReview(getString(R.string.shop_info_title_tab_product), shopId);
+                shopPageTracking.eventClickSeeMoreProduct(getString(R.string.shop_info_title_tab_product), shopId);
                 startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
             }
         }, new View.OnClickListener() {
@@ -231,8 +232,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
         for(ShopProductBaseViewModel shopProductBaseViewModel : list){
             if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel){
-                shopPageTracking.eventViewProductFeaturedImpression(((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel).getShopProductViewModelList());
-                break;
+                shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel).getShopProductViewModelList());
+            }else if(shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel){
+                shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+                        ((ShopProductLimitedFeaturedViewModel)shopProductBaseViewModel).getShopProductViewModelList(),
+                        true);
             }
         }
     }
@@ -255,7 +259,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+        shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
+                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition, true);
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
@@ -331,13 +337,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        shopPageTracking.eventClickProductPictureFeaturedImpression(shopProductViewModel.getName(),
+        shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
                 shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition);
     }
 
     @Override
     public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        shopPageTracking.eventClickProductTitleFeaturedImpression(shopProductViewModel.getName(),
+        shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product),shopProductViewModel.getName(),
                 shopProductViewModel.getId(), shopProductViewModel.getPrice(), adapterPosition);
     }
 

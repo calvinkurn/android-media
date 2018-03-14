@@ -34,6 +34,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_PRODUCTS_CLICK = " - top products - click";
     public static final String BOTTOM_NAVIGATION_CLICK = " - bottom navigation - click";
     public static final String BOTTOM_NAVIGATION_PRODUCT_SORT_CLICK = "bottom navigation - product sort - click";
+    public static final String IMPRESSION = "impression";
 
     //label
     public static final String CLICK_ARROW_BACK = "click arrow back";
@@ -75,4 +76,34 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_ADD_PRODUCT = "click add product";
     public static final String CLICK_SHOP_SETTING = "click shop settings";
     public static final String CLICK_ADD_NOTE = "click add note";
+    public static final String CLICK_PRODUCT_PICTURE = "click product picture";
+    public static final String CLICK_PRODUCT_NAME = "click product name";
+    public static final String IMPRESSION_OF_TOP_PRODUCT_LIST = "impression of top products list";
+
+    //key
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String SHOP_ID = "shop_id";
+    public static final String PRODUCT_ID = "product_id";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String CLICK = "click";
+    public static final String ACTION_FIELD = "actionField";
+    public static final String SHOPPAGE_PRODUCT = "/shoppage - product ";
+    public static final String PRODUCTS = "products";
+    public static final String NAME = "name";
+    public static final String ID = "id";
+    public static final String PRICE = "price";
+    public static final String BRAND = "brand";
+    public static final String CATEGORY = "category";
+    public static final String VARIANT = "variant";
+    public static final String POSITION = "position";
+    public static final String NONE_OTHER = "none / other";
+    public static final String CURRENCY_CODE = "currencyCode";
+    public static final String IDR = "IDR";
+    public static final String IMPRESSIONS = "impressions";
+    public static final String CLICK_VIEW_MORE_PRODUCT = "click view more products";
+    public static final String IMPRESSION_OF_PRODUCT_PICTURES = "impression of product pictures";
+    public static final String CLICK_MENU = "click menu - ";
 }

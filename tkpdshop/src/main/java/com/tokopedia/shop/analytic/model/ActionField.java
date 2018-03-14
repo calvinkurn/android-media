@@ -1,5 +1,4 @@
-
-package com.example;
+package com.tokopedia.shop.analytic.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

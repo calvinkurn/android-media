@@ -101,7 +101,9 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                shopPageTracking.eventClickTabShopInfo(getTitlePage(tab.getPosition()), shopId);
+                if(shopPageTracking != null) {
+                    shopPageTracking.eventClickTabShopInfo(getTitlePage(tab.getPosition()), shopId);
+                }
             }
 
             @Override
