@@ -82,6 +82,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String KEY_CART_DATA = "KEY_CART_DATA";
     private static final String KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA";
+    private static final String KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -119,6 +120,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
     private String contactBirthdate;
     private int contactGender;
+    private Date expiredTransactionDate;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -151,11 +153,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        paramViewModel.setContactName(getContactName());
+        paramViewModel.setContactPhone(getContactPhoneNumber());
+        paramViewModel.setContactEmail(getContactEmail());
         outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramViewModel.getSearchParam());
         outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureTripId);
         outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnTripId);
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData);
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel);
+        outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredTransactionDate);
     }
 
     @Override
@@ -246,16 +252,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         if (savedInstanceState == null) {
-            presenter.processGetCartData();
+            presenter.initialize();
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA);
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA);
+            expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
-
-        presenter.onGetProfileData();
-        presenter.initialize();
     }
 
     @Override
@@ -552,6 +556,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderFinishTimeCountDown(Date date) {
+        expiredTransactionDate = date;
         countdownFinishTransactionView.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
@@ -736,7 +741,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 
-//    private View.OnClickListener getCheckboxClickListener() {
+    @Override
+    public Date getExpiredTransactionDate() {
+        return expiredTransactionDate;
+    }
+
+    //    private View.OnClickListener getCheckboxClickListener() {
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

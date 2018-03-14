@@ -300,10 +300,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int SEGMENT_GROUPCHAT = 2;
         Intent intent;
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = ((TkpdCoreRouter) context).getGroupChatIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
         } else {
-            intent = ((TkpdCoreRouter) context).getInboxChannelsIntent(
+            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
                     context);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
