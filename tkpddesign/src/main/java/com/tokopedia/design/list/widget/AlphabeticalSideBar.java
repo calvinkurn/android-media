@@ -53,7 +53,7 @@ public class AlphabeticalSideBar extends View {
     private void init() {
         alphabetText = "A.D.G.J.M.P.S.V.Z";
         itemTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_12);
-        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.font_title_big);
+        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_20);
         magnifierPadding = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_magnifier_padding);
         int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_to_magnifier_distance);
         magnifierRadius = magnifierTextSize / 2 + magnifierPadding;

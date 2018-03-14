@@ -46,7 +46,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:drawableLeft="@drawable/ic_kol_badge"
                 tools:text="Benny Alexandra Dia Dan Aku Selalu Bersama Huahahahaha" />
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="364" />
 
@@ -213,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="1M" />
 
@@ -250,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 tools:text="1.532" />
 

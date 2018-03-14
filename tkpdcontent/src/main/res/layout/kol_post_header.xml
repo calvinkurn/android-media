@@ -91,7 +91,7 @@
             android:lineSpacingExtra="6sp"
             android:text="@string/action_follow"
             android:textColor="@color/green_500"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:textStyle="normal"/>
     </RelativeLayout>
 </LinearLayout>

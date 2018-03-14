@@ -30,13 +30,10 @@
     <dimen name="sp_18">18sp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>
-
-    <dimen name="font_headline3">56sp</dimen>
-    <dimen name="font_headline2">45sp</dimen>
-    <dimen name="font_headline">34sp</dimen>
-    <dimen name="font_sub_headline">24sp</dimen>
-    <dimen name="font_title_big">20sp</dimen>
-    <dimen name="font_title">16sp</dimen>
+    <dimen name="sp_24">24sp</dimen>
+    <dimen name="sp_34">34sp</dimen>
+    <dimen name="sp_56">56sp</dimen>
+    <dimen name="sp_45">45sp</dimen>
 
     <dimen name="font_line_spacing_headline">38sp</dimen>
     <dimen name="font_line_spacing_subheadline">28sp</dimen>

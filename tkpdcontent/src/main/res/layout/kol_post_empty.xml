@@ -36,7 +36,7 @@
             android:text="@string/empty_kol_post"
             android:fontFamily="sans-serif"
             android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/font_title"
+            android:textSize="@dimen/sp_16"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_8"

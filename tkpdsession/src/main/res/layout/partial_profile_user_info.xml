@@ -176,7 +176,7 @@
                         android:layout_marginStart="10dp"
                         android:fontFamily="sans-serif"
                         android:textColor="@color/font_black_secondary_54"
-                        android:textSize="@dimen/font_sub_headline"
+                        android:textSize="@dimen/sp_24"
                         android:textStyle="bold"
                         tools:text="97%" />
                 </LinearLayout>
