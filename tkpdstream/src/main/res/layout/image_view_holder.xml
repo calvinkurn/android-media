@@ -38,11 +38,9 @@
         layout="@layout/chat_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header_time"
-        android:layout_marginLeft="@dimen/space_small"
-        android:layout_marginStart="@dimen/space_small"
-        android:layout_toEndOf="@id/avatar"
-        android:layout_toRightOf="@id/avatar"
+        android:layout_alignLeft="@+id/content_image"
+        android:layout_alignStart="@+id/content_image"
+        android:layout_below="@+id/header_time"
         android:visibility="visible" />
 
     <ImageView
@@ -55,6 +53,7 @@
         android:layout_marginTop="@dimen/space_mini"
         android:layout_marginLeft="@dimen/space_small"
         android:layout_marginStart="@dimen/space_small"
+        android:scaleType="fitCenter"
         android:background="@drawable/chat_vote_background"
         tools:src="@drawable/ic_loading_image"/>
 
