@@ -370,17 +370,20 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public void onShopIconClicked() {
+        goToShopInfo();
         shopPageTracking.eventClickShopLogo(getTitlePage(viewPager.getCurrentItem()), shopId,
                 shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     @Override
     public void onShopInfoClicked() {
+        goToShopInfo();
         shopPageTracking.eventClickShopInfo(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     @Override
     public void onShopNameClicked() {
+        goToShopInfo();
         shopPageTracking.eventClickShopName(getTitlePage(viewPager.getCurrentItem()), shopId,
                 shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
