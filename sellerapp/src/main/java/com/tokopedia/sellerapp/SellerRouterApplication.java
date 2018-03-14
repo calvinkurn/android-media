@@ -1119,11 +1119,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return TopProfileActivity.newInstance(context, userId);
+    }
 
     @Override
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
-        Intent intent = ProductInfoActivity.createInstance(context, productPass);
-        return intent;
+        return ProductInfoActivity.createInstance(context, productPass);
     }
 
     @Override
