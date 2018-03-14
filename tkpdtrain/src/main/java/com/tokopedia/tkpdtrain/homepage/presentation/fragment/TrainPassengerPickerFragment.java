@@ -23,13 +23,13 @@ import com.tokopedia.tkpdtrain.homepage.presentation.widget.SelectPassengerView;
 
 public class TrainPassengerPickerFragment extends BaseDaggerFragment implements TrainPassengerPickerView {
 
-    TrainPassengerPickerPresenterImpl trainPassengerPickerPresenter;
-
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
     private SelectPassengerView selectPassengerViewAdult;
     private SelectPassengerView selectPassengerViewInfant;
     private Button buttonSave;
+
+    private TrainPassengerPickerPresenterImpl trainPassengerPickerPresenter;
 
     private TrainPassengerViewModel trainPassengerViewModel;
 
