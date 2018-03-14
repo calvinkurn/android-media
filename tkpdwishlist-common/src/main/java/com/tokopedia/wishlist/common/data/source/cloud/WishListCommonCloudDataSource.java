@@ -27,7 +27,7 @@ public class WishListCommonCloudDataSource {
     }
 
     public Observable<Response<DataResponse<WishListData>>> getWishList(String userId, List<String> productIdList) {
-        return wishListCommonApi.getWishList(userId, wishListProductListMapper.convertCommaValue(productIdList));
+        return wishListCommonApi.getWishList(userId, WishListProductListMapper.convertCommaValue(productIdList));
     }
 
     public Observable<Boolean> addToWishList(String userId, String productId) {

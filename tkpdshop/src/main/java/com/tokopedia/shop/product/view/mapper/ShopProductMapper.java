@@ -6,6 +6,8 @@ import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
+import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,26 @@ public class ShopProductMapper {
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
+    }
+
+    public List<ShopProductViewModel> convertFromProductCampaigns(List<ShopProductViewModel> shopProduct,
+                                                                  ShopProductCampaignResponse campaigns) {
+        for (ShopProductViewModel shopProductViewModel : shopProduct) {
+            if (campaigns != null && campaigns.getData() != null) {
+                for (ShopProductCampaign shopProductCampaign : campaigns.getData()) {
+                    if (shopProductViewModel.getId().equalsIgnoreCase(Integer.toString(shopProductCampaign.getProductId()))) {
+                        shopProductViewModel.setOriginalPrice(
+                                shopProductCampaign.getOriginalPrice()
+                        );
+                        shopProductViewModel.setDiscountPrice(
+                                shopProductCampaign.getDiscountedPrice()
+                        );
+                    }
+                }
+
+            }
+        }
+        return shopProduct;
     }
 
     private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct, boolean showWishList) {

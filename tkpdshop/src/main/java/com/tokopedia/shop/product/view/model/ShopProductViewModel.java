@@ -11,7 +11,10 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
 
     private String id;
     private String name;
+    @Deprecated
     private String price;
+    private String originalPrice;
+    private String discountPrice;
     private String imageUrl;
     private int totalReview;
     private double rating;
@@ -22,6 +25,22 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     private boolean wishList;
     private String productUrl;
     private boolean showWishList;
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public String getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(String discountPrice) {
+        this.discountPrice = discountPrice;
+    }
 
     public String getId() {
         return id;

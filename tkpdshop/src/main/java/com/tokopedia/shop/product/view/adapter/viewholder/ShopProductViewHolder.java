@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -10,8 +11,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -36,6 +35,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private FrameLayout wishlistContainer;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
+    private TextView originalPriceTextView;
+    private TextView discountPriceTextView;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
@@ -46,6 +47,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private void findViews(View view) {
         titleTextView = view.findViewById(R.id.title);
         priceTextView = view.findViewById(R.id.price);
+        originalPriceTextView = view.findViewById(R.id.text_original_price);
+        discountPriceTextView = view.findViewById(R.id.text_discount);
+
         cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
@@ -76,7 +80,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         });
 
         titleTextView.setText(shopProductViewModel.getName());
-        priceTextView.setText(shopProductViewModel.getPrice());
+        updatePrice(shopProductViewModel);
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
     }
 
@@ -89,6 +93,25 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void updatePrice(final ShopProductViewModel shopProductViewModel) {
+        if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice()) && !TextUtils.isEmpty(shopProductViewModel.getDiscountPrice())) {
+            originalPriceTextView.setVisibility(View.VISIBLE);
+            discountPriceTextView.setVisibility(View.VISIBLE);
+            priceTextView.setVisibility(View.GONE);
+
+            originalPriceTextView.setText(shopProductViewModel.getOriginalPrice());
+            discountPriceTextView.setText(shopProductViewModel.getDiscountPrice());
+        } else {
+            originalPriceTextView.setVisibility(View.GONE);
+            discountPriceTextView.setVisibility(View.GONE);
+            priceTextView.setVisibility(View.VISIBLE);
+        }
+
+        if (priceTextView != null) {
+            priceTextView.setText(shopProductViewModel.getPrice());
         }
     }
 
