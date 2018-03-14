@@ -382,6 +382,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<FlightPassengerDb> getSinglePassengerById(String passengerId) {
+        return flightPassengerFactorySource.getSinglePassenger(passengerId);
+    }
+
+    @Override
     public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
         return flightPassengerFactorySource.updateIsSelected(passengerId, isSelected);
     }

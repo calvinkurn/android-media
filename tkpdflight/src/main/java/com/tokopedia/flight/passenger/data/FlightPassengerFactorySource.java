@@ -48,6 +48,10 @@ public class FlightPassengerFactorySource {
                 });
     }
 
+    public Observable<FlightPassengerDb> getSinglePassenger(String passengerId) {
+        return flightPassengerDataListDbSource.getSingleData(passengerId);
+    }
+
     public Observable<Boolean> updateIsSelected(String passengerId, int isSelected) {
         return flightPassengerDataListDbSource.updateIsSelected(passengerId, isSelected);
     }
