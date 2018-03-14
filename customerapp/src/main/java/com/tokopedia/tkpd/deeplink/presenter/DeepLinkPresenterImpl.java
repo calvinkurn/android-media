@@ -78,6 +78,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
 
     private final Activity context;
@@ -512,7 +513,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailFragment(context, linkSegment.get(1)), "TAG_FRAGMENT_CATALOG_DETAIL");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
