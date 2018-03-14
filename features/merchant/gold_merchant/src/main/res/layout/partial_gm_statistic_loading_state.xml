@@ -10,18 +10,18 @@
     android:paddingTop="@dimen/margin_sm">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_m"
+        android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/sp_12"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_l"
-        android:layout_height="@dimen/font_headline"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/sp_34"
         android:layout_marginTop="@dimen/padding_vs"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_s"
+        android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/sp_12"
         android:layout_gravity="end"
         android:layout_marginTop="@dimen/margin_sm"

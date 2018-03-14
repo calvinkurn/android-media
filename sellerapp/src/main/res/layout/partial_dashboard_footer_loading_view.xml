@@ -26,8 +26,8 @@
             app:use_gradient="true" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="@dimen/font_loading_width_l"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -41,7 +41,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -54,7 +54,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -67,7 +67,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -80,7 +80,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -107,8 +107,8 @@
             app:use_gradient="true" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="@dimen/font_loading_width_l"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -122,7 +122,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -135,7 +135,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"
@@ -148,7 +148,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/font_loading_width_xxl"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginStart="@dimen/margin_sm"

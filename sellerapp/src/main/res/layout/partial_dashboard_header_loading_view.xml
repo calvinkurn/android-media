@@ -26,13 +26,13 @@
             android:orientation="vertical">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_xl"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_150"
+                android:layout_height="@dimen/dp_15"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_l"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_15"
                 android:layout_marginTop="@dimen/margin_sm"
                 app:use_gradient="true"/>
 
@@ -54,13 +54,13 @@
             android:layout_height="wrap_content">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_l"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_15"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_l"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_15"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 app:use_gradient="true"/>
@@ -69,7 +69,7 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_height="@dimen/dp_15"
             android:layout_marginTop="@dimen/margin_sm"
             app:use_gradient="true"/>
 
@@ -79,13 +79,13 @@
             android:layout_marginTop="@dimen/margin_sm">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_xs"
-                android:layout_height="@dimen/font_loading_width_xxs"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_7"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_s"
-                android:layout_height="@dimen/font_loading_width_xxs"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_7"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 app:use_gradient="true"/>
@@ -105,20 +105,20 @@
             android:orientation="vertical">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_l"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_15"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_m"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_15"
                 android:layout_marginTop="@dimen/margin_small"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_m"
-                android:layout_height="@dimen/font_loading_width_xxs"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_7"
+                android:layout_marginTop="@dimen/dp_10"
                 app:use_gradient="true"/>
         </LinearLayout>
 
@@ -132,13 +132,13 @@
             android:orientation="vertical">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_l"
-                android:layout_height="@dimen/font_loading_width_xs"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_15"
                 app:use_gradient="true"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/font_loading_width_m"
-                android:layout_height="@dimen/font_loading_width_m"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:layout_marginTop="@dimen/margin_small"
                 app:use_gradient="true"/>
         </LinearLayout>

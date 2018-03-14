@@ -8,8 +8,8 @@
     android:padding="@dimen/margin_sm">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xl"
-        android:layout_height="@dimen/font_loading_width_xl"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_150"
         android:layout_gravity="center_horizontal"
         app:use_gradient="true" />
 
