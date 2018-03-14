@@ -683,7 +683,7 @@
                             android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/price_pdp"
-                            android:textSize="@dimen/font_line_spacing_small"
+                            android:textSize="@dimen/sp_18"
                             android:textStyle="bold" />
                     </RelativeLayout>
                 </LinearLayout>

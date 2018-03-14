@@ -28,7 +28,7 @@
                 android:text="Category Title"
                 android:textColor="@color/black"
                 android:textStyle="normal"
-                android:textSize="@dimen/font_line_spacing_small" />
+                android:textSize="@dimen/sp_18" />
 
             <TextView
                 android:id="@+id/txt_show_all"
