@@ -67,6 +67,7 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private boolean forImageSearch = false;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
