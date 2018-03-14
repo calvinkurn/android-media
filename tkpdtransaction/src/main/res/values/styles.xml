@@ -25,6 +25,10 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="TextVerySmall">
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="TextSmallNormal" parent="TextSmall">
         <item name="android:fontFamily">sans-serif</item>
     </style>
@@ -55,6 +59,11 @@
 
     <style name="TextSmallMediumBlack70" parent="TextSmallMedium">
         <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="TextSmallError" parent="TextVerySmall">
+        <item name="android:textColor">@color/text_cart_item_error_red</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="TextMid">

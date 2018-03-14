@@ -61,10 +61,10 @@ public class CartRemoveProductPresenter
 
         for (CartItemData cartItemData : cartItemForUpdate) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
-                            .cartId(cartItemData.getOriginData().getCartId())
-                            .notes(cartItemData.getUpdatedData().getRemark())
-                            .quantity(cartItemData.getUpdatedData().getQuantity())
-                            .build()
+                    .cartId(cartItemData.getOriginData().getCartId())
+                    .notes(cartItemData.getUpdatedData().getRemark())
+                    .quantity(cartItemData.getUpdatedData().getQuantity())
+                    .build()
             );
         }
 

@@ -55,6 +55,12 @@ public class CartShipmentAddressFormDataConverter
         ShipmentCostModel shipmentCostModel = getTotalPayableDetail(cartSellerItemModels);
 
         SingleShipmentData singleShipmentData = new SingleShipmentData();
+
+        singleShipmentData.setError(groupAddress.isError());
+        singleShipmentData.setErrorMessage(groupAddress.getErrorMessage());
+        singleShipmentData.setWarning(groupAddress.isWarning());
+        singleShipmentData.setWarningMessage(groupAddress.getWarningMessage());
+
         singleShipmentData.setRecipientAddress(recipientAddressModel);
         singleShipmentData.setCartItem(cartSellerItemModels);
         singleShipmentData.setShipmentCost(shipmentCostModel);
@@ -73,6 +79,11 @@ public class CartShipmentAddressFormDataConverter
 
     private CartSellerItemModel convertFromGroupShop(GroupShop groupShop) {
         CartSellerItemModel sellerItemModel = new CartSellerItemModel();
+
+        sellerItemModel.setError(groupShop.isError());
+        sellerItemModel.setErrorMessage(groupShop.getErrorMessage());
+        sellerItemModel.setWarning(groupShop.isWarning());
+        sellerItemModel.setWarningMessage(groupShop.getWarningMessage());
 
         Shop shop = groupShop.getShop();
         sellerItemModel.setShopId(String.valueOf(shop.getShopId()));
@@ -93,6 +104,9 @@ public class CartShipmentAddressFormDataConverter
             totalQuantity += cartItemModel.getQuantity();
             totalWeight += cartItemModel.getWeight() * cartItemModel.getQuantity();
         }
+        sellerItemModel.setError(groupShop.isError());
+        sellerItemModel.setErrorMessage(groupShop.getErrorMessage());
+
         sellerItemModel.setTotalItemPrice(totalItemPrice);
         sellerItemModel.setTotalQuantity(totalQuantity);
         sellerItemModel.setTotalWeight(totalWeight);

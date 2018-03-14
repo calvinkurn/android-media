@@ -4,11 +4,16 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +57,6 @@ public class ShipmentAddressListPresenter
     }
 
     /**
-     *
      * @param context
      * @param order
      */
@@ -61,14 +65,14 @@ public class ShipmentAddressListPresenter
     }
 
     /**
-     *
      * @param context
      * @param order
      * @param query
      */
     public void getAddressList(Context context, int order, String query) {
+        getMvpView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
-                    .getRequestParams(context, order, query, mPagingHandler.getPage()),
+                        .getRequestParams(context, order, query, mPagingHandler.getPage()),
                 new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {
@@ -77,21 +81,44 @@ public class ShipmentAddressListPresenter
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getMvpView().showError();
                         Log.d(TAG, throwable.getMessage());
+                        throwable.printStackTrace();
+                        if (isViewAttached()) {
+                            getMvpView().hideLoading();
+                            String message;
+                            if (throwable instanceof UnknownHostException ||
+                                    throwable instanceof ConnectException ||
+                                    throwable instanceof SocketTimeoutException) {
+                                message = getMvpView().getActivity().getResources().getString(
+                                        R.string.msg_no_connection);
+                            } else if (throwable instanceof UnProcessableHttpException) {
+                                message = TextUtils.isEmpty(throwable.getMessage()) ?
+                                        getMvpView().getActivity().getResources().getString(
+                                                R.string.msg_no_connection) :
+                                        throwable.getMessage();
+                            } else {
+                                message = getMvpView().getActivity().getResources().getString(
+                                        R.string.default_request_error_unknown);
+                            }
+                            getMvpView().showError(message);
+                        }
                     }
 
                     @Override
                     public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
-                        if (shipmentAddressModels.isEmpty()) {
-                            getMvpView().showListEmpty();
-                        } else {
-                            getMvpView().showList(shipmentAddressModels);
+                        boolean viewIsAttached = isViewAttached();
+                        if (viewIsAttached) {
+                            getMvpView().hideLoading();
+                            if (shipmentAddressModels.isEmpty()) {
+                                getMvpView().showListEmpty();
+                            } else {
+                                getMvpView().showList(shipmentAddressModels);
+                            }
                         }
 
                         Log.d(TAG, "Size: " + shipmentAddressModels.size());
                     }
-        });
+                });
     }
 
     private void filter(List<RecipientAddressModel> addressList, final String keyword) {
@@ -163,7 +190,7 @@ public class ShipmentAddressListPresenter
 
         @Override
         public void onError(Throwable e) {
-            getMvpView().showError();
+            getMvpView().showError("Terjadi kesalahan");
         }
 
         @Override

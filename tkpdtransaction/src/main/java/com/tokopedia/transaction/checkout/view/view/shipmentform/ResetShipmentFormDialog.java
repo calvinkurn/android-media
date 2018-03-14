@@ -12,7 +12,6 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveItemDialog;
 
 /**
  * @author Aghny A. Putra on 28/02/18.

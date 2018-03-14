@@ -72,7 +72,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                             i,
                             recipientAddressModel,
                             cartItemDataList.get(i).getOriginData(),
-                            cartItemDataList.get(i).getUpdatedData())
+                            cartItemDataList.get(i).getUpdatedData(),
+                            cartItemDataList.get(i).getErrorData())
             );
             addressAdapterData.setProductImageUrl(
                     cartItemDataList.get(i).getOriginData().getProductImage()
@@ -93,7 +94,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             int cartPosition,
             RecipientAddressModel shipmentRecipientModel,
             CartItemData.OriginData originData,
-            CartItemData.UpdatedData updatedData) {
+            CartItemData.UpdatedData updatedData,
+            CartItemData.MessageErrorData messageErrorData) {
+
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
         addressData.setCartPosition(cartPosition);
@@ -116,6 +119,14 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
         addressData.setMaxQuantity(updatedData.getMaxQuantity());
         addressData.setMinQuantity(originData.getMinimalQtyOrder());
+        addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
+        addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());
+        addressData.setErrorFieldMaxChar(messageErrorData.getErrorFieldMaxChar());
+        addressData.setErrorProductAvailableStock(messageErrorData.getErrorProductAvailableStock());
+        addressData.setErrorProductAvailableStockDetail(messageErrorData.getErrorProductAvailableStockDetail());
+        addressData.setErrorProductMaxQuantity(messageErrorData.getErrorProductMaxQuantity());
+        addressData.setErrorProductMinQuantity(messageErrorData.getErrorProductMinQuantity());
+        addressData.setMaxRemark(updatedData.getMaxCharRemark());
         initialItemData.add(addressData);
         return initialItemData;
     }

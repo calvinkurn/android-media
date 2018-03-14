@@ -10,7 +10,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressInteractor implements IMultipleAddressInteractor{
+public class MultipleAddressInteractor implements IMultipleAddressInteractor {
 
     private CompositeSubscription compositeSubscription;
 

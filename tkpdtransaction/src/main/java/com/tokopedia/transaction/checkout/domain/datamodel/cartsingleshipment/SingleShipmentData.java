@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +15,13 @@ import java.util.List;
 
 public class SingleShipmentData implements Parcelable {
 
+    private boolean isError;
+    private String errorMessage;
+    private boolean isWarning;
+    private String warningMessage;
+
     private RecipientAddressModel recipientAddress;
-    private List<CartSellerItemModel> cartItem;
+    private List<CartSellerItemModel> cartItem = new ArrayList<>();
     private ShipmentCostModel shipmentCost;
 
     private SingleShipmentData(Builder builder) {
@@ -24,12 +30,44 @@ public class SingleShipmentData implements Parcelable {
         shipmentCost = builder.shipmentCost;
     }
 
+    public boolean isWarning() {
+        return isWarning;
+    }
+
+    public void setWarning(boolean warning) {
+        isWarning = warning;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
+    }
+
     public RecipientAddressModel getRecipientAddress() {
         return recipientAddress;
     }
 
     public void setRecipientAddress(RecipientAddressModel recipientAddress) {
         this.recipientAddress = recipientAddress;
+    }
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public List<CartSellerItemModel> getCartItem() {
@@ -48,39 +86,8 @@ public class SingleShipmentData implements Parcelable {
         this.shipmentCost = shipmentCost;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.recipientAddress, flags);
-        dest.writeTypedList(this.cartItem);
-        dest.writeParcelable(this.shipmentCost, flags);
-    }
-
     public SingleShipmentData() {
     }
-
-    protected SingleShipmentData(Parcel in) {
-        this.recipientAddress = in.readParcelable(RecipientAddressModel.class.getClassLoader());
-        this.cartItem = in.createTypedArrayList(CartSellerItemModel.CREATOR);
-        this.shipmentCost = in.readParcelable(ShipmentCostModel.class.getClassLoader());
-    }
-
-    public static final Creator<SingleShipmentData> CREATOR =
-            new Creator<SingleShipmentData>() {
-                @Override
-                public SingleShipmentData createFromParcel(Parcel source) {
-                    return new SingleShipmentData(source);
-                }
-
-                @Override
-                public SingleShipmentData[] newArray(int size) {
-                    return new SingleShipmentData[size];
-                }
-            };
 
     public static final class Builder {
         private RecipientAddressModel recipientAddress;
@@ -109,4 +116,42 @@ public class SingleShipmentData implements Parcelable {
             return new SingleShipmentData(this);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningMessage);
+        dest.writeParcelable(this.recipientAddress, flags);
+        dest.writeTypedList(this.cartItem);
+        dest.writeParcelable(this.shipmentCost, flags);
+    }
+
+    protected SingleShipmentData(Parcel in) {
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
+        this.isWarning = in.readByte() != 0;
+        this.warningMessage = in.readString();
+        this.recipientAddress = in.readParcelable(RecipientAddressModel.class.getClassLoader());
+        this.cartItem = in.createTypedArrayList(CartSellerItemModel.CREATOR);
+        this.shipmentCost = in.readParcelable(ShipmentCostModel.class.getClassLoader());
+    }
+
+    public static final Creator<SingleShipmentData> CREATOR = new Creator<SingleShipmentData>() {
+        @Override
+        public SingleShipmentData createFromParcel(Parcel source) {
+            return new SingleShipmentData(source);
+        }
+
+        @Override
+        public SingleShipmentData[] newArray(int size) {
+            return new SingleShipmentData[size];
+        }
+    };
 }

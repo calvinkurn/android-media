@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class MultipleAddressItemAdapter extends RecyclerView.Adapter
-        <MultipleAddressItemAdapter.MultipleAddressItemViewHolder>{
+        <MultipleAddressItemAdapter.MultipleAddressItemViewHolder> {
 
     private List<MultipleAddressItemData> itemDataList;
 
@@ -58,14 +58,15 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
                 + ", " + itemData.getAddressCityName()
                 + ", " + itemData.getAddressProvinceName()
                 + ", " + itemData.getRecipientPhoneNumber());
+        holder.pseudoEditButton.setVisibility(View.GONE);
         holder.editButton.setOnClickListener(onEditOrderClickedListener(itemData));
         holder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(position));
         holder.addressLayout.setOnClickListener(
                 onAddressLayoutClickedListener(itemData)
         );
-        if(itemDataList.size() == 1) holder.deleteButton.setVisibility(View.GONE);
+        if (itemDataList.size() == 1) holder.deleteButton.setVisibility(View.GONE);
         else holder.deleteButton.setVisibility(View.VISIBLE);
-        if(position == itemDataList.size() - 1) holder.borderLine.setVisibility(View.GONE);
+        if (position == itemDataList.size() - 1) holder.borderLine.setVisibility(View.GONE);
         else holder.borderLine.setVisibility(View.VISIBLE);
 
     }
@@ -79,7 +80,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
         private TextView shippingIndex;
 
-        private TextView editButton;
+        private ImageView editButton;
+
+        private TextView pseudoEditButton;
 
         private ImageView deleteButton;
 
@@ -106,7 +109,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             shippingIndex = itemView.findViewById(R.id.shipping_index);
 
-            editButton = itemView.findViewById(R.id.tv_change_address);
+            editButton = itemView.findViewById(R.id.edit_button);
+
+            pseudoEditButton = itemView.findViewById(R.id.tv_change_address);
 
             deleteButton = itemView.findViewById(R.id.delete_button);
 

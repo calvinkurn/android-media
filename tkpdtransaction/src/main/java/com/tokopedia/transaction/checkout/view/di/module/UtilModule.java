@@ -13,7 +13,7 @@ import dagger.Provides;
 public class UtilModule {
 
     @Provides
-    IMapperUtil provideIMapperUtil(){
+    IMapperUtil provideIMapperUtil() {
         return new MapperUtil();
     }
 }

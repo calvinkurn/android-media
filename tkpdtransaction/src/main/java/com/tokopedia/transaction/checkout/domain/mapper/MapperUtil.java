@@ -26,9 +26,9 @@ public class MapperUtil implements IMapperUtil {
             for (int i = 0; i < length; i++) {
                 String s = stringList.get(i);
                 if (i == length - 1) {
-                    stringBuilder.append(s).append(", ");
-                } else {
                     stringBuilder.append(s);
+                } else {
+                    stringBuilder.append(s).append(", ");
                 }
             }
             return stringBuilder.toString();
@@ -47,6 +47,6 @@ public class MapperUtil implements IMapperUtil {
 
     @Override
     public boolean isEmpty(Object object) {
-        return object==null;
+        return object == null;
     }
 }
