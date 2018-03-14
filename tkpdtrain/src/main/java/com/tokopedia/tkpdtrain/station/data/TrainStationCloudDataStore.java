@@ -1,10 +1,10 @@
 package com.tokopedia.tkpdtrain.station.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.common.constant.TrainApi;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
-import com.tokopedia.tkpdtrain.station.data.specification.CloudNetworkSpecification;
-import com.tokopedia.tkpdtrain.station.data.specification.Specification;
+import com.tokopedia.tkpdtrain.common.specification.CloudNetworkSpecification;
 
 import java.util.List;
 

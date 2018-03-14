@@ -1,6 +1,5 @@
-package com.tokopedia.tkpdtrain.station.data.specification;
+package com.tokopedia.tkpdtrain.common.specification;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

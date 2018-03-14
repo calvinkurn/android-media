@@ -2,6 +2,8 @@ package com.tokopedia.tkpdtrain.station.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowGroupBySpecification;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb_Table;
 
 /**

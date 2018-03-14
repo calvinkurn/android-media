@@ -1,6 +1,5 @@
-package com.tokopedia.tkpdtrain.station.data.specification;
+package com.tokopedia.tkpdtrain.common.specification;
 
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
 /**

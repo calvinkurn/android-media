@@ -1,9 +1,7 @@
-package com.tokopedia.tkpdtrain.station.data;
+package com.tokopedia.tkpdtrain.common;
 
-import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
-import com.tokopedia.tkpdtrain.station.data.specification.Specification;
+import com.tokopedia.tkpdtrain.common.specification.Specification;
 
-import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;

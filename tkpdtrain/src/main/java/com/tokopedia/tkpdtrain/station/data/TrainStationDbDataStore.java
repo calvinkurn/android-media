@@ -9,14 +9,15 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
+import com.tokopedia.tkpdtrain.common.TrainDataDBSource;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowGroupBySpecification;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowWithOrderSpecification;
+import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.station.data.databasetable.TrainStationDb;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainCityEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationEntity;
 import com.tokopedia.tkpdtrain.station.data.entity.TrainStationIslandEntity;
-import com.tokopedia.tkpdtrain.station.data.specification.DbFlowGroupBySpecification;
-import com.tokopedia.tkpdtrain.station.data.specification.DbFlowSpecification;
-import com.tokopedia.tkpdtrain.station.data.specification.DbFlowWithOrderSpecification;
-import com.tokopedia.tkpdtrain.station.data.specification.Specification;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 import com.tokopedia.tkpdtrain.station.domain.model.mapper.TrainStationDbMapper;
 
@@ -90,7 +91,7 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                for (TrainStationIslandEntity entity : datas){
+                for (TrainStationIslandEntity entity : datas) {
                     insertStation(entity);
                 }
                 subscriber.onNext(true);
@@ -148,7 +149,7 @@ public class TrainStationDbDataStore implements TrainDataDBSource<TrainStationIs
                         .from(TrainStationDb.class)
                         .where(conditions)
                         .orderByAll(orderBies);
-                if (specification instanceof DbFlowGroupBySpecification){
+                if (specification instanceof DbFlowGroupBySpecification) {
                     IProperty[] properties = ((DbFlowGroupBySpecification) specification).getProperty();
                     query.groupBy(properties);
                 }

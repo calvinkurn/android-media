@@ -27,6 +27,8 @@ public class TrainDateUtil {
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
     public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";
+    public static final String DEFAULT_VIEW_LOCAL_DETAIL= "EEE, dd MMM yyyy";
+
 
     public static String formatDate(String currentFormat, String newFormat, String dateString) {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
