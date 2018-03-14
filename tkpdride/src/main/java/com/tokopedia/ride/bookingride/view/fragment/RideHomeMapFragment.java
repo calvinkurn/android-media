@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -529,6 +528,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     PlacePassViewModel sourceTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    if (sourceTemp == null) return;
+
                     if (sourceTemp.getLatitude() == 0.0 || sourceTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_pickup_zero_error));
                     } else {
@@ -545,10 +546,14 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
-                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
-                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                    if (destinationTemp == null || source == null) {
+                        return;
+                    }
+
+                    if (destinationTemp == null || destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
+                    } else if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
                     } else {
                         destination = destinationTemp;
                         interactionListener.collapseBottomPanel();

@@ -161,7 +161,7 @@
     <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
     <string name="change_phone_text">Setelah pengajuan Anda berhasil dan diterima, Saldo Tokopedia Anda <b>tidak dapat digunakan untuk bertransaksi selama 3x24 jam.</b></string>
 
-    <string name="make_sure_phone_is_active">Pastikan nomor ponsel  Anda aktif untuk keamanan dan kemudahan transaksi.</string>
+    <string name="make_sure_phone_is_active">Pastikan nomor ponsel Anda aktif untuk keamanan dan kemudahan transaksi.</string>
     <string name="minimal_6_character">Minimal 6 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
@@ -174,6 +174,11 @@
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
     <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
     <string name="dialog_cancel">BATAL</string>
+    <string name="title_activity_forbidden">Peringatan</string>
+    <string name="title_activity_service">Persyaratan Layanan</string>
+    <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
+    <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <u><font color=\'#42b549\'>Persyaratan Layanan</font></u> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
+    <string name="forbidden_button">Coba Lagi</string>
 
     <!-- TopProfile -->
     <string name="error_occured">Terjadi Kendala Pada Server</string>

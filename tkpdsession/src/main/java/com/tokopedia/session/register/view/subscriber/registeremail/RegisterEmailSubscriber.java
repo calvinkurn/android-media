@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registeremail;
 
+import  com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
@@ -30,13 +31,23 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissLoadingProgress();
         if (e instanceof ErrorMessageException
                 && e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
             viewListener.showInfo();
         } else {
-            viewListener.onErrorRegister(
-                    ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
+            ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+                @Override
+                public void onForbidden() {
+                    viewListener.onForbidden();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    viewListener.onErrorRegister(errorMessage);
+                }
+            }, e, viewListener.getActivity());
         }
     }
 

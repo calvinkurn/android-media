@@ -77,7 +77,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     @Override
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
+        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE,view.getActivity().getString(R.string.referral_welcome_desc));
         String username = SessionHandler.getLoginName(view.getActivity());
         username = username == null ? "" : " " + username;
         try {
