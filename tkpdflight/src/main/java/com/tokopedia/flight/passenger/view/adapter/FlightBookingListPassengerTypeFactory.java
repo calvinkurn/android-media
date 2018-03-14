@@ -1,5 +1,6 @@
-package com.tokopedia.flight.booking.view.adapter;
+package com.tokopedia.flight.passenger.view.adapter;
 
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerTypeFactory;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 
 /**

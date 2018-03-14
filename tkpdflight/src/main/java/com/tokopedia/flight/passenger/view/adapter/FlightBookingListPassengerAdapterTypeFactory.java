@@ -1,11 +1,11 @@
-package com.tokopedia.flight.booking.view.adapter;
+package com.tokopedia.flight.passenger.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 

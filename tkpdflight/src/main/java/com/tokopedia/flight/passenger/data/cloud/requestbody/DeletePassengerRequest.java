@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.data.cloud.requestbody;
+package com.tokopedia.flight.passenger.data.cloud.requestbody;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

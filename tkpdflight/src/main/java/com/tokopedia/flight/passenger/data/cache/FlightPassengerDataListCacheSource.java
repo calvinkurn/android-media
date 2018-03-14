@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.data.cache;
+package com.tokopedia.flight.passenger.data.cache;
 
 import android.content.Context;
 

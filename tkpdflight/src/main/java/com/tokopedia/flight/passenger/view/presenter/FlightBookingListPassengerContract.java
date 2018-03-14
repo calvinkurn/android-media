@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view.presenter;
+package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;

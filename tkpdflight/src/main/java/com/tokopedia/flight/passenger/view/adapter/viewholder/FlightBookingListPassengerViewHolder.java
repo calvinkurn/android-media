@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view.adapter.viewholder;
+package com.tokopedia.flight.passenger.view.adapter.viewholder;
 
 import android.app.Activity;
 import android.content.Context;

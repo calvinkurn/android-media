@@ -29,7 +29,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingListPassengerActivity;
+import com.tokopedia.flight.passenger.view.activity.FlightBookingListPassengerActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -37,7 +37,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightPassengerTitleType;
+import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,10 +1,10 @@
-package com.tokopedia.flight.booking.data;
+package com.tokopedia.flight.passenger.data;
 
-import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataListCloudSource;
-import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
-import com.tokopedia.flight.booking.data.db.FlightPassengerDataListDbSource;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.passenger.data.cloud.FlightSavedPassengerDataListCloudSource;
+import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.db.FlightPassengerDataListDbSource;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 
 import java.util.HashMap;
 import java.util.List;

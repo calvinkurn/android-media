@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.domain;
+package com.tokopedia.flight.passenger.domain;
 
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view.fragment;
+package com.tokopedia.flight.passenger.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,15 +12,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerContract;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerUpdateActivity;
+import com.tokopedia.flight.passenger.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingNewPassengerViewHolder;
+import com.tokopedia.flight.passenger.view.presenter.FlightBookingListPassengerContract;
+import com.tokopedia.flight.passenger.view.presenter.FlightBookingListPassengerPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     protected void initInjector() {
-        getComponent(FlightBookingComponent.class).inject(this);
+        getComponent(FlightPassengerComponent.class).inject(this);
     }
 
     @Override

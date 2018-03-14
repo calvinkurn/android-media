@@ -1,5 +1,6 @@
 package com.tokopedia.flight.passenger.di;
 
+import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment;
 
@@ -14,5 +15,7 @@ import dagger.Component;
 public interface FlightPassengerComponent {
 
     void inject(FlightPassengerUpdateFragment flightPassengerUpdateFragment);
+
+    void inject(FlightBookingListPassengerFragment flightBookingListPassengerFragment);
 
 }

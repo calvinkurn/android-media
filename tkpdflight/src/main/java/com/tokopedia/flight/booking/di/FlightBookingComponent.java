@@ -4,7 +4,6 @@ import com.tokopedia.flight.booking.view.fragment.FLightBookingPhoneCodeFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 
@@ -25,7 +24,5 @@ public interface FlightBookingComponent {
     void inject(FlightBookingReviewFragment flightBookingReviewFragment);
 
     void inject(FlightBookingPassengerFragment flightBookingPassengerFragment);
-
-    void inject(FlightBookingListPassengerFragment flightBookingListPassengerFragment);
 
 }

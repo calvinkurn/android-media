@@ -1,12 +1,12 @@
-package com.tokopedia.flight.booking.view.presenter;
+package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.domain.FlightBookingDeletePassengerUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingUpdateSelectedPassengerUseCase;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
+import com.tokopedia.flight.passenger.domain.FlightBookingDeletePassengerUseCase;
+import com.tokopedia.flight.passenger.domain.FlightBookingGetSavedPassengerUseCase;
+import com.tokopedia.flight.passenger.domain.FlightBookingUpdateSelectedPassengerUseCase;
+import com.tokopedia.flight.passenger.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.usecase.RequestParams;

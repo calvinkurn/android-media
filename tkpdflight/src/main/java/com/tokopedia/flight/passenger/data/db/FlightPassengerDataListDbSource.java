@@ -1,12 +1,12 @@
-package com.tokopedia.flight.booking.data.db;
+package com.tokopedia.flight.passenger.data.db;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
-import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb_Table;
+import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.HashMap;

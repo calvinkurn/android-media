@@ -2,7 +2,7 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingDeleteAllPassengerListUseCase;
+import com.tokopedia.flight.passenger.domain.FlightBookingDeleteAllPassengerListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;

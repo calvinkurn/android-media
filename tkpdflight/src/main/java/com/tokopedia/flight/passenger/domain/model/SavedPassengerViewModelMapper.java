@@ -1,6 +1,6 @@
-package com.tokopedia.flight.booking.domain.model;
+package com.tokopedia.flight.passenger.domain.model;
 
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 

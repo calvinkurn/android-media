@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.data.db.model;
+package com.tokopedia.flight.passenger.data.db.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 

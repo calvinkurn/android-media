@@ -1,6 +1,6 @@
-package com.tokopedia.flight.booking.domain;
+package com.tokopedia.flight.passenger.domain;
 
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

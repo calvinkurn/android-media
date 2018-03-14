@@ -1,7 +1,7 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
+import com.tokopedia.flight.passenger.domain.FlightBookingGetSavedPassengerUseCase;
 
 import javax.inject.Inject;
 

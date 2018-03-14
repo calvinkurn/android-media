@@ -1,8 +1,5 @@
 package com.tokopedia.flight.common.data.repository;
 
-import android.text.TextUtils;
-
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -11,12 +8,12 @@ import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.data.FlightPassengerFactorySource;
+import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
