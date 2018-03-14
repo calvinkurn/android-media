@@ -1,11 +1,15 @@
 package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
@@ -41,15 +45,16 @@ public class ImageLoader {
         loadImage(ecs, null, imageView);
     }
 
-    public void loadImage(String ecs, final String url, ImageView imageView) {
-        imageFetcher.loadImage(ecs, imageView, new ImageWorker.OnImageLoadedListener() {
+    public void loadImage(String ecs, final String url, final ImageView imageView) {
+        Glide.with(context).load(ecs).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
-            public void onImageLoaded(boolean success) {
-                if (success && url != null && url.contains(PATH_VIEW)) {
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                imageView.setImageBitmap(resource);
+                if (url.contains(PATH_VIEW)) {
                     new ImpresionTask().execute(url);
                 }
             }
-        }, false);
+        });
     }
 
     public void loadImageWithMemoryCache(String url, ImageView imageView){
