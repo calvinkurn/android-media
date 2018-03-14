@@ -80,6 +80,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
                 trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
                 trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNumber());
+                trainScheduleDbTable.setAvailableSeat(AvailabilityTypeDef.DEFAULT_VALUE);
                 adapter.insert(trainScheduleDbTable);
                 subscriber.onNext(true);
             }
@@ -117,6 +118,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
                 trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
                 trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNumber());
+                trainScheduleDbTable.setAvailableSeat(AvailabilityTypeDef.DEFAULT_VALUE);
                 adapter.insert(trainScheduleDbTable);
             }
         });
