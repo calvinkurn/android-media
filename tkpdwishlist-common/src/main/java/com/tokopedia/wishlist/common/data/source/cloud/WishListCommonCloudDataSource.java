@@ -3,11 +3,11 @@ package com.tokopedia.wishlist.common.data.source.cloud;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
+import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.model.WishListData;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -44,6 +44,15 @@ public class WishListCommonCloudDataSource {
             @Override
             public Observable<Boolean> call(Response<Void> response) {
                 return Observable.just(true);
+            }
+        });
+    }
+
+    public Observable<ShopProductCampaignResponse> getProductCampaigns(String ids) {
+        return wishListCommonApi.getProductCampaigns(ids).map(new Func1<Response<ShopProductCampaignResponse>, ShopProductCampaignResponse>() {
+            @Override
+            public ShopProductCampaignResponse call(Response<ShopProductCampaignResponse> response) {
+                return response.body();
             }
         });
     }
