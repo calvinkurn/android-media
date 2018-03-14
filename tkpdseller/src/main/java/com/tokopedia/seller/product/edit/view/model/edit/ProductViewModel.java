@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +90,6 @@ public class ProductViewModel implements ItemType, Parcelable {
     @SerializedName("product_gtin")
     @Expose
     private String productGtin;
-
-    @SerializedName("product_brand")
-    @Expose
-    private ProductBrandViewModel productBrand = null;
 
     @SerializedName("product_catalog")
     @Expose
@@ -393,14 +388,6 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productPreorder = productPreorder;
     }
 
-    public ProductBrandViewModel getProductBrand() {
-        return productBrand;
-    }
-
-    public void setProductBrand(ProductBrandViewModel productBrand) {
-        this.productBrand = productBrand;
-    }
-
     public String getProductGtin() {
         return productGtin;
     }
@@ -480,7 +467,6 @@ public class ProductViewModel implements ItemType, Parcelable {
         dest.writeByte(this.productFreeReturn ? (byte) 1 : (byte) 0);
         dest.writeString(this.productSku);
         dest.writeString(this.productGtin);
-        dest.writeParcelable(this.productBrand, flags);
         dest.writeParcelable(this.productCatalog, flags);
         dest.writeParcelable(this.productCategory, flags);
         dest.writeParcelable(this.productEtalase, flags);
@@ -518,7 +504,6 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productFreeReturn = in.readByte() != 0;
         this.productSku = in.readString();
         this.productGtin = in.readString();
-        this.productBrand = in.readParcelable(ProductBrandViewModel.class.getClassLoader());
         this.productCatalog = in.readParcelable(ProductCatalogViewModel.class.getClassLoader());
         this.productCategory = in.readParcelable(ProductCategoryViewModel.class.getClassLoader());
         this.productEtalase = in.readParcelable(ProductEtalaseViewModel.class.getClassLoader());

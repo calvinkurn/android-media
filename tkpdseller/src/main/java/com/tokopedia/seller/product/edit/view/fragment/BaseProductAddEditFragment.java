@@ -521,6 +521,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         if (currentProductViewModel.getProductCategory() != null) {
             onCategoryLoaded(currentProductViewModel.getProductCategory().getCategoryId());
         }
+
+        getCategoryRecommendation(currentProductViewModel.getProductName());
+        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+
         checkOriginalVariant(model);
     }
 
@@ -590,8 +594,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     @Override
-    public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList) {
-        productInfoViewHolder.successFetchCatalogData(catalogViewModelList);
+    public void onSuccessLoadCatalog(String keyword, long departmentId, List<Catalog> catalogViewModelList) {
+        productInfoViewHolder.successFetchCatalogData(keyword, departmentId, catalogViewModelList);
     }
 
     @Override
@@ -658,6 +662,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productManageViewHolder.onSuccessGetProductVariantCat(null);
         // check catalog by categoryID
         onCategoryLoaded(categoryId);
+    }
+
+    @Override
+    public void onCatalogPicked(boolean isCatalogExist) {
+        valueIndicatorScoreModel.setHasCatalog(isCatalogExist);
+        updateProductScoring();
     }
 
     /**

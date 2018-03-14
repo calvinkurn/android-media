@@ -136,7 +136,7 @@ public class ProductScoreDataSourceCache {
         switch (indicatorScore.getIndicatorId()) {
             case IMAGE_INDICATOR:
                 return calculateScoreProductImage(indicatorScore, valueIndicatorScoreModel.getImageCount(),
-                        valueIndicatorScoreModel.getImageResolution());
+                        valueIndicatorScoreModel.getImageResolution(), valueIndicatorScoreModel.isHasCatalog());
             case NAME_INDICATOR:
                 return calculateScoreProductName(indicatorScore, valueIndicatorScoreModel.getLengthProductName());
             case DESC_INDICATOR:
@@ -198,15 +198,23 @@ public class ProductScoreDataSourceCache {
         return 0;
     }
 
-    private int calculateScoreProductImage(IndicatorScore indicatorScore, int imageCount, int imageResolution) {
+    private int calculateScoreProductImage(IndicatorScore indicatorScore, int imageCount, int imageResolution, boolean hasCatalog) {
         for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
             if (valueIndicator.getIndicatorType().equals(COUNT_TYPE_IMAGE)) {
-                imageCount = calculateScore(valueIndicator, imageCount);
+                imageCount = calculateScoreImage(valueIndicator, imageCount, hasCatalog);
             } else if (valueIndicator.getIndicatorType().equals(RESOLUTION_TYPE_IMAGE)) {
-                imageResolution = calculateScore(valueIndicator, imageResolution);
+                imageResolution = calculateScoreImage(valueIndicator, imageResolution, hasCatalog);
             }
         }
         return imageCount + imageResolution;
+    }
+
+    private int calculateScoreImage(ValueIndicator valueIndicator, int valueCount, boolean hasCatalog) {
+        List<IndicatorScoring> indicatorScorings = valueIndicator.getIndicatorScoring();
+        if (hasCatalog){
+            return indicatorScorings.get(indicatorScorings.size() - 1).getScore();
+        }
+        return calculateScore(valueIndicator, valueCount);
     }
 
     private int calculateScore(ValueIndicator valueIndicator, int valueCount) {

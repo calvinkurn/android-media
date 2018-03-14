@@ -293,7 +293,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         };
     }
 
-    private void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
+    private void getCatalogFromServer(final String keyword, final long departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {
@@ -312,7 +312,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().onSuccessLoadCatalog(catalogDataModel.getResult().getCatalogs());
+                        getView().onSuccessLoadCatalog( keyword, departmentId, catalogDataModel.getResult().getCatalogs());
                     }
                 });
     }
