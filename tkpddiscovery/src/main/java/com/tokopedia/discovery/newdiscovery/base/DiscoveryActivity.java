@@ -39,6 +39,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.imagesearch.domain.usecase.NewImageSearchResponse;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
@@ -48,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -484,6 +486,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    List<String> productIDList = new ArrayList<>();
+
     @Override
     public void onHandleImageSearchResponse(NewImageSearchResponse imageSearchResponse) {
         if (imageSearchResponse == null || imageSearchResponse.getAuctionsArrayList() == null) {
@@ -499,11 +503,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         int productCount = imageSearchResponse.getAuctionsArrayList().size();
         StringBuilder productIDs = new StringBuilder();
 
-        if (productCount > 100)
-            productCount = 100;
+        productIDList.clear();
 
         for (int i = 0; i < productCount; i++) {
-            productIDs.append(imageSearchResponse.getAuctionsArrayList().get(i).getItemId());
+            String itemId = imageSearchResponse.getAuctionsArrayList().get(i).getItemId();
+            productIDList.add(itemId);
+            productIDs.append(itemId);
             if (i != productCount - 1) {
                 productIDs.append(",");
             }
@@ -532,6 +537,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         if (tkpdProgressDialog != null)
             tkpdProgressDialog.dismiss();
+        HashMap<String, ProductItem> productItemHashMap = new HashMap<>();
+        for (ProductItem productItem : productViewModel.getProductList()) {
+            productItemHashMap.put(productItem.getProductID(), productItem);
+        }
+        List<ProductItem> productItemList = new ArrayList<>();
+        for (String productId : productIDList) {
+            if (productItemHashMap.get(productId) != null)
+                productItemList.add(productItemHashMap.get(productId));
+        }
+        productViewModel.setProductList(productItemList);
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
     }
