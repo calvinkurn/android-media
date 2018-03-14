@@ -15,25 +15,25 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_sm"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_sm"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_sm"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/margin_sm"
         app:use_gradient="true" />
 </LinearLayout>
