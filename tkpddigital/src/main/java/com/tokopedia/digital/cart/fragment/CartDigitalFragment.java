@@ -257,7 +257,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.VISIBLE);
     }
 
-
     @Override
     public void showProgressLoading(String title,String message) {
         progressDialogNormal.showDialog(title,message);
@@ -698,8 +697,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
             Intent intent;
             if( cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE){
-        intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
-        } else {
+                intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
+            } else {
                 intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
             }
             navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
