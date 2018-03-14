@@ -3,6 +3,10 @@ package com.tokopedia.tkpd.tkpdreputation.review.shop.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopInfoTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopModelContent;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopSeeMoreModelContent;
@@ -10,6 +14,8 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopSeeM
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopTypeFactoryAdapter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by normansyahputa on 2/14/18.
@@ -33,6 +39,7 @@ public class ReviewShopInfoFragment extends ReviewShopFragment implements Review
 
     @Override
     public void onGoToMoreReview() {
+        reputationTracking.eventClickSeeMoreReview(getString(R.string.review), shopId);
         startActivity(ReviewShopInfoActivity.createIntent(getActivity(), shopId, shopDomain));
     }
 
@@ -55,5 +62,40 @@ public class ReviewShopInfoFragment extends ReviewShopFragment implements Review
         if(isSeeMoreEnabled) {
             getAdapter().addElement(new ReviewShopSeeMoreModelContent());
         }
+    }
+
+    @Override
+    protected void onLikeDislikeTracking(String productId, boolean status, int adapterPosition) {
+        reputationTracking.eventClickLikeDislikeReview(getString(R.string.review), status, adapterPosition, shopId);
+    }
+
+    @Override
+    protected void onGoToDetailProductTracking(String productId, int adapterPosition) {
+        reputationTracking.eventClickProductPictureOrName(getString(R.string.review), adapterPosition, productId);
+    }
+
+    @Override
+    protected void onGoToProfileTracking(int adapterPosition) {
+        reputationTracking.eventClickUserAccount(getString(R.string.review), adapterPosition, shopId);
+    }
+
+    @Override
+    public void onMenuClicked(int adapterPosition) {
+        reputationTracking.eventCLickThreeDotMenu(getString(R.string.review), adapterPosition, shopId);
+    }
+
+    @Override
+    protected void onDeleteReviewResponseTracking(ReviewProductModelContent element, int adapterPosition) {
+        reputationTracking.eventClickChooseThreeDotMenu(getString(R.string.review), adapterPosition, ReputationTrackingConstant.DELETE, shopId);
+    }
+
+    @Override
+    protected void onGoToReportReviewTracking(String shopId, int adapterPosition) {
+        reputationTracking.eventClickChooseThreeDotMenu(getString(R.string.review), adapterPosition, ReputationTrackingConstant.REPORT, shopId);
+    }
+
+    @Override
+    public void onSeeReplied(int adapterPosition) {
+        reputationTracking.eventClickSeeReplies(getString(R.string.review), adapterPosition, shopId);
     }
 }

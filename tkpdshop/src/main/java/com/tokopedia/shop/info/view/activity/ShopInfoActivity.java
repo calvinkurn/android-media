@@ -10,23 +10,32 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
+import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
 public class ShopInfoActivity extends BaseTabActivity implements HasComponent<ShopComponent> {
+
+    @Inject
+    ShopPageTracking shopPageTracking;
 
     private static final int PAGE_LIMIT = 2;
     private static final String EXTRA_STATE_TAB_POSITION = "extra_tab_position";
@@ -65,6 +74,12 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO);
         viewPager.setCurrentItem(tabPosition);
+        DaggerShopInfoComponent
+                .builder()
+                .shopInfoModule(new ShopInfoModule())
+                .shopComponent(getComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -72,6 +87,13 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         super.setupLayout(savedInstanceState);
         tabLayout.addOnTabSelectedListener(getTabsListener());
         tabLayout.setupWithViewPager(viewPager);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //handle backpressed analytic
+                shopPageTracking.eventBackPressedShopInfo(shopId);
+            }
+        });
     }
 
     @NonNull
@@ -79,12 +101,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                }
+                shopPageTracking.eventClickTabShopInfo(getTitlePage(tab.getPosition()), shopId);
             }
 
             @Override
@@ -105,14 +122,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
 
             @Override
             public CharSequence getPageTitle(int position) {
-                switch (position) {
-                    case 0:
-                        return getString(R.string.shop_info_title_tab_shop_info);
-                    case 1:
-                        return getString(R.string.shop_info_title_tab_note);
-                    default:
-                        return super.getPageTitle(position);
-                }
+                return getTitlePage(position);
             }
 
             @Override
@@ -132,6 +142,17 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
                 return PAGE_LIMIT;
             }
         };
+    }
+
+    public CharSequence getTitlePage(int position) {
+        switch (position) {
+            case 0:
+                return getString(R.string.shop_info_title_tab_shop_info);
+            case 1:
+                return getString(R.string.shop_info_title_tab_note);
+            default:
+                return "";
+        }
     }
 
     @Override

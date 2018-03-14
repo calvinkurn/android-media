@@ -1,0 +1,78 @@
+package com.tokopedia.shop.analytic;
+
+/**
+ * Created by zulfikarrahman on 3/12/18.
+ */
+
+public class ShopPageTrackingConstant {
+
+    //event
+    public static final String CLICK_OFFICIAL_STORE = "clickOfficialStore";
+    public static final String VIEW_OFFICIAL_STORE = "viewOfficialStore";
+
+    //category
+    public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
+    public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
+    public static final String SHOP_PAGE_BUYER = "shop page - buyer";
+    public static final String SHOP_PAGE_BUYER_REVIEW = "shop page - buyer review";
+    public static final String SHOP_PAGE_BUYER_DISCUSSION = "shop page - buyer discussion";
+    public static final String SHOP_PAGE_BUYER_PRODUCT = "shop page - buyer product";
+    public static final String SHOP_PAGE_SELLER = "shop page - seller";
+    public static final String SHOP_PAGE_SELLER_REVIEW = "shop page - seller review";
+    public static final String SHOP_PAGE_SELLER_DISCUSSION = "shop page - seller discussion";
+    public static final String SHOP_PAGE_SELLER_PRODUCT = "shop page - seller product";
+
+    //ACTION
+    public static final String TOP_SECTION_GENERAL_CLICK = "- top section - general - click";
+    public static final String TOP_SECTION_SOCIAL_MEDIA_CLICK = "- top section - social media - click";
+    public static final String TOP_SECTION_LIST_FAVOURITE_CLICK = "- top section - list of favourites - click";
+    public static final String TOP_SECTION_SHOP_SPEED_CLICK = "- top section - shop speed - click";
+    public static final String TOP_SECTION_SHOP_INFORMATION_CLICK = "- top section - shop information - click";
+    public static final String TOP_SECTION_IMPRESSION = "- top section - impression";
+    public static final String ACTION_SEARCH_BAR_CLICK = " - search bar - click";
+    public static final String ACTION_SEARCH_BAR_TYPE = " - search bar - type";
+    public static final String TOP_PRODUCTS_CLICK = " - top products - click";
+    public static final String BOTTOM_NAVIGATION_CLICK = " - bottom navigation - click";
+    public static final String BOTTOM_NAVIGATION_PRODUCT_SORT_CLICK = "bottom navigation - product sort - click";
+
+    //label
+    public static final String CLICK_ARROW_BACK = "click arrow back";
+    public static final String CLICK_SHOP_LOGO = "click shop logo";
+    public static final String CLICK_SHOP_NAME = "click shop name";
+    public static final String CLICK_SHARE_SHOP = "click share button";
+    public static final String CLICK_MESSAGE_BRAND = "click message brand";
+    public static final String CLICK_FAVOURITE_SHOP = "click favourite shop - ";
+    public static final String FAVOURITE = "favourite";
+    public static final String UNFAVOURITE = "unfavourite";
+    public static final String CLICK_LIST_OF_FAVOURITE = "click list of favourites";
+    public static final String CLICK_USER_FAVOURITING_SHOP = "click user favouriting shop";
+    public static final String CLICK_CLOSE_FAVOURITE = "click close favourite";
+    public static final String CLICK_TOTAL_PRODUCTS = "click total products";
+    public static final String CLICK_SHOP_SPEED = "click shop speed";
+    public static final String CLICK_SEE_SHOP_INFO = "click see shop information";
+    public static final String CLICK_SHOP_INFO = "click shop information";
+    public static final String CLICK_TOP_TAB = "click top tab - ";
+    public static final String CLICK_NOTE_LIST = "click note list - ";
+    public static final String CLICK_ARROW_BACK_TO_SHOP = "click arrow back to shop page";
+    public static final String CLICK_SHARE_NOTE_LIST = "click note list - share button";
+    public static final String CLICK_TOP_CONTENT_TAB = "click top content tab - ";
+    public static final String ClICK_SEARCH_BAR = "click search bar";
+    public static final String TYPE_KEYWORDS = "type keywords - ";
+    public static final String ADD_WISHLIST = "add";
+    public static final String REMOVE_WISHLIST = "remove";
+    public static final String CLICK_WISHLIST = "click wishlist - ";
+    public static final String PRODUCT_LIST = "product list";
+    public static final String PRODUCT_PAGE = "product page";
+    public static final String CLICK_ETALASE = "click etalase";
+    public static final String CLICK_SORT = "click sort";
+    public static final String GRID = "grid";
+    public static final String FULL_IMAGE = "full image";
+    public static final String LIST = "list";
+    public static final String CLICK_PRODUCT_VIEW = "click product view - ";
+    public static final String CLICK_SORT_BY = "click sort by - ";
+    public static final String CLICK_SEE_MORE = "click see more";
+    public static final String BOTTOM_NAVIGATION_IMPRESSION = " - bottom navigation - impression";
+    public static final String CLICK_ADD_PRODUCT = "click add product";
+    public static final String CLICK_SHOP_SETTING = "click shop settings";
+    public static final String CLICK_ADD_NOTE = "click add note";
+}

@@ -26,6 +26,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -75,6 +76,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private String shopId;
     private ShopInfo shopInfo;
 
@@ -240,6 +243,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     }
 
     private void onShareShop() {
+        shopPageTracking.eventClickShareShopNotePage(shopId, ShopPageTracking.getShopType(shopInfo.getInfo()));
         if (shopInfo != null) {
             ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
                     getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));

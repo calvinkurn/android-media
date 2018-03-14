@@ -30,6 +30,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
@@ -73,6 +74,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Inject
     ShopProductListPresenter shopProductListPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private LabelView etalaseLabelView;
     private ShopModuleRouter shopModuleRouter;
 
@@ -167,6 +170,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
+                    shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId);
                     Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
                     startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
@@ -180,12 +184,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 recyclerViews.setLayoutManager(layoutManager);
                 getAdapter().notifyDataSetChanged();
                 setBottomActionViewImage(++currentImgBottomNav);
+                shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product), currentImgBottomNav, shopId);
             }
         });
 
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId);
                 ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
             }
         });
@@ -279,6 +285,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+        shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(), false, shopId);
         if (shopProductViewModel.isWishList()) {
             shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
         } else {
@@ -350,11 +357,18 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
+    public void onLastItemVisible() {
+        //Do nothing
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
                     etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
+                    String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
+                    shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product), false, etalaseName, shopId);
                     this.isLoadingInitialData = true;
                     loadInitialData();
                 }

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent;
@@ -33,6 +35,8 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Inject
     ShopProductSortPresenter shopProductFilterPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private String sortName;
     private ShopProductSortFragmentListener shopFilterFragmentListener;
 
@@ -116,6 +120,7 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     public void onItemClicked(ShopProductSortModel filterModel) {
+        shopPageTracking.eventClickChooseSort(getString(R.string.shop_info_title_tab_product), filterModel.getName(), "");
         shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }

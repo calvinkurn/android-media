@@ -1,10 +1,15 @@
 package com.tokopedia.shop.common.di.module;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -136,5 +141,15 @@ public class ShopModule {
     @Provides
     public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
         return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    }
+
+    @ShopScope
+    @Provides
+    public ShopPageTracking provideShopPageTracking(@ApplicationContext Context context){
+        if(context instanceof ShopModuleRouter){
+            return new ShopPageTracking((ShopModuleRouter)context);
+        }else{
+            return null;
+        }
     }
 }

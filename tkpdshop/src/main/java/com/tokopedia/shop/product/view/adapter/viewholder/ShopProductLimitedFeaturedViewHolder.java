@@ -24,10 +24,13 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
 
     private RecyclerView recyclerView;
     private ShopProductClickedListener shopProductClickedListener;
+    private ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
 
-    public ShopProductLimitedFeaturedViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
+    public ShopProductLimitedFeaturedViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener,
+                                                ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
         super(itemView);
         this.shopProductClickedListener = shopProductClickedListener;
+        this.shopProductFeaturedListener = shopProductFeaturedListener;
         findViews(itemView);
     }
 
@@ -37,7 +40,7 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
 
     @Override
     public void bind(ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel) {
-        ShopProductLimitedFeaturedAdapter adapter = new ShopProductLimitedFeaturedAdapter(shopProductClickedListener);
+        ShopProductLimitedFeaturedAdapter adapter = new ShopProductLimitedFeaturedAdapter(shopProductClickedListener, shopProductFeaturedListener);
         adapter.setList(shopProductLimitedFeaturedViewModel.getShopProductViewModelList());
         LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

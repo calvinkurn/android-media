@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
@@ -27,19 +28,22 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final ShopProductClickedListener shopProductClickedListener;
     private final EmptyViewHolder.Callback emptyProductOnClickListener;
     private final ShopPagePromoWebView.Listener promoWebViewListener;
+    private final ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener,
                                                 EmptyViewHolder.Callback emptyProductOnClickListener,
-                                                ShopPagePromoWebView.Listener promoWebViewListener) {
+                                                ShopPagePromoWebView.Listener promoWebViewListener,
+                                                ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.showMoreEtalaseOnClickListener = showMoreEtalaseOnClickListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.promoWebViewListener = promoWebViewListener;
+        this.shopProductFeaturedListener = shopProductFeaturedListener;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
-            return new ShopProductLimitedFeaturedViewHolder(parent, shopProductClickedListener);
+            return new ShopProductLimitedFeaturedViewHolder(parent, shopProductClickedListener, shopProductFeaturedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
             return new ShopProductLimitedProductViewHolder(parent,
                     showMoreProductOnClickListener,

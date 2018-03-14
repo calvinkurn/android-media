@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -26,12 +25,12 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public static final int SPAN_LOOK_UP = 1;
 
     private final ShopProductClickedListener shopProductClickedListener;
-    private TextView titleTextView;
+    protected TextView titleTextView;
     private TextView priceTextView;
     private TextView cashBackTextView;
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
-    private ImageView freeReturnImageView, productImageView;
+    protected ImageView freeReturnImageView, productImageView;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
     private AppCompatRatingBar qualityRatingBar;
@@ -71,13 +70,17 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopProductClickedListener.onProductClicked(shopProductViewModel);
+                onProductClicked(shopProductViewModel);
             }
         });
 
         titleTextView.setText(shopProductViewModel.getName());
         priceTextView.setText(shopProductViewModel.getPrice());
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+    }
+
+    protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
+        shopProductClickedListener.onProductClicked(shopProductViewModel, getAdapterPosition());
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
@@ -112,8 +115,12 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopProductClickedListener.onWishListClicked(shopProductViewModel);
+                onWishlistClicked(shopProductViewModel);
             }
         });
+    }
+
+    protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
+        shopProductClickedListener.onWishListClicked(shopProductViewModel);
     }
 }

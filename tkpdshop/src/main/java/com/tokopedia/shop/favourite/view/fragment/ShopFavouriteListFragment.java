@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModelShimmeringList;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.di.component.DaggerShopFavouriteComponent;
@@ -32,6 +34,8 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Inject
     ShopFavouriteListPresenter shopFavouriteListPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private String shopId;
 
     @Override
@@ -62,7 +66,8 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-
+        shopPageTracking.eventClickUserFavouritingShop(shopId);
+        ((ShopModuleRouter) getActivity().getApplication()).goToProfileShop(getActivity(), shopFavouriteViewModel.getId());
     }
 
     @Override
@@ -83,6 +88,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        shopPageTracking.eventCloseListFavourite(shopId);
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
         }

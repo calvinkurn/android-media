@@ -179,7 +179,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onGoToProfile(String reviewerId) {
+    public void onGoToProfile(String reviewerId, int adapterPosition) {
         startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
         );
@@ -212,7 +212,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onDeleteReviewResponse(ReviewProductModelContent element) {
+    public void onDeleteReviewResponse(ReviewProductModelContent element, int adapterPosition) {
         productReviewPresenter.deleteReview(element.getReviewId(), element.getReputationId(), productId);
     }
 
@@ -222,7 +222,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onGoToReportReview(String shopId, String reviewId) {
+    public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
         startActivity(InboxReputationReportActivity.getCallingIntent(
                 getActivity(),
                 Integer.valueOf(shopId),
@@ -332,8 +332,18 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId) {
+    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId, boolean status, int adapterPosition) {
         productReviewPresenter.postLikeDislikeReview(reviewId, likeStatus, productId);
+    }
+
+    @Override
+    public void onMenuClicked(int adapterPosition) {
+
+    }
+
+    @Override
+    public void onSeeReplied(int adapterPosition) {
+
     }
 
     @Override
