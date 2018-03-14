@@ -24,6 +24,8 @@
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
     <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
+    <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
+    <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
     <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
 
@@ -42,9 +44,6 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen> <!-- not recommended -->
-
-    <dimen name="font_loading_width_xxl">200dp</dimen>
-    <dimen name="font_loading_width_xxxl">300dp</dimen>
 
     <dimen name="image_width_xxxs">8dp</dimen>
     <dimen name="image_width_xxs">16dp</dimen>
