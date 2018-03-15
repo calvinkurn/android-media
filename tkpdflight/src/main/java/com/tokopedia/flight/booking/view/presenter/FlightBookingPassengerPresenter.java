@@ -347,7 +347,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
-        Date twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -2);
+        Date twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -12);
+        Date twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -2);
         if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
@@ -378,6 +381,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         } else if ((isAdultPassenger()) && getView().getPassengerBirthDate().length() == 0 && getView().isAirAsiaAirline()) {
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
+        } else if (isAdultPassenger() &&
+                FlightDateUtil.removeTime(
+                        FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
+                .compareTo(FlightDateUtil.removeTime(twelveYearsAgo)) > 0) {
+            isValid = false;
+            getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
         } else if (isChildPassenger() &&
                 FlightDateUtil.removeTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
                         .compareTo(FlightDateUtil.removeTime(twoYearsAgo)) > 0) {
