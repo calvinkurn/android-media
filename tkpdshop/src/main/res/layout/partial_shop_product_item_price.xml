@@ -7,7 +7,8 @@
 
     <TextView
         android:id="@+id/text_view_original_price"
-        style="@style/TextView.Micro.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled.Bold"
+        android:layout_marginBottom="@dimen/margin_ms"
         android:visibility="gone"
         tools:text="@string/app_name"
         tools:visibility="visible" />
