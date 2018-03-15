@@ -13,4 +13,6 @@
 
     <dimen name="shop_badge_min_height">28dp</dimen>
     <dimen name="shop_page_header_margin">6dp</dimen>
+
+    <dimen name="shop_page_sub_info_medal_size">@dimen/medal_size</dimen>
 </resources>

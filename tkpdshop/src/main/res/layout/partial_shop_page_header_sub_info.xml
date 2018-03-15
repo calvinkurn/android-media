@@ -75,9 +75,11 @@
         app:spsd_title="@string/shop_page_label_reputation">
 
         <com.tokopedia.design.reputation.ShopReputationView
+            android:layout_marginTop="@dimen/margin_vvs"
             android:id="@+id/shop_reputation_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:srv_medal_size="@dimen/shop_page_sub_info_medal_size" />
     </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
