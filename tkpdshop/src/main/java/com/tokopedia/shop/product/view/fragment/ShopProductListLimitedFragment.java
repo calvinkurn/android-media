@@ -160,6 +160,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setIconRes(R.drawable.ic_empty_list_product);
         if (shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             emptyModel.setTitle(getString(R.string.shop_product_limited_empty_product_title_owner));
             emptyModel.setContent(getString(R.string.shop_product_limited_empty_product_content_owner));
