@@ -6,8 +6,10 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 
@@ -69,7 +71,14 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             public void onNext(List<ShopProductBaseViewModel> shopProductBaseViewModelList) {
                 if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
                     ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
-                    shopProductLimitedPromoViewModel.setUrl(promotionWebViewUrl);
+                    shopProductLimitedPromoViewModel.setUserId(userSession.getUserId());
+                    shopProductLimitedPromoViewModel.setLogin(userSession.isLoggedIn());
+                    String url = promotionWebViewUrl;
+                    if (userSession.isLoggedIn()) {
+                        url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
+                    }
+                    CommonUtils.dumper(url);
+                    shopProductLimitedPromoViewModel.setUrl(url);
                     shopProductBaseViewModelList.add(0, shopProductLimitedPromoViewModel);
                 }
                 getView().renderList(shopProductBaseViewModelList);
