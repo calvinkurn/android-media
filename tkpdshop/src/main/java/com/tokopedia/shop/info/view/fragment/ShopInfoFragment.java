@@ -45,6 +45,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     ShopInfoDetailPresenter shopInfoDetailPresenter;
     private LinearLayout shopInfoStatisticLinearLayout;
     private LinearLayout shopInfoSatisfiedLinearLayout;
+    private LinearLayout shopTitleAboutShopLinearLayout;
     private LabelView transactionSuccessLabelView;
     private LabelView totalTransactionLabelView;
     private LabelView productSoldLabelView;
@@ -85,6 +86,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
 
         shopInfoStatisticLinearLayout = view.findViewById(R.id.linear_layout_shop_info_statistic);
         shopInfoSatisfiedLinearLayout = view.findViewById(R.id.linear_layout_shop_info_satisfied);
+        shopTitleAboutShopLinearLayout = view.findViewById(R.id.linear_layout_title_about_shop);
 
         transactionSuccessLabelView = view.findViewById(R.id.label_view_transaction_success);
         totalTransactionLabelView = view.findViewById(R.id.label_view_total_transaction);
@@ -109,6 +111,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setFocusable(false);
 
         return view;
     }
@@ -124,8 +127,11 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
             shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
             physicalShopLabelView.setVisibility(View.VISIBLE);
-            officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
+        }
+        else{
+            shopTitleAboutShopLinearLayout.setVisibility(View.GONE);
             shopOwnerLabelView.setVisibility(View.GONE);
+            officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
         }
 
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));

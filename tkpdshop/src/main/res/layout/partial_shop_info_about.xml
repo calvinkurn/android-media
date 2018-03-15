@@ -7,7 +7,8 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/LabelLayout">
+    <LinearLayout style="@style/LabelLayout"
+        android:id="@+id/linear_layout_title_about_shop">
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Title.Bold"
