@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -126,7 +127,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -139,7 +139,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID,"");
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID, "");
         keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
         etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
@@ -265,19 +265,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        showBottomActionView();
+        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
         shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                list,false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-    }
-
-    @Override
-    public void showGetListError(Throwable throwable) {
-        super.showGetListError(throwable);
-        showBottomActionView();
-    }
-
-    private void showBottomActionView() {
-        bottomActionView.setVisibility(getAdapter().getDataSize() > 0 ? View.VISIBLE : View.GONE);
+                list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -374,6 +364,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onSearchSubmitted(String s) {
         keyword = s;
         loadInitialData();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @Override
