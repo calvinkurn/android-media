@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginLeft="@dimen/new_margin_small"
+    android:layout_marginRight="@dimen/new_margin_small"
     app:cardCornerRadius="0dp"
     app:cardElevation="@dimen/card_elevation_checkout">
 

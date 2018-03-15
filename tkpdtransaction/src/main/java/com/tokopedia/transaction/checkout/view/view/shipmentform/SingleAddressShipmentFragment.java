@@ -425,14 +425,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartDataEnableToCheckout() {
-        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.white));
         mTvSelectPaymentMethod.setOnClickListener(getOnClickListenerButtonCheckout());
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
         mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
         mTvSelectPaymentMethod.setOnClickListener(null);
     }

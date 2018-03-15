@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
                 android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/bg_grey_button_rounded"
+                android:background="@drawable/bg_button_disabled"
                 android:gravity="center"
                 android:text="@string/label_button_choose_payment_method"
                 android:textAllCaps="false"

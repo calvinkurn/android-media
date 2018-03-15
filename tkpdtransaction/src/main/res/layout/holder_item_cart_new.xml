@@ -5,8 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/padding_vvs"
-    android:layout_marginTop="@dimen/padding_vvs"
     android:background="@color/white"
     app:cardCornerRadius="0dp"
     app:cardElevation="@dimen/padding_vvs"
