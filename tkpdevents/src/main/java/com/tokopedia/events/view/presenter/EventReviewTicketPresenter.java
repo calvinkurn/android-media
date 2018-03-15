@@ -4,25 +4,16 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -177,7 +168,7 @@ public class EventReviewTicketPresenter
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice());
+        config.setPrice(packageViewModel.getSalesPrice() * checkoutData.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
@@ -195,15 +186,17 @@ public class EventReviewTicketPresenter
             packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
             packageItem.setQuantity(selectedSeatViewModel.getQuantity());
             packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
+            packageItem.setAreaId(selectedSeatViewModel.getAreaId());
         } else {
             packageItem.setAreaCode(new ArrayList<String>());
             packageItem.setSeatId(new ArrayList<String>());
+            packageItem.setAreaId("");
             packageItem.setSeatRowId(new ArrayList<String>());
             packageItem.setSeatPhysicalRowId(new ArrayList<String>());
             packageItem.setQuantity(packageViewModel.getSelectedQuantity());
             packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
         }
-        packageItem.setDescription("");
+        packageItem.setDescription(packageViewModel.getDescription());
 
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
@@ -235,10 +228,10 @@ public class EventReviewTicketPresenter
         meta.setEntityPassengers(passengerItems);
         EntityAddress address = new EntityAddress();
         address.setAddress("");
-        address.setName("");
+        address.setName(profileModel.getProfileData().getUserInfo().getUserName());
         address.setCity("");
         address.setEmail(this.email);
-        address.setMobileNumber(this.number);
+        address.setMobile(this.number);
         address.setLatitude("");
         address.setLongitude("");
         meta.setEntityAddress(address);
@@ -286,8 +279,8 @@ public class EventReviewTicketPresenter
     public void verifyCart() {
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
-        params.putObject("checkoutdata",convertPackageToCartItem(checkoutData));
-        params.putBoolean("ispromocodecase",!isPromoCodeCase);
+        params.putObject("checkoutdata", convertPackageToCartItem(checkoutData));
+        params.putBoolean("ispromocodecase", !isPromoCodeCase);
         postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
@@ -318,7 +311,13 @@ public class EventReviewTicketPresenter
                         getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                     } else {
                         paymentparams = RequestParams.create();
-                        paymentparams.putObject("verfiedcart",verifyCartResponse.getCart());
+                        if (selectedSeatViewModel != null) {
+                            EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
+                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
+                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
+                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                        }
+                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();
                     }
                 } else {
@@ -331,13 +330,13 @@ public class EventReviewTicketPresenter
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
                         promocode = "";
                     } else {
-                        getView().hideProgressBar();
-                        getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-                                getView().getActivity().getResources().getColor(R.color.black_54));
-                        String cashBackDiscount = "Total Discount : "
-                                + verifyCartResponse.getCart().getPromocodeDiscount()
-                                + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();
-                        getView().showCashbackMessage(cashBackDiscount);
+                        String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
+                        if (successMsg != null && successMsg.length() > 0) {
+                            getView().hideProgressBar();
+                            getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
+                                    getView().getActivity().getResources().getColor(R.color.black_54));
+                            getView().showCashbackMessage(successMsg);
+                        }
                     }
                 }
             }

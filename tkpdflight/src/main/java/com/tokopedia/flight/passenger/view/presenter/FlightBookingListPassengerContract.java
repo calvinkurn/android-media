@@ -27,8 +27,6 @@ public interface FlightBookingListPassengerContract {
 
         String getSelectedPassengerId();
 
-        void showPassengerSelectedError(String passengerType);
-
         String getString(int resId);
 
         String getRequestId();

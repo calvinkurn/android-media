@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 
 public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.design_error_network;
+    public final static int LAYOUT = R.layout.view_error_network;
     private ImageView ivIcon;
     private TextView tvMessage;
     private TextView tvSubMessage;

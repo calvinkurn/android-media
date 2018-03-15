@@ -101,27 +101,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     @Override
     public void selectPassenger(FlightBookingPassengerViewModel selectedPassenger) {
         if (getView().getCurrentPassenger() != null &&
-                selectedPassenger != null &&
-                getView().getCurrentPassenger().getType() == selectedPassenger.getType()) {
-            if (selectedPassenger != null) {
+                selectedPassenger != null) {
                 onSelectPassenger(selectedPassenger);
-            }
-        } else if (getView().getCurrentPassenger() != null &&
-                selectedPassenger != null &&
-                getView().getCurrentPassenger().getType() != selectedPassenger.getType()) {
-            String passengerType = "";
-            switch (getView().getCurrentPassenger().getType()) {
-                case FlightBookingPassenger.ADULT:
-                    passengerType = getView().getString(R.string.select_passenger_adult_title);
-                    break;
-                case FlightBookingPassenger.CHILDREN:
-                    passengerType = getView().getString(R.string.select_passenger_children_title);
-                    break;
-                case FlightBookingPassenger.INFANT:
-                    passengerType = getView().getString(R.string.select_passenger_infant_title);
-                    break;
-            }
-            getView().showPassengerSelectedError(passengerType);
         } else if (selectedPassenger == null) {
             onUnselectPassenger(getView().getCurrentPassenger().getPassengerId());
         }
@@ -267,12 +248,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             flightBookingPassengerViewModel.setPassengerTitle(
                     getSalutationById(flightBookingPassengerViewModel.getPassengerTitleId())
             );
-            flightBookingPassengerViewModel.setPassengerDrawable(
-                    getImageRes(
-                            flightBookingPassengerViewModel.getPassengerBirthdate(),
-                            flightBookingPassengerViewModel.getPassengerTitleId()
-                    )
-            );
             flightBookingPassengerViewModel.setType(
                     getType(
                             flightBookingPassengerViewModel.getPassengerBirthdate()
@@ -318,31 +293,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         }
 
         return "";
-    }
-
-    private int getImageRes(String birthdate, int salutationId) {
-        if (birthdate != null) {
-            Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDate());
-            Date birth = FlightDateUtil.stringToDate(birthdate);
-            long diff = departureDate.getTime() - birth.getTime();
-            if (diff < 0) {
-                diff *= -1;
-            }
-
-            if (diff >= (TWELVE_YEARS_IN_MILLIS)) {
-                if (salutationId == TUAN) {
-                    return R.drawable.ic_passenger_male;
-                } else {
-                    return R.drawable.ic_passenger_female;
-                }
-            } else if (diff >= (TWO_YEARS_IN_MILLIS)) {
-                return R.drawable.ic_passenger_childreen;
-            } else if (diff < (TWO_YEARS_IN_MILLIS)) {
-                return R.drawable.ic_passenger_infant;
-            }
-        }
-
-        return R.drawable.ic_passenger_male;
     }
 
 }

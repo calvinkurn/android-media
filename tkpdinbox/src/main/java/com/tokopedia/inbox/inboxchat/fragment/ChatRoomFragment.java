@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -113,7 +112,6 @@ import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
-import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.ROLE_SELLER;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -165,8 +163,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private String title, avatarImage;
 
     private RemoteConfig remoteConfig;
-
     private boolean uploading;
+    private boolean isChatBot;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -180,6 +178,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             title = getArguments().getString(PARAM_SENDER_NAME, "");
             avatarImage = getArguments().getString(PARAM_SENDER_IMAGE, "");
+            isChatBot = getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false);
         }
     }
 
@@ -215,7 +214,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON)) {
+        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON) && !isChatBot) {
             attachButton.setVisibility(View.VISIBLE);
         } else {
             attachButton.setVisibility(View.GONE);
@@ -226,6 +225,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             String customMessage = "\n" + getArguments().getString(SendMessageActivity
                     .PARAM_CUSTOM_MESSAGE, "");
             replyColumn.setText(customMessage);
+        }
+
+        if(isChatBot){
+            attachButton.setVisibility(View.GONE);
+            pickerButton.setVisibility(View.GONE);
         }
     }
 
@@ -397,7 +401,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void setPickerButton() {
-        if (needCreateWebSocket()) {
+        if (needCreateWebSocket() && !isChatBot) {
             pickerButton.setVisibility(View.VISIBLE);
             attachButton.setVisibility(View.VISIBLE);
         }else{
@@ -509,6 +513,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         templateRecyclerView.setAdapter(templateAdapter);
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setStackFromEnd(true);
         templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -1256,6 +1261,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
         }
+    }
+
+    @Override
+    public boolean isChatBot() {
+        return isChatBot;
     }
 
     private void trackProductClicked(){

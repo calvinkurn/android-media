@@ -2,6 +2,7 @@ package com.tokopedia.flight.passenger.data.db;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
@@ -9,6 +10,7 @@ import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,6 +93,10 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
             conditions.or(FlightPassengerDb_Table.id.eq((String) params.get(PASSENGER_ID)));
         }
 
+        final List<OrderBy> orderByList = new ArrayList<>();
+        orderByList.add(OrderBy.fromProperty(FlightPassengerDb_Table.first_name).ascending());
+        orderByList.add(OrderBy.fromProperty(FlightPassengerDb_Table.last_name).ascending());
+
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDb>>() {
             @Override
             public void call(Subscriber<? super List<FlightPassengerDb>> subscriber) {
@@ -98,6 +104,7 @@ public class FlightPassengerDataListDbSource extends BaseDataListDBSource<SavedP
 
                 flightPassengerDbList = new Select().from(FlightPassengerDb.class)
                         .where(conditions)
+                        .orderByAll(orderByList)
                         .queryList();
                 subscriber.onNext(flightPassengerDbList);
             }

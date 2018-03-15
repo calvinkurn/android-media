@@ -11,10 +11,10 @@ public class Form implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -32,7 +32,7 @@ public class Form implements Parcelable {
     private String helpText;
     @SerializedName("required")
     @Expose
-    private Integer required;
+    private int required;
     @SerializedName("validator_regex")
     @Expose
     private String validatorRegex;
@@ -41,21 +41,21 @@ public class Form implements Parcelable {
     private String errorMessage;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -99,11 +99,11 @@ public class Form implements Parcelable {
         this.helpText = helpText;
     }
 
-    public Integer getRequired() {
+    public int getRequired() {
         return required;
     }
 
-    public void setRequired(Integer required) {
+    public void setRequired(int required) {
         this.required = required;
     }
 
@@ -123,11 +123,11 @@ public class Form implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -138,34 +138,34 @@ public class Form implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.productId);
+        dest.writeInt(this.id);
+        dest.writeInt(this.productId);
         dest.writeString(this.name);
         dest.writeString(this.title);
         dest.writeString(this.value);
         dest.writeString(this.elementType);
         dest.writeString(this.helpText);
-        dest.writeValue(this.required);
+        dest.writeInt(this.required);
         dest.writeString(this.validatorRegex);
         dest.writeString(this.errorMessage);
-        dest.writeValue(this.status);
+        dest.writeInt(this.status);
     }
 
     public Form() {
     }
 
     protected Form(Parcel in) {
-        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.productId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.id = in.readInt();
+        this.productId = in.readInt();
         this.name = in.readString();
         this.title = in.readString();
         this.value = in.readString();
         this.elementType = in.readString();
         this.helpText = in.readString();
-        this.required = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.required = in.readInt();
         this.validatorRegex = in.readString();
         this.errorMessage = in.readString();
-        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.status = in.readInt();
     }
 
     public static final Parcelable.Creator<Form> CREATOR = new Parcelable.Creator<Form>() {

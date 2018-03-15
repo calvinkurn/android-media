@@ -11,16 +11,16 @@ public class ItemResponseEntity {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("parent_id")
     @Expose
-    private Integer parentId;
+    private int parentId;
     @SerializedName("category_id")
     @Expose
-    private Integer categoryId;
+    private int categoryId;
     @SerializedName("provider_id")
     @Expose
-    private Integer providerId;
+    private int providerId;
     @SerializedName("child_category_ids")
     @Expose
     private String childCategoryIds;
@@ -110,79 +110,79 @@ public class ItemResponseEntity {
     private String autocode;
     @SerializedName("convenience_fee")
     @Expose
-    private Integer convenienceFee;
+    private int convenienceFee;
     @SerializedName("mrp")
     @Expose
-    private Integer mrp;
+    private int mrp;
     @SerializedName("sales_price")
     @Expose
-    private Integer salesPrice;
+    private int salesPrice;
     @SerializedName("SeatChartTypeId")
     @Expose
-    private Integer seatChartTypeId;
+    private int seatChartTypeId;
     @SerializedName("has_seat_layout")
     @Expose
-    private Integer hasSeatLayout;
+    private int hasSeatLayout;
     @SerializedName("form")
     @Expose
-    private Integer form;
+    private int form;
     @SerializedName("priority")
     @Expose
-    private Integer priority;
+    private int priority;
     @SerializedName("quantity")
     @Expose
-    private Integer quantity;
+    private int quantity;
     @SerializedName("sold_quantity")
     @Expose
-    private Integer soldQuantity;
+    private int soldQuantity;
     @SerializedName("sell_rate")
     @Expose
-    private Integer sellRate;
+    private int sellRate;
     @SerializedName("thumbs_up")
     @Expose
-    private Integer thumbsUp;
+    private int thumbsUp;
     @SerializedName("thumbs_down")
     @Expose
-    private Integer thumbsDown;
+    private int thumbsDown;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private int rating;
     @SerializedName("is_featured")
     @Expose
-    private Integer isFeatured;
+    private int isFeatured;
     @SerializedName("is_promo")
     @Expose
-    private Integer isPromo;
+    private int isPromo;
     @SerializedName("is_food_available")
     @Expose
-    private Integer isFoodAvailable;
+    private int isFoodAvailable;
     @SerializedName("is_searchable")
     @Expose
-    private Integer isSearchable;
+    private int isSearchable;
     @SerializedName("is_top")
     @Expose
-    private Integer isTop;
+    private int isTop;
     @SerializedName("use_pdf")
     @Expose
-    private Integer usePdf;
+    private int usePdf;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("redirect")
     @Expose
-    private Integer redirect;
+    private int redirect;
     @SerializedName("min_start_date")
     @Expose
-    private Integer minStartDate;
+    private int minStartDate;
     @SerializedName("max_end_date")
     @Expose
-    private Integer maxEndDate;
+    private int maxEndDate;
     @SerializedName("sale_start_date")
     @Expose
-    private Integer saleStartDate;
+    private int saleStartDate;
     @SerializedName("sale_end_date")
     @Expose
-    private Integer saleEndDate;
+    private int saleEndDate;
     @SerializedName("custom_labels")
     @Expose
     private String customLabels;
@@ -211,35 +211,35 @@ public class ItemResponseEntity {
     @Expose
     private Object forms;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getParentId() {
+    public int getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(int parentId) {
         this.parentId = parentId;
     }
 
-    public Integer getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
-    public Integer getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(Integer providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 
@@ -475,203 +475,203 @@ public class ItemResponseEntity {
         this.autocode = autocode;
     }
 
-    public Integer getConvenienceFee() {
+    public int getConvenienceFee() {
         return convenienceFee;
     }
 
-    public void setConvenienceFee(Integer convenienceFee) {
+    public void setConvenienceFee(int convenienceFee) {
         this.convenienceFee = convenienceFee;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getSeatChartTypeId() {
+    public int getSeatChartTypeId() {
         return seatChartTypeId;
     }
 
-    public void setSeatChartTypeId(Integer seatChartTypeId) {
+    public void setSeatChartTypeId(int seatChartTypeId) {
         this.seatChartTypeId = seatChartTypeId;
     }
 
-    public Integer getHasSeatLayout() {
+    public int getHasSeatLayout() {
         return hasSeatLayout;
     }
 
-    public void setHasSeatLayout(Integer hasSeatLayout) {
+    public void setHasSeatLayout(int hasSeatLayout) {
         this.hasSeatLayout = hasSeatLayout;
     }
 
-    public Integer getForm() {
+    public int getForm() {
         return form;
     }
 
-    public void setForm(Integer form) {
+    public void setForm(int form) {
         this.form = form;
     }
 
-    public Integer getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Integer getSoldQuantity() {
+    public int getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
+    public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
-    public Integer getSellRate() {
+    public int getSellRate() {
         return sellRate;
     }
 
-    public void setSellRate(Integer sellRate) {
+    public void setSellRate(int sellRate) {
         this.sellRate = sellRate;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Integer getIsFeatured() {
+    public int getIsFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
+    public void setIsFeatured(int isFeatured) {
         this.isFeatured = isFeatured;
     }
 
-    public Integer getIsPromo() {
+    public int getIsPromo() {
         return isPromo;
     }
 
-    public void setIsPromo(Integer isPromo) {
+    public void setIsPromo(int isPromo) {
         this.isPromo = isPromo;
     }
 
-    public Integer getIsFoodAvailable() {
+    public int getIsFoodAvailable() {
         return isFoodAvailable;
     }
 
-    public void setIsFoodAvailable(Integer isFoodAvailable) {
+    public void setIsFoodAvailable(int isFoodAvailable) {
         this.isFoodAvailable = isFoodAvailable;
     }
 
-    public Integer getIsSearchable() {
+    public int getIsSearchable() {
         return isSearchable;
     }
 
-    public void setIsSearchable(Integer isSearchable) {
+    public void setIsSearchable(int isSearchable) {
         this.isSearchable = isSearchable;
     }
 
-    public Integer getIsTop() {
+    public int getIsTop() {
         return isTop;
     }
 
-    public void setIsTop(Integer isTop) {
+    public void setIsTop(int isTop) {
         this.isTop = isTop;
     }
 
-    public Integer getUsePdf() {
+    public int getUsePdf() {
         return usePdf;
     }
 
-    public void setUsePdf(Integer usePdf) {
+    public void setUsePdf(int usePdf) {
         this.usePdf = usePdf;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getRedirect() {
+    public int getRedirect() {
         return redirect;
     }
 
-    public void setRedirect(Integer redirect) {
+    public void setRedirect(int redirect) {
         this.redirect = redirect;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
-    public Integer getSaleStartDate() {
+    public int getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Integer saleStartDate) {
+    public void setSaleStartDate(int saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
-    public Integer getSaleEndDate() {
+    public int getSaleEndDate() {
         return saleEndDate;
     }
 
-    public void setSaleEndDate(Integer saleEndDate) {
+    public void setSaleEndDate(int saleEndDate) {
         this.saleEndDate = saleEndDate;
     }
 
