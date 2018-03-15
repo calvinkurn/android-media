@@ -204,7 +204,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         return view;
     }
 
-    protected abstract boolean needHideShareAndAddMore();
+    protected boolean needHideShareAndAddMore(){
+        return false;
+    }
 
     private void hideShareAndAddMore(View view){
         view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
