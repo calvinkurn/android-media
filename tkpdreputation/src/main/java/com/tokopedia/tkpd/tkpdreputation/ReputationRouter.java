@@ -23,5 +23,7 @@ public interface ReputationRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+  
     void sendEventTrackingShopPage(HashMap<String, Object> eventTracking);
 }

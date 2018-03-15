@@ -21,6 +21,17 @@
         android:orientation="vertical"
         android:showDividers="middle">
 
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/official_store_label_view_shop_owner"
+            style="@style/LabelLayout"
+            android:visibility="gone"
+            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image_width="@dimen/image_width_l"
+            app:lv_sub_title="@string/shop_info_label_shop_owner"
+            app:lv_title="@string/shop_info_label_default_content"
+            tools:visibility="visible" />
+
         <LinearLayout
             style="@style/LabelLayout"
             android:layout_width="match_parent"
@@ -44,7 +55,8 @@
             style="@style/LabelLayout"
             android:visibility="gone"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_title="@string/shop_info_label_physical_shop" />
+            app:lv_title="@string/shop_info_label_physical_shop"
+            tools:visibility="visible" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_shop_owner"
