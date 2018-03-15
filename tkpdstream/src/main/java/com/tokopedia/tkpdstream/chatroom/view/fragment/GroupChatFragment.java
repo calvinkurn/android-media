@@ -453,7 +453,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(channelViewModel.getParticipant()));
+        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());
@@ -755,7 +755,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             public void run() {
                 channelInfoDialog.show();
             }
-        },1500);
+        }, 1500);
     }
 
     @Override
