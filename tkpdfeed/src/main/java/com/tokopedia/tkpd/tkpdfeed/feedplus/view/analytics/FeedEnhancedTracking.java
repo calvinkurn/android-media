@@ -93,6 +93,9 @@ public class FeedEnhancedTracking {
         private static final String FOLLOWED_KOL_POST = "followedkolpost";
         private static final String KOL_POST = "kolpost";
         private static final String KOL_RECOMMENDATION = "kolrecommendation";
+        private static final String PRODUCT_UPLOAD = "product_upload";
+        private static final String SINGLE = "single";
+        private static final String MULTIPLE = "multiple";
         private static String PROFILE = "profile";
         int id;
         String name;
@@ -166,6 +169,15 @@ public class FeedEnhancedTracking {
 
         public static String createContentNameRecommendation() {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
+        }
+
+        public static String createContentNameProductUpload(int totalProduct) {
+            if (totalProduct == 1) {
+                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, SINGLE);
+            } else if (totalProduct > 1) {
+                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, MULTIPLE);
+            }
+            return "";
         }
 
         public static String createContentName(String tagsType, String cardType) {

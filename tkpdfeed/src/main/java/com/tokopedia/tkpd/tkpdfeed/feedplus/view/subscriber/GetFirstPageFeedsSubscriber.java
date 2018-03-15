@@ -268,7 +268,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             list.add(new FeedEnhancedTracking.Promotion(
                                     model.getHeader().getShopId(),
-                                    FeedEnhancedTracking.Promotion.createContentNameRecommendation(),
+                                    FeedEnhancedTracking.Promotion.createContentNameProductUpload(
+                                            model.getTotalProduct()),
                                     String.valueOf(model.getTotalProduct()),
                                     currentPosition,
                                     "-",
