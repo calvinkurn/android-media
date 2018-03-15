@@ -14,10 +14,21 @@ import java.util.Collection;
 
 public class CollectionAdapterUtils implements JsonSerializer<Collection<?>> {
 
+    private boolean isRemoveEmpty = false;
+
+    public CollectionAdapterUtils withRemoveEmpty(boolean removeEmpty) {
+        this.isRemoveEmpty = removeEmpty;
+        return this;
+    }
     @Override
     public JsonElement serialize(Collection<?> src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src == null )
+        if (src == null)
             return null;
+        if (isRemoveEmpty) {
+            if (src.isEmpty())
+                return null;
+        }
+
         JsonArray array = new JsonArray();
         for (Object child : src) {
             JsonElement element = context.serialize(child);

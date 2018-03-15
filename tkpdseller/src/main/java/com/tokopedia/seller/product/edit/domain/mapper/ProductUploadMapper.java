@@ -97,12 +97,9 @@ public class ProductUploadMapper {
 
     /**
      * Convert ProductViewModel to String json and remove unused param
-     *
-     * @param productViewModel
-     * @return
      */
-    public String removeUnusedParam(ProductViewModel productViewModel) {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Collection.class, new CollectionAdapterUtils()).create();
+    public String removeUnusedParam(ProductViewModel productViewModel, boolean removeEmpty) {
+        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Collection.class, new CollectionAdapterUtils().withRemoveEmpty(removeEmpty)).create();
         return gson.toJson(productViewModel);
     }
 

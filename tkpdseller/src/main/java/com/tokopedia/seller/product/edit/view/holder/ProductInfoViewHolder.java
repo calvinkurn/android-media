@@ -109,11 +109,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             @Override
             public void onClick(View view) {
                 if (ProductInfoViewHolder.this.listener != null) {
-                    if (ProductInfoViewHolder.this.listener.hasVariant()) {
-                        showDialogCategoryLocked();
-                    } else {
-                        ProductInfoViewHolder.this.listener.onCategoryPickerClicked(categoryId);
-                    }
+                    ProductInfoViewHolder.this.listener.onCategoryPickerClicked(categoryId);
                 }
             }
         });
@@ -161,22 +157,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         setListener(listener);
     }
 
-    private void showDialogCategoryLocked(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(listener.getActivity(),
-                R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(R.string.product_category_locked);
-        builder.setMessage(R.string.product_category_locked_description);
-        builder.setCancelable(true);
-        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     @Override
     public void renderData(ProductViewModel model) {
         setName(model.getProductName(), model.isProductNameEditable());
@@ -202,6 +182,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public void renderByVariant(boolean hasVariant) {
         if (hasVariant) {
+            // if needed, change categoryLabelView behavior here
+
             categoryRecommView.setVisibility(View.GONE);
         }
     }
