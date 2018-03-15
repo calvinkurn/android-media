@@ -13,7 +13,7 @@
         android:title="@string/scan_qr"></item>
     <item
         android:id="@+id/action_cart"
-        android:icon="@drawable/ic_new_action_cart"
+        android:icon="@drawable/ic_cart_white_new"
         app:showAsAction="always"
         android:title="Open Cart"/>
 </menu>
