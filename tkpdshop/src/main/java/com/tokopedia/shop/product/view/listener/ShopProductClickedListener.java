@@ -11,6 +11,4 @@ public interface ShopProductClickedListener {
     void onWishListClicked(ShopProductViewModel shopProductViewModel);
 
     void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition);
-
-    void onLastItemVisible();
 }

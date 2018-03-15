@@ -373,11 +373,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onLastItemVisible() {
-        //Do nothing
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:

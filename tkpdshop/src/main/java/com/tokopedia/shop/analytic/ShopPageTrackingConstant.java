@@ -9,6 +9,8 @@ public class ShopPageTrackingConstant {
     //event
     public static final String CLICK_OFFICIAL_STORE = "clickOfficialStore";
     public static final String VIEW_OFFICIAL_STORE = "viewOfficialStore";
+    public static final String CLICK_SHOP_PAGE = "clickShopPage";
+    public static final String VIEW_SHOP_PAGE = "viewShopPage";
 
     //category
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
@@ -106,4 +108,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_VIEW_MORE_PRODUCT = "click view more products";
     public static final String IMPRESSION_OF_PRODUCT_PICTURES = "impression of product pictures";
     public static final String CLICK_MENU = "click menu - ";
+    public static final int OFFICIAL_STORE = 1;
+    public static final int GOLD_MERCHANT = 2;
+    public static final int REGULAR_MERCHANT = 3;
 }
