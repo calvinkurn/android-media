@@ -56,6 +56,7 @@ import com.tokopedia.transaction.checkout.view.di.module.SingleAddressShipmentMo
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -208,6 +209,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setViewListener() {
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
+        mRvCartOrderDetails.addItemDecoration(
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.new_margin_med),
+                        false, 0));
 
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

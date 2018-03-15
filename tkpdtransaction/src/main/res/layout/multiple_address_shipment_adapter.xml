@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/new_margin_med"
     app:cardCornerRadius="0dp"
     app:cardElevation="@dimen/card_elevation_checkout">
 
