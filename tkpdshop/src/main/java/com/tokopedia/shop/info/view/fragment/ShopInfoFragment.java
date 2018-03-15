@@ -74,7 +74,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         shopInfoDetailPresenter.attachView(this);
     }
 

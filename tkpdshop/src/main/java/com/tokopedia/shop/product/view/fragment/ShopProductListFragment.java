@@ -13,6 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -135,9 +138,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
-        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
-        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
+        setHasOptionsMenu(true);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID,"");
+        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
+        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         shopProductListPresenter.attachView(this);
     }
@@ -314,6 +318,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
+    }
+
+
     @Override
     public void onSuccessAddToWishList(String productId, Boolean value) {
         ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, true);
@@ -399,6 +411,20 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
