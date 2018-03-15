@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -113,7 +112,6 @@ import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
-import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.ROLE_SELLER;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -515,6 +513,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         templateRecyclerView.setAdapter(templateAdapter);
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setStackFromEnd(true);
         templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
