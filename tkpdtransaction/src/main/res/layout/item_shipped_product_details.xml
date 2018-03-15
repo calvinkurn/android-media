@@ -31,7 +31,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:lineSpacingExtra="5sp"
-                android:text="@string/label_sent_by" />
+                android:text="@string/label_seller" />
 
             <TextView
                 android:id="@+id/tv_shop_name"

@@ -188,7 +188,20 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (object instanceof CartItemPromoHolderData) {
                 cartItemHolderDataList.set(i, cartItemPromoHolderData);
                 notifyItemChanged(i);
-                return;
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(false);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
+    public void updateSuggestionPromo() {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object object = cartItemHolderDataList.get(i);
+            if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(true);
+                notifyItemChanged(i);
+                break;
             }
         }
     }
