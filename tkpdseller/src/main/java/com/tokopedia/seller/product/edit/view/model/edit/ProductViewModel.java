@@ -140,7 +140,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_name_editable")
     @Expose
-    private boolean productNameEditable;
+    private boolean productNameEditable = true;
 
     public String getProductId() {
         return productId;

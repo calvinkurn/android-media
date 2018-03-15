@@ -197,8 +197,18 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 }
             }
         });
+        if (needHideShareAndAddMore()) {
+            hideShareAndAddMore(view);
+        }
         view.requestFocus();
         return view;
+    }
+
+    protected abstract boolean needHideShareAndAddMore();
+
+    private void hideShareAndAddMore(View view){
+        view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
+        view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
     }
 
     protected void saveAndAddDraft() {
