@@ -2,8 +2,6 @@ package com.tokopedia.flight.booking.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,8 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 23/02/18.
