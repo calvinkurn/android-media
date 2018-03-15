@@ -98,14 +98,14 @@ public class ShopPageTracking {
                 shopId);
     }
 
-    public void eventClickUserFavouritingShop(String shopId) {
+    public void eventClickUserFavouritingShop(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_LIST_FAVOURITE_CLICK,
                 ShopPageTrackingConstant.CLICK_USER_FAVOURITING_SHOP,
                 shopId);
     }
 
-    public void eventCloseListFavourite(String shopId) {
+    public void eventCloseListFavourite(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_LIST_FAVOURITE_CLICK,
                 ShopPageTrackingConstant.CLICK_CLOSE_FAVOURITE,
@@ -137,7 +137,7 @@ public class ShopPageTracking {
                 shopId);
     }
 
-    public void eventClickTabShopInfo(CharSequence titlePage, String shopId) {
+    public void eventClickTabShopInfo(CharSequence titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
                 ShopPageTrackingConstant.CLICK_TOP_TAB + titlePage,
@@ -145,21 +145,21 @@ public class ShopPageTracking {
     }
 
 
-    public void eventClickNoteList(long position, String shopId) {
+    public void eventClickNoteList(long position, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
                 ShopPageTrackingConstant.CLICK_NOTE_LIST + String.valueOf(position),
                 shopId);
     }
 
-    public void eventBackPressedShopInfo(String shopId) {
+    public void eventBackPressedShopInfo(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
                 ShopPageTrackingConstant.CLICK_ARROW_BACK_TO_SHOP,
                 shopId);
     }
 
-    public void eventClickShareShopNotePage(String shopId, int shopType) {
+    public void eventClickShareShopNotePage(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
                 ShopPageTrackingConstant.CLICK_SHARE_NOTE_LIST,
@@ -173,7 +173,7 @@ public class ShopPageTracking {
                 shopId);
     }
 
-    public void eventClickSearchProduct(String titlePage, String shopId) {
+    public void eventClickSearchProduct(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.ACTION_SEARCH_BAR_CLICK,
                 ShopPageTrackingConstant.ClICK_SEARCH_BAR,

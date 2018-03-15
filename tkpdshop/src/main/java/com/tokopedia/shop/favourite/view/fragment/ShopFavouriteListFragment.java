@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.di.component.DaggerShopFavouriteComponent;
 import com.tokopedia.shop.favourite.di.module.ShopFavouriteModule;
@@ -34,6 +35,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     ShopFavouriteListPresenter shopFavouriteListPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
+    private ShopInfo shopInfo;
     private String shopId;
 
     @Override
@@ -45,7 +47,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void loadData(int page) {
-        shopFavouriteListPresenter.getshopFavouriteList(shopId, page);
+        shopFavouriteListPresenter.getShopInfo(shopId);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-        shopPageTracking.eventClickUserFavouritingShop(shopId);
+        shopPageTracking.eventClickUserFavouritingShop(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         ((ShopModuleRouter) getActivity().getApplication()).goToProfileShop(getActivity(), shopFavouriteViewModel.getId());
     }
 
@@ -70,6 +72,12 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     }
 
     @Override
+    public void onSuccessGetShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        shopFavouriteListPresenter.getshopFavouriteList(shopId, getCurrentPage());
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -77,7 +85,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        shopPageTracking.eventCloseListFavourite(shopId);
+        shopPageTracking.eventCloseListFavourite(shopId,shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
         }

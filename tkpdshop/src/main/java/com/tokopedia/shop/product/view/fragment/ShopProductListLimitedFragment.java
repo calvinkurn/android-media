@@ -110,7 +110,8 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         searchInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopId);
+                shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
+                        shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
             }
         });
     }
@@ -128,13 +129,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickSeeMoreProduct(getString(R.string.shop_info_title_tab_product), shopId);
+                shopPageTracking.eventClickSeeMoreProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId());
                 startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId()));
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopId);
+                shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopInfo.getInfo().getShopId());
                 startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), null), REQUEST_CODE_ETALASE);
             }
         }, this, this, promoWebViewListener, this);
@@ -351,6 +352,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onLastItemVisible() {
-        shopPageTracking.eventViewBottomNavigation(getString(R.string.shop_info_title_tab_product), shopId);
+        shopPageTracking.eventViewBottomNavigation(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId());
     }
 }
