@@ -21,16 +21,17 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
@@ -230,6 +231,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
+        errorText.setVisibility(View.VISIBLE);
         errorText.setText(errorMessage);
     }
 
@@ -307,8 +309,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        goToWelcomePage();
     }
 
     @Override
@@ -321,11 +322,14 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         });
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    private void goToWelcomePage() {
+        startActivityForResult(WelcomePageActivity.newInstance(getActivity()),REQUEST_WELCOME_PAGE);
     }
 
     private void goToProfileCompletionPage() {

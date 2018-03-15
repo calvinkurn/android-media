@@ -22,6 +22,14 @@ public class WelcomePageActivity extends BaseSimpleActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return WelcomePageFragment.newInstance();
     }
