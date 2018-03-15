@@ -16,7 +16,7 @@
     <string name="groupchat_action_enter">bergabung</string>
     <string name="label_admin">Admin</string>
     <string name="participant">partisipan</string>
-    <string name="view">melihat</string>
+    <string name="view">dilihat</string>
     <string name="voter">telah memilih</string>
     <string name="pending">Sedang Mengirim…</string>
     <string name="groupchat_action_exit">telah keluar dari chat</string>

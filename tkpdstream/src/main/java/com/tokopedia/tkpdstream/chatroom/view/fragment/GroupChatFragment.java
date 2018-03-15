@@ -294,10 +294,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (item.getItemId() == R.id.action_share) {
             analytics.eventClickShare();
             ShareData shareData = ShareData.Builder.aShareData()
-                    .setName("Judul")
-                    .setDescription("Konten")
-                    .setImgUri("ImageUri")
-                    .setUri("URL")
+                    .setName(viewModel.getChannelName())
+                    .setUri(viewModel.getChannelUrl())
+                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
+                    .setDescription(viewModel.getChannelInfoViewModel().getChannelViewModel().getDescription())
                     .setType(ShareData.FEED_TYPE)
                     .build();
 
@@ -1031,6 +1031,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void setVoteParticipant(String participant) {
         voteParticipant.setText(String.format("%s %s", TextFormatter.format(participant)
                 , getActivity().getString(R.string.voter)));
+        voteParticipant.setVisibility(View.GONE);
     }
 
     private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
