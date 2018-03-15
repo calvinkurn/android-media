@@ -299,7 +299,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassengerId(selectedPassenger.getPassengerId());
         currentPassengerViewModel.setPassengerFirstName(selectedPassenger.getPassengerFirstName());
         currentPassengerViewModel.setPassengerLastName(selectedPassenger.getPassengerLastName());
-        currentPassengerViewModel.setType(selectedPassenger.getType());
         currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
         currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
         if (selectedPassenger.getPassengerBirthdate() != null &&
