@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.ArrayList;
@@ -40,11 +42,11 @@ public class FeedEnhancedTracking {
         private static final String KEY_PROMO_CODE = "promo_code";
 
 
-        public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
+        public static Map<String, Object> getEcommerceView(List<Promotion> listPromotion) {
             return DataLayer.mapOf(PROMO_VIEW, getListPromotions(listPromotion));
         }
 
-        public static Map<String, Object> getKolContentEcommerceClick(List<Promotion> listPromotion) {
+        public static Map<String, Object> getEcommerceClick(List<Promotion> listPromotion) {
             return DataLayer.mapOf(PROMO_CLICK, getListPromotions(listPromotion));
 
         }
@@ -71,6 +73,15 @@ public class FeedEnhancedTracking {
             map.put(KEY_CATEGORY, promo.getCategory());
             map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
             map.put(KEY_PROMO_CODE, promo.getPromoCode());
+
+            if (!TextUtils.isEmpty(promo.getUserId())) {
+                map.put(KEY_USER_ID, promo.getUserId());
+            }
+
+            if (!TextUtils.isEmpty(promo.getUserIdMod50())) {
+                map.put(KEY_USER_ID_MOD, promo.getUserIdMod50());
+            }
+
             return map;
         }
 
@@ -90,6 +101,8 @@ public class FeedEnhancedTracking {
         String category;
         int promoId;
         String promoCode;
+        String userId;
+        String userIdMod50;
 
         public Promotion(int id, String name, String creative, int position,
                          String category, int promoId, String promoCode) {
@@ -102,16 +115,23 @@ public class FeedEnhancedTracking {
             this.promoCode = promoCode;
         }
 
-        /**
-         * kolId
-         */
+        public Promotion(int id, String name, String creative, int position,
+                         String category, int promoId, String promoCode, int userId) {
+            this.id = id;
+            this.name = name;
+            this.creative = creative;
+            this.position = position;
+            this.category = category;
+            this.promoId = promoId;
+            this.promoCode = promoCode;
+            this.userId = String.valueOf(userId);
+            this.userIdMod50 = String.valueOf(userId % 50);
+        }
+
         public int getId() {
             return id;
         }
 
-        /**
-         * kolId
-         */
         public String getName() {
             return name;
         }
@@ -136,6 +156,14 @@ public class FeedEnhancedTracking {
             return promoCode;
         }
 
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getUserIdMod50() {
+            return userIdMod50;
+        }
+
         public static String createContentNameRecommendation() {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
         }
@@ -153,7 +181,7 @@ public class FeedEnhancedTracking {
                 EVENT, PROMO_VIEW,
                 KEY_USER_ID, String.valueOf(userId),
                 KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+                ECOMMERCE, Ecommerce.getEcommerceView(listPromotion));
     }
 
     public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion, int
@@ -162,6 +190,18 @@ public class FeedEnhancedTracking {
                 EVENT, PROMO_CLICK,
                 KEY_USER_ID, String.valueOf(userId),
                 KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
+                ECOMMERCE, Ecommerce.getEcommerceClick(listPromotion));
+    }
+
+    public static Map<String, Object> getImpressionTracking(List<Promotion> listPromotion) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                ECOMMERCE, Ecommerce.getEcommerceView(listPromotion));
+    }
+
+    public static Map<String, Object> getClickTracking(List<Promotion> listPromotion) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                ECOMMERCE, Ecommerce.getEcommerceClick(listPromotion));
     }
 }
