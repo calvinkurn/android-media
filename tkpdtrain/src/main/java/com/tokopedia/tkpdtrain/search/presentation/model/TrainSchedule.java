@@ -171,6 +171,16 @@ public class TrainSchedule {
     public void setAvailableSeat(int availableSeat) {
         this.availableSeat = availableSeat;
     }
+
+    @Override
+    public String toString() {
+        return "Schedule ID: " + idSchedule + "\n" +
+                "Adult Fare: " + displayAdultFare  + "\n" +
+                "Train Name: " + trainName + "\n" +
+                "Duration: " + duration + "\n" +
+                "Departure Timestamp: " + departureTimestamp + "\n" +
+                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
+                "Availibility: " + availableSeat + "\n";
+    }
+
 }
-
-
