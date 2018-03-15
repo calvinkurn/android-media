@@ -221,6 +221,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 productPriceViewHolder.isDataValid() &&
                 productManageViewHolder.isDataValid() &&
                 isImageValid() &&
+                productDescriptionViewHolder.isDataValid() &&
                 productDeliveryInfoViewHolder.isDataValid());
     }
 
