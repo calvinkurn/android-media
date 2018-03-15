@@ -36,6 +36,11 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 
@@ -185,7 +190,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
             // because it comes form implicit Uris, check if already login and has shop
             if (validateHasLoginAndShop()) {
                 Intent intent = getIntent();
-                if (intent != null && intent.getAction()!=null) {
+                if (intent != null && intent.getAction() != null) {
                     switch (intent.getAction()) {
                         case Intent.ACTION_SEND:
                             ProductAddActivityPermissionsDispatcher.handleImageUrlImplicitSingleWithCheck(this);
@@ -235,7 +240,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
                 return false;
             }
         } else {
-            Intent intentLogin = ((SellerModuleRouter)(getApplication())).getLoginIntent (this);
+            Intent intentLogin = ((SellerModuleRouter) (getApplication())).getLoginIntent(this);
             startActivity(intentLogin);
             finish();
             return false;
@@ -258,24 +263,48 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
 
     private void processMultipleImage(ArrayList<Uri> imageUris) {
         showProgressDialog();
-        int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
-        imageUrls = new ArrayList<>();
-        for (int i = 0; i < imagescount; i++) {
-            Uri imageUri = imageUris.get(i);
-            String uriString = imageUri.toString();
-            if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
-                imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
-            } else { // get extras for import from gallery
-                String url = FileUtils.getTkpdPathFromURI(this, imageUri);
-                if (!TextUtils.isEmpty(url)) {
-                    imageUrls.add(url);
-                }
-            }
-        }
-        dismissDialog();
-        createProductAddFragment();
-    }
 
+        Observable.just(imageUris).map(new Func1<ArrayList<Uri>, ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call(ArrayList<Uri> imageUris) {
+                int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
+                imageUrls = new ArrayList<>();
+                for (int i = 0; i < imagescount; i++) {
+                    Uri imageUri = imageUris.get(i);
+                    String uriString = imageUri.toString();
+                    if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
+                        imageUrls.add(FileUtils.getPathFromGmail(ProductAddActivity.this, imageUri));
+                    } else { // get extras for import from gallery
+                        String url = FileUtils.getTkpdPathFromURI(ProductAddActivity.this, imageUri);
+                        if (!TextUtils.isEmpty(url)) {
+                            imageUrls.add(url);
+                        }
+                    }
+                }
+                return imageUrls;
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ArrayList<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissDialog();
+                        createProductAddFragment();
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<String> imageUrls) {
+                        dismissDialog();
+                        createProductAddFragment();
+                    }
+                });
+    }
 
 
 }

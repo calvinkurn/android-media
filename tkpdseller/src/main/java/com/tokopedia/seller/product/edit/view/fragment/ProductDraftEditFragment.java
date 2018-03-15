@@ -44,30 +44,9 @@ public class ProductDraftEditFragment extends BaseProductDraftAddEditFragment<Pr
                 .inject(this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (view != null) {
-            view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
-            view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
-        }
-        return view;
+    protected boolean needHideShareAndAddMore() {
+        return true;
     }
 
-    @Override
-    public void onSuccessLoadProduct(ProductViewModel model) {
-        hideLoading();
-        if (!model.isProductNameEditable()) {
-            productInfoViewHolder.setNameEnabled(false);
-        }
-        super.onSuccessLoadProduct(model);
-    }
-
-    @Override
-    protected ProductViewModel collectDataFromView() {
-        ProductViewModel viewModel = super.collectDataFromView();
-        viewModel.setProductId(viewModel.getProductId());
-        return viewModel;
-    }
 }

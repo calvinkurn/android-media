@@ -304,10 +304,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return productCatalog;
     }
 
-    public void setNameEnabled(boolean enabled) {
-        nameEditText.setEnabled(enabled);
-    }
-
     public void successGetCategoryRecommData(List<ProductCategoryPredictionViewModel> categoryPredictionList) {
         if (listener.hasVariant() || categoryPredictionList == null || categoryPredictionList.size() == 0) {
             hideAndClearCategoryRecomm();

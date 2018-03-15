@@ -31,6 +31,11 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         return view;
     }
 
+    @Override
+    protected boolean needHideShareAndAddMore() {
+        return true;
+    }
+
     public abstract void fetchInputData();
 
     @CallSuper

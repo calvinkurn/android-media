@@ -143,7 +143,6 @@ public class UploadProductService extends BaseService implements AddProductServi
         NotificationCompat.Builder builder = buildBaseNotification(productName);
         Notification notification = builder
                 .setContentText(getString(R.string.product_notification_start_upload_product))
-                .setSound(null)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.product_notification_start_upload_product)))
                 .build();
         notificationManager.notify(TAG, notificationId, notification);
@@ -153,7 +152,6 @@ public class UploadProductService extends BaseService implements AddProductServi
     public void updateNotification(int notificationId, int currentCount, int maxProgress) {
         Notification notification = notificationBuilderMap.get(notificationId)
                 .setContentText(getString(R.string.product_notification_progress_upload_product))
-                .setSound(null)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.product_notification_progress_upload_product)))
                 .setProgress(maxProgress, currentCount, false)
                 .build();
