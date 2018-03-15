@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -131,7 +132,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void loadData(int i) {
         if (shopInfo != null) {
-            shopProductListLimitedPresenter.getProductLimitedList(shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopOfficialTop());
+            String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
+            officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
+            shopProductListLimitedPresenter.getProductLimitedList(shopInfo.getInfo().getShopId(), officialWebViewUrl);
         }
     }
 
