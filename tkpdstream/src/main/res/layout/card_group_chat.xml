@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="3sp"
             android:paddingLeft="@dimen/space_avg_small"
             android:paddingRight="@dimen/space_med"
             android:textColor="@color/black_55"
@@ -104,7 +104,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/participant"
                 android:layout_toStartOf="@+id/participant"
-                app:srcCompat="@drawable/ic_group_chat_participant" />
+                app:srcCompat="@drawable/ic_eyes_view" />
 
 
             <TextView

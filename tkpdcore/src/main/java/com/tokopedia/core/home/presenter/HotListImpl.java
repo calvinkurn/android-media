@@ -596,7 +596,7 @@ public class HotListImpl implements HotList {
                         List<HotListModel> list = CacheUtil.convertStringToListModel(listHot.toString(), listType);
                         trackingHotlist(list);
 
-                        temps = new GsonBuilder().create().fromJson(listHot.toString(), listType);
+                        return list;
                     } catch (JSONException json) {
                         Log.e(TAG, HotListImpl.class.getSimpleName() + " is error : " + json.getLocalizedMessage());
                     }

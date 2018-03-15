@@ -16,7 +16,7 @@
             android:id="@+id/channel_banner"
             android:layout_width="0dp"
             android:layout_height="@dimen/channel_banner_height"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
@@ -37,7 +37,6 @@
             app:titleTextAppearance="@style/ToolbarGroupChat"
             tools:title="title"
             tools:subtitle="subtitle"
-            android:alpha="0.9"
             tools:layout_height="64dp"/>
 
         <include
