@@ -89,7 +89,7 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         data = element.getData();
         Shop shop = data.getShop();
         if (shop != null) {
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
+            imageLoader.loadImage(shop.getImageShop().getsEcs(), shop.getImageShop().getsUrl(),
                     shopImage);
             if (shop.getImageProduct() != null) {
                 ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader,
