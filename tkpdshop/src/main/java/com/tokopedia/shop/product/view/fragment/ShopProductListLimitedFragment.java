@@ -43,6 +43,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
@@ -218,6 +219,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void promoClicked(String url) {
+        shopPageTracking.eventClickBannerImpression(getString(R.string.shop_info_title_tab_product),
+                shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                ShopPageTracking.getShopType(shopInfo.getInfo()));
         ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url, shopInfo.getInfo().getShopId());
     }
 
@@ -256,6 +260,10 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
                 shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                         ((ShopProductLimitedProductViewModel)shopProductBaseViewModel).getShopProductViewModelList(),
                         true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+            }else if(shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel){
+                shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
+                        shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                        ShopPageTracking.getShopType(shopInfo.getInfo()));
             }
         }
     }

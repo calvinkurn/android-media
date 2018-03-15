@@ -81,6 +81,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_PRODUCT_PICTURE = "click product picture";
     public static final String CLICK_PRODUCT_NAME = "click product name";
     public static final String IMPRESSION_OF_TOP_PRODUCT_LIST = "impression of top products list";
+    public static final String TOP_CONTENT_CLICK = " - top content - click";
+    public static final String CLICK_TOP_CONTENT = "click top content";
 
     //key
     public static final String EVENT = "event";
@@ -115,4 +117,10 @@ public class ShopPageTrackingConstant {
     public static final String OFFICIAL_STORE_NAME = "official store";
     public static final String GOLD_MERCHANT_NAME = "gold merchant";
     public static final String REGULAR_MERCHANT_NAME = "regular merchant";
+    public static final String PROMO_CLICK = "promoClick";
+    public static final String PROMOTIONS = "promotions";
+    public static final String SHOP_PAGE_PROMO_WEBVIEW = "/shoppage - promo webview";
+    public static final String CREATIVE = "creative";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
 }

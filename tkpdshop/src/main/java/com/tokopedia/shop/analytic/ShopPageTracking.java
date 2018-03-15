@@ -361,6 +361,54 @@ public class ShopPageTracking {
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
+    public void eventClickBannerImpression(String titlePage, String shopName, String shopId, boolean myShop, int shopType) {
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PROMO_CLICK,
+                getEventCategory(myShop, shopType),
+                titlePage + ShopPageTrackingConstant.TOP_CONTENT_CLICK,
+                ShopPageTrackingConstant.CLICK_TOP_CONTENT, shopType);
+        eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapBannerClickImpression(shopName));
+        shopModuleRouter.sendEventTrackingShopPage(eventMap);
+    }
+
+    public void eventViewBannerImpression(String titlePage, String shopName, String shopId, boolean myShop, int shopType) {
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PROMO_VIEW,
+                getEventCategory(myShop, shopType),
+                titlePage + ShopPageTrackingConstant.TOP_CONTENT_IMPRESSION,
+                "", shopType);
+        eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapBannerViewImpression(shopName));
+        shopModuleRouter.sendEventTrackingShopPage(eventMap);
+    }
+
+    private Map<String, Object> createMapBannerViewImpression(String shopName) {
+        return DataLayer.mapOf(
+                ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
+                        ShopPageTrackingConstant.PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        ShopPageTrackingConstant.NAME, ShopPageTrackingConstant.SHOP_PAGE_PROMO_WEBVIEW,
+                                        ShopPageTrackingConstant.CREATIVE, shopName,
+                                        ShopPageTrackingConstant.POSITION, 1
+                                )
+                        )
+                )
+        );
+    }
+
+    private Map<String, Object> createMapBannerClickImpression(String shopName) {
+        return DataLayer.mapOf(
+                ShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
+                        ShopPageTrackingConstant.PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        ShopPageTrackingConstant.NAME, ShopPageTrackingConstant.SHOP_PAGE_PROMO_WEBVIEW,
+                                        ShopPageTrackingConstant.CREATIVE, shopName,
+                                        ShopPageTrackingConstant.POSITION, 1
+                                )
+                        )
+                )
+        );
+    }
+
     private Map<String, Object> createMapProductViewImpression(List<ShopProductViewModel> shopProductViewModelList) {
         List<Object> list = getListProductAsObjectDataLayer(shopProductViewModelList);
         return DataLayer.mapOf(
