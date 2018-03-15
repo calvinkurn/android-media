@@ -21,7 +21,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;

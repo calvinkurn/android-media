@@ -125,8 +125,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     }
                 })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BaseCartData>() {
                     @Override
