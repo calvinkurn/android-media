@@ -133,7 +133,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"), bundle);
+        String etalaseName = bundle.getString("etalase_name");
+        String etalaseId = bundle.getString("etalase_id");
+        Intent intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseName, etalaseId);
         viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
     }
 

@@ -73,7 +73,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private static final int VIEW_CONTENT = 1;
     private static final int VIEW_LOADING = 2;
     private static final int VIEW_ERROR = 3;
-    public static final String EXISTING_BUNDLE = "EXISTING_BUNDLE";
     @Inject
     ShopPagePresenter shopPagePresenter;
     @Inject
@@ -99,14 +98,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private Menu menu;
     private ShopInfo shopInfo;
     private String shopName;
-    private Bundle existingBundle;
-
-    public static Intent createIntent(Context context, String shopId, Bundle existingBundle) {
-        Intent intent = new Intent(context, ShopPageActivity.class);
-        intent.putExtra(SHOP_ID, shopId);
-        intent.putExtra(EXISTING_BUNDLE, existingBundle);
-        return intent;
-    }
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -154,8 +145,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
-        existingBundle = getIntent().getBundleExtra(EXISTING_BUNDLE);
-        proceedExistingBundle();
         updateShopDiscussionIntent();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
@@ -166,19 +155,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
         viewPager.setCurrentItem(tabPosition);
         getShopInfo();
-    }
-
-    private void proceedExistingBundle(){
-        if(existingBundle != null){
-            Log.d("NORMANSYAH", existingBundle.toString());
-            String etalaseName = existingBundle.getString("etalase_name");
-            String etalaseId = existingBundle.getString("etalase_id");
-
-            if(!TextUtils.isEmpty(etalaseId)){
-                Intent intent = ShopProductListActivity.createIntent(this,shopId,"", etalaseId);
-                startActivity(intent);
-            }
-        }
     }
 
     private void getShopInfo() {

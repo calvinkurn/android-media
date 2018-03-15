@@ -44,5 +44,5 @@ public interface TkpdInboxRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle);
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseName, String etalaseId);
 }
