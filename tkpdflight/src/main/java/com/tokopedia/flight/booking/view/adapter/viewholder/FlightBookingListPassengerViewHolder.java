@@ -31,12 +31,11 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
 
     private Context context;
     private TextView txtPassengerName;
-    private ImageView imgPassengerType, imgEdit, imgDelete;
+    private ImageView imgEdit, imgDelete;
 
     public FlightBookingListPassengerViewHolder(View itemView, final ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         super(itemView);
         txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
-        imgPassengerType = itemView.findViewById(R.id.image_passenger_type);
         imgDelete = itemView.findViewById(R.id.image_passenger_delete);
         imgEdit = itemView.findViewById(R.id.image_passenger_edit);
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
@@ -47,15 +46,11 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     public void bind(final FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
 
         txtPassengerName.setText(String.format(
-                "%d. %s. %s %s",
-                flightBookingPassengerViewModel.getPassengerLocalId(),
+                "%s. %s %s",
                 flightBookingPassengerViewModel.getPassengerTitle(),
                 flightBookingPassengerViewModel.getPassengerFirstName(),
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
-
-        imgPassengerType.setImageDrawable(VectorDrawableCompat.create(context.getResources(),
-                flightBookingPassengerViewModel.getPassengerDrawable(), context.getTheme()));
 
         imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
