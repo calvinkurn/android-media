@@ -130,4 +130,8 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
             }
         };
     }
+
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
+    }
 }
