@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -250,7 +251,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
+        showBottomActionView();
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+        showBottomActionView();
+    }
+
+    private void showBottomActionView() {
+        bottomActionView.setVisibility(getAdapter().getDataSize() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -307,9 +318,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSuccessGetShopName(String shopName) {
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(MethodChecker.fromHtml(shopName).toString());
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopName).toString());
         }
     }
 
@@ -319,7 +329,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             this.etalaseId = etalaseId;
         }
         if (TextUtils.isEmpty(etalaseName)) {
-            if (shopProductListPresenter.getUserSession().getShopId().equals(shopId)) {
+            if (shopProductListPresenter.isMyShop(shopId)) {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
             } else {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));

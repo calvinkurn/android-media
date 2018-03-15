@@ -58,6 +58,7 @@
             android:id="@+id/bottom_action_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:bav_1_display="true"
             app:bav_2_display="true"
             app:bav_icon_1="@drawable/ic_icon"

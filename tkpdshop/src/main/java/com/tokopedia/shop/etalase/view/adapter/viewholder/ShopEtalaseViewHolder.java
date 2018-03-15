@@ -18,7 +18,7 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_product_etalase_picker_checked_green;
+    public static final int LAYOUT = R.layout.item_shop_etalase;
     private final TextView etalasePickerItemName;
     private final ImageView etalasePickerRadioButton;
     private final ImageView etalaseBadgeImageView;

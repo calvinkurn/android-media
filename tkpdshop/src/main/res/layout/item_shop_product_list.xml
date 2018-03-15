@@ -30,13 +30,13 @@
             tools:visibility="visible" />
 
         <include
-            layout="@layout/partial_item_product"
+            layout="@layout/partial_shop_product_item_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
     <include
-        layout="@layout/partial_item_product_wishlist"
+        layout="@layout/partial_shop_product_item_wishlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
@@ -26,22 +26,18 @@ import javax.inject.Inject;
 
 public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, ShopNoteAdapterTypeFactory> implements ShopNoteListView, EmptyViewHolder.Callback {
 
-    public static ShopNoteListFragment createInstance(String shopId) {
+    public static ShopNoteListFragment createInstance() {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
-        shopNoteListFragment.setArguments(bundle);
         return shopNoteListFragment;
     }
 
     @Inject
     ShopNoteListPresenter shopNoteListPresenter;
-    private String shopId;
+    private ShopInfo shopInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopNoteListPresenter.attachView(this);
     }
 
@@ -53,7 +49,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        if (shopNoteListPresenter.isMyShop(shopId)) {
+        if (shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             emptyModel.setTitle(getString(R.string.shop_note_empty_note_title_owner));
             emptyModel.setContent(getString(R.string.shop_note_empty_note_content_owner));
             emptyModel.setButtonTitle(getString(R.string.shop_note_empty_note_button_owner));
@@ -63,9 +59,16 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
         return emptyModel;
     }
 
+    public void updateShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        loadInitialData();
+    }
+
     @Override
     public void loadData(int page) {
-        shopNoteListPresenter.getShopNoteList(shopId);
+        if (shopInfo != null) {
+            shopNoteListPresenter.getShopNoteList(shopInfo.getInfo().getShopId());
+        }
     }
 
     @Override

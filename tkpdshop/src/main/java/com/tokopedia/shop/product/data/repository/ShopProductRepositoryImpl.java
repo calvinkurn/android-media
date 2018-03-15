@@ -6,6 +6,9 @@ import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,5 +37,10 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
                 return Observable.just(dataResponseResponse.body().getData());
             }
         });
+    }
+
+    @Override
+    public Observable<List<ShopProductCampaign>> getProductCampaigns(String ids) {
+        return shopProductCloudDataSource.getProductCampaigns(ids);
     }
 }

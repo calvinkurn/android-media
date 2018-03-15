@@ -12,16 +12,12 @@
         android:lineSpacingExtra="5sp"
         tools:text="@string/app_name" />
 
-    <TextView
-        android:id="@+id/price"
-        style="@style/TextView.Small.Orange"
+    <include
+        android:id="@+id/badges_container"
+        layout="@layout/partial_shop_product_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_small"
-        android:gravity="center_vertical"
-        android:lineSpacingExtra="5sp"
-        android:textStyle="normal"
-        tools:text="@string/app_name" />
+        android:layout_marginTop="@dimen/margin_ms" />
 
     <include
         android:id="@+id/badges_container"

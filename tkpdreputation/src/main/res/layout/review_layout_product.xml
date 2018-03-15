@@ -16,7 +16,7 @@
         android:layout_width="match_parent">
 
         <RatingBar
-            style="@style/Small.RatingBar"
+            style="@style/RatingBar.Small"
             android:id="@+id/product_rating"
             android:isIndicator="true"
             android:layout_height="wrap_content"

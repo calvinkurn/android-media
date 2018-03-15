@@ -5,7 +5,18 @@
     android:background="@color/white"
     android:fitsSystemWindows="true">
 
+    <include
+        android:id="@+id/layout_loading_state"
+        layout="@layout/partial_shop_info_loading_state"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_error_state"
+        layout="@layout/partial_empty_page_error"
+        android:visibility="gone" />
+
     <LinearLayout
+        android:id="@+id/container_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"

@@ -13,7 +13,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 public class ShopProductFeaturedViewHolder extends ShopProductViewHolder {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_product_featured;
+    public static final int LAYOUT = R.layout.item_shop_product_featured;
 
     public ShopProductFeaturedViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView, shopProductClickedListener);
