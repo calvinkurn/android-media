@@ -13,6 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
@@ -61,7 +62,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     private List<String> videoIdList;
     private SpinnerTextView conditionSpinnerTextView;
 
-    public ProductDescriptionViewHolder(View view, Listener listener) {
+    public ProductDescriptionViewHolder(View view, final Listener listener) {
         videoIdList = new ArrayList<>();
         conditionSpinnerTextView = view.findViewById(R.id.spinner_text_view_condition);
         descriptionLabelView = view.findViewById(R.id.label_view_description);
@@ -75,12 +76,16 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         labelAddVideoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (CommonUtils.checkNotNull(ProductDescriptionViewHolder.this.listener)) {
-                    if (!goldMerchant && GlobalConfig.isSellerApp()) {
+                if (ProductDescriptionViewHolder.this.listener != null) {
+                    if (!goldMerchant) {
                         UnifyTracking.eventClickVideoAddProduct();
                         ProductDescriptionViewHolder.this.listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_video);
                     } else {
-                        ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                        if (GlobalConfig.isSellerApp()) {
+                            ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                        } else {
+                            ProductDescriptionViewHolder.this.listener.showInstallSellerApp();
+                        }
                     }
                 }
             }
@@ -162,7 +167,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     public void updateViewGoldMerchant(boolean isShown) {
         goldMerchant = isShown;
-        if (isShown || GlobalConfig.isSellerApp()) {
+        if (isShown) {
             labelAddVideoView.setVisibility(View.VISIBLE);
         } else {
             videoIdList.clear();
@@ -339,6 +344,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         void showDialogMoveToGM(@StringRes int message);
 
         void onHasVideoChange(boolean hasVideo);
+
+        void showInstallSellerApp();
 
     }
 }

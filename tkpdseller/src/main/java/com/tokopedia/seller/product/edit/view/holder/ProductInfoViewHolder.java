@@ -1,10 +1,12 @@
 package com.tokopedia.seller.product.edit.view.holder;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -92,7 +94,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         this.listener = listener;
     }
 
-    public ProductInfoViewHolder(View view, Listener listener) {
+    public ProductInfoViewHolder(View view, final Listener listener) {
         etalaseId = DEFAULT_ETALASE_ID;
         categoryId = DEFAULT_CATEGORY_ID;
         catalogId = DEFAULT_CATALOG_ID;
@@ -107,7 +109,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             @Override
             public void onClick(View view) {
                 if (ProductInfoViewHolder.this.listener != null) {
-                    ProductInfoViewHolder.this.listener.onCategoryPickerClicked(categoryId);
+                    if (ProductInfoViewHolder.this.listener.hasVariant()) {
+                        showDialogCategoryLocked();
+                    } else {
+                        ProductInfoViewHolder.this.listener.onCategoryPickerClicked(categoryId);
+                    }
                 }
             }
         });
@@ -155,6 +161,22 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         setListener(listener);
     }
 
+    private void showDialogCategoryLocked(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(listener.getActivity(),
+                R.style.AppCompatAlertDialogStyle);
+        builder.setTitle(R.string.product_category_locked);
+        builder.setMessage(R.string.product_category_locked_description);
+        builder.setCancelable(true);
+        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public void renderData(ProductViewModel model) {
         setName(model.getProductName(), model.isProductNameEditable());
@@ -181,9 +203,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     public void renderByVariant(boolean hasVariant) {
         if (hasVariant) {
             categoryRecommView.setVisibility(View.GONE);
-            categoryLabelView.setEnabled(false);
-        } else {
-            categoryLabelView.setEnabled(true);
         }
     }
 
@@ -308,7 +327,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     public void successGetCategoryRecommData(List<ProductCategoryPredictionViewModel> categoryPredictionList) {
-        if (categoryPredictionList == null || categoryPredictionList.size() == 0) {
+        if (listener.hasVariant() || categoryPredictionList == null || categoryPredictionList.size() == 0) {
             hideAndClearCategoryRecomm();
             return;
         }

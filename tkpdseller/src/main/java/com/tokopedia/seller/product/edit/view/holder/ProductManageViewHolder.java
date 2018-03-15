@@ -9,6 +9,8 @@ import android.widget.EditText;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
@@ -75,7 +77,11 @@ public class ProductManageViewHolder extends ProductViewHolder {
         variantLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductManageViewHolder.this.listener.startProductVariantActivity(productVariantByCatModelList);
+                if (GlobalConfig.isSellerApp()) {
+                    ProductManageViewHolder.this.listener.startProductVariantActivity(productVariantByCatModelList);
+                } else {
+                    ProductManageViewHolder.this.listener.showInstallSellerApp();
+                }
             }
         });
 
@@ -301,6 +307,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
         ProductVariantViewModel getCurrentVariantModel();
 
         void updateVariantModel(ProductVariantViewModel productVariantViewModel);
+
         void updateVariantSizeChartModel(ProductPictureViewModel productPictureViewModel);
+
+        void showInstallSellerApp();
     }
 }

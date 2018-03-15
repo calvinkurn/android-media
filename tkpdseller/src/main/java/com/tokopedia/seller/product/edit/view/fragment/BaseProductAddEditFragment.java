@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -45,7 +46,6 @@ import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActiv
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditProductDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ProductAddWholesaleDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductDeliveryInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDescriptionViewHolder;
@@ -70,7 +70,6 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -234,7 +233,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     private void getCategoryRecommendation(String productName) {
-        if (isNeedGetCategoryRecommendation()) {
+        if (isNeedGetCategoryRecommendation() && !currentProductViewModel.hasVariant()) {
             presenter.getCategoryRecommendation(productName);
         }
     }
@@ -933,13 +932,18 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         // to disable or enable price/wholesale/etc
         productPriceViewHolder.renderData(currentProductViewModel);
 
-        //to disable or enable category and category recommendation
+        //to hide category recommendation
         productInfoViewHolder.renderByVariant(currentProductViewModel.hasVariant());
     }
 
     @Override
     public void updateVariantSizeChartModel(ProductPictureViewModel productPictureViewModel) {
         currentProductViewModel.setProductSizeChart(productPictureViewModel);
+    }
+
+    @Override
+    public void showInstallSellerApp() {
+        ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
     }
 
     @Override

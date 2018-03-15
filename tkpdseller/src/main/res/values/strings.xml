@@ -234,6 +234,8 @@
     <string name="change">Ubah</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_price_locked">Harga Produk Terkunci</string>
-    <string name="product_price_locked_desc">Atur harga di masing-masing varian atau ubah semua harga varian dengan mengisi kolom di bawah ini.</string>
+    <string name="product_price_locked_desc">Atur harga di masing-masing varian atau ubah semua harga varian dengan mengisi harga di bawah.</string>
+    <string name="product_category_locked">Kategori Terkunci</string>
+    <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
 
 </resources>
