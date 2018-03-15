@@ -74,7 +74,12 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         model.setProductWeightUnit(getWeightUnit());
         model.setProductWeight(getWeightValue());
         model.setProductMustInsurance(isMustInsurance());
-        model.setProductFreeReturn(isFreeReturns());
+
+        // only update the model if free return flag from getShopInfo is retrieved,
+        // so we don't accidentally set free return to false.
+        if (listener.isHasLoadShopInfo()) {
+            model.setProductFreeReturn(isFreeReturns());
+        }
     }
 
     public void setListener(Listener listener) {
@@ -176,5 +181,7 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
      */
     public interface Listener {
         void onFreeReturnChecked(boolean checked);
+
+        boolean isHasLoadShopInfo();
     }
 }

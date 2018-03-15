@@ -117,6 +117,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     private Listener listener;
     private boolean hasOriginalVariantLevel1;
     private boolean hasOriginalVariantLevel2;
+    private boolean hasLoadShopInfo;
 
     public interface Listener {
         void startUploadProduct(long productId);
@@ -621,6 +622,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productPriceViewHolder.setGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setOfficialStore(officialStore);
         productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
+
+        hasLoadShopInfo = true;
+    }
+
+    public boolean isHasLoadShopInfo() {
+        return hasLoadShopInfo;
     }
 
     @Override
