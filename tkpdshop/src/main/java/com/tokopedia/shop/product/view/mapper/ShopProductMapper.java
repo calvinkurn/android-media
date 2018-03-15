@@ -8,7 +8,6 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +33,14 @@ public class ShopProductMapper {
     }
 
     public List<ShopProductViewModel> convertFromProductCampaigns(
-            List<ShopProductViewModel> shopProduct, ShopProductCampaignResponse campaigns) {
+            List<ShopProductViewModel> shopProduct, List<ShopProductCampaign> campaigns) {
         for (ShopProductViewModel shopProductViewModel : shopProduct) {
-            if (campaigns != null && campaigns.getData() != null) {
-                for (ShopProductCampaign shopProductCampaign : campaigns.getData()) {
-                    if (shopProductViewModel.getId().equalsIgnoreCase(shopProductCampaign.getProductId())) {
-                        shopProductViewModel.setDisplayedPrice(shopProductCampaign.getDiscountedPriceIdr());
-                        shopProductViewModel.setOriginalPrice(shopProductCampaign.getOriginalPriceIdr());
-                        shopProductViewModel.setDiscountPercentage(shopProductCampaign.getPercentageAmount());
-                    }
+            for (ShopProductCampaign shopProductCampaign : campaigns) {
+                if (shopProductViewModel.getId().equalsIgnoreCase(shopProductCampaign.getProductId())) {
+                    shopProductViewModel.setDisplayedPrice(shopProductCampaign.getDiscountedPriceIdr());
+                    shopProductViewModel.setOriginalPrice(shopProductCampaign.getOriginalPriceIdr());
+                    shopProductViewModel.setDiscountPercentage(shopProductCampaign.getPercentageAmount());
                 }
-
             }
         }
         return shopProduct;
