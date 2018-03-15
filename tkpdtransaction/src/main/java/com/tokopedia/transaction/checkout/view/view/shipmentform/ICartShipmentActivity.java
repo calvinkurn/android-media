@@ -46,5 +46,4 @@ public interface ICartShipmentActivity extends IBaseView {
 
     void closeWithResult(int resultCode, @Nullable Intent intent);
 
-
 }

@@ -1,11 +1,11 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -14,9 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -58,12 +58,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     Button btSendToCurrentAddress;
     @BindView(R2.id.rv_address)
     RecyclerView rvAddress;
-    @BindView(R2.id.pb_loading)
-    ProgressBar pbLoading;
     @BindView(R2.id.ll_network_error_view)
     LinearLayout llNetworkErrorView;
     @BindView(R2.id.ll_content)
     LinearLayout llContent;
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeToRefresh swipeToRefreshLayout;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
@@ -161,6 +161,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         ButterKnife.bind(this, view);
         setupRecyclerView();
         mCartAddressChoicePresenter.attachView(this);
+        swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+            }
+        });
     }
 
     @Override
@@ -188,20 +194,24 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     public void showLoading() {
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
-        pbLoading.setVisibility(View.VISIBLE);
+        swipeToRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.VISIBLE);
         btSendToCurrentAddress.setVisibility(View.VISIBLE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        swipeToRefreshLayout.setRefreshing(false);
+        swipeToRefreshLayout.setEnabled(false);
     }
 
     @Override
     public void showNoConnection(@NonNull String message) {
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        swipeToRefreshLayout.setEnabled(true);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -221,10 +231,11 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
-        Fragment fragment = ShipmentAddressListFragment.newInstance();
+        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
 

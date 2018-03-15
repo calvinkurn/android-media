@@ -246,20 +246,20 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private void bindWarnings(CartSellerItemModel data) {
         if (data.isError()) {
             errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
-            tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.text_cart_item_error_red));
-            tvError.setCompoundDrawables(
-                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_red),
-                    null, null, null);
+            tvError.setTextColor(MainApplication.getAppContext().getResources()
+                    .getColor(R.color.text_cart_item_error_red));
+            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
+                    0, 0, 0);
             errorContainer.setVisibility(View.VISIBLE);
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
         } else if (data.isWarning()) {
             errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
-            tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.black_54));
-            tvError.setCompoundDrawables(
-                    MainApplication.getAppContext().getResources().getDrawable(R.drawable.ic_warning_grey),
-                    null, null, null);
+            tvError.setTextColor(MainApplication.getAppContext().getResources()
+                    .getColor(R.color.black_54));
+            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
+                    0, 0, 0);
             errorContainer.setVisibility(View.VISIBLE);
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);

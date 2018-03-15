@@ -146,7 +146,7 @@ public class CartMapper implements ICartMapper {
     @Override
     public ResetCartData convertToResetCartData(ResetCartDataResponse resetCartDataResponse) {
         ResetCartData resetCartData = new ResetCartData();
-        resetCartData.setSuccess(resetCartDataResponse.getSuccess()==1);
-        return resetCartData ;
+        resetCartData.setSuccess(resetCartDataResponse.getSuccess() == 1);
+        return resetCartData;
     }
 }

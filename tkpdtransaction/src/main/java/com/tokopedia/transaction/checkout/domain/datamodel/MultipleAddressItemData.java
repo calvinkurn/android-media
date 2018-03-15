@@ -9,7 +9,7 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressItemData implements Parcelable{
+public class MultipleAddressItemData implements Parcelable {
 
     private int cartPosition;
 
@@ -81,55 +81,6 @@ public class MultipleAddressItemData implements Parcelable{
 
     public MultipleAddressItemData() {
     }
-
-    protected MultipleAddressItemData(Parcel in) {
-        cartPosition = in.readInt();
-        addressPosition = in.readInt();
-        cartId = in.readString();
-        addressStatus = in.readInt();
-        productId = in.readString();
-        productWeight = in.readString();
-        productRawWeight = in.readInt();
-        productQty = in.readString();
-        productNotes = in.readString();
-        addressId = in.readString();
-        addressTitle = in.readString();
-        addressReceiverName = in.readString();
-        addressProvinceName = in.readString();
-        addressPostalCode = in.readString();
-        addressCityName = in.readString();
-        addressStreet = in.readString();
-        addressCountryName = in.readString();
-        recipientPhoneNumber = in.readString();
-        destinationDistrictId = in.readString();
-        destinationDistrictName = in.readString();
-        tokenPickup = in.readString();
-        unixTime = in.readString();
-        store = in.readParcelable(Store.class.getClassLoader());
-        maxQuantity = in.readInt();
-        minQuantity = in.readInt();
-        errorCheckoutPriceLimit = in.readString();
-        errorFieldBetween = in.readString();
-        errorFieldMaxChar = in.readString();
-        errorFieldRequired = in.readString();
-        errorProductAvailableStock = in.readString();
-        errorProductAvailableStockDetail = in.readString();
-        errorProductMaxQuantity = in.readString();
-        errorProductMinQuantity = in.readString();
-        maxRemark = in.readInt();
-    }
-
-    public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
-        @Override
-        public MultipleAddressItemData createFromParcel(Parcel in) {
-            return new MultipleAddressItemData(in);
-        }
-
-        @Override
-        public MultipleAddressItemData[] newArray(int size) {
-            return new MultipleAddressItemData[size];
-        }
-    };
 
     public void setCartPosition(int cartPosition) {
         this.cartPosition = cartPosition;
@@ -409,40 +360,89 @@ public class MultipleAddressItemData implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(cartPosition);
-        parcel.writeInt(addressPosition);
-        parcel.writeString(cartId);
-        parcel.writeInt(addressStatus);
-        parcel.writeString(productId);
-        parcel.writeString(productWeight);
-        parcel.writeInt(productRawWeight);
-        parcel.writeString(productQty);
-        parcel.writeString(productNotes);
-        parcel.writeString(addressId);
-        parcel.writeString(addressTitle);
-        parcel.writeString(addressReceiverName);
-        parcel.writeString(addressProvinceName);
-        parcel.writeString(addressPostalCode);
-        parcel.writeString(addressCityName);
-        parcel.writeString(addressStreet);
-        parcel.writeString(addressCountryName);
-        parcel.writeString(recipientPhoneNumber);
-        parcel.writeString(destinationDistrictId);
-        parcel.writeString(destinationDistrictName);
-        parcel.writeString(tokenPickup);
-        parcel.writeString(unixTime);
-        parcel.writeParcelable(store, i);
-        parcel.writeInt(maxQuantity);
-        parcel.writeInt(minQuantity);
-        parcel.writeString(errorCheckoutPriceLimit);
-        parcel.writeString(errorFieldBetween);
-        parcel.writeString(errorFieldMaxChar);
-        parcel.writeString(errorFieldRequired);
-        parcel.writeString(errorProductAvailableStock);
-        parcel.writeString(errorProductAvailableStockDetail);
-        parcel.writeString(errorProductMaxQuantity);
-        parcel.writeString(errorProductMinQuantity);
-        parcel.writeInt(maxRemark);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.cartPosition);
+        dest.writeInt(this.addressPosition);
+        dest.writeString(this.cartId);
+        dest.writeInt(this.addressStatus);
+        dest.writeString(this.productId);
+        dest.writeString(this.productWeight);
+        dest.writeInt(this.productRawWeight);
+        dest.writeString(this.productQty);
+        dest.writeString(this.productNotes);
+        dest.writeString(this.addressId);
+        dest.writeString(this.addressTitle);
+        dest.writeString(this.addressReceiverName);
+        dest.writeString(this.addressProvinceName);
+        dest.writeString(this.addressPostalCode);
+        dest.writeString(this.addressCityName);
+        dest.writeString(this.addressStreet);
+        dest.writeString(this.addressCountryName);
+        dest.writeString(this.recipientPhoneNumber);
+        dest.writeString(this.destinationDistrictId);
+        dest.writeString(this.destinationDistrictName);
+        dest.writeString(this.tokenPickup);
+        dest.writeString(this.unixTime);
+        dest.writeParcelable(this.store, flags);
+        dest.writeInt(this.maxQuantity);
+        dest.writeInt(this.minQuantity);
+        dest.writeString(this.errorCheckoutPriceLimit);
+        dest.writeString(this.errorFieldBetween);
+        dest.writeString(this.errorFieldMaxChar);
+        dest.writeString(this.errorFieldRequired);
+        dest.writeString(this.errorProductAvailableStock);
+        dest.writeString(this.errorProductAvailableStockDetail);
+        dest.writeString(this.errorProductMaxQuantity);
+        dest.writeString(this.errorProductMinQuantity);
+        dest.writeInt(this.maxRemark);
     }
+
+    protected MultipleAddressItemData(Parcel in) {
+        this.cartPosition = in.readInt();
+        this.addressPosition = in.readInt();
+        this.cartId = in.readString();
+        this.addressStatus = in.readInt();
+        this.productId = in.readString();
+        this.productWeight = in.readString();
+        this.productRawWeight = in.readInt();
+        this.productQty = in.readString();
+        this.productNotes = in.readString();
+        this.addressId = in.readString();
+        this.addressTitle = in.readString();
+        this.addressReceiverName = in.readString();
+        this.addressProvinceName = in.readString();
+        this.addressPostalCode = in.readString();
+        this.addressCityName = in.readString();
+        this.addressStreet = in.readString();
+        this.addressCountryName = in.readString();
+        this.recipientPhoneNumber = in.readString();
+        this.destinationDistrictId = in.readString();
+        this.destinationDistrictName = in.readString();
+        this.tokenPickup = in.readString();
+        this.unixTime = in.readString();
+        this.store = in.readParcelable(Store.class.getClassLoader());
+        this.maxQuantity = in.readInt();
+        this.minQuantity = in.readInt();
+        this.errorCheckoutPriceLimit = in.readString();
+        this.errorFieldBetween = in.readString();
+        this.errorFieldMaxChar = in.readString();
+        this.errorFieldRequired = in.readString();
+        this.errorProductAvailableStock = in.readString();
+        this.errorProductAvailableStockDetail = in.readString();
+        this.errorProductMaxQuantity = in.readString();
+        this.errorProductMinQuantity = in.readString();
+        this.maxRemark = in.readInt();
+    }
+
+    public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
+        @Override
+        public MultipleAddressItemData createFromParcel(Parcel source) {
+            return new MultipleAddressItemData(source);
+        }
+
+        @Override
+        public MultipleAddressItemData[] newArray(int size) {
+            return new MultipleAddressItemData[size];
+        }
+    };
 }

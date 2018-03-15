@@ -70,9 +70,9 @@ public class MultipleAddressShipmentFooterTotalPayment extends RecyclerView.View
     }
 
     private long getDiscountData(CartItemPromoHolderData promoHolderData) {
-        if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
+        if (promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON)
             return promoHolderData.getCouponDiscountAmount();
-        else if(promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
+        else if (promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
             return promoHolderData.getVoucherDiscountAmount();
         else return 0;
     }

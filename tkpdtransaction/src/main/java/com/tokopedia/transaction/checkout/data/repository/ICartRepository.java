@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.checkout.data.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.data.entity.response.checkout.CheckoutDataResponse;

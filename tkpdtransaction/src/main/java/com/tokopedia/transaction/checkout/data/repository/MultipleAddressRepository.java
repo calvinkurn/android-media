@@ -8,7 +8,7 @@ import rx.Observable;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressRepository implements IMultipleAddressRepository{
+public class MultipleAddressRepository implements IMultipleAddressRepository {
 
     public MultipleAddressRepository() {
     }

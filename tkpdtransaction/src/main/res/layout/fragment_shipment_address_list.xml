@@ -1,50 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_200"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/ll_button_add_new_address"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_add_new_address"
+        <RelativeLayout
+            android:id="@+id/rl_content"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/medium_green_button_rounded"
-            android:gravity="center"
-            android:text="Tambahkan Alamat Baru"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
+            android:layout_height="match_parent"
+            android:background="@color/grey_200"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_button_add_new_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white">
 
-    <RelativeLayout android:id="@+id/rl_search_address_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grey_200">
+                <TextView
+                    android:id="@+id/tv_add_new_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_margin="@dimen/margin_small"
+                    android:background="@drawable/medium_green_button_rounded"
+                    android:gravity="center"
+                    android:text="Tambahkan Alamat Baru"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/sv_address_search_box"
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_search_address_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/grey_200">
+
+                <com.tokopedia.design.text.SearchInputView
+                    android:id="@+id/sv_address_search_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:iconifiedByDefault="false"
+                    android:queryHint="Cari Nama Penerima/Alamat/Kota" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_address_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/ll_button_add_new_address"
+                android:layout_below="@id/rl_search_address_container" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_network_error_view"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="Cari Nama Penerima/Alamat/Kota" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_address_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ll_button_add_new_address"
-        android:layout_below="@id/rl_search_address_container"/>
-
-</RelativeLayout>
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

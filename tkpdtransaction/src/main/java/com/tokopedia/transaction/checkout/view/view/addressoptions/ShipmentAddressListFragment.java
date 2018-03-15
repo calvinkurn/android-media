@@ -4,13 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
@@ -47,6 +53,9 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     RecyclerView mRvRecipientAddressList;
     SearchInputView mSvAddressSearchBox;
     TextView mTvAddNewAddress;
+    SwipeToRefresh swipeToRefreshLayout;
+    LinearLayout llNetworkErrorView;
+    RelativeLayout rlContent;
 
     InputMethodManager mInputMethodManager;
     ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
@@ -158,6 +167,16 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
         mTvAddNewAddress = view.findViewById(R.id.tv_add_new_address);
+        swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        rlContent = view.findViewById(R.id.rl_content);
+        swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                String keyword = mSvAddressSearchBox.getSearchText();
+                performSearch(!TextUtils.isEmpty(keyword) ? keyword : "");
+            }
+        });
     }
 
     /**
@@ -201,8 +220,32 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     }
 
     @Override
-    public void showError() {
+    public void showError(String message) {
+        rlContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        swipeToRefreshLayout.setEnabled(true);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        String keyword = mSvAddressSearchBox.getSearchText();
+                        performSearch(!TextUtils.isEmpty(keyword) ? keyword : "");
+                    }
+                });
+    }
 
+    @Override
+    public void showLoading() {
+        rlContent.setVisibility(View.GONE);
+        swipeToRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideLoading() {
+        rlContent.setVisibility(View.VISIBLE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        swipeToRefreshLayout.setRefreshing(false);
+        swipeToRefreshLayout.setEnabled(false);
     }
 
     private void initSearchView() {

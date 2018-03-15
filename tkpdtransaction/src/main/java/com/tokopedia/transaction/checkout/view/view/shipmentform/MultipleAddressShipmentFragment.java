@@ -20,26 +20,31 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
-import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -80,6 +85,10 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     private PromoCodeAppliedData promoCodeAppliedData;
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestion;
+    private ViewGroup totalPaymentLayout;
+    private ViewGroup confirmButton;
+    private RecyclerView orderAddressList;
+    private TkpdProgressDialog progressDialogNormal;
 
 
     public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -143,6 +152,16 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     protected void initView(View view) {
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        totalPayment = view.findViewById(R.id.total_payment_text_view);
+        promoMessage = view.findViewById(R.id.tv_promo_message);
+        totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
+        confirmButton = view.findViewById(R.id.confirm_payment_button);
+        orderAddressList = view.findViewById(R.id.order_shipment_list);
+    }
+
+    @Override
+    protected void setViewListener() {
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
         if (promoCodeAppliedData != null) {
             if (promoCodeAppliedData.getTypeVoucher() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
@@ -158,11 +177,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                         promoCodeAppliedData.getAmount());
             }
         }
-        totalPayment = view.findViewById(R.id.total_payment_text_view);
-        promoMessage = view.findViewById(R.id.tv_promo_message);
-        ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
-        ViewGroup confirmButton = view.findViewById(R.id.confirm_payment_button);
-        RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         shipmentAdapter = new MultipleAddressShipmentAdapter(
                 cartPromoSuggestion,
@@ -172,14 +186,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
-        confirmButton.setOnClickListener(onConfirmedButtonClicked(
-                shipmentAdapter.getAddressDataList(),
-                shipmentAdapter.getPriceSummaryData()));
-    }
-
-    @Override
-    protected void setViewListener() {
-
+        confirmButton.setOnClickListener(onConfirmedButtonClicked());
     }
 
     @Override
@@ -207,6 +214,16 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         return false;
     }
 
+    @Override
+    public void showLoading() {
+        progressDialogNormal.showDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialogNormal.dismiss();
+    }
+
     private void showCancelPickupBoothDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.label_dialog_title_cancel_pickup);
@@ -223,16 +240,12 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         alert.show();
     }
 
-    private View.OnClickListener onConfirmedButtonClicked(
-            final List<MultipleAddressShipmentAdapterData> addressDataList,
-            final MultipleAddressPriceSummaryData data) {
+    private View.OnClickListener onConfirmedButtonClicked() {
 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartShipmentActivity.checkoutCart(
-                        presenter.generateCheckoutRequest(addressDataList, data)
-                );
+                presenter.processCheckShipmentFormPrepareCheckout();
             }
         };
 
@@ -292,28 +305,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     }
 
     @Override
-    public void onPromoSuggestionClicked(CartPromoSuggestion cartPromoSuggestion) {
-
-    }
-
-    @Override
-    public void onPromoSuggestionCancelled() {
-
-    }
-
-    @Override
-    public void onHachikoClicked(MultipleAddressPriceSummaryData addressPriceSummaryData) {
-        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
-            startActivityForResult(
-                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
-                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), true
-                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-            );
-        }
-    }
-
-    @Override
     public void onShowPromo(String promoMessageString) {
         formatPromoMessage(promoMessage, promoMessageString);
         this.promoMessage.setVisibility(View.VISIBLE);
@@ -327,6 +318,35 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         shipmentAdapter.notifyDataSetChanged();
         promoMessage.setText("");
         promoMessage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return originParams == null ? AuthUtil.generateParamsNetwork(getActivity()) :
+                AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+        this.promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                .promoCode(promoCodeCartListData.getDataVoucher().getCode())
+                .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
+                .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
+                .build();
+        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
+                promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
+        checkAppliedPromo(cartItemPromoHolderData);
+    }
+
+    @Override
+    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(
@@ -467,6 +487,42 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                 !TextUtils.isEmpty(message) ? message : "Terjadi kesalahan");
     }
 
+    @Override
+    public void renderCheckShipmentPrepareCheckoutSuccess() {
+        cartShipmentActivity.checkoutCart(
+                presenter.generateCheckoutRequest(shipmentAdapter.getAddressDataList(),
+                        shipmentAdapter.getPriceSummaryData())
+        );
+    }
+
+    @Override
+    public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+            CartShipmentAddressFormData cartShipmentAddressFormData
+    ) {
+        this.cartShipmentAddressFormData = cartShipmentAddressFormData;
+        setViewListener();
+    }
+
+    @Override
+    public void renderErrorCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckShipmentPrepareCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckShipmentPrepareCheckout(String message) {
+
+    }
+
     private Spannable formatPromoMessage(TextView textView, String promoMessage) {
         String formatText = " Hapus";
         promoMessage += formatText;
@@ -494,5 +550,58 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(formattedPromoMessage);
         return formattedPromoMessage;
+    }
+
+    @Override
+    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+        presenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode());
+    }
+
+    @Override
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
+        cartPromoSuggestion.setVisible(false);
+        shipmentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo, int position) {
+        onRemovePromo();
+    }
+
+    @Override
+    public void onCartPromoTrackingSuccess(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
+
+    }
+
+    @Override
+    public void onCartDataEnableToCheckout() {
+
+    }
+
+    @Override
+    public void onCartDataDisableToCheckout() {
+
     }
 }

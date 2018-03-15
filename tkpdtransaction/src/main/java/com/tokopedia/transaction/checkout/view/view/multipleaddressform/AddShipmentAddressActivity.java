@@ -197,7 +197,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         ));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
-        if(itemData.getProductQty().equals("1")) {
+        if (itemData.getProductQty().equals("1")) {
             decreaseButton.setEnabled(false);
             decreaseButton.setClickable(false);
         }
@@ -297,11 +297,11 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 quantityErrorLayout.setVisibility(View.VISIBLE);
                 quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                         .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
-            } else if(!addressLayout.isShown()) {
+            } else if (!addressLayout.isShown()) {
                 saveChangesButton.setVisibility(View.GONE);
             } else {
                 quantityErrorLayout.setVisibility(View.GONE);
-                if(!addAddressErrorTextView.isShown()) {
+                if (!addAddressErrorTextView.isShown()) {
                     saveChangesButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -312,14 +312,14 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             String notes,
             MultipleAddressItemData data
     ) {
-        if(notes.length() > data.getMaxRemark()) {
+        if (notes.length() > data.getMaxRemark()) {
             addAddressErrorTextView.setVisibility(View.VISIBLE);
             addAddressErrorTextView.setText(data.getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(data.getMaxRemark())));
             saveChangesButton.setVisibility(View.GONE);
         } else {
             addAddressErrorTextView.setVisibility(View.GONE);
-            if(!quantityErrorLayout.isShown()) {
+            if (!quantityErrorLayout.isShown()) {
                 saveChangesButton.setVisibility(View.VISIBLE);
             }
         }
@@ -397,22 +397,22 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private TextWatcher notesTextWatcher(final MultipleAddressItemData data) {
-       return new TextWatcher() {
-           @Override
-           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-           }
+            }
 
-           @Override
-           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-           }
+            }
 
-           @Override
-           public void afterTextChanged(Editable editable) {
-               setNotesSubmitButtonVisibility(editable.toString(), data);
-           }
-       };
+            @Override
+            public void afterTextChanged(Editable editable) {
+                setNotesSubmitButtonVisibility(editable.toString(), data);
+            }
+        };
     }
 
     private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,

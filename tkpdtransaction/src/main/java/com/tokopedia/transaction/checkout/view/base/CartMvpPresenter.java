@@ -15,7 +15,7 @@ public class CartMvpPresenter<T> {
         mMvpView = null;
     }
 
-    private boolean isViewAttached() {
+    public boolean isViewAttached() {
         return mMvpView != null;
     }
 

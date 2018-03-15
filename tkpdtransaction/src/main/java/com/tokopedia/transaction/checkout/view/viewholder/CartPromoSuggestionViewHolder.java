@@ -1,75 +1,93 @@
 package com.tokopedia.transaction.checkout.view.viewholder;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.CartAdapterActionListener;
 
 /**
- * @author Aghny A. Putra on 02/03/18
+ * @author anggaprasetiyo on 13/03/18.
  */
-
 public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
+    public static final int TYPE_VIEW_PROMO_SUGGESTION = R.layout.holder_item_cart_potential_promo;
+    private final CartAdapterActionListener actionListener;
 
     private RelativeLayout mRlPromoSuggestionLayout;
-    private ImageView mBtnClose;
-    private TextView mTvDescription;
-    private TextView mTvAction;
+    private ImageView btnClose;
+    private TextView tvDesc;
+    private TextView tvAction;
+    private RecyclerView.LayoutParams layoutParamsVisible;
+    private RecyclerView.LayoutParams layoutParamsGone;
 
-    private SingleAddressShipmentAdapter.ActionListener mActionListener;
-
-    public CartPromoSuggestionViewHolder(View itemView,
-                                         SingleAddressShipmentAdapter.ActionListener actionListener) {
+    public CartPromoSuggestionViewHolder(View itemView, CartAdapterActionListener actionListener) {
         super(itemView);
+        this.actionListener = actionListener;
 
         mRlPromoSuggestionLayout = itemView.findViewById(R.id.rl_promo_suggestion_layout);
-        mBtnClose = itemView.findViewById(R.id.iv_close_banner);
-        mTvAction = itemView.findViewById(R.id.tv_text_promo_suggestion_action);
-        mTvDescription = itemView.findViewById(R.id.tv_text_promo_suggestion_description);
+        this.btnClose = itemView.findViewById(R.id.btn_close);
+        this.tvAction = itemView.findViewById(R.id.tv_action);
+        this.tvDesc = itemView.findViewById(R.id.tv_desc);
 
-        mActionListener = actionListener;
+        setupLayoutParams();
     }
 
-    public void bindViewHolder(CartPromoSuggestion cartPromoSuggestion, int position) {
-        if (cartPromoSuggestion.isVisible()) {
+    private void setupLayoutParams() {
+        Context context = mRlPromoSuggestionLayout.getContext();
+        layoutParamsVisible = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        int marginVertical = (int) context.getResources().getDimension(R.dimen.new_margin_med);
+        int marginHorizontal = (int) context.getResources().getDimension(R.dimen.new_margin_small);
+        layoutParamsVisible.leftMargin = marginHorizontal;
+        layoutParamsVisible.rightMargin = marginHorizontal;
+        layoutParamsVisible.bottomMargin = marginVertical;
+        layoutParamsGone = new RecyclerView.LayoutParams(0, 0);
+    }
+
+    public void bindData(final CartPromoSuggestion data, final int position) {
+
+        if (data.isVisible()) {
             mRlPromoSuggestionLayout.setVisibility(View.VISIBLE);
+            mRlPromoSuggestionLayout.setLayoutParams(layoutParamsVisible);
 
-            mTvDescription.setText(fromHtml(cartPromoSuggestion.getText()));
-            mTvAction.setText(cartPromoSuggestion.getCta());
-            mTvAction.setTextColor(Color.parseColor(cartPromoSuggestion.getCtaColor()));
+            tvDesc.setText(fromHtml(data.getText()));
+            tvAction.setText(data.getCta());
+            tvAction.setTextColor(Color.parseColor(data.getCtaColor()));
 
-            mTvAction.setOnClickListener(actionClickListener(cartPromoSuggestion, position));
-            mBtnClose.setOnClickListener(closeClickListener(cartPromoSuggestion, position));
+            tvAction.setOnClickListener(actionClickListener(data, position));
+            btnClose.setOnClickListener(closeClickListener(data, position));
         } else {
             mRlPromoSuggestionLayout.setVisibility(View.GONE);
+            mRlPromoSuggestionLayout.setLayoutParams(layoutParamsGone);
         }
     }
 
     private View.OnClickListener actionClickListener(final CartPromoSuggestion cartPromoSuggestion,
-                                             final int position) {
+                                                     final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActionListener.onCartPromoSuggestionActionClicked(cartPromoSuggestion, position);
+                actionListener.onCartPromoSuggestionActionClicked(cartPromoSuggestion, position);
             }
         };
     }
 
     private View.OnClickListener closeClickListener(final CartPromoSuggestion cartPromoSuggestion,
-                                            final int position) {
+                                                    final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActionListener.onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestion, position);
+                actionListener.onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestion, position);
             }
         };
     }
@@ -81,5 +99,4 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
             return Html.fromHtml(source);
         }
     }
-
 }

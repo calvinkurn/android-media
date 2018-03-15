@@ -46,7 +46,7 @@ public class AddShipmentAddressPresenter implements IAddShipmentAddressPresenter
 
     @Override
     public MultipleAddressItemData confirmAddData(String quantity,
-                               String notes) {
+                                                  String notes) {
         MultipleAddressItemData newItemData = new MultipleAddressItemData();
         newItemData.setProductQty(quantity);
         newItemData.setProductWeight(multipleAddressItemData.getProductWeight());

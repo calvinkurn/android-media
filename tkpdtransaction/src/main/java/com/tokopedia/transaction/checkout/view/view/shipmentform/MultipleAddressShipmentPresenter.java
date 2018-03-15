@@ -1,9 +1,8 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
@@ -22,13 +21,16 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Grou
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -38,10 +40,14 @@ import rx.Subscriber;
 
 public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmentPresenter {
 
-    IMultipleAddressShipmentView view;
+    private final IMultipleAddressShipmentView view;
+    private final ICartListInteractor cartListInteractor;
 
-    public MultipleAddressShipmentPresenter(IMultipleAddressShipmentView view) {
+    @Inject
+    public MultipleAddressShipmentPresenter(IMultipleAddressShipmentView view,
+                                            ICartListInteractor cartListInteractor) {
         this.view = view;
+        this.cartListInteractor = cartListInteractor;
     }
 
     @Override
@@ -118,10 +124,22 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
             for (int shopIndex = 0; shopIndex < groupShopList.size(); shopIndex++) {
                 GroupShop currentGroupShop = groupShopList.get(shopIndex);
                 List<Product> productList = currentGroupShop.getProducts();
+
+                boolean isErrorGroupShop = currentGroupShop.isError();
+                String errorMessageGroupShop = currentGroupShop.getErrorMessage();
+                boolean isWarningGroupShop = currentGroupShop.isWarning();
+                String warningMessageGroupShop = currentGroupShop.getWarningMessage();
+
                 for (int productIndex = 0; productIndex < productList.size(); productIndex++) {
                     MultipleAddressShipmentAdapterData adapterData =
                             new MultipleAddressShipmentAdapterData();
                     Product currentProduct = productList.get(productIndex);
+
+                    adapterData.setError(isErrorGroupShop);
+                    adapterData.setErrorMessage(errorMessageGroupShop);
+                    adapterData.setWarning(isWarningGroupShop);
+                    adapterData.setWarningMessage(warningMessageGroupShop);
+
                     adapterData.setInvoicePosition(adapterDataList.size());
                     adapterData.setShopId(currentGroupShop.getShop().getShopId());
                     adapterData.setProductName(currentProduct.getProductName());
@@ -279,6 +297,41 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         };
     }
 
+    @Override
+    public void processCheckShipmentFormPrepareCheckout() {
+        cartListInteractor.getShipmentForm(new Subscriber<CartShipmentAddressFormData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                boolean isEnableCheckout = true;
+                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                    if (groupAddress.isError() || groupAddress.isWarning())
+                        isEnableCheckout = false;
+                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                        if (groupShop.isError() || groupShop.isWarning())
+                            isEnableCheckout = false;
+                    }
+                }
+                if (isEnableCheckout) {
+                    view.renderCheckShipmentPrepareCheckoutSuccess();
+                } else {
+                    view.renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+                            cartShipmentAddressFormData
+                    );
+                }
+            }
+        }, AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), new TKPDMapParam<String, String>()));
+    }
+
     private int switchValue(boolean isTrue) {
         if (isTrue) return 1;
         else return 0;
@@ -288,6 +341,36 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
         Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
         return rupiahCurrencyFormat.format(rupiahAmount);
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+        view.showLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideLoading();
+            }
+
+            @Override
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
+                view.hideLoading();
+                if (!promoCodeCartListData.isError()) {
+                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                } else {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                }
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
     }
 
 }
