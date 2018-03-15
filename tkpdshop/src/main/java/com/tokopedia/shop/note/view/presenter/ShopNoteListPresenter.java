@@ -31,8 +31,7 @@ public class ShopNoteListPresenter extends BaseDaggerPresenter<ShopNoteListView>
     }
 
     public boolean isMyShop(String shopId) {
-//        return userSession.getShopId().equals(shopId);
-        return true;
+        return userSession.getShopId().equals(shopId);
     }
 
     public void getShopNoteList(String shopId) {

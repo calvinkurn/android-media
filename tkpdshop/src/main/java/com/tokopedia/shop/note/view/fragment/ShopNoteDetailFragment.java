@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
@@ -31,6 +33,7 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     @Inject
     ShopNoteDetailPresenter shopNoteDetailPresenter;
     private String shopNoteId;
+    private LoadingStateView loadingStateView;
     private TextView titleTextView;
     private TextView dateTextView;
     private TextView descTextView;
@@ -63,12 +66,40 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
         titleTextView = view.findViewById(R.id.text_view_title);
         dateTextView = view.findViewById(R.id.text_view_date);
         descTextView = view.findViewById(R.id.text_view_desc);
+        loadingStateView = view.findViewById(R.id.loading_state_view);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getShopDetail();
+    }
+
+    private void getShopDetail() {
         shopNoteDetailPresenter.getShopNoteList(shopNoteId);
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+    }
+
+    @Override
+    public void onSuccessGetShopNoteList(ShopNoteDetail shopNoteDetail) {
+        titleTextView.setText(shopNoteDetail.getNotes().getTitle());
+        dateTextView.setText(shopNoteDetail.getNotes().getLastUpdate());
+        descTextView.setText(TextHtmlUtils.getTextFromHtml(shopNoteDetail.getNotes().getContent()));
+        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
+    public void onErrorGetShopNoteList(Throwable e) {
+        loadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
+        TextView textRetryError = loadingStateView.getErrorView().findViewById(R.id.message_retry);
+        TextView buttonRetryError = loadingStateView.getErrorView().findViewById(R.id.button_retry);
+        textRetryError.setText(ErrorHandler.getErrorMessage(getActivity(), e));
+        buttonRetryError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getShopDetail();
+            }
+        });
     }
 
     @Override
@@ -97,17 +128,5 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public void onErrorGetShopNoteList(Throwable e) {
-        //TODO Need to show error
-    }
-
-    @Override
-    public void onSuccessGetShopNoteList(ShopNoteDetail shopNoteDetail) {
-        titleTextView.setText(shopNoteDetail.getNotes().getTitle());
-        dateTextView.setText(shopNoteDetail.getNotes().getLastUpdate());
-        descTextView.setText(TextHtmlUtils.getTextFromHtml(shopNoteDetail.getNotes().getContent()));
     }
 }

@@ -8,8 +8,7 @@ import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaignResponse;
-import com.tokopedia.wishlist.common.domain.interactor.GetProductCampaignsUseCase;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     private final GetWishListUseCase getWishListUseCase;
     private final UserSession userSession;
     private final ShopProductMapper shopProductMapper;
-    private GetProductCampaignsUseCase getProductCampaignsUseCase;
+    private final GetProductCampaignsUseCase getProductCampaignsUseCase;
 
     @Inject
     public GetShopProductWithWishListUseCase(GetShopProductListUseCase getShopProductListUseCase,
@@ -62,7 +61,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
             public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
                 // Show shop product list without wish list
                 if (shopProductPagingList.getList().size() <= 0 || isShopOwner(shopProductRequestModel.getShopId())) {
-                    return Observable.just(getShopProductViewModelList(new ShopProductCampaignResponse(), shopProductPagingList, new ArrayList<String>(), false));
+                    return Observable.just(getShopProductViewModelList(new ArrayList<ShopProductCampaign>(), shopProductPagingList, new ArrayList<String>(), false));
                 }
                 final List<String> productIdList = new ArrayList<>();
                 for (ShopProduct shopProduct : shopProductPagingList.getList()) {
@@ -70,11 +69,11 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
                 }
 
                 Observable<List<String>> wishlist = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
-                Observable<ShopProductCampaignResponse> campaigns = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
+                Observable<List<ShopProductCampaign>> campaigns = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
 
-                return Observable.zip(wishlist, campaigns, new Func2<List<String>, ShopProductCampaignResponse, PagingList<ShopProductViewModel>>() {
+                return Observable.zip(wishlist, campaigns, new Func2<List<String>, List<ShopProductCampaign>, PagingList<ShopProductViewModel>>() {
                     @Override
-                    public PagingList<ShopProductViewModel> call(List<String> productWishList, ShopProductCampaignResponse shopProductCampaignResponse) {
+                    public PagingList<ShopProductViewModel> call(List<String> productWishList, List<ShopProductCampaign> shopProductCampaignResponse) {
                         return getShopProductViewModelList(shopProductCampaignResponse, shopProductPagingList, productWishList, true);
                     }
                 });
@@ -83,10 +82,8 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     }
 
     private PagingList<ShopProductViewModel> getShopProductViewModelList(
-            ShopProductCampaignResponse shopProductCampaignResponse,
-            PagingList<ShopProduct> shopProductPagingList,
-            List<String> productIdList,
-            boolean showWishList) {
+            List<ShopProductCampaign> shopProductCampaignResponse, PagingList<ShopProduct> shopProductPagingList,
+            List<String> productIdList, boolean showWishList) {
         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
         pagingList.setTotalData(shopProductPagingList.getTotalData());
         pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList, showWishList));

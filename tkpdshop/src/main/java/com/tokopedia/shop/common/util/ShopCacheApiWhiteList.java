@@ -45,6 +45,8 @@ public class ShopCacheApiWhiteList {
         // Shop Favourite
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_WS_URL, ShopUrl.SHOP_FAVOURITE_USER, ONE_HOUR));
 
+        // Official store discount
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_OFFICIAL_STORE_URL, ShopUrl.SHOP_PRODUCT_OS_DISCOUNT, ONE_HOUR));
         return cacheApiWhiteList;
     }
 }

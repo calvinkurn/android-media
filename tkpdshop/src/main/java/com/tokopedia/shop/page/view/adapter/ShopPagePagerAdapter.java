@@ -22,14 +22,9 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     private final String shopDomain;
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<Fragment>();
 
-    public ShopPagePagerAdapter(FragmentManager fm,
-                                String[] title,
-                                ShopModuleRouter shopModuleRouter,
-                                ShopPagePromoWebView.Listener listener,
-                                String shopId,
-                                String shopDomain
-    ) {
-        super(fm);
+    public ShopPagePagerAdapter(FragmentManager fragmentManager, String[] title, ShopModuleRouter shopModuleRouter,
+                                ShopPagePromoWebView.Listener listener, String shopId, String shopDomain) {
+        super(fragmentManager);
         this.title = title;
         this.shopModuleRouter = shopModuleRouter;
         this.listener = listener;
@@ -41,11 +36,9 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return title[0];
             case 1:
-                return title[1];
             case 2:
-                return title[2];
+                return title[position];
             default:
                 return super.getPageTitle(position);
         }
@@ -53,11 +46,10 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
+        ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
+        shopProductListLimitedFragment.setPromoWebViewListener(listener);
         switch (position) {
             case 0:
-                ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
-                shopProductListLimitedFragment.setPromoWebViewListener(listener);
                 return shopProductListLimitedFragment;
             case 1:
                 if (shopModuleRouter != null) {
@@ -70,8 +62,6 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
                 }
                 break;
         }
-        ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
-        shopProductListLimitedFragment.setPromoWebViewListener(listener);
         return shopProductListLimitedFragment;
     }
 

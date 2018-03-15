@@ -7,8 +7,7 @@
         android:layout_width="@dimen/font_loading_width_xxl"
         android:layout_height="@dimen/font_loading_width_xs"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:layout_marginStart="@dimen/margin_sm"
+        app:corners="@integer/corner_radius_shimmering"
         app:use_gradient="true" />
 
 </LinearLayout>

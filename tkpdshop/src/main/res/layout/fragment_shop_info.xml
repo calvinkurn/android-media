@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/loading_state_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:lsv_error_layout="@layout/partial_empty_page_error"
-    app:lsv_loading_layout="@layout/partial_shop_info_loading_state">
+    android:layout_height="wrap_content">
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/background_apps"
+        android:divider="@drawable/bg_shop_content_separator"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
-        <LinearLayout
+        <include layout="@layout/partial_shop_info_statistic" />
+
+        <include
+            layout="@layout/partial_shop_info_satisfied"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background_apps"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-            <include layout="@layout/partial_shop_info_statistic" />
+        <include
+            layout="@layout/partial_shop_info_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/partial_shop_info_satisfied"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small" />
+        <include
+            layout="@layout/partial_shop_info_logistic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/partial_shop_info_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small" />
-
-            <include
-                layout="@layout/partial_shop_info_logistic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small" />
-
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</com.tokopedia.design.loading.LoadingStateView>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -258,10 +258,19 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
-
+        showBottomActionView();
         shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                 list,false);
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+        showBottomActionView();
+    }
+
+    private void showBottomActionView() {
+        bottomActionView.setVisibility(getAdapter().getDataSize() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -332,7 +341,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             this.etalaseId = etalaseId;
         }
         if (TextUtils.isEmpty(etalaseName)) {
-            if (shopProductListPresenter.getUserSession().getShopId().equals(shopId)) {
+            if (shopProductListPresenter.isMyShop(shopId)) {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
             } else {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));

@@ -17,6 +17,8 @@ import dagger.Component;
 @Component(modules = ShopInfoModule.class, dependencies = ShopComponent.class)
 public interface ShopInfoComponent {
 
+    void inject(ShopInfoActivity shopInfoActivity);
+
     void inject(ShopInfoFragment shopInfoDetailFragment);
 
     void inject(ShopAddressListFragment shopAddressListFragment);

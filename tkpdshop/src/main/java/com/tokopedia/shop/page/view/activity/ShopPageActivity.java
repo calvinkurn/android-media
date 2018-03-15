@@ -41,13 +41,13 @@ import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.page.di.module.ShopPageModule;
+import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
@@ -144,6 +144,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
+        updateShopDiscussionIntent();
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
         }
@@ -153,7 +154,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
         viewPager.setCurrentItem(tabPosition);
         getShopInfo();
-        updateShopDiscussionIntent();
     }
 
     private void getShopInfo() {
@@ -296,12 +296,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getString(R.string.shop_info_title_tab_review),
                 getString(R.string.shop_info_title_tab_discussion)
         };
-        return new ShopPagePagerAdapter(getSupportFragmentManager(),
-                title,
-                shopModuleRouter,
-                this,
-                shopId,
-                shopDomain);
+        return new ShopPagePagerAdapter(getSupportFragmentManager(), title,
+                shopModuleRouter, this, shopId, shopDomain);
     }
 
     @Override
@@ -488,12 +484,13 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
         setViewState(VIEW_CONTENT);
         shopInfo = shopPageViewModel.getShopInfo();
+        shopId = shopInfo.getInfo().getShopId();
+        shopDomain = shopInfo.getInfo().getShopDomain();
         shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
 
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
-            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0))
-                    .displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
+            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(shopInfo);
         }
         shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
         shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId);
