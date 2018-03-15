@@ -28,8 +28,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private final ShopProductClickedListener shopProductClickedListener;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
-    private ImageView productImageView;
-    private TextView titleTextView;
+    protected ImageView productImageView;
+    protected TextView titleTextView;
     private TextView displayedPriceTextView;
     private TextView originalPriceTextView;
     private TextView discountPercentageTextView;
@@ -77,13 +77,17 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopProductClickedListener.onProductClicked(shopProductViewModel);
+                onProductClicked(shopProductViewModel);
             }
         });
 
         titleTextView.setText(shopProductViewModel.getName());
         updatePrice(shopProductViewModel);
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+    }
+
+    protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
+        shopProductClickedListener.onProductClicked(shopProductViewModel, getAdapterPosition());
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
@@ -133,8 +137,12 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopProductClickedListener.onWishListClicked(shopProductViewModel);
+                onWishlistClicked(shopProductViewModel);
             }
         });
+    }
+
+    protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
+        shopProductClickedListener.onWishListClicked(shopProductViewModel);
     }
 }

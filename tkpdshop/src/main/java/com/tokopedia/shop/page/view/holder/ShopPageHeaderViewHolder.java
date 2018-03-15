@@ -43,13 +43,19 @@ public class ShopPageHeaderViewHolder {
 
         void onChatSellerClicked();
 
-        void onToggleFavouriteShop();
+        void onToggleFavouriteShop(boolean favouriteShop);
 
         void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview);
 
         void displayReputationInfo(int reputationMedalType, int reputationLevel, String reputationScore);
 
         void displayReputationSpeedInfo(@DrawableRes int speedIcon, int speedLevel, String speedLevelDescription);
+
+        void onShopIconClicked();
+
+        void onShopNameClicked();
+
+        void onShopInfoClicked();
     }
 
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
@@ -85,6 +91,7 @@ public class ShopPageHeaderViewHolder {
     private Button buttonChatSeller;
     private Button buttonFavouriteShop;
     private Button buttonAlreadyFavouriteShop;
+    private ImageView shopInfo;
 
     private boolean favouriteShop;
     private Listener listener;
@@ -108,6 +115,7 @@ public class ShopPageHeaderViewHolder {
         locationImageView = view.findViewById(R.id.image_view_location);
         shopInfoLocationTextView = view.findViewById(R.id.text_view_location);
         shopTitleLinearLayout = view.findViewById(R.id.linear_layout_header_title);
+        shopInfo = view.findViewById(R.id.shop_info);
 
         totalFavouriteDetailView = view.findViewById(R.id.sub_detail_view_total_favourite);
         totalProductDetailView = view.findViewById(R.id.sub_detail_view_total_product);
@@ -178,12 +186,31 @@ public class ShopPageHeaderViewHolder {
                 listener.onChatSellerClicked();
             }
         });
+
+        shopIconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onShopIconClicked();
+            }
+        });
+        shopNameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onShopNameClicked();
+            }
+        });
+        shopInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onShopInfoClicked();
+            }
+        });
     }
 
     private void toggleFavouriteShop() {
         buttonFavouriteShop.setEnabled(false);
         buttonAlreadyFavouriteShop.setEnabled(false);
-        listener.onToggleFavouriteShop();
+        listener.onToggleFavouriteShop(favouriteShop);
     }
 
     public void renderData(ShopPageViewModel shopPageViewModel, boolean myShop) {

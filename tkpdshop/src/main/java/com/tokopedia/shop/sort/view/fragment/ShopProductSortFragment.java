@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.ShopPageTracking;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent;
@@ -33,20 +36,25 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Inject
     ShopProductSortPresenter shopProductFilterPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private String sortName;
+    private String shopId;
+    private ShopInfo shopInfo;
     private ShopProductSortFragmentListener shopFilterFragmentListener;
 
-    public static ShopProductSortFragment createInstance(String sortName) {
+    public static ShopProductSortFragment createInstance(String sortName, String shopId) {
         ShopProductSortFragment fragment = new ShopProductSortFragment();
         Bundle arguments = new Bundle();
         arguments.putString(ShopProductSortActivity.SORT_NAME, sortName);
+        arguments.putString(ShopProductSortActivity.SHOP_ID, shopId);
         fragment.setArguments(arguments);
         return fragment;
     }
 
     @Override
     public void loadData(int i) {
-        shopProductFilterPresenter.getShopFilterList();
+        shopProductFilterPresenter.getShopInfo(shopId);
     }
 
     @Override
@@ -72,6 +80,12 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     }
 
     @Override
+    public void onSuccessGetShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        shopProductFilterPresenter.getShopFilterList();
+    }
+
+    @Override
     public void renderList(@NonNull List<ShopProductSortModel> list, boolean hasNextPage) {
         if (sortName != null) {
             for (int i = 0; i < list.size(); i++) {
@@ -90,6 +104,7 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null && savedInstanceState == null) {
             sortName = getArguments().getString(ShopProductSortActivity.SORT_NAME);
+            shopId = getArguments().getString(ShopProductSortActivity.SHOP_ID);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -116,6 +131,8 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     public void onItemClicked(ShopProductSortModel filterModel) {
+        shopPageTracking.eventClickChooseSort(getString(R.string.shop_info_title_tab_product), filterModel.getName(), "",
+                shopProductFilterPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }

@@ -54,6 +54,16 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
         LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                int lastVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                if(lastVisibleItem >= recyclerView.getLayoutManager().getItemCount()){
+                    shopProductClickedListener.onLastItemVisible();
+                }
+            }
+        });
         adapter.notifyDataSetChanged();
     }
 }
