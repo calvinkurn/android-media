@@ -67,6 +67,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     public void onItemClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
         Intent intent = new Intent();
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, shopEtalaseViewModel.getEtalaseId());
+        intent.putExtra(ShopParamConstant.EXTRA_ETALASE_NAME, shopEtalaseViewModel.getEtalaseName());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

@@ -101,7 +101,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessGetShopName(shopInfo.getInfo().getShopName());
+                getView().onSuccessGetShopName(shopInfo);
                 getShopProductWithEtalase(shopId, keyword, etalaseId, wholesale, page, orderBy);
             }
         });

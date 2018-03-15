@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -33,6 +34,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Inject
     ShopNoteListPresenter shopNoteListPresenter;
+    @Inject
+    ShopPageTracking shopPageTracking;
     private ShopInfo shopInfo;
 
     @Override
@@ -73,6 +76,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
+        shopPageTracking.eventClickNoteList(shopNoteViewModel.getPosition(), shopInfo.getInfo().getShopId(),
+                shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
     }
 
@@ -83,6 +88,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onEmptyButtonClicked() {
+        shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId(),
+                shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         ((ShopModuleRouter) getActivity().getApplication()).goToEditShopNote(getActivity());
     }
 

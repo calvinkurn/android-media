@@ -20,6 +20,7 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
+import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;

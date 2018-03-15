@@ -19,6 +19,7 @@ import java.util.List;
 public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductFeaturedViewHolder> {
 
     private final ShopProductClickedListener shopProductClickedListener;
+    private ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
     private List<ShopProductViewModel> list;
 
     public List<ShopProductViewModel> getList() {
@@ -29,15 +30,17 @@ public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<Shop
         this.list = list;
     }
 
-    public ShopProductLimitedFeaturedAdapter(ShopProductClickedListener shopProductClickedListener) {
+    public ShopProductLimitedFeaturedAdapter(ShopProductClickedListener shopProductClickedListener,
+                                             ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
         this.shopProductClickedListener = shopProductClickedListener;
+        this.shopProductFeaturedListener = shopProductFeaturedListener;
         list = new ArrayList<>();
     }
 
     @Override
     public ShopProductFeaturedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductFeaturedViewHolder.LAYOUT, parent, false);
-        return new ShopProductFeaturedViewHolder(view, shopProductClickedListener);
+        return new ShopProductFeaturedViewHolder(view, shopProductClickedListener, shopProductFeaturedListener);
     }
 
     @Override

@@ -52,6 +52,7 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    compile rootProject.ext.playServicesDependencies.analytics
     compile rootProject.ext.supportLibDependencies.constraintLayout
 
     testCompile 'junit:junit:4.12'
