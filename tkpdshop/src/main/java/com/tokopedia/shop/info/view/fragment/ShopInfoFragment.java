@@ -16,11 +16,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
-import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -41,6 +41,8 @@ import javax.inject.Inject;
 
 public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDetailView {
 
+    @Inject
+    ShopInfoDetailPresenter shopInfoDetailPresenter;
     private LinearLayout shopInfoStatisticLinearLayout;
     private LinearLayout shopInfoSatisfiedLinearLayout;
     private LabelView transactionSuccessLabelView;
@@ -52,23 +54,17 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     private LabelView openSinceLabelView;
     private LabelView totalProductLabelView;
     private LabelView totalEtalaseLabelView;
-
     private LabelView physicalShopLabelView;
     private LabelView shopOwnerLabelView;
     private TextView scoreGoodTextView;
     private TextView scoreNeutralTextView;
     private TextView scoreBadTextView;
-
     private TextView taglineTextView;
     private TextView descriptionTextView;
-
     private RecyclerView recyclerView;
-
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
-
-    @Inject
-    ShopInfoDetailPresenter shopInfoDetailPresenter;
     private ShopInfo shopInfo;
+    private LabelView officialStoreShopOwnerLabelView;
 
     public static ShopInfoFragment createInstance() {
         ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
@@ -102,6 +98,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
 
         physicalShopLabelView = view.findViewById(R.id.label_view_physical_shop);
         shopOwnerLabelView = view.findViewById(R.id.label_view_shop_owner);
+        officialStoreShopOwnerLabelView = view.findViewById(R.id.official_store_label_view_shop_owner);
 
         scoreGoodTextView = view.findViewById(R.id.text_view_score_good);
         scoreNeutralTextView = view.findViewById(R.id.text_view_score_neutral);
@@ -127,6 +124,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
             shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
             physicalShopLabelView.setVisibility(View.VISIBLE);
+            officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
+            shopOwnerLabelView.setVisibility(View.GONE);
         }
 
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
@@ -160,6 +159,10 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
         }
 
         physicalShopLabelView.setContent(physicalAddressContent);
+
+        officialStoreShopOwnerLabelView.setTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
+        ImageHandler.LoadImage(officialStoreShopOwnerLabelView.getImageView(), shopInfo.getInfo().getShopAvatar());
+
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
         ImageHandler.loadImageCircle2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
