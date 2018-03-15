@@ -73,9 +73,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-
-import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -402,6 +399,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
@@ -768,7 +766,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onAddFavorite(int position, Data shopData) {
-        //TODO: this listener not used in this sprint
     }
 
     @Override
@@ -862,8 +859,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
-        if (resultCode == RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            dPresenter.processToShipmentForm();
+        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
+            // dPresenter.processToShipmentForm();
         }
     }
 
