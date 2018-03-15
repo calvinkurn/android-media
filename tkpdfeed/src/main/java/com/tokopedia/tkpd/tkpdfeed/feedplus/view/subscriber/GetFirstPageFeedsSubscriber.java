@@ -274,11 +274,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     currentPosition,
                                     "-",
                                     model.getHeader().getShopId(),
-                                    SHOP.replace(SHOP_ID_BRACKETS, shopId),
-                                    loginIdInt
+                                    SHOP.replace(SHOP_ID_BRACKETS, shopId)
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
-                                    FeedEnhancedTracking.getImpressionTracking(list));
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
                         }
                         break;
                     case TYPE_PROMOTION:
@@ -344,7 +343,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
-                                    FeedEnhancedTracking.getKolImpressionTracking(list, loginIdInt));
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
                         }
                         break;
                     case TYPE_KOL_RECOMMENDATION:
@@ -371,7 +370,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 ));
                             }
                             TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
-                                    .getKolImpressionTracking(list,
+                                    .getImpressionTracking(list,
                                             loginIdInt));
                         }
                         break;

@@ -263,7 +263,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 element.getContentLink().equals("")? "-" : element.getContentLink()
         ));
 
-        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking.getKolClickTracking(list,
+        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking.getClickTracking(list,
                 Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))));
 
         viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),

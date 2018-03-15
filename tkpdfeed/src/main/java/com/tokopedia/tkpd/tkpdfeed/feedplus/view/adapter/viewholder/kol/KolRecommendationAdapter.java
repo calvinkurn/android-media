@@ -99,7 +99,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 recItem.getId(),
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
                         TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
-                                .getKolClickTracking(list,
+                                .getClickTracking(list,
                                         Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))
                                 ));
 
