@@ -8,6 +8,7 @@ import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchExpiredUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
@@ -20,6 +21,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchWithMetaViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -52,6 +54,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private FlightAnalytics flightAnalytics;
     private FlightSearchExpiredUseCase flightSearchExpiredUseCase;
+    private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -61,7 +64,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightSearchMetaUseCase flightSearchMetaUseCase,
                                  DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                  FlightAnalytics flightAnalytics,
-                                 FlightSearchExpiredUseCase flightSearchExpiredUseCase) {
+                                 FlightSearchExpiredUseCase flightSearchExpiredUseCase,
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
@@ -70,10 +74,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.flightAnalytics = flightAnalytics;
         this.flightSearchExpiredUseCase = flightSearchExpiredUseCase;
+        this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
     }
 
-    public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
-                                    boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
+    public void searchAndSortFlight(final FlightSearchApiRequestModel flightSearchApiRequestModel,
+                                    final boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
         if (isViewAttached()) {
             getView().removeToolbarElevation();
@@ -89,14 +94,30 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             sortOptionId),
                     getSubscriberSortFlight(sortOptionId));
         } else {
-            flightSearchMetaUseCase.execute(
-                    FlightSearchUseCase.generateRequestParams(
-                            flightSearchApiRequestModel,
-                            isReturning,
-                            false,
-                            null,
-                            FlightSortOption.NO_PREFERENCE),
-                    getSubscriberSearchFlightCloud());
+            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    flightSearchMetaUseCase.execute(
+                            FlightSearchUseCase.generateRequestParams(
+                                    flightSearchApiRequestModel,
+                                    isReturning,
+                                    false,
+                                    null,
+                                    FlightSortOption.NO_PREFERENCE),
+                            getSubscriberSearchFlightCloud());
+                }
+            });
+
         }
     }
 
