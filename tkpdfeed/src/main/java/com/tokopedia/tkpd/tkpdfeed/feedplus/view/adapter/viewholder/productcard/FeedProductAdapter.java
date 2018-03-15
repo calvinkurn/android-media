@@ -14,13 +14,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.tokopedia.core.gcm.Constants.Applinks.SHOP;
 
 /**
  * @author by nisie on 5/16/17.
@@ -28,6 +34,7 @@ import java.util.ArrayList;
 
 public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.ViewHolder> {
 
+    private static final String SHOP_ID_BRACKETS = "{shop_id}";
 
     private static final int MAX_FEED_SIZE = 6;
     private static final int LAST_FEED_POSITION = 5;
@@ -117,38 +124,14 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetailFromProductUpload(
-                            activityCardViewModel.getRowNumber(),
-                            activityCardViewModel.getPositionFeedCard(),
-                            list.get(position).getPage(),
-                            position,
-                            String.valueOf(list.get(position).getProductId()),
-                            list.get(position).getImageSourceSingle(),
-                            list.get(position).getName(),
-                            list.get(position).getPrice(),
-                            list.get(position).getPriceInt(),
-                            list.get(position).getUrl(),
-                            activityCardViewModel.getEventLabel()
-                    );
+                    goToProductDetail(position);
                 }
             });
 
             holder.productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetailFromProductUpload(
-                            activityCardViewModel.getRowNumber(),
-                            activityCardViewModel.getPositionFeedCard(),
-                            list.get(position).getPage(),
-                            position,
-                            String.valueOf(list.get(position).getProductId()),
-                            list.get(position).getImageSourceSingle(),
-                            list.get(position).getName(),
-                            list.get(position).getPrice(),
-                            list.get(position).getPriceInt(),
-                            list.get(position).getUrl(),
-                            activityCardViewModel.getEventLabel()
-                    );
+                    goToProductDetail(position);
                 }
             });
         }
@@ -179,5 +162,43 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     public int getItemViewType(int position) {
 
         return super.getItemViewType(position);
+    }
+
+    private void goToProductDetail(int position) {
+        viewListener.onGoToProductDetailFromProductUpload(
+                activityCardViewModel.getRowNumber(),
+                activityCardViewModel.getPositionFeedCard(),
+                list.get(position).getPage(),
+                position,
+                String.valueOf(list.get(position).getProductId()),
+                list.get(position).getImageSourceSingle(),
+                list.get(position).getName(),
+                list.get(position).getPrice(),
+                list.get(position).getPriceInt(),
+                list.get(position).getUrl(),
+                activityCardViewModel.getEventLabel()
+        );
+
+        doTrackingEnhancedEcommerce(position);
+    }
+
+    private void doTrackingEnhancedEcommerce(int position) {
+        String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
+        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
+
+        String shopId = String.valueOf(activityCardViewModel.getHeader().getShopId());
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
+                activityCardViewModel.getHeader().getShopId(),
+                FeedEnhancedTracking.Promotion.createContentNameProductUpload(
+                        activityCardViewModel.getTotalProduct()),
+                String.valueOf(activityCardViewModel.getTotalProduct()),
+                position,
+                "-",
+                activityCardViewModel.getHeader().getShopId(),
+                SHOP.replace(SHOP_ID_BRACKETS, shopId)
+        ));
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(list, loginIdInt));
     }
 }
