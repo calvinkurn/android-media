@@ -450,7 +450,23 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void onCategoryPickerClicked(long categoryId) {
-        CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
+        if (hasVariant() && isEditStatus()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                    R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(R.string.product_category_locked);
+            builder.setMessage(R.string.product_category_locked_description);
+            builder.setCancelable(true);
+            builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
+        }
     }
 
     @Override
@@ -917,7 +933,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
         currentProductViewModel.setProductVariant(productVariantViewModel);
         // if has any variant, we want to get summary of stock, then update to the parent model.
-        if (productVariantViewModel!= null && productVariantViewModel.hasSelectedVariant()) {
+        if (productVariantViewModel != null && productVariantViewModel.hasSelectedVariant()) {
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
             currentProductViewModel.setProductStatus(stockType);
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
