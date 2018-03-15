@@ -19,6 +19,8 @@ public interface ICartAddressChoiceView extends CustomerView {
 
     void showNoConnection(String message);
 
+    void renderSaveButtonEnabled();
+
     void renderRecipientData(List<RecipientAddressModel> recipientAddressModels);
 
     Activity getActivity();
