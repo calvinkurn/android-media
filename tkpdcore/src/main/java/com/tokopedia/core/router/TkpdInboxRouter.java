@@ -23,6 +23,7 @@ public interface TkpdInboxRouter {
     String PROFILE = "profile";
 
     String ENABLE_GROUPCHAT = "enable_groupchat";
+    String IS_CHAT_BOT = "is_chat_bot";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,

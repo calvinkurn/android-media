@@ -165,8 +165,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private String title, avatarImage;
 
     private RemoteConfig remoteConfig;
-
     private boolean uploading;
+    private boolean isChatBot;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -180,6 +180,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             title = getArguments().getString(PARAM_SENDER_NAME, "");
             avatarImage = getArguments().getString(PARAM_SENDER_IMAGE, "");
+            isChatBot = getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false);
         }
     }
 
@@ -1256,6 +1257,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
         }
+    }
+
+    @Override
+    public boolean isChatBot() {
+        return isChatBot;
     }
 
     private void trackProductClicked(){
