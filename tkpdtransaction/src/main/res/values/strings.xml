@@ -256,6 +256,7 @@
     <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
     <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
+    <string name="label_sub_total">Sub total</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>
