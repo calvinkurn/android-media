@@ -114,9 +114,9 @@ public class ShopPageTrackingConstant {
     public static final int GOLD_MERCHANT = 2;
     public static final int REGULAR_MERCHANT = 3;
     public static final String SHOP_TYPE = "shop_type";
-    public static final String OFFICIAL_STORE_NAME = "official store";
-    public static final String GOLD_MERCHANT_NAME = "gold merchant";
-    public static final String REGULAR_MERCHANT_NAME = "regular merchant";
+    public static final String OFFICIAL_STORE_NAME = "official_store";
+    public static final String GOLD_MERCHANT_NAME = "gold_merchant";
+    public static final String REGULAR_MERCHANT_NAME = "regular";
     public static final String PROMO_CLICK = "promoClick";
     public static final String PROMOTIONS = "promotions";
     public static final String SHOP_PAGE_PROMO_WEBVIEW = "/shoppage - promo webview";
