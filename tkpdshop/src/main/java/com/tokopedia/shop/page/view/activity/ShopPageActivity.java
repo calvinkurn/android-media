@@ -343,13 +343,14 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public void onManageShopClicked() {
-        shopPageTracking.eventClickShopSetting(getTitlePage(viewPager.getCurrentItem()), shopId);
+        shopPageTracking.eventClickShopSetting(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         ((ShopModuleRouter) getApplication()).goToManageShop(this);
     }
 
     @Override
     public void onAddProductClicked() {
-        shopPageTracking.eventClickAddProduct(getTitlePage(viewPager.getCurrentItem()), shopId);
+        shopPageTracking.eventClickAddProduct(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId),
+                ShopPageTracking.getShopType(shopInfo.getInfo()));
         ((ShopModuleRouter) getApplication()).goToAddProduct(this);
     }
 
@@ -493,7 +494,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(shopInfo);
         }
         shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
-        shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId);
+        shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
+                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     @Override

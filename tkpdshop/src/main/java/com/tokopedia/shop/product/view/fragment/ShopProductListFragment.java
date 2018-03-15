@@ -1,6 +1,5 @@
 package com.tokopedia.shop.product.view.fragment;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -31,6 +29,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -42,7 +41,6 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewH
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
@@ -91,6 +89,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String sortId;
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
+    private ShopInfo shopInfo;
 
     public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -172,7 +171,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId);
+                    shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId,
+                            shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                     Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
                     startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
@@ -186,15 +186,18 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 recyclerViews.setLayoutManager(layoutManager);
                 getAdapter().notifyDataSetChanged();
                 setBottomActionViewImage(++currentImgBottomNav);
-                shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product), currentImgBottomNav, shopId);
+                shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product),
+                        currentImgBottomNav, shopId, shopProductListPresenter.isMyShop(shopId),
+                        ShopPageTracking.getShopType(shopInfo.getInfo()));
             }
         });
 
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId);
-                ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
+                shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
+                        shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopId), REQUEST_CODE_SORT);
             }
         });
         if (!TextUtils.isEmpty(keyword)) {
@@ -260,7 +263,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         super.renderList(list, hasNextPage);
         showBottomActionView();
         shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                list,false);
+                list,false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     @Override
@@ -293,7 +296,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-        shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(), false, shopId);
+        shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product),
+                shopProductViewModel.isWishList(), false, shopId, shopProductListPresenter.isMyShop(shopId),
+                ShopPageTracking.getShopType(shopInfo.getInfo()));
         if (shopProductViewModel.isWishList()) {
             shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
         } else {
@@ -304,7 +309,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, false);
+                shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, false,
+                shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
 
@@ -329,9 +335,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onSuccessGetShopName(String shopName) {
+    public void onSuccessGetShopName(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
         if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopName).toString());
+            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         }
     }
 
@@ -377,7 +384,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 if (resultCode == Activity.RESULT_OK) {
                     etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
-                    shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product), false, etalaseName, shopId);
+                    shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
+                            false, etalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
+                            ShopPageTracking.getShopType(shopInfo.getInfo()));
                     this.isLoadingInitialData = true;
                     loadInitialData();
                 }

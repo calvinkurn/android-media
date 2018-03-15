@@ -1,7 +1,6 @@
 package com.tokopedia.shop.analytic;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoDetail;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -180,48 +179,48 @@ public class ShopPageTracking {
                 shopId);
     }
 
-    public void eventTypeKeywordSearchProduct(String titlePage, String keyword, String shopId) {
+    public void eventTypeKeywordSearchProduct(String titlePage, String keyword, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.ACTION_SEARCH_BAR_TYPE,
                 ShopPageTrackingConstant.TYPE_KEYWORDS + keyword,
                 shopId);
     }
 
-    public void eventClickWishlistShopPageFeatured(String titlePage, boolean wishList, String producId) {
+    public void eventClickWishlistShopPageFeatured(String titlePage, boolean wishList, String producId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_WISHLIST + (wishList ? ShopPageTrackingConstant.ADD_WISHLIST : ShopPageTrackingConstant.REMOVE_WISHLIST),
                 producId);
     }
 
-    public void eventViewShopPage(String titlePage, String shopId) {
+    public void eventViewShopPage(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.TOP_SECTION_IMPRESSION,
                 "", shopId);
     }
 
-    public void eventClickWishlistShop(String titlePage, boolean wishList, boolean isFromHomeShop, String productId) {
+    public void eventClickWishlistShop(String titlePage, boolean wishList, boolean isFromHomeShop, String productId, boolean myShop, int shopType) {
         eventShopPageOfficialStoreProductId(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE) + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_WISHLIST + (wishList ? ShopPageTrackingConstant.ADD_WISHLIST : ShopPageTrackingConstant.REMOVE_WISHLIST),
                 productId);
     }
 
-    public void eventClickEtalaseShop(String titlePage, boolean isFromHomeShop, String shopId) {
+    public void eventClickEtalaseShop(String titlePage, boolean isFromHomeShop, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE) + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_ETALASE,
                 shopId);
     }
 
-    public void eventClickEtalaseShopChoose(String titlePage, boolean isFromHomeShop, String etalaseName, String shopId) {
+    public void eventClickEtalaseShopChoose(String titlePage, boolean isFromHomeShop, String etalaseName, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE) + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_MENU + etalaseName,
                 shopId);
     }
 
-    public void eventClickSortProductList(String titlePage, String shopId) {
+    public void eventClickSortProductList(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.BOTTOM_NAVIGATION_CLICK,
                 ShopPageTrackingConstant.CLICK_SORT,
@@ -229,7 +228,7 @@ public class ShopPageTracking {
     }
 
 
-    public void eventClickViewTypeProduct(String titlePage, int index, String shopId) {
+    public void eventClickViewTypeProduct(String titlePage, int index, String shopId, boolean myShop, int shopType) {
         String viewTypeName;
         switch (index) {
             case 0:
@@ -251,49 +250,49 @@ public class ShopPageTracking {
                 shopId);
     }
 
-    public void eventClickChooseSort(String titlePage, String sortName, String shopId) {
+    public void eventClickChooseSort(String titlePage, String sortName, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.BOTTOM_NAVIGATION_PRODUCT_SORT_CLICK,
                 ShopPageTrackingConstant.CLICK_SORT_BY + sortName,
                 shopId);
     }
 
-    public void eventClickSeeMoreProduct(String titlePage, String shopId) {
+    public void eventClickSeeMoreProduct(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.BOTTOM_NAVIGATION_CLICK,
                 ShopPageTrackingConstant.CLICK_VIEW_MORE_PRODUCT,
                 shopId);
     }
 
-    public void eventViewBottomNavigation(String titlePage, String shopId) {
+    public void eventViewBottomNavigation(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStoreView(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.BOTTOM_NAVIGATION_IMPRESSION,
                 "",
                 shopId);
     }
 
-    public void eventClickAddProduct(String titlePage, String shopId) {
+    public void eventClickAddProduct(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BRAND,
                 titlePage + ShopPageTrackingConstant.TOP_SECTION_GENERAL_CLICK,
                 ShopPageTrackingConstant.CLICK_ADD_PRODUCT,
                 shopId);
     }
 
-    public void eventClickShopSetting(String titlePage, String shopId) {
+    public void eventClickShopSetting(String titlePage, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BRAND,
                 titlePage + ShopPageTrackingConstant.TOP_SECTION_GENERAL_CLICK,
                 ShopPageTrackingConstant.CLICK_SHOP_SETTING,
                 shopId);
     }
 
-    public void eventClickAddNote(String shopId) {
+    public void eventClickAddNote(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BRAND,
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
                 ShopPageTrackingConstant.CLICK_ADD_NOTE,
                 shopId);
     }
 
-    public void eventClickProductPictureFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition) {
+    public void eventClickProductPictureFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.CLICK_OFFICIAL_STORE,
                 ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
@@ -303,7 +302,7 @@ public class ShopPageTracking {
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList) {
+    public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.VIEW_OFFICIAL_STORE,
                 ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
@@ -313,7 +312,7 @@ public class ShopPageTracking {
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean isFromHomeShop) {
+    public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean isFromHomeShop, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.VIEW_OFFICIAL_STORE,
                 ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
@@ -324,7 +323,7 @@ public class ShopPageTracking {
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    public void eventClickProductTitleFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition) {
+    public void eventClickProductTitleFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.CLICK_OFFICIAL_STORE,
                 ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
@@ -335,7 +334,7 @@ public class ShopPageTracking {
     }
 
 
-    public void eventClickProductImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean isFromHomeShop) {
+    public void eventClickProductImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.CLICK_OFFICIAL_STORE,
                 ShopPageTrackingConstant.OFFICIAL_STORE_SHOP_PAGE_BUYER,
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)

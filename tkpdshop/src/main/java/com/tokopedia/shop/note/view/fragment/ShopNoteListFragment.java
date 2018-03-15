@@ -88,7 +88,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onEmptyButtonClicked() {
-        shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId());
+        shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId(),
+                shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         ((ShopModuleRouter) getActivity().getApplication()).goToEditShopNote(getActivity());
     }
 
