@@ -61,6 +61,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
     private ItemClickListener clickListener;
+    private QuickFilterAdapter quickFilterAdapter;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
@@ -70,6 +71,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         initTopAds(topAdsConfig);
+        initQuickFilterRecyclerView();
     }
 
     private void initTopAds(Config topAdsConfig) {
@@ -91,6 +93,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 clickListener.onBannerAdsClicked(applink);
             }
         });
+    }
+
+    private void initQuickFilterRecyclerView() {
+        quickFilterAdapter = new QuickFilterAdapter(clickListener);
+        quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        quickFilterListView.setAdapter(quickFilterAdapter);
     }
 
     @Override
@@ -121,14 +129,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
             suggestionContainer.addView(suggestionView);
         }
-        bindQuickFilter(element.getQuickFilterList());
-    }
-
-    private void bindQuickFilter(List<Option> quickFilterList) {
-        QuickFilterAdapter adapter = new QuickFilterAdapter();
-        adapter.setOptionList(quickFilterList);
-        quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        quickFilterListView.setAdapter(adapter);
+        quickFilterAdapter.setOptionList(element.getQuickFilterList());
     }
 
     private void goToUrl(String url) {
@@ -173,6 +174,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private static class QuickFilterAdapter extends RecyclerView.Adapter<QuickFilterItemViewHolder> {
 
         private List<Option> optionList = new ArrayList<>();
+        private ItemClickListener clickListener;
+
+        public QuickFilterAdapter(ItemClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
 
         public void setOptionList(List<Option> optionList) {
             this.optionList.clear();
@@ -183,7 +189,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         @Override
         public QuickFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
-            return new QuickFilterItemViewHolder(view);
+            return new QuickFilterItemViewHolder(view, clickListener);
         }
 
         @Override
@@ -199,18 +205,25 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView quickFilterText;
+        private final ItemClickListener clickListener;
 
-        public QuickFilterItemViewHolder(View itemView) {
+        public QuickFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
             super(itemView);
             quickFilterText = itemView.findViewById(R.id.quick_filter_text);
+            this.clickListener = clickListener;
         }
 
-        public void bind(Option option) {
+        public void bind(final Option option) {
             quickFilterText.setText(option.getName());
+            if (Boolean.parseBoolean(option.getInputState())) {
+                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+            } else {
+                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+            }
             quickFilterText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    clickListener.onQuickFilterSelected(option);
                 }
             });
         }

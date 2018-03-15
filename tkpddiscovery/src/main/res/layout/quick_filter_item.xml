@@ -16,7 +16,7 @@
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_sm"
         android:layout_marginBottom="@dimen/margin_sm"
-        android:background="@drawable/guided_search_item_background"
+        android:background="@drawable/quick_filter_item_background_neutral"
         tools:text="superstar"/>
 
 </LinearLayout>

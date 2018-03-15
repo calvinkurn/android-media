@@ -50,6 +50,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.PreFilterHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -528,6 +529,34 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onQuickFilterSelected(Option option) {
+        boolean isQuickFilterSelected = !Boolean.parseBoolean(option.getInputState());
+        if (getFlagFilterHelper() == null) {
+            setFlagFilterHelper(new FilterFlagSelectedModel());
+            getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
+            getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
+        }
+        getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), isQuickFilterSelected);
+
+        String mapValue = getSelectedFilter().get(option.getKey());
+        if (TextUtils.isEmpty(mapValue)) {
+            mapValue = option.getValue();
+        } else if (isQuickFilterSelected) {
+            mapValue += "," + option.getValue();
+        } else {
+            mapValue = removeValue(mapValue, option.getValue());
+        }
+        getSelectedFilter().put(option.getKey(), mapValue);
+        clearDataFilterSort();
+        showBottomBarNavigation(false);
+        reloadData();
+    }
+
+    private String removeValue(String mapValue, String removedValue) {
+        return mapValue.replace(removedValue, "").replace(",,", ",");
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
     }
@@ -751,8 +780,23 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void renderQuickFilter(DynamicFilterModel dynamicFilterModel) {
         quickFilterOptions = getOptionList(dynamicFilterModel);
+        enrichWithInputState(quickFilterOptions);
         headerViewModel.setQuickFilterList(quickFilterOptions);
         adapter.notifyDataSetChanged();
+    }
+
+    private void enrichWithInputState(List<Option> optionList) {
+        if (getFlagFilterHelper() == null) {
+            return;
+        }
+
+        for (Option option : optionList) {
+            option.setInputState(
+                    OptionHelper.loadOptionInputState(option,
+                            getFlagFilterHelper().getSavedCheckedState(),
+                            getFlagFilterHelper().getSavedTextInput())
+            );
+        }
     }
 
     private List<Option> getOptionList(DynamicFilterModel dynamicFilterModel) {
