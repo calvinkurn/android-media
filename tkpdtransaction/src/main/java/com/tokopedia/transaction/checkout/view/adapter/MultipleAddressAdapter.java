@@ -1,25 +1,14 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceFragment;
+import com.tokopedia.transaction.checkout.view.viewholder.MultipleAddressViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,26 +29,28 @@ public class MultipleAddressAdapter
             R.layout.multiple_address_adapter;
     private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT =
             R.layout.multiple_address_footer;
-    private static final int HEADER_SIZE = 1;
-    private static final int FOOTER_SIZE = 1;
-    private static final int FIRST_ITEM_POSITION = 1;
 
     private List<MultipleAddressAdapterData> addressData;
 
     private MultipleAddressAdapterListener listener;
 
+    private List<Object> adapterObjectList;
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
                                   MultipleAddressAdapterListener listener) {
         this.addressData = addressData;
         this.listener = listener;
+        adapterObjectList = new ArrayList<>();
+        adapterObjectList.addAll(addressData);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) return MULTIPLE_ADDRESS_HEADER_LAYOUT;
-        else if (position > addressData.size()) return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
-        else return MULTIPLE_ADDRESS_ADAPTER_LAYOUT;
+        if(adapterObjectList.get(position) instanceof MultipleAddressAdapterData)
+            return MULTIPLE_ADDRESS_ADAPTER_LAYOUT;
+        else if(position == adapterObjectList.size()) return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
+        else
+            return super.getItemViewType(position);
     }
 
 
@@ -77,32 +68,24 @@ public class MultipleAddressAdapter
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (holder instanceof MultipleAddressViewHolder) {
+        if (getItemViewType(position) ==  MULTIPLE_ADDRESS_ADAPTER_LAYOUT) {
             MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
-            MultipleAddressAdapterData data = addressData.get(position - 1);
-            itemViewHolder.senderName.setText(data.getSenderName());
-            itemViewHolder.productName.setText(data.getProductName());
-            itemViewHolder.productPrice.setText(data.getProductPrice());
-            ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
-            itemViewHolder.shippingDestinationList
-                    .setLayoutManager(new LinearLayoutManager(itemViewHolder.context));
-            itemViewHolder.shippingDestinationList.setAdapter(
-                    new MultipleAddressItemAdapter(data, data.getItemListData(), this)
-            );
-            itemViewHolder.addNewShipmentAddressButton.setOnClickListener(
-                    onAddAddressClickedListener(data.getItemListData().size(), data, data.getItemListData().get(0))
-            );
-            if (position == FIRST_ITEM_POSITION) setShowCase(itemViewHolder.context,
-                    itemViewHolder.addNewShipmentAddressButton);
+            MultipleAddressAdapterData data = (MultipleAddressAdapterData)
+                    adapterObjectList.get(position);
+            itemViewHolder.bindAdapterView(data, this, listener, isFirstItem(data));
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
 
     }
 
+    private boolean isFirstItem(MultipleAddressAdapterData data) {
+        return (data.getItemListData().get(0).getCartPosition() == 0);
+    }
+
     @Override
     public int getItemCount() {
-        return HEADER_SIZE + addressData.size() + FOOTER_SIZE;
+        return adapterObjectList.size();
     }
 
     @Override
@@ -115,42 +98,6 @@ public class MultipleAddressAdapter
         MultipleAddressHeaderViewHolder(View itemView) {
             super(itemView);
 
-        }
-    }
-
-    class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
-
-        private Context context;
-
-        private TextView senderName;
-
-        private ImageView productImage;
-
-        private TextView productName;
-
-        private TextView productPrice;
-
-        private RecyclerView shippingDestinationList;
-
-        private ViewGroup addNewShipmentAddressButton;
-
-        MultipleAddressViewHolder(Context context, View itemView) {
-            super(itemView);
-
-            this.context = context;
-
-            senderName = itemView.findViewById(R.id.sender_name);
-
-            productImage = itemView.findViewById(R.id.product_image);
-
-            productName = itemView.findViewById(R.id.product_name);
-
-            productPrice = itemView.findViewById(R.id.product_price);
-
-            shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
-
-            addNewShipmentAddressButton = itemView
-                    .findViewById(R.id.add_new_shipment_address_button);
         }
     }
 
@@ -178,18 +125,6 @@ public class MultipleAddressAdapter
         };
     }
 
-    private View.OnClickListener onAddAddressClickedListener(
-            final int latestPositionToAdd,
-            final MultipleAddressAdapterData data,
-            final MultipleAddressItemData firstItemData) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onAddNewShipmentAddress(latestPositionToAdd, data, firstItemData);
-            }
-        };
-    }
-
     public interface MultipleAddressAdapterListener {
 
         void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
@@ -200,44 +135,6 @@ public class MultipleAddressAdapter
         void onAddNewShipmentAddress(int addressPositionToAdd,
                                      MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
-    }
-
-    private void setShowCase(Context context, ViewGroup addAddress) {
-        ShowCaseObject showCase = new ShowCaseObject(
-                addAddress, "Kirim Barang Sama ke Bebeberapa\n" +
-                "Alamat.", "Klik tombol untuk mengirim barang yang sama ke beda alamat.",
-                ShowCaseContentPosition.UNDEFINED);
-
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-
-        showCaseObjectList.add(showCase);
-
-        ShowCaseDialog showCaseDialog = createShowCaseDialog();
-
-        if (!ShowCasePreference.hasShown(context, CartAddressChoiceFragment.class.getName()))
-            showCaseDialog.show(
-                    (Activity) context,
-                    CartAddressChoiceFragment.class.getName(),
-                    showCaseObjectList
-            );
-    }
-
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
-                .finishStringRes(R.string.show_case_finish)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 
     public List<MultipleAddressAdapterData> getAddressData() {
