@@ -48,6 +48,36 @@ public class GroupChatActivity extends BaseSimpleActivity {
         return taskStackBuilder;
     }
 
+    @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
+    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
+        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
+        Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        Intent parentIntent = ((StreamModuleRouter) context.getApplicationContext())
+                .getInboxChannelsIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
+    @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
+    public static TaskStackBuilder getCallingTaskStackViaList(Context context, Bundle extras) {
+        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
+        Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        Intent parentIntent = ((StreamModuleRouter) context.getApplicationContext())
+                .getInboxChannelsIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
