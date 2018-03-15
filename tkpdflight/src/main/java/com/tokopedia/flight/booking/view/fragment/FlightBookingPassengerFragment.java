@@ -37,7 +37,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -563,7 +562,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
         Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
-                selected, requestId);
+                selected, requestId, departureDate);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 

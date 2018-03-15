@@ -20,10 +20,11 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 public class FlightBookingListPassengerActivity extends BaseFlightActivity implements HasComponent<FlightBookingComponent> {
 
     public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected,
-                                      String requestId) {
+                                      String requestId, String departureDate) {
         Intent intent = new Intent(context, FlightBookingListPassengerActivity.class);
         intent.putExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER, selected);
         intent.putExtra(FlightBookingListPassengerFragment.EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_DEPARTURE_DATE, departureDate);
         return intent;
     }
     @Override
@@ -32,8 +33,10 @@ public class FlightBookingListPassengerActivity extends BaseFlightActivity imple
                 .getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
         String requestId = getIntent().getStringExtra(
                 FlightBookingListPassengerFragment.EXTRA_REQUEST_ID);
+        String departureDate = getIntent().getStringExtra(
+                FlightBookingListPassengerFragment.EXTRA_DEPARTURE_DATE);
         return FlightBookingListPassengerFragment.createInstance(flightBookingPassengerViewModel,
-                requestId);
+                requestId, departureDate);
     }
 
     @Override
