@@ -3,6 +3,7 @@ package com.tokopedia.seller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -52,4 +53,6 @@ public interface SellerModuleRouter {
     Intent getPhoneVerificationActivityIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle);
 }

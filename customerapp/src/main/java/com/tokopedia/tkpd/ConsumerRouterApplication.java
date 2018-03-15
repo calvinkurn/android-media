@@ -1416,4 +1416,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getShopPageIntentByDomain(Context context, String domain) {
         return ShopPageActivity.createIntentWithDomain(context, domain);
     }
+
+    @Override
+    public Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle) {
+        return ShopPageActivity.createIntent(context, shopId, existingBundle);
+    }
 }

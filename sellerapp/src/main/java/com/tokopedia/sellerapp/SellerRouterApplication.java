@@ -1143,4 +1143,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getShopPageIntentByDomain(Context context, String domain) {
         return ShopPageActivity.createIntentWithDomain(context, domain);
     }
+
+    @Override
+    public Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle) {
+        return ShopPageActivity.createIntent(context, shopId, existingBundle);
+    }
 }

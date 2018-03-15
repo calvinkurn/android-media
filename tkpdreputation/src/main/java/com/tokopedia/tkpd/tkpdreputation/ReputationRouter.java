@@ -20,4 +20,6 @@ public interface ReputationRouter {
     Intent getLoginIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle);
 }

@@ -3,6 +3,7 @@ package com.tokopedia.core.router.transactionmodule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 /**
  * Created by kris on 7/21/17. Tokopedia
@@ -23,4 +24,6 @@ public interface TransactionRouter {
     Intent getResolutionCenterIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntent(Context context, String shopId, Bundle existingBundle);
 }
