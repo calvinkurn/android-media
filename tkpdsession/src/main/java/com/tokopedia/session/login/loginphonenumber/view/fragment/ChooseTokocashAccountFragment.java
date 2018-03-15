@@ -275,7 +275,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         } else {
-            presenter.clearToken();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

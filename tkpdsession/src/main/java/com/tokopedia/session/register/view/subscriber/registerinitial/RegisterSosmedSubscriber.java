@@ -48,7 +48,6 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-        viewListener.dismissProgressBar();
         if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             viewListener.onGoToCreatePasswordPage(registerSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
@@ -68,7 +67,6 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     registerSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             viewListener.onErrorRegisterSosmed(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
-            viewListener.clearToken();
         }
     }
 

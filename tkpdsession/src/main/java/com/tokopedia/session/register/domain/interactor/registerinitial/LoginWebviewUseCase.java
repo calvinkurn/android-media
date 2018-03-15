@@ -23,11 +23,10 @@ public class LoginWebviewUseCase extends LoginWithSosmedUseCase {
     @Inject
     public LoginWebviewUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
-                               SessionHandler sessionHandler,
                                GetTokenUseCase getTokenUseCase,
                                GetUserInfoUseCase getUserInfoUseCase,
                                MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread, sessionHandler, getTokenUseCase,
+        super(threadExecutor, postExecutionThread, getTokenUseCase,
                 getUserInfoUseCase, makeLoginUseCase);
     }
 

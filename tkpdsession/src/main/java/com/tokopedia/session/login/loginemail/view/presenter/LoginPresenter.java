@@ -194,9 +194,4 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
                 new LoginSosmedSubscriber(LoginAnalytics.Label.FACEBOOK, getView(), email));
     }
 
-    @Override
-    public void resetToken() {
-        sessionHandler.clearToken();
-    }
-
 }

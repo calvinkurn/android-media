@@ -43,9 +43,4 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
         ), new LoginTokoCashSubscriber
                 (getView(), accountTokocash));
     }
-
-    @Override
-    public void clearToken() {
-        sessionHandler.clearToken();
-    }
 }
