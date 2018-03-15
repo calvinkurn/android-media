@@ -28,6 +28,10 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         if (savedInstanceState == null) {
             fetchInputData();
         }
+        if (view != null) {
+            view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
+            view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
+        }
         return view;
     }
 
