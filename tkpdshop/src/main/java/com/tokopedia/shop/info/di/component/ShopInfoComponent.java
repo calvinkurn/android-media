@@ -22,5 +22,4 @@ public interface ShopInfoComponent {
     void inject(ShopInfoFragment shopInfoDetailFragment);
 
     void inject(ShopAddressListFragment shopAddressListFragment);
-
 }

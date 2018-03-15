@@ -153,6 +153,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -445,6 +446,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getLoginIntent(Context context) {
         Intent intent = LoginActivity.getCallingIntent(context);
         return intent;
+    }
+
+    @Override
+    public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
+        UnifyTracking.sendGTMEvent(eventTracking);
     }
 
     @Override

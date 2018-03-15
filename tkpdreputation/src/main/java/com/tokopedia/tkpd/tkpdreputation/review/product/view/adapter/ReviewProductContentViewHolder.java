@@ -96,13 +96,14 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             @Override
             public void onClick(View v) {
                 if (!element.isReviewIsAnonymous() || element.isSellerRepliedOwner()) {
-                    viewListener.onGoToProfile(element.getReviewerId());
+                    viewListener.onGoToProfile(element.getReviewerId(), getAdapterPosition());
                 }
             }
         });
         containerReplyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewListener.onSeeReplied(getAdapterPosition());
                 toggleReply();
             }
         });
@@ -140,7 +141,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         containerLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus() ? UNLIKE_STATUS : LIKE_STATUS_ACTIVE, element.getProductId());
+                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus() ? UNLIKE_STATUS : LIKE_STATUS_ACTIVE, element.getProductId(),
+                        element.isLikeStatus(), getAdapterPosition());
                 element.setLikeStatus(!element.isLikeStatus());
                 element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
                 setLikeStatus(element);
@@ -237,7 +239,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             if (item.getItemId() == R.id.menu_delete) {
-                                viewListener.onDeleteReviewResponse(element);
+                                viewListener.onDeleteReviewResponse(element, getAdapterPosition());
                                 return true;
                             } else {
                                 return false;
@@ -305,6 +307,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewListener.onMenuClicked(getAdapterPosition());
                 PopupMenu popup = new PopupMenu(itemView.getContext(), v);
                 popup.getMenu().add(1, R.id.menu_report, 2, v.getContext().getString(R.string.menu_report));
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -314,7 +317,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                         if (item.getItemId() == R.id.menu_report) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
-                                    element.getReviewId()
+                                    element.getReviewId(),
+                                    getAdapterPosition()
                             );
                             return true;
                         }
@@ -329,18 +333,22 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     }
 
     public interface ListenerReviewHolder {
-        void onGoToProfile(String reviewerId);
+        void onGoToProfile(String reviewerId, int adapterPosition);
 
         void goToPreviewImage(int position, ArrayList<ImageUpload> list);
 
         void onGoToShopInfo(String shopId);
 
-        void onDeleteReviewResponse(ReviewProductModelContent element);
+        void onDeleteReviewResponse(ReviewProductModelContent element, int adapterPosition);
 
         void onSmoothScrollToReplyView(int adapterPosition);
 
-        void onGoToReportReview(String shopId, String reviewId);
+        void onGoToReportReview(String shopId, String reviewId, int adapterPosition);
 
-        void onLikeDislikePressed(String reviewId, int likeStatus, String productId);
+        void onLikeDislikePressed(String reviewId, int likeStatus, String productId, boolean status, int adapterPosition);
+
+        void onMenuClicked(int adapterPosition);
+
+        void onSeeReplied(int adapterPosition);
     }
 }

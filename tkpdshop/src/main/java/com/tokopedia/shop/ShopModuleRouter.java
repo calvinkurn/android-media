@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import java.util.HashMap;
+
 /**
  * Created by normansyahputa on 2/13/18.
  */
@@ -33,4 +35,6 @@ public interface ShopModuleRouter {
     void goToProfileShop(Context context, String userId);
 
     Intent getLoginIntent(Context context);
+
+    void sendEventTrackingShopPage(HashMap<String, Object> eventTracking);
 }

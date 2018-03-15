@@ -20,25 +20,29 @@ import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
 public class ShopProductSortActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductSortFragmentListener {
     public static final String SORT_NAME = "SORT_NAME";
     public static final String SORT_ID = "SORT_ID";
+    public static final String SHOP_ID = "SHOP_ID";
     private ShopComponent component;
     private String sortName;
+    private String shopId;
 
-    public static Intent createIntent(Context context, String sortName){
+    public static Intent createIntent(Context context, String sortName, String shopId){
            Intent intent = new Intent(context, ShopProductSortActivity.class);
            intent.putExtra(SORT_NAME, sortName);
+           intent.putExtra(SHOP_ID, shopId);
            return intent;
 
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductSortFragment.createInstance(sortName);
+        return ShopProductSortFragment.createInstance(sortName, shopId);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(getIntent() != null && savedInstanceState == null){
             sortName = getIntent().getStringExtra(SORT_NAME);
+            shopId = getIntent().getStringExtra(SHOP_ID);
 
             if (sortName.equalsIgnoreCase(Integer.toString(Integer.MIN_VALUE))) {
                 sortName = null;
