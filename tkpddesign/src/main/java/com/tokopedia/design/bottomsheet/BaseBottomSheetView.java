@@ -14,6 +14,7 @@ import android.view.View;
  */
 
 public abstract class BaseBottomSheetView extends BottomSheetDialog {
+
     public BaseBottomSheetView(@NonNull Context context) {
         super(context);
         init(context);
