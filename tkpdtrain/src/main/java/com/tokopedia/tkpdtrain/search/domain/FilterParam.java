@@ -3,7 +3,7 @@ package com.tokopedia.tkpdtrain.search.domain;
 import java.util.List;
 
 /**
- * Created by Rizky on 15/03/18.
+ * @author Rizky on 15/03/18.
  */
 
 public class FilterParam {

@@ -5,7 +5,7 @@ import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 
 /**
- * Created by Rizky on 14/03/18.
+ * @author Rizky on 14/03/18.
  */
 
 public class TrainScheduleClassFilterSpecification implements DbFlowSpecification {

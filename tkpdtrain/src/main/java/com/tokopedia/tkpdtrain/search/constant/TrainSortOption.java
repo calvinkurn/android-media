@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by Rizky on 15/03/18.
+ * @author Rizky on 15/03/18.
  */
 
 @IntDef({

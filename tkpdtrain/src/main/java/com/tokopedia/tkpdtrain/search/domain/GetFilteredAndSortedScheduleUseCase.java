@@ -11,7 +11,7 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * Created by Rizky on 14/03/18.
+ * @author Rizky on 14/03/18.
  */
 
 public class GetFilteredAndSortedScheduleUseCase extends UseCase<List<TrainSchedule>> {

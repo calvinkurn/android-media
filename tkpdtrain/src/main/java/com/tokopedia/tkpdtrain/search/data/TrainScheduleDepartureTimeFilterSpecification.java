@@ -4,7 +4,7 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
 
 /**
- * Created by Rizky on 15/03/18.
+ * @author Rizky on 15/03/18.
  */
 
 public class TrainScheduleDepartureTimeFilterSpecification implements DbFlowSpecification {
