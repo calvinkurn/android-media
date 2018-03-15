@@ -216,7 +216,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON)) {
+        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON) && !isChatBot) {
             attachButton.setVisibility(View.VISIBLE);
         } else {
             attachButton.setVisibility(View.GONE);
@@ -227,6 +227,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             String customMessage = "\n" + getArguments().getString(SendMessageActivity
                     .PARAM_CUSTOM_MESSAGE, "");
             replyColumn.setText(customMessage);
+        }
+
+        if(isChatBot){
+            attachButton.setVisibility(View.GONE);
+            pickerButton.setVisibility(View.GONE);
         }
     }
 
@@ -398,7 +403,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void setPickerButton() {
-        if (needCreateWebSocket()) {
+        if (needCreateWebSocket() && !isChatBot) {
             pickerButton.setVisibility(View.VISIBLE);
             attachButton.setVisibility(View.VISIBLE);
         }else{
