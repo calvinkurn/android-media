@@ -111,4 +111,8 @@ public class ShopPageTrackingConstant {
     public static final int OFFICIAL_STORE = 1;
     public static final int GOLD_MERCHANT = 2;
     public static final int REGULAR_MERCHANT = 3;
+    public static final String SHOP_TYPE = "shop_type";
+    public static final String OFFICIAL_STORE_NAME = "official store";
+    public static final String GOLD_MERCHANT_NAME = "gold merchant";
+    public static final String REGULAR_MERCHANT_NAME = "regular merchant";
 }

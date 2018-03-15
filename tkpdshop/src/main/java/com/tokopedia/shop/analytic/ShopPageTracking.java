@@ -24,32 +24,46 @@ public class ShopPageTracking {
 
     private void eventShopPageOfficialStore(String action, String label, String shopId, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType), getEventCategory(myShop, shopType),
-                action, label);
+                action, label, shopType);
         eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
     private void eventShopPageOfficialStoreProductId(String action, String label, String productId, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType), getEventCategory(myShop, shopType),
-                action, label);
+                action, label, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, productId);
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
     private void eventShopPageOfficialStoreView(String action, String label, String shopId, boolean myShop, int shopType) {
         HashMap<String, Object> eventMap = createEventMap(getEventNameView(myShop, shopType), getEventCategory(myShop, shopType),
-                action, label);
+                action, label, shopType);
         eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {
+    private HashMap<String, Object> createEventMap(String event, String category, String action, String label, int shopType) {
         HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put(ShopPageTrackingConstant.EVENT, event);
         eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, category);
         eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
         eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);
+        eventMap.put(ShopPageTrackingConstant.SHOP_TYPE, getShopTypeName(shopType));
         return eventMap;
+    }
+
+    private String getShopTypeName(int shopType) {
+        switch (shopType) {
+            case ShopPageTrackingConstant.OFFICIAL_STORE:
+                return ShopPageTrackingConstant.OFFICIAL_STORE_NAME;
+            case ShopPageTrackingConstant.GOLD_MERCHANT:
+                return ShopPageTrackingConstant.GOLD_MERCHANT_NAME;
+            case ShopPageTrackingConstant.REGULAR_MERCHANT:
+                return ShopPageTrackingConstant.REGULAR_MERCHANT_NAME;
+            default:
+                return ShopPageTrackingConstant.REGULAR_MERCHANT_NAME;
+        }
     }
 
     public void eventBackPressed(String titlePage, String shopId, boolean myShop, int shopType) {
@@ -298,7 +312,7 @@ public class ShopPageTracking {
         HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType),
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
-                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE);
+                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
@@ -308,7 +322,7 @@ public class ShopPageTracking {
         HashMap<String, Object> eventMap = createEventMap(getEventNameView(myShop, shopType),
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
-                ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST);
+                ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
@@ -319,7 +333,7 @@ public class ShopPageTracking {
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.IMPRESSION,
-                ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_PICTURES);
+                ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_PICTURES, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
@@ -329,7 +343,7 @@ public class ShopPageTracking {
         HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType),
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
-                ShopPageTrackingConstant.CLICK_PRODUCT_NAME);
+                ShopPageTrackingConstant.CLICK_PRODUCT_NAME, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
@@ -341,7 +355,7 @@ public class ShopPageTracking {
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.CLICK,
-                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE);
+                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
