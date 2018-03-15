@@ -538,6 +538,9 @@ public class ProductListFragment extends SearchSectionFragment
         }
         getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), isQuickFilterSelected);
 
+        if (getSelectedFilter() == null) {
+            setSelectedFilter(new HashMap<String, String>());
+        }
         String mapValue = getSelectedFilter().get(option.getKey());
         if (TextUtils.isEmpty(mapValue)) {
             mapValue = option.getValue();
