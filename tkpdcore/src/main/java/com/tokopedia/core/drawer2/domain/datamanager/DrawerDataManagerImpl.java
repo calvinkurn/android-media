@@ -10,14 +10,12 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.subscriber.GetDepositSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
-import com.tokopedia.core.drawer2.view.subscriber.TopPointsSubscriber;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -33,7 +31,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final ProfileUseCase profileUseCase;
     private final DepositUseCase depositUseCase;
     private final TokoCashUseCase tokoCashUseCase;
-    private final TopPointsUseCase topPointsUseCase;
     private final GetUserAttributesUseCase userAttributesUseCase;
     private final NewNotificationUseCase newNotificationUseCase;
 
@@ -44,13 +41,11 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                                  DepositUseCase depositUseCase,
                                  NewNotificationUseCase newNotificationUseCase,
                                  TokoCashUseCase tokoCashUseCase,
-                                 TopPointsUseCase topPointsUseCase,
                                  GetUserAttributesUseCase uaUseCase) {
         this.viewListener = viewListener;
         this.profileUseCase = profileUseCase;
         this.depositUseCase = depositUseCase;
         this.tokoCashUseCase = tokoCashUseCase;
-        this.topPointsUseCase = topPointsUseCase;
         this.userAttributesUseCase = uaUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
     }
@@ -63,11 +58,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void getDeposit() {
         depositUseCase.execute(RequestParams.EMPTY, new GetDepositSubscriber(viewListener));
-    }
-
-    @Override
-    public void getTopPoints() {
-        topPointsUseCase.execute(RequestParams.EMPTY, new TopPointsSubscriber(viewListener));
     }
 
     @Override
@@ -85,7 +75,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void unsubscribe() {
         profileUseCase.unsubscribe();
-        topPointsUseCase.unsubscribe();
         newNotificationUseCase.unsubscribe();
         tokoCashUseCase.unsubscribe();
         depositUseCase.unsubscribe();
