@@ -80,6 +80,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -456,6 +457,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         tabs = findViewById(R.id.tab);
+    }
+
+    private void test() {
+        BottomSheetView bottomSheetView = new BottomSheetView(this);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+//                .setTitle(getString(com.tokopedia.digital.R.string.title_tooltip_instan_payment))
+//                .setBody(getString(com.tokopedia.digital.R.string.body_tooltip_instan_payment))
+//                .setImg()
+                .build());
+        bottomSheetView.show();
     }
 
     public ChangeTabListener changeTabListener() {

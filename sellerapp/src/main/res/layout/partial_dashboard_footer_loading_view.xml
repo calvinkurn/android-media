@@ -13,7 +13,7 @@
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10_sm"
+        android:layout_marginTop="@dimen/margin_small_sm"
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_8">
 
@@ -94,7 +94,7 @@
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10_sm"
+        android:layout_marginTop="@dimen/margin_small_sm"
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_8">
 

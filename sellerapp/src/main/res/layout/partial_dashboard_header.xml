@@ -63,8 +63,8 @@
 
                     <ImageView
                         android:id="@+id/image_view_gm_icon"
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
                         android:layout_gravity="center_vertical"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_shop_gold"
