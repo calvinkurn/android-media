@@ -7,17 +7,18 @@
     <FrameLayout
         android:id="@+id/layout_loading"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/font_loading_width_xxxl">
+        android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+        <include
+            layout="@layout/item_shimmering_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </FrameLayout>
 
     <com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
         android:id="@+id/web_view"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 </FrameLayout>
