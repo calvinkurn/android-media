@@ -8,8 +8,7 @@ import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
-import com.tokopedia.wishlist.common.domain.interactor.GetProductCampaignsUseCase;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;

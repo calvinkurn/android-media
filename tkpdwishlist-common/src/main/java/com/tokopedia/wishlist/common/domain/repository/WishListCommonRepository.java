@@ -1,7 +1,5 @@
 package com.tokopedia.wishlist.common.domain.repository;
 
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
-
 import java.util.List;
 
 import rx.Observable;
@@ -17,6 +15,4 @@ public interface WishListCommonRepository {
     Observable<Boolean> addToWishList(String userId, String productId);
 
     Observable<Boolean> removeFromWishList(String userId, String productId);
-
-    Observable<List<ShopProductCampaign>> getProductCampaigns(String ids);
 }

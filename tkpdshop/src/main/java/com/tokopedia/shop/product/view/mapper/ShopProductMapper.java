@@ -7,7 +7,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 
 import java.util.ArrayList;
 import java.util.List;

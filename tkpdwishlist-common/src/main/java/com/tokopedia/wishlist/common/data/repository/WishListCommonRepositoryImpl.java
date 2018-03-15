@@ -1,7 +1,6 @@
 package com.tokopedia.wishlist.common.data.repository;
 
 import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
 
 import java.util.List;
@@ -32,10 +31,5 @@ public class WishListCommonRepositoryImpl implements WishListCommonRepository {
     @Override
     public Observable<Boolean> removeFromWishList(String userId, String productId) {
         return wishListCommonDataSource.removeFromWishList(userId, productId);
-    }
-
-    @Override
-    public Observable<List<ShopProductCampaign>> getProductCampaigns(String ids) {
-        return wishListCommonDataSource.getProductCampaigns(ids);
     }
 }

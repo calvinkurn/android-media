@@ -1,10 +1,10 @@
-package com.tokopedia.wishlist.common.domain.interactor;
+package com.tokopedia.shop.product.domain.interactor;
 
+import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ShopProductCampaign;
-import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ import rx.Observable;
 public class GetProductCampaignsUseCase extends UseCase<List<ShopProductCampaign>> {
     private static final String PRODUCT_IDS = "PRODUCT_IDS";
 
-    private WishListCommonRepository wishListCommonRepository;
+    private ShopProductRepository shopProductRepository;
 
-    public GetProductCampaignsUseCase(WishListCommonRepository wishListCommonRepository) {
-        this.wishListCommonRepository = wishListCommonRepository;
+    public GetProductCampaignsUseCase(ShopProductRepository shopProductRepository) {
+        this.shopProductRepository = shopProductRepository;
     }
 
     public static RequestParams createRequestParam(List<String> productIdList) {
@@ -32,6 +32,6 @@ public class GetProductCampaignsUseCase extends UseCase<List<ShopProductCampaign
     @Override
     public Observable<List<ShopProductCampaign>> createObservable(RequestParams requestParams) {
         List<String> productIdList = (List<String>) requestParams.getObject(PRODUCT_IDS);
-        return wishListCommonRepository.getProductCampaigns(WishListProductListMapper.convertCommaValue(productIdList));
+        return shopProductRepository.getProductCampaigns(WishListProductListMapper.convertCommaValue(productIdList));
     }
 }
