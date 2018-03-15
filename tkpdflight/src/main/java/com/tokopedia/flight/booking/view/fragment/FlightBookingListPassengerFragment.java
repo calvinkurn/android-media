@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
@@ -167,11 +166,6 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public String getSelectedPassengerId() {
         return selectedPassengerId;
-    }
-
-    @Override
-    public void showPassengerSelectedError(String passengerType) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), String.format(getString(R.string.flight_booking_list_passenger_selected_error), passengerType));
     }
 
     @Override
