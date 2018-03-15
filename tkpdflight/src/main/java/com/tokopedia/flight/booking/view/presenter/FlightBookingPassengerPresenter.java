@@ -26,6 +26,9 @@ import rx.Subscriber;
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
+    private final int MINUS_TWO_YEARS = -2;
+    private final int MINUS_TWELVE_YEARS = -12;
+
     private FlightBookingUpdateSelectedPassengerUseCase flightBookingUpdateSelectedPassengerUseCase;
 
     @Inject
@@ -348,9 +351,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
         Date twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -12);
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWELVE_YEARS);
         Date twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -2);
+                FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, MINUS_TWO_YEARS);
         if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
