@@ -384,7 +384,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         onRemovePromoCode();
         cartPromo.setPromoNotActive();
         mSingleAddressShipmentAdapter.updatePromo(null);
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+        mSingleAddressShipmentAdapter.notifyItemChanged(position);
     }
 
     @Override
@@ -564,8 +564,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                             mSingleAddressShipmentAdapter.getCartSellerItemModelList());
             mPromoRequestData = requestData.getPromoRequestData();
             requestPromo();
+            mSingleAddressShipmentAdapter.notifyDataSetChanged();
         }
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {

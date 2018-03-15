@@ -125,8 +125,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             if (object instanceof CartItemPromoHolderData) {
                 mShipmentDataList.set(i, cartPromo);
                 checkDataForCheckout();
+                notifyItemChanged(i);
             } else if (object instanceof CartPromoSuggestion) {
                 ((CartPromoSuggestion) object).setVisible(false);
+                notifyItemChanged(i);
             }
         }
     }
@@ -271,24 +273,27 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         if (dataVoucher != null) {
             mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
             mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
-            for (Object itemAdapter : mShipmentDataList) {
+            for (int i = 0; i < mShipmentDataList.size(); i++) {
+                Object itemAdapter = mShipmentDataList.get(i);
                 if (itemAdapter instanceof CartPromoSuggestion) {
                     ((CartPromoSuggestion) itemAdapter).setVisible(false);
-                    break;
+                    notifyItemChanged(i);
                 }
             }
         } else {
             mShipmentCost.setPromoPrice(0);
             mShipmentCost.setPromoMessage(null);
-            for (Object itemAdapter : mShipmentDataList) {
+            for (int i = 0; i < mShipmentDataList.size(); i++) {
+                Object itemAdapter = mShipmentDataList.get(i);
                 if (itemAdapter instanceof CartItemPromoHolderData) {
                     ((CartItemPromoHolderData) itemAdapter).setPromoNotActive();
+                    notifyItemChanged(i);
                 } else if (itemAdapter instanceof CartPromoSuggestion) {
                     ((CartPromoSuggestion) itemAdapter).setVisible(true);
+                    notifyItemChanged(i);
                 }
             }
         }
-        notifyDataSetChanged();
     }
 
     public boolean hasAppliedPromoCode() {

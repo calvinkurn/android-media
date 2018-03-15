@@ -7,7 +7,7 @@
     android:layout_marginLeft="@dimen/new_margin_small"
     android:layout_marginRight="@dimen/new_margin_small"
     android:layout_marginTop="@dimen/new_margin_small"
-    android:background="@drawable/bg_button_disabled"
+    android:background="@drawable/bg_button_green_enabled"
     android:foreground="?selectableItemBackground"
     android:gravity="center"
     android:orientation="vertical">
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:text="@string/label_button_choose_shipment_courier"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/white"
         android:textSize="13sp"
         android:textStyle="normal" />
 

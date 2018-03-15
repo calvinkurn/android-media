@@ -251,6 +251,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
+            disableItemView();
         } else if (data.isWarning()) {
             errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
             tvError.setTextColor(MainApplication.getAppContext().getResources()
@@ -261,6 +262,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getWarningMessage());
+            enableItemView();
         } else {
             errorContainer.setVisibility(View.GONE);
             tvError.setVisibility(View.GONE);
