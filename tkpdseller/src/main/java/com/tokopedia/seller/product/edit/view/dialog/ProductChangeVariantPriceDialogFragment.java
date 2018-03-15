@@ -137,6 +137,7 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
         if (savedInstanceState == null) {
             Bundle bundle = getArguments();
             counterInputPrice.setCounterValue(bundle.getDouble(KEY_CURRENCY_VALUE));
+            counterInputPrice.getCounterEditText().setSelection(counterInputPrice.getCounterEditText().getText().length());
         }
 
         view.findViewById(R.id.string_picker_dialog_change).setOnClickListener(new View.OnClickListener() {

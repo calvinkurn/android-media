@@ -7,6 +7,7 @@
 
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view"
+        android:layout_marginTop="@dimen/padding_vvvs"
         android:layout_width="@dimen/spinner_decimal_spinner_width"
         android:layout_height="wrap_content" />
 

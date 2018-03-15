@@ -13,8 +13,9 @@
         android:text="@string/product_price_locked"/>
 
     <TextView
-        style="@style/TextView.Title"
-        android:text="@string/product_price_locked_desc"/>
+        style="@style/TextView.Small"
+        android:text="@string/product_price_locked_desc"
+        android:layout_marginTop="@dimen/padding_ms"/>
 
     <com.tokopedia.design.text.SpinnerCounterInputView
         android:layout_marginTop="@dimen/new_margin_med"
@@ -37,12 +38,12 @@
             style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:text="@string/change" />
 
         <TextView
@@ -54,8 +55,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:layout_toLeftOf="@id/string_picker_dialog_confirm"
-            android:layout_toStartOf="@id/string_picker_dialog_confirm"
+            android:layout_toLeftOf="@id/string_picker_dialog_change"
+            android:layout_toStartOf="@id/string_picker_dialog_change"
             android:text="@string/close" />
 
     </RelativeLayout>
