@@ -1152,7 +1152,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseName, String etalaseId) {
+    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId);
     }
 }

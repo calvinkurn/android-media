@@ -165,5 +165,5 @@ public interface TkpdCoreRouter {
 
     Intent getShopPageIntentByDomain(Context context, String domain);
 
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseName, String etalaseId);
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 }

@@ -18,5 +18,5 @@ public interface FeedModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseName, String etalaseId);
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 }
