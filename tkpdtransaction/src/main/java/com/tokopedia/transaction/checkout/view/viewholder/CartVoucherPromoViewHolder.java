@@ -17,17 +17,16 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
     private final CartAdapterActionListener actionListener;
     private VoucherPromoView voucherCartHachikoView;
-    private RecyclerView.LayoutParams layoutParams;
+    private CartItemPromoHolderData cartItemPromoHolderData;
 
     public CartVoucherPromoViewHolder(View itemView, CartAdapterActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
         this.voucherCartHachikoView = itemView.findViewById(R.id.voucher_cart_holder_view);
-        layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     public void bindData(final CartItemPromoHolderData data, final int position) {
+        cartItemPromoHolderData = data;
         this.voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
             @Override
             public void onClickUseVoucher() {
@@ -55,18 +54,17 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
                     data.getCouponMessage(),
                     data.getCouponCode()
             );
-            layoutParams.bottomMargin = 0;
         } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
             voucherCartHachikoView.setVoucher(data.getVoucherCode(),
                     data.getVoucherMessage()
             );
-            layoutParams.bottomMargin = 0;
         } else {
             voucherCartHachikoView.setPromoAndCouponLabel();
             voucherCartHachikoView.resetView();
-            layoutParams.bottomMargin = (int) voucherCartHachikoView.getContext().getResources()
-                    .getDimension(R.dimen.new_margin_med);
         }
-        itemView.setLayoutParams(layoutParams);
+    }
+
+    public CartItemPromoHolderData getCartItemPromoHolderData() {
+        return cartItemPromoHolderData;
     }
 }

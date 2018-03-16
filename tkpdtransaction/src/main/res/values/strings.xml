@@ -250,6 +250,14 @@
     <string name="label_promo">Promo</string>
     <string name="label_payment_total">Total Pembayaran</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
+    <string name="label_seller">Penjual :</string>
+    <string name="label_menu_cart_remove">Hapus</string>
+    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang</string>
+    <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
+    <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
+    <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
+    <string name="label_sub_total">Sub total</string>
+    <string name="label_select_all">Pilih Semua</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

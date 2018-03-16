@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/new_margin_med"
     app:cardCornerRadius="0dp"
     app:cardElevation="@dimen/card_elevation_checkout">
 
@@ -31,7 +30,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:lineSpacingExtra="5sp"
-                android:text="@string/label_sent_by" />
+                android:text="@string/label_seller" />
 
             <TextView
                 android:id="@+id/tv_shop_name"

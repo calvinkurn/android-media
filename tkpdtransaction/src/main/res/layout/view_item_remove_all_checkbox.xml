@@ -18,7 +18,8 @@
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:theme="@style/TransactionCheckbox" />
     </FrameLayout>
 
     <LinearLayout
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:lineSpacingExtra="5sp"
-            android:text="Pilih Semua" />
+            android:text="@string/label_select_all" />
 
     </LinearLayout>
 

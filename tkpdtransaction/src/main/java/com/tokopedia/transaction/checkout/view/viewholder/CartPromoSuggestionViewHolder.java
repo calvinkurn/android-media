@@ -29,6 +29,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAction;
     private RecyclerView.LayoutParams layoutParamsVisible;
     private RecyclerView.LayoutParams layoutParamsGone;
+    private CartPromoSuggestion cartPromoSuggestion;
 
     public CartPromoSuggestionViewHolder(View itemView, CartAdapterActionListener actionListener) {
         super(itemView);
@@ -43,19 +44,13 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setupLayoutParams() {
-        Context context = mRlPromoSuggestionLayout.getContext();
         layoutParamsVisible = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        int marginVertical = (int) context.getResources().getDimension(R.dimen.new_margin_med);
-        int marginHorizontal = (int) context.getResources().getDimension(R.dimen.new_margin_small);
-        layoutParamsVisible.leftMargin = marginHorizontal;
-        layoutParamsVisible.rightMargin = marginHorizontal;
-        layoutParamsVisible.bottomMargin = marginVertical;
         layoutParamsGone = new RecyclerView.LayoutParams(0, 0);
     }
 
     public void bindData(final CartPromoSuggestion data, final int position) {
-
+        cartPromoSuggestion = data;
         if (data.isVisible()) {
             mRlPromoSuggestionLayout.setVisibility(View.VISIBLE);
             mRlPromoSuggestionLayout.setLayoutParams(layoutParamsVisible);
@@ -70,6 +65,10 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
             mRlPromoSuggestionLayout.setVisibility(View.GONE);
             mRlPromoSuggestionLayout.setLayoutParams(layoutParamsGone);
         }
+    }
+
+    public CartPromoSuggestion getCartPromoSuggestion() {
+        return cartPromoSuggestion;
     }
 
     private View.OnClickListener actionClickListener(final CartPromoSuggestion cartPromoSuggestion,

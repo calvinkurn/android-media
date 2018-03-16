@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -248,6 +249,17 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         String btnText = mCheckedCartItem == 0 ? "Hapus" :
                 String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
 
+        if (mCheckedCartItem == 0) {
+            mTvRemoveProduct.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_button_disabled));
+            mTvRemoveProduct.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_500));
+            mTvRemoveProduct.setClickable(false);
+        } else {
+            mTvRemoveProduct.setBackground(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.bg_button_green_enabled));
+            mTvRemoveProduct.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            mTvRemoveProduct.setClickable(true);
+        }
         mTvRemoveProduct.setText(btnText);
     }
 
