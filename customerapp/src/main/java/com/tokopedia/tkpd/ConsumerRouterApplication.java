@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -714,7 +715,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
-        Log.i("eventTracking", eventTracking.toString());
+        CommonUtils.dumper(eventTracking.toString());
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -453,7 +454,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
-        Log.i("eventTracking", eventTracking.toString());
+        CommonUtils.dumper(eventTracking.toString());
     }
 
     @Override
