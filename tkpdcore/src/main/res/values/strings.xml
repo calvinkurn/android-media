@@ -1308,7 +1308,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_receive_name">Penerima</string>
     <string name="title_sender_city">Asal</string>
     <string name="title_receiver_city">Tujuan</string>
-    <!--string related to Android PlayStore Review Dialog -->
+    <!--string related to Android PlayStore RevBaseDialogalog -->
     <string name="label_find_own_product">Cari Produk </string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
