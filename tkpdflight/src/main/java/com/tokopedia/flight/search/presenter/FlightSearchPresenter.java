@@ -94,29 +94,19 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             sortOptionId),
                     getSubscriberSortFlight(sortOptionId));
         } else {
-            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
+            if (!getView().isReturning()) {
 
-                }
+            } else {
+                flightSearchMetaUseCase.execute(
+                        FlightSearchUseCase.generateRequestParams(
+                                flightSearchApiRequestModel,
+                                isReturning,
+                                false,
+                                null,
+                                FlightSortOption.NO_PREFERENCE),
+                        getSubscriberSearchFlightCloud());
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    flightSearchMetaUseCase.execute(
-                            FlightSearchUseCase.generateRequestParams(
-                                    flightSearchApiRequestModel,
-                                    isReturning,
-                                    false,
-                                    null,
-                                    FlightSortOption.NO_PREFERENCE),
-                            getSubscriberSearchFlightCloud());
-                }
-            });
 
         }
     }
@@ -362,5 +352,30 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
         flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
+    }
+
+    public void initialize() {
+        if (!getView().isReturning()) {
+            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                    getView().showGetListError(e);
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    getView().actionFetchFlightSearchData();
+                }
+            });
+        } else {
+            getView().actionFetchFlightSearchData();
+        }
+
     }
 }

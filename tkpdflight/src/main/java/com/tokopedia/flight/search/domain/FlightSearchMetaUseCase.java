@@ -1,8 +1,8 @@
 package com.tokopedia.flight.search.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight.search.domain.mapper.FlightSortMapper;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -23,29 +23,17 @@ import rx.functions.Func2;
  */
 
 public class FlightSearchMetaUseCase extends UseCase<FlightSearchWithMetaViewModel> {
-    private FlightRepository flightRepository;
     private FlightSearchUseCase flightSearchUseCase;
     private FlightSearchGetMetaUseCase flightSearchGetMetaUseCase;
 
     @Inject
-    public FlightSearchMetaUseCase(FlightRepository flightRepository, FlightSearchUseCase flightSearchUseCase, FlightSearchGetMetaUseCase flightSearchGetMetaUseCase) {
-        this.flightRepository = flightRepository;
+    public FlightSearchMetaUseCase(FlightSearchUseCase flightSearchUseCase, FlightSearchGetMetaUseCase flightSearchGetMetaUseCase) {
         this.flightSearchUseCase = flightSearchUseCase;
         this.flightSearchGetMetaUseCase = flightSearchGetMetaUseCase;
     }
 
     @Override
     public Observable<FlightSearchWithMetaViewModel> createObservable(final RequestParams requestParams) {
-        /*return flightRepository.refreshAirlines().flatMap(new Func1<List<FlightAirlineDB>, Observable<FlightSearchWithMetaViewModel>>() {
-            @Override
-            public Observable<FlightSearchWithMetaViewModel> call(List<FlightAirlineDB> flightAirlineDBS) {
-                return getSearchMetaResultObservable(requestParams);
-            }
-        });*/
-        return getSearchMetaResultObservable(requestParams);
-    }
-
-    private Observable<FlightSearchWithMetaViewModel> getSearchMetaResultObservable(final RequestParams requestParams) {
         return flightSearchUseCase.createObservable(requestParams).flatMap(new Func1<List<FlightSearchViewModel>, Observable<FlightSearchWithMetaViewModel>>() {
             @Override
             public Observable<FlightSearchWithMetaViewModel> call(List<FlightSearchViewModel> flightSearchViewModelList) {

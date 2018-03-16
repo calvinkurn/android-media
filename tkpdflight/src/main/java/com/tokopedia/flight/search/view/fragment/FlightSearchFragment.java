@@ -290,7 +290,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void loadInitialData() {
-        actionFetchFlightSearchData();
+        flightSearchPresenter.initialize();
     }
 
     @Override
@@ -345,7 +345,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    private void actionFetchFlightSearchData() {
+    public void actionFetchFlightSearchData() {
         setUpProgress();
         if (getAdapter().getItemCount() == 0) {
             showLoading();
@@ -696,7 +696,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
-        actionFetchFlightSearchData();
+        flightSearchPresenter.initialize();
     }
 
     public void onResetFilterClicked() {

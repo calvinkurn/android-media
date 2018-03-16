@@ -18,6 +18,7 @@ import rx.functions.Func1;
 
 public class FlightAirlineHardRefreshUseCase extends UseCase<Boolean> {
     private FlightRepository flightRepository;
+
     @Inject
     public FlightAirlineHardRefreshUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;

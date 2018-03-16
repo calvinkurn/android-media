@@ -405,4 +405,9 @@ public class FlightRepositoryImpl implements FlightRepository {
             }
         });
     }
+
+    @Override
+    public Observable<FlightAirlineDB> getAirlineCacheById(String airlineId) {
+        return flightAirlineDataListSource.getCacheAirline(airlineId);
+    }
 }

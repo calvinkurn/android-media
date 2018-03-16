@@ -48,22 +48,7 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<FlightAirlineDB> getAirline(final String airlineId) {
-        return flightAirlineDataListDBSource.getAirline(airlineId).map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
-            @Override
-            public FlightAirlineDB call(FlightAirlineDB flightAirlineDB) {
-                if (flightAirlineDB == null){
-                    return new FlightAirlineDB(
-                            airlineId,
-                            DEFAULT_EMPTY_VALUE,
-                            DEFAULT_EMPTY_VALUE,
-                            DEFAULT_EMPTY_VALUE,
-                            0
-                    );
-                }
-                return flightAirlineDB;
-            }
-        });
-        /*return flightAirlineDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirlineDB>>() {
+        return flightAirlineDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirlineDB>>() {
             @Override
             public Observable<FlightAirlineDB> call(Boolean aBoolean) {
                 if (aBoolean) {
@@ -81,7 +66,7 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
                     return getFlightAirlineFromCloud(airlineId);
                 }
             }
-        });*/
+        });
     }
 
     private Observable<FlightAirlineDB> getFlightAirlineFromCloud(final String airlineId) {
@@ -108,5 +93,23 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
                         );
                     }
                 });
+    }
+
+    public Observable<FlightAirlineDB> getCacheAirline(final String airlineId) {
+        return flightAirlineDataListDBSource.getAirline(airlineId).map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
+            @Override
+            public FlightAirlineDB call(FlightAirlineDB flightAirlineDB) {
+                if (flightAirlineDB == null){
+                    return new FlightAirlineDB(
+                            airlineId,
+                            DEFAULT_EMPTY_VALUE,
+                            DEFAULT_EMPTY_VALUE,
+                            DEFAULT_EMPTY_VALUE,
+                            0
+                    );
+                }
+                return flightAirlineDB;
+            }
+        });
     }
 }
