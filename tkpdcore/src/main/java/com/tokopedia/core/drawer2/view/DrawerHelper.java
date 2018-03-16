@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
@@ -85,6 +86,8 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    ((TkpdCoreRouter) context.getApplication())
+                            .sendTrackingGroupChatLeftNavigation();
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:

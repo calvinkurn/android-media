@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        FrameLayout wrapper;
         TextView title;
         ImageView icon;
         TextView notification;
@@ -54,6 +56,7 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
             icon = itemView.findViewById(R.id.icon);
             notification = itemView.findViewById(R.id.notification);
             mainView = itemView.findViewById(R.id.main_view);
+            wrapper = itemView.findViewById(R.id.icon_wrapper);
 
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,13 +98,13 @@ public class IndicatorAdapter extends RecyclerView.Adapter<IndicatorAdapter.View
     private void setInactive(ViewHolder holder) {
         holder.title.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         holder.title.setTextColor(MethodChecker.getColor(context, R.color.black_38));
-        MethodChecker.setBackground(holder.icon, null);
+        MethodChecker.setBackground(holder.wrapper, null);
     }
 
     private void setActive(ViewHolder holder) {
         holder.title.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         holder.title.setTextColor(MethodChecker.getColor(context, R.color.black_70));
-        MethodChecker.setBackground(holder.icon, MethodChecker.getDrawable(context, R.drawable
+        MethodChecker.setBackground(holder.wrapper, MethodChecker.getDrawable(context, R.drawable
                 .shadow_background_circle));
     }
 

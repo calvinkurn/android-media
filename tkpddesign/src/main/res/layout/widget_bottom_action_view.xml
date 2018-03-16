@@ -50,9 +50,15 @@
         <View
             android:id="@+id/view_separator"
             android:layout_width="2dp"
+<<<<<<< HEAD
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
+=======
+            android:layout_height="@dimen/image_width_s"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_vs"
+>>>>>>> 0862c8ab3777bc42b8935850e6f207d4639a01c8
             android:background="@color/grey_300"
             android:visibility="visible" />
 
