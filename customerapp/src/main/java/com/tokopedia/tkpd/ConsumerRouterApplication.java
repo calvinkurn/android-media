@@ -76,6 +76,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -155,10 +156,10 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
 import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -205,6 +206,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -229,8 +231,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -1447,6 +1448,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
     }
+
     @Override
     public void registerShake(String screenName) {
         ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
@@ -1594,6 +1596,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isEnabledGroupChat() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
+        return true;
+    }
+
+    @Override
+    public void sendTrackingGroupChatLeftNavigation() {
+        getAnalyticTracker().sendEventTracking(StreamAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
+                StreamAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
+                StreamAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
+                ""
+        );
+    }
+
+    @Override
+    public void generateBranchLink(String title, String contentMessage, String imgUrl, String
+            shareUrl, Activity activity, final ShareListener
+                                           listener) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setName(title)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.FEED_TYPE)
+                .build();
+
+        BranchSdkUtils.generateBranchLink(shareData, activity, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                listener.onGenerateLink(shareContents, shareUri);
+            }
+        });
     }
 }

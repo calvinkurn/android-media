@@ -26,7 +26,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;

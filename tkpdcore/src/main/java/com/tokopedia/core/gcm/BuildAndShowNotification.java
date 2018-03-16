@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -122,11 +123,14 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+        } else if (!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())) {
+            downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else if(!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())){
             configureLargeImageNotification(applinkNotificationPass, mBuilder, configuration);
-        } else
-            {
-            mBuilder.setLargeIcon(getBitmap(applinkNotificationPass.getImageUrl()));
+        } else {
+            mBuilder.setLargeIcon(
+                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+            );
 
             NotificationManager mNotificationManager =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -150,6 +154,21 @@ public class BuildAndShowNotification {
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         mBuilder.setLargeIcon(
                                 ImageHandler.getRoundedCornerBitmap(resource, 60)
+                        );
+
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (configuration.isVibrate() && configuration.isBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        mBuilder.setLargeIcon(
+                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
                         );
 
                         NotificationManager mNotificationManager =
