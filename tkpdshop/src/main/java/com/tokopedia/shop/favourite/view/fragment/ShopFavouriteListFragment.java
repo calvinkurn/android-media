@@ -57,7 +57,9 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-        shopPageTracking.eventClickUserFavouritingShop(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickUserFavouritingShop(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         ((ShopModuleRouter) getActivity().getApplication()).goToProfileShop(getActivity(), shopFavouriteViewModel.getId());
     }
 
@@ -85,7 +87,9 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        shopPageTracking.eventCloseListFavourite(shopId,shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventCloseListFavourite(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
         }

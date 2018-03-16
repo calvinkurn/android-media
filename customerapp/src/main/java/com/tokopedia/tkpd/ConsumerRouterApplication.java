@@ -12,9 +12,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -713,6 +715,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
+        CommonUtils.dumper(eventTracking.toString());
     }
 
     @Override

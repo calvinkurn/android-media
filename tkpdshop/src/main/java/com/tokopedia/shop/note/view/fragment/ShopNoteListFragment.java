@@ -76,8 +76,10 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
-        shopPageTracking.eventClickNoteList(shopNoteViewModel.getPosition(), shopInfo.getInfo().getShopId(),
-                shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickNoteList(shopNoteViewModel.getPosition(), shopInfo.getInfo().getShopId(),
+                    shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
     }
 
@@ -88,8 +90,10 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onEmptyButtonClicked() {
-        shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId(),
-                shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId(),
+                    shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         ((ShopModuleRouter) getActivity().getApplication()).goToEditShopNote(getActivity());
     }
 

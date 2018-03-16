@@ -233,8 +233,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        shopPageTracking.eventBackPressed(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventBackPressed(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
     }
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
@@ -313,8 +315,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     private void onShareShop() {
-        shopPageTracking.eventClickShareShop(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShareShop(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
                 getString(R.string.shop_label_share_formatted, shopName, shopInfo.getInfo().getShopLocation()));
     }
@@ -327,36 +331,46 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public void onTotalFavouriteClicked() {
-        shopPageTracking.eventClickListFavourite(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickListFavourite(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         Intent intent = ShopFavouriteListActivity.createIntent(this, shopId);
         startActivity(intent);
     }
 
     @Override
     public void onTotalProductClicked() {
-        shopPageTracking.eventClickTotalProduct(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickTotalProduct(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         Intent intent = ShopProductListActivity.createIntent(this, shopId);
         startActivity(intent);
     }
 
     @Override
     public void onManageShopClicked() {
-        shopPageTracking.eventClickShopSetting(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShopSetting(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         ((ShopModuleRouter) getApplication()).goToManageShop(this);
     }
 
     @Override
     public void onAddProductClicked() {
-        shopPageTracking.eventClickAddProduct(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId),
-                ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickAddProduct(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         ((ShopModuleRouter) getApplication()).goToAddProduct(this);
     }
 
     @Override
     public void onChatSellerClicked() {
-        shopPageTracking.eventClickMessageShop(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId),
-                ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickMessageShop(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         if (shopInfo != null) {
             ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopName, shopInfo.getInfo().getShopAvatar());
         }
@@ -365,21 +379,27 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     @Override
     public void onShopIconClicked() {
         goToShopInfo();
-        shopPageTracking.eventClickShopLogo(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShopLogo(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
     }
 
     @Override
     public void onShopInfoClicked() {
         goToShopInfo();
-        shopPageTracking.eventClickShopInfo(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShopInfo(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
     }
 
     @Override
     public void onShopNameClicked() {
         goToShopInfo();
-        shopPageTracking.eventClickShopName(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShopName(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
     }
 
     @Override
@@ -444,7 +464,9 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public void displayReputationSpeedInfo(@DrawableRes int speedIcon, int speedLevel, String speedLevelDescription) {
-        shopPageTracking.eventClickShopSpeed(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickShopSpeed(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         View speedContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_speed, null);
         AppCompatImageView imageViewSpeed = speedContentBottomSheet.findViewById(R.id.image_view_speed_content);
         imageViewSpeed.setImageResource(speedIcon);
@@ -466,7 +488,9 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopPageTracking.eventClickShopSpeedInfo(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                if(shopInfo != null) {
+                    shopPageTracking.eventClickShopSpeedInfo(getTitlePage(viewPager.getCurrentItem()), shopId, shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                }
                 goToShopInfo();
             }
         });
@@ -475,8 +499,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     public void onToggleFavouriteShop(boolean favouriteShop) {
-        shopPageTracking.eventClickFavouriteShop(getTitlePage(viewPager.getCurrentItem()), shopId, favouriteShop,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickFavouriteShop(getTitlePage(viewPager.getCurrentItem()), shopId, favouriteShop,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         shopPagePresenter.toggleFavouriteShop(shopId);
     }
 
@@ -493,9 +519,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(shopInfo);
         }
         shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
-
-        shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
-                shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
 
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
     }

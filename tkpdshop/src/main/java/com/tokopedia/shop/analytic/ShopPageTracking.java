@@ -162,7 +162,7 @@ public class ShopPageTracking {
     public void eventClickNoteList(long position, String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,
-                ShopPageTrackingConstant.CLICK_NOTE_LIST + String.valueOf(position),
+                ShopPageTrackingConstant.CLICK_NOTE_LIST + String.valueOf(position + 1),
                 shopId, myShop, shopType);
     }
 
@@ -314,7 +314,7 @@ public class ShopPageTracking {
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition + 1));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -345,7 +345,7 @@ public class ShopPageTracking {
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_NAME, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition + 1));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -357,7 +357,7 @@ public class ShopPageTracking {
                         + " - " + ShopPageTrackingConstant.CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition + 1));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
@@ -430,8 +430,8 @@ public class ShopPageTracking {
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + i,
-                            ShopPageTrackingConstant.POSITION, i
+                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + i + 1,
+                            ShopPageTrackingConstant.POSITION, i + 1
                     )
             );
         }
@@ -441,7 +441,7 @@ public class ShopPageTracking {
     private Map<String, Object> createMapProductClickImpression(String name, String id, String price, int adapterPosition) {
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK, DataLayer.mapOf(
-                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + adapterPosition),
+                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + adapterPosition + 1),
                         ShopPageTrackingConstant.PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
@@ -450,8 +450,8 @@ public class ShopPageTracking {
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + adapterPosition,
-                                        ShopPageTrackingConstant.POSITION, adapterPosition
+                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + adapterPosition + 1,
+                                        ShopPageTrackingConstant.POSITION, adapterPosition + 1
                                 )
                         )
                 )
