@@ -451,7 +451,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public boolean isAirAsiaAirline() {
+    public boolean isMandatoryDoB() {
         return isAirAsiaAirlines;
     }
 
