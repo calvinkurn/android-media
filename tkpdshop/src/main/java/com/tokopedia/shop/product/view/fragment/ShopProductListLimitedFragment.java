@@ -106,15 +106,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         progressDialog.setMessage(getString(R.string.title_loading));
         VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.clearItemDecoration();
-        searchInputView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(shopInfo != null) {
-                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                }
-            }
-        });
         getRecyclerView(view).addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -145,7 +136,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             @Override
             public void onClick(View view) {
                 if(shopInfo != null) {
-                    shopPageTracking.eventClickSeeMoreProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
+                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
             }
