@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +20,7 @@ import java.util.Set;
 
 public class ShopProductOfficialStoreUtils {
 
+    private static final String SEAMLESS = "seamless";
     public static final String TOKOPEDIA_HOST = "tokopedia";
 
     private static final String URL_QUERY_SORT = "sort";
@@ -34,7 +38,7 @@ public class ShopProductOfficialStoreUtils {
             processUriTokopedia(activity, shopId, uri);
         } else if (uri.getScheme().startsWith(HTTP)) {
             if (activity.getApplication() instanceof ShopModuleRouter) {
-                ((ShopModuleRouter) activity.getApplication()).goToWebview(url);
+                ((ShopModuleRouter) activity.getApplication()).goToWebview(activity, url);
             }
         }
         return true;
@@ -100,5 +104,22 @@ public class ShopProductOfficialStoreUtils {
             }
         }
         return params;
+    }
+
+    public static String getLogInUrl(String url, String fcmTokenId, String uid) {
+        if (!url.contains(SEAMLESS)) {
+            return URLGenerator.generateURLSessionLogin(encodeUrl(url), fcmTokenId, uid);
+        }
+        return url;
+    }
+
+    private static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 }

@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
  * Created by nathan on 3/10/18.
  */
 
-public class ShopPagePromoWebView extends WebView {
+public class ShopPagePromoWebView extends NestedWebView {
 
     public interface Listener {
         void webViewTouched(boolean touched);

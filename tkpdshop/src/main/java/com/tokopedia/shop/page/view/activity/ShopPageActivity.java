@@ -225,7 +225,6 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.font_black_primary_70));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         collapsingToolbarLayout.setTitle(" ");
@@ -242,7 +241,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
-            private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 1f;
+            private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.9f;
             boolean toolbarTitleShown = false;
             int scrollRange = -1;
 
@@ -524,6 +523,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
             shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
                     shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
+
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
     }
 
     @Override

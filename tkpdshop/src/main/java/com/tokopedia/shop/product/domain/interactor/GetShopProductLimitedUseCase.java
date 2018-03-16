@@ -25,25 +25,27 @@ import rx.schedulers.Schedulers;
 public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
+    private static final String OFFICIAL_STORE = "OFFICIAL_STORE";
 
     private final GetShopProductFeaturedUseCase getShopProductFeaturedUseCase;
-    private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
+    private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
 
     @Inject
     public GetShopProductLimitedUseCase(GetShopProductFeaturedUseCase getShopProductFeaturedUseCase,
-                                        GetShopProductWithWishListUseCase getShopProductWithWishListUseCase) {
+                                        GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase) {
         this.getShopProductFeaturedUseCase = getShopProductFeaturedUseCase;
-        this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
+        this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
     }
 
     @Override
     public Observable<List<ShopProductBaseViewModel>> createObservable(RequestParams requestParams) {
         final String shopId = requestParams.getString(SHOP_ID, "");
+        final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
         shopProductRequestModel.setShopId(shopId);
         return Observable.zip(
-                getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId)).subscribeOn(Schedulers.io()),
-                getShopProductWithWishListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
+                getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore)).subscribeOn(Schedulers.io()),
+                getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
                 new Func2<List<ShopProductViewModel>, PagingList<ShopProductViewModel>, List<ShopProductBaseViewModel>>() {
                     @Override
                     public List<ShopProductBaseViewModel> call(List<ShopProductViewModel> shopProductViewModelList, PagingList<ShopProductViewModel> shopProductList) {
@@ -64,9 +66,10 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         );
     }
 
-    public static RequestParams createRequestParam(String shopId) {
+    public static RequestParams createRequestParam(String shopId, boolean officialStore) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
+        requestParams.putBoolean(OFFICIAL_STORE, officialStore);
         return requestParams;
     }
 }

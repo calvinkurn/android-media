@@ -6,11 +6,14 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 
+import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 
@@ -51,8 +54,8 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         return userSession.getShopId().equals(shopId);
     }
 
-    public void getProductLimitedList(String shopId, final String promotionWebViewUrl) {
-        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductBaseViewModel>>() {
+    public void getProductLimitedList(String shopId, boolean officialStore, final String promotionWebViewUrl) {
+        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, officialStore), new Subscriber<List<ShopProductBaseViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -67,12 +70,28 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
             @Override
             public void onNext(List<ShopProductBaseViewModel> shopProductBaseViewModelList) {
+                boolean shopHasProduct = shopProductBaseViewModelList.size() > 0;
                 if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
-                    ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
-                    shopProductLimitedPromoViewModel.setUrl(promotionWebViewUrl);
-                    shopProductBaseViewModelList.add(0, shopProductLimitedPromoViewModel);
+                    shopProductBaseViewModelList.add(0, getProductPromoModel());
+                }
+                // There's at least 1 product, show search view
+                if (shopHasProduct) {
+                    shopProductBaseViewModelList.add(0, new ShopProductLimitedSearchViewModel());
                 }
                 getView().renderList(shopProductBaseViewModelList);
+            }
+
+            private ShopProductLimitedPromoViewModel getProductPromoModel() {
+                ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
+                shopProductLimitedPromoViewModel.setUserId(userSession.getUserId());
+                shopProductLimitedPromoViewModel.setLogin(userSession.isLoggedIn());
+                String url = promotionWebViewUrl;
+                if (userSession.isLoggedIn()) {
+                    url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
+                }
+                CommonUtils.dumper(url);
+                shopProductLimitedPromoViewModel.setUrl(url);
+                return shopProductLimitedPromoViewModel;
             }
         });
     }
