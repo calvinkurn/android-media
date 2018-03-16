@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -712,6 +713,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
+        Log.d("eventTracking", eventTracking.toString());
     }
 
     @Override

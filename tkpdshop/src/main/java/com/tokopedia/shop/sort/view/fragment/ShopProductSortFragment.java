@@ -131,8 +131,10 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     public void onItemClicked(ShopProductSortModel filterModel) {
-        shopPageTracking.eventClickChooseSort(getString(R.string.shop_info_title_tab_product), filterModel.getName(), "",
-                shopProductFilterPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventClickChooseSort(getString(R.string.shop_info_title_tab_product), filterModel.getName(), "",
+                    shopProductFilterPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }
