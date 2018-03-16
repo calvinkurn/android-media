@@ -499,10 +499,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToWebview(String url) {
+    public void goToWebview(Context context, String url) {
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override

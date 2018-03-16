@@ -38,7 +38,7 @@ public class ShopProductOfficialStoreUtils {
             processUriTokopedia(activity, shopId, uri);
         } else if (uri.getScheme().startsWith(HTTP)) {
             if (activity.getApplication() instanceof ShopModuleRouter) {
-                ((ShopModuleRouter) activity.getApplication()).goToWebview(url);
+                ((ShopModuleRouter) activity.getApplication()).goToWebview(activity, url);
             }
         }
         return true;
