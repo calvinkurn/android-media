@@ -477,7 +477,8 @@ public class ActivitySellingTransaction extends TkpdActivity
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.
+                        ic_cart_white_new);
             }
             return true;
         } else {
