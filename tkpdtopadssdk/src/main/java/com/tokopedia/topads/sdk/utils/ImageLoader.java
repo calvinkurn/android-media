@@ -42,14 +42,19 @@ public class ImageLoader {
     }
 
     public void loadImage(String ecs, final String url, ImageView imageView) {
-        imageFetcher.loadImage(ecs, imageView, new ImageWorker.OnImageLoadedListener() {
-            @Override
-            public void onImageLoaded(boolean success) {
-                if (success && url != null && url.contains(PATH_VIEW)) {
-                    new ImpresionTask().execute(url);
-                }
-            }
-        }, false);
+        Glide.with(context)
+                .load(ecs)
+                .asBitmap()
+                .placeholder(R.drawable.loading_page)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageView.setImageBitmap(resource);
+                        if (url.contains(PATH_VIEW)) {
+                            new ImpresionTask().execute(url);
+                        }
+                    }
+                });
     }
 
     public void loadImageWithMemoryCache(String url, ImageView imageView){
