@@ -12,10 +12,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.component.ButtonCompat;
 
 /**
  * Created by meyta on 1/29/18.
@@ -34,7 +34,7 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class FloatingButton extends BaseCustomView {
 
-    private Button button;
+    private ButtonCompat button;
 
     private String mText;
     private int mStyle;
@@ -79,7 +79,7 @@ public class FloatingButton extends BaseCustomView {
     @SuppressLint("RestrictedApi")
     private void init() {
         if (button == null) {
-            button = new Button(new ContextThemeWrapper(this.getContext(), mStyle), null, 0);
+            button = new ButtonCompat(new ContextThemeWrapper(this.getContext(), mStyle), null, 0);
         }
 
         button.setText(mText);
@@ -108,7 +108,7 @@ public class FloatingButton extends BaseCustomView {
             this.button.setText(text);
     }
 
-    public Button getButton() {
+    public ButtonCompat getButton() {
         return button;
     }
 
