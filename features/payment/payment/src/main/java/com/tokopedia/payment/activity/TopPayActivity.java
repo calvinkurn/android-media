@@ -137,6 +137,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
         scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
+        btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
