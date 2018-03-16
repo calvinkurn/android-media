@@ -47,10 +47,8 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
                 if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
                     if(sessionHandler.isV4Login()) {
                         view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
-                        view.closeView();
-                    }else{
-                        view.closeView();
                     }
+                    view.closeView();
                 }
                 BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
                 view.renderReferralCode(code);
