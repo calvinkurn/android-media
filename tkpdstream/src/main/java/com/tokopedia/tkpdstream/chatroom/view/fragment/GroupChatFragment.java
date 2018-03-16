@@ -860,12 +860,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
 
+        try {
 //        viewModel.setTotalParticipant(participantCount);
-        viewModel.setTotalParticipant(viewModel.getTotalParticipant());
-        setToolbarParticipantCount();
-        adapter.addAction(userActionViewModel);
-        adapter.notifyItemInserted(0);
-        scrollToBottomWhenPossible();
+            viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
+                    1));
+            setToolbarParticipantCount();
+            adapter.addAction(userActionViewModel);
+            adapter.notifyItemInserted(0);
+            scrollToBottomWhenPossible();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -884,7 +889,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
             mChannel = openChannel;
-            viewModel.setTotalParticipant(String.valueOf(openChannel.getParticipantCount()));
+            try {
+                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
+                        1));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             setToolbarParticipantCount();
             presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
         } catch (NullPointerException e) {

@@ -120,7 +120,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getModeratorProfileUrl(),
                 pojo.getTitle(),
                 pojo.getDescription(),
-                pojo.getTotalParticipantsOnline(),
+                pojo.getTotalViews(),
                 pojo.getChannelUrl());
     }
 

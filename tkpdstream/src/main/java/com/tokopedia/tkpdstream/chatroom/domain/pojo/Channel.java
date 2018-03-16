@@ -30,6 +30,9 @@ public class Channel {
     @SerializedName("total_participants_online")
     @Expose
     private String totalParticipantsOnline;
+    @SerializedName("total_views")
+    @Expose
+    private String totalViews;
     @SerializedName("is_active")
     @Expose
     private boolean isActive;
@@ -161,4 +164,7 @@ public class Channel {
         this.moderatorProfileUrl = moderatorProfileUrl;
     }
 
+    public String getTotalViews() {
+        return totalViews;
+    }
 }
