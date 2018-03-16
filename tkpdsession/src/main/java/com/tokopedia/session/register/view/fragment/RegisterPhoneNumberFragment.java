@@ -31,6 +31,7 @@ import com.tokopedia.otp.registerphonenumber.view.activity.VerificationActivity;
 import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
@@ -200,6 +201,11 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void goToLoginPhoneNumber() {
+        startActivity(LoginPhoneNumberActivity.getCallingIntent(getActivity()));
+    }
+
+    @Override
     public void dismissLoading() {
         if (progressDialog != null)
             progressDialog.dismiss();
@@ -231,6 +237,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
+        dismissLoading();
         errorText.setVisibility(View.VISIBLE);
         errorText.setText(errorMessage);
     }
@@ -244,6 +251,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             @Override
             public void onClick(DialogInterface dialog, int i) {
             //go to login
+                goToLoginPhoneNumber();
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.phone_number_already_registered_no), new DialogInterface.OnClickListener() {
@@ -299,6 +307,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             if (resultCode == Activity.RESULT_OK) {
                 goToProfileCompletionPage();
             } else {
+                getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
         } else {
@@ -309,17 +318,26 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
-        goToWelcomePage();
+        if (model.getMakeLoginDomain().isLogin()) {
+            goToWelcomePage();
+        } else {
+            goToLoginPhoneNumber();
+        }
     }
 
     @Override
     public void showErrorRegisterPhoneNumber(String message) {
+        dismissLoading();
+        showSnackbarErrorWithAction(message);
+    }
+
+    private void showSnackbarErrorWithAction(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 doRegisterPhoneNumber();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -329,7 +347,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void goToWelcomePage() {
-        startActivityForResult(WelcomePageActivity.newInstance(getActivity()),REQUEST_WELCOME_PAGE);
+        startActivityForResult(WelcomePageActivity.newInstance(getActivity()), REQUEST_WELCOME_PAGE);
     }
 
     private void goToProfileCompletionPage() {
@@ -340,6 +358,8 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         stackBuilder.addNextIntent(parentIntent);
         stackBuilder.addNextIntent(childIntent);
         getActivity().startActivities(stackBuilder.getIntents());
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void enableButton(TextView button) {

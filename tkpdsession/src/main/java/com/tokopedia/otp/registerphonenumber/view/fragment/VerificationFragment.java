@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 /**
- * @author by nisie on 3/5/17.
+ * @author by yfsx on 5/3/18.
  */
 
 public class VerificationFragment extends BaseDaggerFragment implements Verification.View {

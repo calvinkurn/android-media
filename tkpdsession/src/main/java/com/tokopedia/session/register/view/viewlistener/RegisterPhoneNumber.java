@@ -19,6 +19,8 @@ public interface RegisterPhoneNumber {
 
         void goToVerifyAccountPage(String phoneNumber);
 
+        void goToLoginPhoneNumber();
+
         void showConfirmationPhoneNumber(String phoneNumber);
 
         void doRegisterPhoneNumber();

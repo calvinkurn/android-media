@@ -1,6 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerphonenumber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
 
@@ -25,7 +25,7 @@ public class RegisterPhoneNumberSubscriber extends Subscriber<LoginRegisterPhone
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.showErrorRegisterPhoneNumber(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
+        mainView.showErrorRegisterPhoneNumber(ErrorHandler.getErrorMessage(throwable));
 
     }
 
