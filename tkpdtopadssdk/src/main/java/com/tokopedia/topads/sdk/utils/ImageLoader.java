@@ -45,7 +45,7 @@ public class ImageLoader {
         loadImage(ecs, null, imageView);
     }
 
-    public void loadImage(String ecs, final String url, ImageView imageView) {
+    public void loadImage(String ecs, final String url, final ImageView imageView) {
         Glide.with(context)
                 .load(ecs)
                 .asBitmap()
