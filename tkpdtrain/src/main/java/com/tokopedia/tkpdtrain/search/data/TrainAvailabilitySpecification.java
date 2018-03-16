@@ -2,9 +2,8 @@ package com.tokopedia.tkpdtrain.search.data;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
-import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
-
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
+import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 
 import java.util.List;
 
@@ -28,4 +27,5 @@ public class TrainAvailabilitySpecification implements DbFlowSpecification {
         }
         return conditionGroup;
     }
+
 }

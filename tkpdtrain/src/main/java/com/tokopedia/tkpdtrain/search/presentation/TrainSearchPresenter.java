@@ -3,10 +3,13 @@ package com.tokopedia.tkpdtrain.search.presentation;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.domain.GetAvailabilityScheduleUseCase;
-import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.tkpdtrain.search.domain.GetFilteredAndSortedScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
+import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -22,13 +25,18 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         TrainSearchContract.Presenter {
 
     private static final String TAG = TrainSearchPresenter.class.getSimpleName();
+
     private GetScheduleUseCase getScheduleUseCase;
     private GetAvailabilityScheduleUseCase getAvailabilityScheduleUseCase;
+    private GetFilteredAndSortedScheduleUseCase getFilteredAndSortedScheduleUseCase;
 
     @Inject
-    public TrainSearchPresenter(GetScheduleUseCase getScheduleUseCase, GetAvailabilityScheduleUseCase getAvailabilityScheduleUseCase) {
+    public TrainSearchPresenter(GetScheduleUseCase getScheduleUseCase,
+                                GetAvailabilityScheduleUseCase getAvailabilityScheduleUseCase,
+                                GetFilteredAndSortedScheduleUseCase getFilteredAndSortedScheduleUseCase) {
         this.getScheduleUseCase = getScheduleUseCase;
         this.getAvailabilityScheduleUseCase = getAvailabilityScheduleUseCase;
+        this.getFilteredAndSortedScheduleUseCase = getFilteredAndSortedScheduleUseCase;
     }
 
     @Override
@@ -55,7 +63,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 });
     }
 
-    private void getAvailabilitySchedule(String idTrain) {
+    private void getAvailabilitySchedule(final String idTrain) {
         getAvailabilityScheduleUseCase.setIdTrain(idTrain);
         getAvailabilityScheduleUseCase.execute(new Subscriber<List<TrainSchedule>>() {
             @Override
@@ -71,11 +79,39 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onNext(List<TrainSchedule> trainSchedules) {
-                Log.d(TAG, "onNext size: " + trainSchedules.size());
-                if (trainSchedules != null) {
-                    getView().showSearchResult(trainSchedules);
-                }
+                Log.d(TAG, idTrain);
+                getView().showSearchResult(trainSchedules);
             }
         });
     }
+
+    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, String trainClass, List<String> trains, int sortOptionId) {
+        FilterParam filterParam = new FilterParam.Builder()
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .trains(trains)
+                .trainClass(trainClass)
+                .build();
+        RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, sortOptionId);
+
+        getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainSchedule>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                Log.e(TAG, "onError: " + e.getMessage() );
+            }
+
+            @Override
+            public void onNext(List<TrainSchedule> trainSchedules) {
+                Log.d(TAG, "onNext filtered and sorted size: " + trainSchedules.size());
+                getView().showSearchResult(trainSchedules);
+            }
+        });
+    }
+
 }

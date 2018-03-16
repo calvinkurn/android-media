@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdtrain.common.domain;
 
 
+import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
@@ -15,6 +16,7 @@ import rx.Observable;
  */
 
 public interface TrainRepository {
+
     Observable<List<TrainStation>> getPopularStations();
 
     Observable<List<TrainStation>> getStationsByKeyword(String keyword);
@@ -24,4 +26,7 @@ public interface TrainRepository {
     Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam);
 
     Observable<List<TrainSchedule>> getAvailabilitySchedule(String idTrain);
+
+    Observable<List<TrainSchedule>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId);
+
 }
