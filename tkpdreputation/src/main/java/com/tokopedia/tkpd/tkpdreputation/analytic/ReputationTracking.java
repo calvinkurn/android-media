@@ -50,84 +50,84 @@ public class ReputationTracking {
     public void eventClickLikeDislikeReview(String titlePage, boolean status, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_CLICK,
-                ReputationTrackingConstant.CLICK_REVIEW + (status ? ReputationTrackingConstant.NEUTRAL : ReputationTrackingConstant.HELPING) + "-" + String.valueOf(position),
+                ReputationTrackingConstant.CLICK_REVIEW + (status ? ReputationTrackingConstant.NEUTRAL : ReputationTrackingConstant.HELPING) + "-" + String.valueOf(position +1),
                 shopId, myShop);
     }
 
     public void eventClickProductPictureOrName(String titlePage, int position, String productId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_CLICK,
-                ReputationTrackingConstant.CLICK_PRODUCT_PICTURE_OR_NAME +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_PRODUCT_PICTURE_OR_NAME +  String.valueOf(position+1),
                 productId, myShop);
     }
 
     public void eventClickUserAccount(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_CLICK,
-                ReputationTrackingConstant.CLICK_USER_ACCOUNT +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_USER_ACCOUNT +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickUserAccountPage(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_REVIEW_PAGE_CLICK,
-                ReputationTrackingConstant.CLICK_USER_ACCOUNT +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_USER_ACCOUNT +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventCLickThreeDotMenu(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_CLICK,
-                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickChooseThreeDotMenu(String titlePage, int position, String typeAction, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_THREE_DOTTED_CLICK,
-                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickSeeReplies(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 titlePage + ReputationTrackingConstant.TOP_CONTENT_CLICK,
-                ReputationTrackingConstant.CLICK_SEE_REPLIES +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_SEE_REPLIES +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickLikeDislikeReviewPage(String titlePage, boolean status, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 String.format(ReputationTrackingConstant.TOP_CONTENT_PAGE_CLICK, titlePage, ReputationTrackingConstant.REVIEW),
-                ReputationTrackingConstant.CLICK_REVIEW + (status ? ReputationTrackingConstant.NEUTRAL : ReputationTrackingConstant.HELPING) + "-" + String.valueOf(position),
+                ReputationTrackingConstant.CLICK_REVIEW + (status ? ReputationTrackingConstant.NEUTRAL : ReputationTrackingConstant.HELPING) + "-" + String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickProductPictureOrNamePage(String titlePage, int position, String productId, boolean myShop) {
         eventShopPageOfficialStoreProductId(
                 String.format(ReputationTrackingConstant.TOP_CONTENT_PAGE_CLICK, titlePage, ReputationTrackingConstant.REVIEW),
-                ReputationTrackingConstant.CLICK_PRODUCT_PICTURE_OR_NAME +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_PRODUCT_PICTURE_OR_NAME +  String.valueOf(position+1),
                 productId, myShop);
     }
 
     public void eventCLickThreeDotMenuPage(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 String.format(ReputationTrackingConstant.TOP_CONTENT_PAGE_CLICK, titlePage, ReputationTrackingConstant.REVIEW),
-                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickChooseThreeDotMenuPage(String titlePage, int position, String report, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 String.format(ReputationTrackingConstant.TOP_CONTENT_PAGE_DOTTED_MENU_CLICK, titlePage, ReputationTrackingConstant.REVIEW),
-                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_THREE_DOTTED +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
     public void eventClickSeeRepliesPage(String titlePage, int position, String shopId, boolean myShop) {
         eventShopPageOfficialStore(
                 String.format(ReputationTrackingConstant.TOP_CONTENT_PAGE_DOTTED_MENU_CLICK, titlePage, ReputationTrackingConstant.REVIEW),
-                ReputationTrackingConstant.CLICK_SEE_REPLIES +  String.valueOf(position),
+                ReputationTrackingConstant.CLICK_SEE_REPLIES +  String.valueOf(position+1),
                 shopId, myShop);
     }
 
