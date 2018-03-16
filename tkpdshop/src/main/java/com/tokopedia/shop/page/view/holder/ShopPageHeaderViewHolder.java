@@ -276,7 +276,7 @@ public class ShopPageHeaderViewHolder {
         });
         final String qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
-        final int intRatingDrawableRes =  getRatingImageRes(Math.round(shopInfo.getRatings().getQuality().getRatingStar()));
+        final int intRatingDrawableRes = getRatingImageRes(Math.round(shopInfo.getRatings().getQuality().getRatingStar()));
         ratingBarImageView.setImageResource(intRatingDrawableRes);
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,6 +395,7 @@ public class ShopPageHeaderViewHolder {
 
     /**
      * Temporary solution to provide very small rating bar on shop page, hard to implement on various screen dimension
+     *
      * @param rating
      * @return
      */
@@ -403,17 +404,17 @@ public class ShopPageHeaderViewHolder {
     private int getRatingImageRes(int rating) {
         switch (rating) {
             case 1:
-                return R.drawable.ic_rating_small_one;
+                return R.drawable.ic_rating_star_1;
             case 2:
-                return R.drawable.ic_rating_small_two;
+                return R.drawable.ic_rating_star_2;
             case 3:
-                return R.drawable.ic_rating_small_three;
+                return R.drawable.ic_rating_star_3;
             case 4:
-                return R.drawable.ic_rating_small_four;
+                return R.drawable.ic_rating_star_4;
             case 5:
-                return R.drawable.ic_rating_small_five;
+                return R.drawable.ic_rating_star_5;
             default:
-                return R.drawable.ic_rating_small_none;
+                return R.drawable.ic_rating_star_0;
         }
     }
 }

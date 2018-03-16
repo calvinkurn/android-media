@@ -10,6 +10,7 @@ public class ReputationTrackingConstant {
 
     //Category
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
+    public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
 
     //Action
     public static final String TOP_CONTENT_CLICK = " - top content - click";
@@ -17,6 +18,7 @@ public class ReputationTrackingConstant {
     public static final String TOP_CONTENT_PAGE_CLICK = "%1$s - top content - %2$s page - click";
     public static final String TOP_CONTENT_PAGE_DOTTED_MENU_CLICK = "%1$s - top content - %2$s page - three dotted menu - click";
     public static final String BOTTOM_NAVIGATION_CLICK = " - bottom navigation - click";
+    public static final String TOP_CONTENT_REVIEW_PAGE_CLICK = " - top content - review page - click";
 
     //Label
     public static final String CLICK_REVIEW = "click review -";

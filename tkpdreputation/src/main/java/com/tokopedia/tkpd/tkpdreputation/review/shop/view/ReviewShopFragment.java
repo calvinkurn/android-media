@@ -141,7 +141,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     protected void onGoToProfileTracking(int adapterPosition) {
-        reputationTracking.eventClickUserAccount(getString(R.string.review), adapterPosition, shopId);
+        reputationTracking.eventClickUserAccountPage(getString(R.string.review), adapterPosition, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
 
@@ -178,7 +179,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     protected void onDeleteReviewResponseTracking(ReviewProductModelContent element, int adapterPosition) {
-        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.DELETE, shopId);
+        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.DELETE, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
@@ -196,17 +198,18 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     protected void onGoToReportReviewTracking(String shopId, int adapterPosition) {
-        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.REPORT, shopId);
+        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.REPORT, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
     public void onMenuClicked(int adapterPosition) {
-        reputationTracking.eventCLickThreeDotMenuPage(getString(R.string.review), adapterPosition, shopId);
+        reputationTracking.eventCLickThreeDotMenuPage(getString(R.string.review), adapterPosition, shopId, shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
     public void onSeeReplied(int adapterPosition) {
-        reputationTracking.eventClickSeeRepliesPage(getString(R.string.review), adapterPosition, shopId);
+        reputationTracking.eventClickSeeRepliesPage(getString(R.string.review), adapterPosition, shopId, shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
@@ -216,7 +219,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     protected void onLikeDislikeTracking(String productId, boolean status, int adapterPosition) {
-        reputationTracking.eventClickLikeDislikeReviewPage(getString(R.string.review), status, adapterPosition, shopId);
+        reputationTracking.eventClickLikeDislikeReviewPage(getString(R.string.review), status, adapterPosition, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
@@ -250,7 +254,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     protected void onGoToDetailProductTracking(String productId, int adapterPosition) {
-        reputationTracking.eventClickProductPictureOrNamePage(getString(R.string.review), adapterPosition, productId);
+        reputationTracking.eventClickProductPictureOrNamePage(getString(R.string.review), adapterPosition, productId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override

@@ -8,6 +8,8 @@ import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFact
 
 public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewModel {
     private String url;
+    private boolean login;
+    private String userId;
 
     public String getUrl() {
         return url;
@@ -15,6 +17,22 @@ public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewMode
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

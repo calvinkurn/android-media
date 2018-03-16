@@ -13,6 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -123,7 +127,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -135,9 +138,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
-        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
-        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
+        setHasOptionsMenu(true);
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID, "");
+        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
+        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         shopProductListPresenter.attachView(this);
     }
@@ -261,19 +265,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        showBottomActionView();
+        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
         shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                list,false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-    }
-
-    @Override
-    public void showGetListError(Throwable throwable) {
-        super.showGetListError(throwable);
-        showBottomActionView();
-    }
-
-    private void showBottomActionView() {
-        bottomActionView.setVisibility(getAdapter().getDataSize() > 0 ? View.VISIBLE : View.GONE);
+                list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -313,6 +307,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
+
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
+    }
+
 
     @Override
     public void onSuccessAddToWishList(String productId, Boolean value) {
@@ -362,6 +364,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onSearchSubmitted(String s) {
         keyword = s;
         loadInitialData();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @Override
@@ -370,11 +373,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             keyword = s;
             loadInitialData();
         }
-    }
-
-    @Override
-    public void onLastItemVisible() {
-        //Do nothing
     }
 
     @Override
@@ -404,6 +402,20 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

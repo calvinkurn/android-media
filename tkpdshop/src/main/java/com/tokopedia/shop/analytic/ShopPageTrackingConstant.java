@@ -9,6 +9,8 @@ public class ShopPageTrackingConstant {
     //event
     public static final String CLICK_OFFICIAL_STORE = "clickOfficialStore";
     public static final String VIEW_OFFICIAL_STORE = "viewOfficialStore";
+    public static final String CLICK_SHOP_PAGE = "clickShopPage";
+    public static final String VIEW_SHOP_PAGE = "viewShopPage";
 
     //category
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
@@ -79,6 +81,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_PRODUCT_PICTURE = "click product picture";
     public static final String CLICK_PRODUCT_NAME = "click product name";
     public static final String IMPRESSION_OF_TOP_PRODUCT_LIST = "impression of top products list";
+    public static final String TOP_CONTENT_CLICK = " - top content - click";
+    public static final String CLICK_TOP_CONTENT = "click top content";
 
     //key
     public static final String EVENT = "event";
@@ -106,4 +110,17 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_VIEW_MORE_PRODUCT = "click view more products";
     public static final String IMPRESSION_OF_PRODUCT_PICTURES = "impression of product pictures";
     public static final String CLICK_MENU = "click menu - ";
+    public static final int OFFICIAL_STORE = 1;
+    public static final int GOLD_MERCHANT = 2;
+    public static final int REGULAR_MERCHANT = 3;
+    public static final String SHOP_TYPE = "shop_type";
+    public static final String OFFICIAL_STORE_NAME = "official_store";
+    public static final String GOLD_MERCHANT_NAME = "gold_merchant";
+    public static final String REGULAR_MERCHANT_NAME = "regular";
+    public static final String PROMO_CLICK = "promoClick";
+    public static final String PROMOTIONS = "promotions";
+    public static final String SHOP_PAGE_PROMO_WEBVIEW = "/shoppage - promo webview";
+    public static final String CREATIVE = "creative";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
 }
