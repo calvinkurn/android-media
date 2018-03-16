@@ -32,7 +32,7 @@ public class ReactNativeHostFactory {
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
 
-        return createReactNativeHostDev(application);
+        return createReactNativeHost(application);
 
     }
 
