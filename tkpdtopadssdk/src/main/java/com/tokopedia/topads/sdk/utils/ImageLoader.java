@@ -11,6 +11,10 @@ import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -41,7 +45,7 @@ public class ImageLoader {
         loadImage(ecs, null, imageView);
     }
 
-    public void loadImage(String ecs, final String url, ImageView imageView) {
+    public void loadImage(String ecs, final String url, final ImageView imageView) {
         Glide.with(context)
                 .load(ecs)
                 .asBitmap()
