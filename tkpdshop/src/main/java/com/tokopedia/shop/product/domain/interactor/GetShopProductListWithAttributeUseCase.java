@@ -24,7 +24,7 @@ import rx.functions.Func2;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopProductViewModel>> {
+public class GetShopProductListWithAttributeUseCase extends UseCase<PagingList<ShopProductViewModel>> {
 
     private final static String SHOP_REQUEST = "SHOP_REQUEST";
 
@@ -35,11 +35,11 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
     private final GetProductCampaignsUseCase getProductCampaignsUseCase;
 
     @Inject
-    public GetShopProductWithWishListUseCase(GetShopProductListUseCase getShopProductListUseCase,
-                                             GetWishListUseCase getWishListUseCase,
-                                             GetProductCampaignsUseCase getProductCampaignsUseCase,
-                                             UserSession userSession,
-                                             ShopProductMapper shopProductMapper) {
+    public GetShopProductListWithAttributeUseCase(GetShopProductListUseCase getShopProductListUseCase,
+                                                  GetWishListUseCase getWishListUseCase,
+                                                  GetProductCampaignsUseCase getProductCampaignsUseCase,
+                                                  UserSession userSession,
+                                                  ShopProductMapper shopProductMapper) {
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.getWishListUseCase = getWishListUseCase;
         this.getProductCampaignsUseCase = getProductCampaignsUseCase;
