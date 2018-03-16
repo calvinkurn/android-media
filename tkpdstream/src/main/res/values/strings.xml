@@ -57,5 +57,6 @@
     <string name="you_have_been_idle_for_too_long">Anda telah dikeluarkan dari chatroom karena
         terlalu lama tidak aktif.</string>
     <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
+    <string name="lets_join_channel">Yuk gabung sekarang di channel %s</string>
 
 </resources>

@@ -294,10 +294,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (item.getItemId() == R.id.action_share) {
             analytics.eventClickShare();
             ShareData shareData = ShareData.Builder.aShareData()
-                    .setName("Judul")
-                    .setDescription("Konten")
-                    .setImgUri("ImageUri")
-                    .setUri("URL")
+                    .setName(viewModel.getChannelName())
+                    .setDescription(String.format(getString(R.string.lets_join_channel),
+                            viewModel.getChannelName()))
+                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
+                    .setUri(viewModel.getChannelUrl())
                     .setType(ShareData.FEED_TYPE)
                     .build();
 
@@ -858,7 +859,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
 
-        viewModel.setTotalParticipant(participantCount);
+//        viewModel.setTotalParticipant(participantCount);
+        viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
         setToolbarParticipantCount();
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
@@ -868,7 +870,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
         try {
-            viewModel.setTotalParticipant(participantCount);
+//            viewModel.setTotalParticipant(participantCount);
             setToolbarParticipantCount();
 //        adapter.addAction(userActionViewModel);
 //        adapter.notifyItemInserted(0);
