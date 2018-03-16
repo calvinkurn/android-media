@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -403,10 +404,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview) {
+    public void displayQualityInfo(String qualityAverage, float rating, String totalReview) {
         View qualityContentBottomSheet = getLayoutInflater().inflate(R.layout.partial_shop_page_bottom_sheet_product_quality, null);
-        ImageView ratingBarImageView = qualityContentBottomSheet.findViewById(R.id.image_view_rating_bar);
-        ratingBarImageView.setImageResource(qualityRatingStarImageRes);
+        RatingBar ratingBar = qualityContentBottomSheet.findViewById(R.id.product_rating);
+        ratingBar.setRating(rating);
 
         TextView averageTextView = qualityContentBottomSheet.findViewById(R.id.text_view_product_quality);
         averageTextView.setText(qualityAverage);
