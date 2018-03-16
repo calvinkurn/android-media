@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
@@ -14,7 +15,7 @@ import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductWithWishListUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -35,7 +36,7 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
-    private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
+    private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
@@ -44,14 +45,14 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     private final UserSession userSession;
 
     @Inject
-    public ShopProductListPresenter(GetShopProductWithWishListUseCase getShopProductWithWishListUseCase,
+    public ShopProductListPresenter(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
                                     RemoveFromWishListUseCase removeFromWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseUseCase getShopEtalaseUseCase,
                                     UserSession userSession) {
-        this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
+        this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
@@ -152,7 +153,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     private void getShopProductWithWishList(final String shopId, final String keyword, final String etalaseId, final int wholesale, final int page, final int orderBy) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
-        getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
+        getShopProductListWithAttributeUseCase.execute(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -173,6 +174,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     }
 
     public void addToWishList(final String productId) {
+        if (!userSession.isLoggedIn() && isViewAttached()) {
+            getView().onErrorAddToWishList(new UserNotLoginException());
+            return;
+        }
         RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
@@ -223,6 +228,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     @Override
     public void detachView() {
         super.detachView();
-        getShopProductWithWishListUseCase.unsubscribe();
+        getShopProductListWithAttributeUseCase.unsubscribe();
     }
 }

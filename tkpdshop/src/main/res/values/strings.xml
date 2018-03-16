@@ -97,6 +97,7 @@
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
+    <string name="shop_product_empty_title_desc">Tidak ada produk di etalase ini</string>
 
 
 </resources>

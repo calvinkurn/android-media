@@ -37,6 +37,7 @@ public class ShopReputationView extends BaseCustomView {
     private BottomSheetDialog dialog;
 
     private boolean showTooltip;
+    private int medalSize;
 
     public ShopReputationView(Context context) {
         super(context);
@@ -58,6 +59,8 @@ public class ShopReputationView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopReputationView);
         try {
             showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
+            medalSize = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_size,
+                    getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size));
         } finally {
             styledAttributes.recycle();
         }
@@ -88,9 +91,7 @@ public class ShopReputationView extends BaseCustomView {
         }
     }
 
-    private void updateMedalView(LinearLayout reputationLayout,
-                                 @DrawableRes int imageResource,
-                                 int levelMedal) {
+    private void updateMedalView(LinearLayout reputationLayout, @DrawableRes int imageResource, int levelMedal) {
         int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
@@ -103,9 +104,7 @@ public class ShopReputationView extends BaseCustomView {
         }
     }
 
-    private void setToolTip(final String pointValue,
-                            final int medalType,
-                            final int level) {
+    private void setToolTip(final String pointValue, final int medalType, final int level) {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,19 +113,15 @@ public class ShopReputationView extends BaseCustomView {
                 dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
                 TextView point = dialog.findViewById(R.id.reputation_point);
 
-                String pointText = TextUtils.isEmpty(pointValue)
-                        || pointValue.equals("0") ?
+                String pointText = TextUtils.isEmpty(pointValue) || pointValue.equals("0") ?
                         getContext().getString(R.string.no_reputation_yet) :
-                        String.valueOf(pointValue) +
-                                " " + getContext().getString(R.string.point);
+                        String.valueOf(pointValue) + " " + getContext().getString(R.string.point);
 
-                if (point != null) point.setText(pointText);
-
-                LinearLayout sellerReputation = dialog.findViewById(R.id
-                        .seller_reputation);
-
+                if (point != null) {
+                    point.setText(pointText);
+                }
+                LinearLayout sellerReputation = dialog.findViewById(R.id.seller_reputation);
                 updateMedalView(sellerReputation, getIconResource(medalType), level);
-
                 Button closeButton = dialog.findViewById(R.id.close_button);
 
                 if (closeButton != null)
@@ -144,8 +139,7 @@ public class ShopReputationView extends BaseCustomView {
     private ImageView getGeneratedMedalImage(@DrawableRes int imageResource) {
         ImageView imageView = new ImageView(getContext());
         imageView.setAdjustViewBounds(true);
-        int size = getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, size);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, medalSize);
         imageView.setLayoutParams(param);
         imageView.setImageResource(imageResource);
         return imageView;

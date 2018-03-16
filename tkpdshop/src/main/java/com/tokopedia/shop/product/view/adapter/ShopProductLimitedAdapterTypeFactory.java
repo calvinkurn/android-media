@@ -7,15 +7,18 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedSearchViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 /**
@@ -24,6 +27,8 @@ import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
+    private final SearchInputView.Listener searchInputViewListener;
+    private final View.OnClickListener searchInputViewOnClickListener;
     private final ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final View.OnClickListener showMoreProductOnClickListener;
     private final View.OnClickListener showMoreEtalaseOnClickListener;
@@ -32,13 +37,17 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final ShopPagePromoWebView.Listener promoWebViewListener;
     private final ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
 
-    public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
+    public ShopProductLimitedAdapterTypeFactory(SearchInputView.Listener searchInputViewListener,
+                                                View.OnClickListener searchInputViewOnClickListener,
+                                                ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 View.OnClickListener showMoreProductOnClickListener,
                                                 View.OnClickListener showMoreEtalaseOnClickListener,
                                                 ShopProductClickedListener shopProductClickedListener,
                                                 EmptyViewHolder.Callback emptyProductOnClickListener,
                                                 ShopPagePromoWebView.Listener promoWebViewListener,
                                                 ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
+        this.searchInputViewListener = searchInputViewListener;
+        this.searchInputViewOnClickListener = searchInputViewOnClickListener;
         this.promoViewHolderListener = promoViewHolderListener;
         this.showMoreProductOnClickListener = showMoreProductOnClickListener;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -56,6 +65,10 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     @Override
     public int type(EmptyModel viewModel) {
         return EmptyViewHolder.LAYOUT;
+    }
+
+    public int type(ShopProductLimitedSearchViewModel shopProductLimitedSearchViewModel) {
+        return ShopProductLimitedSearchViewHolder.LAYOUT;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -76,6 +89,8 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
             return new LoadingShimmeringGridViewHolder(parent);
         } else if (type == EmptyViewHolder.LAYOUT) {
             return new EmptyViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == ShopProductLimitedSearchViewHolder.LAYOUT) {
+            return new ShopProductLimitedSearchViewHolder(parent, searchInputViewListener, searchInputViewOnClickListener);
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
