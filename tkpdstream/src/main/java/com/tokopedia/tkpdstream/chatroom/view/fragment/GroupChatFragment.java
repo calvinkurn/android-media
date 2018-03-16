@@ -901,8 +901,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         try {
             mChannel = openChannel;
             try {
-                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
-                        1));
+                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant())));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
