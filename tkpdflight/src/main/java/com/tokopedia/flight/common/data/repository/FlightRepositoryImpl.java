@@ -53,7 +53,6 @@ import rx.functions.Func2;
  */
 
 public class FlightRepositoryImpl implements FlightRepository {
-    private static final String DEFAULT_EMPTY_VALUE = "";
     private BannerDataSource bannerDataSource;
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;

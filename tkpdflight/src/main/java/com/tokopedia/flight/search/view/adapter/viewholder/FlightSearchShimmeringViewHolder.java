@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 
 /**
- * Created by alvarisi on 12/22/17.
+ * @author  by alvarisi on 12/22/17.
  */
 
 public class FlightSearchShimmeringViewHolder extends AbstractViewHolder<LoadingModel> {
@@ -33,6 +33,12 @@ public class FlightSearchShimmeringViewHolder extends AbstractViewHolder<Loading
         View partialView = inflater.inflate(R.layout.partial_flight_search_shimmering_loading, null, false);
         partialView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         linearLayout.removeAllViews();
+        if (partialView.getMeasuredHeight() > 0){
+            renderLoadingItem(inflater, partialView);
+        }
+    }
+
+    private void renderLoadingItem(LayoutInflater inflater, View partialView) {
         int numRows = Resources.getSystem().getDisplayMetrics().heightPixels / partialView.getMeasuredHeight();
         for (int i = 1; i < numRows; i++) {
             View newPartialView = inflater.inflate(R.layout.partial_flight_search_shimmering_loading, null, false);
