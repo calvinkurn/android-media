@@ -60,6 +60,7 @@ import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -780,7 +781,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     private void sendAnalyticsAdd(ProductViewModel viewModel) {
         List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
-                Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
         for (String labelAnalytics : listLabelAnalytics) {
@@ -794,7 +794,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     private void sendAnalyticsAddMore(ProductViewModel viewModel) {
         List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
-                Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
         for (String labelAnalytics : listLabelAnalytics) {
@@ -973,6 +972,25 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void showInstallSellerApp() {
         ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
+    }
+
+    @Override
+    public List<ProductVideoViewModel> getVideoIdList() {
+        if (currentProductViewModel == null || currentProductViewModel.getProductVideo() == null ||
+                currentProductViewModel.getProductVideo().size() == 0){
+            return new ArrayList<>();
+        }
+        return currentProductViewModel.getProductVideo();
+    }
+
+    @Override
+    public void updateVideoIdList(ArrayList<String> videoIdList) {
+        List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
+        for (String videoId : videoIdList) {
+            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(videoId);
+            productVideoViewModelList.add(productVideoViewModel);
+        }
+        currentProductViewModel.setProductVideo(productVideoViewModelList);
     }
 
     @Override

@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductVariantOptionParent implements Parcelable{
-    @SerializedName("pv")
-    @Expose
-    private int pv; // id for this variant
 
     @SerializedName("v")
     @Expose
@@ -28,7 +25,7 @@ public class ProductVariantOptionParent implements Parcelable{
 
     @SerializedName(value="opt", alternate={"option"})
     @Expose
-    private List<ProductVariantOptionChild> productVariantOptionChild = new ArrayList<>();;
+    private List<ProductVariantOptionChild> productVariantOptionChild = new ArrayList<>();
 
     @SerializedName("name")
     @Expose
@@ -41,14 +38,6 @@ public class ProductVariantOptionParent implements Parcelable{
     @SerializedName("unit_name")
     @Expose
     private String unitName; // ex: "" (for no unit),  "International"
-
-    public int getPv() {
-        return pv;
-    }
-
-    public void setPv(int pv) {
-        this.pv = pv;
-    }
 
     public int getV() {
         return v;
@@ -117,7 +106,6 @@ public class ProductVariantOptionParent implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.pv);
         dest.writeInt(this.v);
         dest.writeInt(this.vu);
         dest.writeInt(this.position);
@@ -131,7 +119,6 @@ public class ProductVariantOptionParent implements Parcelable{
     }
 
     protected ProductVariantOptionParent(Parcel in) {
-        this.pv = in.readInt();
         this.v = in.readInt();
         this.vu = in.readInt();
         this.position = in.readInt();

@@ -31,7 +31,7 @@ import java.util.Random;
  */
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
-    public static final String FILE_IMAGE_EXT = ".jpg";
+    public static final String FILE_IMAGE_EXT = ".png"; //to handle transparent issues.
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
@@ -107,7 +107,7 @@ public class FileUtils {
         if (bitmap != null) {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
             byte[] bytes;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
             bytes = bao.toByteArray();
             return writeImageToTkpdPath(bytes);
         } else {
@@ -429,7 +429,7 @@ public class FileUtils {
         Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         if (tempPicToUpload != null) {
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
+            tempPicToUpload.compress(Bitmap.CompressFormat.PNG, compressionQuality, bao);
             return bao.toByteArray();
         }
         return null;
