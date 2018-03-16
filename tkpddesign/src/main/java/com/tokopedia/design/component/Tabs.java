@@ -1,4 +1,4 @@
-package com.tokopedia.design.tab;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package com.tokopedia.design.dialog;
+package com.tokopedia.design.component;
 
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.base.BaseDialog;
 
 /**
  * Created by meyta on 2/14/18.

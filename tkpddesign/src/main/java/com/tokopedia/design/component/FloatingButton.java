@@ -1,4 +1,4 @@
-package com.tokopedia.design.button;
+package com.tokopedia.design.component;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.component.ButtonCompat;
 
 /**
  * Created by meyta on 1/29/18.

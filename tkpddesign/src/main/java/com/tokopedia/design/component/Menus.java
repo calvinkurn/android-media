@@ -1,4 +1,4 @@
-package com.tokopedia.design.menu;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.ArrayRes;
@@ -209,6 +209,21 @@ public class Menus extends BaseBottomSheetView {
                 return TYPE_FOOTER;
             }
             return TYPE_ITEM;
+        }
+    }
+
+    public class ItemMenus {
+
+        public String title;
+        public int icon;
+
+        public ItemMenus(String title) {
+            this.title = title;
+        }
+
+        public ItemMenus(String title, int icon) {
+            this.title = title;
+            this.icon = icon;
         }
     }
 }

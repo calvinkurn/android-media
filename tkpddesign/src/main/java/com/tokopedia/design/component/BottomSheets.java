@@ -1,8 +1,10 @@
-package com.tokopedia.design.bottomsheet;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
+
+import com.tokopedia.design.bottomsheet.BaseBottomSheetView;
 
 /**
  * Created by meta on 15/03/18.

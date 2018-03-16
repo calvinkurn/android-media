@@ -1,4 +1,4 @@
-package com.tokopedia.design.tooltip;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
