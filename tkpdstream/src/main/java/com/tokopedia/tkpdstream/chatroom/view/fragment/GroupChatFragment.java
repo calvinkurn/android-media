@@ -665,8 +665,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
         setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
+        autoExpand(channelInfoViewModel.getVoteInfoViewModel().isVoted());
         channelUrl = channelInfoViewModel.getChannelUrl();
         channelInfoDialog.setContentView(createBottomSheetView(checkPollValid(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel()), channelInfoViewModel.getChannelViewModel()));
+    }
+
+    private void autoExpand(boolean voted) {
+        if(!voted){
+            expand(voteBody);
+        }
     }
 
     void setVisibilityHeader(int visible) {
