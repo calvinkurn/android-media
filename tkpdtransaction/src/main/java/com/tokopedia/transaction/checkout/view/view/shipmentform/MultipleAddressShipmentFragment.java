@@ -195,7 +195,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     protected void initialVar() {
-
+        getActivity().setTitle(getString(R.string.toolbar_title_shipment_courier));
     }
 
     @Override

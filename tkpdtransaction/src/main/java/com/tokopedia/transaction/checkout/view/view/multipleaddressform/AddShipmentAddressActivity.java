@@ -90,6 +90,12 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setNavigationIcon(R.drawable.ic_clear_24dp);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.add_shipping_address_fragment;
     }

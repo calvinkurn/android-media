@@ -259,7 +259,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initialVar() {
-        getActivity().setTitle("Kurir Pengiriman");
+        getActivity().setTitle(getString(R.string.toolbar_title_shipment_courier));
     }
 
     @Override

@@ -258,6 +258,10 @@
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
     <string name="label_sub_total">Sub total</string>
     <string name="label_select_all">Pilih Semua</string>
+    <string name="label_note_for_seller">Catatan untuk penjual (Opsional)</string>
+    <string name="label_button_add_note">Tulis Catatan</string>
+    <string name="toolbar_title_shipment_courier">Kurir Pengiriman</string>
+    <string name="label_hint_search_address">Cari Alamat</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>
