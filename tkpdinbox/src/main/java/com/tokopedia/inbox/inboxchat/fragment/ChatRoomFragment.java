@@ -358,12 +358,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 replyColumn.clearFocus();
 
+                UnifyTracking.eventAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACH,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
                 myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
                 myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ChatRoomFragmentPermissionsDispatcher.actionImagePickerWithCheck(ChatRoomFragment.this);
+                        ChatRoomFragmentPermissionsDispatcher.actionImagePickerWin0thCheck(ChatRoomFragment.this);
                     }
                 });
                 myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
