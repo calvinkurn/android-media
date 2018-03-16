@@ -2,6 +2,7 @@ package com.tokopedia.design.bottomsheet;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 /**
  * Created by meta on 15/03/18.
@@ -32,7 +33,7 @@ public class BottomSheets extends BaseBottomSheetView {
     }
 
     @Override
-    protected void initView() {
+    protected void initView(View view) {
 
     }
 

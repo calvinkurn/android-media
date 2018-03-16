@@ -3,7 +3,6 @@ package com.tokopedia.design.menu;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,8 +34,6 @@ import java.util.List;
 
 public class Menus extends BaseBottomSheetView {
 
-    private BottomSheetDialog bottomSheetDialog;
-
     private MenusAdapter menusAdapter;
 
     public Menus(@NonNull Context context) {
@@ -57,20 +54,14 @@ public class Menus extends BaseBottomSheetView {
     }
 
     @Override
-    protected void initView() {
-
-        bottomSheetDialog = new BottomSheetDialog(this.getContext());
-        View sheetView = getLayoutInflater().inflate(R.layout.widget_menu, null);
-
-        RecyclerView recyclerView = sheetView.findViewById(R.id.rv_menu);
+    protected void initView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.rv_menu);
 
         menusAdapter = new MenusAdapter();
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(menusAdapter);
-
-        bottomSheetDialog.setContentView(sheetView);
     }
 
     public List<ItemMenus> getItemMenuList() {
@@ -118,14 +109,6 @@ public class Menus extends BaseBottomSheetView {
 
     public interface OnItemMenuClickListener {
         void onClick(ItemMenus itemMenus, int pos);
-    }
-
-    public void show() {
-        this.bottomSheetDialog.show();
-    }
-
-    public void dismiss() {
-        this.bottomSheetDialog.dismiss();
     }
 
     private class MenusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

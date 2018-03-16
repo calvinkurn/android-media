@@ -55,11 +55,11 @@ public class Tooltip extends BaseBottomSheetView {
     }
 
     @Override
-    protected void initView() {
-        tvTitle = findViewById(R.id.tv_title_tooltip);
-        tvDesc = findViewById(R.id.tv_desc_tooltip);
-        icon = findViewById(R.id.iv_icon_tooltip);
-        btnAction = findViewById(R.id.btn_action_tooltip);
+    protected void initView(View view) {
+        tvTitle = view.findViewById(R.id.tv_title_tooltip);
+        tvDesc = view.findViewById(R.id.tv_desc_tooltip);
+        icon = view.findViewById(R.id.iv_icon_tooltip);
+        btnAction = view.findViewById(R.id.btn_action_tooltip);
     }
 
     public void setTitle(String title) {
