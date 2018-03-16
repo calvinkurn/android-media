@@ -207,7 +207,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             }
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
             Resources resources = itemView.getContext().getResources();
