@@ -67,12 +67,9 @@ public class ShopProductMapper {
     }
 
     public void mergeShopProductViewModelWithWishList(List<ShopProductViewModel> shopProductViewModelList, List<String> productWishList, boolean showWishlist) {
-        int sizeProduct = shopProductViewModelList.size();
-        for (int i = 0; i < sizeProduct; i++) {
-            ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
+        for (ShopProductViewModel shopProductViewModel : shopProductViewModelList) {
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProductViewModel.getId(), productWishList));
             shopProductViewModel.setShowWishList(showWishlist);
-            shopProductViewModelList.add(shopProductViewModel);
         }
     }
 
