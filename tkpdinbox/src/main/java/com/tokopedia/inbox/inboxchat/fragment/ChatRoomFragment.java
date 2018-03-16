@@ -367,7 +367,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ChatRoomFragmentPermissionsDispatcher.actionImagePickerWin0thCheck(ChatRoomFragment.this);
+                        ChatRoomFragmentPermissionsDispatcher.actionImagePickerWithCheck(ChatRoomFragment.this);
                     }
                 });
                 myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
