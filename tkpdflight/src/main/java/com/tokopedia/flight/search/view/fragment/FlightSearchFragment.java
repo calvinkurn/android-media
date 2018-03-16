@@ -488,6 +488,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void onSwipeRefresh() {
+        removeBottomPaddingForSortAndFilterActionButton();
+        super.onSwipeRefresh();
+    }
+
+    @Override
     public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
         // do nothing
     }
