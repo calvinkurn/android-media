@@ -862,8 +862,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         try {
 //        viewModel.setTotalParticipant(participantCount);
-            viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
-                    1));
+            if (!userActionViewModel.getUserId().equalsIgnoreCase(userSession.getUserId())) {
+                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
+                        1));
+            }
             setToolbarParticipantCount();
             adapter.addAction(userActionViewModel);
             adapter.notifyItemInserted(0);
