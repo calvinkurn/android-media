@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdtrain.homepage.presentation.view;
+package com.tokopedia.tkpdtrain.homepage.presentation.fragment;
 
 
 import android.app.Activity;
@@ -25,8 +25,10 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.common.constant.TrainAppScreen;
 import com.tokopedia.tkpdtrain.common.presentation.TextInputView;
 import com.tokopedia.tkpdtrain.homepage.di.TrainHomepageComponent;
+import com.tokopedia.tkpdtrain.homepage.presentation.activity.TrainPassengerPickerActivity;
 import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 import com.tokopedia.tkpdtrain.search.presentation.TrainSearchActivity;
@@ -45,6 +47,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
+    private static final int PASSENGER_REQUEST_CODE = 1004;
+
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
 
     private AppCompatButton buttonOneWayTrip;
@@ -157,6 +161,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
             }
         });
 
+        textInputViewPassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(TrainPassengerPickerActivity.getCallingIntent(getActivity(), getHomepageViewModel().getTrainPassengerViewModel()),
+                        PASSENGER_REQUEST_CODE);
+            }
+        });
+
         buttonSearchTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,8 +188,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.white));
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonOneWayTrip.setSelected(true);
         buttonRoundTrip.setSelected(false);
         textInputViewDateReturn.setVisibility(View.GONE);
@@ -201,8 +211,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.grey_400));
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.white));
         buttonOneWayTrip.setSelected(false);
         buttonRoundTrip.setSelected(true);
         textInputViewDateReturn.setVisibility(View.VISIBLE);
@@ -288,11 +296,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         startActivity(intent);
     }
 
-    @Override
-    public TrainHomepageViewModel getHomepageViewModel() {
-        return viewModel;
-    }
-
     @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
@@ -324,6 +327,17 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     trainHomepagePresenterImpl.onDepartureStationChanged(viewModel);
                 }
                 break;
+            case PASSENGER_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    TrainPassengerViewModel passengerViewModel = data.getParcelableExtra(TrainPassengerPickerActivity.EXTRA_PASS_DATA);
+                    trainHomepagePresenterImpl.onTrainPassengerChange(passengerViewModel);
+                }
         }
     }
+
+    @Override
+    public TrainHomepageViewModel getHomepageViewModel() {
+        return viewModel;
+    }
+
 }

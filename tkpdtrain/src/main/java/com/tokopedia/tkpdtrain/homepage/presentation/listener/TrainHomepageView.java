@@ -10,7 +10,7 @@ import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataVi
 import java.util.Date;
 
 /**
- * Created by Rizky on 21/02/18.
+ * @author Rizky on 21/02/18.
  */
 
 public interface TrainHomepageView extends CustomerView{
@@ -31,11 +31,12 @@ public interface TrainHomepageView extends CustomerView{
 
     void showReturnDateMax100Days(@StringRes int resId);
 
+    void setHomepageViewModel(TrainHomepageViewModel viewModel);
+
+    void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel);
+
     TrainHomepageViewModel getHomepageViewModel();
 
     Activity getActivity();
 
-    void setHomepageViewModel(TrainHomepageViewModel viewModel);
-
-    void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel);
 }

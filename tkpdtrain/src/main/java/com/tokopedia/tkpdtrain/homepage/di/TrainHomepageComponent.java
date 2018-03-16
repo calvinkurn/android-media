@@ -1,8 +1,7 @@
 package com.tokopedia.tkpdtrain.homepage.di;
 
 import com.tokopedia.tkpdtrain.common.di.TrainComponent;
-import com.tokopedia.tkpdtrain.common.di.TrainModule;
-import com.tokopedia.tkpdtrain.homepage.presentation.view.TrainHomepageFragment;
+import com.tokopedia.tkpdtrain.homepage.presentation.fragment.TrainHomepageFragment;
 
 import dagger.Component;
 
