@@ -14,226 +14,235 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:elevation="@dimen/flight_elevation_level"
-    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/margin_small">
-
-        <TextView
-            android:id="@+id/tv_airline"
-            style="@style/TextView.Small"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            tools:text="Garuda" />
-
-        <com.tokopedia.flight.common.view.FlightMultiAirlineView
-            android:id="@+id/view_multi_airline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/tv_airline"
-            android:layout_toRightOf="@id/tv_airline"
-            android:orientation="horizontal" />
-
-        <TextView
-            android:id="@+id/airline_refundable_info"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bg_rect_stroke_flight_grey"
-            android:paddingBottom="@dimen/padding_vvs"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_vvs"
-            android:textSize="10sp"
-            android:visibility="gone"
-            tools:text="Refundable"
-            tools:visibility="visible" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:background="@color/grey_200" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="horizontal">
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical">
+
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/padding_small"
-            android:layout_marginEnd="@dimen/padding_vs"
-            android:layout_marginRight="@dimen/padding_vs">
-
-            <ImageView
-                android:id="@+id/departure_time_circle"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginEnd="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_marginTop="@dimen/margin_vs"
-                app:srcCompat="@drawable/selector_flight_detail" />
-
-
-            <ImageView
-                android:id="@+id/arrival_time_circle"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxxs"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                app:srcCompat="@drawable/selector_flight_detail" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/arrival_time_circle"
-                android:layout_below="@id/departure_time_circle"
-                android:layout_centerHorizontal="true"
-                android:background="@color/grey_300" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_small"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/margin_small">
 
             <TextView
-                android:id="@+id/departure_time"
-                style="@style/TextView.Small.Bold"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:textSize="13sp"
-                tools:text="19:25" />
+                android:id="@+id/tv_airline"
+                style="@style/TextView.Small"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                tools:text="Garuda" />
 
-            <TextView
-                android:id="@+id/arrival_time"
-                style="@style/TextView.Small.Bold"
-                android:layout_alignLeft="@+id/container_flight_time"
-                android:layout_alignStart="@+id/container_flight_time"
-                android:layout_below="@+id/container_flight_time"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:textSize="13sp"
-                tools:text="19:25" />
-
-            <TextView
-                android:id="@+id/arrival_add_day"
-                style="@style/TextView.Micro.BlackSecondary"
-                android:layout_alignBaseline="@id/arrival_time"
-                android:layout_below="@+id/container_flight_time"
-                android:layout_toEndOf="@+id/arrival_time"
-                android:layout_toRightOf="@+id/arrival_time"
-                android:visibility="gone"
-                tools:text="(+1 Hari)"
-                tools:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/container_flight_time"
+            <com.tokopedia.flight.common.view.FlightMultiAirlineView
+                android:id="@+id/view_multi_airline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/departure_time"
-                android:layout_alignStart="@+id/departure_time"
-                android:layout_below="@+id/departure_time"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/flight_time"
-                    style="@style/TextView.Micro.BlackDisabled"
-                    android:textSize="11sp"
-                    tools:text="8j 20m" />
-            </LinearLayout>
-        </RelativeLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="end"
-            android:orientation="vertical">
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/tv_airline"
+                android:layout_toRightOf="@id/tv_airline"
+                android:orientation="horizontal" />
 
             <TextView
-                android:id="@+id/saving_price"
+                android:id="@+id/airline_refundable_info"
                 style="@style/TextView.Micro.BlackSecondary"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_rect_stroke_flight_grey"
+                android:paddingBottom="@dimen/padding_vvs"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vvs"
                 android:textSize="10sp"
                 android:visibility="gone"
-                tools:text="Rp25000"
+                tools:text="Refundable"
                 tools:visibility="visible" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:background="@color/grey_200" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs">
+
+                <ImageView
+                    android:id="@+id/departure_time_circle"
+                    android:layout_width="@dimen/image_width_xxxs"
+                    android:layout_height="@dimen/image_width_xxxs"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="@dimen/margin_sm"
+                    android:layout_marginRight="@dimen/margin_sm"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    app:srcCompat="@drawable/selector_flight_detail" />
+
+
+                <ImageView
+                    android:id="@+id/arrival_time_circle"
+                    android:layout_width="@dimen/image_width_xxxs"
+                    android:layout_height="@dimen/image_width_xxxs"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/margin_sm"
+                    android:layout_marginRight="@dimen/margin_sm"
+                    app:srcCompat="@drawable/selector_flight_detail" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/arrival_time_circle"
+                    android:layout_below="@id/departure_time_circle"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/grey_300" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vvvs"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:orientation="horizontal">
+                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/total_price"
-                    style="@style/TextView.Title.Bold"
-                    tools:text="Rp25.000" />
+                    android:id="@+id/departure_time"
+                    style="@style/TextView.Small.Bold"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:textSize="13sp"
+                    tools:text="19:25" />
 
                 <TextView
+                    android:id="@+id/arrival_time"
+                    style="@style/TextView.Small.Bold"
+                    android:layout_alignLeft="@+id/container_flight_time"
+                    android:layout_alignStart="@+id/container_flight_time"
+                    android:layout_below="@+id/container_flight_time"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:textSize="13sp"
+                    tools:text="19:25" />
+
+                <TextView
+                    android:id="@+id/arrival_add_day"
                     style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_alignBaseline="@id/arrival_time"
+                    android:layout_below="@+id/container_flight_time"
+                    android:layout_toEndOf="@+id/arrival_time"
+                    android:layout_toRightOf="@+id/arrival_time"
+                    android:visibility="gone"
+                    tools:text="(+1 Hari)"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/container_flight_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@id/total_price"
-                    android:layout_toEndOf="@id/total_price"
-                    android:layout_toRightOf="@id/total_price"
-                    android:text="/org"
-                    android:textSize="10sp" />
+                    android:layout_alignLeft="@+id/departure_time"
+                    android:layout_alignStart="@+id/departure_time"
+                    android:layout_below="@+id/departure_time"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/flight_time"
+                        style="@style/TextView.Micro.BlackDisabled"
+                        android:textSize="11sp"
+                        tools:text="8j 20m" />
+                </LinearLayout>
             </RelativeLayout>
 
 
             <LinearLayout
-                android:id="@+id/container_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/padding_small"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/padding_vvs">
+                android:layout_gravity="bottom"
+                android:gravity="end"
+                android:orientation="vertical">
 
                 <TextView
-                    style="@style/TextView.Micro.Green"
-                    android:text="@string/flight_label_see_detail" />
+                    android:id="@+id/saving_price"
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:text="Rp25000"
+                    tools:visibility="visible" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vvvs"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/total_price"
+                        style="@style/TextView.Title.Bold"
+                        tools:text="Rp25.000" />
+
+                    <TextView
+                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/total_price"
+                        android:layout_toEndOf="@id/total_price"
+                        android:layout_toRightOf="@id/total_price"
+                        android:text="/org"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/container_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/padding_vvs">
+
+                    <TextView
+                        style="@style/TextView.Micro.Green"
+                        android:text="@string/flight_label_see_detail" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
-
-
         </LinearLayout>
+
+
     </LinearLayout>
 </LinearLayout>

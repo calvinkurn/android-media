@@ -79,4 +79,8 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showEmptyFlightStateView();
 
     void removeBottomPaddingForSortAndFilterActionButton();
+
+    void loadInitialData();
+
+    void actionFetchFlightSearchData();
 }

@@ -172,6 +172,7 @@ public class AttributesDigital implements Parcelable {
         dest.writeString(this.smsState);
         dest.writeByte(this.enableVoucher ? (byte) 1 : (byte) 0);
         dest.writeString(this.voucherAutoCode);
+        dest.writeInt(this.isCouponActive);
         dest.writeParcelable(this.userInputPrice, flags);
     }
 
@@ -188,6 +189,7 @@ public class AttributesDigital implements Parcelable {
         this.smsState = in.readString();
         this.enableVoucher = in.readByte() != 0;
         this.voucherAutoCode = in.readString();
+        this.isCouponActive = in.readInt();
         this.userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
     }
 

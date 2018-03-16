@@ -23,6 +23,8 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory> 
     public static class Item {
         private String keyword;
         private String url;
+        private String currentPage;
+        private String previousKey;
 
         public String getKeyword() {
             return keyword;
@@ -38,6 +40,22 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory> 
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public void setCurrentPage(String currentPage) {
+            this.currentPage = currentPage;
+        }
+
+        public String getCurrentPage() {
+            return currentPage;
+        }
+
+        public void setPreviousKey(String previousKey) {
+            this.previousKey = previousKey;
+        }
+
+        public String getPreviousKey() {
+            return previousKey;
         }
     }
 

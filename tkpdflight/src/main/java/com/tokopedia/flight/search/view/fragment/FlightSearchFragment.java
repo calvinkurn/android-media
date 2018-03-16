@@ -286,12 +286,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         flightSearchPresenter.attachView(this);
 
         flightSearchPresenter.checkCacheExpired();
-        loadInitialData();
     }
 
     @Override
     public void loadInitialData() {
-        actionFetchFlightSearchData();
+        flightSearchPresenter.attachView(this);
+        flightSearchPresenter.initialize();
     }
 
     @Override
@@ -346,7 +346,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    private void actionFetchFlightSearchData() {
+    public void actionFetchFlightSearchData() {
         setUpProgress();
         if (getAdapter().getItemCount() == 0) {
             showLoading();
@@ -486,6 +486,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onErrorGetDetailFlightDeparture(Throwable e) {
         // do nothing
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        removeBottomPaddingForSortAndFilterActionButton();
+        super.onSwipeRefresh();
     }
 
     @Override
@@ -697,7 +703,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
-        actionFetchFlightSearchData();
+        flightSearchPresenter.initialize();
     }
 
     public void onResetFilterClicked() {
