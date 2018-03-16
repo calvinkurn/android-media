@@ -54,6 +54,7 @@
             app:layout_constraintEnd_toStartOf="@+id/shop_info"
             app:layout_constraintStart_toEndOf="@+id/image_view_shop_status"
             app:layout_constraintTop_toTopOf="@+id/image_view_shop_status"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_shop_status"
             tools:layout_conversion_absoluteHeight="21dp"
             tools:layout_conversion_absoluteWidth="121dp"
             tools:text="@string/app_name" />
@@ -80,9 +81,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/shop_page_header_margin"
             android:layout_marginStart="@dimen/shop_page_header_margin"
-            android:layout_marginTop="@dimen/new_margin_tiny"
             app:layout_constraintStart_toEndOf="@+id/image_view_location"
             app:layout_constraintTop_toTopOf="@+id/image_view_location"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_location"
             tools:layout_conversion_absoluteHeight="15dp"
             tools:layout_conversion_absoluteWidth="90dp"
             tools:text="@string/app_name" />
