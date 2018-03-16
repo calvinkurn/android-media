@@ -714,7 +714,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEventTrackingShopPage(HashMap<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
-        Log.d("eventTracking", eventTracking.toString());
+        Log.i("eventTracking", eventTracking.toString());
     }
 
     @Override
