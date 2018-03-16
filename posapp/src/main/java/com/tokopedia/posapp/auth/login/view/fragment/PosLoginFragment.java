@@ -80,7 +80,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     protected void initInjector() {
-        PosLoginComponent posLoginComponent = (DaggerPosLoginComponent) DaggerPosLoginComponent
+        PosLoginComponent posLoginComponent = DaggerPosLoginComponent
                 .builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();

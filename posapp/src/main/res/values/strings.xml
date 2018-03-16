@@ -58,5 +58,8 @@
     <string name="product_online_price_label">Harga Online</string>
     <string name="product_outlet_price_label">Harga Outlet</string>
     <string name="product_shown_status">Status</string>
-    <string name="currency_symbol_idr">Rp</string>
+    <string name="currency_symbol_idr">Rp \u0020</string>
+    <string name="edit_product_title">Edit Harga</string>
+    <string name="edit_product_cancel">Batal</string>
+    <string name="edit_product_save">Simpan</string>
 </resources>

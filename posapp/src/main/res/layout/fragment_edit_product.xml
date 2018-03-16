@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/new_margin_big">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_product_title"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        style="@style/TextView.SubHeadline.Bold" />
+
+    <TextView
+        android:id="@+id/text_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        style="@style/TextView.Title"
+        tools:text="Samsung Galaxy A8 2018 Gold Garansi Resmi Samsung"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_online_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_product_name"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:hint="@string/product_online_price_label"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+        style="@style/TextInputLayout">
+
+        <com.tokopedia.seller.common.widget.PrefixEditText
+            android:id="@+id/edit_online_price"
+            style="@style/EditText.Currency"
+            android:layout_width="match_parent"
+            app:prefix="@string/currency_symbol_idr"
+            tools:text="12312321312312312312312312321312312" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_outlet_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_online_price"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:hint="@string/product_outlet_price_label"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+        style="@style/TextInputLayout">
+
+        <com.tokopedia.seller.common.widget.PrefixEditText
+            android:id="@+id/edit_outlet_price"
+            style="@style/EditText.Currency"
+            android:layout_width="match_parent"
+            app:prefix="@string/currency_symbol_idr"
+            tools:text="12312321312312312312312312321312312" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_outlet_price"
+        android:layout_toLeftOf="@+id/button_save"
+        android:text="@string/edit_product_cancel"
+        style="@style/PosButton.Submit.Dialog"/>
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_outlet_price"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/edit_product_save"
+        style="@style/PosButton.Submit.Dialog" />
+
+</RelativeLayout>

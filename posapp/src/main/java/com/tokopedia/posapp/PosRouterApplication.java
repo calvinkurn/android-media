@@ -30,15 +30,15 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.applink.DeepLinkDelegate;
 import com.tokopedia.posapp.applink.DeeplinkHandlerActivity;
+import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
+import com.tokopedia.posapp.base.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.cache.PosCacheHandler;
+import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
 import com.tokopedia.posapp.di.component.ReactNativeComponent;
 import com.tokopedia.posapp.di.module.PosReactNativeModule;
-import com.tokopedia.posapp.auth.login.view.activity.PosLoginActivity;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
-import com.tokopedia.posapp.base.drawer.DrawerPosHelper;
-import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import javax.inject.Inject;
@@ -52,12 +52,12 @@ import rx.Observable;
 public class PosRouterApplication extends MainApplication implements
         TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter {
 
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private ReactNativeComponent reactNativeComponent;
     @Inject
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+    private ReactNativeComponent reactNativeComponent;
 
     @Override
     public String getOutletName() {
@@ -164,7 +164,7 @@ public class PosRouterApplication extends MainApplication implements
     public Intent getHomeIntent(Context context) {
         startService(SchedulerService.getDefaultServiceIntent(this));
         Intent intent;
-        if(isOutletSelected(context)) {
+        if (isOutletSelected(context)) {
             intent = new Intent(this, ProductListActivity.class);
         } else {
             intent = new Intent(this, OutletActivity.class);
@@ -182,8 +182,8 @@ public class PosRouterApplication extends MainApplication implements
         return null;
     }
 
-    public Class getHomeActivity(Context context){
-        if(isOutletSelected(context)) {
+    public Class getHomeActivity(Context context) {
+        if (isOutletSelected(context)) {
             return ProductListActivity.class;
         } else {
             return OutletActivity.class;

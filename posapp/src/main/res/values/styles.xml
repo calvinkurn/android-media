@@ -24,4 +24,8 @@
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
+    <style name="PosButton.Submit.Dialog">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textSize">@dimen/font_title_big</item>
+    </style>
 </resources>
