@@ -13,7 +13,7 @@
         android:layout_height="?android:actionBarSize"
         android:background="@drawable/bg_toolbar_drop_shadow">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/btn_back"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
@@ -35,7 +35,7 @@
             android:textColor="@color/tkpd_main_text_color_payment_module"
             android:textSize="18sp" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/btn_close"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
