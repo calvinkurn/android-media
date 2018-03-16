@@ -214,6 +214,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     @Override
     public void detachView() {
         super.detachView();
+        flightAirlineHardRefreshUseCase.unsubscribe();
         flightSearchWithSortUseCase.unsubscribe();
         flightSearchStatisticUseCase.unsubscribe();
         flightBookingGetSingleResultUseCase.unsubscribe();
@@ -285,7 +286,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().showGetListError(e);
+                if (isViewAttached()) {
+                    getView().showGetListError(e);
+                }
             }
 
             @Override
@@ -360,7 +363,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 @Override
                 public void onError(Throwable e) {
                     e.printStackTrace();
-                    getView().showGetListError(e);
+                    if (isViewAttached()) {
+                        getView().showGetListError(e);
+                    }
                 }
 
                 @Override
