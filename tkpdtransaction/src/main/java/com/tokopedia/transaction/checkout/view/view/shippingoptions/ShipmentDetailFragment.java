@@ -490,6 +490,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
             switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
         }
+        btSave.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        btSave.setTextColor(getResources().getColor(R.color.white));
     }
 
     private void formatInsuranceTncView() {
