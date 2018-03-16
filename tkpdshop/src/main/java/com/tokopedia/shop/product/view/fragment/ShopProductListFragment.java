@@ -25,6 +25,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
@@ -60,11 +63,12 @@ import javax.inject.Inject;
 public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
-    public static final int REQUEST_CODE_ETALASE = 12912;
-    public static final int REQUEST_CODE_SORT = 12913;
+    private static final int REQUEST_CODE_USER_LOGIN = 100;
+    private static final int REQUEST_CODE_ETALASE = 200;
+    private static final int REQUEST_CODE_SORT = 300;
 
-    public static final int LAYOUT_GRID_TYPE = 65;
-    public static final int LAYOUT_LIST_TYPE = 97;
+    private static final int LAYOUT_GRID_TYPE = 65;
+    private static final int LAYOUT_LIST_TYPE = 97;
     private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
             new Pair<>(ShopProductViewHolder.LAYOUT, LAYOUT_GRID_TYPE),
             new Pair<>(ShopProductSingleViewHolder.LAYOUT, LAYOUT_LIST_TYPE),
@@ -323,7 +327,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onErrorAddToWishList(Throwable e) {
-
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
