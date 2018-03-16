@@ -39,10 +39,10 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     public static final int REQUEST_CODE_GET_VIDEO = 400;
     public static final int REQUEST_CODE_GET_DESCRIPTION = 401;
 
-    public static final int STATUS_PRE_ORDER_INACTIVE = 0;
-    public static final int STATUS_PRE_ORDER_ACTIVE = 1;
+    private static final int STATUS_PRE_ORDER_INACTIVE = 0;
+    private static final int STATUS_PRE_ORDER_ACTIVE = 1;
 
-    public static final int PREORDER_DAY = 1; // from api
+    private static final int PREORDER_DAY = 1; // from api
 
     private LabelView descriptionLabelView;
     private LabelView labelAddVideoView;
@@ -51,7 +51,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     private Listener listener;
 
-    private String description;
+    private String descriptionText;
     private boolean goldMerchant;
 
     /**
@@ -66,7 +66,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         descriptionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductDescriptionViewHolder.this.listener.goToProductDescriptionPicker(getDescription());
+                ProductDescriptionViewHolder.this.listener.goToProductDescriptionPicker(descriptionText);
             }
         });
         labelAddVideoView = view.findViewById(R.id.label_add_video_view);
@@ -122,7 +122,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     @Override
     public void renderData(ProductViewModel model) {
         setCondition((int) model.getProductCondition());
-        setDescription(model.getProductDescription());
+        setDescriptionText(model.getProductDescription());
         setLabelViewText(model.getProductVideo());
         if (model.getProductPreorder() != null && model.getProductPreorder().getPreorderProcessTime() > 0) {
             expandPreOrder(true);
@@ -136,7 +136,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     @Override
     public void updateModel(ProductViewModel model) {
         model.setProductCondition(getCondition());
-        model.setProductDescription(getDescription());
+        model.setProductDescription(descriptionText);
         model.setProductPreorder(getPreOrder());
     }
 
@@ -168,17 +168,13 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         labelAddVideoView.setVisibility(View.VISIBLE);
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? "" :
-                description.trim();
-        if (TextUtils.isEmpty(this.description)) {
+    private void setDescriptionText(String descriptionText) {
+        this.descriptionText = descriptionText == null ? "" :
+                descriptionText.trim();
+        if (TextUtils.isEmpty(this.descriptionText)) {
             descriptionLabelView.setContent(descriptionLabelView.getContext().getString(R.string.label_add));
         } else {
-            descriptionLabelView.setContent(this.description);
+            descriptionLabelView.setContent(this.descriptionText);
         }
     }
 
@@ -197,8 +193,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             case REQUEST_CODE_GET_DESCRIPTION:
                 if (resultCode == Activity.RESULT_OK) {
                     String description = data.getStringExtra(ProductAddDescriptionPickerFragment.PRODUCT_DESCRIPTION);
-                    setDescription(description);
-                    listener.onDescriptionTextChanged(getDescription());
+                    setDescriptionText(description);
+                    listener.onDescriptionTextChanged(descriptionText);
                 }
                 break;
         }
@@ -220,11 +216,11 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         }
     }
 
-    public void expandPreOrder(boolean expand) {
+    private void expandPreOrder(boolean expand) {
         preOrderExpandableOptionSwitch.setExpand(expand);
     }
 
-    public int getPreOrderUnit() {
+    private int getPreOrderUnit() {
         if (preOrderExpandableOptionSwitch.isExpanded()) {
             return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
         } else {
@@ -232,7 +228,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         }
     }
 
-    public @NonNull ProductPreOrderViewModel getPreOrder() {
+    @NonNull
+    private ProductPreOrderViewModel getPreOrder() {
         ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
         if (getPreOrderValue() > 0) {
             productPreorderViewModel.setPreorderStatus(STATUS_PRE_ORDER_ACTIVE);
@@ -245,11 +242,11 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         return productPreorderViewModel;
     }
 
-    public void setPreOrderUnit(int unit) {
+    private void setPreOrderUnit(int unit) {
         preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public int getPreOrderValue() {
+    private int getPreOrderValue() {
         if (preOrderExpandableOptionSwitch.isExpanded()) {
             return (int) preOrderSpinnerCounterInputView.getCounterValue();
         } else {
@@ -257,7 +254,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         }
     }
 
-    public void setPreOrderValue(int value) {
+    private void setPreOrderValue(int value) {
         preOrderSpinnerCounterInputView.setCounterValue(value);
     }
 
