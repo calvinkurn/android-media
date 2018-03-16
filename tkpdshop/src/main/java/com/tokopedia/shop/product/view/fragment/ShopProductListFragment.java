@@ -125,7 +125,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_search);
-        emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+        if (TextUtils.isEmpty(keyword)) {
+            emptyModel.setTitle(getString(R.string.shop_product_empty_title_desc));
+        } else {
+            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+        }
         emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
         return emptyModel;
     }

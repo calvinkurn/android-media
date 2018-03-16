@@ -123,6 +123,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
             shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
             physicalShopLabelView.setVisibility(View.VISIBLE);
+        } else {
             officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
             shopOwnerLabelView.setVisibility(View.GONE);
         }
