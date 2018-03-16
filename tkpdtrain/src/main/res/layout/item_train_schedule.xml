@@ -39,6 +39,8 @@
             <TextView
                 android:id="@+id/class_name"
                 style="@style/TextView.Micro"
+                android:layout_alignTop="@+id/train_name"
+                android:layout_alignBottom="@+id/train_name"
                 android:layout_alignParentRight="true"
                 tools:text="Ekonomi (C)" />
 
