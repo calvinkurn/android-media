@@ -308,7 +308,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
         if (selectedPassenger.getPassengerBirthdate() != null &&
                 !selectedPassenger.getPassengerBirthdate().isEmpty() &&
-                getView().isMandatoryDoB()) {
+                (isChildPassenger() || isInfantPassenger() || getView().isMandatoryDoB())) {
             currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
         }
 
