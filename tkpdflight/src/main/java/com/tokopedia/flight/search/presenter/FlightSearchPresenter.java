@@ -94,9 +94,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             sortOptionId),
                     getSubscriberSortFlight(sortOptionId));
         } else {
-            if (!getView().isReturning()) {
-
-            } else {
                 flightSearchMetaUseCase.execute(
                         FlightSearchUseCase.generateRequestParams(
                                 flightSearchApiRequestModel,
@@ -105,9 +102,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                 null,
                                 FlightSortOption.NO_PREFERENCE),
                         getSubscriberSearchFlightCloud());
-            }
-
-
         }
     }
 
@@ -355,6 +349,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void initialize() {
+        getView().showSortRouteLoading();
         if (!getView().isReturning()) {
             flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
                 @Override
