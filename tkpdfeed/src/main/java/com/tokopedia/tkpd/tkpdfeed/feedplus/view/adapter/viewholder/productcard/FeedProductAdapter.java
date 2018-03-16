@@ -65,6 +65,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     private ActivityCardViewModel activityCardViewModel;
     private final FeedPlus.View viewListener;
     protected final Context context;
+    private int positionInFeed;
 
     public FeedProductAdapter(Context context, FeedPlus.View viewListener) {
         this.context = context;
@@ -149,8 +150,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             return 0;
     }
 
-    public void setData(ActivityCardViewModel activityCardViewModel) {
+    public void setData(ActivityCardViewModel activityCardViewModel, int positionInFeed) {
         this.activityCardViewModel = activityCardViewModel;
+        this.positionInFeed = positionInFeed;
         notifyDataSetChanged();
     }
 
@@ -179,10 +181,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 activityCardViewModel.getEventLabel()
         );
 
-        doTrackingEnhancedEcommerce(position);
+        doTrackingEnhancedEcommerce();
     }
 
-    private void doTrackingEnhancedEcommerce(int position) {
+    private void doTrackingEnhancedEcommerce() {
         String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
         int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
 
@@ -193,7 +195,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 FeedEnhancedTracking.Promotion.createContentNameProductUpload(
                         activityCardViewModel.getTotalProduct()),
                 String.valueOf(activityCardViewModel.getTotalProduct()),
-                position,
+                this.positionInFeed,
                 "-",
                 activityCardViewModel.getHeader().getShopId(),
                 SHOP.replace(SHOP_ID_BRACKETS, shopId)
