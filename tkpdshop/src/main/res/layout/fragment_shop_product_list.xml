@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:elevation="0dp">
+        android:elevation="@dimen/toolbar_elevation">
 
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search_input_view"

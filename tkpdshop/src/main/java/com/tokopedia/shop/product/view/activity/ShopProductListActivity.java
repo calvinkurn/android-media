@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
@@ -76,5 +77,10 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
             component = ShopComponentInstance.getComponent(getApplication());
         }
         return component;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_shop_product_list;
     }
 }
