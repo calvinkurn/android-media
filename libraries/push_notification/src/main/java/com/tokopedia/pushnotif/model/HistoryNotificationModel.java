@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.fcm.applink.model;
+package com.tokopedia.pushnotif.model;
 
 /**
  * @author ricoharisin .

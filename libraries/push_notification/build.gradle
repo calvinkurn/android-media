@@ -1,0 +1,12 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.neenbedankt.android-apt'
+
+
+dependencies {
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.playServicesDependencies.firebase
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.libraries.applink)
+}

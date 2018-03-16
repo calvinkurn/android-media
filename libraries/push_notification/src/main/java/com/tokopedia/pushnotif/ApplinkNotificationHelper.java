@@ -1,13 +1,11 @@
-package com.tokopedia.tkpd.fcm.applink;
+package com.tokopedia.pushnotif;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,16 +13,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.R;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.fcm.applink.model.ApplinkNotificationModel;
-import com.tokopedia.tkpd.fcm.applink.model.HistoryNotificationModel;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.model.HistoryNotificationModel;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,19 +31,6 @@ import java.util.concurrent.TimeoutException;
 public class ApplinkNotificationHelper {
 
     private Context context;
-    private static final String GROUP_KEY_TALK = "com.tokopedia.tkpd.TALK";
-    private static final String GROUP_KEY_TOPCHAT = "com.tokopedia.tkpd.TOPCHAT";
-    private static final String GROUP_KEY_TRANSACTION = "com.tokopedia.tkpd.TRANSACTION";
-    private static final String GROUP_KEY_NEW_ORDER = "com.tokopedia.tkpd.NEWORDER";
-    private static final String GROUP_KEY_RESOLUTION = "com.tokopedia.tkpd.RESOLUTION";
-    private static final String GROUP_KEY_GENERAL = "com.tokopedia.tkpd.GENERAL";
-    private static final int NOTIFICATION_ID = 100;
-    private static final int NOTIFICATION_ID_TALK = 200;
-    private static final int NOTIFICATION_ID_CHAT = 300;
-    private static final int NOTIFICATION_ID_TRANSACTION = 400;
-    private static final int NOTIFICATION_ID_SELLER = 500;
-    private static final int NOTIFICATION_ID_RESOLUTION = 600;
-
 
     public ApplinkNotificationHelper(Context context) {
         this.context = context;
@@ -71,22 +52,22 @@ public class ApplinkNotificationHelper {
 
     private NotificationCompat.Builder buildNotification(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
         builder.setContentText(applinkNotificationModel.getSummary());
         builder.setSmallIcon(getDrawableIcon());
 
-        if (notificationId == NOTIFICATION_ID_TALK || notificationId == NOTIFICATION_ID_CHAT) {
-            String key = notificationId == NOTIFICATION_ID_TALK ? HistoryNotification.KEY_TALK : HistoryNotification.KEY_CHAT;
+        if (notificationId == Constant.NotificationId.TALK || notificationId == Constant.NotificationId.CHAT) {
+            String key = notificationId == Constant.NotificationId.TALK ? HistoryNotification.KEY_TALK : HistoryNotification.KEY_CHAT;
             HistoryNotification historyNotification = new HistoryNotification(context, key);
             if (historyNotification.getListHistoryNotificationModel().size() == 0) {
                 builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationId));
                 builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
             } else {
-                if (notificationId == NOTIFICATION_ID_TALK) {
-                    builder.setContentIntent(createPendingIntent(Constants.Applinks.TALK, notificationId));
+                if (notificationId == Constant.NotificationId.TALK) {
+                    builder.setContentIntent(createPendingIntent(ApplinkConst.TALK, notificationId));
                 } else {
-                    builder.setContentIntent(createPendingIntent(Constants.Applinks.TOPCHAT_IDLESS, notificationId));
+                    builder.setContentIntent(createPendingIntent(ApplinkConst.TOPCHAT_IDLESS, notificationId));
                 }
             }
 
@@ -108,7 +89,7 @@ public class ApplinkNotificationHelper {
         } else {
             builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(applinkNotificationModel.getSummary()));
-            builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(),NOTIFICATION_ID));
+            builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL));
         }
 
         builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
@@ -118,7 +99,7 @@ public class ApplinkNotificationHelper {
     }
 
     private NotificationCompat.Style generateStyle(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
-        if (notificationId == NOTIFICATION_ID_TALK) {
+        if (notificationId == Constant.NotificationId.TALK) {
             HistoryNotification historyNotification = new HistoryNotification(context, HistoryNotification.KEY_TALK);
             NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("ME");
 
@@ -158,55 +139,56 @@ public class ApplinkNotificationHelper {
     }
 
     private Boolean allowToShow(String toUserId) {
-        return toUserId.equals(SessionHandler.getLoginID(context));
+        String loginId = ((AbstractionRouter) context.getApplicationContext()).getSession().getUserId();
+        return toUserId.equals(loginId);
     }
 
     private int generateNotifictionId(String appLink) {
         if (appLink.contains("talk")) {
-            return NOTIFICATION_ID_TALK;
+            return Constant.NotificationId.TALK;
         } else if (appLink.contains("message")) {
-            return NOTIFICATION_ID;
+            return Constant.NotificationId.GENERAL;
         } else if (appLink.contains("chat")) {
-            return NOTIFICATION_ID_CHAT;
+            return Constant.NotificationId.CHAT;
         } else if (appLink.contains("buyer")) {
-            return NOTIFICATION_ID_TRANSACTION;
+            return Constant.NotificationId.TRANSACTION;
         } else if (appLink.contains("seller")) {
-            return NOTIFICATION_ID_SELLER;
+            return Constant.NotificationId.SELLER;
         } else if (appLink.contains("resolution")) {
-            return NOTIFICATION_ID_RESOLUTION;
+            return Constant.NotificationId.RESOLUTION;
         } else {
-            return NOTIFICATION_ID;
+            return Constant.NotificationId.GENERAL;
         }
     }
 
     private String generateGroupKey(String appLink) {
         if (appLink.contains("talk")) {
-            return GROUP_KEY_TALK;
+            return Constant.NotificationGroup.TALK;
         } else if (appLink.contains("chat")) {
-            return GROUP_KEY_TOPCHAT;
+            return Constant.NotificationGroup.TOPCHAT;
         } else if (appLink.contains("buyer")) {
-            return GROUP_KEY_TRANSACTION;
+            return Constant.NotificationGroup.TRANSACTION;
         } else if (appLink.contains("seller")) {
-            return GROUP_KEY_NEW_ORDER;
+            return Constant.NotificationGroup.NEW_ORDER;
         } else if (appLink.contains("resolution")) {
-            return GROUP_KEY_RESOLUTION;
+            return Constant.NotificationGroup.RESOLUTION;
         } else {
-            return GROUP_KEY_GENERAL;
+            return Constant.NotificationGroup.GENERAL;
         }
     }
 
     private int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_status_bar_toped_topseller;
+            return R.drawable.ic_status_bar_notif_sellerapp;
         else
-            return R.drawable.ic_stat_notify_white;
+            return R.drawable.ic_status_bar_notif_customerapp;
     }
 
     private int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp())
-            return R.drawable.qc_launcher2;
+            return R.drawable.ic_big_notif_sellerapp;
         else
-            return R.drawable.qc_launcher;
+            return R.drawable.ic_big_notif_customerapp;
     }
 
     private Bitmap getBitmap(String url) {
@@ -230,10 +212,10 @@ public class ApplinkNotificationHelper {
 
     private PendingIntent createPendingIntent(String appLinks, int notificationId) {
         PendingIntent resultPendingIntent;
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+        Intent intent = RouteManager.getIntent(context, appLinks);
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
-        bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+        bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
         intent.putExtras(bundle);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(

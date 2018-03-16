@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.fcm.applink.model;
+package com.tokopedia.pushnotif.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,1 +1,3 @@
 include "libraries:react_native"
+include "libraries:push_notification"
+include "libraries:applink"

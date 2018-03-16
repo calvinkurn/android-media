@@ -233,7 +233,9 @@ ext {
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
             cacheApi        : ":tkpdcacheapi",
-            reactNative     : ":libraries:react_native"
+            reactNative     : ":libraries:react_native",
+            pushNotif       : ":libraries:push_notification",
+            applink         : ":libraries:applink"
     ]
 
 }
