@@ -2,7 +2,7 @@ package com.tokopedia.tkpdtrain.common.domain;
 
 
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.tkpdtrain.station.domain.model.TrainStation;
 
 import java.util.List;
@@ -23,5 +23,5 @@ public interface TrainRepository {
 
     Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam);
 
-    Observable<List<TrainSchedule>> getAvailabilitySchedule(String idTrain);
+    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain);
 }

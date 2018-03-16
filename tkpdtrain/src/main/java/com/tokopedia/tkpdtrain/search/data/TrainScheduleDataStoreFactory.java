@@ -5,7 +5,7 @@ import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainListSchedulesEntity;
 import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
 
@@ -64,15 +64,15 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainSchedule>> getAvailabilitySchedule(String idTrain) {
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain) {
         return cloudDataStore.getDatasAvailability(idTrain)
-                .flatMap(new Func1<List<ScheduleAvailabilityEntity>, Observable<List<TrainSchedule>>>() {
+                .flatMap(new Func1<List<ScheduleAvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
-                    public Observable<List<TrainSchedule>> call(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
+                    public Observable<List<TrainScheduleViewModel>> call(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {
                         return dbDataStore.updateDataAvailability(scheduleAvailabilityEntities)
-                                .flatMap(new Func1<Boolean, Observable<List<TrainSchedule>>>() {
+                                .flatMap(new Func1<Boolean, Observable<List<TrainScheduleViewModel>>>() {
                                     @Override
-                                    public Observable<List<TrainSchedule>> call(Boolean isSuccessSavedData) {
+                                    public Observable<List<TrainScheduleViewModel>> call(Boolean isSuccessSavedData) {
                                         if (!isSuccessSavedData) {
                                             return Observable.empty();
                                         } else {

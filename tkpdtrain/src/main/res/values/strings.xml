@@ -18,4 +18,13 @@
     <string name="train_station_popular_label">Populer</string>
     <string name="train_station_toolbar_title">Pencarian Stasiun</string>
     <string name="train_search_toolbar_title">Pencarian</string>
+    
+    <string name="search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
+    <string name="search_reset_button">Ganti Pencarian</string>
+    <string name="search_no_connection_title">Tidak Ada Koneksi Internet</string>
+    <string name="search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
+
+    <!-- TODO check with designer again for this bottom action -->
+    <string name="sort">Urutkan</string>
+    <string name="filter">Filter</string>
 </resources>

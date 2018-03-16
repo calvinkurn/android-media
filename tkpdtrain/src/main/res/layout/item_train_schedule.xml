@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:cardElevation="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <LinearLayout
+                android:id="@+id/flag_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:orientation="horizontal"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/train_name"
+                android:layout_below="@+id/flag_item"
+                style="@style/TextView.Small.Bold"
+                tools:text="Gajahwong 154" />
+
+            <TextView
+                android:id="@+id/class_name"
+                style="@style/TextView.Micro"
+                android:layout_alignParentRight="true"
+                tools:text="Ekonomi (C)" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/train_name"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/bg_line_separator_vertical" />
+
+            <include
+                android:id="@+id/detail_trip"
+                layout="@layout/view_train_search_trip_detail" />
+
+            <TextView
+                android:id="@+id/availability_seat"
+                style="@style/TextView.Micro"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/separator"
+                android:textColor="@color/colorRed"
+                tools:text="Sisa 3 kursi" />
+
+            <TextView
+                android:id="@+id/price"
+                style="@style/TextView.Small.Bold"
+                android:layout_toLeftOf="@+id/unit"
+                android:layout_below="@+id/availability_seat"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/margin_vs"
+                tools:text="Rp430.000" />
+
+            <TextView
+                android:id="@+id/unit"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/availability_seat"
+                android:layout_alignBaseline="@+id/price"
+                android:text=" /org" />
+
+            <TextView
+                android:id="@+id/tap_for_details"
+                style="@style/TextView.Micro.Green"
+                android:layout_below="@+id/price"
+                android:layout_alignParentRight="true"
+                android:text="Lihat Detail"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

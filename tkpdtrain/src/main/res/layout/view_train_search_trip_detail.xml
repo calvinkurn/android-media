@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_trip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/separator">
+
+    <LinearLayout
+        android:id="@+id/layout_detail_trip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/origin_code"
+                style="@style/TextView.Small.Bold"
+                android:layout_gravity="center_horizontal"
+                android:text="JKT" />
+
+            <TextView
+                android:id="@+id/departure_time"
+                style="@style/TextView.Micro"
+                android:layout_below="@+id/origin_code"
+                android:layout_gravity="center_horizontal"
+                android:text="10:45" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_large"
+            android:layout_marginRight="@dimen/margin_large"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/empty_string"
+                style="@style/TextView.Small.Bold"
+                android:layout_gravity="center_horizontal"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/duration"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_gravity="center_horizontal"
+                android:text="1h 4j 8m" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/destination_code"
+                style="@style/TextView.Small.Bold"
+                android:layout_gravity="center_horizontal"
+                android:text="JKT" />
+
+            <TextView
+                android:id="@+id/arrival_time"
+                style="@style/TextView.Micro"
+                android:layout_below="@+id/origin_code"
+                android:layout_gravity="center_horizontal"
+                android:text="10:45" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/layout_detail_trip"
+        android:layout_alignRight="@+id/layout_detail_trip"
+        android:layout_below="@+id/layout_detail_trip"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image1"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@drawable/ic_round_fill_green" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/bg_line_separator_vertical" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image3"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_toRightOf="@+id/image2"
+            app:srcCompat="@drawable/ic_round_fill_green" />
+    </RelativeLayout>
+
+</RelativeLayout>
