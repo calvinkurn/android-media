@@ -42,13 +42,15 @@ public class MultipleAddressAdapter
         this.listener = listener;
         adapterObjectList = new ArrayList<>();
         adapterObjectList.addAll(addressData);
+        adapterObjectList.add(addressData);
     }
 
     @Override
     public int getItemViewType(int position) {
         if(adapterObjectList.get(position) instanceof MultipleAddressAdapterData)
             return MULTIPLE_ADDRESS_ADAPTER_LAYOUT;
-        else if(position == adapterObjectList.size()) return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
+        else if(adapterObjectList.get(position) instanceof List)
+            return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
         else
             return super.getItemViewType(position);
     }
@@ -73,7 +75,7 @@ public class MultipleAddressAdapter
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
             itemViewHolder.bindAdapterView(data, this, listener, isFirstItem(data));
-        } else if (holder instanceof MultipleAddressFooterViewHolder)
+        } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
 
