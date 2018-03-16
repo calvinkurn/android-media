@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.tokopedia.design.bottomsheet.BaseBottomSheetView;
+import com.tokopedia.design.base.BaseBottomSheetView;
 
 /**
  * Created by meta on 15/03/18.

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.BaseBottomSheetView;
+import com.tokopedia.design.base.BaseBottomSheetView;
 
 /**
  * Created by meyta on 2/13/18.

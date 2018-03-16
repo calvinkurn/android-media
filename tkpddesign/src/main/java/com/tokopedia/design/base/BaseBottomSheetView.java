@@ -1,4 +1,4 @@
-package com.tokopedia.design.bottomsheet;
+package com.tokopedia.design.base;
 
 import android.app.Service;
 import android.content.Context;

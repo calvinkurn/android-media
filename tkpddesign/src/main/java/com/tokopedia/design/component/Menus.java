@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.bottomsheet.BaseBottomSheetView;
+import com.tokopedia.design.base.BaseBottomSheetView;
 
 import java.util.ArrayList;
 import java.util.List;
