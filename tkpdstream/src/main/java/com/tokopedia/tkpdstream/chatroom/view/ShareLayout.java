@@ -51,7 +51,7 @@ public class ShareLayout {
     private ShareFeedAdapter adapter;
     private ArrayList<ShareItem> list;
 
-    private String urlLink, applink, channelUrl, channelName;
+    private String urlLink, channelUrl, channelName;
 
     public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager, String channelUrl, String channelName, StreamAnalytics analytics) {
         this.fragment = null;
@@ -72,8 +72,6 @@ public class ShareLayout {
     private void initVar(Context context) {
         String link = "https://tokopedia.com/groupchat/{channel_url}";
         urlLink = link.replace("{channel_url}", channelUrl);
-        String linkApp = "tokopedia://groupchat/{channel_url}";
-        applink = linkApp.replace("{channel_url}", channelUrl);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         appGrid.setLayoutManager(layoutManager);
         list = new ArrayList<>();
@@ -121,12 +119,28 @@ public class ShareLayout {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, generateShareText(urlLink));
-                sendIntent.setType("text/plain");
-                activity.startActivity(sendIntent);
-                analytics.eventClickShareChannel(channelType, channelName);
+
+                String description = generateShareText(urlLink);
+                if (activity.getApplication() instanceof StreamModuleRouter) {
+                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink
+                            (shareModel.getId(), shareModel.getName
+                                    (), description, shareModel.getImgUri(), urlLink, activity, new
+                                    StreamModuleRouter.ShareListener() {
+                                        @Override
+                                        public void onGenerateLink(String shareContents, String shareUri) {
+
+                                            Intent sendIntent = new Intent();
+                                            sendIntent.setAction(Intent.ACTION_SEND);
+                                            sendIntent.putExtra(Intent.EXTRA_TEXT, generateShareText(shareUri));
+                                            sendIntent.setType("text/plain");
+                                            activity.startActivity(sendIntent);
+                                            analytics.eventClickShareChannel(channelType, channelName);
+
+                                        }
+                                    });
+                }
+
+
             }
         };
     }
@@ -135,9 +149,24 @@ public class ShareLayout {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent smsIntent = MethodChecker.getSmsIntent(activity, generateShareText(urlLink));
-                activity.startActivity(smsIntent);
-                analytics.eventClickShareChannel(channelType, channelName);
+
+                String description = generateShareText(urlLink);
+                if (activity.getApplication() instanceof StreamModuleRouter) {
+                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getId(), shareModel.getName
+                            (), description, shareModel.getImgUri(), urlLink, activity, new StreamModuleRouter.ShareListener() {
+                        @Override
+                        public void onGenerateLink(String shareContents, String shareUri) {
+
+                            Intent smsIntent = MethodChecker.getSmsIntent(activity,
+                                    generateShareText(shareUri));
+                            activity.startActivity(smsIntent);
+                            analytics.eventClickShareChannel(channelType, channelName);
+
+                        }
+                    });
+                }
+
+
             }
         };
     }
@@ -160,22 +189,34 @@ public class ShareLayout {
         };
     }
 
-    private void shareToApp(final String appName, String channelType) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.setPackage(appName);
+    private void shareToApp(final String appName, final String channelType) {
 
-        if (!TextUtils.isEmpty(urlLink))
-            intent.putExtra(Intent.EXTRA_TEXT, generateShareText(urlLink));
+        String description = generateShareText(urlLink);
+        if (activity.getApplication() instanceof StreamModuleRouter) {
+            ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getId(), shareModel.getName
+                    (), description, shareModel.getImgUri(), urlLink, activity, new StreamModuleRouter.ShareListener() {
+                @Override
+                public void onGenerateLink(String shareContents, String shareUri) {
 
-        try {
-            activity.startActivity(intent);
-            analytics.eventClickShareChannel(channelType, channelName);
-        } catch (android.content.ActivityNotFoundException ex) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.setPackage(appName);
 
-            Toast.makeText(activity,
-                    activity.getString(R.string.error_apps_not_installed),
-                    Toast.LENGTH_SHORT).show();
+                    if (!TextUtils.isEmpty(shareUri))
+                        intent.putExtra(Intent.EXTRA_TEXT, generateShareText(shareUri));
+
+                    try {
+                        activity.startActivity(intent);
+                        analytics.eventClickShareChannel(channelType, channelName);
+                    } catch (android.content.ActivityNotFoundException ex) {
+
+                        Toast.makeText(activity,
+                                activity.getString(R.string.error_apps_not_installed),
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
         }
 
     }
@@ -199,23 +240,34 @@ public class ShareLayout {
             @Override
             public void onClick(View v) {
 
-                analytics.eventClickShareChannel(channelType, channelName);
-                PlusShare.Builder builder = new PlusShare.Builder(activity);
+                String description = generateShareText(urlLink);
+                if (activity.getApplication() instanceof StreamModuleRouter) {
+                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getId(), shareModel.getName
+                            (), description, shareModel.getImgUri(), urlLink, activity, new StreamModuleRouter.ShareListener() {
+                        @Override
+                        public void onGenerateLink(String shareContents, String shareUri) {
 
-                builder.setType("text/plain");
+                            analytics.eventClickShareChannel(channelType, channelName);
+                            PlusShare.Builder builder = new PlusShare.Builder(activity);
 
-                if (!TextUtils.isEmpty(urlLink))
-                    builder.setText(generateShareText(urlLink));
+                            builder.setType("text/plain");
 
-                if (!TextUtils.isEmpty(urlLink))
-                    builder.setContentUrl(Uri.parse(urlLink));
+                            if (!TextUtils.isEmpty(shareUri))
+                                builder.setText(generateShareText(shareUri));
 
-                if (fragment != null)
-                    fragment.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                else if (fragmentV4 != null)
-                    fragmentV4.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                else
-                    activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                            if (!TextUtils.isEmpty(shareUri))
+                                builder.setContentUrl(Uri.parse(shareUri));
+
+                            if (fragment != null)
+                                fragment.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                            else if (fragmentV4 != null)
+                                fragmentV4.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                            else
+                                activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+
+                        }
+                    });
+                }
             }
         };
     }
@@ -224,12 +276,25 @@ public class ShareLayout {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
-                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Activity.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Tokopedia", generateShareText(urlLink));
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-                analytics.eventClickShareChannel(channelType, channelName);
+
+                String description = generateShareText(urlLink);
+                if (activity.getApplication() instanceof StreamModuleRouter) {
+                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getId(), shareModel.getName
+                            (), description, shareModel.getImgUri(), urlLink, activity, new StreamModuleRouter.ShareListener() {
+                        @Override
+                        public void onGenerateLink(String shareContents, String shareUri) {
+
+                            dialog.dismiss();
+                            ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Activity.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Tokopedia", generateShareText
+                                    (shareUri));
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                            analytics.eventClickShareChannel(channelType, channelName);
+
+                        }
+                    });
+                }
             }
         };
     }
@@ -242,8 +307,8 @@ public class ShareLayout {
 
                 String description = generateShareText(urlLink);
                 if (activity.getApplication() instanceof StreamModuleRouter) {
-                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getName
-                            (), description, shareModel.getImgUri(), applink, activity, new StreamModuleRouter.ShareListener() {
+                    ((StreamModuleRouter) activity.getApplication()).generateBranchLink(shareModel.getId(), shareModel.getName
+                            (), description, shareModel.getImgUri(), urlLink, activity, new StreamModuleRouter.ShareListener() {
                         @Override
                         public void onGenerateLink(String shareContents, String shareUri) {
                             processShareFb(channelType, shareContents, shareUri);
@@ -295,7 +360,7 @@ public class ShareLayout {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse(shareUri));
 
-                    linkBuilder.setQuote(generateShareText(shareUri));
+                linkBuilder.setQuote(generateShareText(shareUri));
 
                 ShareLinkContent linkContent = linkBuilder.build();
                 shareDialog.show(linkContent);

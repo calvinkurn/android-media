@@ -1609,15 +1609,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void generateBranchLink(String title, String contentMessage, String imgUrl, String
+    public void generateBranchLink(String channelId, String title, String contentMessage, String
+            imgUrl, String
             shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
+                .setId(channelId)
                 .setName(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
-                .setType(ShareData.FEED_TYPE)
+                .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
 
         BranchSdkUtils.generateBranchLink(shareData, activity, new BranchSdkUtils.GenerateShareContents() {

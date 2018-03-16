@@ -294,6 +294,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (item.getItemId() == R.id.action_share) {
             analytics.eventClickShare();
             ShareData shareData = ShareData.Builder.aShareData()
+                    .setId(viewModel.getChannelUuid())
                     .setName(viewModel.getChannelName())
                     .setDescription(String.format(getString(R.string.lets_join_channel),
                             viewModel.getChannelName()))
@@ -454,7 +455,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         else
             actionButton.setText(R.string.lets_chat);
 
-        if(showActionButton)
+        if (showActionButton)
             actionButton.setVisibility(View.VISIBLE);
         else
             actionButton.setVisibility(View.GONE);
@@ -764,7 +765,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             public void run() {
                 channelInfoDialog.show();
             }
-        },DELAY_TIME);
+        }, DELAY_TIME);
     }
 
     @Override
@@ -860,7 +861,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
 
 //        viewModel.setTotalParticipant(participantCount);
-        viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
+        viewModel.setTotalParticipant(viewModel.getTotalParticipant());
         setToolbarParticipantCount();
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
@@ -1142,7 +1143,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onRedirectUrl(String url) {
         analytics.eventClickThumbnail(url);
-        if(!TextUtils.isEmpty(url)) {
+        if (!TextUtils.isEmpty(url)) {
             ((StreamModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
         }
     }
