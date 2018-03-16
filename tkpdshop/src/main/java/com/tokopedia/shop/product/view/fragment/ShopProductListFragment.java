@@ -346,7 +346,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onErrorRemoveFromWishList(Throwable e) {
-
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override

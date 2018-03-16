@@ -21,7 +21,9 @@ public class ShopProductRequestModel {
     private int perPage;
     private int wholesale;
 
+    // Additional param for query attribute
     private boolean shopClosed;
+    private boolean officialStore;
 
     public String getShopId() {
         return shopId;
@@ -85,6 +87,14 @@ public class ShopProductRequestModel {
 
     public void setShopClosed(boolean shopClosed) {
         this.shopClosed = shopClosed;
+    }
+
+    public boolean isOfficialStore() {
+        return officialStore;
+    }
+
+    public void setOfficialStore(boolean officialStore) {
+        this.officialStore = officialStore;
     }
 
     public HashMap<String, String> getHashMap() {

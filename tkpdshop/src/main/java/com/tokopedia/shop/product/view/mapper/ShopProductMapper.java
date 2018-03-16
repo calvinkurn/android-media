@@ -5,9 +5,9 @@ import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,31 +22,16 @@ public class ShopProductMapper {
     private static final String LABEL_CASHBACK = "Cashback";
     private static final String LABEL_PERCENTAGE = "%";
 
-    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList, boolean showWishList) {
+    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (ShopProduct shopProduct : shopProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct, showWishList);
-            shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
+            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    public List<ShopProductViewModel> convertFromProductCampaigns(
-            List<ShopProductViewModel> shopProduct, List<ShopProductCampaign> campaigns) {
-        for (ShopProductViewModel shopProductViewModel : shopProduct) {
-            for (ShopProductCampaign shopProductCampaign : campaigns) {
-                if (shopProductViewModel.getId().equalsIgnoreCase(shopProductCampaign.getProductId())) {
-                    shopProductViewModel.setDisplayedPrice(shopProductCampaign.getDiscountedPriceIdr());
-                    shopProductViewModel.setOriginalPrice(shopProductCampaign.getOriginalPriceIdr());
-                    shopProductViewModel.setDiscountPercentage(shopProductCampaign.getPercentageAmount());
-                }
-            }
-        }
-        return shopProduct;
-    }
-
-    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct, boolean showWishList) {
+    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(shopProduct.getProductId());
@@ -78,8 +63,29 @@ public class ShopProductMapper {
                 }
             }
         }
-        shopProductViewModel.setShowWishList(showWishList);
         return shopProductViewModel;
+    }
+
+    public void mergeShopProductViewModelWithWishList(List<ShopProductViewModel> shopProductViewModelList, List<String> productWishList, boolean showWishlist) {
+        int sizeProduct = shopProductViewModelList.size();
+        for (int i = 0; i < sizeProduct; i++) {
+            ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
+            shopProductViewModel.setWishList(WishListUtils.isWishList(shopProductViewModel.getId(), productWishList));
+            shopProductViewModel.setShowWishList(showWishlist);
+            shopProductViewModelList.add(shopProductViewModel);
+        }
+    }
+
+    public void mergeShopProductViewModelWithProductCampaigns(List<ShopProductViewModel> shopProductViewModelList, List<ShopProductCampaign> shopProductCampaignList) {
+        for (ShopProductViewModel shopProductViewModel : shopProductViewModelList) {
+            for (ShopProductCampaign shopProductCampaign : shopProductCampaignList) {
+                if (shopProductViewModel.getId().equalsIgnoreCase(shopProductCampaign.getProductId())) {
+                    shopProductViewModel.setDisplayedPrice(shopProductCampaign.getDiscountedPriceIdr());
+                    shopProductViewModel.setOriginalPrice(shopProductCampaign.getOriginalPriceIdr());
+                    shopProductViewModel.setDiscountPercentage(shopProductCampaign.getPercentageAmount());
+                }
+            }
+        }
     }
 
 

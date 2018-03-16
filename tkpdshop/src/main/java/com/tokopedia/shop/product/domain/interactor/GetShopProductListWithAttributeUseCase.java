@@ -3,12 +3,12 @@ package com.tokopedia.shop.product.domain.interactor;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;
@@ -59,36 +59,42 @@ public class GetShopProductListWithAttributeUseCase extends UseCase<PagingList<S
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
             @Override
             public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
-                // Show shop product list without wish list
-                if (shopProductPagingList.getList().size() <= 0 || isShopOwner(shopProductRequestModel.getShopId())) {
-                    return Observable.just(getShopProductViewModelList(new ArrayList<ShopProductCampaign>(), shopProductPagingList, new ArrayList<String>(), false));
-                }
-                final List<String> productIdList = new ArrayList<>();
-                for (ShopProduct shopProduct : shopProductPagingList.getList()) {
-                    productIdList.add(shopProduct.getProductId());
-                }
-
-                Observable<List<String>> wishlist = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
-                Observable<List<ShopProductCampaign>> campaigns = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
-
-                return Observable.zip(wishlist, campaigns, new Func2<List<String>, List<ShopProductCampaign>, PagingList<ShopProductViewModel>>() {
-                    @Override
-                    public PagingList<ShopProductViewModel> call(List<String> productWishList, List<ShopProductCampaign> shopProductCampaignResponse) {
-                        return getShopProductViewModelList(shopProductCampaignResponse, shopProductPagingList, productWishList, true);
-                    }
-                });
+                return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
             }
         });
     }
 
-    private PagingList<ShopProductViewModel> getShopProductViewModelList(
-            List<ShopProductCampaign> shopProductCampaignResponse, PagingList<ShopProduct> shopProductPagingList,
-            List<String> productIdList, boolean showWishList) {
-        PagingList<ShopProductViewModel> pagingList = new PagingList<>();
-        pagingList.setTotalData(shopProductPagingList.getTotalData());
-        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList, showWishList));
-        pagingList.setList(shopProductMapper.convertFromProductCampaigns(pagingList.getList(), shopProductCampaignResponse));
-        return pagingList;
+    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(
+            final ShopProductRequestModel shopProductRequestModel, final PagingList<ShopProduct> shopProductPagingList) {
+        List<String> defaultWishList = new ArrayList<>();
+        List<ShopProductCampaign> defaultShopProductCampaignList = new ArrayList<>();
+        Observable<List<String>> wishlistObservable = Observable.just(defaultWishList);
+        Observable<List<ShopProductCampaign>> campaignListObservable = Observable.just(defaultShopProductCampaignList);
+
+        final List<String> productIdList = new ArrayList<>();
+        for (ShopProduct shopProduct : shopProductPagingList.getList()) {
+            productIdList.add(shopProduct.getProductId());
+        }
+        if (!isShopOwner(shopProductRequestModel.getShopId())) {
+            wishlistObservable = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
+        }
+        if (shopProductRequestModel.isOfficialStore()) {
+            campaignListObservable = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
+        }
+
+        return Observable.zip(wishlistObservable, campaignListObservable, new Func2<List<String>, List<ShopProductCampaign>, PagingList<ShopProductViewModel>>() {
+            @Override
+            public PagingList<ShopProductViewModel> call(List<String> wishList, List<ShopProductCampaign> shopProductCampaignList) {
+                List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromShopProduct(shopProductPagingList.getList());
+                PagingList<ShopProductViewModel> pagingList = new PagingList<>();
+                pagingList.setTotalData(shopProductPagingList.getTotalData());
+                pagingList.setPaging(shopProductPagingList.getPaging());
+                pagingList.setList(shopProductViewModelList);
+                shopProductMapper.mergeShopProductViewModelWithWishList(shopProductViewModelList, wishList, !isShopOwner(shopProductRequestModel.getShopId()));
+                shopProductMapper.mergeShopProductViewModelWithProductCampaigns(shopProductViewModelList, shopProductCampaignList);
+                return pagingList;
+            }
+        });
     }
 
     private boolean isShopOwner(String shopId) {
