@@ -1,14 +1,11 @@
 package com.tokopedia.tkpd.campaign.view;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.SensorManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 
@@ -16,10 +13,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
-
-import java.util.List;
+import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 
 import static android.content.Context.SENSOR_SERVICE;
 
