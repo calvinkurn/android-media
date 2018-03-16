@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by normansyahputa on 2/23/18.
@@ -47,14 +48,14 @@ public abstract class GetShopProductAttributeUseCase<T> extends UseCase<T> {
         for (ShopProductViewModel shopProductViewModel : shopProductViewModelList) {
             productIdList.add(shopProductViewModel.getId());
         }
-        if (!isShopOwner) {
+        if (shopProductViewModelList.size() > 0 && !isShopOwner) {
             wishlistObservable = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
         }
-        if (officialStore) {
+        if (shopProductViewModelList.size() > 0 && officialStore) {
             campaignListObservable = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
         }
 
-        return Observable.zip(wishlistObservable, campaignListObservable, new Func2<List<String>, List<ShopProductCampaign>, List<ShopProductViewModel>>() {
+        return Observable.zip(wishlistObservable.subscribeOn(Schedulers.io()), campaignListObservable.subscribeOn(Schedulers.io()), new Func2<List<String>, List<ShopProductCampaign>, List<ShopProductViewModel>>() {
             @Override
             public List<ShopProductViewModel> call(List<String> wishList, List<ShopProductCampaign> shopProductCampaignList) {
                 shopProductMapper.mergeShopProductViewModelWithWishList(shopProductViewModelList, wishList, !isShopOwner);

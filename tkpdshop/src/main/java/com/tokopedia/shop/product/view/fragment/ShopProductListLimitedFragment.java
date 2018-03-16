@@ -32,6 +32,7 @@ import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
@@ -121,7 +122,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (shopInfo != null) {
             String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
             officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
-            shopProductListLimitedPresenter.getProductLimitedList(shopInfo.getInfo().getShopId(), officialWebViewUrl);
+            shopProductListLimitedPresenter.getProductLimitedList(
+                    shopInfo.getInfo().getShopId(),
+                    TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
+                    officialWebViewUrl);
         }
     }
 

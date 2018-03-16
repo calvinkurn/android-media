@@ -89,17 +89,16 @@ public class ShopProductMapper {
     }
 
 
-    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList, boolean showWishList) {
+    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (GMFeaturedProduct shopProduct : gmFeaturedProductList) {
-            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct, showWishList);
-            shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
+            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct, boolean showWishList) {
+    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(gmFeaturedProduct.getProductId());
@@ -116,7 +115,6 @@ public class ShopProductMapper {
         shopProductViewModel.setWholesale(gmFeaturedProduct.isWholesale());
         shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
         shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
-        shopProductViewModel.setShowWishList(showWishList);
         return shopProductViewModel;
     }
 }
