@@ -467,7 +467,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
 
     private void setToolbarParticipantCount() {
-        String textParticipant = String.format("%d %s", viewModel.getTotalParticipant()
+        String textParticipant = String.format("%s %s", viewModel.getTotalParticipant()
                 , getActivity().getString(R.string.participant));
         toolbar.setSubtitle(textParticipant);
     }
@@ -848,7 +848,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserEntered(UserActionViewModel userActionViewModel, int participantCount) {
+    public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
 
         viewModel.setTotalParticipant(participantCount);
         setToolbarParticipantCount();
@@ -858,7 +858,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserExited(UserActionViewModel userActionViewModel, int participantCount) {
+    public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
         try {
             viewModel.setTotalParticipant(participantCount);
             setToolbarParticipantCount();
@@ -873,7 +873,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
             mChannel = openChannel;
-            viewModel.setTotalParticipant(openChannel.getParticipantCount());
+            viewModel.setTotalParticipant(String.valueOf(openChannel.getParticipantCount()));
             setToolbarParticipantCount();
             presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
         } catch (NullPointerException e) {

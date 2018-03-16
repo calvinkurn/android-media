@@ -29,7 +29,7 @@ public class Channel {
     private long endTime;
     @SerializedName("total_participants_online")
     @Expose
-    private int totalParticipantsOnline;
+    private String totalParticipantsOnline;
     @SerializedName("is_active")
     @Expose
     private boolean isActive;
@@ -105,11 +105,11 @@ public class Channel {
         this.endTime = endTime;
     }
 
-    public int getTotalParticipantsOnline() {
+    public String getTotalParticipantsOnline() {
         return totalParticipantsOnline;
     }
 
-    public void setTotalParticipantsOnline(int totalParticipantsOnline) {
+    public void setTotalParticipantsOnline(String totalParticipantsOnline) {
         this.totalParticipantsOnline = totalParticipantsOnline;
     }
 
