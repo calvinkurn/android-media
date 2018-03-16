@@ -12,7 +12,7 @@
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:id="@+id/sub_detail_view_total_favourite"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/shop_page_sub_info_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
@@ -20,7 +20,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
             android:gravity="center_vertical">
 
             <ImageView
@@ -40,7 +40,7 @@
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:id="@+id/sub_detail_view_total_product"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/shop_page_sub_info_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
@@ -48,7 +48,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
             android:gravity="center_vertical">
 
             <ImageView
@@ -68,24 +68,29 @@
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:id="@+id/sub_detail_view_reputation"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/shop_page_sub_info_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
         app:spsd_title="@string/shop_page_label_reputation">
 
-        <com.tokopedia.design.reputation.ShopReputationView
-            android:layout_marginTop="@dimen/margin_vvs"
-            android:id="@+id/shop_reputation_view"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srv_medal_size="@dimen/shop_page_sub_info_medal_size" />
+            android:layout_height="@dimen/shop_page_sub_info_detail_height">
+
+            <com.tokopedia.design.reputation.ShopReputationView
+                android:id="@+id/shop_reputation_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srv_medal_size="@dimen/shop_page_sub_info_medal_size" />
+        </FrameLayout>
     </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:id="@+id/sub_detail_view_product_quality"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/shop_page_sub_info_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
@@ -94,7 +99,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
             android:gravity="center_vertical">
 
             <TextView
@@ -107,7 +112,8 @@
             <ImageView
                 android:id="@+id/image_view_rating_bar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside" />
 
         </LinearLayout>
 
@@ -116,14 +122,14 @@
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:id="@+id/sub_detail_view_reputation_speed"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/shop_page_sub_info_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         app:spsd_title="@string/shop_page_label_speed">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
             android:gravity="center_vertical">
 
             <ImageView
