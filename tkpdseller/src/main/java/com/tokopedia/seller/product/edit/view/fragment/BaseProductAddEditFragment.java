@@ -780,7 +780,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     private void sendAnalyticsAdd(ProductViewModel viewModel) {
         List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
-                Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
         for (String labelAnalytics : listLabelAnalytics) {
@@ -794,7 +793,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     private void sendAnalyticsAddMore(ProductViewModel viewModel) {
         List<String> listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
-                Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 isShare()
         );
         for (String labelAnalytics : listLabelAnalytics) {

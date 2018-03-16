@@ -75,12 +75,9 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductPictureViewModelList(mapPhotosDraftToProductViewModel(draftModel.getProductPhotos().getPhotos()));
         productViewModel.setProductWholesale(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
-//        domainModel.setProductChangeCatalog(draftModel.getProductChangeCatalog());
-//        domainModel.setProductChangeWholesale(draftModel.getProductChangeWholesale());
         productViewModel.setProductVideo(mapToProductVideo(draftModel.getProductVideos()));
         productViewModel.setProductName(draftModel.getProductName());
         productViewModel.setProductDescription(draftModel.getProductDescription());
-//        domainModel.setProductChangePhoto(draftModel.getProductChangePhoto());
         productViewModel.setProductCatalog(generateCatalog(draftModel));
         productViewModel.setProductCategory(generateProductCategoryViewModel(draftModel));
         productViewModel.setProductCondition(draftModel.getProductCondition());
@@ -95,7 +92,6 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         productViewModel.setProductWeight(draftModel.getProductWeight());
         productViewModel.setProductWeightUnit(draftModel.getProductWeightUnit());
         productViewModel.setProductPreorder(generateProductPreorder(draftModel));
-//        domainModel.setServerId(draftModel.getServerId());
         productViewModel.setProductId(draftModel.getProductId());
         productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 
