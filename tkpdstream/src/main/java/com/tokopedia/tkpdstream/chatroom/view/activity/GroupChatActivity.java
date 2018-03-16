@@ -153,8 +153,6 @@ public class GroupChatActivity extends BaseSimpleActivity {
         bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
         intent.putExtras(bundle);
         return intent;
-
-
     }
 
     /**
@@ -166,7 +164,7 @@ public class GroupChatActivity extends BaseSimpleActivity {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CHANNEL_UUID, channelId);
-        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, false);
+        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true);
         intent.putExtras(bundle);
         return intent;
     }
