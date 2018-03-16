@@ -132,12 +132,10 @@ public class EventBookTicketPresenter
                         reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                         reviewTicketIntent.putExtra(EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
-                        getView().hideProgressBar();
                         getView().navigateToActivityRequest(reviewTicketIntent, 100);
                     } else {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
                         reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        getView().hideProgressBar();
                         getView().navigateToActivityRequest(reviewTicketIntent, 100);
                     }
                 } else {
