@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.tokopedia.tkpdtrain.homepage.presentation.view.TrainHomepageFragment">
+    tools:context=".homepage.presentation.fragment.TrainHomepageFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

@@ -4,6 +4,7 @@ package com.tokopedia.tkpdtrain.common.data;
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleSpecification;
+import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
@@ -22,6 +23,7 @@ import rx.Observable;
  */
 
 public class TrainRepositoryImpl implements TrainRepository {
+
     private TrainDataStoreFactory dataStoreFactory;
     private TrainStationDataStoreFactory trainStationDataStoreFactory;
     private TrainScheduleDataStoreFactory trainScheduleDataStoreFactory;
@@ -57,5 +59,10 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain) {
         return trainScheduleDataStoreFactory.getAvailabilitySchedule(idTrain);
+    }
+
+    @Override
+    public Observable<List<TrainSchedule>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
+        return trainScheduleDataStoreFactory.getFilteredAndSortedSchedule(filterParam, sortOptionId);
     }
 }

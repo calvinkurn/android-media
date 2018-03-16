@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdtrain.homepage.presentation.view;
+package com.tokopedia.tkpdtrain.homepage.presentation.activity;
 
 import android.support.v4.app.Fragment;
 
@@ -7,7 +7,7 @@ import com.tokopedia.tkpdtrain.common.di.utils.TrainComponentUtils;
 import com.tokopedia.tkpdtrain.common.presentation.TrainBaseActivity;
 import com.tokopedia.tkpdtrain.homepage.di.DaggerTrainHomepageComponent;
 import com.tokopedia.tkpdtrain.homepage.di.TrainHomepageComponent;
-
+import com.tokopedia.tkpdtrain.homepage.presentation.fragment.TrainHomepageFragment;
 
 public class TrainHomepageActivity extends TrainBaseActivity implements HasComponent<TrainHomepageComponent> {
     private static TrainHomepageComponent component;

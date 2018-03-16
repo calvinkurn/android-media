@@ -7,8 +7,13 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.tkpdtrain.homepage.presentation.view.TrainHomepageActivity"
+            android:name=".homepage.presentation.activity.TrainHomepageActivity"
             android:label="@string/train_homepage_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".homepage.presentation.activity.TrainPassengerPickerActivity"
+            android:label="@string/select_passenger_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />

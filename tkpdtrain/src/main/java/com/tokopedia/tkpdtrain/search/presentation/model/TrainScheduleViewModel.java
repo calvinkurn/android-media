@@ -215,6 +215,8 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         this.availableSeat = availableSeat;
     }
 
+
+
     public boolean isCheapestFlag() {
         return cheapestFlag;
     }
@@ -264,6 +266,15 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         parcel.writeByte((byte) (cheapestFlag ? 1 : 0));
         parcel.writeByte((byte) (fastestFlag ? 1 : 0));
     }
+
+    @Override
+    public String toString() {
+        return "Schedule ID: " + idSchedule + "\n" +
+                "Adult Fare: " + displayAdultFare  + "\n" +
+                "Train Name: " + trainName + "\n" +
+                "Duration: " + duration + "\n" +
+                "Departure Timestamp: " + departureTimestamp + "\n" +
+                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
+                "Availibility: " + availableSeat + "\n";
+    }
 }
-
-

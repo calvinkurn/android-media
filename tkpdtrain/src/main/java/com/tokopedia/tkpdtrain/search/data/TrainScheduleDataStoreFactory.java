@@ -1,8 +1,11 @@
 package com.tokopedia.tkpdtrain.search.data;
 
+import com.tokopedia.tkpdtrain.common.specification.AndDbFlowSpecification;
+import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.common.specification.Specification;
 import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainListSchedulesEntity;
+import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
@@ -83,4 +86,20 @@ public class TrainScheduleDataStoreFactory {
                     }
                 });
     }
+
+    public Observable<List<TrainSchedule>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
+        DbFlowSpecification specification = new TrainSchedulePriceFilterSpecification(filterParam.getMinPrice(), filterParam.getMaxPrice());
+        if (!filterParam.getTrainClass().isEmpty()) {
+            specification = new AndDbFlowSpecification(specification,
+                    new TrainScheduleClassFilterSpecification(filterParam.getTrainClass()));
+        }
+        if (!filterParam.getTrains().isEmpty()) {
+            specification = new AndDbFlowSpecification(specification,
+                    new TrainScheduleNameFilterSpecification(filterParam.getTrains()));
+        }
+        specification = new AndDbFlowSpecification(specification,
+                new TrainScheduleSortSpecification(sortOptionId));
+        return dbDataStore.getDatas(specification);
+    }
+
 }
