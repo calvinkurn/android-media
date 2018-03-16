@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
@@ -36,6 +37,17 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
                         return;
                     }
                 }
+            }
+        }
+    }
+
+    public void updateVisibleStatus(boolean visible) {
+        for (int i = 0; i < getData().size(); i++) {
+            ShopProductBaseViewModel shopProductViewModel = getData().get(i);
+            if (shopProductViewModel instanceof ShopProductLimitedPromoViewModel) {
+                ((ShopProductLimitedPromoViewModel) shopProductViewModel).setVisibleByUser(visible);
+                notifyItemChanged(i);
+                return;
             }
         }
     }

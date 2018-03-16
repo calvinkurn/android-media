@@ -195,6 +195,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getAdapter() != null) {
+            ((ShopProductLimitedAdapter) getAdapter()).updateVisibleStatus(isVisibleToUser);
+        }
+    }
+    
+    @Override
     public void onEmptyContentItemTextClicked() {
 
     }

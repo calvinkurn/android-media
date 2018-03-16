@@ -10,6 +10,7 @@ public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewMode
     private String url;
     private boolean login;
     private String userId;
+    private boolean visibleByUser;
 
     public String getUrl() {
         return url;
@@ -33,6 +34,14 @@ public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewMode
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean isVisibleByUser() {
+        return visibleByUser;
+    }
+
+    public void setVisibleByUser(boolean visibleByUser) {
+        this.visibleByUser = visibleByUser;
     }
 
     @Override
