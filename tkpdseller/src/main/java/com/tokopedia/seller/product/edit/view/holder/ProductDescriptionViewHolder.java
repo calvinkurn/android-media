@@ -13,7 +13,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
@@ -23,7 +22,6 @@ import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddDescriptionPickerFragment;
-import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
@@ -59,11 +57,10 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     /**
      * this prevent duplication at videoIdList;
      */
-    private List<String> videoIdList;
     private SpinnerTextView conditionSpinnerTextView;
 
     public ProductDescriptionViewHolder(View view, final Listener listener) {
-        videoIdList = new ArrayList<>();
+
         conditionSpinnerTextView = view.findViewById(R.id.spinner_text_view_condition);
         descriptionLabelView = view.findViewById(R.id.label_view_description);
         descriptionLabelView.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +79,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
                         ProductDescriptionViewHolder.this.listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_video);
                     } else {
                         if (GlobalConfig.isSellerApp()) {
-                            ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
+                            ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(
+                                    convertToListString(ProductDescriptionViewHolder.this.listener.getVideoIdList()));
                         } else {
                             ProductDescriptionViewHolder.this.listener.showInstallSellerApp();
                         }
@@ -125,9 +123,7 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     public void renderData(ProductViewModel model) {
         setCondition((int) model.getProductCondition());
         setDescription(model.getProductDescription());
-        if (model.getProductVideo() != null) {
-            setVideoIdList(convertToListString(model.getProductVideo()));
-        }
+        setLabelViewText(model.getProductVideo());
         if (model.getProductPreorder() != null && model.getProductPreorder().getPreorderProcessTime() > 0) {
             expandPreOrder(true);
             setPreOrderUnit((int) model.getProductPreorder().getPreorderTimeUnit());
@@ -141,12 +137,11 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     public void updateModel(ProductViewModel model) {
         model.setProductCondition(getCondition());
         model.setProductDescription(getDescription());
-        model.setProductVideo(getVideoList());
         model.setProductPreorder(getPreOrder());
     }
 
-    private List<String> convertToListString(List<ProductVideoViewModel> productVideo) {
-        List<String> productVideos = new ArrayList<>();
+    private ArrayList<String> convertToListString(List<ProductVideoViewModel> productVideo) {
+        ArrayList<String> productVideos = new ArrayList<>();
         for (ProductVideoViewModel productVideoViewModel : productVideo) {
             productVideos.add(productVideoViewModel.getUrl());
         }
@@ -165,14 +160,12 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         this.listener = listener;
     }
 
-    public void updateViewGoldMerchant(boolean isShown) {
-        goldMerchant = isShown;
-        if (isShown) {
-            labelAddVideoView.setVisibility(View.VISIBLE);
-        } else {
-            videoIdList.clear();
-            labelAddVideoView.setVisibility(View.GONE);
+    public void updateViewGoldMerchant(boolean isGoldMerchant) {
+        goldMerchant = isGoldMerchant;
+        if (!isGoldMerchant) {
+            ProductDescriptionViewHolder.this.listener.updateVideoIdList(new ArrayList<String>());
         }
+        labelAddVideoView.setVisibility(View.VISIBLE);
     }
 
     public String getDescription() {
@@ -196,8 +189,9 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
                     processVideos(data);
                 } else {
                     // means that no data at all.
-                    this.videoIdList.clear();
-                    setLabelViewText(new ArrayList<>(videoIdList));
+                    ProductDescriptionViewHolder.this.listener.updateVideoIdList(new ArrayList<String>());
+                    // this.videoIdList.clear();
+                    setLabelViewText(ProductDescriptionViewHolder.this.listener.getVideoIdList());
                 }
                 break;
             case REQUEST_CODE_GET_DESCRIPTION:
@@ -212,11 +206,11 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     private void processVideos(Intent data) {
         ArrayList<String> videoIdList = data.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-        this.videoIdList.clear();
-        setVideoIdList(videoIdList);
+        ProductDescriptionViewHolder.this.listener.updateVideoIdList(videoIdList);
+        setLabelViewText(ProductDescriptionViewHolder.this.listener.getVideoIdList());
     }
 
-    private void setLabelViewText(List<String> videoIdList) {
+    private void setLabelViewText(List<ProductVideoViewModel> videoIdList) {
         if (CommonUtils.checkCollectionNotNull(videoIdList)) {
             listener.onHasVideoChange(true);
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIdList.size()));
@@ -224,24 +218,6 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             listener.onHasVideoChange(false);
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.label_add));
         }
-    }
-
-    public List<String> getVideoIdList() {
-        return videoIdList;
-    }
-
-    public List<ProductVideoViewModel> getVideoList() {
-        List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
-        for (String videoId : getVideoIdList()) {
-            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(videoId);
-            productVideoViewModelList.add(productVideoViewModel);
-        }
-        return productVideoViewModelList;
-    }
-
-    public void setVideoIdList(List<String> videoIdList) {
-        this.videoIdList.addAll(videoIdList);
-        setLabelViewText(videoIdList);
     }
 
     public void expandPreOrder(boolean expand) {
@@ -325,14 +301,6 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         // no need; already on the model
     }
 
-    /**
-     * @author normansyahputa on 4/18/17.
-     *         <p>
-     *         this represent contract for {@link ProductDescriptionViewHolder}
-     *         <p>
-     *         for example calling {@link ProductAddFragment#startActivityForResult(Intent, int)}
-     *         this will delefate to {@link ProductAddFragment} for doing that
-     */
     public interface Listener {
 
         void goToProductDescriptionPicker(String description);
@@ -346,6 +314,10 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
         void onHasVideoChange(boolean hasVideo);
 
         void showInstallSellerApp();
+
+        List<ProductVideoViewModel> getVideoIdList();
+
+        void updateVideoIdList(ArrayList<String> videoIdList);
 
     }
 }
