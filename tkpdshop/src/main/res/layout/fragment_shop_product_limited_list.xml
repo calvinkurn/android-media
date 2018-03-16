@@ -13,12 +13,6 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

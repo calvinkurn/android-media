@@ -28,7 +28,7 @@ public interface ShopModuleRouter {
 
     void goToProductDetail(Context context, String productUrl);
 
-    void goToWebview(String url);
+    void goToWebview(Context context, String url);
 
     void goToProductDetailById(Context activity, String productId);
 

@@ -8,7 +8,7 @@
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".info.view.activity.ShopInfoActivity"

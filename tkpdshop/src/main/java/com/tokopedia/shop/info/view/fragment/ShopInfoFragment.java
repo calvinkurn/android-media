@@ -75,7 +75,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         shopInfoDetailPresenter.attachView(this);
     }
 
@@ -127,8 +126,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
             shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
             shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
             physicalShopLabelView.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             shopTitleAboutShopLinearLayout.setVisibility(View.GONE);
             shopOwnerLabelView.setVisibility(View.GONE);
             officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
