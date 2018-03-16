@@ -62,7 +62,7 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<TrainSchedule>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
+    public Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
         return trainScheduleDataStoreFactory.getFilteredAndSortedSchedule(filterParam, sortOptionId);
     }
 }

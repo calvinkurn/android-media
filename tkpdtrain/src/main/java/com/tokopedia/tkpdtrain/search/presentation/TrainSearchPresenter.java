@@ -10,8 +10,6 @@ import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
 
@@ -85,7 +83,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 if (trainScheduleViewModels != null) {
                     getView().showLayoutTripInfo();
                     getView().renderList(trainScheduleViewModels);
-                }            }
+                }
+            }
         });
     }
 
@@ -107,15 +106,15 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                Log.e(TAG, "onError: " + e.getMessage() );
+                Log.e(TAG, "onError: " + e.getMessage());
             }
 
             @Override
-            public void onNext(List<TrainScheduleViewModel> trainScheduleViewModels) {
-                Log.d(TAG, "onNext size: " + trainScheduleViewModels.size());
-                if (trainScheduleViewModels != null) {
+            public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
+                Log.d(TAG, "onNext size: " + trainSchedulesViewModel.size());
+                if (trainSchedulesViewModel != null) {
                     getView().showLayoutTripInfo();
-                    getView().renderList(trainScheduleViewModels);
+                    getView().renderList(trainSchedulesViewModel);
                 } else {
 
                 }

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,11 +19,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.search.constant.TrainSortOption;
@@ -94,7 +92,6 @@ public class TrainSearchFragment extends BaseListFragment<TrainScheduleViewModel
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDataFromFragment();
-        showSortBottomSheets();
         showLoading();
         presenter.getTrainSchedules();
 
@@ -141,8 +138,7 @@ public class TrainSearchFragment extends BaseListFragment<TrainScheduleViewModel
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO urutkan button action
-                Toast.makeText(getActivity(), "urutkan", Toast.LENGTH_SHORT).show();
+                showSortBottomSheets();
             }
         });
     }

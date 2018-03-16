@@ -87,7 +87,7 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainSchedule>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
+    public Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
         DbFlowSpecification specification = new TrainSchedulePriceFilterSpecification(filterParam.getMinPrice(), filterParam.getMaxPrice());
         if (!filterParam.getTrainClass().isEmpty()) {
             specification = new AndDbFlowSpecification(specification,
