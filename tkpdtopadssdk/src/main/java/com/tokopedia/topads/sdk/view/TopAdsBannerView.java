@@ -162,8 +162,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void displayAds(CpmModel cpmModel) {
-        if (data != null && data.getCpm() != null) {
-            if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
+        if (cpmModel.getData().size() > 0) {
+            final CpmData data = cpmModel.getData().get(0);
+            if (data.getCpm()!= null && data.getCpm().getCpmShop() != null && isResponseValid(data)) {
                 createViewCpmShop(getContext(), data.getCpm());
             } else if (data.getCpm().getTemplateId() == 4) {
                 createViewCpmDigital(getContext(), data.getCpm());
