@@ -85,7 +85,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                 ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
                 shopProductLimitedPromoViewModel.setUserId(userSession.getUserId());
                 shopProductLimitedPromoViewModel.setLogin(userSession.isLoggedIn());
-                shopProductLimitedPromoViewModel.setVisibleByUser(true);
                 String url = promotionWebViewUrl;
                 if (userSession.isLoggedIn()) {
                     url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());

@@ -135,7 +135,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         return new ShopProductLimitedAdapterTypeFactory(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(shopInfo != null) {
+                if (shopInfo != null) {
                     shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
@@ -150,7 +150,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(shopInfo != null) {
+                if (shopInfo != null) {
                     shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopInfo.getInfo().getShopId(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
@@ -195,13 +195,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
+    public void setUserVisibleHint(boolean visibleToUser) {
+        super.setUserVisibleHint(visibleToUser);
         if (getAdapter() != null) {
-            ((ShopProductLimitedAdapter) getAdapter()).updateVisibleStatus(isVisibleToUser);
+            ((ShopProductLimitedAdapter) getAdapter()).updateVisibleStatus(visibleToUser);
         }
     }
-    
+
     @Override
     public void onEmptyContentItemTextClicked() {
 
@@ -232,7 +232,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void promoClicked(String url) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickBannerImpression(getString(R.string.shop_info_title_tab_product),
                     shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -245,7 +245,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (TextUtils.isEmpty(text)) {
             return;
         }
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventTypeKeywordSearchProduct(getString(R.string.shop_info_title_tab_product), text, shopInfo.getInfo().getShopId(),
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
@@ -264,21 +264,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     private void trackingImpressionFeatureProduct(List<ShopProductBaseViewModel> list) {
-        for(ShopProductBaseViewModel shopProductBaseViewModel : list){
-            if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel){
-                if(shopInfo != null) {
+        for (ShopProductBaseViewModel shopProductBaseViewModel : list) {
+            if (shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
+                if (shopInfo != null) {
                     shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
-            }else if(shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel){
-                if(shopInfo != null) {
+            } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
+                if (shopInfo != null) {
                     shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
                             true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
-            }else if(shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel){
-                if(shopInfo != null) {
+            } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
+                if (shopInfo != null) {
                     shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
                             shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                             ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -294,7 +294,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
                     true, shopProductViewModel.getId(),
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -308,7 +308,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, true,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -385,7 +385,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void onFeatureWishlistClickedTracking(ShopProductViewModel shopProductViewModel) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShopPageFeatured(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.isWishList(), shopProductViewModel.getId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -394,7 +394,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
                     shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -403,7 +403,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
                     shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -411,7 +411,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     public void onLastItemVisibleTracking() {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventViewBottomNavigation(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }

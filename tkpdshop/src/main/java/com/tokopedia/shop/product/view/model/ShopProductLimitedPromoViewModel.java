@@ -1,16 +1,18 @@
 package com.tokopedia.shop.product.view.model;
 
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
+import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
 
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
 
 public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewModel {
+
     private String url;
     private boolean login;
     private String userId;
-    private boolean visibleByUser;
+    private ShopProductUserVisibleHintListener shopProductUserVisibleHintListener;
 
     public String getUrl() {
         return url;
@@ -36,12 +38,12 @@ public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewMode
         this.userId = userId;
     }
 
-    public boolean isVisibleByUser() {
-        return visibleByUser;
+    public ShopProductUserVisibleHintListener getShopProductUserVisibleHintListener() {
+        return shopProductUserVisibleHintListener;
     }
 
-    public void setVisibleByUser(boolean visibleByUser) {
-        this.visibleByUser = visibleByUser;
+    public void setShopProductUserVisibleHintListener(ShopProductUserVisibleHintListener shopProductUserVisibleHintListener) {
+        this.shopProductUserVisibleHintListener = shopProductUserVisibleHintListener;
     }
 
     @Override

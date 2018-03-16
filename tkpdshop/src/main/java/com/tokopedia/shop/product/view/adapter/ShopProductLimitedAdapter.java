@@ -45,8 +45,10 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
         for (int i = 0; i < getData().size(); i++) {
             ShopProductBaseViewModel shopProductViewModel = getData().get(i);
             if (shopProductViewModel instanceof ShopProductLimitedPromoViewModel) {
-                ((ShopProductLimitedPromoViewModel) shopProductViewModel).setVisibleByUser(visible);
-                notifyItemChanged(i);
+                ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = ((ShopProductLimitedPromoViewModel) shopProductViewModel);
+                if (shopProductLimitedPromoViewModel.getShopProductUserVisibleHintListener() != null) {
+                    shopProductLimitedPromoViewModel.getShopProductUserVisibleHintListener().setUserVisibleHint(visible);
+                }
                 return;
             }
         }
