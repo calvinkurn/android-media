@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -45,7 +44,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     ShopInfoDetailPresenter shopInfoDetailPresenter;
     private LinearLayout shopInfoStatisticLinearLayout;
     private LinearLayout shopInfoSatisfiedLinearLayout;
-    private LinearLayout shopTitleAboutShopLinearLayout;
     private LabelView transactionSuccessLabelView;
     private LabelView totalTransactionLabelView;
     private LabelView productSoldLabelView;
@@ -64,8 +62,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     private TextView descriptionTextView;
     private RecyclerView recyclerView;
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
-    private ShopInfo shopInfo;
-    private LabelView officialStoreShopOwnerLabelView;
 
     public static ShopInfoFragment createInstance() {
         ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
@@ -85,7 +81,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
 
         shopInfoStatisticLinearLayout = view.findViewById(R.id.linear_layout_shop_info_statistic);
         shopInfoSatisfiedLinearLayout = view.findViewById(R.id.linear_layout_shop_info_satisfied);
-        shopTitleAboutShopLinearLayout = view.findViewById(R.id.linear_layout_title_about_shop);
 
         transactionSuccessLabelView = view.findViewById(R.id.label_view_transaction_success);
         totalTransactionLabelView = view.findViewById(R.id.label_view_total_transaction);
@@ -99,7 +94,6 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
 
         physicalShopLabelView = view.findViewById(R.id.label_view_physical_shop);
         shopOwnerLabelView = view.findViewById(R.id.label_view_shop_owner);
-        officialStoreShopOwnerLabelView = view.findViewById(R.id.official_store_label_view_shop_owner);
 
         scoreGoodTextView = view.findViewById(R.id.text_view_score_good);
         scoreNeutralTextView = view.findViewById(R.id.text_view_score_neutral);
@@ -116,36 +110,14 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
     }
 
     public void updateShopInfo(ShopInfo shopInfo) {
-        this.shopInfo = shopInfo;
-        displayBasicShopInfo(shopInfo);
+        if (!TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
+            displayBasicShopInfo(shopInfo);
+        }
+        displayAboutStoreInfo(shopInfo);
         displayLogisticShopInfo(shopInfo);
     }
 
-    private void displayBasicShopInfo(final ShopInfo shopInfo) {
-        if (!TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
-            shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
-            shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
-            physicalShopLabelView.setVisibility(View.VISIBLE);
-        } else {
-            shopTitleAboutShopLinearLayout.setVisibility(View.GONE);
-            shopOwnerLabelView.setVisibility(View.GONE);
-            officialStoreShopOwnerLabelView.setVisibility(View.VISIBLE);
-        }
-
-        transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
-        totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
-        productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
-        totalReviewLabelView.setContent(shopInfo.getRatings().getQuality().getCountTotal());
-        favoriteLabelView.setContent(String.valueOf(shopInfo.getStats().getFavoriteCount()));
-        lastOnlineLabelView.setContent(shopInfo.getInfo().getShopOwnerLastLogin());
-        openSinceLabelView.setContent(shopInfo.getInfo().getShopOpenSince());
-        totalProductLabelView.setContent(shopInfo.getStats().getShopTotalProduct());
-        totalEtalaseLabelView.setContent(shopInfo.getStats().getShopTotalEtalase());
-
-        scoreGoodTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreGood());
-        scoreNeutralTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreNeutral());
-        scoreBadTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreBad());
-
+    private void displayAboutStoreInfo(final ShopInfo shopInfo) {
         taglineTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopTagline()));
         descriptionTextView.setText(TextHtmlUtils.getTextFromHtml(shopInfo.getInfo().getShopDescription()));
 
@@ -161,14 +133,31 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoDeta
                 }
             });
         }
-
         physicalShopLabelView.setContent(physicalAddressContent);
-
-        officialStoreShopOwnerLabelView.setTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
-        ImageHandler.LoadImage(officialStoreShopOwnerLabelView.getImageView(), shopInfo.getInfo().getShopAvatar());
-
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
         ImageHandler.loadImageCircle2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
+    }
+
+    private void displayBasicShopInfo(final ShopInfo shopInfo) {
+        shopInfoStatisticLinearLayout.setVisibility(View.VISIBLE);
+        shopInfoSatisfiedLinearLayout.setVisibility(View.VISIBLE);
+        physicalShopLabelView.setVisibility(View.VISIBLE);
+
+        transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
+        totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
+        productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
+        totalReviewLabelView.setContent(shopInfo.getRatings().getQuality().getCountTotal());
+        favoriteLabelView.setContent(String.valueOf(shopInfo.getStats().getFavoriteCount()));
+        lastOnlineLabelView.setContent(shopInfo.getInfo().getShopOwnerLastLogin());
+        openSinceLabelView.setContent(shopInfo.getInfo().getShopOpenSince());
+        totalProductLabelView.setContent(shopInfo.getStats().getShopTotalProduct());
+        totalEtalaseLabelView.setContent(shopInfo.getStats().getShopTotalEtalase());
+
+        scoreGoodTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreGood());
+        scoreNeutralTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreNeutral());
+        scoreBadTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreBad());
+
+        shopOwnerLabelView.setContent(getString(R.string.see_label));
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
