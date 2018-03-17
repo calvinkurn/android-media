@@ -25,7 +25,7 @@ public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewMod
 
     public ShopEtalaseViewHolder(View itemView) {
         super(itemView);
-        etalasePickerItemName = itemView.findViewById(R.id.text_view_etalase_name);
+        etalasePickerItemName = itemView.findViewById(R.id.text_view_name);
         etalasePickerRadioButton = itemView.findViewById(R.id.image_view_etalase_checked);
         etalaseBadgeImageView = itemView.findViewById(R.id.image_view_etalase_badge);
     }

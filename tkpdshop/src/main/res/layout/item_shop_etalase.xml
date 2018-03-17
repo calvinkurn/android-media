@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
+    android:foreground="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/margin_sm">
 
     <TextView
-        android:id="@+id/text_view_etalase_name"
+        android:id="@+id/text_view_name"
         style="@style/TextView.Title"
         android:layout_marginEnd="@dimen/margin_padding_small"
         android:layout_marginRight="@dimen/margin_padding_small"

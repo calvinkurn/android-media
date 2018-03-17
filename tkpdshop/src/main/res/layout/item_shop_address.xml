@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_sm"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="@dimen/cardview_default_elevation"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
