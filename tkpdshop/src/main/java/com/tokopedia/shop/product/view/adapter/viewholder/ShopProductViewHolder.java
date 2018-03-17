@@ -68,6 +68,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
         updateDisplayGeneralView(shopProductViewModel);
+        updateDisplayPrice(shopProductViewModel);
         updateDisplayRating(shopProductViewModel);
         updateDisplayBadges(shopProductViewModel);
         updateDisplayWishList(shopProductViewModel);
@@ -82,7 +83,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         });
 
         titleTextView.setText(shopProductViewModel.getName());
-        updatePrice(shopProductViewModel);
         ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
     }
 
@@ -102,16 +102,20 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         }
     }
 
-    private void updatePrice(final ShopProductViewModel shopProductViewModel) {
+    private void updateDisplayPrice(final ShopProductViewModel shopProductViewModel) {
         if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice())) {
             originalPriceTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             originalPriceTextView.setVisibility(View.VISIBLE);
             originalPriceTextView.setText(shopProductViewModel.getOriginalPrice());
+        } else {
+            originalPriceTextView.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
             discountPercentageTextView.setVisibility(View.VISIBLE);
             discountPercentageTextView.setText(discountPercentageTextView.getContext().
                     getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));
+        } else {
+            discountPercentageTextView.setVisibility(View.GONE);
         }
         if (displayedPriceTextView != null) {
             displayedPriceTextView.setText(shopProductViewModel.getDisplayedPrice());
