@@ -124,6 +124,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
             shopProductListLimitedPresenter.getProductLimitedList(
                     shopInfo.getInfo().getShopId(),
+                    TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
                     officialWebViewUrl);
         }
