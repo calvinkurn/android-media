@@ -75,9 +75,9 @@
 
             <include
                 android:id="@+id/badges_container"
-                layout="@layout/partial_shop_product_badge"
+                layout="@layout/partial_shop_product_item_badge"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/shop_badge_min_height"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_ms" />
         </LinearLayout>
 

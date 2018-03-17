@@ -11,10 +11,12 @@
     <dimen name="image_width_wishlist_icon">20dp</dimen>
     <dimen name="image_width_wishlist_container">34dp</dimen>
 
-    <dimen name="shop_badge_min_height">28dp</dimen>
+    <dimen name="shop_badge_min_height">20dp</dimen>
     <dimen name="shop_page_header_margin">6dp</dimen>
 
     <dimen name="shop_page_sub_info_medal_size">18dp</dimen>
     <dimen name="shop_page_sub_info_height">40dp</dimen>
     <dimen name="shop_page_sub_info_detail_height">24dp</dimen>
+
+    <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
 </resources>
