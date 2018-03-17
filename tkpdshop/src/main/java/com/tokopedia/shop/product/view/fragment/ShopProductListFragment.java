@@ -183,7 +183,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    if(shopInfo != null) {
+                    if (shopInfo != null) {
                         shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId,
                                 shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                     }
@@ -200,7 +200,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 recyclerViews.setLayoutManager(layoutManager);
                 getAdapter().notifyDataSetChanged();
                 setBottomActionViewImage(++currentImgBottomNav);
-                if(shopInfo != null) {
+                if (shopInfo != null) {
                     shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product),
                             currentImgBottomNav, shopId, shopProductListPresenter.isMyShop(shopId),
                             ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -211,7 +211,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(shopInfo != null) {
+                if (shopInfo != null) {
                     shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
                             shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
@@ -279,11 +279,21 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        bottomActionView.setVisibility(list.size() > 0 ? View.VISIBLE : View.GONE);
-        if(shopInfo != null) {
+        showBottomActionView();
+        if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
+        showBottomActionView();
+    }
+
+    private void showBottomActionView() {
+        bottomActionView.setVisibility(getAdapter().isContainData() ? View.VISIBLE : View.GONE);
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -306,7 +316,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.isWishList(), false, shopId, shopProductListPresenter.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -320,7 +330,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
-        if(shopInfo != null) {
+        if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, false,
                     shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
@@ -412,7 +422,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 if (resultCode == Activity.RESULT_OK) {
                     etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
-                    if(shopInfo != null) {
+                    if (shopInfo != null) {
                         shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
                                 false, etalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
                                 ShopPageTracking.getShopType(shopInfo.getInfo()));
