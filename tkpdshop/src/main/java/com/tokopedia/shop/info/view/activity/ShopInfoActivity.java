@@ -101,7 +101,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shop_info_page;
+        return R.layout.activity_shop_info;
     }
 
     @Override
