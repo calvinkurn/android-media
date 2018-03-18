@@ -38,6 +38,8 @@ public class ShopProductMapper {
         shopProductViewModel.setName(shopProduct.getProductName());
         shopProductViewModel.setDisplayedPrice(shopProduct.getProductPrice());
         shopProductViewModel.setImageUrl(shopProduct.getProductImage());
+        shopProductViewModel.setImageUrl300(shopProduct.getProductImage300());
+        shopProductViewModel.setImageUrl700(shopProduct.getProductImage700());
         shopProductViewModel.setProductUrl(shopProduct.getProductUrl());
 //        shopProductViewModel.setRating(); Api not support
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));

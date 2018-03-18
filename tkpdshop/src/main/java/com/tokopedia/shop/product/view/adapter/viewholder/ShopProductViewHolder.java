@@ -83,7 +83,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         });
 
         titleTextView.setText(shopProductViewModel.getName());
-        ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+        ImageHandler.LoadImage(productImageView, getImageUrl(shopProductViewModel));
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
@@ -148,5 +148,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
         shopProductClickedListener.onWishListClicked(shopProductViewModel);
+    }
+
+    protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
+        return shopProductViewModel.getImageUrl();
     }
 }
