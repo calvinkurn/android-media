@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                app:srv_medal_size="@dimen/shop_page_sub_info_medal_size" />
+                app:srv_medal_width="@dimen/shop_page_sub_info_medal_width" />
         </FrameLayout>
     </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 

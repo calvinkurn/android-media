@@ -2,20 +2,15 @@ package com.tokopedia.design.reputation;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
@@ -37,7 +32,7 @@ public class ShopReputationView extends BaseCustomView {
     private BottomSheetDialog dialog;
 
     private boolean showTooltip;
-    private int medalSize;
+    private int medalWidth;
 
     public ShopReputationView(Context context) {
         super(context);
@@ -59,7 +54,7 @@ public class ShopReputationView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopReputationView);
         try {
             showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
-            medalSize = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_size,
+            medalWidth = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_width,
                     getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size));
         } finally {
             styledAttributes.recycle();
@@ -139,7 +134,7 @@ public class ShopReputationView extends BaseCustomView {
     private ImageView getGeneratedMedalImage(@DrawableRes int imageResource) {
         ImageView imageView = new ImageView(getContext());
         imageView.setAdjustViewBounds(true);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, medalSize);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(medalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView.setLayoutParams(param);
         imageView.setImageResource(imageResource);
         return imageView;
