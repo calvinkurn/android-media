@@ -1,8 +1,8 @@
-package com.tokopedia.session.register.view.subscriber.registerphonenumber;
+package com.tokopedia.session.register.registerphonenumber.view.subscriber;
 
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
-import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
+import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
+import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 import rx.Subscriber;
 

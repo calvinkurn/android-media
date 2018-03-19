@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.domain.interactor.registerphonenumber;
+package com.tokopedia.session.register.registerphonenumber.domain.usecase;
 
 import android.content.Context;
 
@@ -6,8 +6,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.session.register.data.source.CheckMsisdnSource;
-import com.tokopedia.session.register.domain.model.CheckMsisdnDomain;
+import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
+import com.tokopedia.session.register.registerphonenumber.domain.model.CheckMsisdnDomain;
 
 import rx.Observable;
 

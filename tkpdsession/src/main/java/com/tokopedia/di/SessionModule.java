@@ -9,10 +9,13 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.SessionUrl;
 import com.tokopedia.network.service.AccountsBasicService;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.network.service.RegisterPhoneNumberApi;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
@@ -61,19 +64,22 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
-import com.tokopedia.session.register.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.data.mapper.RegisterPhoneNumberMapper;
-import com.tokopedia.session.register.data.source.CheckMsisdnSource;
-import com.tokopedia.session.register.data.source.CloudRegisterPhoneNumberSource;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.LoginRegisterPhoneNumberUseCase;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.RegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
+import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
+import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
+import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 
 /**
@@ -155,6 +161,28 @@ SessionModule {
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
         return new AccountsService(bundle);
+    }
+
+    @SessionScope
+    @Provides
+    AccountsAuthInterceptor provideAccountsAuthInterceptor() {
+        return new AccountsAuthInterceptor();
+    }
+
+    @SessionScope
+    @Provides
+    TkpdAuthInterceptor provideTkpdAuthInterceptor() {
+        return new TkpdAuthInterceptor();
+    }
+
+
+    @SessionScope
+    @Provides
+    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor)
+                .addInterceptor(accountsAuthInterceptor)
+                .build();
     }
 
     @SessionScope
@@ -322,12 +350,26 @@ SessionModule {
 
     @SessionScope
     @Provides
+    @RegisterPhoneNumberQualifier
+    Retrofit providesRegisterPhoneNumberRetrofit(Retrofit.Builder retrofitBuilder,
+                                                 OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(SessionUrl.ACCOUNTS_DOMAIN).client(okHttpClient).build();
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberApi provideRegisterPhoneNumberApi(@RegisterPhoneNumberQualifier Retrofit retrofit) {
+        return retrofit.create(RegisterPhoneNumberApi.class);
+    }
+
+    @SessionScope
+    @Provides
     CloudRegisterPhoneNumberSource provideCloudRegisterPhoneNumberSource(
             @ApplicationContext Context context,
-            @Named(HMAC_SERVICE) AccountsService accountsService,
+            RegisterPhoneNumberApi registerPhoneNumberApi,
             RegisterPhoneNumberMapper mapper,
             SessionHandler sessionHandler) {
-        return new CloudRegisterPhoneNumberSource(context, accountsService, mapper, sessionHandler);
+        return new CloudRegisterPhoneNumberSource(context, registerPhoneNumberApi, mapper, sessionHandler);
     }
 
     @SessionScope

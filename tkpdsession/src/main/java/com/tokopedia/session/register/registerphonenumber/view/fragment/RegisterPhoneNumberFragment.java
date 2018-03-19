@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.view.fragment;
+package com.tokopedia.session.register.registerphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,10 +32,10 @@ import com.tokopedia.otp.registerphonenumber.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
-import com.tokopedia.session.register.view.activity.WelcomePageActivity;
-import com.tokopedia.session.register.view.presenter.RegisterPhoneNumberPresenter;
-import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
-import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
+import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
+import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
+import com.tokopedia.session.register.registerphonenumber.view.presenter.RegisterPhoneNumberPresenter;
+import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 import java.util.ArrayList;
 

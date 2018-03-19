@@ -1,15 +1,15 @@
-package com.tokopedia.session.register.view.presenter;
+package com.tokopedia.session.register.registerphonenumber.view.presenter;
 
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.LoginRegisterPhoneNumberUseCase;
-import com.tokopedia.session.register.domain.interactor.registerphonenumber.RegisterPhoneNumberUseCase;
-import com.tokopedia.session.register.view.subscriber.registerphonenumber.CheckMsisdnRegisterPhoneNumberSubscriber;
-import com.tokopedia.session.register.view.subscriber.registerphonenumber.RegisterPhoneNumberSubscriber;
-import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
+import com.tokopedia.session.register.registerphonenumber.view.subscriber.CheckMsisdnRegisterPhoneNumberSubscriber;
+import com.tokopedia.session.register.registerphonenumber.view.subscriber.RegisterPhoneNumberSubscriber;
 
 import javax.inject.Inject;
 

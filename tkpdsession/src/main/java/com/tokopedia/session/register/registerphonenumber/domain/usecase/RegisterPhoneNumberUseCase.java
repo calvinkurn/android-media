@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.domain.interactor.registerphonenumber;
+package com.tokopedia.session.register.registerphonenumber.domain.usecase;
 
 import android.content.Context;
 
@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
-import com.tokopedia.session.register.data.source.CloudRegisterPhoneNumberSource;
+import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
 
 import rx.Observable;
 

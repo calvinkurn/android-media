@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.view.activity;
+package com.tokopedia.session.register.registerphonenumber.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.view.fragment.RegisterPhoneNumberFragment;
+import com.tokopedia.session.register.registerphonenumber.view.fragment.RegisterPhoneNumberFragment;
 
 /**
  * @author by yfsx on 26/2/18.

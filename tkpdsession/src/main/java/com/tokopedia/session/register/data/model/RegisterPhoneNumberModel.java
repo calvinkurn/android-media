@@ -1,6 +1,6 @@
 package com.tokopedia.session.register.data.model;
 
-import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
+import com.tokopedia.session.register.registerphonenumber.data.pojo.RegisterPhoneNumberData;
 
 /**
  * @author yfsx on 28/2/18.

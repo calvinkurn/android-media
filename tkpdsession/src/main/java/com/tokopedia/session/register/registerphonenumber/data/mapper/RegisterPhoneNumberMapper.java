@@ -1,9 +1,9 @@
-package com.tokopedia.session.register.data.mapper;
+package com.tokopedia.session.register.registerphonenumber.data.mapper;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
-import com.tokopedia.session.register.data.pojo.RegisterPhoneNumberData;
+import com.tokopedia.session.register.registerphonenumber.data.pojo.RegisterPhoneNumberData;
 
 import javax.inject.Inject;
 

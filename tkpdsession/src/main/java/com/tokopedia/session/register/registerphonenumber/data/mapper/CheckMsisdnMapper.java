@@ -1,12 +1,12 @@
-package com.tokopedia.session.register.data.mapper;
+package com.tokopedia.session.register.registerphonenumber.data.mapper;
 
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.session.register.data.pojo.CheckMsisdnResponse;
-import com.tokopedia.session.register.domain.model.CheckMsisdnDomain;
+import com.tokopedia.session.register.registerphonenumber.data.pojo.CheckMsisdnResponse;
+import com.tokopedia.session.register.registerphonenumber.domain.model.CheckMsisdnDomain;
 
 import javax.inject.Inject;
 

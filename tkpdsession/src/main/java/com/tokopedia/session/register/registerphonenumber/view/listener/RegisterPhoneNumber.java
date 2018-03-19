@@ -1,10 +1,10 @@
-package com.tokopedia.session.register.view.viewlistener;
+package com.tokopedia.session.register.registerphonenumber.view.listener;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
+import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 /**
  * @author by yfsx on 26/2/18.

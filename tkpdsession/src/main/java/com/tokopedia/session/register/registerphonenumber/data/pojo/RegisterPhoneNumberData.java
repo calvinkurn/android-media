@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.data.pojo;
+package com.tokopedia.session.register.registerphonenumber.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

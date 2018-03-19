@@ -90,10 +90,6 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> registerEmail(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(SessionUrl.Register.PATH_REGISTER_PHONE_NUMBER)
-    Observable<Response<TkpdResponse>> registerPhoneNumber(@FieldMap Map<String, Object> params);
-
-    @FormUrlEncoded
     @POST(SessionUrl.ACTIVATE_UNICODE)
     Observable<Response<String>> activateWithUnicode(@FieldMap Map<String, Object> params);
 

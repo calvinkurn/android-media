@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.domain.interactor.registerphonenumber;
+package com.tokopedia.session.register.registerphonenumber.domain.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
-import com.tokopedia.session.register.view.viewmodel.LoginRegisterPhoneNumberModel;
+import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 
 import javax.inject.Inject;
 

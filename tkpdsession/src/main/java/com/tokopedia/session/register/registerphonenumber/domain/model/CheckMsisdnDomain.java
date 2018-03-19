@@ -1,15 +1,16 @@
-package com.tokopedia.session.register.data.pojo;
-
-import com.google.gson.annotations.SerializedName;
+package com.tokopedia.session.register.registerphonenumber.domain.model;
 
 /**
  * @author by yfsx on 28/02/18.
  */
 
-public class CheckMsisdnResponse {
+public class CheckMsisdnDomain {
 
-    @SerializedName("isExist")
     private boolean isExist;
+
+    public CheckMsisdnDomain(boolean isExist) {
+        this.isExist = isExist;
+    }
 
     public boolean isExist() {
         return isExist;
@@ -18,4 +19,5 @@ public class CheckMsisdnResponse {
     public void setExist(boolean exist) {
         isExist = exist;
     }
+
 }

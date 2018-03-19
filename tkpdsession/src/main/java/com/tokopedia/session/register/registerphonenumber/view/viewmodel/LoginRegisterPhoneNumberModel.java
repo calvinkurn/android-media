@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.view.viewmodel;
+package com.tokopedia.session.register.registerphonenumber.view.viewmodel;
 
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
