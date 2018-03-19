@@ -186,14 +186,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
-                Visitable visitable = adapter.getItem(firstVisibleItemPos);
-                if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
-                        && floatingTextButton.getVisibility() == View.VISIBLE) {
+                if (SessionHandler.isV4Login(getActivity())) {
+                    int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
+                    Visitable visitable = adapter.getItem(firstVisibleItemPos);
+                    if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
+                            && floatingTextButton.getVisibility() == View.VISIBLE) {
+                        floatingTextButton.setVisibility(View.GONE);
+                    } else if (!(visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
+                            && floatingTextButton.getVisibility() == View.GONE) {
+                        floatingTextButton.setVisibility(View.VISIBLE);
+                    }
+                } else if (floatingTextButton.getVisibility() == View.VISIBLE) {
                     floatingTextButton.setVisibility(View.GONE);
-                } else if (!(visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
-                        && floatingTextButton.getVisibility() == View.GONE) {
-                    floatingTextButton.setVisibility(View.VISIBLE);
                 }
             }
         });
