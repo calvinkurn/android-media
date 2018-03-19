@@ -205,6 +205,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -1446,6 +1447,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void init() {
         ShakeDetectManager.getShakeDetectManager().init();
     }
+
     @Override
     public void registerShake(String screenName) {
         ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
@@ -1593,6 +1595,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isEnabledGroupChat() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
+        return true;
+    }
+
+    @Override
+    public void sendTrackingGroupChatLeftNavigation() {
+        getAnalyticTracker().sendEventTracking(StreamAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
+                StreamAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
+                StreamAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
+                ""
+        );
     }
 }

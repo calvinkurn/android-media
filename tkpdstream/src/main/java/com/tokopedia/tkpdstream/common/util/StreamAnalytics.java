@@ -11,24 +11,29 @@ import javax.inject.Inject;
 public class StreamAnalytics {
     private AnalyticTracker analyticTracker;
 
-    private String EVENT_CATEGORY_GROUPCHAT_LIST = "groupchat";
-    private String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
-    private String EVENT_CATEGORY_SHARE = "share page";
-    private String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
+    private static final String EVENT_CATEGORY_GROUPCHAT_LIST = "groupchat";
+    private static final String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
+    private static final String EVENT_CATEGORY_SHARE = "share page";
+    private static final String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
+    public static final String EVENT_CATEGORY_LEFT_NAVIGATION = "left navigation";
 
-    private String EVENT_ACTION_GROUPCHAT_LIST = "click on group chat list";
-    private String EVENT_ACTION_VOTE = "click on vote";
-    private String EVENT_ACTION_SHARE = "click on share";
-    private String EVENT_ACTION_SHARE_CHANNEL = "click share channel";
-    private String EVENT_ACTION_JOIN_VOTE_NOW = "click on join";
-    private String EVENT_ACTION_CLICK_THUMBNAIL= "click on image thumbnail";
-    private String EVENT_ACTION_CLICK_VOTE_COMPONENT= "click on component - ";
-    private String EVENT_ACTION_CLICK_VOTE_EXPAND= "click on vote expand";
-    private String EVENT_ACTION_CLICK_COMMUNITY_TAB= "click on community tab";
 
-    private String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
-    private String EVENT_NAME_CLICK_SHARE = "clickShare";
-    private String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
+    private static final String EVENT_ACTION_GROUPCHAT_LIST = "click on group chat list";
+    private static final String EVENT_ACTION_VOTE = "click on vote";
+    private static final String EVENT_ACTION_SHARE = "click on share";
+    private static final String EVENT_ACTION_SHARE_CHANNEL = "click share channel";
+    private static final String EVENT_ACTION_JOIN_VOTE_NOW = "click on join";
+    private static final String EVENT_ACTION_CLICK_THUMBNAIL= "click on image thumbnail";
+    private static final String EVENT_ACTION_CLICK_VOTE_COMPONENT= "click on component - ";
+    private static final String EVENT_ACTION_CLICK_VOTE_EXPAND= "click on vote expand";
+    private static final String EVENT_ACTION_CLICK_COMMUNITY_TAB= "click on community tab";
+    public static final String EVENT_ACTION_CLICK_GROUP_CHAT= "click on group chat";
+
+    private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
+    private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
+    private static final String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
+    public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+
 
     @Inject
     public StreamAnalytics(AnalyticTracker analyticTracker) {

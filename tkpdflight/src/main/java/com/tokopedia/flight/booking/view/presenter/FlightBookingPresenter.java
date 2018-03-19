@@ -1,3 +1,4 @@
+
 package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.NonNull;
@@ -22,6 +23,9 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.common.constant.FlightErrorConstant;
+import com.tokopedia.flight.common.data.model.FlightError;
+import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
@@ -322,7 +326,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideFullPageLoading();
-                            getView().showGetCartDataErrorStateLayout(e);
+                            if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))){
+                                getView().showSoldOutDialog();
+                            } else {
+                                getView().showGetCartDataErrorStateLayout(e);
+                            }
                         }
                     }
 
