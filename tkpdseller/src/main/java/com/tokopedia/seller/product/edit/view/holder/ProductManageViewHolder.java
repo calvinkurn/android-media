@@ -45,7 +45,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
     private Listener listener;
     private final View vSku;
 
-    public ProductManageViewHolder(View view, Listener listener) {
+    public ProductManageViewHolder(View view, final Listener listener) {
         setListener(listener);
 
         stockStatusSpinnerTextView = view.findViewById(R.id.spinner_text_view_stock_status);
@@ -56,7 +56,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
                 onStockSpinnerValueChanged(value);
                 // change all variant items to the value
                 if (ProductManageViewHolder.this.listener.getCurrentVariantModel() != null) {
-                    ProductManageViewHolder.this.listener.getCurrentVariantModel().changeStockTo(Integer.parseInt(value));
+                    int stock = Integer.parseInt(value);
+                    ProductManageViewHolder.this.listener.getCurrentVariantModel().changeStockTo(stock);
+                    ProductManageViewHolder.this.listener.onTotalStockUpdated(stock);
                 }
             }
         });
@@ -140,11 +142,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
     }
 
     private int getTotalStock() {
-        if (isStockViewVisible()) {
-            return (int) stockTotalCounterInputView.getDoubleValue();
-        } else {
-            return DEFAULT_STOCK_VALUE;
-        }
+        return (int) stockTotalCounterInputView.getDoubleValue();
     }
 
     private void setTotalStock(int value) {
@@ -262,13 +260,14 @@ public class ProductManageViewHolder extends ProductViewHolder {
 
     @Override
     public void renderData(ProductViewModel model) {
-        if (model.getProductStock() == 0) {
-            int productStatus = model.getProductStatus();
-            if (productStatus == StockTypeDef.TYPE_ACTIVE) {
-                setStockStatus(StockTypeDef.TYPE_ACTIVE);
+        if (model.getProductStock() == 0){
+            int productStatus;
+            if (model.hasVariant()) {
+                productStatus = model.getProductVariant().getCalculateProductStatus();
             } else {
-                setStockStatus(StockTypeDef.TYPE_WAREHOUSE);
+                productStatus = model.getProductStatus();
             }
+            setStockStatus(productStatus);
             setStockManaged(false);
         } else {
             setStockStatus(StockTypeDef.TYPE_ACTIVE_LIMITED);
@@ -281,7 +280,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
 
     @Override
     public void updateModel(ProductViewModel model) {
-        model.setProductStock(getTotalStock());
+        if (isStockViewVisible()) {
+            model.setProductStock(getTotalStock());
+        }
         model.setProductStatus(getStatusStock());
         model.setProductSku(getSkuText());
     }
