@@ -19,6 +19,14 @@ public class MultipleAddressAdapterData implements Parcelable {
 
     private String productPrice;
 
+    private boolean isPreOrder;
+
+    private boolean isFreeReturn;
+
+    private boolean isCashBack;
+
+    private String cashBackInfo;
+
     private List<MultipleAddressItemData> itemListData;
 
     public MultipleAddressAdapterData() {
@@ -29,7 +37,29 @@ public class MultipleAddressAdapterData implements Parcelable {
         productImageUrl = in.readString();
         productName = in.readString();
         productPrice = in.readString();
+        isPreOrder = in.readByte() != 0;
+        isFreeReturn = in.readByte() != 0;
+        isCashBack = in.readByte() != 0;
+        cashBackInfo = in.readString();
         itemListData = in.createTypedArrayList(MultipleAddressItemData.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(senderName);
+        dest.writeString(productImageUrl);
+        dest.writeString(productName);
+        dest.writeString(productPrice);
+        dest.writeByte((byte) (isPreOrder ? 1 : 0));
+        dest.writeByte((byte) (isFreeReturn ? 1 : 0));
+        dest.writeByte((byte) (isCashBack ? 1 : 0));
+        dest.writeString(cashBackInfo);
+        dest.writeTypedList(itemListData);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MultipleAddressAdapterData> CREATOR = new Creator<MultipleAddressAdapterData>() {
@@ -84,18 +114,35 @@ public class MultipleAddressAdapterData implements Parcelable {
         this.itemListData = itemListData;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isPreOrder() {
+        return isPreOrder;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(senderName);
-        parcel.writeString(productImageUrl);
-        parcel.writeString(productName);
-        parcel.writeString(productPrice);
-        parcel.writeTypedList(itemListData);
+    public void setPreOrder(boolean preOrder) {
+        isPreOrder = preOrder;
+    }
+
+    public boolean isFreeReturn() {
+        return isFreeReturn;
+    }
+
+    public void setFreeReturn(boolean freeReturn) {
+        isFreeReturn = freeReturn;
+    }
+
+    public boolean isCashBack() {
+        return isCashBack;
+    }
+
+    public void setCashBack(boolean cashBack) {
+        isCashBack = cashBack;
+    }
+
+    public String getCashBackInfo() {
+        return cashBackInfo;
+    }
+
+    public void setCashBackInfo(String cashBackInfo) {
+        this.cashBackInfo = cashBackInfo;
     }
 }

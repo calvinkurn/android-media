@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * Created by kris on 3/14/18. Tokopedia
  */
 
-public class MultipleAddressViewHolder extends RecyclerView.ViewHolder{
+public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
 
@@ -43,6 +43,16 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder{
     private RecyclerView shippingDestinationList;
 
     private ViewGroup addNewShipmentAddressButton;
+
+    private ImageView imgFreeReturn;
+
+    private TextView tvFreeReturnLabel;
+
+    private TextView tvPreOrder;
+
+    private TextView tvCashback;
+
+    private View marginHeader;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
         super(itemView);
@@ -61,6 +71,16 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder{
 
         addNewShipmentAddressButton = itemView
                 .findViewById(R.id.add_new_shipment_address_button);
+
+        imgFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
+
+        tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
+
+        tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
+
+        tvCashback = itemView.findViewById(R.id.tv_cashback);
+
+        marginHeader = itemView.findViewById(R.id.margin_header);
 
     }
 
@@ -88,10 +108,36 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder{
                         addressListener
                 )
         );
-        if (firstItemPosition) setShowCase(
-                context,
-                addNewShipmentAddressButton
-        );
+        if (firstItemPosition) {
+            marginHeader.setVisibility(View.VISIBLE);
+            setShowCase(
+                    context,
+                    addNewShipmentAddressButton
+            );
+        } else {
+            marginHeader.setVisibility(View.GONE);
+        }
+
+        if (data.isFreeReturn()) {
+            imgFreeReturn.setVisibility(View.VISIBLE);
+            tvFreeReturnLabel.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeReturn.setVisibility(View.GONE);
+            tvFreeReturnLabel.setVisibility(View.GONE);
+        }
+
+        if (data.isCashBack()) {
+            tvCashback.setText(data.getCashBackInfo());
+            tvCashback.setVisibility(View.VISIBLE);
+        } else {
+            tvCashback.setVisibility(View.GONE);
+        }
+
+        if (data.isPreOrder()) {
+            tvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            tvPreOrder.setVisibility(View.GONE);
+        }
     }
 
     private void setShowCase(Context context, ViewGroup addAddress) {

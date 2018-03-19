@@ -262,6 +262,10 @@
     <string name="label_button_add_note">Tulis Catatan</string>
     <string name="toolbar_title_shipment_courier">Kurir Pengiriman</string>
     <string name="label_hint_search_address">Cari Alamat</string>
+    <string name="label_free_return">Free Returns</string>
+    <string name="label_po">PO</string>
+    <string name="label_count">Jumlah :</string>
+    <string name="label_weight">Berat :</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>
