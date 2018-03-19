@@ -31,6 +31,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
@@ -83,7 +84,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener, View.OnClickListener {
+        TokoCashUpdateListener, HomeFeedListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -158,7 +159,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         root = view.findViewById(R.id.root);
         presenter.attachView(this);
         presenter.setFeedListener(this);
-        floatingTextButton.setOnClickListener(this);
+        if(!SessionHandler.isV4Login(getContext())){
+            floatingTextButton.setVisibility(View.GONE);
+        } else {
+            floatingTextButton.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -177,6 +182,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         fetchRemoteConfig();
+        floatingTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.scrollToPosition(adapter.inspirationPosition());
+            }
+        });
     }
 
     private void initTabNavigation() {
@@ -635,13 +646,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.recom_action_button){
-            recyclerView.scrollToPosition(adapter.inspirationPosition());
         }
     }
 
