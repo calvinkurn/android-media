@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
@@ -20,9 +21,10 @@ import java.util.Set;
 
 public class ShopProductOfficialStoreUtils {
 
-    private static final String SEAMLESS = "seamless";
+    public static final String HTTP = "http";
     public static final String TOKOPEDIA_HOST = "tokopedia";
 
+    private static final String SEAMLESS = "seamless";
     private static final String URL_QUERY_SORT = "sort";
     private static final String URL_QUERY_KEYWORD = "keyword";
     private static final String URL_QUERY_PAGE = "page";
@@ -30,15 +32,19 @@ public class ShopProductOfficialStoreUtils {
     private static final String URL_PATH_ETALASE = "etalase";
     private static final String URL_PATH_PRODUCT = "product";
     private static final String URL_PATH_PAGE = "page";
-    public static final String HTTP = "http";
+    private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
-    public static boolean overrideUrl(Activity activity, String url, String shopId) {
+    public static boolean proceedUrl(Activity activity, String url, String shopId, boolean login, String fcmTokenId, String uid) {
         Uri uri = Uri.parse(url);
         if (uri.getScheme().equals(TOKOPEDIA_HOST)) {
             processUriTokopedia(activity, shopId, uri);
         } else if (uri.getScheme().startsWith(HTTP)) {
-            if (activity.getApplication() instanceof ShopModuleRouter) {
-                ((ShopModuleRouter) activity.getApplication()).goToWebview(activity, url);
+            if (isNeededToLogin(url) & !login) {
+                return false;
+            } else if (isNeededToLogin(url) & login) {
+                openWebViewWithSession(activity, url, fcmTokenId, uid);
+            } else {
+                openWebView(activity, url);
             }
         }
         return true;
@@ -121,5 +127,27 @@ public class ShopProductOfficialStoreUtils {
         }
 
         return url;
+    }
+
+    private static void openWebViewWithSession(Activity activity, String url, String fcmTokenId, String uid) {
+        String encodedUrl = encodeUrl(url);
+        if (encodedUrl != null) {
+            openWebView(activity, URLGenerator.generateURLSessionLogin(encodeUrl(url), fcmTokenId, uid));
+        }
+    }
+
+    private static boolean isNeededToLogin(String url) {
+        switch (Uri.parse(url).getHost()) {
+            case URL_RECHARGE_HOST:
+                return true;
+        }
+        return false;
+    }
+
+    private static void openWebView(Activity activity, String url) {
+        CommonUtils.dumper(url);
+        if (activity.getApplication() instanceof ShopModuleRouter) {
+            ((ShopModuleRouter) activity.getApplication()).goToWebview(activity, url);
+        }
     }
 }

@@ -150,7 +150,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
             Uri uri = Uri.parse(url);
             if (url.contains(SHOP_STATIC_URL)) {
                 view.loadUrl(url);
-            } else if (uri.getScheme().equals(ShopProductOfficialStoreUtils.TOKOPEDIA_HOST) || uri.getScheme().startsWith("http")) {
+            } else if (uri.getScheme().equals(ShopProductOfficialStoreUtils.TOKOPEDIA_HOST) || uri.getScheme().startsWith(ShopProductOfficialStoreUtils.HTTP)) {
                 promoViewHolderListener.promoClicked(url);
             }
             return true;

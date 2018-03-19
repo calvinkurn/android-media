@@ -11,9 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -24,7 +22,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -65,12 +62,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback, ShopProductFeaturedViewHolder.ShopProductFeaturedListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
+    private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 200;
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
     private ProgressDialog progressDialog;
+    private String urlNeedTobBeProceed;
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private ShopPagePromoWebView.Listener promoWebViewListener;
@@ -238,7 +237,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(), shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        ShopProductOfficialStoreUtils.overrideUrl(getActivity(), url, shopInfo.getInfo().getShopId());
+        boolean urlProceed = ShopProductOfficialStoreUtils.proceedUrl(getActivity(), url, shopInfo.getInfo().getShopId(),
+                shopProductListLimitedPresenter.isLogin(),
+                shopProductListLimitedPresenter.getDeviceId(),
+                shopProductListLimitedPresenter.getUserId());
+        // Need to login
+        if (!urlProceed) {
+            urlNeedTobBeProceed = url;
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW);
+        }
     }
 
     @Override
@@ -358,6 +366,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                             true, etalaseName, shopInfo.getInfo().getShopId(),
                             shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
                     startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", etalaseId));
+                }
+                break;
+            case REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW:
+                if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(urlNeedTobBeProceed)) {
+                    promoClicked(urlNeedTobBeProceed);
                 }
                 break;
             default:
