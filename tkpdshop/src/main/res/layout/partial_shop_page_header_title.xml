@@ -53,7 +53,7 @@
             android:src="@drawable/ic_badge_shop_gm"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
-            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon_container"
             tools:layout_conversion_absoluteHeight="@dimen/margin_sm"
             tools:layout_conversion_absoluteWidth="@dimen/margin_sm"
             tools:visibility="gone" />
@@ -64,8 +64,8 @@
             android:layout_width="0dp"
             android:layout_marginBottom="2dp"
             android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
             android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/shop_info"
@@ -83,7 +83,7 @@
             android:layout_marginStart="@dimen/margin_ms"
             android:layout_marginTop="2dp"
             android:src="@drawable/ic_info_location_grey"
-            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon_container"
             app:layout_constraintTop_toTopOf="@+id/guideline"
             tools:layout_conversion_absoluteHeight="15dp"
             tools:layout_conversion_absoluteWidth="15dp" />
