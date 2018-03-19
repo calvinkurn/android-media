@@ -37,6 +37,7 @@
                 android:textAllCaps="true"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                tools:text="Text button"
                 tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry" />
 
             <ImageView

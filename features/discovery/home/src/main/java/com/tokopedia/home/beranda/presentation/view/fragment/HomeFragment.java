@@ -67,6 +67,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
@@ -183,14 +185,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.scrollToPosition(adapter.findFirstInspirationPosition());
+                recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
-                if(firstVisibleItemPos >= adapter.findFirstInspirationPosition()){
+                Visitable visitable = adapter.getItem(firstVisibleItemPos);
+                if (visitable instanceof InspirationViewModel
+                        || visitable instanceof TopAdsViewModel) {
                     floatingTextButton.setVisibility(View.GONE);
                 } else {
                     floatingTextButton.setVisibility(View.VISIBLE);

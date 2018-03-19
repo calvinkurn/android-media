@@ -33,6 +33,7 @@ public class FloatingTextButton extends FrameLayout {
     private Drawable leftIcon;
     private Drawable rightIcon;
     private int background;
+    private boolean titleAllCaps;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -144,7 +145,8 @@ public class FloatingTextButton extends FrameLayout {
         leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
         rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
         background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE);
-
+        titleAllCaps = styleable.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, true);
+        titleView.setAllCaps(titleAllCaps);
         styleable.recycle();
     }
 
@@ -156,9 +158,9 @@ public class FloatingTextButton extends FrameLayout {
         setBackgroundColor(background);
 
         container.setContentPadding(
-                getHorizontalPaddingValue(16),
+                getHorizontalPaddingValue(8),
                 getVerticalPaddingValue(8),
-                getHorizontalPaddingValue(16),
+                getHorizontalPaddingValue(8),
                 getVerticalPaddingValue(8)
         );
         initViewRadius();
