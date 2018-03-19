@@ -46,7 +46,7 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
         shopProductRequestModel.setShopId(shopId);
-
+        shopProductRequestModel.setOfficialStore(officialStore);
         List<ShopProductViewModel> defaultFeaturedProductList = new ArrayList<>();
         Observable<List<ShopProductViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
         if (goldMerchantStore || officialStore) {
