@@ -454,6 +454,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         tabs = findViewById(R.id.tab);
+
+
     }
 
     public ChangeTabListener changeTabListener() {
