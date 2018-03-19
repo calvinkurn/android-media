@@ -313,7 +313,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         })
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FlightBookingCartData>() {
                     @Override
