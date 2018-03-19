@@ -400,7 +400,9 @@ public class CartListPresenter implements ICartListPresenter {
                     + (data.getCartItemData().getUpdatedData().getQuantity()
                     * data.getCartItemData().getOriginData().getPricePlan());
         }
-        view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
+
+        view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice))
+                .replace("Rp", "Rp "));
     }
 
     @Override

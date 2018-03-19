@@ -41,36 +41,38 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
     private static final int ITEM_VIEW_CART = R.layout.item_shipped_product_details;
 
-    private List<Object> mShipmentDataList;
-    private ActionListener mActionListener;
+    private List<Object> shipmentDataList;
+    private ActionListener actionListener;
 
-    private RecipientAddressModel mRecipientAddress;
-    private ShipmentCostModel mShipmentCost;
+    private RecipientAddressModel recipientAddress;
+    private ShipmentCostModel shipmentCost;
 
-    private ShipmentDataRequestConverter mRequestConverter;
+    private ShipmentDataRequestConverter requestConverter;
+
+    private Context context;
 
     @Inject
     public SingleAddressShipmentAdapter(ActionListener actionListener,
                                         ShipmentDataRequestConverter requestConverter) {
-        mShipmentDataList = new ArrayList<>();
-        mActionListener = actionListener;
-        mRequestConverter = requestConverter;
+        this.shipmentDataList = new ArrayList<>();
+        this.actionListener = actionListener;
+        this.requestConverter = requestConverter;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
+        context = viewGroup.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
         if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
-            return new CartVoucherPromoViewHolder(view, mActionListener);
+            return new CartVoucherPromoViewHolder(view, actionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
-            return new CartPromoSuggestionViewHolder(view, mActionListener);
+            return new CartPromoSuggestionViewHolder(view, actionListener);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
-            return new RecipientAddressViewHolder(view, mActionListener);
+            return new RecipientAddressViewHolder(view, actionListener);
         } else if (viewType == ITEM_VIEW_CART) {
-            return new CartSellerItemViewHolder(view, context, mActionListener);
+            return new CartSellerItemViewHolder(view, context, actionListener);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
-            return new ShipmentCostViewHolder(view, mActionListener);
+            return new ShipmentCostViewHolder(view, actionListener);
         }
         return null;
     }
@@ -78,7 +80,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         int viewType = getItemViewType(position);
-        Object data = mShipmentDataList.get(position);
+        Object data = shipmentDataList.get(position);
 
         if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             ((CartVoucherPromoViewHolder) viewHolder).bindData((CartItemPromoHolderData) data, position);
@@ -89,7 +91,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
-                    mShipmentCost, mRecipientAddress);
+                    shipmentCost, recipientAddress);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
         }
@@ -97,12 +99,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public int getItemCount() {
-        return mShipmentDataList.size();
+        return shipmentDataList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        Object item = mShipmentDataList.get(position);
+        Object item = shipmentDataList.get(position);
 
         if (item instanceof CartItemPromoHolderData) {
             return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
@@ -120,10 +122,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public void updateItemPromoVoucher(CartItemPromoHolderData cartPromo) {
-        for (int i = 0; i < mShipmentDataList.size(); i++) {
-            Object object = mShipmentDataList.get(i);
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            Object object = shipmentDataList.get(i);
             if (object instanceof CartItemPromoHolderData) {
-                mShipmentDataList.set(i, cartPromo);
+                shipmentDataList.set(i, cartPromo);
                 checkDataForCheckout();
                 notifyItemChanged(i);
             } else if (object instanceof CartPromoSuggestion) {
@@ -135,7 +137,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private void checkDataForCheckout() {
         boolean availableCheckout = true;
-        for (Object object : mShipmentDataList) {
+        for (Object object : shipmentDataList) {
             if (object instanceof CartSellerItemModel) {
                 if (((CartSellerItemModel) object).getSelectedShipmentDetailData() == null) {
                     availableCheckout = false;
@@ -143,56 +145,56 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             }
         }
         if (availableCheckout) {
-            mActionListener.onCartDataEnableToCheckout();
+            actionListener.onCartDataEnableToCheckout();
         } else {
-            mActionListener.onCartDataDisableToCheckout();
+            actionListener.onCartDataDisableToCheckout();
         }
     }
 
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
-        mShipmentDataList.add(cartItemPromoHolderData);
+        this.shipmentDataList.add(cartItemPromoHolderData);
         notifyDataSetChanged();
         checkDataForCheckout();
     }
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
-        mShipmentDataList.add(cartPromoSuggestion);
+        this.shipmentDataList.add(cartPromoSuggestion);
         notifyDataSetChanged();
         checkDataForCheckout();
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddress) {
-        mRecipientAddress = recipientAddress;
-        mShipmentDataList.add(recipientAddress);
+        this.recipientAddress = recipientAddress;
+        this.shipmentDataList.add(recipientAddress);
         notifyDataSetChanged();
         checkDataForCheckout();
     }
 
     public void addCartItemDataList(List<CartSellerItemModel> cartItemList) {
-        mShipmentDataList.addAll(cartItemList);
+        shipmentDataList.addAll(cartItemList);
         notifyDataSetChanged();
         checkDataForCheckout();
     }
 
     public void addShipmentCostData(ShipmentCostModel shipmentCost) {
-        mShipmentCost = shipmentCost;
-        mShipmentDataList.add(shipmentCost);
+        this.shipmentCost = shipmentCost;
+        shipmentDataList.add(shipmentCost);
         notifyDataSetChanged();
         checkDataForCheckout();
     }
 
     public void removeData(int position) {
-        mShipmentDataList.remove(position);
+        this.shipmentDataList.remove(position);
         notifyItemRemoved(position);
         checkDataForCheckout();
     }
 
     public void updateSelectedAddress(RecipientAddressModel recipientAddress) {
-        for (Object item : mShipmentDataList) {
+        for (Object item : shipmentDataList) {
             if (item instanceof RecipientAddressModel) {
-                int index = mShipmentDataList.indexOf(item);
-                mShipmentDataList.set(index, recipientAddress);
-                this.mRecipientAddress = recipientAddress;
+                int index = shipmentDataList.indexOf(item);
+                this.shipmentDataList.set(index, recipientAddress);
+                this.recipientAddress = recipientAddress;
                 notifyItemChanged(index);
                 checkDataForCheckout();
                 return;
@@ -201,11 +203,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public RecipientAddressModel getSelectedAddressReceipent() {
-        return mRecipientAddress;
+        return recipientAddress;
     }
 
     public void clearData() {
-        mShipmentDataList.clear();
+        this.shipmentDataList.clear();
         notifyDataSetChanged();
     }
 
@@ -236,19 +238,19 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
 
     public void setPickupPoint(Store store) {
-        if (mRecipientAddress != null) {
-            mRecipientAddress.setStore(store);
+        if (this.recipientAddress != null) {
+            this.recipientAddress.setStore(store);
         }
         notifyDataSetChanged();
     }
 
     public void unSetPickupPoint() {
-        mRecipientAddress.setStore(null);
+        this.recipientAddress.setStore(null);
         notifyDataSetChanged();
     }
 
     public boolean hasSetAllCourier() {
-        for (Object itemData : mShipmentDataList) {
+        for (Object itemData : shipmentDataList) {
             if (itemData instanceof CartSellerItemModel) {
                 if (((CartSellerItemModel) itemData).getSelectedShipmentDetailData() == null) {
                     return false;
@@ -260,7 +262,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public List<CartSellerItemModel> getCartSellerItemModelList() {
         List<CartSellerItemModel> cartSellerItemModels = new ArrayList<>();
-        for (Object itemView : mShipmentDataList) {
+        for (Object itemView : shipmentDataList) {
             if (itemView instanceof CartSellerItemModel) {
                 cartSellerItemModels.add((CartSellerItemModel) itemView);
             }
@@ -271,20 +273,20 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void updatePromo(CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher) {
         if (dataVoucher != null) {
-            mShipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
-            mShipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
-            for (int i = 0; i < mShipmentDataList.size(); i++) {
-                Object itemAdapter = mShipmentDataList.get(i);
+            shipmentCost.setPromoPrice(dataVoucher.getVoucherAmount());
+            shipmentCost.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                Object itemAdapter = shipmentDataList.get(i);
                 if (itemAdapter instanceof CartPromoSuggestion) {
                     ((CartPromoSuggestion) itemAdapter).setVisible(false);
                     notifyItemChanged(i);
                 }
             }
         } else {
-            mShipmentCost.setPromoPrice(0);
-            mShipmentCost.setPromoMessage(null);
-            for (int i = 0; i < mShipmentDataList.size(); i++) {
-                Object itemAdapter = mShipmentDataList.get(i);
+            shipmentCost.setPromoPrice(0);
+            shipmentCost.setPromoMessage(null);
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                Object itemAdapter = shipmentDataList.get(i);
                 if (itemAdapter instanceof CartItemPromoHolderData) {
                     ((CartItemPromoHolderData) itemAdapter).setPromoNotActive();
                     notifyItemChanged(i);
@@ -297,7 +299,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public boolean hasAppliedPromoCode() {
-        for (Object itemAdapter : mShipmentDataList) {
+        for (Object itemAdapter : shipmentDataList) {
             if (itemAdapter instanceof CartItemPromoHolderData) {
                 return ((CartItemPromoHolderData) itemAdapter).getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER ||
                         ((CartItemPromoHolderData) itemAdapter).getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON;
@@ -310,12 +312,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         int counter = 0;
         boolean isCourierComplete = true;
 
-        mShipmentCost.setShippingFee(0);
-        mShipmentCost.setInsuranceFee(0);
+        shipmentCost.setShippingFee(0);
+        shipmentCost.setInsuranceFee(0);
 
         List<CartSellerItemModel> cartSellerItemList = new ArrayList<>();
 
-        for (Object item : mShipmentDataList) {
+        for (Object item : shipmentDataList) {
             if (item instanceof CartSellerItemModel) {
                 CartSellerItemModel cartSellerItem = (CartSellerItemModel) item;
                 cartSellerItemList.add(cartSellerItem);
@@ -337,9 +339,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                             + cartSellerItem.getInsuranceFee());
                 }
 
-                mShipmentCost.setShippingFee(mShipmentCost.getShippingFee()
+                shipmentCost.setShippingFee(shipmentCost.getShippingFee()
                         + cartSellerItem.getShippingFee());
-                mShipmentCost.setInsuranceFee(mShipmentCost.getInsuranceFee()
+                shipmentCost.setInsuranceFee(shipmentCost.getInsuranceFee()
                         + cartSellerItem.getInsuranceFee());
 
                 // Check if all cart shops have shipping courier
@@ -351,12 +353,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             counter++;
         }
 
-        mShipmentCost.setTotalPrice(calculateTotalPrice(mShipmentCost));
-        mActionListener.onTotalPaymentChange(mShipmentCost);
+        shipmentCost.setTotalPrice(calculateTotalPrice(shipmentCost));
+        actionListener.onTotalPaymentChange(shipmentCost);
 
         if (isCourierComplete) {
             RequestData requestData = getRequestPromoData(cartSellerItemList);
-            mActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
+            actionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                     requestData.getCheckoutRequestData());
         }
         notifyDataSetChanged();
@@ -364,7 +366,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public RequestData getRequestPromoData(List<CartSellerItemModel> cartSellerItemList) {
-        return mRequestConverter.generateRequestData(cartSellerItemList, mRecipientAddress);
+        return requestConverter.generateRequestData(cartSellerItemList, recipientAddress);
     }
 
     private double calculateTotalPrice(ShipmentCostModel shipmentCost) {
@@ -403,6 +405,5 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
     }
-
 
 }

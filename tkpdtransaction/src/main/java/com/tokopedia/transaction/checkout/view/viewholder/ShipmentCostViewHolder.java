@@ -126,7 +126,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CURRENCY_IDR.format(price);
+        return price == 0 ? "-" : CURRENCY_IDR.format(price).replace("Rp", "Rp ");
     }
 
     private void togglePromoText() {
