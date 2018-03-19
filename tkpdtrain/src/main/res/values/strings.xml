@@ -29,4 +29,13 @@
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
     <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+
+    <string name="search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
+    <string name="search_reset_button">Ganti Pencarian</string>
+    <string name="search_no_connection_title">Tidak Ada Koneksi Internet</string>
+    <string name="search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
+
+    <!-- TODO check with designer again for this bottom action -->
+    <string name="sort">Urutkan</string>
+    <string name="filter">Filter</string>
 </resources>

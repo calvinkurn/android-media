@@ -1,25 +1,34 @@
 package com.tokopedia.tkpdtrain.search.presentation;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.search.constant.TrainSortOption;
 import com.tokopedia.tkpdtrain.search.di.TrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -30,7 +39,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrainSearchFragment extends BaseDaggerFragment implements TrainSearchContract.View {
+public class TrainSearchFragment extends BaseListFragment<TrainScheduleViewModel,
+        TrainSearchAdapterTypeFactory> implements TrainSearchContract.View {
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
 
@@ -42,6 +52,13 @@ public class TrainSearchFragment extends BaseDaggerFragment implements TrainSear
     private String originCity;
     private String destinationCode;
     private String destinationCity;
+    private TextView originCodeTv;
+    private TextView originCityTv;
+    private TextView destinationCodeTv;
+    private TextView destinationCityTv;
+    private LinearLayout tripInfoLinearLayout;
+
+    private BottomActionView filterAndSortBottomAction;
 
     @Inject
     TrainSearchPresenter presenter;
@@ -62,15 +79,40 @@ public class TrainSearchFragment extends BaseDaggerFragment implements TrainSear
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         presenter.attachView(this);
-        return inflater.inflate(R.layout.fragment_train_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_train_search, container, false);
+        originCodeTv = view.findViewById(R.id.origin_code);
+        originCityTv = view.findViewById(R.id.origin_city);
+        destinationCodeTv = view.findViewById(R.id.destination_code);
+        destinationCityTv = view.findViewById(R.id.destination_city);
+        tripInfoLinearLayout = view.findViewById(R.id.layout_trip_info);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDataFromFragment();
-        showSortBottomSheets();
+        showLoading();
         presenter.getTrainSchedules();
+
+        setUpButtonActionView(view);
+        originCodeTv.setText(originCode);
+        originCityTv.setText(originCity);
+        destinationCodeTv.setText(destinationCode);
+        destinationCityTv.setText(destinationCity);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> createAdapterInstance() {
+        BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> adapter = super.createAdapterInstance();
+        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
+        errorNetworkModel.setIconDrawableRes(R.drawable.ic_train_error_network);
+        errorNetworkModel.setErrorMessage(getString(R.string.search_no_connection_title));
+        errorNetworkModel.setSubErrorMessage(getString(R.string.search_no_connection));
+        errorNetworkModel.setOnRetryListener(this);
+        adapter.setErrorNetworkModel(errorNetworkModel);
+        return adapter;
     }
 
     private void getDataFromFragment() {
@@ -82,6 +124,44 @@ public class TrainSearchFragment extends BaseDaggerFragment implements TrainSear
         originCity = trainSearchPassDataViewModel.getOriginCityName();
         destinationCode = trainSearchPassDataViewModel.getDestinationStationCode();
         destinationCity = trainSearchPassDataViewModel.getDestinationCityName();
+    }
+
+    private void setUpButtonActionView(View view) {
+        filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
+        filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO filter button action
+                Toast.makeText(getActivity(), "filter", Toast.LENGTH_SHORT).show();
+            }
+        });
+        filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSortBottomSheets();
+            }
+        });
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        //TODO handle if user from filter searching
+        EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
+        emptyResultViewModel.setIconRes(R.drawable.ic_train_no_result);
+        emptyResultViewModel.setContentRes(R.string.search_no_result_default);
+        emptyResultViewModel.setButtonTitleRes(R.string.search_reset_button);
+        emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+
+            }
+        });
+        return emptyResultViewModel;
     }
 
     @Override
@@ -98,6 +178,16 @@ public class TrainSearchFragment extends BaseDaggerFragment implements TrainSear
     }
 
     @Override
+    public void hideLayoutTripInfo() {
+        tripInfoLinearLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLayoutTripInfo() {
+        tripInfoLinearLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -108,12 +198,20 @@ public class TrainSearchFragment extends BaseDaggerFragment implements TrainSear
     }
 
     @Override
-    public void showSearchResult(List<TrainSchedule> schedules) {
-        String trainScheduleStr = "";
-        for (TrainSchedule trainSchedule : schedules) {
-            trainScheduleStr = trainScheduleStr + trainSchedule.toString() + "\n";
-        }
-        Log.d(TAG, trainScheduleStr);
+    protected TrainSearchAdapterTypeFactory getAdapterTypeFactory() {
+        return new TrainSearchAdapterTypeFactory(new TrainSearchAdapterTypeFactory.OnTrainSearchListener() {
+
+        });
+    }
+
+    @Override
+    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
+        //TODO make tap to go to detail schedule page
+        Toast.makeText(getActivity(), trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void loadData(int page) {
     }
 
     public void showSortBottomSheets() {

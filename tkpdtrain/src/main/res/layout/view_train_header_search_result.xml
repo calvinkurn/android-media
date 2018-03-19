@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_trip_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_ms"
+    android:layout_marginTop="@dimen/margin_ms"
+    android:orientation="horizontal"
+    android:weightSum="3">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/origin_code"
+            style="@style/TextView.Title.Bold"
+            android:layout_gravity="center_horizontal"
+            android:text="JKT" />
+
+        <TextView
+            android:id="@+id/origin_city"
+            style="@style/TextView.Micro"
+            android:layout_below="@+id/origin_code"
+            android:layout_gravity="center_horizontal"
+            android:text="Kota Jakarta" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="6">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image1"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_round_green"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image2"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/image1"
+            app:srcCompat="@drawable/ic_dash_green_line"
+            android:layout_weight="4"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/image2"
+            app:srcCompat="@drawable/ic_train_icon"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/destination_code"
+            style="@style/TextView.Title.Bold"
+            android:layout_gravity="center_horizontal"
+            android:text="JKT" />
+
+        <TextView
+            android:id="@+id/destination_city"
+            style="@style/TextView.Micro"
+            android:layout_below="@+id/origin_code"
+            android:layout_gravity="center_horizontal"
+            android:text="Kota Jakarta" />
+
+    </LinearLayout>
+
+</LinearLayout>

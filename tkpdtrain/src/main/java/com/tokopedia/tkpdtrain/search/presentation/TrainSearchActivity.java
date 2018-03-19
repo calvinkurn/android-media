@@ -26,6 +26,7 @@ public class TrainSearchActivity extends TrainBaseActivity implements HasCompone
     private String dateString;
     private String adultPassanger;
     private String infantPassanger;
+    private int infantTotal;
 
     public static Intent getCallingIntent(Activity activity, TrainSearchPassDataViewModel viewModel) {
         Intent intent = new Intent(activity, TrainSearchActivity.class);
@@ -60,6 +61,7 @@ public class TrainSearchActivity extends TrainBaseActivity implements HasCompone
                 TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, trainSearchPassDataViewModel.getDepartureDate());
         adultPassanger = trainSearchPassDataViewModel.getAdult() + " Dewasa";
         infantPassanger = trainSearchPassDataViewModel.getInfant() + " Infant";
+        infantTotal = trainSearchPassDataViewModel.getInfant();
     }
 
     private void setupTrainToolbar() {
@@ -67,6 +69,7 @@ public class TrainSearchActivity extends TrainBaseActivity implements HasCompone
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
         String title = "Perjalanan Pergi";
         String subtitle = dateString + " | " + adultPassanger + ", " + infantPassanger;
-        updateTitle(title, subtitle);
+        String subtitleNonInfant = dateString + " | " + adultPassanger;
+        updateTitle(title, infantTotal == 0 ? subtitleNonInfant : subtitle);
     }
 }

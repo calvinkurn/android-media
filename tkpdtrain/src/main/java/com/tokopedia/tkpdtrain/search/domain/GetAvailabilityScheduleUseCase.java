@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdtrain.search.domain;
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by nabillasabbaha on 3/12/18.
  */
 
-public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainSchedule>> {
+public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainScheduleViewModel>> {
 
     private TrainRepository trainRepository;
 
@@ -28,7 +28,7 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainSchedule>>
     }
 
     @Override
-    public Observable<List<TrainSchedule>> createObservable(RequestParams requestParams) {
+    public Observable<List<TrainScheduleViewModel>> createObservable(RequestParams requestParams) {
         return trainRepository.getAvailabilitySchedule(idTrain);
     }
 }

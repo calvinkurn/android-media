@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_round_corner_custom">
+
+        <TextView
+            android:id="@+id/flag_name"
+            style="@style/TextView.Micro"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingLeft="@dimen/padding_ms"
+            android:paddingRight="@dimen/padding_ms"
+            android:paddingTop="@dimen/padding_vs"
+            android:text="TERMURAH" />
+
+    </LinearLayout>
+
+</LinearLayout>

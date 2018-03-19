@@ -8,7 +8,7 @@ import com.tokopedia.tkpdtrain.search.domain.GetAvailabilityScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetFilteredAndSortedScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
-import com.tokopedia.tkpdtrain.search.presentation.model.TrainSchedule;
+import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -50,13 +50,13 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "onError: " + e.getMessage() );
+                        getView().hideLayoutTripInfo();
+                        getView().showGetListError(e);
                     }
 
                     @Override
                     public void onNext(List<AvailabilityKeySchedule> availabilityKeySchedules) {
-                        for (AvailabilityKeySchedule available: availabilityKeySchedules) {
+                        for (AvailabilityKeySchedule available : availabilityKeySchedules) {
                             getAvailabilitySchedule(available.getIdTrain());
                         }
                     }
@@ -65,7 +65,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     private void getAvailabilitySchedule(final String idTrain) {
         getAvailabilityScheduleUseCase.setIdTrain(idTrain);
-        getAvailabilityScheduleUseCase.execute(new Subscriber<List<TrainSchedule>>() {
+        getAvailabilityScheduleUseCase.execute(new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -73,14 +73,17 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                Log.e(TAG, "onError: " + e.getMessage() );
+                getView().hideLayoutTripInfo();
+                getView().showGetListError(e);
             }
 
             @Override
-            public void onNext(List<TrainSchedule> trainSchedules) {
+            public void onNext(List<TrainScheduleViewModel> trainScheduleViewModels) {
                 Log.d(TAG, idTrain);
-                getView().showSearchResult(trainSchedules);
+                if (trainScheduleViewModels != null) {
+                    getView().showLayoutTripInfo();
+                    getView().renderList(trainScheduleViewModels);
+                }
             }
         });
     }
@@ -94,7 +97,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 .build();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, sortOptionId);
 
-        getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainSchedule>>() {
+        getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -103,13 +106,18 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                Log.e(TAG, "onError: " + e.getMessage() );
+                Log.e(TAG, "onError: " + e.getMessage());
             }
 
             @Override
-            public void onNext(List<TrainSchedule> trainSchedules) {
-                Log.d(TAG, "onNext filtered and sorted size: " + trainSchedules.size());
-                getView().showSearchResult(trainSchedules);
+            public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
+                Log.d(TAG, "onNext size: " + trainSchedulesViewModel.size());
+                if (trainSchedulesViewModel != null) {
+                    getView().showLayoutTripInfo();
+                    getView().renderList(trainSchedulesViewModel);
+                } else {
+
+                }
             }
         });
     }

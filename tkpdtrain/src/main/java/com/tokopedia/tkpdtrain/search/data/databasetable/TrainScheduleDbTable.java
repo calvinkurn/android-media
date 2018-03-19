@@ -67,6 +67,12 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "available_seat")
     private
     int availableSeat;
+    @Column(name = "cheapest_flag")
+    private
+    boolean cheapestFlag;
+    @Column(name = "fastest_flag")
+    private
+    boolean fastestFlag;
 
     public String getIdSchedule() {
         return idSchedule;
@@ -210,5 +216,21 @@ public class TrainScheduleDbTable extends BaseModel {
 
     public void setAvailableSeat(int availableSeat) {
         this.availableSeat = availableSeat;
+    }
+
+    public boolean isCheapestFlag() {
+        return cheapestFlag;
+    }
+
+    public void setCheapestFlag(boolean cheapestFlag) {
+        this.cheapestFlag = cheapestFlag;
+    }
+
+    public boolean isFastestFlag() {
+        return fastestFlag;
+    }
+
+    public void setFastestFlag(boolean fastestFlag) {
+        this.fastestFlag = fastestFlag;
     }
 }
