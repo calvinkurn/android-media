@@ -48,7 +48,7 @@ public class Channel {
     @SerializedName("moderator_name")
     @Expose
     private String moderatorName;
-    @SerializedName("moderator_profile_url")
+    @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorProfileUrl;
 
