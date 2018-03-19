@@ -1,20 +1,24 @@
 package com.tokopedia.flight.passenger.view.fragment;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
-import com.tokopedia.flight.passenger.domain.FlightPassengerGetSingleUseCase;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdateContract;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdatePresenter;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -24,7 +28,8 @@ import javax.inject.Inject;
 
 public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements FlightPassengerUpdateContract.View {
 
-    public static final String EXTRA_PASSENGER_ID = "EXTRA_PASSENGER_ID";
+    public static final String EXTRA_PASSENGER_VIEW_MODEL = "EXTRA_PASSENGER_VIEW_MODEL";
+    public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
 
     @Inject
     FlightPassengerUpdatePresenter presenter;
@@ -39,10 +44,12 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     public FlightPassengerUpdateFragment() {
     }
 
-    public static FlightPassengerUpdateFragment newInstance(String passengerId) {
+    public static FlightPassengerUpdateFragment newInstance(FlightBookingPassengerViewModel passengerViewModel,
+                                                            String departureDate) {
         FlightPassengerUpdateFragment flightPassengerUpdateFragment = new FlightPassengerUpdateFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_PASSENGER_ID, passengerId);
+        bundle.putParcelable(EXTRA_PASSENGER_VIEW_MODEL, passengerViewModel);
+        bundle.putString(EXTRA_DEPARTURE_DATE, departureDate);
         flightPassengerUpdateFragment.setArguments(bundle);
         return flightPassengerUpdateFragment;
     }
@@ -56,12 +63,23 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassengerFirstName = view.findViewById(R.id.et_first_name);
         etPassengerLastName = view.findViewById(R.id.et_last_name);
         etPassengerBirthdate = view.findViewById(R.id.et_birth_date);
+
+        etPassengerBirthdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onBirthdateClicked();
+            }
+        });
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        flightBookingPassengerViewModel = getArguments().getParcelable(EXTRA_PASSENGER_VIEW_MODEL);
+
         presenter.attachView(this);
         presenter.onViewCreated();
     }
@@ -77,9 +95,9 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public String getPassengerId() {
+    public String getDepartureDate() {
         if (getArguments() != null) {
-            return getArguments().getString(EXTRA_PASSENGER_ID);
+            return getArguments().getString(EXTRA_DEPARTURE_DATE);
         }
         return "";
     }
@@ -127,5 +145,38 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public void renderPassengerBirthdate(String birthdate) {
         etPassengerBirthdate.setText(birthdate);
+    }
+
+    @Override
+    public void showBirthdatePickerDialog(Date selectedDate, final Date minDate, final Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onBirthdateChanged(year, month, dayOfMonth, minDate, maxDate);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker = datePickerDialog.getDatePicker();
+        datePicker.setMinDate(minDate.getTime());
+        datePicker.setMaxDate(maxDate.getTime());
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void showBirthdatePickerDialog(Date selectedDate, final Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onBirthdateChanged(year, month, dayOfMonth, maxDate);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker = datePickerDialog.getDatePicker();
+        datePicker.setMaxDate(maxDate.getTime());
+        datePickerDialog.show();
     }
 }

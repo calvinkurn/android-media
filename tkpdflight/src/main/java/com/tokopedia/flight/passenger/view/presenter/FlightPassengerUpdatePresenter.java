@@ -4,14 +4,11 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.passenger.domain.FlightBookingGetSavedPassengerUseCase;
-import com.tokopedia.flight.passenger.domain.FlightPassengerGetSingleUseCase;
 
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
@@ -27,41 +24,61 @@ import static com.tokopedia.flight.common.util.FlightPassengerTitleType.TUAN;
 public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPassengerUpdateContract.View>
         implements FlightPassengerUpdateContract.Presenter {
 
-    FlightPassengerGetSingleUseCase flightBookingGetSinglePassengerUseCase;
+    private static final int MINUS_TWELVE = -12;
+    private static final int MINUS_TWO = -2;
+    private static final int MINUS_ONE = -1;
+    private static final int PLUS_ONE = 1;
 
     @Inject
-    public FlightPassengerUpdatePresenter(FlightPassengerGetSingleUseCase flightBookingGetSinglePassengerUseCase) {
-        this.flightBookingGetSinglePassengerUseCase = flightBookingGetSinglePassengerUseCase;
+    public FlightPassengerUpdatePresenter() {
     }
 
     @Override
     public void onViewCreated() {
-        getPassengerDataFromDb();
+        renderView();
     }
 
-    private void getPassengerDataFromDb() {
-        flightBookingGetSinglePassengerUseCase.execute(
-                flightBookingGetSinglePassengerUseCase.generateRequestParams(
-                        getView().getPassengerId()
-                ),
-                new Subscriber<FlightBookingPassengerViewModel>() {
-                    @Override
-                    public void onCompleted() {
+    @Override
+    public void onBirthdateClicked() {
 
-                    }
+        Date maxDate, minDate = null, selectedDate;
+        Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDate());
 
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
+        if (isChildPassenger()) {
+            minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, MINUS_TWELVE);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, MINUS_TWO);
+        } else if (isAdultPassenger()) {
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, MINUS_TWELVE);
+        } else {
+            minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, MINUS_TWO);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, MINUS_ONE);
+        }
 
-                    @Override
-                    public void onNext(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
-                        getView().setPassengerViewModel(flightBookingPassengerViewModel);
-                        renderView();
-                    }
-                }
-        );
+        if (getView().getCurrentPassengerViewModel().getPassengerBirthdate() != null &&
+                getView().getCurrentPassengerViewModel().getPassengerBirthdate().length() > 0) {
+            selectedDate = FlightDateUtil.stringToDate(
+                    getView().getCurrentPassengerViewModel().getPassengerBirthdate());
+        } else {
+            selectedDate = maxDate;
+        }
+
+        if (minDate != null) {
+            getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+        } else {
+            getView().showBirthdatePickerDialog(selectedDate, maxDate);
+        }
+    }
+
+    @Override
+    public void onBirthdateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxDate) {
+
+    }
+
+    @Override
+    public void onBirthdateChanged(int year, int month, int dayOfMonth, Date maxDate) {
+
     }
 
     private void renderView() {
