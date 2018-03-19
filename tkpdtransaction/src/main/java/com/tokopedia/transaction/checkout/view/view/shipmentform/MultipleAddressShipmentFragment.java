@@ -87,7 +87,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     private CartShipmentAddressFormData cartShipmentAddressFormData;
     private CartPromoSuggestion cartPromoSuggestion;
     private ViewGroup totalPaymentLayout;
-    private ViewGroup confirmButton;
+    private TextView confirmButton;
     private RecyclerView orderAddressList;
     private TkpdProgressDialog progressDialogNormal;
 
@@ -318,8 +318,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     @Override
     public void onRemovePromo() {
         shipmentAdapter.showPromoSuggestion();
-        shipmentAdapter.getPriceSummaryData().setAppliedPromo(null);
-        shipmentAdapter.notifyDataSetChanged();
+        shipmentAdapter.setAppliedPromoData(null);
         promoMessage.setText("");
         promoMessage.setVisibility(View.GONE);
     }
@@ -402,7 +401,6 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     int shipmentPosition = data.getIntExtra(EXTRA_POSITION, 0);
                     shipmentAdapter.setShipmentDetailData(shipmentPosition, shipmentDetailData);
-                    shipmentAdapter.notifyDataSetChanged();
                     totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
             }
@@ -462,26 +460,17 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     private void checkAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.setPromo(cartPromo);
-        shipmentAdapter.notifyDataSetChanged();
-        if (hasSelectAllCourier()) {
+        if (shipmentAdapter.hasSelectAllCourier()) {
             createPromoRequest(shipmentAdapter.getAddressDataList(), cartPromo);
         }
     }
 
-    private boolean hasSelectAllCourier() {
-        for (MultipleAddressShipmentAdapterData shipmentAdapterData : shipmentAdapter.getAddressDataList()) {
-            if (shipmentAdapterData.getSelectedShipmentDetailData() == null) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     @Override
     public void showPromoMessage(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult,
                                  CartItemPromoHolderData cartItemPromoHolderData) {
-        shipmentAdapter.getPriceSummaryData().setAppliedPromo(checkPromoCodeCartShipmentResult);
-        shipmentAdapter.notifyDataSetChanged();
+
+        shipmentAdapter.setAppliedPromoData(checkPromoCodeCartShipmentResult);
         onShowPromo(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
     }
 
@@ -565,6 +554,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position) {
         cartPromoSuggestion.setVisible(false);
         shipmentAdapter.notifyDataSetChanged();
+        shipmentAdapter.checkAvailableForCheckout();
     }
 
     @Override
@@ -601,11 +591,16 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
 
     @Override
     public void onCartDataEnableToCheckout() {
-
+        confirmButton.setBackgroundResource(R.drawable.bg_button_orange_enabled);
+        confirmButton.setTextColor(getResources().getColor(R.color.white));
+        confirmButton.setOnClickListener(onConfirmedButtonClicked());
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
+        confirmButton.setBackgroundResource(R.drawable.bg_button_disabled);
+        confirmButton.setTextColor(getResources().getColor(R.color.grey_500));
+        confirmButton.setOnClickListener(null);
 
     }
 }
