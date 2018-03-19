@@ -86,14 +86,18 @@ public class EventsHomeActivity extends TActivity
     View indicatorLayout;
 
 
-    int mBannnerPos;
-    int defaultViewPagerPos;
+    private int mBannnerPos;
+    private int defaultViewPagerPos;
+    private String defaultSection;
+    private final static String THEMEPARK = "themepark";
+    private final static String TOP = "top";
+
 
     public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
 
-    @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_ACTIVITIES})
+    @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_HIBURAN})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
@@ -102,9 +106,9 @@ public class EventsHomeActivity extends TActivity
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         if (Constants.Applinks.EVENTS.equals(deepLink)) {
-            destination.putExtra(EXTRA_SECTION, 0);
-        } else if (Constants.Applinks.EVENTS_ACTIVITIES.equals(deepLink)) {
-            destination.putExtra(EXTRA_SECTION, 1);
+            destination.putExtra(EXTRA_SECTION, TOP);
+        } else if (Constants.Applinks.EVENTS_HIBURAN.equals(deepLink)) {
+            destination.putExtra(EXTRA_SECTION, THEMEPARK);
         }
         return destination;
     }
@@ -113,7 +117,9 @@ public class EventsHomeActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_home_new);
-        defaultViewPagerPos = getIntent().getIntExtra(EXTRA_SECTION, 0);
+        defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
+        if (defaultSection == null || defaultSection.length() <= 1)
+            defaultSection = TOP;
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
@@ -151,11 +157,6 @@ public class EventsHomeActivity extends TActivity
     @Override
     public RequestParams getParams() {
         return RequestParams.EMPTY;
-    }
-
-    @Override
-    public int getBannerPosition() {
-        return mBannnerPos;
     }
 
     @Override
@@ -243,13 +244,17 @@ public class EventsHomeActivity extends TActivity
         ArrayList<EventCategoryView> eventCategoryViews = new ArrayList<>();
         for (CategoryViewModel categoryViewModel : categoryList) {
             if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
-                continue;
-            }
-            if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
-                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
-                setViewPagerListener();
-                tabLayout.setViewPager(viewPager);
-                mPresenter.startBannerSlide(viewPager);
+            } else {
+                if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
+                    adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
+                    setViewPagerListener();
+                    tabLayout.setViewPager(viewPager);
+                    mPresenter.startBannerSlide(viewPager);
+                }
+                if (defaultSection.equalsIgnoreCase(categoryViewModel.getName()))
+                    defaultViewPagerPos = categoryList.indexOf(categoryViewModel);
+                else
+                    defaultViewPagerPos = 0;
             }
         }
 

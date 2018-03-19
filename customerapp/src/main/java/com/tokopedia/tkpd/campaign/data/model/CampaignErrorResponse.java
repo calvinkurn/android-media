@@ -15,7 +15,7 @@ public class CampaignErrorResponse extends BaseResponseError {
 
     @SerializedName(ERROR_KEY)
     @Expose
-    private String error;
+    private String[] error;
 
     @Override
     public String getErrorKey() {
@@ -29,6 +29,6 @@ public class CampaignErrorResponse extends BaseResponseError {
 
     @Override
     public IOException createException() {
-        return new CampaignException(error);
+        return new CampaignException(error[0]);
     }
 }

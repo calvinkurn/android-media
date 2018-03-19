@@ -24,6 +24,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
+    <string name="select_max_ticket">Silahkan pilih %1$d tiket</string>
+    <string name="more_seat_than_tiket_warning_toast">Tidak dapat memilih lebih dari %1$d tiket</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
     <string name="some_info">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan untuk pembelian tiket dengan atas nama di atas.</string>
     <string name="cek_kode">Cek Kode</string>
@@ -39,7 +41,7 @@
     <string name="price_holder">Rp %1$s</string>
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="top_events">TOP EVENTS</string>
-    <string name="max_ticket_warning">Maks. 4 tiket</string>
+    <string name="max_ticket_warning">Maks. %1$d tiket</string>
     <string name="zero">0</string>
     <string name="habis_terjual">HABIS TERJUAL</string>
     <string name="ticket_desc">Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan.</string>
@@ -61,6 +63,9 @@
     <string name="pilihan_kursi">Pilihan Kursi:</string>
     <string name="detail_tiket">Detail Tiket</string>
     <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
+    <string name="jadwal">Jadwal</string>
+    <string name="ubah_jadwal">Ubah Jadwal</string>
+    <string name="ubah_lokasi">Ubah Lokasi</string>
 
     <!-- need to changed -->
 
