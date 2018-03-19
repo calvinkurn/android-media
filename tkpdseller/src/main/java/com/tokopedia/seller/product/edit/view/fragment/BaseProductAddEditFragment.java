@@ -702,8 +702,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onCatalogPicked(boolean isCatalogExist) {
-        valueIndicatorScoreModel.setHasCatalog(isCatalogExist);
-        updateProductScoring();
+        if (valueIndicatorScoreModel.isHasCatalog()!= isCatalogExist) {
+            valueIndicatorScoreModel.setHasCatalog(isCatalogExist);
+            updateProductScoring();
+        }
     }
 
     /**
@@ -885,44 +887,59 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onHasVideoChange(boolean hasVideo) {
-        valueIndicatorScoreModel.setHasVideo(hasVideo);
-        updateProductScoring();
+        if (valueIndicatorScoreModel.isHasVideo() != hasVideo) {
+            valueIndicatorScoreModel.setHasVideo(hasVideo);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onVariantCountChange(boolean hasActiveVariant) {
-        valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
-        updateProductScoring();
+        if (hasActiveVariant!= valueIndicatorScoreModel.isVariantActive()) {
+            valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onTotalImageUpdated(int total) {
-        valueIndicatorScoreModel.setImageCount(total);
-        updateProductScoring();
+        if (valueIndicatorScoreModel.getImageCount() != total) {
+            valueIndicatorScoreModel.setImageCount(total);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onImageResolutionChanged(long maxSize) {
-        valueIndicatorScoreModel.setImageResolution((int) maxSize);
-        updateProductScoring();
+        if (valueIndicatorScoreModel.getImageResolution()!= maxSize) {
+            valueIndicatorScoreModel.setImageResolution((int) maxSize);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onFreeReturnChecked(boolean checked) {
-        valueIndicatorScoreModel.setFreeReturnStatus(checked);
-        updateProductScoring();
+        if (valueIndicatorScoreModel.isFreeReturnStatus() != checked) {
+            valueIndicatorScoreModel.setFreeReturnStatus(checked);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onTotalStockUpdated(int total) {
-        valueIndicatorScoreModel.setStockStatus(total > 0);
-        updateProductScoring();
+        boolean stockStatus = total > 0;
+        if (valueIndicatorScoreModel.isStockStatus() != stockStatus) {
+            valueIndicatorScoreModel.setStockStatus(total > 0);
+            updateProductScoring();
+        }
     }
 
     @Override
     public void onDescriptionTextChanged(String text) {
-        valueIndicatorScoreModel.setLengthDescProduct(text.length());
-        updateProductScoring();
+        if (valueIndicatorScoreModel.getLengthDescProduct()!= text.length()) {
+            valueIndicatorScoreModel.setLengthDescProduct(text.length());
+            updateProductScoring();
+        }
     }
 
     public void goToGoldMerchantPage() {
@@ -947,12 +964,16 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         // if has any variant, we want to get summary of stock, then update to the parent model.
         if (productVariantViewModel != null && productVariantViewModel.hasSelectedVariant()) {
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
-            currentProductViewModel.setProductStatus(stockType);
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                currentProductViewModel.setProductStock(1);
+                currentProductViewModel.setProductStatus(1);
             } else {
-                currentProductViewModel.setProductStock(0);
+                if (stockType == StockTypeDef.TYPE_ACTIVE) {
+                    currentProductViewModel.setProductStatus(1);
+                } else {
+                    currentProductViewModel.setProductStatus(0);
+                }
             }
+            currentProductViewModel.setProductStock(0);
         }
         // refresh the stock and variant label.
         productManageViewHolder.renderData(currentProductViewModel);

@@ -94,11 +94,14 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
             if (productVariantCombinationViewModel.getStock() == 0) {
                 if (productVariantCombinationViewModel.isActive()) {
                     lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
+                    variantImageView.setStockEmpty(false);
                 } else {
                     lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+                    variantImageView.setStockEmpty(true);
                 }
             } else {
                 lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
+                variantImageView.setStockEmpty(false);
             }
 
             lvStock.setVisibility(View.VISIBLE);
@@ -109,33 +112,37 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
 
         titleTextView.setText(childLvl1Model.getValue());
 
-        List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
-                model.getProductVariantCombinationViewModelList();
-        if (productVariantCombinationViewModelList != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
-                ProductVariantCombinationViewModel variantCombinationViewModel =
-                        productVariantCombinationViewModelList.get(i);
-                if (variantCombinationViewModel.getStock() > 0 || variantCombinationViewModel.isActive()) {
-                    if (stringBuilder.length() > 0) {
-                        stringBuilder.append(", ");
+        if (model.haslevel2()) {
+            List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList =
+                    model.getProductVariantCombinationViewModelList();
+            if (productVariantCombinationViewModelList != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
+                    ProductVariantCombinationViewModel variantCombinationViewModel =
+                            productVariantCombinationViewModelList.get(i);
+                    if (variantCombinationViewModel.getStock() > 0 || variantCombinationViewModel.isActive()) {
+                        if (stringBuilder.length() > 0) {
+                            stringBuilder.append(", ");
+                        }
+                        stringBuilder.append(variantCombinationViewModel.getLevel2String());
                     }
-                    stringBuilder.append(variantCombinationViewModel.getLevel2String());
                 }
-            }
-            String activeVariantItemString = stringBuilder.toString();
-            if (TextUtils.isEmpty(activeVariantItemString)) {
-                variantImageView.setStockEmpty(true);
-                if (TextUtils.isEmpty(level2String)) {
-                    tvSubtitle.setText(null);
+                String activeVariantItemString = stringBuilder.toString();
+                if (TextUtils.isEmpty(activeVariantItemString)) {
+                    variantImageView.setStockEmpty(true);
+                    if (TextUtils.isEmpty(level2String)) {
+                        tvSubtitle.setText(null);
+                    } else {
+                        String level2EmptyString = level2String + " " + context.getString(R.string.product_variant_stock_empty);
+                        tvSubtitle.setText(level2EmptyString);
+                    }
                 } else {
-                    String level2EmptyString = level2String + " " + context.getString(R.string.product_variant_stock_empty);
-                    tvSubtitle.setText(level2EmptyString);
+                    variantImageView.setStockEmpty(false);
+                    tvSubtitle.setText(activeVariantItemString);
                 }
-            } else {
-                variantImageView.setStockEmpty(false);
-                tvSubtitle.setText(activeVariantItemString);
             }
+        } else {
+            tvSubtitle.setText(null);
         }
     }
 }
