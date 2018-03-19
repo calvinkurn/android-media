@@ -553,6 +553,7 @@ public class ProductListFragment extends SearchSectionFragment
         clearDataFilterSort();
         showBottomBarNavigation(false);
         reloadData();
+        UnifyTracking.eventSearchResultQuickFilter(option.getKey(), option.getValue());
     }
 
     private String removeValue(String mapValue, String removedValue) {
