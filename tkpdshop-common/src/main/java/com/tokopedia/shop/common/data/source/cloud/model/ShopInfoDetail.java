@@ -106,7 +106,7 @@ public class ShopInfoDetail {
     private long shopScore;
     @SerializedName("shop_status")
     @Expose
-    private long shopStatus;
+    private int shopStatus;
     @SerializedName("shop_status_message")
     @Expose
     private String shopStatusMessage;
@@ -382,11 +382,11 @@ public class ShopInfoDetail {
         this.shopScore = shopScore;
     }
 
-    public long getShopStatus() {
+    public int getShopStatus() {
         return shopStatus;
     }
 
-    public void setShopStatus(long shopStatus) {
+    public void setShopStatus(int shopStatus) {
         this.shopStatus = shopStatus;
     }
 

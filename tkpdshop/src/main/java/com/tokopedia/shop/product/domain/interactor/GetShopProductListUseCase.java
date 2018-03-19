@@ -39,7 +39,14 @@ public class GetShopProductListUseCase extends UseCase<PagingList<ShopProduct>> 
         return getShopInfoUseCase.createObservable(GetShopInfoUseCase.createRequestParam(shopProductRequestModel.getShopId())).flatMap(new Func1<ShopInfo, Observable<PagingList<ShopProduct>>>() {
             @Override
             public Observable<PagingList<ShopProduct>> call(ShopInfo shopInfo) {
-                shopProductRequestModel.setShopClosed((int) shopInfo.getInfo().getShopStatus() == ShopStatusDef.CLOSED);
+                switch (shopInfo.getInfo().getShopStatus()) {
+                    case ShopStatusDef.OPEN:
+                        shopProductRequestModel.setShopClosed(false);
+                        break;
+                    default:
+                        shopProductRequestModel.setShopClosed(true);
+                        break;
+                }
                 return shopNoteRepository.getShopProductList(shopProductRequestModel);
             }
         });
