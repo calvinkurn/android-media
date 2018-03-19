@@ -73,6 +73,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -806,7 +807,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
+                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
+                resultCode == CartShipmentActivity.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
             dPresenter.processResetAndRefreshCartData();
         }
     }

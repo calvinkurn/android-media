@@ -46,6 +46,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
+    public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
@@ -213,22 +214,22 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
-    public void renderErrorThanksTopPaySuccess(String message) {
+    public void renderErrorThanksTopPay(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
-    public void renderErrorHttpThanksTopPaySuccess(String message) {
+    public void renderErrorHttpThanksTopPay(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
-    public void renderErrorNoConnectionThanksTopPaySuccess(String message) {
+    public void renderErrorNoConnectionThanksTopPay(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
     @Override
-    public void renderErrorTimeoutConnectionThanksTopPaySuccess(String message) {
+    public void renderErrorTimeoutConnectionThanksTopPay(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(this, message);
     }
 
@@ -354,6 +355,8 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                             this,
                             getString(R.string.alert_payment_canceled_or_failed_transaction_module)
                     );
+                    setResult(RESULT_CODE_CANCEL_SHIPMENT_PAYMENT);
+                    finish();
                     break;
                 case TopPayActivity.PAYMENT_SUCCESS:
                     cartShipmentPresenter.processVerifyPayment(checkoutData.getTransactionId());
