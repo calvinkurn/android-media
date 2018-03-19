@@ -1099,13 +1099,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             this.newShopView.renderData(productData);
             refreshMenu();
             updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
-        } else if (presenter!=null) {
-            if (presenter==null) {
-                initialVar();
-                setViewListener();
-                setActionVar();
-            }
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
     }
 
