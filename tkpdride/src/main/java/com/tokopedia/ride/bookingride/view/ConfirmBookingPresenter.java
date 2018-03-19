@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
@@ -194,7 +194,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             return;
         }
 
-        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashModel>() {
+        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashData>() {
             @Override
             public void onCompleted() {
 
@@ -206,14 +206,12 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             }
 
             @Override
-            public void onNext(TokoCashModel tokoCashModel) {
-                if (tokoCashModel != null
-                        && tokoCashModel.isSuccess()
-                        && tokoCashModel.getData() != null
-                        && tokoCashModel.getData().getLink() == 1) {
-                    CommonUtils.dumper("ConfirmBookingPresenter :: tokocash balance == " + tokoCashModel.getData().getBalance());
+            public void onNext(TokoCashData tokoCashData) {
+                if (tokoCashData != null
+                        && tokoCashData.getLink() == 1) {
+                    CommonUtils.dumper("ConfirmBookingPresenter :: tokocash balance == " + tokoCashData.getBalance());
 
-                    tokoCashBalance = "(" + tokoCashModel.getData().getBalance() + ")";
+                    tokoCashBalance = "(" + tokoCashData.getBalance() + ")";
 
                     //show tokocash balance
                     if (isViewAttached()) {

@@ -147,6 +147,7 @@ public final class AppScreen {
     public static final String SCREEN_TX_PEOPLE_CONFIRM_RECEIVED = "Confirm received";
     public static final String SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST = "Transaction list - Buying";
     public static final String SCREEN_FINISH_TX = "Finish Transaction";
+    public static final String SCREEN_FINISH_TX_OLD = "Finish Transaction Old";
     public static final String SCREEN_TOPPOINTS_DETAIL = "Top points detail page";
     public static final String SCREEN_CONTACT_US = "Contact us page";
     public static final String SCREEN_INBOX_RESOLUTION_CENTER = "Inbox resolution center";
@@ -274,6 +275,7 @@ public final class AppScreen {
 
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+    public static String GROUP_CHAT = "Group Chat Page";
     public static final String SCREEN_REFERRAL = "Referral";
 
     public static class UnifyScreenTracker {

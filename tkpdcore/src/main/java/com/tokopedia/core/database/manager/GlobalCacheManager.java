@@ -40,6 +40,10 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return this;
     }
 
+    /**
+     * @param duration value in second
+     * @return
+     */
     public GlobalCacheManager setCacheDuration(long duration) {
         Log.d(TAG, "Storing expired time: " + (System.currentTimeMillis()));
         this.expiredTime = System.currentTimeMillis() + (duration * 1000);

@@ -19,7 +19,6 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -112,7 +111,7 @@ ShippingConfirmationDetail extends TActivity {
     OrderShippingList orderData;
     String invoice_uri;
     String invoice_pdf;
-    String UserID;
+    String userId;
 
     private String OrderId;
 
@@ -161,7 +160,7 @@ ShippingConfirmationDetail extends TActivity {
         OrderStatus.setAdapter(OrderAdapter);
 
         orderData = Parcels.unwrap(getIntent().getExtras().getParcelable(ORDER));
-        UserID = getIntent().getExtras().getString(USER_ID);
+        userId = getIntent().getExtras().getString(USER_ID);
         invoice_uri = getIntent().getExtras().getString(INVOICE_URI1);
         invoice_pdf = getIntent().getExtras().getString(INVOICE_PDF1);
 
@@ -430,7 +429,11 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void onBuyerClick() {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
+        if (this.getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) this.getApplicationContext())
+                    .getTopProfileIntent(this,
+                            userId));
+        }
     }
 
     private void Loading() {
