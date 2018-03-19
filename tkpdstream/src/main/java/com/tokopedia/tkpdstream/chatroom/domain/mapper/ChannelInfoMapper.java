@@ -59,6 +59,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
             return new VoteInfoViewModel(
                     String.valueOf(activePollPojo.getPollId()),
+                    activePollPojo.getTitle(),
                     activePollPojo.getQuestion(),
                     mapToListOptions(activePollPojo.isIsAnswered(),
                             activePollPojo.getOptionType(),

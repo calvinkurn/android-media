@@ -100,7 +100,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
-    private static final long DELAY_TIME = 2000L;
+    private static final long DELAY_TIME = 1000L;
 
     @Inject
     GroupChatPresenter presenter;
@@ -767,8 +767,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void showSuccessVoted() {
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
         channelInfoDialog.setContentView(view);
-        channelInfoDialog.show();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1013,7 +1011,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
-        voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getTitle());
+        voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getQuestion());
 
         voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                 .getListOption());

@@ -202,6 +202,7 @@ public class GroupChatMessagesMapper {
         if (hasPoll(activePollPojo)) {
             return new VoteInfoViewModel(
                     String.valueOf(activePollPojo.getPollId()),
+                    activePollPojo.getTitle(),
                     activePollPojo.getQuestion(),
                     mapToListOptions(activePollPojo.isIsAnswered(),
                             activePollPojo.getOptionType(),
