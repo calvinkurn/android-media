@@ -66,7 +66,9 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
 import java.util.ArrayList;
@@ -81,7 +83,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener {
+        TokoCashUpdateListener, HomeFeedListener, View.OnClickListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -101,6 +103,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
+    private FloatingTextButton floatingTextButton;
 
     public static HomeFragment newInstance() {
 
@@ -151,9 +154,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
         tabContainer = view.findViewById(R.id.tab_container);
+        floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         presenter.attachView(this);
         presenter.setFeedListener(this);
+        floatingTextButton.setOnClickListener(this);
         return view;
     }
 
@@ -630,6 +635,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.recom_action_button){
+            recyclerView.scrollToPosition(adapter.inspirationPosition());
         }
     }
 

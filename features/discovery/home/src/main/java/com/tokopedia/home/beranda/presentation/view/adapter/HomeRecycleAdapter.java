@@ -10,6 +10,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 
 import java.util.List;
 
@@ -94,5 +95,16 @@ public class HomeRecycleAdapter extends BaseAdapter {
 
     public boolean isRetryShown() {
         return visitables.contains(retryModel);
+    }
+
+    public int inspirationPosition() {
+        int pos = 0;
+        for (int i = 0; i < getItemCount(); i++) {
+            if(getItems().get(i) instanceof InspirationViewHolder){
+                pos = i;
+                break;
+            }
+        }
+        return pos;
     }
 }

@@ -49,7 +49,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_margin="@dimen/margin_card_home"
         app:floating_left_icon="@drawable/ic_info"
-        app:floating_title="Cek Rekomendasi" />
+        app:floating_title="@string/cek_recomendasi" />
 
 </android.support.design.widget.CoordinatorLayout>
