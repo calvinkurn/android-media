@@ -785,7 +785,7 @@ public class ProductListFragment extends SearchSectionFragment
         quickFilterOptions = getOptionList(dynamicFilterModel);
         enrichWithInputState(quickFilterOptions);
         headerViewModel.setQuickFilterList(quickFilterOptions);
-        adapter.notifyDataSetChanged();
+        adapter.updateHeaderModel(headerViewModel);
     }
 
     private void enrichWithInputState(List<Option> optionList) {

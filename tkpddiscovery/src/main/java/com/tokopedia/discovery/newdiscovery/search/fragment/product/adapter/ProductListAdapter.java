@@ -26,6 +26,7 @@ import java.util.List;
 
 public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
+    private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
     private EmptySearchModel emptySearchModel;
     private ProductListTypeFactory typeFactory;
@@ -175,5 +176,12 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean hasGuidedSearch() {
         return guidedSearch != null;
+    }
+
+    public void updateHeaderModel(HeaderViewModel headerViewModel) {
+        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
+            list.set(ADAPTER_POSITION_HEADER, headerViewModel);
+            notifyItemChanged(ADAPTER_POSITION_HEADER);
+        }
     }
 }
