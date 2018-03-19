@@ -184,7 +184,8 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
                 .setContentIntent(pIntent)
-                .setGroup(getString(R.string.product_group_notification));
+                .setGroup(getString(R.string.product_group_notification))
+                .setOnlyAlertOnce(true);
     }
 
     private Notification buildFailedNotification(String errorMessage, int notificationId, @ProductStatus int productStatus) {
