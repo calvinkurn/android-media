@@ -16,7 +16,7 @@ import com.tokopedia.shop.sort.view.model.ShopProductSortModel;
 public class ShopProductSortViewHolder extends AbstractViewHolder<ShopProductSortModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_sort_picker;
+    public static final int LAYOUT = R.layout.item_shop_product_sort;
 
     private TextView etalasePickerItemName;
     private ImageView checkedImageView;
@@ -24,8 +24,8 @@ public class ShopProductSortViewHolder extends AbstractViewHolder<ShopProductSor
     public ShopProductSortViewHolder(View itemView) {
         super(itemView);
 
-        etalasePickerItemName = itemView.findViewById(R.id.text_view_etalase_name);
-        checkedImageView = itemView.findViewById(R.id.etalase_picker_radio_button_selected);
+        etalasePickerItemName = itemView.findViewById(R.id.text_view_name);
+        checkedImageView = itemView.findViewById(R.id.image_view_selection);
     }
 
     @Override

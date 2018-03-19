@@ -101,7 +101,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shop_info_page;
+        return R.layout.activity_shop_info;
     }
 
     @Override
@@ -128,7 +128,9 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        shopPageTracking.eventBackPressedShopInfo(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if(shopInfo != null) {
+            shopPageTracking.eventBackPressedShopInfo(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
     }
 
     @NonNull
@@ -136,7 +138,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(shopPageTracking != null) {
+                if(shopPageTracking != null && shopInfo != null) {
                     shopPageTracking.eventClickTabShopInfo(getTitlePage(tab.getPosition()), shopId,
                             shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }

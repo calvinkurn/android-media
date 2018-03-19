@@ -2,20 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_border_view"
+    android:background="@android:color/white"
+    android:foreground="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="@dimen/margin_sm">
 
     <TextView
-        android:id="@+id/text_view_etalase_name"
+        android:id="@+id/text_view_name"
         style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <ImageView
-        android:id="@+id/etalase_picker_radio_button_selected"
+        android:id="@+id/image_view_selection"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_check_green" />

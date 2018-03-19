@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
+import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
@@ -24,7 +25,8 @@ import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopProductLimitedPromoViewModel> {
+public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopProductLimitedPromoViewModel> implements
+        ShopProductUserVisibleHintListener {
 
     private static final String SHOP_STATIC_URL = "shop-static";
     private static final int MIN_SHOW_WEB_VIEW_PROGRESS = 100;
@@ -39,7 +41,8 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     private ShopPagePromoWebView shopPagePromoWebView;
 
 
-    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener, ShopPagePromoWebView.Listener promoWebViewListener) {
+    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener,
+                                             ShopPagePromoWebView.Listener promoWebViewListener) {
         super(itemView);
         this.promoViewHolderListener = promoViewHolderListener;
         this.promoWebViewListener = promoWebViewListener;
@@ -83,6 +86,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
         } else {
             shopPagePromoWebView.loadUrl(shopProductLimitedPromoViewModel.getUrl());
         }
+        shopProductLimitedPromoViewModel.setShopProductUserVisibleHintListener(this);
     }
 
     private void showLoading() {
@@ -93,6 +97,15 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     private void finishLoading() {
         loadingLayout.setVisibility(View.GONE);
         shopPagePromoWebView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visibleToUser) {
+        if (visibleToUser) {
+            shopPagePromoWebView.onResume();
+        } else {
+            shopPagePromoWebView.onPause();
+        }
     }
 
     private class OfficialStoreWebChromeClient extends WebChromeClient {

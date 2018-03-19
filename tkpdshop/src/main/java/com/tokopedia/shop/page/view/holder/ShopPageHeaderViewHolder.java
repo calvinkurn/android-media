@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -45,7 +46,7 @@ public class ShopPageHeaderViewHolder {
 
         void onToggleFavouriteShop(boolean favouriteShop);
 
-        void displayQualityInfo(String qualityAverage, @DrawableRes int qualityRatingStarImageRes, String totalReview);
+        void displayQualityInfo(String qualityAverage, float rating, String totalReview);
 
         void displayReputationInfo(int reputationMedalType, int reputationLevel, String reputationScore);
 
@@ -82,7 +83,7 @@ public class ShopPageHeaderViewHolder {
     private ShopReputationView reputationView;
     private TextView totalFavouriteTextView;
     private TextView totalProductTextView;
-    private ImageView ratingBarImageView;
+    private RatingBar ratingBarImageView;
     private TextView qualityValueTextView;
     private ImageView speedImageView;
     private TextView speedValueTextView;
@@ -125,7 +126,7 @@ public class ShopPageHeaderViewHolder {
 
         totalFavouriteTextView = view.findViewById(R.id.text_view_total_favourite);
         totalProductTextView = view.findViewById(R.id.text_view_total_product);
-        ratingBarImageView = view.findViewById(R.id.image_view_rating_bar);
+        ratingBarImageView = view.findViewById(R.id.product_rating);
         qualityValueTextView = view.findViewById(R.id.text_view_product_quality_value);
         speedImageView = view.findViewById(R.id.image_view_speed);
         speedValueTextView = view.findViewById(R.id.text_view_speed_value);
@@ -276,12 +277,18 @@ public class ShopPageHeaderViewHolder {
         });
         final String qualityAverage = shopInfo.getRatings().getQuality().getAverage();
         qualityValueTextView.setText(qualityAverage);
-        final int intRatingDrawableRes = getRatingImageRes(Math.round(shopInfo.getRatings().getQuality().getRatingStar()));
-        ratingBarImageView.setImageResource(intRatingDrawableRes);
+        float rating;
+        try {
+             rating = Float.parseFloat(qualityAverage);
+        }catch (Exception e){
+            rating = shopInfo.getRatings().getQuality().getRatingStar();
+        }
+        ratingBarImageView.setRating(rating);
+        final float finalRating = rating;
         productQualityDetailView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.displayQualityInfo(qualityAverage, intRatingDrawableRes, shopInfo.getRatings().getQuality().getCountTotal());
+                listener.displayQualityInfo(qualityAverage, finalRating, shopInfo.getRatings().getQuality().getCountTotal());
             }
         });
     }

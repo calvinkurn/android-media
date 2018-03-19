@@ -130,7 +130,7 @@
 
     <declare-styleable name="ShopReputationView">
         <attr name="srv_show_tooltip" format="boolean" />
-        <attr name="srv_medal_size" format="dimension" />
+        <attr name="srv_medal_width" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">

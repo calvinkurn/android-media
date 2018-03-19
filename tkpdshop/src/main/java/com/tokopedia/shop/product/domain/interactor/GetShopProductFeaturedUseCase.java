@@ -1,8 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -21,59 +24,40 @@ import rx.functions.Func1;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class GetShopProductFeaturedUseCase extends UseCase<List<ShopProductViewModel>> {
+public class GetShopProductFeaturedUseCase extends GetShopProductAttributeUseCase<List<ShopProductViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
+    private static final String OFFICIAL_STORE = "OFFICIAL_STORE";
 
     private final GetFeatureProductListUseCase getFeatureProductListUseCase;
-    private final GetWishListUseCase getWishListUseCase;
-    private final UserSession userSession;
-    private final ShopProductMapper shopProductMapper;
 
     @Inject
     public GetShopProductFeaturedUseCase(GetFeatureProductListUseCase getFeatureProductListUseCase,
                                          GetWishListUseCase getWishListUseCase,
+                                         GetProductCampaignsUseCase getProductCampaignsUseCase,
                                          UserSession userSession,
                                          ShopProductMapper shopProductMapper) {
+        super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
-        this.getWishListUseCase = getWishListUseCase;
-        this.userSession = userSession;
-        this.shopProductMapper = shopProductMapper;
     }
 
     @Override
     public Observable<List<ShopProductViewModel>> createObservable(RequestParams requestParams) {
         final String shopId = requestParams.getString(SHOP_ID, "");
+        final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         return getFeatureProductListUseCase.createObservable(GetFeatureProductListUseCase.createRequestParam(shopId)).flatMap(new Func1<List<GMFeaturedProduct>, Observable<List<ShopProductViewModel>>>() {
             @Override
             public Observable<List<ShopProductViewModel>> call(final List<GMFeaturedProduct> gmFeaturedProductList) {
-                // Show shop product list without wish list
-                if (gmFeaturedProductList.size() <= 0 || isShopOwner(shopId)) {
-                    return Observable.just(shopProductMapper.convertFromProductFeatured(gmFeaturedProductList, new ArrayList<String>(), false));
-                }
-                List<String> productIdList = new ArrayList<>();
-                for (GMFeaturedProduct gmFeaturedProduct : gmFeaturedProductList) {
-                    productIdList.add(gmFeaturedProduct.getProductId());
-                }
-                return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<List<ShopProductViewModel>>>() {
-                    @Override
-                    public Observable<List<ShopProductViewModel>> call(List<String> productWishList) {
-                        return Observable.just(shopProductMapper.convertFromProductFeatured(gmFeaturedProductList, productWishList, true));
-                    }
-                });
+                List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromProductFeatured(gmFeaturedProductList);
+                return getShopProductViewModelList(isShopOwner(shopId), officialStore, shopProductViewModelList);
             }
         });
     }
 
-    private boolean isShopOwner(String shopId){
-        return userSession.getShopId().equals(shopId);
-    }
-
-
-
-    public static RequestParams createRequestParam(String shopId) {
+    public static RequestParams createRequestParam(String shopId, boolean officialStore) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
+        requestParams.putBoolean(OFFICIAL_STORE, officialStore);
         return requestParams;
     }
 }

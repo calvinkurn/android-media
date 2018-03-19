@@ -87,7 +87,7 @@
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 
     <dimen name="height_widget_ticker">90dp</dimen>
-    <dimen name="image_medal_size">20dp</dimen>
+    <dimen name="image_medal_size">15dp</dimen>
 
     <dimen name="height_button_voucher">44dp</dimen>
     <dimen name="font_small_caption_voucher">10dp</dimen>

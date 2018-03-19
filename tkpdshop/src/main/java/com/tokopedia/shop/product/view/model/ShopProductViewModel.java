@@ -15,6 +15,8 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     private String originalPrice;
     private String discountPercentage;
     private String imageUrl;
+    private String imageUrl300;
+    private String imageUrl700;
     private int totalReview;
     private double rating;
     private double cashback;
@@ -71,6 +73,22 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl300() {
+        return imageUrl300;
+    }
+
+    public void setImageUrl300(String imageUrl300) {
+        this.imageUrl300 = imageUrl300;
+    }
+
+    public String getImageUrl700() {
+        return imageUrl700;
+    }
+
+    public void setImageUrl700(String imageUrl700) {
+        this.imageUrl700 = imageUrl700;
     }
 
     public int getTotalReview() {

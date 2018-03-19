@@ -5,6 +5,9 @@
     android:id="@+id/linear_layout_header_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     android:paddingLeft="@dimen/margin_ms"
     android:paddingRight="@dimen/margin_ms"
@@ -17,14 +20,27 @@
         android:layout_marginBottom="@dimen/margin_ms"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/image_view_shop_icon"
-            android:layout_width="@dimen/image_width_l"
-            android:layout_height="@dimen/image_width_l"
-            android:src="@drawable/ic_loading_toped"
+        <FrameLayout
+            android:id="@+id/image_view_shop_icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rect_stroke_lighter_gray"
+            android:padding="@dimen/margin_vvs"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/image_view_shop_icon"
+                android:layout_width="@dimen/image_width_l"
+                android:layout_height="@dimen/image_width_l"
+                android:src="@drawable/ic_loading_toped" />
+
+            <View
+                android:layout_width="@dimen/image_width_l"
+                android:layout_height="@dimen/image_width_l"
+                android:background="@drawable/bg_rect_stroke_gray_dashed"/>
+        </FrameLayout>
 
 
         <ImageView
@@ -48,7 +64,9 @@
             android:layout_width="0dp"
             android:layout_marginBottom="2dp"
             android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginStart="8dp"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginStart="@dimen/margin_ms"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/shop_info"
             app:layout_constraintStart_toEndOf="@+id/image_view_shop_status"
@@ -70,18 +88,20 @@
             tools:layout_conversion_absoluteHeight="15dp"
             tools:layout_conversion_absoluteWidth="15dp" />
 
-        <TextView
+       <TextView
             android:id="@+id/text_view_location"
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginStart="@dimen/margin_ms"
             android:layout_marginTop="@dimen/new_margin_tiny"
             app:layout_constraintStart_toEndOf="@+id/image_view_location"
             app:layout_constraintTop_toTopOf="@+id/image_view_location"
             tools:layout_conversion_absoluteHeight="15dp"
             tools:layout_conversion_absoluteWidth="90dp"
             tools:text="@string/app_name" />
+
 
 
         <ImageView

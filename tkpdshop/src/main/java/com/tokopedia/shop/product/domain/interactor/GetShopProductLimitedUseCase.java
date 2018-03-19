@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
@@ -25,25 +26,36 @@ import rx.schedulers.Schedulers;
 public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
+    private static final String GOLD_MERCHANT_STORE = "GOLD_MERCHANT";
+    private static final String OFFICIAL_STORE = "OFFICIAL_STORE";
 
     private final GetShopProductFeaturedUseCase getShopProductFeaturedUseCase;
-    private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
+    private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
 
     @Inject
     public GetShopProductLimitedUseCase(GetShopProductFeaturedUseCase getShopProductFeaturedUseCase,
-                                        GetShopProductWithWishListUseCase getShopProductWithWishListUseCase) {
+                                        GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase) {
         this.getShopProductFeaturedUseCase = getShopProductFeaturedUseCase;
-        this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
+        this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
     }
 
     @Override
     public Observable<List<ShopProductBaseViewModel>> createObservable(RequestParams requestParams) {
         final String shopId = requestParams.getString(SHOP_ID, "");
+        final boolean goldMerchantStore = requestParams.getBoolean(GOLD_MERCHANT_STORE, false);
+        final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
         shopProductRequestModel.setShopId(shopId);
+
+        List<ShopProductViewModel> defaultFeaturedProductList = new ArrayList<>();
+        Observable<List<ShopProductViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
+        if (goldMerchantStore || officialStore) {
+            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore));
+        }
+        Observable<PagingList<ShopProductViewModel>> shopProductObservable = getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel));
+
         return Observable.zip(
-                getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId)).subscribeOn(Schedulers.io()),
-                getShopProductWithWishListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
+                featuredProductObservable.subscribeOn(Schedulers.io()), shopProductObservable.subscribeOn(Schedulers.io()),
                 new Func2<List<ShopProductViewModel>, PagingList<ShopProductViewModel>, List<ShopProductBaseViewModel>>() {
                     @Override
                     public List<ShopProductBaseViewModel> call(List<ShopProductViewModel> shopProductViewModelList, PagingList<ShopProductViewModel> shopProductList) {
@@ -64,9 +76,11 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         );
     }
 
-    public static RequestParams createRequestParam(String shopId) {
+    public static RequestParams createRequestParam(String shopId, boolean goldMerchantStore, boolean officialStore) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
+        requestParams.putBoolean(GOLD_MERCHANT_STORE, goldMerchantStore);
+        requestParams.putBoolean(OFFICIAL_STORE, officialStore);
         return requestParams;
     }
 }
