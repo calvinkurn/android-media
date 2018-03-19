@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 
@@ -16,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 public class LoadingViewholder extends AbstractViewHolder<LoadingModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.loading_layout;
+    public final static int LAYOUT = R.layout.item_shimmering_list;
 
     public LoadingViewholder(View itemView) {
         super(itemView);
@@ -24,13 +23,8 @@ public class LoadingViewholder extends AbstractViewHolder<LoadingModel> {
 
     @Override
     public void bind(LoadingModel element) {
-        if (element.isFullScreen()) {
-            itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
+        itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
 }

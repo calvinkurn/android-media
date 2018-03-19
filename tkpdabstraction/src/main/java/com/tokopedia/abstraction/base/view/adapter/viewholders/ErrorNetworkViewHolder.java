@@ -3,6 +3,7 @@ package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,11 +17,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 
 public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.design_error_network;
+    public final static int LAYOUT = R.layout.partial_empty_page_error;
     private ImageView ivIcon;
     private TextView tvMessage;
     private TextView tvSubMessage;
-    private TextView tvRetryButton;
+    private Button tvRetryButton;
 
     public ErrorNetworkViewHolder(View itemView) {
         super(itemView);
@@ -31,17 +32,17 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     }
 
     @Override
-    public void bind(final ErrorNetworkModel element) {
-        if (element.getIconDrawableRes() != 0) {
-            ivIcon.setImageResource(element.getIconDrawableRes());
+    public void bind(final ErrorNetworkModel errorNetworkModel) {
+        if (errorNetworkModel.getIconDrawableRes() != 0) {
+            ivIcon.setImageResource(errorNetworkModel.getIconDrawableRes());
         }
-        if (element.getErrorMessage() != null && element.getErrorMessage().length() > 0) {
-            tvMessage.setText(element.getErrorMessage());
+        if (errorNetworkModel.getErrorMessage() != null && errorNetworkModel.getErrorMessage().length() > 0) {
+            tvMessage.setText(errorNetworkModel.getErrorMessage());
         }
         tvRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ErrorNetworkModel.OnRetryListener listener = element.getOnRetryListener();
+                ErrorNetworkModel.OnRetryListener listener = errorNetworkModel.getOnRetryListener();
                 if (listener != null) {
                     listener.onRetryClicked();
                 }

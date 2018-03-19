@@ -31,6 +31,7 @@ import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
@@ -43,7 +44,6 @@ import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.network.entity.intermediary.Image;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
@@ -54,6 +54,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
@@ -268,9 +269,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onShopItemClicked(Shop shop) {
-            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-            Intent intent = new Intent(context, ShopInfoActivity.class);
-            intent.putExtras(bundle);
+            Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getShopPageIntent(context, shop.getId());
             context.startActivity(intent);
         }
 

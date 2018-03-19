@@ -9,16 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
@@ -31,7 +37,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopMode
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopContract;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopPresenter;
 
 import java.util.ArrayList;
@@ -49,11 +54,13 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     public static final String SHOP_DOMAIN = "shop_domain";
     @Inject
     ReviewShopPresenter shopReviewPresenter;
+    @Inject
+    ReputationTracking reputationTracking;
 
     private ProgressDialog progressDialog;
 
-    private String shopId;
-    private String shopDomain;
+    protected String shopId;
+    protected String shopDomain;
 
     public static ReviewShopFragment createInstance(String shopId, String shopDomain) {
         ReviewShopFragment shopReviewFragment = new ReviewShopFragment();
@@ -62,6 +69,21 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
         bundle.putString(SHOP_DOMAIN, shopDomain);
         shopReviewFragment.setArguments(bundle);
         return shopReviewFragment;
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setContent(getString(R.string.review_shop_empty_list_content));
+        return emptyModel;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shopId = getArguments().getString(SHOP_ID, "");
+        shopDomain = getArguments().getString(SHOP_DOMAIN, "");
     }
 
     @Nullable
@@ -73,10 +95,10 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(SHOP_ID, "");
-        shopDomain = getArguments().getString(SHOP_DOMAIN, "");
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.clearItemDecoration();
     }
 
     @Override
@@ -111,11 +133,18 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onGoToProfile(String reviewerId) {
+    public void onGoToProfile(String reviewerId, int adapterPosition) {
+        onGoToProfileTracking(adapterPosition);
         startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
         );
     }
+
+    protected void onGoToProfileTracking(int adapterPosition) {
+        reputationTracking.eventClickUserAccountPage(getString(R.string.review), adapterPosition, shopId,
+                shopReviewPresenter.isMyShop(shopId));
+    }
+
 
     @Override
     public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
@@ -139,14 +168,19 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToShopInfo(String shopId) {
-        Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
         startActivity(intent);
     }
 
     @Override
-    public void onDeleteReviewResponse(ReviewProductModelContent element) {
+    public void onDeleteReviewResponse(ReviewProductModelContent element, int adapterPosition) {
+        onDeleteReviewResponseTracking(element, adapterPosition);
         shopReviewPresenter.deleteReview(element.getReviewId(), element.getReputationId(), element.getProductId());
+    }
+
+    protected void onDeleteReviewResponseTracking(ReviewProductModelContent element, int adapterPosition) {
+        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.DELETE, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
@@ -155,16 +189,38 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onGoToReportReview(String shopId, String reviewId) {
+    public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
+        onGoToReportReviewTracking(shopId, adapterPosition);
         startActivity(InboxReputationReportActivity.getCallingIntent(
                 getActivity(),
                 Integer.valueOf(shopId),
                 reviewId));
     }
 
+    protected void onGoToReportReviewTracking(String shopId, int adapterPosition) {
+        reputationTracking.eventClickChooseThreeDotMenuPage(getString(R.string.review), adapterPosition, ReputationTrackingConstant.REPORT, shopId,
+                shopReviewPresenter.isMyShop(shopId));
+    }
+
     @Override
-    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId) {
+    public void onMenuClicked(int adapterPosition) {
+        reputationTracking.eventCLickThreeDotMenuPage(getString(R.string.review), adapterPosition, shopId, shopReviewPresenter.isMyShop(shopId));
+    }
+
+    @Override
+    public void onSeeReplied(int adapterPosition) {
+        reputationTracking.eventClickSeeRepliesPage(getString(R.string.review), adapterPosition, shopId, shopReviewPresenter.isMyShop(shopId));
+    }
+
+    @Override
+    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId, boolean status, int adapterPosition) {
+        onLikeDislikeTracking(productId, status, adapterPosition);
         shopReviewPresenter.postLikeDislikeReview(reviewId, likeStatus, productId);
+    }
+
+    protected void onLikeDislikeTracking(String productId, boolean status, int adapterPosition) {
+        reputationTracking.eventClickLikeDislikeReviewPage(getString(R.string.review), status, adapterPosition, shopId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override
@@ -189,11 +245,17 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onGoToDetailProduct(String productId) {
+    public void onGoToDetailProduct(String productId, int adapterPosition) {
+        onGoToDetailProductTracking(productId, adapterPosition);
         ProductPass productPass = ProductPass.Builder.aProductPass()
                 .setProductId(productId)
                 .build();
         ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
+    }
+
+    protected void onGoToDetailProductTracking(String productId, int adapterPosition) {
+        reputationTracking.eventClickProductPictureOrNamePage(getString(R.string.review), adapterPosition, productId,
+                shopReviewPresenter.isMyShop(shopId));
     }
 
     @Override

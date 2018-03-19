@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -22,11 +23,11 @@ import rx.Subscriber;
 
 public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.View> implements ReviewShopContract.Presenter {
 
-    private final ReviewShopUseCase shopReviewUseCase;
+    protected final ReviewShopUseCase shopReviewUseCase;
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
-    private final ReviewProductListMapper productReviewListMapper;
-    private final UserSession userSession;
+    protected final ReviewProductListMapper productReviewListMapper;
+    protected final UserSession userSession;
 
     @Inject
     public ReviewShopPresenter(ReviewShopUseCase shopReviewUseCase,
@@ -108,7 +109,7 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
                 getSubscriberGetShopReview());
     }
 
-    private Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
+    protected Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
         return new Subscriber<DataResponseReviewShop>() {
             @Override
             public void onCompleted() {
@@ -128,5 +129,9 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
                         !TextUtils.isEmpty(dataResponseReviewShop.getPaging().getUriNext()));
             }
         };
+    }
+
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/button_show_complete_discussion"
+    style="@style/Button.Submit.White"
+    android:text="@string/discussion_shop_label_show_more_discussion" />

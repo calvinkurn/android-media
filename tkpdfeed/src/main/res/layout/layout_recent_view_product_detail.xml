@@ -57,7 +57,7 @@
 
     <RatingBar
         android:id="@+id/product_rating"
-        style="@style/Small.RatingBar"
+        style="@style/RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_below="@id/product_price"

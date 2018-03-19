@@ -27,7 +27,6 @@ import com.tokopedia.core.people.presenter.PeopleInfoFragmentImpl;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import butterknife.BindView;
 
@@ -209,11 +208,8 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
 
     @Override
     public void openShopDetail(String shopId) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("shop_id", shopId);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        context.startActivity(intent);
     }
 
     @Override

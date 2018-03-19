@@ -20,7 +20,6 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -31,11 +30,9 @@ import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.WhiteList;
-
-import java.util.List;
-
-import rx.Subscriber;
+import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
+import com.tokopedia.shop.common.constant.ShopUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -165,6 +162,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+        ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
+        ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
+        ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
 
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
 
@@ -190,11 +190,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 .build());
     }
 
-    public void initCacheApi() {
+    private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = WhiteList.getWhiteList();
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
-                cacheApiWhiteListDomains,
+                CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_product_list"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginEnd="@dimen/margin_vl"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginRight="@dimen/margin_vl"
+        android:layout_marginStart="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_ms">
+
+        <com.tokopedia.shop.product.view.widget.SquareImageView
+            android:id="@+id/product_image"
+            android:layout_width="@dimen/image_width_product_list"
+            android:layout_height="@dimen/image_width_product_list"
+            android:layout_marginEnd="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_kupon"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/TextView.Small.BlackSecondary"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5sp"
+                android:minLines="2"
+                tools:text="@string/app_name" />
+
+            <include
+                android:id="@+id/badges_container"
+                layout="@layout/partial_shop_product_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_ms" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_ms">
+
+                <android.support.v7.widget.AppCompatRatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_vvs"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/total_review"
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_marginLeft="@dimen/new_margin_med"
+                    android:layout_marginStart="@dimen/new_margin_med"
+                    android:visibility="gone"
+                    tools:text="TextView"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <include
+                android:id="@+id/badges_container"
+                layout="@layout/partial_shop_product_item_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_ms" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/partial_shop_product_item_wishlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

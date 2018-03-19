@@ -2,13 +2,15 @@ package com.tokopedia.design.label;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,11 +23,15 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class LabelView extends BaseCustomView {
 
+    private ImageView imageView;
     private TextView titleTextView;
+    private TextView subTitleTextView;
     private TextView contentTextView;
-    private ImageView arrow;
 
+    private Drawable imageDrawable;
+    private int imageWidth;
     private String titleText;
+    private String subTitleText;
     @ColorInt
     private int titleColorValue;
     private int contentTextStyleValue;
@@ -35,9 +41,7 @@ public class LabelView extends BaseCustomView {
     private int contentColorValue;
     private int titleTextStyleValue;
 
-    private boolean showArrow;
     private int maxLines;
-    private float textSize;
     private float titleTextSize;
     private float contentTextSize;
     private int minTitleWidth;
@@ -62,17 +66,18 @@ public class LabelView extends BaseCustomView {
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
+            imageDrawable = styledAttributes.getDrawable(R.styleable.LabelView_lv_image);
+            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.image_width_s));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
-            showArrow = styledAttributes.getBoolean(R.styleable.LabelView_lv_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
-            textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
-                    getResources().getDimension(com.tokopedia.design.R.dimen.font_title));
-            titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, textSize);
+            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.font_title));
+            titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {
             styledAttributes.recycle();
@@ -82,36 +87,47 @@ public class LabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_label_view, this);
-        titleTextView = (TextView) view.findViewById(R.id.title_text_view);
-        contentTextView = (TextView) view.findViewById(R.id.content_text_view);
-        arrow = (ImageView) view.findViewById(R.id.arrow_left);
+        imageView = view.findViewById(R.id.image_view);
+        titleTextView = view.findViewById(R.id.text_view_title);
+        subTitleTextView = view.findViewById(R.id.text_view_sub_title);
+        contentTextView = view.findViewById(R.id.text_view_content);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        if (imageDrawable != null) {
+            imageView.setImageDrawable(imageDrawable);
+            imageView.setVisibility(View.VISIBLE);
+        }
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.width = imageWidth;
+        layoutParams.height = imageWidth;
+        imageView.setLayoutParams(layoutParams);
         titleTextView.setText(titleText);
-        setContent(contentText);
+        titleTextView.setTypeface(null, titleTextStyleValue);
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
+        titleTextView.setMinWidth(minTitleWidth);
+        if (!TextUtils.isEmpty(subTitleText)) {
+            subTitleTextView.setText(subTitleText);
+            subTitleTextView.setVisibility(View.VISIBLE);
+        }
+        contentTextView.setText(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
-        titleTextView.setTypeface(null, titleTextStyleValue);
-        setVisibleArrow(showArrow);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
-        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        titleTextView.setMinWidth(minTitleWidth);
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
         invalidate();
         requestLayout();
     }
 
     public void resetContentText() {
         setContent(contentText);
-        setVisibleArrow(showArrow);
         invalidate();
         requestLayout();
     }
 
-    public boolean isContentDefault(){
+    public boolean isContentDefault() {
         return contentTextView.getText().equals(contentText);
     }
 
@@ -122,12 +138,9 @@ public class LabelView extends BaseCustomView {
         if (enabled) {
             titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
-            arrow.clearColorFilter();
         } else {
             titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            arrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400),
-                    PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -142,6 +155,13 @@ public class LabelView extends BaseCustomView {
 
     public void setTitle(String textTitle) {
         titleTextView.setText(textTitle);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setSubTitle(String text) {
+        subTitleTextView.setText(text);
+        subTitleTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         invalidate();
         requestLayout();
     }
@@ -175,11 +195,7 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setVisibleArrow(boolean isVisible) {
-        if (isVisible) {
-            arrow.setVisibility(VISIBLE);
-        } else {
-            arrow.setVisibility(GONE);
-        }
+    public ImageView getImageView() {
+        return imageView;
     }
 }

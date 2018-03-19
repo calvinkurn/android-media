@@ -36,7 +36,6 @@ import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
@@ -794,9 +793,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-                Bundle bundle = ShopInfoActivity.createBundle(model.getReviewShopId(), "");
-                intent.putExtras(bundle);
+                Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), model.getReviewShopId());
                 startActivity(intent);
             }
         };

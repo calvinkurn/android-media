@@ -102,8 +102,4 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
     public void setContentText(String contentText) {
         labelView.setContent(contentText);
     }
-
-    public void setArrow(boolean isShow) {
-        labelView.setVisibleArrow(isShow);
-    }
 }

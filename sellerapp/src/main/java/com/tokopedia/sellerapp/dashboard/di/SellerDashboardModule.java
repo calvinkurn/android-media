@@ -30,6 +30,8 @@ import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
@@ -177,10 +179,16 @@ public class SellerDashboardModule {
                 notificationUseCase, topChatNotificationUseCase);
     }
 
+    @DeleteCacheScope
+    @Provides
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
+        return new DeleteShopInfoTomeUseCase();
+    }
+
     @SellerDashboardScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
     }
 
     @SellerDashboardScope

@@ -40,6 +40,7 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
