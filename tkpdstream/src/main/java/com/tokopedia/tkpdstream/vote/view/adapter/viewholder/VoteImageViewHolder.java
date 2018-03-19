@@ -60,14 +60,14 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
     public void bind(final VoteViewModel element) {
         Context context = itemView.getContext();
         if (element.getSelected() == VoteViewModel.DEFAULT) {
-//            shadowLayer.setVisibility(View.GONE);
+            shadowLayer.setVisibility(View.GONE);
             percent.setVisibility(View.GONE);
             percentLayout.setVisibility(View.GONE);
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_default));
             icon.setVisibility(View.GONE);
         } else {
-//            shadowLayer.setVisibility(View.VISIBLE);
+            shadowLayer.setVisibility(View.VISIBLE);
             percent.setVisibility(View.VISIBLE);
             percentLayout.setVisibility(View.VISIBLE);
             progressBar.setProgress(element.getPercentageInteger());
