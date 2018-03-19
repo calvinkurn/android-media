@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -23,6 +27,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     public static final int RESULT_CODE_ACTION_SELECT_ADDRESS = 100;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
+    public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
 
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
@@ -30,6 +35,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST = 1;
+    public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 2;
 
     private int mTypeRequest;
 
@@ -87,8 +93,12 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                         .commit();
                 break;
 
-            default:
+            case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
+                startActivityForResult(AddAddressActivity.createInstance(this),
+                        REQUEST_CODE_PARAM_CREATE);
                 break;
+
+            default:
         }
     }
 
@@ -112,6 +122,15 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PARAM_CREATE) {
+            setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
+            finish();
+        }
+    }
 
     @Override
     public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
@@ -137,7 +156,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
                 break;
 
             default:
-                break;
         }
     }
 
