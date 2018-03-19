@@ -353,7 +353,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void initialize() {
         getView().showSortRouteLoading();
-        if (!getView().isReturning() && getView().isNeedRefreshFromCache()) {
+        if (!getView().isReturning()) {
             flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
