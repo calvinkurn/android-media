@@ -3,14 +3,11 @@ package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
@@ -34,7 +31,7 @@ import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.M
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressFragment extends TkpdFragment
+public class MultipleAddressFragment extends BasePresenterFragment
         implements IMultipleAddressView,
         MultipleAddressAdapter.MultipleAddressAdapterListener {
 
@@ -66,23 +63,33 @@ public class MultipleAddressFragment extends TkpdFragment
         return null;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.multiple_address_fragment, container, false);
-        initInjector();
-        RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
-        orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        multipleAddressAdapter = new MultipleAddressAdapter(initiateAdapterData(), this);
-        orderAddressList.setAdapter(multipleAddressAdapter);
-        return view;
+    protected void onFirstTimeLaunched() {
+
     }
 
-    private void initInjector() {
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
                 .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
     }
 
     private List<MultipleAddressAdapterData> initiateAdapterData() {
@@ -151,13 +158,56 @@ public class MultipleAddressFragment extends TkpdFragment
     }
 
     @Override
-    public void receiveData(List<MultipleAddressAdapterData> dataList) {
+    public void onDestroyView() {
+        presenter.onUnsubscribe();
+        super.onDestroyView();
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
 
     }
 
     @Override
-    public void onDestroyView() {
-        presenter.onUnsubscribe();
-        super.onDestroyView();
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.multiple_address_fragment;
+    }
+
+    @Override
+    protected void initView(View view) {
+        RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
+        orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        multipleAddressAdapter = new MultipleAddressAdapter(initiateAdapterData(), this);
+        orderAddressList.setAdapter(multipleAddressAdapter);
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
     }
 }
