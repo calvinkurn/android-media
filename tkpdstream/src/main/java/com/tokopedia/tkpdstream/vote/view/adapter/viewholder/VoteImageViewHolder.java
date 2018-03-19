@@ -1,14 +1,17 @@
 package com.tokopedia.tkpdstream.vote.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -32,10 +35,12 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
     private SquareImageView imageView;
     private View icon;
     private View percentLayout;
+    private View shadowLayer;
 
     public VoteImageViewHolder(View itemView, GroupChatContract.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
+        shadowLayer = itemView.findViewById(R.id.shadow_layer);
         progressBar = itemView.findViewById(R.id.progress_bar);
         option = itemView.findViewById(R.id.text_view);
         imageView = itemView.findViewById(R.id.imageView);
@@ -55,12 +60,14 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
     public void bind(final VoteViewModel element) {
         Context context = itemView.getContext();
         if (element.getSelected() == VoteViewModel.DEFAULT) {
+//            shadowLayer.setVisibility(View.GONE);
             percent.setVisibility(View.GONE);
             percentLayout.setVisibility(View.GONE);
             progressBar.setProgress(0);
             progressBar.setProgressDrawable(MethodChecker.getDrawable(context, R.drawable.vote_option_image_default));
             icon.setVisibility(View.GONE);
         } else {
+//            shadowLayer.setVisibility(View.VISIBLE);
             percent.setVisibility(View.VISIBLE);
             percentLayout.setVisibility(View.VISIBLE);
             progressBar.setProgress(element.getPercentageInteger());
@@ -75,14 +82,22 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
 
         option.setText(element.getOption());
         percent.setText(element.getPercentage());
-//        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
-//
-//            @Override
-//            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
-//                imageView.setImageBitmap(arg0);
-//            }
-//        });
-        ImageHandler.LoadImage(imageView, element.getUrl());
+        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
+
+            @Override
+            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
+                imageView.setImageBitmap(arg0);
+
+                if (element.getSelected() == VoteViewModel.DEFAULT) {
+                    shadowLayer.setVisibility(View.GONE);
+                } else {
+                    shadowLayer.setLayoutParams(new RelativeLayout.LayoutParams(imageView.getHeight(),
+                            imageView.getWidth()));
+                    shadowLayer.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+//        ImageHandler.LoadImage(imageView, element.getUrl());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
