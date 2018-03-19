@@ -159,18 +159,17 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_cart_remove) {
-            mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
+        MenuItem item = menu.getItem(0);
+        item.setActionView(R.layout.layout_menu_delete);
+        TextView deleteTextView = (TextView) item.getActionView();
+        deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 

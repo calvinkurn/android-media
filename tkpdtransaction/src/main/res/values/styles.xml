@@ -25,7 +25,7 @@
         <item name="colorAccent">#42b549</item>
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
-    
+
     <style name="TextSmall">
         <item name="android:textSize">12sp</item>
     </style>
