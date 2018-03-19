@@ -43,6 +43,7 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     }
 
     public void setQuickFilterList(List<Option> quickFilterList) {
-        this.quickFilterList = quickFilterList;
+        this.quickFilterList.clear();
+        this.quickFilterList.addAll(quickFilterList);
     }
 }
