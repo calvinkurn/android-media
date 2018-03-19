@@ -229,8 +229,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.tvErrorFormRemarkValidation.setText("");
         } else {
             if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_FIELD_MAX_CHAR) {
-                this.tvErrorFormValidation.setText("");
-                this.tvErrorFormValidation.setVisibility(View.GONE);
+                if (TextUtils.isEmpty(data.getErrorFormItemValidationMessage())) {
+                    this.tvErrorFormValidation.setText("");
+                    this.tvErrorFormValidation.setVisibility(View.GONE);
+                }
                 this.tvErrorFormRemarkValidation.setVisibility(View.VISIBLE);
                 this.tvErrorFormRemarkValidation.setText(data.getErrorFormItemValidationMessage());
             } else {
@@ -240,6 +242,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 this.tvErrorFormRemarkValidation.setText("");
             }
         }
+        actionListener.onCartItemAfterErrorChecked();
     }
 
 
@@ -320,8 +323,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 e.printStackTrace();
             }
             data.getCartItemData().getUpdatedData().setQuantity(qty);
-            actionListener.onCartItemQuantityFormEdited();
             renderErrorFormItemValidation(data);
+            actionListener.onCartItemQuantityFormEdited();
         }
     }
 }

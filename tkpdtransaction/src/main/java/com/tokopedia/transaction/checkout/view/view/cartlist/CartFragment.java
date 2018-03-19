@@ -353,6 +353,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
+    public void onCartItemAfterErrorChecked() {
+        cartListAdapter.checkForShipmentForm();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
