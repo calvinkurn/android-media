@@ -64,7 +64,6 @@ public class BranchSdkUtils {
 
         if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-            ContentMetadata contentMetadata = new ContentMetadata();
             LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
             branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
                 @Override
