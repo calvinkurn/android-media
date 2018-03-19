@@ -715,7 +715,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             if (!productData.getInfo().getProductStatus().equals(PRD_STATE_PENDING)) {
                 fabWishlist.setOnClickListener(new EditClick(productData));
             } else {
-                showToastMessage(productData.getInfo().getProductStatusTitle());
+                fabWishlist.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showToastMessage(productData.getInfo().getProductStatusTitle());
+                    }
+                });
             }
 
         } else if (status == 1) {
