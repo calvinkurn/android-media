@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -76,7 +77,7 @@ public interface WishList {
 
     void deleteWishlist(Context context, String productId, int position);
 
-    void addToCart(Context context, String productId);
+    void addToCart(Activity activity, String productId);
 
     boolean isLoadedFirstPage();
 
