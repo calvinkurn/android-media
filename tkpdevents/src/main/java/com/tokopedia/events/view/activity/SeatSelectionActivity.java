@@ -172,22 +172,13 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
             areaId = seatLayoutViewModel.getArea().get(0).getAreaCode() + "-" + String.valueOf(seatLayoutViewModel.getArea().get(0).getAreaNo());
         }
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
-//        String prevChr = "";
         String currentChar = "";
         for (int i = 0; i < numOfRows; ) {
             CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
             int rowId = seatLayoutViewModel.getLayoutDetail().get(i).getRowId();
             if (Utils.isNotNullOrEmpty(seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId())) {
                 currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId();
-//                if (prevChr.length() > 0 && prevChr.compareTo(currentChar) < 0) {
-//                    customSeatAreaLayout.setSeatRow("");
-//                    prevChr = currentChar;
-//                    seatTextLayout.addView(customSeatAreaLayout);
-//                    continue;
-//                } else {
-                    customSeatAreaLayout.setSeatRow(currentChar);
-//                    prevChr = currentChar;
-//                }
+                customSeatAreaLayout.setSeatRow(currentChar);
             }
             int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
             for (int j = 0; j < numOfColumns; j++) {
