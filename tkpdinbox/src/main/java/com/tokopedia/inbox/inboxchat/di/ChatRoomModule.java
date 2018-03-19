@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.template.TemplateChatFactory;
@@ -74,8 +75,8 @@ public class ChatRoomModule {
 
     @InboxChatScope
     @Provides
-    GetReplyMapper provideGetReplyMapper() {
-        return new GetReplyMapper();
+    GetReplyMapper provideGetReplyMapper(SessionHandler sessionHandler) {
+        return new GetReplyMapper(sessionHandler);
     }
 
     @InboxChatScope

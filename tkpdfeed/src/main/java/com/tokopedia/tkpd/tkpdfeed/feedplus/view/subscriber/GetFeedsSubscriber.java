@@ -40,6 +40,7 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
             if (feedResult.isHasNext()) {
                 viewListener.updateCursor(getCurrentCursor(feedResult));
                 viewListener.onSuccessGetFeed(list);
+                viewListener.hideTopAdsAdapterLoading();
             } else {
                 viewListener.onSuccessGetFeed(list);
                 viewListener.onShowAddFeedMore();

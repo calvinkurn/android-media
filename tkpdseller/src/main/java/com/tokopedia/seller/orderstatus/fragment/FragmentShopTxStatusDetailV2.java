@@ -1,7 +1,6 @@
 package com.tokopedia.seller.orderstatus.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
@@ -42,9 +38,11 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.OrderHistoryView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenter;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenterImpl;
@@ -333,10 +331,11 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(),
-                                presenter.getInvoiceData().getUserId())
-                );
+                if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+                    startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    presenter.getInvoiceData().getUserId()));
+                }
             }
         };
     }
@@ -523,7 +522,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                             + "\n"
                             + getActivity().getString(R.string.message_verification_timeout),
                     Toast.LENGTH_LONG).show();
-            Crashlytics.log(0,
+            if(!GlobalConfig.DEBUG) Crashlytics.log(0,
                     "NullPointerException "
                             + getActivity().getClass().getSimpleName(), e.toString());
             getActivity().finish();

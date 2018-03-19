@@ -29,6 +29,9 @@ import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -119,15 +122,11 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-        } else if (!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())) {
-            downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else if(!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())){
             configureLargeImageNotification(applinkNotificationPass, mBuilder, configuration);
         } else
             {
-            mBuilder.setLargeIcon(
-                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
-            );
+            mBuilder.setLargeIcon(getBitmap(applinkNotificationPass.getImageUrl()));
 
             NotificationManager mNotificationManager =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -429,5 +428,16 @@ public class BuildAndShowNotification {
 
     public interface OnGetFileListener {
         void onFileReady(File file);
+    }
+
+    private Bitmap getBitmap(String url) {
+        try {
+            return Glide.with(mContext).load(url)
+                    .asBitmap()
+                    .into(60, 60)
+                    .get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
+            return BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon());
+        }
     }
 }

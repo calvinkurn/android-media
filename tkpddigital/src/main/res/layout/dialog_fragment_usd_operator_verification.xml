@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
     android:padding="@dimen/digital_padding_16">
@@ -103,7 +104,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:layout_marginRight="@dimen/margin_small"
-                    android:src="@drawable/ic_close_24dp"
+                    app:srcCompat="@drawable/ic_close_24dp"
                     android:tint="@color/green_btn" />
 
             </LinearLayout>

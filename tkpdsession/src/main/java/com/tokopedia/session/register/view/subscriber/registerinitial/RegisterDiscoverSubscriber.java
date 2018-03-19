@@ -1,6 +1,7 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
@@ -28,7 +29,17 @@ public class RegisterDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissLoadingDiscover();
-        viewListener.onErrorDiscoverRegister(ErrorHandler.getErrorMessage(e));
+        ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+            @Override
+            public void onForbidden() {
+                viewListener.onForbidden();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                viewListener.onErrorDiscoverRegister(errorMessage);
+            }
+        }, e, MainApplication.getAppContext());
     }
 
     @Override

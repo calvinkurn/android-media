@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -26,11 +25,14 @@ import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,12 +55,13 @@ public class EventBookTicketPresenter
     private AddTicketAdapter.TicketViewHolder selectedViewHolder;
     private List<SchedulesViewModel> schedulesList;
     private PostValidateShowUseCase postValidateShowUseCase;
-    private String dateRange;
     private String eventTitle;
+    private String selectedPackageDate;
     private int hasSeatLayout;
     private FragmentAddTickets mChildFragment;
     private int px;
-
+    private EventsDetailsViewModel dataModel;
+    private List<LocationDateModel> locationDateModels;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
@@ -83,19 +86,19 @@ public class EventBookTicketPresenter
 
     @Override
     public void getTicketDetails() {
-        EventsDetailsViewModel dataModel = getView().
+        dataModel = getView().
                 getActivity().
                 getIntent().
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
         hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
-        this.dateRange = dataModel.getTimeRange();
+        generateLocationDateModels();
         getView().renderFromDetails(dataModel);
+        if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
             getView().hideSeatmap();
-        if (!dataModel.getTimeRange().contains("1970"))
-            getView().initTablayout();
         schedulesList = dataModel.getSchedulesViewModels();
     }
 
@@ -147,37 +150,26 @@ public class EventBookTicketPresenter
         if (requestCode == getView().getRequestCode()) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getProfile();
+            } else {
+                getView().hideProgressBar();
             }
         }
     }
 
     private void getProfile() {
         getView().showProgressBar();
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
+        if (!SessionHandler.isV4Login(getView().getActivity())) {
+            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                    getLoginIntent(getView().getActivity());
+            getView().navigateToActivityRequest(intent, getView().getRequestCode());
+        } else {
+            getView().hideProgressBar();
+            if (hasSeatLayout == 1)
+                getSeatSelectionDetails();
+            else
+                validateSelection();
+        }
 
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase", "ON ERROR");
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().navigateToActivityRequest(intent, getView().getRequestCode());
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                getView().hideProgressBar();
-                if (hasSeatLayout == 1)
-                    getSeatSelectionDetails();
-                else
-                    validateSelection();
-            }
-        });
     }
 
     @Override
@@ -189,6 +181,7 @@ public class EventBookTicketPresenter
     @Override
     public void payTicketsClick(String title) {
         eventTitle = title;
+        selectedPackageViewModel.setTimeRange(selectedPackageDate);
         ValidateShow validateShow = new ValidateShow();
         validateShow.setQuantity(selectedPackageViewModel.getSelectedQuantity());
         validateShow.setGroupId(selectedPackageViewModel.getProductGroupId());
@@ -220,7 +213,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         } else {
-            selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE);
+            selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
     }
@@ -230,7 +223,7 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE);
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, 4);
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         if (selectedCount == 0) {
@@ -242,19 +235,9 @@ public class EventBookTicketPresenter
         }
     }
 
-    public void onPageChange(int scheduleIndex) {
-        mSelectedSchedule = scheduleIndex;
-        mSelectedPackage = -1;
-    }
-
-    public String getDateArray() {
-        return dateRange;
-    }
-
-
     private void getSeatSelectionDetails() {
         RequestParams params = RequestParams.create();
-        params.putString("seatlayouturl",selectedPackageViewModel.getFetchSectionUrl());
+        params.putString("seatlayouturl", selectedPackageViewModel.getFetchSectionUrl());
         getView().showProgressBar();
         getSeatLayoutUseCase.execute(params, new Subscriber<List<SeatLayoutItem>>() {
             @Override
@@ -272,7 +255,6 @@ public class EventBookTicketPresenter
                                 getSeatSelectionDetails();
                             }
                         });
-//                Log.d("Naveen", " on Error" + throwable.getMessage());
             }
 
             @Override
@@ -310,6 +292,44 @@ public class EventBookTicketPresenter
         mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
         if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
             mChildFragment.scrollToLast();
+    }
+
+    public void onClickLocationDate(LocationDateModel model, int index) {
+        SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
+        getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
+        if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
+        mSelectedSchedule = index;
+    }
+
+    private void generateLocationDateModels() {
+        locationDateModels = new ArrayList<>();
+        for (SchedulesViewModel viewModel : dataModel.getSchedulesViewModels()) {
+            LocationDateModel model = new LocationDateModel();
+            model.setmLocation(viewModel.getCityName());
+            if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+            else
+                model.setDate("");
+            locationDateModels.add(model);
+        }
+    }
+
+    public List<LocationDateModel> getLocationDateModels() {
+        return locationDateModels;
+    }
+
+    public void resetViewHolders() {
+        if (selectedPackageViewModel != null) {
+            selectedPackageViewModel.setSelectedQuantity(0);
+            selectedPackageViewModel = null;
+        }
+        if (selectedViewHolder != null) {
+            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder = null;
+        }
+        mSelectedPackage = -1;
+        getView().hidePayButton();
     }
 
 }

@@ -109,13 +109,14 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideProgress();
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                        getView().hideNearbyCabs();
                     } else {
                         getView().hideProgress();
                         getView().hideErrorMessage();
                         getView().showProductList();
                         getView().renderProductList(productsList);
+                        getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
-                        //renderNearbyCarsAroundSource(productEstimates);
                     }
                 }
             }
@@ -167,6 +168,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideProgress();
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                        getView().hideNearbyCabs();
                     } else {
                         if (destination != null) {
                             actionGetPricesEstimate(source, destination, productEstimates);
@@ -176,8 +178,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().showProductList();
                             getView().renderProductList(productsList);
                             getView().showFareListHeader();
-                            //renderNearbyCarsAroundSource(productEstimates);
                         }
+                        getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
                     }
                 }
@@ -265,6 +267,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                 if (isViewAttached()) {
                                     getView().hideProgress();
                                     getView().hideProductList();
+                                    getView().hideNearbyCabs();
 
                                     String message = e.getMessage();
                                     if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -298,6 +301,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
                                                 getView().getActivity().getString(R.string.btn_text_retry)
                                         );
+                                        getView().hideNearbyCabs();
                                     }
                                 }
                             }

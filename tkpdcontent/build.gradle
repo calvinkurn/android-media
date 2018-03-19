@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+apt {
+    arguments {
+        targetModuleName 'TkpdContent'
+    }
+}
+
+dependencies {
+    compile project(rootProject.ext.features.useCase)
+    compile project(rootProject.ext.libraries.abstraction)
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile 'junit:junit:4.12'
+
+    compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.supportLibDependencies.supportV4
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.debugToolsDependencies.stetho
+
+}
