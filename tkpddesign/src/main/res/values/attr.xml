@@ -106,6 +106,7 @@
         <attr name="lsv_empty_layout" format="reference" />
         <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
+        <attr name="lsv_full_screen" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="EmptyCardContentView">
