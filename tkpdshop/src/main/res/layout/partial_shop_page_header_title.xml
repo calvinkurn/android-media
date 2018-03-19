@@ -21,7 +21,6 @@
             android:id="@+id/image_view_shop_icon"
             android:layout_width="@dimen/image_width_l"
             android:layout_height="@dimen/image_width_l"
-            android:layout_marginTop="@dimen/margin_ms"
             android:src="@drawable/ic_loading_toped"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,29 +30,28 @@
         <ImageView
             android:id="@+id/image_view_shop_status"
             android:layout_width="@dimen/image_medal_size"
-            android:layout_height="@dimen/image_medal_size"
+            android:layout_height="20dp"
+            android:layout_marginBottom="2dp"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:layout_marginTop="@dimen/margin_sm"
             android:src="@drawable/ic_badge_shop_gm"
             android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
-            app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="@dimen/margin_sm"
             tools:layout_conversion_absoluteWidth="@dimen/margin_sm"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/text_view_shop_name"
             style="@style/TextView.Title"
             android:layout_width="0dp"
+            android:layout_marginBottom="2dp"
             android:layout_marginEnd="@dimen/margin_ms"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/shop_info"
             app:layout_constraintStart_toEndOf="@+id/image_view_shop_status"
-            app:layout_constraintTop_toTopOf="@+id/image_view_shop_status"
             tools:layout_conversion_absoluteHeight="21dp"
             tools:layout_conversion_absoluteWidth="121dp"
             tools:text="@string/app_name" />
@@ -65,11 +63,10 @@
             android:layout_height="@dimen/image_medal_size"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:layout_marginTop="@dimen/new_margin_tiny"
+            android:layout_marginTop="2dp"
             android:src="@drawable/ic_info_location_grey"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_shop_name"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
             tools:layout_conversion_absoluteHeight="15dp"
             tools:layout_conversion_absoluteWidth="15dp" />
 
@@ -78,8 +75,7 @@
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/shop_page_header_margin"
-            android:layout_marginStart="@dimen/shop_page_header_margin"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="@dimen/new_margin_tiny"
             app:layout_constraintStart_toEndOf="@+id/image_view_location"
             app:layout_constraintTop_toTopOf="@+id/image_view_location"
@@ -99,13 +95,20 @@
             app:layout_constraintTop_toTopOf="@+id/text_view_shop_name"
             tools:layout_conversion_absoluteHeight="24dp"
             tools:layout_conversion_absoluteWidth="24dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
     </android.support.constraint.ConstraintLayout>
 
     <com.tokopedia.shop.page.view.widget.ShopWarningTickerView
         android:id="@+id/shop_warning_ticker_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_ms"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginBottom="@dimen/margin_ms"/>
+        tools:visibility="gone" />
 </LinearLayout>
