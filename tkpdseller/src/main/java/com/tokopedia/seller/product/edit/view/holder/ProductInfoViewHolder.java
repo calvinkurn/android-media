@@ -197,7 +197,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         model.setProductNameEditable(isNameEditable());
     }
 
-    public boolean isNameEditable() {
+    private boolean isNameEditable() {
         return nameEditText.isEnabled();
     }
 
@@ -269,7 +269,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         nameEditText.addTextChangedListener(nameTextWatcher);
     }
 
-    public String getCatalogName() {
+    private String getCatalogName() {
         return catalogLabelView.getContent();
     }
 
@@ -277,7 +277,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return categoryId;
     }
 
-    public ProductCategoryViewModel getProductCategory() {
+    private ProductCategoryViewModel getProductCategory() {
         ProductCategoryViewModel productCategory = new ProductCategoryViewModel();
         if (categoryId != DEFAULT_CATEGORY_ID) {
             productCategory.setCategoryId(categoryId);
@@ -294,8 +294,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return catalogId;
     }
 
-    public @NonNull
-    ProductCatalogViewModel getProductCatalog() {
+    @NonNull
+    private ProductCatalogViewModel getProductCatalog() {
         ProductCatalogViewModel productCatalog = new ProductCatalogViewModel();
         if (catalogId != DEFAULT_CATALOG_ID) {
             productCatalog.setCatalogId(catalogId);
@@ -400,7 +400,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         setCatalog(catalogId, catalogName);
     }
 
-    public void setCatalog(long catalogId, String name) {
+    private void setCatalog(long catalogId, String name) {
         this.catalogId = catalogId;
         if (catalogId <= 0) {
             listener.onCatalogPicked(false);
@@ -470,7 +470,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return true;
     }
 
-    @NonNull
     private void setNameError(String errorMessage) {
         nameTextInputLayout.setError(errorMessage);
         nameTextInputLayout.clearFocus();

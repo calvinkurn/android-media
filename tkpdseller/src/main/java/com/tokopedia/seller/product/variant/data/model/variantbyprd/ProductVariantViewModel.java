@@ -113,6 +113,10 @@ public class ProductVariantViewModel implements Parcelable {
         return StockTypeDef.TYPE_WAREHOUSE;
     }
 
+    public boolean isLimitedStock() {
+        return hasSelectedVariant() && productVariant.get(0).isLimitedStock();
+    }
+
     public void setProductVariant(List<ProductVariantCombinationViewModel> productVariant) {
         this.productVariant = productVariant;
     }
