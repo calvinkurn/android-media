@@ -31,7 +31,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
@@ -67,7 +66,6 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -159,7 +157,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         root = view.findViewById(R.id.root);
         presenter.attachView(this);
         presenter.setFeedListener(this);
-        if(!SessionHandler.isV4Login(getContext())){
+        if (!SessionHandler.isV4Login(getContext())) {
             floatingTextButton.setVisibility(View.GONE);
         } else {
             floatingTextButton.setVisibility(View.VISIBLE);
@@ -185,7 +183,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.scrollToPosition(adapter.inspirationPosition());
+                recyclerView.scrollToPosition(adapter.findFirstInspirationPosition());
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
+                if(firstVisibleItemPos >= adapter.findFirstInspirationPosition()){
+                    floatingTextButton.setVisibility(View.GONE);
+                } else {
+                    floatingTextButton.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
