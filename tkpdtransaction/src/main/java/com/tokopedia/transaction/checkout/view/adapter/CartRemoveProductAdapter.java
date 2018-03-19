@@ -96,6 +96,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bindViewHolder() {
             mCbRemoveAll.setChecked(isRemoveAll);
+            itemView.setOnClickListener(checkBoxClickedListener());
             mCbRemoveAll.setOnClickListener(checkBoxClickedListener());
         }
 
@@ -185,6 +186,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
 
             mCbRemoveProduct.setChecked(isChecked);
+            itemView.setOnClickListener(checkBoxClickedListener(position));
             mCbRemoveProduct.setOnClickListener(checkBoxClickedListener(position));
             mCbRemoveProduct.setOnCheckedChangeListener(onChangeStateListener(position));
 

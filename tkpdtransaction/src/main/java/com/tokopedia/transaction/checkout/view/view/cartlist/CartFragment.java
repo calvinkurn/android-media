@@ -318,6 +318,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         cartItemPromoHolderData.setPromoNotActive();
         cartListAdapter.notifyItemChanged(position);
+        cartListAdapter.updateSuggestionPromo();
         cartListAdapter.checkForShipmentForm();
     }
 
@@ -441,6 +442,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             mIsMenuVisible = true;
             getActivity().invalidateOptionsMenu();
         }
+        cartListAdapter.checkForShipmentForm();
     }
 
     @Override

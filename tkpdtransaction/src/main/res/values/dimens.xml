@@ -8,4 +8,6 @@
     <dimen name="credit_card_detail_bg_height">40dp</dimen>
     <dimen name="credit_card_detail_content_height">120dp</dimen>
     <dimen name="chip_thumb_size">45dp</dimen>
+
+    <dimen name="card_elevation_checkout">3dp</dimen>
 </resources>

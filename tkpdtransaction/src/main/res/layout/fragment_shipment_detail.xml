@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/new_margin_med"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -160,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/new_margin_med"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <LinearLayout
                         android:id="@+id/ll_pinpoint"
@@ -290,7 +290,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/new_margin_med"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -505,7 +505,7 @@
                     android:layout_marginTop="@dimen/new_margin_med"
                     android:visibility="gone"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <LinearLayout
                         android:id="@+id/ll_fees_group"
@@ -615,7 +615,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/new_margin_med"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -657,9 +657,10 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/new_margin_med"
                     android:layout_marginTop="@dimen/new_margin_med"
                     app:cardCornerRadius="0dp"
-                    app:cardElevation="2dp">
+                    app:cardElevation="@dimen/card_elevation_checkout">
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -671,10 +672,10 @@
                             android:id="@+id/bt_save"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:background="@drawable/bg_button_green_enabled"
+                            android:background="@drawable/bg_grey_button_rounded"
                             android:text="@string/title_save"
                             android:textAllCaps="false"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/grey_500" />
 
                     </FrameLayout>
                 </android.support.v7.widget.CardView>

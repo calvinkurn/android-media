@@ -90,6 +90,12 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setNavigationIcon(R.drawable.ic_clear_24dp);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.add_shipping_address_fragment;
     }
@@ -461,5 +467,10 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         if (notesFieldShown)
             return notesEditText.getText().toString();
         else return "";
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

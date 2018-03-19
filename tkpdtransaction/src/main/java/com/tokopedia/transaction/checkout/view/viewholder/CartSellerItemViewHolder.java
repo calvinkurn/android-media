@@ -71,7 +71,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvOtherCartItemLabel;
 
     private TextView mTvChooseCourierButton;
-    private ImageView mIvChevronShipmentOption;
     private TextView mTvSelectedShipment;
 
     private RelativeLayout mRlCostDetailLayout;
@@ -95,6 +94,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvShippingWarning;
     private TextView mTvTextProductWeight;
     private TextView mTvLabelItemCount;
+    private LinearLayout mLlSelectedCourier;
 
     private SingleAddressShipmentAdapter.ActionListener mActionListener;
 
@@ -130,8 +130,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvOtherCartItemLabel = itemView.findViewById(R.id.tv_expand_other_product);
 
         mTvChooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
-        mIvChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
         mTvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
+        mLlSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
 
         mRlCostDetailLayout = itemView.findViewById(R.id.rl_shipment_cost);
         mTvTotalItemLabel = itemView.findViewById(R.id.tv_total_item);
@@ -210,9 +210,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
                                    RecipientAddressModel recipientAddressModel) {
         mTvChooseCourierButton.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
                 cartSellerItemModel, recipientAddressModel));
-        mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
-                cartSellerItemModel, recipientAddressModel));
-        mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
+        mLlSelectedCourier.setOnClickListener(selectShippingOptionListener(getAdapterPosition(),
                 cartSellerItemModel, recipientAddressModel));
 
         boolean isCourierSelected = shipmentDetailData != null
@@ -221,8 +219,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvChooseCourierButton.setVisibility(isCourierSelected ? View.GONE : View.VISIBLE);
         mTvSelectedShipment.setText(isCourierSelected ?
                 shipmentDetailData.getSelectedCourier().getName() : "");
-        mTvSelectedShipment.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
-        mIvChevronShipmentOption.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
+        mLlSelectedCourier.setVisibility(isCourierSelected ? View.VISIBLE : View.GONE);
     }
 
     private void bindCostDetail(CartSellerItemModel cartSellerItem) {
@@ -240,7 +237,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvInsuranceFee.setText(getPriceFormat(cartSellerItem.getInsuranceFee()));
 
         mTvSubTotal.setText(getPriceFormat(cartSellerItem.getTotalPrice()));
-        mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
+        mRlSubTotalLayout.setOnClickListener(costDetailOptionListener());
     }
 
     private void bindWarnings(CartSellerItemModel data) {
@@ -254,6 +251,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
+            disableItemView();
         } else if (data.isWarning()) {
             errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
             tvError.setTextColor(MainApplication.getAppContext().getResources()
@@ -264,6 +262,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
             tvError.setVisibility(View.VISIBLE);
             tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getWarningMessage());
+            enableItemView();
         } else {
             errorContainer.setVisibility(View.GONE);
             tvError.setVisibility(View.GONE);

@@ -56,6 +56,7 @@ import com.tokopedia.transaction.checkout.view.di.module.SingleAddressShipmentMo
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -208,6 +209,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setViewListener() {
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
+        mRvCartOrderDetails.addItemDecoration(
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.new_margin_med),
+                        false, 0));
 
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -255,7 +259,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initialVar() {
-        getActivity().setTitle("Kurir Pengiriman");
+        getActivity().setTitle(getString(R.string.toolbar_title_shipment_courier));
     }
 
     @Override
@@ -384,7 +388,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         onRemovePromoCode();
         cartPromo.setPromoNotActive();
         mSingleAddressShipmentAdapter.updatePromo(null);
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+        mSingleAddressShipmentAdapter.notifyItemChanged(position);
     }
 
     @Override
@@ -425,14 +429,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartDataEnableToCheckout() {
-        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.white));
         mTvSelectPaymentMethod.setOnClickListener(getOnClickListenerButtonCheckout());
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+        mTvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_disabled);
         mTvSelectPaymentMethod.setTextColor(getResources().getColor(R.color.grey_500));
         mTvSelectPaymentMethod.setOnClickListener(null);
     }
@@ -564,8 +568,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                             mSingleAddressShipmentAdapter.getCartSellerItemModelList());
             mPromoRequestData = requestData.getPromoRequestData();
             requestPromo();
+            mSingleAddressShipmentAdapter.notifyDataSetChanged();
         }
-        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {

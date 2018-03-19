@@ -45,6 +45,7 @@ import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressShipm
 import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -185,13 +186,16 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
+        orderAddressList.addItemDecoration(
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.new_margin_med),
+                        false, 0));
         totalPayment.setText(shipmentAdapter.getTotalPayment());
         confirmButton.setOnClickListener(onConfirmedButtonClicked());
     }
 
     @Override
     protected void initialVar() {
-
+        getActivity().setTitle(getString(R.string.toolbar_title_shipment_courier));
     }
 
     @Override

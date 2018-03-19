@@ -194,9 +194,13 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(unformattedPrice);
+        if (unformattedPrice == 0) {
+            return "-";
+        } else {
+            Locale locale = new Locale("in", "ID");
+            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+            return rupiahCurrencyFormat.format(unformattedPrice);
+        }
     }
 
     public String getTotalPayment() {
@@ -229,7 +233,13 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     public void setPromo(CartItemPromoHolderData promo) {
-        cartItemPromoHolderData = promo;
+        if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+            cartItemPromoHolderData.setPromoCouponType(promo.getCouponTitle(),
+                    promo.getCouponCode(), promo.getCouponMessage(), promo.getCouponDiscountAmount());
+        } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+            cartItemPromoHolderData.setPromoVoucherType(promo.getVoucherCode(),
+                    promo.getVoucherMessage(), promo.getVoucherDiscountAmount());
+        }
         hidePromoSuggestion();
     }
 

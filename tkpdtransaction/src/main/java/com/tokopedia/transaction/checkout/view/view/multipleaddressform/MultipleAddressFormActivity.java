@@ -118,4 +118,9 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
         ft.add(dialog, ResetShipmentFormDialog.DIALOG_FRAGMENT_TAG);
         ft.commitAllowingStateLoss();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

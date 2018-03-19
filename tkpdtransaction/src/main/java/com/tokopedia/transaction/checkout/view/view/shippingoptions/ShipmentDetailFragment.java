@@ -358,7 +358,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showShipmentChoiceBottomSheet();
+                if (ShipmentDetailFragment.this.isAdded()) {
+                    showShipmentChoiceBottomSheet();
+                }
             }
         }, DELAY_IN_MILISECOND);
     }
@@ -457,6 +459,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderDropshipperView(courierItemData);
             renderPartialOrderView();
             updateFeesGroupLayout();
+            btSave.setBackgroundResource(R.drawable.medium_green_button_rounded);
+            btSave.setTextColor(getResources().getColor(R.color.white));
         }
     }
 
@@ -486,6 +490,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
             switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
         }
+        btSave.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        btSave.setTextColor(getResources().getColor(R.color.white));
     }
 
     private void formatInsuranceTncView() {
@@ -758,16 +764,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        if (!TextUtils.isEmpty(etShipperName.getText().toString())) {
-            presenter.getShipmentDetailData().setDropshipperName(etShipperName.getText().toString());
-        }
-        if (!TextUtils.isEmpty(etShipperPhone.getText().toString())) {
-            presenter.getShipmentDetailData().setDropshipperPhone(etShipperPhone.getText().toString());
-        }
+        if (presenter.getShipmentDetailData().getSelectedCourier() != null) {
+            if (!TextUtils.isEmpty(etShipperName.getText().toString())) {
+                presenter.getShipmentDetailData().setDropshipperName(etShipperName.getText().toString());
+            }
+            if (!TextUtils.isEmpty(etShipperPhone.getText().toString())) {
+                presenter.getShipmentDetailData().setDropshipperPhone(etShipperPhone.getText().toString());
+            }
 
-        if (!getLocalValidationResult()) {
-            if (fragmentListener != null) {
-                fragmentListener.onCourierSelected(presenter.getShipmentDetailData());
+            if (!getLocalValidationResult()) {
+                if (fragmentListener != null) {
+                    fragmentListener.onCourierSelected(presenter.getShipmentDetailData());
+                }
             }
         }
     }
@@ -891,6 +899,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             presenter.setSelectedShipment(shipmentItemData);
             tvShipmentType.setText(shipmentItemData.getType());
             renderPartialOrderView();
+            btSave.setBackgroundResource(R.drawable.bg_grey_button_rounded);
+            btSave.setTextColor(getResources().getColor(R.color.grey_500));
         }
     }
 

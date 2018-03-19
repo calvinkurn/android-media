@@ -21,6 +21,11 @@
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
     </style>
 
+    <style name="TransactionCheckbox" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">#42b549</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+    
     <style name="TextSmall">
         <item name="android:textSize">12sp</item>
     </style>
@@ -46,7 +51,7 @@
     </style>
 
     <style name="TextSmallMedium" parent="TextSmall">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="TextSmallMediumBlack38" parent="TextSmallMedium">

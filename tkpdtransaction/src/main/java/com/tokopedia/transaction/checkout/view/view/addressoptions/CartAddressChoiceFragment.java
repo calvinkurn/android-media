@@ -147,8 +147,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        RecipientAddressModel model = arguments.getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
-        mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+
     }
 
     @Override
@@ -161,6 +160,10 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         ButterKnife.bind(this, view);
         setupRecyclerView();
         mCartAddressChoicePresenter.attachView(this);
+        if (getArguments() != null) {
+            RecipientAddressModel model = getArguments().getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
+            mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+        }
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -170,9 +173,21 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mCartAddressChoicePresenter.detachView();
+    }
+
+    @Override
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderSaveButtonEnabled() {
+        btSendToCurrentAddress.setBackgroundResource(R.drawable.medium_green_button_rounded);
+        btSendToCurrentAddress.setTextColor(getResources().getColor(R.color.white));
     }
 
     @Override
@@ -249,11 +264,13 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         RecipientAddressModel recipientAddress
                 = mCartAddressChoicePresenter.getSelectedRecipientAddress();
 
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddress);
+        if (recipientAddress != null) {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, recipientAddress);
 
-        getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
-        getActivity().finish();
+            getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
+            getActivity().finish();
+        }
     }
 
     @Override

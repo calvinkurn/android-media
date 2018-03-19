@@ -242,6 +242,26 @@
     <string name="label_delivery_hour_with_asterisk">\u0020jam perjalanan*</string>
     <string name="label_max_delivery">Maks\u0020</string>
     <string name="label_button_choose_shipment_courier">Pilih Kurir Pengiriman</string>
+    <string name="label_button_change_address_or_send_to_multiple_address">Ganti alamat atau gunakan beberapa alamat</string>
+    <string name="label_button_choose_courier">Pilih Kurir</string>
+    <string name="label_sent_by">Dikirim oleh :</string>
+    <string name="label_courier">Kurir Pengiriman</string>
+    <string name="label_subtotal">Subtotal</string>
+    <string name="label_promo">Promo</string>
+    <string name="label_payment_total">Total Pembayaran</string>
+    <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
+    <string name="label_seller">Penjual :</string>
+    <string name="label_menu_cart_remove">Hapus</string>
+    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang</string>
+    <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
+    <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
+    <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
+    <string name="label_sub_total">Sub total</string>
+    <string name="label_select_all">Pilih Semua</string>
+    <string name="label_note_for_seller">Catatan untuk penjual (Opsional)</string>
+    <string name="label_button_add_note">Tulis Catatan</string>
+    <string name="toolbar_title_shipment_courier">Kurir Pengiriman</string>
+    <string name="label_hint_search_address">Cari Alamat</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

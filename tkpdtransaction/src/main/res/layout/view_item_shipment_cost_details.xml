@@ -1,138 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_200"
-    android:paddingBottom="24dp"
-    android:paddingTop="24dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="@dimen/card_elevation_checkout">
 
     <RelativeLayout
-        android:id="@+id/rl_shipment_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="16dp">
+        android:background="@color/grey_200">
 
-        <TextView
-            android:id="@+id/tv_total_item_label"
-            style="@style/TextSmallNormalBlack70"
+        <RelativeLayout
+            android:id="@+id/rl_shipment_cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tv_total_item_label"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                tools:text="Jumlah Barang (1 Barang)" />
+
+            <TextView
+                android:id="@+id/tv_total_item_price"
+                style="@style/TextMidNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_toEndOf="@id/tv_total_item"
+                android:layout_toRightOf="@id/tv_total_item"
+                android:gravity="end"
+                tools:text="Rp1.400.000" />
+
+            <TextView
+                android:id="@+id/tv_shipping_fee_label"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_total_item_label"
+                android:layout_marginBottom="18dp"
+                tools:text="Ongkos Kirim (1kg)" />
+
+            <TextView
+                android:id="@+id/tv_shipping_fee"
+                style="@style/TextMidNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_total_item_label"
+                android:gravity="end"
+                tools:text="-" />
+
+            <TextView
+                android:id="@+id/tv_insurance_fee_label"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_shipping_fee_label"
+                android:layout_marginBottom="18dp"
+                android:text="Biaya Asuransi" />
+
+            <TextView
+                android:id="@+id/tv_insurance_fee"
+                style="@style/TextMidNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_shipping_fee_label"
+                android:gravity="end"
+                tools:text="-" />
+
+            <TextView
+                android:id="@+id/tv_promo_label"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_insurance_fee_label"
+                android:text="Promo" />
+
+            <TextView
+                android:id="@+id/tv_promo"
+                style="@style/TextMidNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_insurance_fee_label"
+                android:gravity="end"
+                tools:text="Rp100.000" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="18dp"
-            tools:text="Jumlah Barang (1 Barang)" />
+            android:layout_below="@id/rl_shipment_cost"
+            android:background="@color/white"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp">
 
-        <TextView
-            android:id="@+id/tv_total_item_price"
-            style="@style/TextMidNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_toEndOf="@id/tv_total_item"
-            android:layout_toRightOf="@id/tv_total_item"
-            android:gravity="end"
-            tools:text="Rp1.400.000" />
+            <TextView
+                android:id="@+id/tv_payable_label"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="Total Pembayaran" />
 
-        <TextView
-            android:id="@+id/tv_shipping_fee_label"
-            style="@style/TextSmallNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_total_item_label"
-            android:layout_marginBottom="18dp"
-            tools:text="Ongkos Kirim (1kg)" />
+            <TextView
+                android:id="@+id/tv_payable"
+                style="@style/TextMidNormalBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="end"
+                tools:text="Rp1.300.000" />
 
-        <TextView
-            android:id="@+id/tv_shipping_fee"
-            style="@style/TextMidNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_total_item_label"
-            android:gravity="end"
-            tools:text="-" />
+            <TextView
+                android:id="@+id/tv_promo_message"
+                style="@style/TextSmallNormalBlack54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_payable_label"
+                android:layout_marginTop="9dp"
+                tools:text="Anda mendapat gratis ongkir Rp20.000" />
 
-        <TextView
-            android:id="@+id/tv_insurance_fee_label"
-            style="@style/TextSmallNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_shipping_fee_label"
-            android:layout_marginBottom="18dp"
-            android:text="Biaya Asuransi" />
-
-        <TextView
-            android:id="@+id/tv_insurance_fee"
-            style="@style/TextMidNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_shipping_fee_label"
-            android:gravity="end"
-            tools:text="-" />
-
-        <TextView
-            android:id="@+id/tv_promo_label"
-            style="@style/TextSmallNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_insurance_fee_label"
-            android:text="Promo" />
-
-        <TextView
-            android:id="@+id/tv_promo"
-            style="@style/TextMidNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_insurance_fee_label"
-            android:gravity="end"
-            tools:text="Rp100.000" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_shipment_cost"
-        android:background="@color/white"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
-
-        <TextView
-            android:id="@+id/tv_payable_label"
-            style="@style/TextSmallNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="Total Pembayaran" />
-
-        <TextView
-            android:id="@+id/tv_payable"
-            style="@style/TextMidNormalBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:gravity="end"
-            tools:text="Rp1.300.000" />
-
-        <TextView
-            android:id="@+id/tv_promo_message"
-            style="@style/TextSmallNormalBlack54"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_payable_label"
-            android:layout_marginTop="9dp"
-            tools:text="Anda mendapat gratis ongkir Rp20.000" />
-
-    </RelativeLayout>
-
-</RelativeLayout>
+</android.support.v7.widget.CardView>
