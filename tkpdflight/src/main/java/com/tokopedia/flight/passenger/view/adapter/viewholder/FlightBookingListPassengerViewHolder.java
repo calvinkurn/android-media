@@ -24,7 +24,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     public interface ListenerCheckedSavedPassenger {
         void deletePassenger(String passengerId);
 
-        void editPassenger(String passengerId);
+        void editPassenger(FlightBookingPassengerViewModel passengerViewModel);
     }
 
     private ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
@@ -62,7 +62,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
         imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listenerCheckedSavedPassenger.editPassenger(flightBookingPassengerViewModel.getPassengerId());
+                listenerCheckedSavedPassenger.editPassenger(flightBookingPassengerViewModel);
             }
         });
     }
