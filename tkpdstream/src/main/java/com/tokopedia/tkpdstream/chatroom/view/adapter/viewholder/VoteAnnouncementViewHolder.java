@@ -53,11 +53,11 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
                 break;
         }
 
-        voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
-        if(TextUtils.isEmpty(element.getMessage())){
+        if(TextUtils.isEmpty(element.getVoteInfoViewModel().getTitle())){
             voteQuestion.setVisibility(View.GONE);
         }else {
             voteQuestion.setVisibility(View.VISIBLE);
+            voteQuestion.setText(MethodChecker.fromHtml(element.getVoteInfoViewModel().getTitle()));
         }
         voteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
