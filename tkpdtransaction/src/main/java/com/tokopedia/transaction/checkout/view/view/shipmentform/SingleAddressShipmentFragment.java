@@ -389,6 +389,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         cartPromo.setPromoNotActive();
         mSingleAddressShipmentAdapter.updatePromo(null);
         mSingleAddressShipmentAdapter.notifyItemChanged(position);
+        mSingleAddressShipmentAdapter.notifyItemChanged(mSingleAddressShipmentAdapter.getItemCount() - 1);
     }
 
     @Override
