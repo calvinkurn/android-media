@@ -19,6 +19,8 @@ public interface FlightPassengerUpdateContract {
 
         FlightBookingPassengerViewModel getCurrentPassengerViewModel();
 
+        String getPassengerBirthdate();
+
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
         void renderSpinnerForAdult();
@@ -45,9 +47,9 @@ public interface FlightPassengerUpdateContract {
 
         void onBirthdateClicked();
 
-        void onBirthdateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxDate);
+        void onBirthdateChanged(int year, int month, int date, Date minDate, Date maxDate);
 
-        void onBirthdateChanged(int year, int month, int dayOfMonth, Date maxDate);
+        void onBirthdateChanged(int year, int month, int date, Date maxDate);
     }
 
 }

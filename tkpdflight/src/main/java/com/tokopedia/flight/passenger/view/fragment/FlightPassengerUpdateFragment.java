@@ -108,6 +108,11 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public String getPassengerBirthdate() {
+        return etPassengerBirthdate.getText().toString().trim();
+    }
+
+    @Override
     public void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
         this.flightBookingPassengerViewModel = flightBookingPassengerViewModel;
     }

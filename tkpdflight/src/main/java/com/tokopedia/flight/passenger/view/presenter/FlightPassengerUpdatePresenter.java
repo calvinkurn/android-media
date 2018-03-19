@@ -56,10 +56,9 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, MINUS_ONE);
         }
 
-        if (getView().getCurrentPassengerViewModel().getPassengerBirthdate() != null &&
-                getView().getCurrentPassengerViewModel().getPassengerBirthdate().length() > 0) {
-            selectedDate = FlightDateUtil.stringToDate(
-                    getView().getCurrentPassengerViewModel().getPassengerBirthdate());
+        if (getView().getPassengerBirthdate().length() > 0) {
+            selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    getView().getPassengerBirthdate());
         } else {
             selectedDate = maxDate;
         }
@@ -72,13 +71,51 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     }
 
     @Override
-    public void onBirthdateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxDate) {
+    public void onBirthdateChanged(int year, int month, int date, Date minDate, Date maxDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, date);
+        Date newReturnDate = now.getTime();
 
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+
+        if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
+            if (isChildPassenger()) {
+
+            } else if (isInfantPassenger()) {
+
+            }
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate,
+                    FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderPassengerBirthdate(birthdateStr);
+        }
     }
 
     @Override
-    public void onBirthdateChanged(int year, int month, int dayOfMonth, Date maxDate) {
+    public void onBirthdateChanged(int year, int month, int date, Date maxDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, date);
+        Date newReturnDate = now.getTime();
 
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+
+        if (newReturnDate.after(maxDate)) {
+            if (isChildPassenger()) {
+
+            } else if (isInfantPassenger()) {
+
+            }
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate,
+                    FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderPassengerBirthdate(birthdateStr);
+        }
     }
 
     private void renderView() {
