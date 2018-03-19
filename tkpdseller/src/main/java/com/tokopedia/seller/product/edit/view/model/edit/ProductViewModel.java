@@ -241,23 +241,23 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productEtalase = productEtalase;
     }
 
-    public int getImageCount(){
-        return productPictureViewModelList == null? 0: productPictureViewModelList.size();
+    public int getImageCount() {
+        return productPictureViewModelList == null ? 0 : productPictureViewModelList.size();
     }
 
-    public int getMinimumImageResolution(){
+    public int getMinimumImageResolution() {
         if (getImageCount() == 0) {
             return 0;
         }
         int minResolution = Integer.MAX_VALUE;
-        for (int i = 0, sizei = productPictureViewModelList.size() ; i<sizei ; i++) {
+        for (int i = 0, sizei = productPictureViewModelList.size(); i < sizei; i++) {
             ProductPictureViewModel productPictureViewModel = productPictureViewModelList.get(i);
             int resolution = (int) Math.min(productPictureViewModel.getX(), productPictureViewModel.getY());
             if (minResolution > resolution) {
                 minResolution = resolution;
             }
         }
-        return minResolution == Integer.MAX_VALUE? 0: minResolution;
+        return minResolution == Integer.MAX_VALUE ? 0 : minResolution;
     }
 
     public List<ProductPictureViewModel> getProductPictureViewModelList() {
@@ -313,7 +313,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+        this.productDescription = productDescription == null ? "" : productDescription;
     }
 
     public boolean isProductMustInsurance() {
@@ -404,8 +404,8 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productVideo = productVideo;
     }
 
-    public boolean hasVariant(){
-        return productVariant!= null && productVariant.hasSelectedVariant();
+    public boolean hasVariant() {
+        return productVariant != null && productVariant.hasSelectedVariant();
     }
 
     public ProductVariantViewModel getProductVariant() {
@@ -428,7 +428,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         return productNameEditable;
     }
 
-    public void changePriceTo(@CurrencyTypeDef int currencyType, double value){
+    public void changePriceTo(@CurrencyTypeDef int currencyType, double value) {
         if (productVariant.hasSelectedVariant()) {
             productVariant.changePriceTo(value);
         }
@@ -531,13 +531,13 @@ public class ProductViewModel implements ItemType, Parcelable {
     };
 
     public boolean isFilledAny() {
-        return  (!TextUtils.isEmpty(productName) ||
-                (productPictureViewModelList!= null && productPictureViewModelList.size() > 0) ||
-                (productCategory!= null && productCategory.getCategoryId() > 0) ||
-                (productEtalase!= null && productEtalase.getEtalaseId() > 0 ) ||
+        return (!TextUtils.isEmpty(productName) ||
+                (productPictureViewModelList != null && productPictureViewModelList.size() > 0) ||
+                (productCategory != null && productCategory.getCategoryId() > 0) ||
+                (productEtalase != null && productEtalase.getEtalaseId() > 0) ||
                 productPrice > 0 ||
-                !TextUtils.isEmpty( productDescription) ||
-                (productVideo!= null && productVideo.size() > 0) ||
+                !TextUtils.isEmpty(productDescription) ||
+                (productVideo != null && productVideo.size() > 0) ||
                 productWeight > 0 ||
                 !TextUtils.isEmpty(productSku));
     }

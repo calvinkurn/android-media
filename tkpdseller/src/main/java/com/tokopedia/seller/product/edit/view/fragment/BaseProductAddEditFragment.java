@@ -843,6 +843,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     // View holder listener part
     @Override
     public void onProductNameChanged(String productName) {
+        // this is to prevent clear catalog when don't activity
+        if (currentProductViewModel.getProductName().equalsIgnoreCase(productName)) {
+            return;
+        }
         getCategoryRecommendation(productName);
         productInfoViewHolder.hideAndClearCatalog();
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
@@ -966,12 +970,14 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
                 currentProductViewModel.setProductStatus(1);
+                onTotalStockUpdated(1);
             } else {
                 if (stockType == StockTypeDef.TYPE_ACTIVE) {
                     currentProductViewModel.setProductStatus(1);
                 } else {
                     currentProductViewModel.setProductStatus(0);
                 }
+                onTotalStockUpdated(0);
             }
             currentProductViewModel.setProductStock(0);
         }
