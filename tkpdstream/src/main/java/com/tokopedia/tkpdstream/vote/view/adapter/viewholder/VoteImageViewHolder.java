@@ -87,17 +87,22 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
             @Override
             public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
                 imageView.setImageBitmap(arg0);
+                imageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        shadowLayer.setLayoutParams(new RelativeLayout.LayoutParams(imageView.getHeight(),
+                                imageView.getWidth()));
 
-                if (element.getSelected() == VoteViewModel.DEFAULT) {
-                    shadowLayer.setVisibility(View.GONE);
-                } else {
-                    shadowLayer.setLayoutParams(new RelativeLayout.LayoutParams(imageView.getHeight(),
-                            imageView.getWidth()));
-                    shadowLayer.setVisibility(View.VISIBLE);
-                }
+                        if (element.getSelected() == VoteViewModel.DEFAULT) {
+                            shadowLayer.setVisibility(View.GONE);
+                        } else {
+                            shadowLayer.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
             }
         });
-//        ImageHandler.LoadImage(imageView, element.getUrl());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
