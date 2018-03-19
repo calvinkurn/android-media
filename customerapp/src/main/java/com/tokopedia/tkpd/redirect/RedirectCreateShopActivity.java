@@ -33,14 +33,14 @@ public class RedirectCreateShopActivity extends TActivity {
                     @Override
                     public void onClick(View view) {
                         try {
-                            activity.startActivity(
+                            RedirectCreateShopActivity.this.startActivity(
                                     new Intent(
                                             Intent.ACTION_VIEW,
                                             Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
                                     )
                             );
                         } catch (android.content.ActivityNotFoundException anfe) {
-                            activity.startActivity(
+                            RedirectCreateShopActivity.this.startActivity(
                                     new Intent(
                                             Intent.ACTION_VIEW,
                                             Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)
