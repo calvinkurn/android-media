@@ -26,7 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:iconifiedByDefault="false"
-                    android:queryHint="Cari Nama Penerima/Alamat/Kota" />
+                    android:queryHint="@string/label_hint_search_address" />
 
             </RelativeLayout>
 

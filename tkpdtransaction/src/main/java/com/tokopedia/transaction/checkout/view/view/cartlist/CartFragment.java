@@ -440,6 +440,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             mIsMenuVisible = true;
             getActivity().invalidateOptionsMenu();
         }
+        cartListAdapter.checkForShipmentForm();
     }
 
     @Override

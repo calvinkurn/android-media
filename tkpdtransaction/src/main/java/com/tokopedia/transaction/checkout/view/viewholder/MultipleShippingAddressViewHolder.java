@@ -364,8 +364,12 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(unformattedPrice);
+        if (unformattedPrice == 0) {
+            return "-";
+        } else {
+            Locale locale = new Locale("in", "ID");
+            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+            return rupiahCurrencyFormat.format(unformattedPrice);
+        }
     }
 }
