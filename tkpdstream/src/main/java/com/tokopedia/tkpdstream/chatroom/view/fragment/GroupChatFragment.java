@@ -674,7 +674,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void autoExpand(boolean voted) {
-        if(!voted){
+        if (!voted) {
             expand(voteBody);
         }
     }
@@ -1006,13 +1006,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         LinearLayoutManager voteLayoutManager;
         RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
+        if (voteInfoViewModel.getVoteOptionType().equalsIgnoreCase(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
         }
+
+        if (voteRecyclerView.getItemDecorationAt(0) != null) {
+            voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(0));
+        }
+
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
