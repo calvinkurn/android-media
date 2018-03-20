@@ -57,8 +57,7 @@ public class ProductScoreViewHolder {
         valueIndicatorScoreModel.setImageCount(model.getImageCount());
         valueIndicatorScoreModel.setImageResolution(model.getMinimumImageResolution());
         valueIndicatorScoreModel.setFreeReturnStatus(model.isProductFreeReturn());
-        valueIndicatorScoreModel.setStockStatus(
-                (model.hasVariant() && model.getProductVariant().isLimitedStock()) || model.getProductStock() > 0);
+        valueIndicatorScoreModel.setStockStatus(model.getProductStock() > 0);
         valueIndicatorScoreModel.setLengthDescProduct(model.getProductDescription().length());
         listener.updateProductScoring();
     }

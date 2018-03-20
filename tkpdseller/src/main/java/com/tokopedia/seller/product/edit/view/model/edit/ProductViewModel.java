@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 
 import java.util.ArrayList;
@@ -185,8 +186,16 @@ public class ProductViewModel implements ItemType, Parcelable {
         return productStatus;
     }
 
+    public boolean isProductStatusActive() {
+        return productStatus != StockTypeDef.TYPE_WAREHOUSE;
+    }
+
     public void setProductStatus(int productStatus) {
         this.productStatus = productStatus;
+    }
+
+    public void setProductStatus(boolean isActive) {
+        this.productStatus = isActive ? StockTypeDef.TYPE_ACTIVE : StockTypeDef.TYPE_WAREHOUSE;
     }
 
     public long getProductMinOrder() {
