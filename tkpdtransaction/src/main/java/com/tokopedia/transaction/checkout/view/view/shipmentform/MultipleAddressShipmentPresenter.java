@@ -340,7 +340,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private String formatRupiah(long rupiahAmount) {
         Locale locale = new Locale("in", "ID");
         NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(rupiahAmount);
+        return rupiahCurrencyFormat.format(rupiahAmount).replace("Rp", "Rp ");
     }
 
     @Override
