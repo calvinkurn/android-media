@@ -96,8 +96,9 @@ public class ProductManageViewHolder extends ProductViewHolder {
             } else {
                 stockTotalCounterInputView.setVisibility(View.VISIBLE);
             }
-            stockTotalCounterInputView.setValue(1);
-            ProductManageViewHolder.this.listener.onTotalStockUpdated(true, 1);
+            int stock = getTotalStock();
+            stockTotalCounterInputView.setValue(stock);
+            ProductManageViewHolder.this.listener.onTotalStockUpdated(true, stock);
         } else { // if either always available or empty stock
             stockTotalCounterInputView.setVisibility(View.GONE);
             if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
