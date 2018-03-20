@@ -13,6 +13,7 @@ import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
@@ -398,6 +399,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
+    }
+
+    @Override
+    public Observable<Response<Object>> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey) {
+        return flightPassengerFactorySource.updatePassenger(request, idempotencyKey);
     }
 
     @Override

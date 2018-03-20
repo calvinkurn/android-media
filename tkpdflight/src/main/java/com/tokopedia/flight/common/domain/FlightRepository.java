@@ -6,6 +6,7 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
@@ -96,6 +97,8 @@ public interface FlightRepository {
     Observable<Boolean> deleteAllListPassenger();
 
     Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
+
+    Observable<Response<Object>> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
     Observable<List<FlightAirlineDB>> refreshAirlines();
 
