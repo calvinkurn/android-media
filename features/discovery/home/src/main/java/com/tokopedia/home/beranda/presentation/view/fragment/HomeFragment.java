@@ -192,8 +192,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
                             && floatingTextButton.getVisibility() == View.VISIBLE) {
                         floatingTextButton.setVisibility(View.GONE);
-                    } else if (!(visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
-                            && floatingTextButton.getVisibility() == View.GONE) {
+                    } else if (firstVisibleItemPos == 0 && floatingTextButton.getVisibility() == View.GONE) {
                         floatingTextButton.setVisibility(View.VISIBLE);
                     }
                 } else if (floatingTextButton.getVisibility() == View.VISIBLE) {

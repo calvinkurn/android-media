@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -164,6 +165,14 @@ public class FloatingTextButton extends FrameLayout {
                 getVerticalPaddingValue(8)
         );
         initViewRadius();
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if(visibility==VISIBLE) {
+            initViewRadius();
+        }
     }
 
     private void initViewRadius() {

@@ -1119,6 +1119,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return TopProfileActivity.newInstance(context, userId);
+    }
 
     @Override
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
@@ -1130,6 +1131,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void startAddProduct(Activity activity, String shopId) {
         goToAddProduct(activity);
     }
+
     @Override
     public boolean isEnabledGroupChat() {
         return false;
