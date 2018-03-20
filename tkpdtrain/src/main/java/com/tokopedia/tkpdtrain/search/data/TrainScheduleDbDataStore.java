@@ -15,8 +15,8 @@ import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainScheduleEntity;
-import com.tokopedia.tkpdtrain.search.data.typedef.AvailabilityTypeDef;
-import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainAvailabilityTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 
@@ -102,10 +102,10 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
         trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
         trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNumber());
-        trainScheduleDbTable.setAvailableSeat(AvailabilityTypeDef.DEFAULT_VALUE);
+        trainScheduleDbTable.setAvailableSeat(TrainAvailabilityTypeDef.DEFAULT_VALUE);
         trainScheduleDbTable.setCheapestFlag(false);
         trainScheduleDbTable.setFastestFlag(false);
-        trainScheduleDbTable.setReturnSchedule(scheduleVariant == ScheduleTypeDef.RETURN_SCHEDULE);
+        trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
         adapter.insert(trainScheduleDbTable);
     }
 

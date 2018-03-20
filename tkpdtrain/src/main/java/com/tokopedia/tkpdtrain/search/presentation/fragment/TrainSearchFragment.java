@@ -30,7 +30,6 @@ import com.tokopedia.tkpdtrain.search.constant.TrainSortOption;
 import com.tokopedia.tkpdtrain.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.di.TrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
-import com.tokopedia.tkpdtrain.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 import com.tokopedia.tkpdtrain.search.presentation.contract.TrainSearchContract;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;

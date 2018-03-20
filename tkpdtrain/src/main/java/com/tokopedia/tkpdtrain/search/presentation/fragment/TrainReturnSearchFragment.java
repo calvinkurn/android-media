@@ -10,7 +10,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.common.di.utils.TrainComponentUtils;
 import com.tokopedia.tkpdtrain.common.util.TrainDateUtil;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainReturnSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainSearchActivity;
@@ -59,7 +59,7 @@ public class TrainReturnSearchFragment extends TrainSearchFragment
 
     @Override
     protected int getScheduleVariant() {
-        return ScheduleTypeDef.RETURN_SCHEDULE;
+        return TrainScheduleTypeDef.RETURN_SCHEDULE;
     }
 
     @Override

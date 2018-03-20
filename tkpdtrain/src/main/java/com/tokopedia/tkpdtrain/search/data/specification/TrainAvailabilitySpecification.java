@@ -2,7 +2,7 @@ package com.tokopedia.tkpdtrain.search.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
-import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 
@@ -37,7 +37,7 @@ public class TrainAvailabilitySpecification implements DbFlowSpecification {
     }
 
     private boolean isReturnSchedule() {
-        return scheduleVariant == ScheduleTypeDef.RETURN_SCHEDULE;
+        return scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE;
     }
 
 }

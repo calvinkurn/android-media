@@ -10,7 +10,7 @@ import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleClassFilte
 import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleNameFilterSpecification;
 import com.tokopedia.tkpdtrain.search.data.specification.TrainSchedulePriceFilterSpecification;
 import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleSortSpecification;
-import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
@@ -41,9 +41,9 @@ public class TrainScheduleDataStoreFactory {
 
     public Observable<List<AvailabilityKeySchedule>> getScheduleTrain(final Specification specification,
                                                                       final int scheduleVariant) {
-        if (scheduleVariant == ScheduleTypeDef.RETURN_SCHEDULE) {
+        if (scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE) {
             return getDataFromCloud(specification, scheduleVariant);
-        } else if (scheduleVariant == ScheduleTypeDef.DEPARTURE_SCHEDULE){
+        } else if (scheduleVariant == TrainScheduleTypeDef.DEPARTURE_SCHEDULE){
             return dbDataStore.deleteAll().flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
                 @Override
                 public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessDelete) {
