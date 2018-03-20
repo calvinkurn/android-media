@@ -54,9 +54,6 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     private String descriptionText;
     private boolean goldMerchant;
 
-    /**
-     * this prevent duplication at videoIdList;
-     */
     private SpinnerTextView conditionSpinnerTextView;
 
     public ProductDescriptionViewHolder(View view, final Listener listener) {
