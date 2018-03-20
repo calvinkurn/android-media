@@ -179,6 +179,7 @@
     <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
     <string name="product_variant_stock_empty">Kosong</string>
     <string name="product_variant_stock_available">Tersedia</string>
+    <string name="product_variant_stock_limited">Stok Terbatas</string>
     <string name="product_variant_stock_always_available">Selalu Tersedia</string>
     <string name="product_variant_status">Status Produk</string>
     <string name="product_variant_status_available">Tersedia</string>

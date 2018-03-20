@@ -717,7 +717,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 fabWishlist.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToastMessage(productData.getInfo().getProductStatusTitle());
+                        showToastMessage(productData.getInfo().getProductStatusTitle() );
                     }
                 });
             }
@@ -895,6 +895,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
+        if (message == null) {
+            message = getString(R.string.default_request_error_unknown_short);
+        }
         Snackbar snackbar = Snackbar.make(coordinatorLayout,
                 message.replace("\n", " "),
                 Snackbar.LENGTH_LONG);

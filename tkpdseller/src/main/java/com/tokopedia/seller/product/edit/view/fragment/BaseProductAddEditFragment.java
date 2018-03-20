@@ -242,7 +242,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         // if it has catalog, image is valid (because no image needed)
         // if no catalog, check stock, if the stock is not empty, it should have picture.
         return productInfoViewHolder.getCatalogId() > 0 ||
-                !productManageViewHolder.isStockAvailable() ||
+                !currentProductViewModel.isProductStatusActive()||
                 productImageViewHolder.isDataValid();
     }
 
@@ -930,7 +930,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     @Override
-    public void onTotalStockUpdated(int total) {
+    public void onTotalStockUpdated(boolean status, int total) {
+        //we need to update this in "realtime" because stock and total will be needed for variant immediately
+        currentProductViewModel.setProductStatus(status);
+        currentProductViewModel.setProductStock(total);
         boolean stockStatus = total > 0;
         if (valueIndicatorScoreModel.isStockStatus() != stockStatus) {
             valueIndicatorScoreModel.setStockStatus(total > 0);
@@ -969,17 +972,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         if (productVariantViewModel != null && productVariantViewModel.hasSelectedVariant()) {
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                currentProductViewModel.setProductStatus(1);
-                onTotalStockUpdated(1);
+                onTotalStockUpdated(true, 1);
             } else {
-                if (stockType == StockTypeDef.TYPE_ACTIVE) {
-                    currentProductViewModel.setProductStatus(1);
-                } else {
-                    currentProductViewModel.setProductStatus(0);
-                }
-                onTotalStockUpdated(0);
+                onTotalStockUpdated(stockType == StockTypeDef.TYPE_ACTIVE, 0);
             }
-            currentProductViewModel.setProductStock(0);
         }
         // refresh the stock and variant label.
         productManageViewHolder.renderData(currentProductViewModel);

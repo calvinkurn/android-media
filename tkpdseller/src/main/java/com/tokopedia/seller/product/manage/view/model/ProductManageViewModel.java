@@ -192,6 +192,10 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         return productVariant;
     }
 
+    public boolean isProductVariant(){
+        return productVariant == 1;
+    }
+
     public void setProductVariant(int productVariant) {
         this.productVariant = productVariant;
     }
