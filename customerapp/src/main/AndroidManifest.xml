@@ -201,6 +201,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="tokopedia" />
+                <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
 
