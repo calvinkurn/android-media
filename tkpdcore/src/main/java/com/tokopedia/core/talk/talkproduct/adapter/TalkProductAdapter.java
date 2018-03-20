@@ -160,10 +160,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         final Talk talk = (Talk) data.get(position);
         LabelUtils label = LabelUtils.getInstance(context, holder.UserView);
 
-        talk.setTalkProductId(bundle.getString("product_id"));
-        talk.setTalkProductName(bundle.getString("prod_name"));
-        talk.setTalkProductImage(bundle.getString("product_image"));
-
         if (isShop) {
             ImageHandler.loadImageCircle2(context, holder.UserImageView, String.valueOf(talk.getTalkProductImage()));
             holder.UserImageView.setOnClickListener(goToProduct(talk.getTalkProductId()));

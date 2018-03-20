@@ -10,7 +10,6 @@ public class SellerAppBaseUrl {
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
-    public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static final String BASE_HADES_DOMAIN = "https://hades.tokopedia.com";

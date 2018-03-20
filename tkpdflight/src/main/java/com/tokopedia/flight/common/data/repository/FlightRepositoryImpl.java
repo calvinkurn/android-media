@@ -1,8 +1,5 @@
 package com.tokopedia.flight.common.data.repository;
 
-import android.text.TextUtils;
-
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -56,7 +53,6 @@ import rx.functions.Func2;
  */
 
 public class FlightRepositoryImpl implements FlightRepository {
-
     private BannerDataSource bannerDataSource;
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
@@ -397,5 +393,20 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return flightPassengerFactorySource.deletePassenger(request, idempotencyKey);
+    }
+
+    @Override
+    public Observable<List<FlightAirlineDB>> refreshAirlines() {
+        return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
+            @Override
+            public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
+                return flightAirlineDataListSource.getAirlineList();
+            }
+        });
+    }
+
+    @Override
+    public Observable<FlightAirlineDB> getAirlineCacheById(String airlineId) {
+        return flightAirlineDataListSource.getCacheAirline(airlineId);
     }
 }

@@ -259,7 +259,6 @@ public class EventBookTicketPresenter
 
             @Override
             public void onNext(List<SeatLayoutItem> response) {
-                getView().hideProgressBar();
                 seatLayoutViewModel = convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0)));
                 validateSelection();
             }

@@ -142,6 +142,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                             getView().showUpdateDataErrorStateLayout(e);
                             if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
                                 getView().showExpireTransactionDialog();
+                            }else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))){
+                                getView().showSoldOutDialog();
                             }
                         }
                     }

@@ -172,29 +172,22 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
             areaId = seatLayoutViewModel.getArea().get(0).getAreaCode() + "-" + String.valueOf(seatLayoutViewModel.getArea().get(0).getAreaNo());
         }
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
-        char prevChr = '\0';
-        char currentChar = '\0';
+        String currentChar = "";
         for (int i = 0; i < numOfRows; ) {
             CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
             int rowId = seatLayoutViewModel.getLayoutDetail().get(i).getRowId();
             if (Utils.isNotNullOrEmpty(seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId())) {
-                currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId().charAt(0);
-                if (prevChr != '\0' && currentChar - prevChr > 1) {
-                    customSeatAreaLayout.setSeatRow("");
-                    prevChr++;
-                    seatTextLayout.addView(customSeatAreaLayout);
-                    continue;
-                } else {
-                    customSeatAreaLayout.setSeatRow(currentChar + "");
-                    prevChr = currentChar;
-                }
+                currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId();
+                customSeatAreaLayout.setSeatRow(currentChar);
             }
             int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
             for (int j = 0; j < numOfColumns; j++) {
                 if (seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo() != 0) {
-                    customSeatAreaLayout.addColumn("" + seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo(), seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(), maxTickets, rowId, currentChar);
+                    customSeatAreaLayout.addColumn(String.valueOf(seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo()),
+                            seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
+                            maxTickets, rowId, currentChar);
                 } else {
-                    customSeatAreaLayout.addColumn("", 0, 0, 0, '\0');
+                    customSeatAreaLayout.addColumn("", 0, 0, 0, "");
                 }
             }
             seatTextLayout.addView(customSeatAreaLayout);

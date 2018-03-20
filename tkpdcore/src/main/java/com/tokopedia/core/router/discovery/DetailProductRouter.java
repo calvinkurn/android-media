@@ -15,11 +15,16 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_CATA
 
 public class DetailProductRouter {
 
+    private static final String ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID";
+
     private static final String CATALOG_DETAIL_ACTIVITY
             = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity";
 
     private static final String CATALOG_DETAIL_LIST_FRAGMENT
             = "com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment";
+
+    private static final String CATALOG_DETAIL_FRAGMENT
+            = "com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment";
 
     public static Intent getCatalogDetailActivity(Context context, String catalogId) {
         Intent intent = RouterUtils.getActivityIntent(context, CATALOG_DETAIL_ACTIVITY);
@@ -31,6 +36,14 @@ public class DetailProductRouter {
         Fragment fragment = Fragment.instantiate(context, CATALOG_DETAIL_LIST_FRAGMENT);
         Bundle bundle = new Bundle();
         bundle.putString("catalog_id", catalogId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment getCatalogDetailFragment(Context context, String catalogId) {
+        Fragment fragment = Fragment.instantiate(context, CATALOG_DETAIL_FRAGMENT);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId);
         fragment.setArguments(bundle);
         return fragment;
     }

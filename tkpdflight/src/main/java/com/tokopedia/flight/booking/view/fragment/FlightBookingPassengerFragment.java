@@ -37,7 +37,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -276,6 +275,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -320,6 +321,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -452,7 +455,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public boolean isAirAsiaAirline() {
+    public boolean isMandatoryDoB() {
         return isAirAsiaAirlines;
     }
 
@@ -563,7 +566,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
         Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
-                selected, requestId);
+                selected, requestId, departureDate);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 
