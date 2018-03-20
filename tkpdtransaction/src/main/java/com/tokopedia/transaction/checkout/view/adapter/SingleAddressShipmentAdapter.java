@@ -140,7 +140,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         boolean availableCheckout = true;
         for (Object object : shipmentDataList) {
             if (object instanceof CartSellerItemModel) {
-                if (((CartSellerItemModel) object).getSelectedShipmentDetailData() == null) {
+                if (((CartSellerItemModel) object).getSelectedShipmentDetailData() == null ||
+                        ((CartSellerItemModel) object).isError()) {
                     availableCheckout = false;
                 }
             }

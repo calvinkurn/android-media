@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -74,7 +75,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         multipleAddressShipmentItemList.add(promoSuggestionData);
 
-        multipleAddressShipmentItemList.addAll(addressDataList);
+        multipleAddressShipmentItemList.addAll(this.addressDataList);
 
         multipleAddressShipmentItemList.add(priceSummaryData);
 
@@ -88,6 +89,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         if (isAllShipmentChosen()) {
             listener.onAllShipmentChosen(addressDataList);
         }
+        notifyDataSetChanged();
+        checkAvailableForCheckout();
     }
 
     private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
@@ -226,6 +229,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void showPromoSuggestion() {
         promoSuggestionData.setVisible(true);
         cartItemPromoHolderData.setPromoNotActive();
+        notifyDataSetChanged();
+        checkAvailableForCheckout();
     }
 
     public void hidePromoSuggestion() {
@@ -241,6 +246,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                     promo.getVoucherMessage(), promo.getVoucherDiscountAmount());
         }
         hidePromoSuggestion();
+        notifyDataSetChanged();
+        checkAvailableForCheckout();
     }
 
     public CartItemPromoHolderData getAppliedPromo() {
@@ -261,6 +268,39 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         else if (promoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER)
             return promoHolderData.getVoucherDiscountAmount();
         else return 0;
+    }
+
+
+    public boolean hasSelectAllCourier() {
+        for (MultipleAddressShipmentAdapterData shipmentAdapterData : addressDataList) {
+            if (shipmentAdapterData.getSelectedShipmentDetailData() == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasNoErrorCartItem() {
+        for (MultipleAddressShipmentAdapterData shipmentAdapterData : addressDataList) {
+            if (shipmentAdapterData.isError()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void checkAvailableForCheckout() {
+        if (hasSelectAllCourier() && hasNoErrorCartItem()) {
+            listener.onCartDataEnableToCheckout();
+        } else {
+            listener.onCartDataDisableToCheckout();
+        }
+    }
+
+    public void setAppliedPromoData(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+        priceSummaryData.setAppliedPromo(checkPromoCodeCartShipmentResult);
+        notifyDataSetChanged();
+        checkAvailableForCheckout();
     }
 
     public interface MultipleAddressShipmentAdapterListener extends CartAdapterActionListener {
