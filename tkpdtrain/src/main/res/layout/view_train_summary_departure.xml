@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_departure_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tkpd_main_green" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_green"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/padding_small">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_train"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            app:srcCompat="@drawable/ic_train_trip" />
+
+        <TextView
+            android:id="@+id/title_departure_info"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_toRightOf="@+id/image_train"
+            tools:text="Perjalanan Pergi - 29 Ags 2018" />
+
+        <TextView
+            android:id="@+id/train_name"
+            style="@style/TextView.Small.Bold"
+            android:layout_below="@+id/title_departure_info"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_toRightOf="@+id/image_train"
+            tools:text="Agro Angreek" />
+
+        <TextView
+            android:id="@+id/detail_departure_info"
+            style="@style/TextView.Small"
+            android:layout_below="@+id/title_departure_info"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_toRightOf="@+id/train_name"
+            android:maxLines="1"
+            tools:text=" | 19.30 - 07.10 +1" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tkpd_main_green" />
+
+</LinearLayout>
