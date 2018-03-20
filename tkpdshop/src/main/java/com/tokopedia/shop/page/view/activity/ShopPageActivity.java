@@ -207,7 +207,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(shopPageTracking != null) {
+                if(shopPageTracking != null && shopPagePresenter != null && shopInfo != null) {
                     shopPageTracking.eventClickTabShopPage(getTitlePage(tab.getPosition()), shopId,
                             shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
