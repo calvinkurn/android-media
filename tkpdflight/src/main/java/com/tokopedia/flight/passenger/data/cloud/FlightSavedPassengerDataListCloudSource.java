@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.passenger.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 
 import java.util.HashMap;
@@ -41,5 +42,9 @@ public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource
 
     public Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey) {
         return this.flightApi.deleteSavedPassengerData(new DataRequest<>(request), idempotencyKey);
+    }
+
+    public Observable<Response<Object>> updatePassenger(UpdatePassengerRequest request, String idempotencyKey) {
+        return this.flightApi.updatePassengerListData(new DataRequest<>(request), idempotencyKey);
     }
 }
