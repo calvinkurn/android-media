@@ -21,7 +21,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
@@ -279,23 +281,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url) {
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url) {
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
                     .override(30, 30)
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);

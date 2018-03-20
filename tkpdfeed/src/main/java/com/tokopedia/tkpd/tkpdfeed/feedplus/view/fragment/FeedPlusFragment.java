@@ -1034,4 +1034,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
     }
+
+    @Override
+    public int getAdapterListSize() {
+        return adapter.getItemCount();
+    }
 }

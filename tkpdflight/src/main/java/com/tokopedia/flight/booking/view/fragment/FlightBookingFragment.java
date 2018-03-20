@@ -593,6 +593,24 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showSoldOutDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage(R.string.flight_booking_sold_out_label);
+        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                FlightFlowConstant.EXPIRED_JOURNEY
+                        );
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.create().show();
+    }
+
+    @Override
     public void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);

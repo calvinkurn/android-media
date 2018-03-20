@@ -182,7 +182,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter{
+        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -676,8 +676,8 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
-            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source, avatar);
+        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source, avatar);
 
     }
 
@@ -1086,10 +1086,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
 
-
     @Override
     public void init() {
     }
+
     @Override
     public void registerShake(String screenName) {
     }
@@ -1136,8 +1136,14 @@ public abstract class SellerRouterApplication extends MainApplication
     public void startAddProduct(Activity activity, String shopId) {
         goToAddProduct(activity);
     }
+
     @Override
     public boolean isEnabledGroupChat() {
         return false;
+    }
+
+    @Override
+    public void sendTrackingGroupChatLeftNavigation() {
+
     }
 }
