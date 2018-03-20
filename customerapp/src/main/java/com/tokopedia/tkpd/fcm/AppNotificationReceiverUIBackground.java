@@ -118,7 +118,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-            ) {
+                    ) {
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
                 refreshUI(data);

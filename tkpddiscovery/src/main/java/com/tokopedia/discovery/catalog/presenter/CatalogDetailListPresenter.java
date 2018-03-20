@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
@@ -104,8 +104,7 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     @Override
     public void goToShopPage(CatalogDetailItemShop shop) {
-        Intent intent = new Intent(view.getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(shop.getId(), shop.getDomain()));
+        Intent intent = ((DiscoveryRouter) view.getActivity().getApplication()).getShopPageIntentByDomain(view.getActivity(), shop.getDomain());
         view.getActivity().startActivity(intent);
     }
 

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/bg_line_separator_shop_page_sub_info"
+    android:minHeight="@dimen/shop_page_header_sub_info_min_height"
+    android:orientation="horizontal"
+    android:showDividers="middle">
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_total_favourite"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/shop_page_sub_info_height"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:spsd_title="@string/shop_info_label_favourite">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:src="@drawable/ic_info_favourite_green" />
+
+            <TextView
+                android:id="@+id/text_view_total_favourite"
+                style="@style/TextView.Small" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_total_product"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/shop_page_sub_info_height"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:spsd_title="@string/shop_info_label_total_product">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:src="@drawable/ic_info_product_green" />
+
+            <TextView
+                android:id="@+id/text_view_total_product"
+                style="@style/TextView.Small" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_reputation"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/shop_page_sub_info_height"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:spsd_title="@string/shop_page_label_reputation">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height">
+
+            <com.tokopedia.design.reputation.ShopReputationView
+                android:id="@+id/shop_reputation_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srv_medal_width="@dimen/shop_page_sub_info_medal_width" />
+        </FrameLayout>
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_product_quality"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/shop_page_sub_info_height"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:spsd_title="@string/shop_page_label_product_quality"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/text_view_product_quality_value"
+                style="@style/TextView.Small.Bold"
+                android:layout_marginLeft="@dimen/margin_vvs"
+                android:layout_marginRight="@dimen/margin_vvs"
+                tools:text="@string/app_name" />
+
+            <RatingBar
+                android:layout_gravity="center_vertical"
+                style="@style/RatingBar.Small"
+                android:id="@+id/product_rating"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:numStars="5"
+                android:rating="4" />
+
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_reputation_speed"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/shop_page_sub_info_height"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        app:spsd_title="@string/shop_page_label_speed">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/shop_page_sub_info_detail_height"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/image_view_speed"
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:src="@drawable/ic_shop_reputation_speed_very_fast" />
+
+            <TextView
+                android:id="@+id/text_view_speed_value"
+                style="@style/TextView.Micro" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+</LinearLayout>

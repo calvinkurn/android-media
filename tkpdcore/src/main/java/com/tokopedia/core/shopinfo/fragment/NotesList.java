@@ -1,6 +1,5 @@
 package com.tokopedia.core.shopinfo.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.ShopNotesDetail;
 import com.tokopedia.core.shopinfo.adapter.NoteListAdapterR;
 import com.tokopedia.core.shopinfo.facades.GetShopNote;
 import com.tokopedia.core.shopinfo.models.NoteModel;
@@ -28,6 +24,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Tkpd_Eka on 10/8/2015.
  */
+@Deprecated
 public class NotesList extends Fragment {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -72,7 +69,7 @@ public class NotesList extends Fragment {
         facadeGetNote = new GetShopNote(getActivity());
         facadeGetNote.setOnGetNoteListListener(onGetNoteListListener());
         facadeGetNote.setCompositeSubscription(compositeSubscription);
-        facadeGetNote.getNoteListV4(getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""), getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
+
     }
 
     private void loadSavedInstance(Bundle savedInstanceState) {
@@ -84,10 +81,7 @@ public class NotesList extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(true);
-            }
+
         }
     }
 
@@ -152,8 +146,7 @@ public class NotesList extends Fragment {
         adapter.setListener(new NoteListAdapterR.NoteListAdapterInterface() {
             @Override
             public void onView(int position) {
-                Intent intent = ShopNotesDetail.createIntent(getActivity(), getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""), getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""), noteList.get(position).id);
-                startActivity(intent);
+
             }
 
             @Override

@@ -130,18 +130,19 @@ public class CacheApiDatabaseSource {
         return Observable.unsafeCreate(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
+                CacheApiLoggingUtils.dumper(String.format("Query cache: %s - %s - %s", host, path, param));
                 Where<CacheApiData> selection = new Select()
                         .from(CacheApiData.class)
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
-                CacheApiLoggingUtils.dumper("CachedData : " + selection.toString());
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
                 if (cacheApiData != null) {
                     cachedResponseBody = cacheApiData.getResponseBody();
                     cachedResponseBody = getDecrypted(cachedResponseBody);
                 }
+                CacheApiLoggingUtils.dumper("CachedData : " + cachedResponseBody);
                 subscriber.onNext(cachedResponseBody);
             }
         });
@@ -180,6 +181,7 @@ public class CacheApiDatabaseSource {
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .execute();
+                CacheApiLoggingUtils.dumper(String.format("Cache deleted: %s - %s", host, path));
                 subscriber.onNext(true);
             }
         });

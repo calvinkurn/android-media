@@ -1,0 +1,62 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.shop">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".page.view.activity.ShopPageActivity"
+            android:exported="true"
+            android:label="@string/shop_info_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".info.view.activity.ShopInfoActivity"
+            android:exported="true"
+            android:label="@string/shop_info_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".address.view.activity.ShopAddressListActivity"
+            android:exported="true"
+            android:label="@string/shop_info_label_physical_shop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".note.view.activity.ShopNoteDetailActivity"
+            android:exported="true"
+            android:label="@string/shop_note_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".product.view.activity.ShopProductListActivity"
+            android:exported="true"
+            android:label="@string/shop_product_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".sort.view.activity.ShopProductSortActivity"
+            android:exported="true"
+            android:label="@string/shop_sort_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".etalase.view.activity.ShopEtalaseActivity"
+            android:exported="true"
+            android:label="@string/choose_etalase_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".favourite.view.activity.ShopFavouriteListActivity"
+            android:exported="true"
+            android:label="@string/favorited_shop_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+</manifest>

@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -17,7 +19,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -297,10 +298,8 @@ public class DeepLinkChecker {
         context.startActivity(intent);
     }
 
-    public static void openShop(String url, Context context) {
-        Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public static void openShop(String url, Activity context) {
+        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntentByDomain(context, getLinkSegment(url).get(0));
         context.startActivity(intent);
     }
 
@@ -316,11 +315,10 @@ public class DeepLinkChecker {
     }
 
     public static void openShopWithParameter(String url, Context context, Bundle parameter) {
-        Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        intent.putExtras(parameter);
-        context.startActivity(intent);
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getShopPageIntentByDomain(context, getLinkSegment(url).get(0));
+            MainApplication.getAppContext().startActivity(intent);
+        }
     }
 
     private static boolean isExcludedUrl(Uri uriData) {

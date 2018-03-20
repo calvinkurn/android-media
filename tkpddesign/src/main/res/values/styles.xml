@@ -218,4 +218,11 @@
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
     </style>
 
+    <style name="RatingBar.Small" parent="style/Base.Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
+        <item name="android:stepSize">0.1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:isIndicator">true</item>
+    </style>
+
 </resources>

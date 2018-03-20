@@ -51,6 +51,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             />
+        <activity
+            android:label="@string/title_activity_reputation"
+            android:name=".review.shop.view.ReviewShopInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            />
     </application>
 
 </manifest>

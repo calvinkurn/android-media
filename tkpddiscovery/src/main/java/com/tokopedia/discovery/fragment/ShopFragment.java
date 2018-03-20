@@ -28,10 +28,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
@@ -45,14 +45,15 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.tokopedia.core.shopinfo.ShopInfoActivity.FAVORITE_STATUS_UPDATED;
-import static com.tokopedia.core.shopinfo.ShopInfoActivity.SHOP_STATUS_IS_FAVORITED;
-
 /**
  * Created by Erry on 6/30/2016.
  * modified by m.normansyah
  */
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
+
+    public static final String SHOP_STATUS_IS_FAVORITED = "shopIsFavorited";
+    public static final String FAVORITE_STATUS_UPDATED = "favoriteStatusUpdated";
+
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
     public static final int GOTO_SHOP_DETAIL = 125;
@@ -342,9 +343,8 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void startShopInfoActivity(String shopId) {
-        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
-        startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        getActivity().startActivity(intent);
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -108,8 +108,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         if (item.getEventAction().equals("shop") && item.getApplink() != null) {
             List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
             if (segments != null && segments.size() > 0) {
-                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-                intent.putExtras(ShopInfoActivity.createBundle(segments.get(0), ""));
+                Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), segments.get(0));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
             }

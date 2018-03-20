@@ -1,6 +1,7 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -348,6 +349,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     private static boolean isContextValid(Context context) {
-        return context instanceof Activity && !((Activity) context).isFinishing();
+        return (context instanceof Activity && !((Activity) context).isFinishing()) || context instanceof Application;
     }
 }

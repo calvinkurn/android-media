@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/price_info_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_sm"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="@dimen/cardview_default_elevation"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/bg_line_separator"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_sm"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_address_title"
+                style="@style/TextView.Title.Bold"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/text_view_address_content"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_sm"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/text_view_address_area"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_vvvs"
+                tools:text="@string/app_name" />
+        </LinearLayout>
+
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
+            app:lv_image="@drawable/ic_info_email_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
+
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
+            app:lv_image="@drawable/ic_info_phone_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
+
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_fax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:visibility="gone"
+            app:lv_image="@drawable/ic_info_fax_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

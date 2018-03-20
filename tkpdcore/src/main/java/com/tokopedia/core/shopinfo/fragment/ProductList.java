@@ -28,10 +28,8 @@ import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.Sort;
@@ -39,7 +37,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.EtalaseAdapter;
 import com.tokopedia.core.shopinfo.adapter.FeaturedProductAdapter;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
@@ -60,6 +57,7 @@ import java.util.List;
 /**
  * Created by Tkpd_Eka on 10/8/2015.
  */
+@Deprecated
 public class ProductList extends Fragment {
 
     private final String CACHE_SHOP_PRODUCT = "CACHE_SHOP_PRODUCT";
@@ -157,8 +155,7 @@ public class ProductList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, "");
-        shopDomain = getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, "");
+
 
         initModels();
         initAdapter();
@@ -311,9 +308,7 @@ public class ProductList extends Fragment {
                     public boolean onTouch(View v, MotionEvent event) {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
-                                if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
-                                    ((ShopInfoActivity) getActivity()).setToolbarCollapse();
-                                }
+
                                 if (getActivity() != null) {
                                     UnifyTracking.eventDiscoverySearchShopDetail();
                                 }
@@ -352,9 +347,7 @@ public class ProductList extends Fragment {
         holder.searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
-                    ((ShopInfoActivity) getActivity()).setToolbarCollapse();
-                }
+
             }
         });
         holder.searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -391,9 +384,7 @@ public class ProductList extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (getActivity() != null && getActivity() instanceof ShopInfoActivity) {
-                        ((ShopInfoActivity) getActivity()).setToolbarCollapse();
-                    }
+
                 }
             }
         });
@@ -934,10 +925,7 @@ public class ProductList extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(true);
-            }
+
         }
     }
 }

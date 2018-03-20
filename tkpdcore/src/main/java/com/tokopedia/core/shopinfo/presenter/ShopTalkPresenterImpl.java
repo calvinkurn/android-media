@@ -3,7 +3,6 @@ package com.tokopedia.core.shopinfo.presenter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.interactor.ShopTalkRetrofitInteractor;
 import com.tokopedia.core.shopinfo.interactor.ShopTalkRetrofitInteractorImpl;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;
@@ -16,8 +15,11 @@ import java.util.Map;
 /**
  * Created by nisie on 11/18/16.
  */
-
+@Deprecated
 public class ShopTalkPresenterImpl implements ShopTalkPresenter {
+
+    public static String SHOP_ID = "shop_id";
+    public static String SHOP_DOMAIN = "shop_domain";
 
     private final ShopTalkFragmentView viewListener;
     private ShopTalkRetrofitInteractor networkInteractor;
@@ -76,8 +78,8 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     private Map<String, String> getDeleteTalkParam(ShopTalk shopTalk) {
         HashMap<String, String> param = new HashMap<>();
-        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
-        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""));
+        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(SHOP_DOMAIN, ""));
+        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(SHOP_ID, ""));
         param.put("talk_id", shopTalk.getTalkId());
         return param;
     }
@@ -129,8 +131,8 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     private Map<String, String> getReportTalkParam(ShopTalk shopTalk) {
         HashMap<String, String> param = new HashMap<>();
-        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
-        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""));
+        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(SHOP_DOMAIN, ""));
+        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(SHOP_ID, ""));
         param.put("product_id", String.valueOf(shopTalk.getTalkProductId()));
         param.put("talk_id", shopTalk.getTalkId());
         param.put("text_message", shopTalk.getReport());
@@ -187,8 +189,8 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     private Map<String, String> getFollowTalkParam(ShopTalk shopTalk) {
         HashMap<String, String> param = new HashMap<>();
-        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
-        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""));
+        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(SHOP_DOMAIN, ""));
+        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(SHOP_ID, ""));
         param.put("product_id", String.valueOf(shopTalk.getTalkProductId()));
         param.put("talk_id", shopTalk.getTalkId());
         return param;
@@ -283,8 +285,8 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     private Map<String, String> getShopTalkParam() {
         HashMap<String, String> param = new HashMap<>();
-        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
-        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""));
+        param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(SHOP_DOMAIN, ""));
+        param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(SHOP_ID, ""));
         param.put("page", String.valueOf(paging.getPage()));
         param.put("type","s");
         return param;

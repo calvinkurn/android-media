@@ -160,4 +160,10 @@ public interface TkpdCoreRouter {
     Intent getLoginFacebookIntent(Context context);
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 }

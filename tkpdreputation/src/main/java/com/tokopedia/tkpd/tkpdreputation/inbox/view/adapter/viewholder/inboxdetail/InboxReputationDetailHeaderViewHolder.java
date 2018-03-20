@@ -225,7 +225,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
                     break;
                 case SMILEY_NEUTRAL:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_netral);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_neutral);
                     break;
                 case SMILEY_GOOD:
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);

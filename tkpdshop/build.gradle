@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+
+def getTkpdAbstraction() {
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction')
+}
+
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
+}
+
+def getTkpdCacheApi() {
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi')
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+    compile getTkpdUseCase()
+    compile getTkpdAbstraction()
+    compile getTkpdCacheApi()
+
+    compile project(':tkpdshop-common')
+    compile project(':tkpdgm-common')
+    compile project(':tkpdreputation-common')
+    compile project(':tkpdwishlist-common')
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.playServicesDependencies.analytics
+    compile rootProject.ext.supportLibDependencies.constraintLayout
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+}

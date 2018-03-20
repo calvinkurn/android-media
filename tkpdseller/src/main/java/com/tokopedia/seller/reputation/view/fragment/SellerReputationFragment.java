@@ -20,22 +20,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -45,14 +38,10 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
-import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
-import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
-import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
-import com.tokopedia.seller.reputation.data.source.cloud.apiservice.SellerReputationService;
-import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
+import com.tokopedia.seller.reputation.di.DaggerSellerReputationComponent;
+import com.tokopedia.seller.reputation.di.SellerReputationModule;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;
-import com.tokopedia.seller.reputation.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
@@ -61,11 +50,12 @@ import com.tokopedia.seller.reputation.view.helper.GMStatHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -91,10 +81,16 @@ public class SellerReputationFragment extends BaseDaggerFragment
     LinearLayoutManager linearLayoutManager;
 
     SwipeToRefresh swipeToRefresh;
+
+    @Inject
     SessionHandler sessionHandler;
+    @Inject
     ReviewReputationUseCase reviewReputationUseCase;
+    @Inject
     GCMHandler gcmHandler;
+    @Inject
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
+
     SellerReputationFragmentPresenter presenter;
 
     private SnackbarRetry snackbarRetry;
@@ -318,38 +314,10 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private void inject() {
 
         //[START] This is for dependent component
-        ThreadExecutor threadExecutor = new JobExecutor();
-        PostExecutionThread postExecutionThread = new UIThread();
-        Gson gson = new GsonBuilder().create();
-        ShopService shopService =
-                new ShopService();
-        ShopNetworkController shopNetworkController = new ShopNetworkController(
-                getActivity(), shopService, gson
-        );
-
-
-        SellerReputationService sellerReputationService =
-                new SellerReputationService();
-        ReputationReviewMapper reputationReviewMapper =
-                new ReputationReviewMapper();
-        CloudReputationReviewDataSource cloudReputationReviewDataSource =
-                new CloudReputationReviewDataSource(
-                        getActivity(), sellerReputationService.getApi(), reputationReviewMapper
-                );
-        ReputationReviewRepository reputationReviewRepository
-                = new ReputationReviewRepositoryImpl(
-                cloudReputationReviewDataSource,
-                shopNetworkController
-        );
-
-        ShopInfoUseCase shopInfoUseCase = new ShopInfoUseCase(threadExecutor, postExecutionThread, reputationReviewRepository);
-        sessionHandler = new SessionHandler(getActivity());
-        reviewReputationUseCase = new ReviewReputationUseCase(threadExecutor, postExecutionThread, reputationReviewRepository);
-        gcmHandler = new GCMHandler(getActivity());
-
-        reviewReputationMergeUseCase = new ReviewReputationMergeUseCase(
-                threadExecutor, postExecutionThread, reviewReputationUseCase, shopInfoUseCase
-        );
+        DaggerSellerReputationComponent.builder()
+                .sellerReputationModule(new SellerReputationModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build().inject(this);
         //[END] This is for dependent component
     }
 

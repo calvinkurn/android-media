@@ -163,7 +163,7 @@
     <string name="top_ads_label_choose_product_desc_empty_without_group">Pengaturan dilakukan per promo.</string>
     <string name="top_ads_label_choose_promo">Pilih Promo</string>
 
-    <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
+    <string name="error_top_ads_click_budget_max">Biaya maksimum Rp %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
     <string name="error_top_ads_click_budget_must_be_filled">Biaya harus diisi</string>
     <string name="error_top_ads_click_budget_multiple_by">Biaya harus kelipatan Rp %1s</string>
