@@ -24,4 +24,6 @@ public interface SessionRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Interceptor getChuckInterceptor();
+
+    Intent getShopPageIntent(Context context, String shopId);
 }
