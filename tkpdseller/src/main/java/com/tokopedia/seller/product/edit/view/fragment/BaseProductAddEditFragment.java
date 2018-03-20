@@ -932,8 +932,10 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onTotalStockUpdated(boolean status, int total) {
         //we need to update this in "realtime" because stock and total will be needed for variant immediately
-        currentProductViewModel.setProductStatus(status);
-        currentProductViewModel.setProductStock(total);
+        if (currentProductViewModel!= null) {
+            currentProductViewModel.setProductStatus(status);
+            currentProductViewModel.setProductStock(total);
+        }
         boolean stockStatus = total > 0;
         if (valueIndicatorScoreModel.isStockStatus() != stockStatus) {
             valueIndicatorScoreModel.setStockStatus(total > 0);
