@@ -19,16 +19,16 @@ public class ImageSelectModel implements Parcelable{
     private long width;
     private long height;
     private boolean isValidURL;
-    private String id;
+    private long id;
 
     private String serverFileName;
     private String serverFilePath;
 
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, 0, 0, "", null, null);
+        this(uriOrPath, null, 0, 0, 0, null, null);
     }
 
-    public ImageSelectModel(String uriOrPath, String description, long width, long height, String id,
+    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id,
                             String serverFilePath, String serverFileName) {
         this.description = description;
         this.width = width;
@@ -103,9 +103,10 @@ public class ImageSelectModel implements Parcelable{
         }
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
+
 
     @Override
     public int describeContents() {
@@ -119,7 +120,7 @@ public class ImageSelectModel implements Parcelable{
         dest.writeLong(this.width);
         dest.writeLong(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
-        dest.writeString(this.id);
+        dest.writeLong(this.id);
         dest.writeString(this.serverFileName);
         dest.writeString(this.serverFilePath);
     }
@@ -130,7 +131,7 @@ public class ImageSelectModel implements Parcelable{
         this.width = in.readLong();
         this.height = in.readLong();
         this.isValidURL = in.readByte() != 0;
-        this.id = in.readString();
+        this.id = in.readLong();
         this.serverFileName = in.readString();
         this.serverFilePath = in.readString();
     }

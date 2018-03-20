@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
@@ -9,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by nakama on 06/03/18.
  */
 
-public abstract class BasePictureViewModel {
+public abstract class BasePictureViewModel implements Parcelable {
     public static final int ACTIVE_STATUS = 1;
 
     // currently not used in UI, only for backend
@@ -46,8 +48,8 @@ public abstract class BasePictureViewModel {
     @Expose
     protected int fromIg;
 
-    public abstract String getId();
-    public abstract void setId(String id);
+    public abstract long getId();
+    public abstract void setId(long id);
 
     public long getStatus() {
         return status;
@@ -78,7 +80,7 @@ public abstract class BasePictureViewModel {
     }
 
     public String getUriOrPath(){
-        if (TextUtils.isEmpty(getId()) && !TextUtils.isEmpty(getFilePath())) {
+        if (getId() <= 0 && !TextUtils.isEmpty(getFilePath())) {
             return getFilePath();
         }
         return getUrlOriginal();
@@ -119,4 +121,6 @@ public abstract class BasePictureViewModel {
     public void setFromIg(int fromIg) {
         this.fromIg = fromIg;
     }
+
+
 }

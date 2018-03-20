@@ -11,18 +11,18 @@ public class ProductPictureViewModel extends BasePictureViewModel implements Par
 
     @SerializedName(value="product_pic_id", alternate={"id"})
     @Expose
-    private String id;
+    private long id;
 
     @SerializedName("description")
     @Expose
     private String description;
 
     @Override
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -41,13 +41,13 @@ public class ProductPictureViewModel extends BasePictureViewModel implements Par
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeLong(this.id);
+        dest.writeString(this.description);
         dest.writeLong(this.status);
         dest.writeString(this.fileName);
         dest.writeString(this.filePath);
         dest.writeString(this.urlOriginal);
         dest.writeString(this.urlThumbnail);
-        dest.writeString(this.description);
         dest.writeLong(this.x);
         dest.writeLong(this.y);
         dest.writeInt(this.fromIg);
@@ -57,19 +57,19 @@ public class ProductPictureViewModel extends BasePictureViewModel implements Par
     }
 
     protected ProductPictureViewModel(Parcel in) {
-        this.id = in.readString();
+        this.id = in.readLong();
+        this.description = in.readString();
         this.status = in.readLong();
         this.fileName = in.readString();
         this.filePath = in.readString();
         this.urlOriginal = in.readString();
         this.urlThumbnail = in.readString();
-        this.description = in.readString();
         this.x = in.readLong();
         this.y = in.readLong();
         this.fromIg = in.readInt();
     }
 
-    public static final Creator<ProductPictureViewModel> CREATOR = new Creator<ProductPictureViewModel>() {
+    public static final Parcelable.Creator<ProductPictureViewModel> CREATOR = new Parcelable.Creator<ProductPictureViewModel>() {
         @Override
         public ProductPictureViewModel createFromParcel(Parcel source) {
             return new ProductPictureViewModel(source);

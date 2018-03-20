@@ -35,7 +35,7 @@ public abstract class BaseVariantImageFragment extends BaseImageFragment {
         } else {
             VariantPictureViewModel variantPictureViewModel =
                     productVariantOptionChild.getProductPictureViewModelList().get(0);
-            variantPictureViewModel.setId("");
+            variantPictureViewModel.setId(0);
             variantPictureViewModel.setUrlOriginal("");
             variantPictureViewModel.setUrlThumbnail("");
             variantPictureViewModel.setFilePath(imageUrl);
