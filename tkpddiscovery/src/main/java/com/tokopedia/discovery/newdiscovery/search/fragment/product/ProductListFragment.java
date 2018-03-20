@@ -101,7 +101,6 @@ public class ProductListFragment extends SearchSectionFragment
     private boolean forceSearch;
 
     private List<Option> quickFilterOptions;
-    private HeaderViewModel headerViewModel;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -232,7 +231,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private List<Visitable> initMappingProduct() {
         List<Visitable> list = new ArrayList<>();
-        headerViewModel = new HeaderViewModel();
+        HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
         list.add(headerViewModel);
         list.addAll(productViewModel.getProductList());
@@ -785,8 +784,7 @@ public class ProductListFragment extends SearchSectionFragment
     public void renderQuickFilter(DynamicFilterModel dynamicFilterModel) {
         quickFilterOptions = getOptionList(dynamicFilterModel);
         enrichWithInputState(quickFilterOptions);
-        headerViewModel.setQuickFilterList(quickFilterOptions);
-        adapter.updateHeaderModel(headerViewModel);
+        adapter.updateQuickFilter(quickFilterOptions);
     }
 
     private void enrichWithInputState(List<Option> optionList) {

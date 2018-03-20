@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -178,9 +179,9 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return guidedSearch != null;
     }
 
-    public void updateHeaderModel(HeaderViewModel headerViewModel) {
+    public void updateQuickFilter(List<Option> quickFilterOptions) {
         if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
-            list.set(ADAPTER_POSITION_HEADER, headerViewModel);
+            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
             notifyItemChanged(ADAPTER_POSITION_HEADER);
         }
     }
