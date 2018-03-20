@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,8 +136,9 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     @Override
     public void onSuccessCheckEmail() {
         //intent to verification email
-        Intent intent = AddEmailVerificationActivity.newInstance(getActivity(), etEmail.getText().toString());
-        startActivityForResult(intent, REQUEST_VERIFY_EMAIL);
+        startActivityForResult(
+                AddEmailVerificationActivity.newInstance(getActivity(), etEmail.getText().toString()),
+                REQUEST_VERIFY_EMAIL);
     }
 
     @Override
@@ -172,7 +174,7 @@ public class AddEmailFragment extends BaseDaggerFragment implements AddEmailList
     }
 
     private void setTextError(String s) {
-        if (s.equals("")) {
+        if (TextUtils.isEmpty(s)) {
             tvError.setText(s);
             tvError.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);

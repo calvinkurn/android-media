@@ -64,6 +64,9 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public static final int REQUEST_CHANGE_PHONE_NUMBER = 13;
     public static final int RESULT_EMAIL_SENT = 111;
 
+    public static final int REQUEST_ADD_EMAIL = 1001;
+
+
     @BindView(R2.id.layout_main)
     View layoutMain;
     @BindView(R2.id.layout_manage_people_profile_avatar_view)
@@ -307,7 +310,21 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
+        if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
+            if (resultCode == Activity.RESULT_OK) {
+                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+                renderData();
+                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
+                UnifyTracking.eventSuccessChangePhoneNumber();
+            }
+
+            if (resultCode == RESULT_EMAIL_SENT) {
+                contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
+            }
+        } else if (requestCode == REQUEST_ADD_EMAIL) {
+            if (resultCode == Activity.RESULT_OK)
+                presenter.setOnFirstTimeLaunch(getActivity());
+        } else if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
             if (requestCode == REQUEST_VERIFY_PHONE &&
                     SessionHandler.isMsisdnVerified()) {
                 getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
@@ -328,19 +345,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                                 showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
                             }
                         });
-            }
-        }
-
-        if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
-            if (resultCode == Activity.RESULT_OK) {
-                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
-                renderData();
-                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
-                UnifyTracking.eventSuccessChangePhoneNumber();
-            }
-
-            if (resultCode == RESULT_EMAIL_SENT) {
-                contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -539,6 +543,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void startAddEmailActivity() {
-        getActivity().startActivity(((TkpdCoreRouter)getActivity().getApplicationContext()).getAddEmailIntent(getActivity()));
+        startActivityForResult(
+                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                        .getAddEmailIntent(getActivity()), REQUEST_ADD_EMAIL);
     }
 }

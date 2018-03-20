@@ -48,9 +48,10 @@ public class AddEmailVerificationPresenter
 
     @Override
     public void sendVerify(String email, String uniqueCode) {
+        getView().showLoading();
         addEmailUseCase.execute(
                 AddEmailUseCase.getParams(
-                        SessionHandler.getUUID(getView().getContext()), email, uniqueCode),
+                        SessionHandler.getLoginID(getView().getContext()), email, uniqueCode),
                 new AddEmailSubscriber(getView()));
     }
 }

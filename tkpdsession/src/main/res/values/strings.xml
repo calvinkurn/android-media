@@ -205,7 +205,7 @@
 
     <!--WELCOME PAGE-->
     <string name="title_welcome">Selamat Bergabung di Tokopedia</string>
-    <string name="sub_title_welcome">Silahkan lanjut belanja atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>!</string>
-    <string name="welcome_button_continue">Lanjut Belanja</string>
+    <string name="sub_title_welcome">Silahkan lanjut atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>!</string>
+    <string name="welcome_button_continue">Lanjut</string>
     <string name="welcome_button_complete">Lengkapi Profil</string>
 </resources>

@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
-    private static final int MAX_INPUT_OTP = 6;
+    private static final int MAX_INPUT_OTP = 5;
 
 
     private static final String CACHE_OTP = "CACHE_OTP";
@@ -88,26 +89,34 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_email_verification, container, false);
         icon = view.findViewById(R.id.icon);
-        message = view.findViewById(R.id.message);
+        message = (TextView)view.findViewById(R.id.message);
         inputOtp = view.findViewById(R.id.input_otp);
-        countdownText = view.findViewById(R.id.countdown_text);
-        verifyButton = view.findViewById(R.id.verify_button);
+        countdownText = (TextView) view.findViewById(R.id.countdown_text);
+        verifyButton = (TextView)view.findViewById(R.id.verify_button);
         limitOtp = view.findViewById(R.id.limit_otp);
-        errorOtp = view.findViewById(R.id.error_otp);
+        errorOtp = (TextView)view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
-        noCodeText = view.findViewById(R.id.no_code);
+        noCodeText = (TextView)view.findViewById(R.id.no_code);
         errorImage = view.findViewById(R.id.error_image);
         prepareView();
         presenter.attachView(this);
-        initData();
         return view;
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            Log.v("yfsx", "saveInstance");
             viewModel = savedInstanceState.getParcelable(ARGS_DATA);
         } else if (getArguments() != null) {
+            Log.v("yfsx", "parcelable");
             viewModel = createViewModel(getArguments());
         } else {
             getActivity().finish();
@@ -228,6 +237,7 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onErrorVerify(String error) {
+        dismissLoading();
         inputOtp.setError(true);
         inputOtp.setFocusableInTouchMode(true);
         inputOtp.post(new Runnable() {
@@ -243,6 +253,7 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onSuccessVerify() {
+        dismissLoading();
         removeErrorOtp();
         resetCountDown();
         getActivity().setResult(Activity.RESULT_OK);
@@ -276,8 +287,9 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
             countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL, INTERVAL) {
                 public void onTick(long millisUntilFinished) {
                     isRunningTimer = true;
-                    setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
-                            (millisUntilFinished)));
+                    if (isAdded())
+                        setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS
+                                .toSeconds(millisUntilFinished)));
                 }
 
                 public void onFinish() {
@@ -325,8 +337,23 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
     }
 
     private void setLimitReachedCountdownText() {
-        getActivity().setResult(Activity.RESULT_CANCELED);
-        getActivity().finish();
+        countdownText.setVisibility(View.VISIBLE);
+        finishCountdownView.setVisibility(View.GONE);
+        noCodeText.setVisibility(View.GONE);
+
+        countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        countdownText.setText(R.string.login_with_other_method);
+        countdownText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOtherVerificationMethod();
+            }
+        });
+//        getActivity().setResult(Activity.RESULT_CANCELED);
+//        getActivity().finish();
+    }
+    private void goToOtherVerificationMethod() {
+
     }
 
     private void removeErrorOtp() {

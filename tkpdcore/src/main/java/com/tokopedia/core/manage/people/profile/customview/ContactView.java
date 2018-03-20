@@ -85,6 +85,13 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     }
 
     private void renderEmailView(String userEmail) {
+        if (SessionHandler.isMsisdnVerified()) {
+            changeEmailBtn.setVisibility(VISIBLE);
+            changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
+        } else {
+            changeEmailBtn.setVisibility(GONE);
+        }
+
         if (!TextUtils.isEmpty(userEmail)) {
             email.setVisibility(GONE);
             email.setClickable(false);
@@ -103,12 +110,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             changeEmailBtn.setVisibility(GONE);
         }
 
-        if (SessionHandler.isMsisdnVerified()) {
-            changeEmailBtn.setVisibility(VISIBLE);
-            changeEmailBtn.setOnClickListener(new ChangeEmailButtonClick(userEmail));
-        } else {
-            changeEmailBtn.setVisibility(GONE);
-        }
+
     }
 
     private void renderPhoneView(String userPhone) {

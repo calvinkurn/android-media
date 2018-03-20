@@ -79,4 +79,9 @@ public class AddEmailActivity extends BasePresenterActivity implements HasCompon
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

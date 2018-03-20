@@ -24,9 +24,9 @@ public class AddEmailVerificationActivity extends BasePresenterActivity implemen
 
 
     public static Intent newInstance(Context context, String email) {
-        Intent callingIntent = new Intent(context, AddEmailVerificationActivity.class);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        return callingIntent;
+        Intent intent = new Intent(context, AddEmailVerificationActivity.class);
+        intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        return intent;
     }
 
     @Override
@@ -100,5 +100,10 @@ public class AddEmailVerificationActivity extends BasePresenterActivity implemen
         } else {
             return "";
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
