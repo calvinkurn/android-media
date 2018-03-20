@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/seat_areaID"
-        android:layout_width="@dimen/margin_left_skip_nob"
+        android:layout_width="@dimen/large_dp"
         android:layout_height="@dimen/margin_left_skip_nob"
         android:layout_gravity="center"
         android:layout_margin="@dimen/dp_2"

@@ -61,7 +61,9 @@
             android:textColor="@color/black_55"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
-            tools:text="Hai para pecinta sepak bola, Ramaikan piala dunia 2018 bersama Tokopedia!…" />
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Hai para pecinta sepak bola,Ramaikan pialadunia 2018 bersama Tokopedia!… luar biasa menang jfeijeij" />
 
         <android.support.v4.widget.Space
             android:layout_width="wrap_content"
