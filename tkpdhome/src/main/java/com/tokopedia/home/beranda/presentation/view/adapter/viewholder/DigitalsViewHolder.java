@@ -104,7 +104,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         tabLayout.removeAllTabs();
         addChildTablayout(mRechargeCategory, newRechargePositions);
         getPositionFlagNewRecharge(newRechargePositions);
-        setModeScrollerWidget(mRechargeCategory.size());
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         if (rechargeViewPagerAdapter == null) {
             rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, mRechargeCategory);
@@ -126,15 +126,6 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private void showDigitalWidget() {
         container.setVisibility(View.VISIBLE);
         ((LinearLayout) tabLayout.getParent()).setVisibility(View.VISIBLE);
-    }
-
-    private void setModeScrollerWidget(int categorySize) {
-        if (categorySize == 1)
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        else {
-            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        }
     }
 
     private void addChildTablayout(List<Category> rechargeCategory, List<Integer> newRechargePositions) {
