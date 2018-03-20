@@ -88,7 +88,6 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-      //  super.onBackPressed();
         DialogFragment dialog = ResetShipmentFormDialog.newInstance(
                 new ResetShipmentFormDialog.ResetShipmentFormCallbackAction() {
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_200"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_200"
+                android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view_container"
@@ -25,7 +25,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/grey_300" />
+                android:background="@color/grey_300"/>
 
             <LinearLayout
                 android:id="@+id/total_payment_layout"
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Total Pembayaran" />
+                    android:text="Total Pembayaran"/>
 
                 <TextView
                     android:id="@+id/total_payment_text_view"
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:text="-" />
+                    android:text="-"/>
 
             </LinearLayout>
 
@@ -67,36 +67,24 @@
                 android:paddingRight="@dimen/padding_med"
                 android:visibility="gone"
                 tools:text="Anda mendapat gratis ongkir Rp20.000"
-                tools:visibility="visible" />
+                tools:visibility="visible"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/grey_300" />
+                android:background="@color/grey_300"/>
 
-            <LinearLayout
+            <TextView
                 android:id="@+id/confirm_payment_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_med"
-                android:layout_marginLeft="@dimen/margin_med"
-                android:layout_marginRight="@dimen/margin_med"
-                android:layout_marginStart="@dimen/margin_med"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/orange_button_rounded"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/label_button_choose_payment_method"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:textStyle="normal" />
-
-            </LinearLayout>
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/bg_button_disabled"
+                android:gravity="center"
+                android:text="@string/label_button_choose_payment_method"
+                android:textAllCaps="false"
+                android:textColor="@color/grey_500"
+                android:textSize="13sp"/>
 
         </LinearLayout>
 
@@ -106,6 +94,6 @@
         android:id="@+id/order_shipment_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/card_view_container" />
+        android:layout_above="@id/card_view_container"/>
 
 </RelativeLayout>
