@@ -326,6 +326,16 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerGeneralActivity"
+            android:label="@string/product_title_activity_etalase_picker"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerSellerActivity"
+            android:label="@string/product_title_activity_etalase_picker"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".product.picker.view.ProductListPickerActivity"
             android:label="@string/title_activity_product_list_picker"
             android:screenOrientation="portrait"

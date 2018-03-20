@@ -23,7 +23,7 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -683,9 +683,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionShopDetailClick(String shopID) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(shopID, "");
-        intent.putExtras(bundle);
+        Intent intent = ((TkpdInboxRouter) getActivity()).getShopPageIntent(getActivity(), String.valueOf(shopID));
         startActivity(intent);
     }
 

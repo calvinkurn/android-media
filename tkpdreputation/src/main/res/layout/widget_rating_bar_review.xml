@@ -9,7 +9,7 @@
 
     <RatingBar
         android:id="@+id/product_rating"
-        style="@style/Small.RatingBar"
+        style="@style/RatingBar.Small"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/margin_vs"

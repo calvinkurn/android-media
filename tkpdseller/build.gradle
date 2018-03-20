@@ -113,6 +113,8 @@ dependencies {
     compile getTkpdDesign()
     compile getTkpdPayment()
 
+    compile project(':tkpdreputation-common')
+
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
@@ -132,7 +134,6 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
-    compile rootProject.ext.miscDependencies.loaderviewlibrary
     compile (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }

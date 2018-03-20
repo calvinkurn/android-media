@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LabelView">
+        <attr name="lv_image" format="reference" />
+        <attr name="lv_image_width" format="dimension" />
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
@@ -10,6 +12,7 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="lv_sub_title" format="string" />
         <attr name="lv_content" format="string" />
         <attr name="lv_content_color" format="color" />
         <attr name="lv_content_text_size" format="dimension" />
@@ -19,8 +22,6 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="lv_font_size" format="dimension" />
-        <attr name="lv_show_arrow" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SelectionLabelView">
@@ -105,6 +106,7 @@
         <attr name="lsv_empty_layout" format="reference" />
         <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
+        <attr name="lsv_full_screen" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="EmptyCardContentView">
@@ -129,6 +131,7 @@
 
     <declare-styleable name="ShopReputationView">
         <attr name="srv_show_tooltip" format="boolean" />
+        <attr name="srv_medal_width" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">

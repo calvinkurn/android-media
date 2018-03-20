@@ -10,6 +10,7 @@ ext {
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'
+    tkpdCacheApiVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -147,7 +148,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
@@ -182,6 +183,7 @@ ext {
             usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
@@ -204,7 +206,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
     ]
 
 }

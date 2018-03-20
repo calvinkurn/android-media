@@ -35,7 +35,7 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -458,10 +458,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopModel shopModel) {
                 viewListener.finishLoading();
                 if (shopModel != null && shopModel.info != null) {
-                    viewListener.goToActivity(
-                            ShopInfoActivity.class,
-                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
-                    );
+                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
+                    context.startActivity(intent);
                 } else {
                     prepareOpenWebView(uriData);
                 }

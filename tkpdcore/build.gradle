@@ -12,14 +12,14 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
-def getTkpdCacheApi() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi');
-}
-
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+}
+
+def getTkpdCacheApi() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi');
 }
 
 buildscript {

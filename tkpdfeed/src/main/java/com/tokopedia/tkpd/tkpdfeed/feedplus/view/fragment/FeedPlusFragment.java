@@ -50,7 +50,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
@@ -503,13 +502,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
-        intent.putExtras(bundle);
+        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
-        UnifyTracking.eventFeedViewShop(String.valueOf(shopId),
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
-
+        UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
 
     @Override
@@ -812,12 +807,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
         UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
-
     }
 
     @Override
@@ -912,9 +904,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .OFFICIAL_STORE_BRAND +
                         officialStoreViewModel.getShopName());
 
-        Intent intent = ShopInfoActivity.getCallingIntent(
-                getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
-        getActivity().startActivity(intent);
+        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        startActivity(intent);
     }
 
     private String getFeedAnalyticsHeader(int page, int rowNumber) {

@@ -58,7 +58,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
@@ -134,10 +133,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivityRequest(intent,
-                ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
+        String etalaseName = bundle.getString("etalase_name");
+        String etalaseId = bundle.getString("etalase_id");
+        Intent intent = null;
+        if(!TextUtils.isEmpty(etalaseId)) {
+            intent = ((PdpRouter) context.getApplicationContext()).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId);
+        }else{
+            intent = ((PdpRouter) context.getApplicationContext()).getShopPageIntent(context, bundle.getString("shop_id"));
+        }
+        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_SHOP_INFO);
     }
 
     @Override
@@ -668,8 +672,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
-        } else if (productData.getInfo().getHasVariant() && productVariant == null) {
-            getProductVariant(context, Integer.toString(productData.getInfo().getProductId()));
+        } else if (productData.getInfo() != null && productData.getInfo().getHasVariant() && productVariant==null) {
+            getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData.getCampaign() != null) {

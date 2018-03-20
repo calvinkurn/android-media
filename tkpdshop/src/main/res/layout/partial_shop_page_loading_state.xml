@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_width_xxl"
+            android:layout_marginBottom="@dimen/margin_sm" />
+
+        <include
+            layout="@layout/item_shimmering_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms" />
+
+        <include
+            layout="@layout/item_shimmering_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms" />
+
+        <include
+            layout="@layout/item_shimmering_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms" />
+
+        <include
+            layout="@layout/item_shimmering_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm" />
+
+    </LinearLayout>
+</ScrollView>

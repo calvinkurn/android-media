@@ -65,7 +65,7 @@
             android:maxHeight="@dimen/smiley_reputation_size"
             android:maxWidth="@dimen/smiley_reputation_size"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_smiley_netral"/>
+            android:src="@drawable/ic_smiley_neutral"/>
 
         <TextView
             android:id="@+id/score_netral"

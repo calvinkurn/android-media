@@ -20,8 +20,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
@@ -51,17 +51,17 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     private ProductManageFilterModel productManageFilterModel;
 
-    @Override
-    protected String getScreenName() {
-        return getClass().getSimpleName();
-    }
-
     public static Fragment createInstance(ProductManageFilterModel productManageFilterModel) {
         ProductManageFilterFragment productManageFilterFragment = new ProductManageFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ProductManageConstant.EXTRA_FILTER_SELECTED, productManageFilterModel);
         productManageFilterFragment.setArguments(bundle);
         return productManageFilterFragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getClass().getSimpleName();
     }
 
     @Override
