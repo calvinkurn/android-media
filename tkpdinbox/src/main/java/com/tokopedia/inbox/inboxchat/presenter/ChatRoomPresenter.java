@@ -65,7 +65,8 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAG
  * Created by stevenfredian on 9/26/17.
  */
 
-public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View> implements ChatRoomContract.Presenter {
+public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View>
+        implements ChatRoomContract.Presenter {
 
     private static final String ROLE_SHOP = "shop";
 
@@ -116,7 +117,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.pagingHandler = new PagingHandler();
 
         client = new OkHttpClient();
-        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN + TkpdBaseURL.Chat.CHAT_WEBSOCKET +
+        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN +
+                TkpdBaseURL.Chat.CHAT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
@@ -145,7 +147,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             getView().setTextAreaReply(true);
             getView().hideNotifier();
         }
-        if(!getView().isChatBot()) {
+        if (!getView().isChatBot()) {
             getTemplate();
         }
     }
@@ -207,7 +209,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().setUploadingMode(false);
-                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable, getView().getActivity()), model);
+                getView().onErrorUploadImages(
+                        ErrorHandler.getErrorMessage(throwable, getView().getActivity()), model);
             }
 
             @Override
@@ -250,52 +253,59 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void addMessageChatBalloon(WebSocketResponse response) {
-        try {if (getView().isCurrentThread(response.getData().getMsgId())
-                && getView().isMyMessage(response.getData().getFromUid())) {
+        try {
+            if (getView().isCurrentThread(response.getData().getMsgId())
+                    && getView().isMyMessage(response.getData().getFromUid())) {
 
-            MyChatViewModel item = new MyChatViewModel();
-            item.setReplyId(response.getData().getMsgId());
-            item.setMsgId(response.getData().getMsgId());
-            item.setSenderId(String.valueOf(response.getData().getFromUid()));
-            item.setMsg(response.getData().getMessage().getCensoredReply());
-            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-            item.setAttachment(response.getData().getAttachment());
-if(response.getData().getAttachment() != null &&
-                    response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
-                AttachProductViewModel productItem = new AttachProductViewModel(item);
-                Integer productId = response.getData().getAttachment().getAttributes().getProductId();
-                getView().getAdapter().removeLastProductWithId(productId);
-                getView().getAdapter().addReply(productItem);
-            }
-            else {
+                MyChatViewModel item = new MyChatViewModel();
+                item.setReplyId(response.getData().getMsgId());
+                item.setMsgId(response.getData().getMsgId());
+                item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+                item.setAttachment(response.getData().getAttachment());
+                if (response.getData().getAttachment() != null &&
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+                                .PRODUCT_ATTACHED)) {
+                    AttachProductViewModel productItem = new AttachProductViewModel(item);
+                    Integer productId = response.getData().getAttachment().getAttributes()
+                            .getProductId();
+                    getView().getAdapter().removeLastProductWithId(productId);
+                    getView().getAdapter().addReply(productItem);
+                } else {
 
-                getView().getAdapter().removeLast();            getView().getAdapter().addReply(item);
-            }getView().finishLoading();
-            getView().resetReplyColumn();
-            getView().scrollToBottom();
-        } else if (getView() != null &&getView().isCurrentThread(response.getData().getMsgId())) {
-            OppositeChatViewModel item = new OppositeChatViewModel();
-            item.setReplyId(response.getData().getMsgId());
-            item.setMsgId(response.getData().getMsgId());
-            item.setSenderId(String.valueOf(response.getData().getFromUid()));
-            item.setMsg(response.getData().getMessage().getCensoredReply());
-            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-            item.setAttachment(response.getData().getAttachment());
-            if (getView().getAdapter().isTyping()) {
-                getView().getAdapter().removeTyping();
-            }if(response.getData().getAttachment() != null &&
-                    response.getData().getAttachment().getType().equals(AttachmentChatHelper.PRODUCT_ATTACHED)){
-                AttachProductViewModel productItem = new AttachProductViewModel(item);
-                getView().getAdapter().addReply(productItem);
-            }
-            else
-            getView().getAdapter().addReply(item);
-            getView().finishLoading();
-            getView().scrollToBottomWithCheck();
-            try {
-                readMessage(String.valueOf(response.getData().getMsgId()));
-            } catch (JSONException e) {
-                e.printStackTrace();}
+                    getView().getAdapter().removeLast();
+                    getView().getAdapter().addReply(item);
+                }
+                getView().finishLoading();
+                getView().resetReplyColumn();
+                getView().scrollToBottom();
+            } else if (getView() != null && getView().isCurrentThread(response.getData().getMsgId
+                    ())) {
+                OppositeChatViewModel item = new OppositeChatViewModel();
+                item.setReplyId(response.getData().getMsgId());
+                item.setMsgId(response.getData().getMsgId());
+                item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+                item.setAttachment(response.getData().getAttachment());
+                if (getView().getAdapter().isTyping()) {
+                    getView().getAdapter().removeTyping();
+                }
+                if (response.getData().getAttachment() != null &&
+                        response.getData().getAttachment().getType().equals(AttachmentChatHelper
+                                .PRODUCT_ATTACHED)) {
+                    AttachProductViewModel productItem = new AttachProductViewModel(item);
+                    getView().getAdapter().addReply(productItem);
+                } else
+                    getView().getAdapter().addReply(item);
+                getView().finishLoading();
+                getView().scrollToBottomWithCheck();
+                try {
+                    readMessage(String.valueOf(response.getData().getMsgId()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -347,7 +357,8 @@ if(response.getData().getAttachment() != null &&
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
         final String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-        attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId), new Subscriber<UploadImageDomain>() {
+        attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId),
+                new Subscriber<UploadImageDomain>() {
             @Override
             public void onCompleted() {
 
@@ -409,12 +420,14 @@ if(response.getData().getAttachment() != null &&
         }
 
         isRequesting = true;
-        getReplyListUseCase.execute(requestParam, new GetReplySubscriber(getView(), this));
+        getReplyListUseCase.execute(requestParam,
+                new GetReplySubscriber(getView(),
+                        this));
     }
 
     public void setResult(ChatRoomViewModel replyData) {
         getView().setCanLoadMore(false);
-        getView().setHeaderModel(replyData.getNameHeader(),replyData.getImageHeader());
+        getView().setHeaderModel(replyData.getNameHeader(), replyData.getImageHeader());
         getView().setHeader();
         if (pagingHandler.getPage() == 1) {
             getView().getAdapter().setList(replyData.getChatList());
@@ -469,7 +482,8 @@ if(response.getData().getAttachment() != null &&
         }
     }
 
-    public void sendProductAttachment(String messageId, ResultProduct product) throws JSONException {
+    public void sendProductAttachment(String messageId,
+                                      ResultProduct product) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JSONObject data = new JSONObject();
@@ -479,15 +493,15 @@ if(response.getData().getAttachment() != null &&
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("UTC"));
         data.put("start_time", date.format(Calendar.getInstance().getTime()));
-        data.put("attachment_type",3);
+        data.put("attachment_type", 3);
         data.put("product_id", product.getProductId());
 
         JSONObject productProfile = new JSONObject();
-        productProfile.put("name",product.getName());
-        productProfile.put("price",product.getPrice());
-        productProfile.put("image_url",product.getProductImageThumbnail());
-        productProfile.put("url",product.getProductUrl());
-        data.put("product_profile",productProfile);
+        productProfile.put("name", product.getName());
+        productProfile.put("price", product.getPrice());
+        productProfile.put("image_url", product.getProductImageThumbnail());
+        productProfile.put("url", product.getProductUrl());
+        data.put("product_profile", productProfile);
         json.put("data", data);
         ws.send(json.toString());
     }
@@ -560,19 +574,18 @@ if(response.getData().getAttachment() != null &&
     }
 
     @Override
-    public void getAttachProductDialog(String shopId,String shopName ,String senderRole) {
+    public void getAttachProductDialog(String shopId, String shopName, String senderRole) {
         String id = "0";
         String shopNameLocal = "";
         if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId)) {
             id = String.valueOf(shopId);
             shopNameLocal = shopName;
-        }
-        else if (!TextUtils.isEmpty(sessionHandler.getShopID())
+        } else if (!TextUtils.isEmpty(sessionHandler.getShopID())
                 && !sessionHandler.getShopID().equals("0")) {
             id = sessionHandler.getShopID();
             shopNameLocal = sessionHandler.getShopName();
         }
-        getView().startAttachProductActivity(id,shopNameLocal,senderRole.equals(ROLE_SHOP));
+        getView().startAttachProductActivity(id, shopNameLocal, senderRole.equals(ROLE_SHOP));
     }
 
     @Override
@@ -599,7 +612,8 @@ if(response.getData().getAttachment() != null &&
     }
 
     public void getTemplate() {
-        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(), new Subscriber<GetTemplateViewModel>() {
+        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(),
+                new Subscriber<GetTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
