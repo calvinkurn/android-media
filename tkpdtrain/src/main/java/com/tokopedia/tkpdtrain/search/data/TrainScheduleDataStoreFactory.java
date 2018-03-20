@@ -33,25 +33,31 @@ public class TrainScheduleDataStoreFactory {
         this.cloudDataStore = cloudDataStore;
     }
 
-    public Observable<List<AvailabilityKeySchedule>> getScheduleTrain(final Specification specification) {
-        return dbDataStore.deleteAll().flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
-            @Override
-            public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessDelete) {
-                if (isSuccessDelete) {
-                    return getDataFromCloud(specification);
-                } else {
-                    return Observable.empty();
+    public Observable<List<AvailabilityKeySchedule>> getScheduleTrain(final Specification specification,
+                                                                      final int scheduleVariant) {
+        if (scheduleVariant == ScheduleTypeDef.RETURN_SCHEDULE) {
+            return getDataFromCloud(specification, scheduleVariant);
+        } else if (scheduleVariant == ScheduleTypeDef.DEPARTURE_SCHEDULE){
+            return dbDataStore.deleteAll().flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
+                @Override
+                public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessDelete) {
+                    if (isSuccessDelete) {
+                        return getDataFromCloud(specification, scheduleVariant);
+                    } else {
+                        return Observable.empty();
+                    }
                 }
-            }
-        });
+            });
+        }
+        return null;
     }
 
-    private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification) {
+    private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification, final int scheduleVariant) {
         return cloudDataStore.getDatasSchedule(specification)
                 .flatMap(new Func1<TrainListSchedulesEntity, Observable<List<AvailabilityKeySchedule>>>() {
                     @Override
                     public Observable<List<AvailabilityKeySchedule>> call(final TrainListSchedulesEntity trainListSchedulesEntity) {
-                        return dbDataStore.insertAll(trainListSchedulesEntity.getTrainSchedules())
+                        return dbDataStore.insertAllData(trainListSchedulesEntity.getTrainSchedules(), scheduleVariant)
                                 .flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
                                     @Override
                                     public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessSaveData) {
@@ -67,7 +73,7 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain) {
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, final int scheduleVariant) {
         return cloudDataStore.getDatasAvailability(idTrain)
                 .flatMap(new Func1<List<ScheduleAvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
@@ -79,7 +85,7 @@ public class TrainScheduleDataStoreFactory {
                                         if (!isSuccessSavedData) {
                                             return Observable.empty();
                                         } else {
-                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities));
+                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities, scheduleVariant));
                                         }
                                     }
                                 });
@@ -100,6 +106,10 @@ public class TrainScheduleDataStoreFactory {
         specification = new AndDbFlowSpecification(specification,
                 new TrainScheduleSortSpecification(sortOptionId));
         return dbDataStore.getDatas(specification);
+    }
+
+    public Observable<TrainScheduleViewModel> getDetailScheduleById(Specification specification) {
+        return dbDataStore.getData(specification);
     }
 
 }

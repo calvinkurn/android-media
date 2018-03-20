@@ -2,6 +2,7 @@ package com.tokopedia.tkpdtrain.common.data;
 
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
+import com.tokopedia.tkpdtrain.search.data.TrainDetailScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.domain.FilterParam;
@@ -47,8 +48,8 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam) {
-        return trainScheduleDataStoreFactory.getScheduleTrain(new TrainScheduleSpecification(mapParam));
+    public Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant) {
+        return trainScheduleDataStoreFactory.getScheduleTrain(new TrainScheduleSpecification(mapParam), scheduleVariant);
     }
 
     @Override
@@ -57,12 +58,17 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain) {
-        return trainScheduleDataStoreFactory.getAvailabilitySchedule(idTrain);
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, int scheduleVariant) {
+        return trainScheduleDataStoreFactory.getAvailabilitySchedule(idTrain, scheduleVariant);
     }
 
     @Override
     public Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId) {
         return trainScheduleDataStoreFactory.getFilteredAndSortedSchedule(filterParam, sortOptionId);
+    }
+
+    @Override
+    public Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule) {
+        return trainScheduleDataStoreFactory.getDetailScheduleById(new TrainDetailScheduleSpecification(idSchedule));
     }
 }

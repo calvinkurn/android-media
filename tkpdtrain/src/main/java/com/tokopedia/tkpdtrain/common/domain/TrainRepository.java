@@ -22,10 +22,12 @@ public interface TrainRepository {
 
     Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword);
 
-    Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam);
+    Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant);
 
-    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain);
+    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(String idTrain, int scheduleVariant);
 
     Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId);
+
+    Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule);
 
 }

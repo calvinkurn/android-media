@@ -57,24 +57,21 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
 
     @Override
     public Observable<Boolean> insert(final TrainScheduleEntity trainScheduleEntity) {
-        return Observable.just(trainScheduleEntity)
-                .map(new Func1<TrainScheduleEntity, Boolean>() {
-                    @Override
-                    public Boolean call(TrainScheduleEntity trainScheduleEntity) {
-                        insertSchedule(trainScheduleEntity);
-                        return true;
-                    }
-                });
+        return null;
     }
 
     @Override
     public Observable<Boolean> insertAll(final List<TrainScheduleEntity> datas) {
+        return null;
+    }
+
+    public Observable<Boolean> insertAllData(final List<TrainScheduleEntity> datas, final int scheduleVariant) {
         return Observable.just(datas)
                 .map(new Func1<List<TrainScheduleEntity>, Boolean>() {
                     @Override
                     public Boolean call(List<TrainScheduleEntity> trainScheduleEntities) {
                         for (TrainScheduleEntity trainListSchedulesEntity : datas) {
-                            insertSchedule(trainListSchedulesEntity);
+                            insertSchedule(trainListSchedulesEntity, scheduleVariant);
                         }
                         updateFilterCheapest();
                         updateFilterFastest();
@@ -83,7 +80,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 });
     }
 
-    private void insertSchedule(TrainScheduleEntity trainScheduleEntity) {
+    private void insertSchedule(TrainScheduleEntity trainScheduleEntity, int scheduleVariant) {
         ModelAdapter<TrainScheduleDbTable> adapter = FlowManager.getModelAdapter(TrainScheduleDbTable.class);
         TrainScheduleDbTable trainScheduleDbTable = new TrainScheduleDbTable();
         trainScheduleDbTable.setIdSchedule(trainScheduleEntity.getIdSchedule());
@@ -106,6 +103,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         trainScheduleDbTable.setAvailableSeat(AvailabilityTypeDef.DEFAULT_VALUE);
         trainScheduleDbTable.setCheapestFlag(false);
         trainScheduleDbTable.setFastestFlag(false);
+        trainScheduleDbTable.setReturnSchedule(scheduleVariant == ScheduleTypeDef.RETURN_SCHEDULE);
         adapter.insert(trainScheduleDbTable);
     }
 
