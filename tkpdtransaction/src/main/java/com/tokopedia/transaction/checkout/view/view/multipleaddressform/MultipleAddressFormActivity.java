@@ -2,7 +2,6 @@ package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -62,22 +61,12 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        FragmentManager fragmentManager = getFragmentManager();
-        CartListData cartListData = getIntent()
-                .getExtras()
-                .getParcelable(EXTRA_CART_LIST_DATA);
-        RecipientAddressModel addressModel = getIntent().getExtras()
-                .getParcelable(EXTRA_RECIPIENT_ADDRESS_DATA);
-        Fragment fragment = MultipleAddressFragment.newInstance(
-                cartListData,
-                addressModel
-        );
-        String backStateName = fragment.getClass().getName();
-        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-        if (!isFragmentPopped) {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        if (fragment == null || !(fragment instanceof MultipleAddressFragment)) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .addToBackStack(backStateName)
+                    .replace(R.id.container, MultipleAddressFragment.newInstance(
+                            cartListData,
+                            addressData))
                     .commit();
         }
     }
@@ -99,7 +88,7 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+      //  super.onBackPressed();
         DialogFragment dialog = ResetShipmentFormDialog.newInstance(
                 new ResetShipmentFormDialog.ResetShipmentFormCallbackAction() {
 

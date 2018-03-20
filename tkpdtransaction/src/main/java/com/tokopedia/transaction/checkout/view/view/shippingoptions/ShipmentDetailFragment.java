@@ -102,8 +102,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     RecyclerView rvCourierChoice;
     @BindView(R2.id.ll_pinpoint)
     LinearLayout llPinpoint;
-    @BindView(R2.id.card_pinpoint)
-    CardView cardPinpoint;
     @BindView(R2.id.map_view_pinpoint)
     MapView mapViewPinpoint;
     @BindView(R2.id.bt_change_pinpoint)
@@ -158,8 +156,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     Button btSave;
     @BindView(R2.id.ll_fees_group)
     LinearLayout llFeesGroup;
-    @BindView(R2.id.card_fees_group)
-    CardView cardFeesGroup;
     @BindView(R2.id.ll_insurance_fee)
     LinearLayout llInsuranceFee;
     @BindView(R2.id.ll_additional_fee)
@@ -346,7 +342,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         } else {
             renderNoPinpoint();
         }
-        cardPinpoint.setVisibility(View.VISIBLE);
+        llPinpoint.setVisibility(View.VISIBLE);
     }
 
     private void showErrorSnackbar(String message) {
@@ -410,7 +406,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
-        cardPinpoint.setVisibility(View.GONE);
+        llPinpoint.setVisibility(View.GONE);
         renderShipment(shipmentDetailData);
     }
 
@@ -585,9 +581,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     private void updateFeesGroupLayout() {
         if (llInsuranceFee.getVisibility() == View.GONE && llAdditionalFee.getVisibility() == View.GONE) {
-            cardFeesGroup.setVisibility(View.GONE);
+            llFeesGroup.setVisibility(View.GONE);
         } else {
-            cardFeesGroup.setVisibility(View.VISIBLE);
+            llFeesGroup.setVisibility(View.VISIBLE);
         }
     }
 
@@ -712,8 +708,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         switchInsurance.setVisibility(View.GONE);
         tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
         tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
-        cardFeesGroup.setVisibility(View.GONE);
-        cardPinpoint.setVisibility(View.GONE);
+        llFeesGroup.setVisibility(View.GONE);
+        llPinpoint.setVisibility(View.GONE);
         imgBtInsuranceInfo.setVisibility(View.GONE);
         setText(tvDeliveryFeeTotal, null);
     }

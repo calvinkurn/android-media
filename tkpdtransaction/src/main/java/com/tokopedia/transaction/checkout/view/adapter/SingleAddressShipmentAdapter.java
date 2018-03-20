@@ -133,6 +133,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 notifyItemChanged(i);
             }
         }
+        notifyItemChanged(getItemCount() - 1);
     }
 
     private void checkDataForCheckout() {
@@ -296,6 +297,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 }
             }
         }
+        notifyItemChanged(getItemCount() - 1);
     }
 
     public boolean hasAppliedPromoCode() {

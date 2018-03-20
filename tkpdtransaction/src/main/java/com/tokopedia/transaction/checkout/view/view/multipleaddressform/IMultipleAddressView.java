@@ -12,6 +12,4 @@ public interface IMultipleAddressView {
 
     void successMakeShipmentData();
 
-    void receiveData(List<MultipleAddressAdapterData> listOfAddressData);
-
 }

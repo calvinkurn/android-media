@@ -74,8 +74,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -162,18 +160,17 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_cart_remove) {
-            mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
+        MenuItem item = menu.getItem(0);
+        item.setActionView(R.layout.layout_menu_delete);
+        TextView deleteTextView = (TextView) item.getActionView();
+        deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -357,6 +354,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
+    public void onCartItemAfterErrorChecked() {
+        cartListAdapter.checkForShipmentForm();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -403,6 +405,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
@@ -770,7 +773,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onAddFavorite(int position, Data shopData) {
-        //TODO: this listener not used in this sprint
     }
 
     @Override
@@ -809,7 +811,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             );
             dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
+                resultCode == CartShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT ||
+                resultCode == CartShipmentActivity.RESULT_CODE_CANCEL_SHIPMENT_PAYMENT) {
             dPresenter.processResetAndRefreshCartData();
         }
     }
@@ -864,8 +867,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
-        if (resultCode == RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            dPresenter.processToShipmentForm();
+        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
+            // dPresenter.processToShipmentForm();
         }
     }
 

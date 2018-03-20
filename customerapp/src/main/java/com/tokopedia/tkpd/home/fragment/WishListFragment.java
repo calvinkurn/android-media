@@ -340,6 +340,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
+    public void showAddToCartMessage(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
     public String getUserId() {
         return SessionHandler.getLoginID(getActivity());
     }

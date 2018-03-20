@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_product_policies_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/tv_product_price"
+    android:layout_marginTop="4dp"
+    android:layout_toEndOf="@id/iv_product_image"
+    android:layout_toRightOf="@id/iv_product_image">
+
+    <ImageView
+        android:id="@+id/iv_free_return_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_free_return"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_free_return_label"
+        style="@style/TextSmallNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/iv_free_return_icon"
+        android:layout_toRightOf="@id/iv_free_return_icon"
+        android:text="@string/label_free_return"
+        android:textColor="@color/font_black_secondary_54" />
+
+    <TextView
+        android:id="@+id/tv_pre_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toEndOf="@id/tv_free_return_label"
+        android:layout_toRightOf="@id/tv_free_return_label"
+        android:background="@drawable/layout_bg_pre_order"
+        android:fontFamily="sans-serif"
+        android:padding="4dp"
+        android:text="@string/label_po"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        tools:ignore="SmallSp" />
+
+    <TextView
+        android:id="@+id/tv_cashback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/tv_pre_order"
+        android:layout_toRightOf="@id/tv_pre_order"
+        android:background="@drawable/layout_bg_cashback"
+        android:fontFamily="sans-serif"
+        android:padding="4dp"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        tools:ignore="SmallSp"
+        tools:text="Cashback 5%" />
+
+</RelativeLayout>

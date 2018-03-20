@@ -311,7 +311,8 @@ public class CartListPresenter implements ICartListPresenter {
                     public void onNext(UpdateToSingleAddressShipmentData data) {
                         view.hideProgressLoading();
                         if (data.getUpdateCartData().isSuccess() && !data.getShipmentAddressFormData().isError()) {
-                            if (data.getShipmentAddressFormData().getGroupAddress().isEmpty()) {
+                            if (data.getShipmentAddressFormData().getGroupAddress() == null
+                                    || data.getShipmentAddressFormData().getGroupAddress().isEmpty()) {
                                 view.renderNoRecipientAddressShipmentForm(data.getShipmentAddressFormData());
                             } else {
                                 view.renderToShipmentFormSuccess(data.getShipmentAddressFormData());

@@ -35,13 +35,13 @@ public interface ICartShipmentActivity extends IBaseView {
 
     void renderThanksTopPaySuccess(String message);
 
-    void renderErrorThanksTopPaySuccess(String message);
+    void renderErrorThanksTopPay(String message);
 
-    void renderErrorHttpThanksTopPaySuccess(String message);
+    void renderErrorHttpThanksTopPay(String message);
 
-    void renderErrorNoConnectionThanksTopPaySuccess(String message);
+    void renderErrorNoConnectionThanksTopPay(String message);
 
-    void renderErrorTimeoutConnectionThanksTopPaySuccess(String message);
+    void renderErrorTimeoutConnectionThanksTopPay(String message);
 
 
     void closeWithResult(int resultCode, @Nullable Intent intent);
