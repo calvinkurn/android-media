@@ -58,5 +58,6 @@
         terlalu lama tidak aktif.</string>
     <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
     <string name="lets_join_channel">Yuk gabung sekarang di channel %s</string>
+    <string name="title_group_chat">Chat</string>
 
 </resources>
