@@ -285,68 +285,94 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     public void processGetCartData() {
         getView().showFullPageLoading();
-        compositeSubscription.add(flightAddToCartUseCase.createObservable(getRequestParams())
-                .map(new Func1<CartEntity, FlightBookingCartData>() {
-                    @Override
-                    public FlightBookingCartData call(CartEntity entity) {
-                        return flightBookingCartDataMapper.transform(entity);
-                    }
-                })
-                .zipWith(getDepartureDataObservable(),
-                        new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
+        compositeSubscription.add(
+                getDepartureDataObservable()
+                        .map(new Func1<FlightSearchViewModel, FlightBookingCartData>() {
                             @Override
-                            public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
-                                FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(flightSearchViewModel);
+                            public FlightBookingCartData call(FlightSearchViewModel viewModel) {
+                                FlightBookingCartData flightBookingCartData = new FlightBookingCartData();
+                                FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(viewModel);
                                 flightDetailViewModel.build(getView().getCurrentBookingParamViewModel().getSearchParam());
                                 flightBookingCartData.setDepartureTrip(flightDetailViewModel);
                                 return flightBookingCartData;
                             }
                         })
-                .flatMap(getFlightRoundTripDataObservable())
-                .zipWith(getDefaultPhoneDataObservable(),
-                        new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
+                        .flatMap(getFlightRoundTripDataObservable())
+                        .flatMap(new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
                             @Override
-                            public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                                flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
-                                return flightBookingCartData;
+                            public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
+                                List<Fare> fares = new ArrayList<>();
+                                Fare departureFare = new Fare();
+                                departureFare.setAdultNumeric(flightBookingCartData.getDepartureTrip().getAdultNumericPrice());
+                                departureFare.setChildNumeric(flightBookingCartData.getDepartureTrip().getChildNumericPrice());
+                                departureFare.setInfantNumeric(flightBookingCartData.getDepartureTrip().getInfantNumericPrice());
+                                fares.add(departureFare);
+                                if (flightBookingCartData.getReturnTrip() != null) {
+                                    Fare returnFare = new Fare();
+                                    returnFare.setAdultNumeric(flightBookingCartData.getReturnTrip().getAdultNumericPrice());
+                                    returnFare.setChildNumeric(flightBookingCartData.getReturnTrip().getChildNumericPrice());
+                                    returnFare.setInfantNumeric(flightBookingCartData.getReturnTrip().getInfantNumericPrice());
+                                    fares.add(returnFare);
+                                }
+                                FlightSearchPassDataViewModel searchPassDataViewModel = getView().getCurrentBookingParamViewModel().getSearchParam();
+                                int price = calculateTotalPassengerFare(
+                                        fares,
+                                        searchPassDataViewModel.getFlightPassengerViewModel().getAdult(),
+                                        searchPassDataViewModel.getFlightPassengerViewModel().getChildren(),
+                                        searchPassDataViewModel.getFlightPassengerViewModel().getInfant()
+                                );
+                                return Observable.zip(flightAddToCartUseCase.createObservable(getRequestParams(price)), Observable.just(flightBookingCartData), new Func2<CartEntity, FlightBookingCartData, FlightBookingCartData>() {
+                                    @Override
+                                    public FlightBookingCartData call(CartEntity entity, FlightBookingCartData flightBookingCartData) {
+                                        return flightBookingCartDataMapper.transform(flightBookingCartData, entity);
+                                    }
+                                });
                             }
                         })
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FlightBookingCartData>() {
-                    @Override
-                    public void onCompleted() {
+                        .zipWith(getDefaultPhoneDataObservable(),
+                                new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
+                                    @Override
+                                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+                                        flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
+                                        return flightBookingCartData;
+                                    }
+                                })
+                        .onBackpressureDrop()
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<FlightBookingCartData>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (isViewAttached()) {
-                            getView().hideFullPageLoading();
-                            if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))){
-                                getView().showSoldOutDialog();
-                            } else {
-                                getView().showGetCartDataErrorStateLayout(e);
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onNext(FlightBookingCartData flightBookingCartData) {
-                        if (isViewAttached()) {
-                            flightAnalytics.eventAddToCart(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
-                            getView().hideFullPageLoading();
-                            renderUi(flightBookingCartData, false);
-                        }
-                    }
-                })
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (isViewAttached()) {
+                                    getView().hideFullPageLoading();
+                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
+                                        getView().showSoldOutDialog();
+                                    } else {
+                                        getView().showGetCartDataErrorStateLayout(e);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNext(FlightBookingCartData flightBookingCartData) {
+                                if (isViewAttached()) {
+                                    flightAnalytics.eventAddToCart(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+                                    getView().hideFullPageLoading();
+                                    renderUi(flightBookingCartData, false);
+                                }
+                            }
+                        })
         );
     }
 
-    private RequestParams getRequestParams() {
+    private RequestParams getRequestParams(int price) {
         RequestParams requestParams;
         if (isRoundTrip()) {
             requestParams = flightAddToCartUseCase.createRequestParam(
@@ -356,7 +382,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass().getId(),
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
-                    getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId())
+                    getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId()),
+                    price
             );
         } else {
             requestParams = flightAddToCartUseCase.createRequestParam(
@@ -365,7 +392,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightPassengerViewModel().getInfant(),
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass().getId(),
                     getView().getDepartureTripId(),
-                    getView().getIdEmpotencyKey(getView().getDepartureTripId())
+                    getView().getIdEmpotencyKey(getView().getDepartureTripId()),
+                    price
             );
         }
         return requestParams;
@@ -660,7 +688,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     protected RequestParams getRequestParam() {
-        return getRequestParams();
+        return getRequestParams(calculateTotalPassengerFare());
     }
 
     @Override
@@ -693,7 +721,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    protected void onCountDownTimestimeChanged(String timestamp) {
+    protected void onCountDownTimestampChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
     }
 

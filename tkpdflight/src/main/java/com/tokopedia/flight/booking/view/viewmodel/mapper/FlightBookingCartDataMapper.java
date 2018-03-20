@@ -22,10 +22,11 @@ public class FlightBookingCartDataMapper {
         this.flightBookingAmenityViewModelMapper = flightBookingAmenityViewModelMapper;
     }
 
-    public FlightBookingCartData transform(CartEntity entity) {
-        FlightBookingCartData data = null;
+    public FlightBookingCartData transform(FlightBookingCartData data, CartEntity entity){
         if (entity != null) {
-            data = new FlightBookingCartData();
+            if (data == null) {
+                data = new FlightBookingCartData();
+            }
             data.setId(entity.getId());
             data.setRefreshTime(entity.getAttribute().getFlightAttribute().getRefreshTime());
             if (entity.getAttribute().getFlightAttribute().getAmenities() != null) {
@@ -64,5 +65,10 @@ public class FlightBookingCartDataMapper {
             data.setNewFarePrices(entity.getAttribute().getFlightAttribute().getNewPrices());
         }
         return data;
+    }
+
+    public FlightBookingCartData transform(CartEntity entity) {
+        FlightBookingCartData data = null;
+        return transform(null, entity);
     }
 }
