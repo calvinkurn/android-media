@@ -140,7 +140,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
         pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
 
-        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        rlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
 
         rlProductPoliciesLayout.setVisibility(View.GONE);
 
@@ -209,7 +209,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
                         .replace("#", data.getItemData().getProductWeight())
                 );
 
-        if(isShipmentDataInitiated(data)) {
+        if (isShipmentDataInitiated(data)) {
             itemPrice.setText(formatPrice(data.getProductPriceNumber()));
             deliveryPrice.setText(formatPrice(
                     getGeneratedShipmentCartData(data).getDeliveryPriceTotal()));
@@ -320,7 +320,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(detailPriceLayout.isShown()) {
+                if (detailPriceLayout.isShown()) {
                     detailPriceLayout.setVisibility(View.GONE);
                     subTotalTotalDetailButton.setImageDrawable(context.getResources()
                             .getDrawable(R.drawable.chevron_down));
