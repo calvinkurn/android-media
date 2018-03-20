@@ -64,7 +64,7 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
             List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
             ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
             productPictureViewModel.setFilePath(localPath);
-            productPictureViewModel.setId("");
+            productPictureViewModel.setId(0);
 
             productPictureViewModelList.add(productPictureViewModel);
             productViewModel.setProductPictureViewModelList(productPictureViewModelList);

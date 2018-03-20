@@ -930,10 +930,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     }
 
     @Override
-    public void onTotalStockUpdated(boolean status, int total) {
+    public void onTotalStockUpdated(int total) {
         //we need to update this in "realtime" because stock and total will be needed for variant immediately
         if (currentProductViewModel!= null) {
-            currentProductViewModel.setProductStatus(status);
             currentProductViewModel.setProductStock(total);
         }
         boolean stockStatus = total > 0;
@@ -941,6 +940,21 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             valueIndicatorScoreModel.setStockStatus(total > 0);
             updateProductScoring();
         }
+    }
+
+    @Override
+    public void onStockStatusUpdated(boolean isActive) {
+        if (currentProductViewModel!= null) {
+            currentProductViewModel.setProductStatus(isActive);
+        }
+    }
+
+    @Override
+    public long getTotalStock() {
+        if (currentProductViewModel == null) {
+            return 0;
+        }
+        return currentProductViewModel.getProductStock();
     }
 
     @Override
@@ -974,9 +988,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         if (productVariantViewModel != null && productVariantViewModel.hasSelectedVariant()) {
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                onTotalStockUpdated(true, 1);
+                onStockStatusUpdated(true);
+                onTotalStockUpdated(1);
             } else {
-                onTotalStockUpdated(stockType == StockTypeDef.TYPE_ACTIVE, 0);
+                onStockStatusUpdated(stockType == StockTypeDef.TYPE_ACTIVE);
+                onTotalStockUpdated(0);
             }
         }
         // refresh the stock and variant label.

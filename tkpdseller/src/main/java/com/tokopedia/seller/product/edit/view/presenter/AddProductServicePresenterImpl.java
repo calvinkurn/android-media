@@ -128,7 +128,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
         List<ProductPictureViewModel> productPictureViewModelList = productViewModel.getProductPictureViewModelList();
         if (productPictureViewModelList != null) {
             for (ProductPictureViewModel productPictureViewModel : productPictureViewModelList) {
-                if (TextUtils.isEmpty(productPictureViewModel.getId())) {
+                if (productPictureViewModel.getId() <= 0) {
                     count++;
                 }
             }

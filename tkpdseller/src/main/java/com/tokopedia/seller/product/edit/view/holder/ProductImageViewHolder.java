@@ -199,7 +199,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             // Update image to server
             if (!UrlUtils.isValidURL(selectModel.getUriOrPath())) {
-                productPictureViewModel.setId("");
+                productPictureViewModel.setId(0);
                 productPictureViewModel.setFilePath(selectModel.getUriOrPath());
             } else {
                 productPictureViewModel.setId(selectModel.getId());

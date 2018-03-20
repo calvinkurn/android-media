@@ -353,7 +353,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             productSizeChart = new ProductPictureViewModel();
             productSizeChart.setFilePath(imageUrl);
         } else { //change
-            productSizeChart.setId("");
+            productSizeChart.setId(0);
             productSizeChart.setUrlOriginal("");
             productSizeChart.setUrlThumbnail("");
             productSizeChart.setFilePath(imageUrl);

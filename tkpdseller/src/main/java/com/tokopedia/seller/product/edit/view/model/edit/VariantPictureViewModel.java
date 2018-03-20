@@ -14,20 +14,16 @@ public class VariantPictureViewModel extends BasePictureViewModel implements Par
     @Expose
     private long id;
 
-    public String getId() {
+    public long getId() {
         if (id <= 0) {
-            return "";
+            return 0;
         } else {
-            return String.valueOf(id);
+            return id;
         }
     }
 
-    public void setId(String id) {
-        if (TextUtils.isEmpty(id)) {
-            this.id = 0;
-        } else {
-            this.id = Long.parseLong(id);
-        }
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
@@ -63,7 +59,7 @@ public class VariantPictureViewModel extends BasePictureViewModel implements Par
         this.fromIg = in.readInt();
     }
 
-    public static final Creator<VariantPictureViewModel> CREATOR = new Creator<VariantPictureViewModel>() {
+    public static final Parcelable.Creator<VariantPictureViewModel> CREATOR = new Parcelable.Creator<VariantPictureViewModel>() {
         @Override
         public VariantPictureViewModel createFromParcel(Parcel source) {
             return new VariantPictureViewModel(source);
@@ -74,4 +70,5 @@ public class VariantPictureViewModel extends BasePictureViewModel implements Par
             return new VariantPictureViewModel[size];
         }
     };
+
 }

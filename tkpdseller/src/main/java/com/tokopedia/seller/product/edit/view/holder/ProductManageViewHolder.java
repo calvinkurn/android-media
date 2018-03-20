@@ -67,7 +67,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
                 if (isTotalStockValid()) {
                     stockTotalCounterInputView.setError(null);
                 }
-                ProductManageViewHolder.this.listener.onTotalStockUpdated(true, (int) number);
+                ProductManageViewHolder.this.listener.onTotalStockUpdated((int) number);
             }
         });
 
@@ -92,20 +92,26 @@ public class ProductManageViewHolder extends ProductViewHolder {
             // if stock is limited
             // if product has variant, no need to make stock counter enable.
             if (listener.getCurrentVariantModel() != null && listener.getCurrentVariantModel().hasSelectedVariant()) {
+                // if variant, always change stock to 1
                 stockTotalCounterInputView.setVisibility(View.GONE);
+                ProductManageViewHolder.this.listener.onTotalStockUpdated(1);
             } else {
                 stockTotalCounterInputView.setVisibility(View.VISIBLE);
+                // change the stock to 1, but only if the stock value is 0; will not change the value if it is already > 0
+                if (listener.getTotalStock() == 0) {
+                    stockTotalCounterInputView.setValue(1);
+                    ProductManageViewHolder.this.listener.onTotalStockUpdated(1);
+                }
             }
-            int stock = getTotalStock();
-            stockTotalCounterInputView.setValue(stock);
-            ProductManageViewHolder.this.listener.onTotalStockUpdated(true, stock);
+            ProductManageViewHolder.this.listener.onStockStatusUpdated(true);
         } else { // if either always available or empty stock
             stockTotalCounterInputView.setVisibility(View.GONE);
             if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value))) {
-                ProductManageViewHolder.this.listener.onTotalStockUpdated(true, 0);
+                ProductManageViewHolder.this.listener.onStockStatusUpdated(true);
             } else {
-                ProductManageViewHolder.this.listener.onTotalStockUpdated(false, 0);
+                ProductManageViewHolder.this.listener.onStockStatusUpdated(false);
             }
+            ProductManageViewHolder.this.listener.onTotalStockUpdated(0);
         }
 
     }
@@ -124,10 +130,6 @@ public class ProductManageViewHolder extends ProductViewHolder {
             return StockTypeDef.TYPE_ACTIVE;
         }
         return status;
-    }
-
-    public boolean isStockAvailable() {
-        return getStatusStock() == Integer.parseInt(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value));
     }
 
     private void setStockStatus(int unit) {
@@ -296,7 +298,11 @@ public class ProductManageViewHolder extends ProductViewHolder {
 
         void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelArrayList);
 
-        void onTotalStockUpdated(boolean isStockActive, int total);
+        void onTotalStockUpdated(int total);
+
+        void onStockStatusUpdated(boolean isActive);
+
+        long getTotalStock();
 
         void onVariantCountChange(boolean hasActiveVariant);
 
