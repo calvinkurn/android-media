@@ -32,7 +32,7 @@
             app:expandedTitleMarginEnd="12dp"
             app:expandedTitleMarginStart="12dp"
             app:expandedTitleTextAppearance="@style/TextView.Title"
-            app:scrimAnimationDuration="50"
+            app:scrimAnimationDuration="@integer/collapsingtoolbar_hide_time"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include

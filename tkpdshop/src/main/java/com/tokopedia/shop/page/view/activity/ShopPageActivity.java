@@ -61,7 +61,8 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
-    private float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
@@ -242,7 +243,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         }
     }
 
-    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange(final Float offset) {
         return new AppBarLayout.OnOffsetChangedListener() {
             boolean toolbarTitleShown = false;
             int scrollRange = -1;
@@ -253,10 +254,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 float percentage = (float) Math.abs(verticalOffset) / (float) scrollRange;
-                if (percentage < OFFSET_TOOLBAR_TITLE_SHOWN && toolbarTitleShown) {
+                if (percentage < offset && toolbarTitleShown) {
                     showToolbarTitle(false);
                     toolbarTitleShown = false;
-                } else if (percentage >= OFFSET_TOOLBAR_TITLE_SHOWN && !toolbarTitleShown) {
+                } else if (percentage >= offset && !toolbarTitleShown) {
                     showToolbarTitle(true);
                     toolbarTitleShown = true;
                 }
@@ -528,19 +529,21 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         switch (shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
-                OFFSET_TOOLBAR_TITLE_SHOWN = 0.813f;
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
                 break;
             case ShopStatusDef.MODERATED:
-                OFFSET_TOOLBAR_TITLE_SHOWN = 0.813f;
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
-                OFFSET_TOOLBAR_TITLE_SHOWN = 0.813f;
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
                 break;
             default:
-                OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN);
         }
+    }
 
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+    public void setOffsetChangeListener(Float offset){
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange(offset));
     }
 
     @Override
