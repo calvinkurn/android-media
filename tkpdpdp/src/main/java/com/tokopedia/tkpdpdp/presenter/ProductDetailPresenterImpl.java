@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
@@ -315,6 +316,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
                             }
+                            validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
 
                         @Override
@@ -829,6 +831,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         } else {
                             data.getInfo().setHasVariant(false);
                         }
+                        validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
 
                     @Override
@@ -1081,5 +1084,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     }
                 }
         );
+    }
+
+    private void validateProductDataWithProductPassAndShowMessage(ProductDetailData data, ProductPass productPass, @NonNull Context context){
+        if(productPass == null)
+            return;
+        if(productPass.getDateTimeInMilis() != 0){
+            try {
+                Date date = new Date(productPass.getDateTimeInMilis());
+                String lastUpdate = data.getInfo().getProductLastUpdate().replace(" WIB","");
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy, HH:mm", Locale.ENGLISH);
+                Date lastUpdateDate = df.parse(lastUpdate);
+                if(lastUpdateDate.after(date)){
+                    viewListener.showToastMessage(context.getString(R.string.product_updated_on_message_container, lastUpdate));
+                }
+            }
+            catch (ParseException ex)
+            {
+                ex.printStackTrace();
+                return;
+            }
+        }
     }
 }

@@ -12,13 +12,18 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
@@ -67,30 +72,39 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithId(ImageView imageview, int resId, int placeholder) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(placeholder)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(placeholder)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(resId)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(drawable)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
 
@@ -169,7 +183,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(imageview);
         }
     }
@@ -267,23 +281,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url) {
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url) {
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String,GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
                     .override(30, 30)
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
@@ -293,7 +309,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .dontAnimate()
                 .into(imageview);
     }

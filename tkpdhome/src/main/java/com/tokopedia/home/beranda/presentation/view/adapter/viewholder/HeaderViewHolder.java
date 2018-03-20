@@ -30,10 +30,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(HeaderViewModel element) {
-        if (element.getHomeHeaderWalletActionData() == null && element.getTokoPointDrawerData() == null)
-            return;
         mainContainer.removeAllViews();
-        if (element.getType() == HeaderViewModel.TYPE_EMPTY) return;
         mainContainer.addView(new HeaderHomeView(itemView.getContext(), element, listener), 0);
     }
 }

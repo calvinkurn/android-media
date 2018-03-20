@@ -9,21 +9,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -59,17 +56,12 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private static final long DURATION_ANIMATOR = 1000;
 
-    @BindView(R.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R.id.main_content)
     RelativeLayout mainContent;
-
-    @BindView(R.id.partial_empty_wishlist)
     View wishlistNotLoggedIn;
+    Button btnLogin;
 
     @Inject
     FavoritePresenter favoritePresenter;
@@ -98,7 +90,12 @@ public class FragmentFavorite extends BaseDaggerFragment
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.index_favorite_recycler_view);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
+        mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
+        wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
+        btnLogin = parentView.findViewById(R.id.btn_login);
 
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();
@@ -114,13 +111,24 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         favoritePresenter.detachView();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (btnLogin != null) {
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -386,11 +394,5 @@ public class FragmentFavorite extends BaseDaggerFragment
                 }
             }
         }
-    }
-
-    @OnClick(R.id.login_button)
-    public void onLoginButtonClick() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        startActivity(intent);
     }
 }

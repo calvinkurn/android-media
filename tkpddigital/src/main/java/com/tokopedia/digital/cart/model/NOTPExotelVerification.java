@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 public class NOTPExotelVerification {
-    private static final int WAIT_SECONDS = 5;
+    private static final int WAIT_SECONDS = 10;
     private static NOTPExotelVerification mInstance = new NOTPExotelVerification();
     public static final String APPLICATION_ID = "2d3a8f96d9e7436a9a5f93cae8d5ddd3";
     public static final String ACCOUNT_SID ="tokopedianotp";
@@ -142,6 +142,7 @@ public class NOTPExotelVerification {
 
         List<SubscriptionInfo> subscriptionInfos = null;
         boolean result = true;
+        boolean isPhoneMatch = false;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
             if (subscriptionInfos != null) {
@@ -150,6 +151,7 @@ public class NOTPExotelVerification {
                     if (phoneNumber != null) {
                         result = false;
                         if (phoneNumber.isEmpty() || convertE164Fromat(phoneNumber).equals(number)) {
+                            isPhoneMatch = !phoneNumber.isEmpty();
                             result = true;
                             break;
                         }
@@ -160,8 +162,10 @@ public class NOTPExotelVerification {
             }
         }
         if(result) {
-            AnalyticsLog.printNOTPLog("NOTP Verification verification Number Exist in Phone or Empty "+ number);
+            AnalyticsLog.printNOTPLog("NOTP Verification  Number Exist in Phone"+ (isPhoneMatch?" Match  "+ number:"Empty "));
             NOTPTracking.eventNOTPConfiguration(false,false,true);
+        }else {
+            AnalyticsLog.printNOTPLog("NOTP Verification  Number not match");
 
         }
 

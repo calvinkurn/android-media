@@ -24,7 +24,6 @@ public interface FeedPlus {
 
         void finishLoadingProgress();
 
-
         interface Kol {
             void onGoToKolProfile(int page, int rowNumber, String url);
 
@@ -155,9 +154,9 @@ public interface FeedPlus {
 
         void onSeeAllRecentView();
 
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads);
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
 
-        void onShowEmpty(boolean canShowTopads);
+        void onShowEmpty();
 
         void clearData();
 
@@ -172,8 +171,6 @@ public interface FeedPlus {
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void showTopAds(boolean isTopAdsShown);
 
         void onEmptyOfficialStoreClicked();
 
@@ -195,6 +192,8 @@ public interface FeedPlus {
         void onUserNotLogin();
 
         void onGoToLogin();
+
+        int getAdapterListSize();
     }
 
     interface Presenter extends CustomerPresenter<View> {

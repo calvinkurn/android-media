@@ -5,24 +5,21 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.view.activity.UberSMSChatActivity;
 import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
@@ -176,21 +173,8 @@ public class DriverDetailFragment extends BaseFragment {
         }
 
         shareRideLayout.setVisibility(View.VISIBLE);
-        Glide.with(getActivity()).load(driver.getPictureUrl())
-                .asBitmap()
-                .centerCrop()
-                .error(R.drawable.default_user_pic_light)
-                .into(new BitmapImageViewTarget(driverImageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            RoundedBitmapDrawable roundedBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
-                            roundedBitmapDrawable.setCircular(true);
-                            driverImageView.setImageDrawable(roundedBitmapDrawable);
-                        }
-                    }
-                });
+
+        ImageHandler.loadCircleImageWithPlaceHolder(getActivity(), driverImageView, R.drawable.default_user_pic_light, driver.getPictureUrl());
 
         vehicleDetailTextView.setText(String.format("%s %s", vehicle.getMake(), vehicle.getVehicleModel()));
         vehiclePlateTextView.setText(vehicle.getLicensePlate());
@@ -205,7 +189,11 @@ public class DriverDetailFragment extends BaseFragment {
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
-        openSmsIntent(driver.getPhoneNumber());
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(UberSMSChatActivity.DRIVER_INFO, driver);
+        bundle.putParcelable(UberSMSChatActivity.VEHICLE_INFO, vehicle);
+        startActivity(UberSMSChatActivity.newInstance(getActivity(), bundle));
     }
 
     @NeedsPermission({Manifest.permission.CALL_PHONE})
@@ -213,14 +201,6 @@ public class DriverDetailFragment extends BaseFragment {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + phoneNumber));
         startActivity(callIntent);
-    }
-
-    public void openSmsIntent(String smsNumber) {
-        if (!TextUtils.isEmpty(smsNumber)) {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.fromParts("sms", smsNumber, null))
-            );
-        }
     }
 
     /**

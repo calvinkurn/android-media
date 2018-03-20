@@ -26,17 +26,23 @@ public interface FlightBookingContract {
 
         String getContactName();
 
+        void setContactName(String fullname);
+
         void showContactNameEmptyError(@StringRes int resId);
 
         void showContactNameInvalidError(@StringRes int resId);
 
         String getContactEmail();
 
+        void setContactEmail(String email);
+
         void showContactEmailEmptyError(@StringRes int resId);
 
         void showContactEmailInvalidError(@StringRes int resId);
 
         String getContactPhoneNumber();
+
+        void setContactPhoneNumber(String phone);
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
 
@@ -92,17 +98,29 @@ public interface FlightBookingContract {
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 
-        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
+        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel,
+                                           boolean isAirAsiaAirline, String departureDate,
+                                           String requestId);
 
         Observable<ProfileInfo> getProfileObservable();
 
-        void setContactName(String fullname);
+        void setContactBirthdate(String birthdate);
 
-        void setContactEmail(String email);
+        String getContactBirthdate();
 
-        void setContactPhoneNumber(String phone);
+        void setContactGender(int gender);
+
+        int getContactGender();
 
         void showContactEmailInvalidSymbolError(@StringRes int resId);
+
+        void navigateToOtpPage();
+
+        void closePage();
+
+        void setSameAsContactChecked(boolean isChecked);
+
+        Date getExpiredTransactionDate();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -129,8 +147,21 @@ public interface FlightBookingContract {
 
         void onPause();
 
-        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
+        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate);
 
         void onGetProfileData();
+
+        void initialize();
+
+        void onReceiveOtpSuccessResult();
+
+        void onReceiveOtpCancelResult();
+
+        void toggleSameAsContactCheckbox();
+
+        void onSameAsContactClicked(boolean navigateToPassengerInfo);
+
+        void deleteAllPassengerList();
+
     }
 }

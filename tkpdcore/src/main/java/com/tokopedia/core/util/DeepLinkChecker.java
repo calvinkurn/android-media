@@ -18,6 +18,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 
 import java.util.Arrays;
@@ -49,13 +50,19 @@ public class DeepLinkChecker {
     public static final int PELUANG = 16;
     public static final int DISCOVERY_PAGE = 17;
     public static final int FLIGHT = 18;
+    public static final int REFERRAL = 19;
+    public static final int TOKOPOINT = 20;
+    public static final int GROUPCHAT = 21;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
+    private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int getDeepLinkType(String url) {
+    public static int
+
+    getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();
@@ -68,6 +75,8 @@ public class DeepLinkChecker {
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;
+            else if (isGroupChat(linkSegment))
+                return GROUPCHAT;
             else if (isExcludedUrl(uriData))
                 return OTHER;
             else if (isFlight(linkSegment))
@@ -104,11 +113,19 @@ public class DeepLinkChecker {
                 return PRODUCT;
             else if (isShop(linkSegment))
                 return SHOP;
+            else if (isReferral(linkSegment))
+                return REFERRAL;
+            else if (isTokoPoint(linkSegment))
+                return TOKOPOINT;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
             return OTHER;
         }
+    }
+
+    private static boolean isGroupChat(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(GROUPCHAT_SEGMENT);
     }
 
     private static boolean isFlight(List<String> linkSegment) {
@@ -186,7 +203,8 @@ public class DeepLinkChecker {
                 && !isHot(linkSegment)
                 && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
-                && !isTopPicks(linkSegment));
+                && !isTopPicks(linkSegment))
+                && !isTokoPoint(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -195,7 +213,9 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("about")
                 && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl"));
+                && !linkSegment.get(0).equals("activation.pl")
+                && !linkSegment.get(0).equals("referral"))
+                && !isTokoPoint(linkSegment);
     }
 
     private static boolean isSearch(String url) {
@@ -204,6 +224,14 @@ public class DeepLinkChecker {
 
     private static boolean isEtalase(List<String> linkSegment) {
         return (linkSegment.size() == 3 && linkSegment.get(1).equals("etalase"));
+    }
+
+    private static boolean isReferral(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("referral"));
+    }
+
+    private static boolean isTokoPoint(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("tokopoints"));
     }
 
     public static String getQuery(String url, String q) {
@@ -318,6 +346,12 @@ public class DeepLinkChecker {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getShopPageIntentByDomain(context, getLinkSegment(url).get(0));
             MainApplication.getAppContext().startActivity(intent);
+        }
+    }
+
+    public static void openTokoPoint(Context context, String url) {
+        if (context.getApplicationContext() instanceof ILoyaltyRouter) {
+            ((ILoyaltyRouter) context.getApplicationContext()).openTokoPoint(context, url);
         }
     }
 

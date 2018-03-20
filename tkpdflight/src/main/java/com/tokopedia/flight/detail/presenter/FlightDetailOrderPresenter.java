@@ -179,7 +179,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             } else {
                 getView().setPaymentLabel(R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
-                getView().hideTotalTransfer();
+                if (flightOrder.getPayment().getTotalAmount() > 0) {
+                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getTotalAmount()));
+                } else {
+                    getView().hideTotalTransfer();
+                }
             }
 
             if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY

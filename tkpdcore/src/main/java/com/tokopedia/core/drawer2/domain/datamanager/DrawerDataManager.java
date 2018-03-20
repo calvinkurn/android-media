@@ -12,8 +12,6 @@ public interface DrawerDataManager {
 
     void getDeposit();
 
-    void getTopPoints();
-
     void getTokoCash();
 
     void getNotification();

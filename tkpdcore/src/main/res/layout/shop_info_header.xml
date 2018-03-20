@@ -72,7 +72,7 @@
                     <ImageView
                         android:layout_width="@dimen/img_thumb_s"
                         android:layout_height="@dimen/img_thumb_s"
-                        android:src="@drawable/ic_icon_repsis_medal_diamond"
+                        app:srcCompat="@drawable/ic_icon_repsis_medal_diamond"
                         android:visibility="invisible" />
                 </LinearLayout>
 
@@ -92,7 +92,7 @@
                     android:id="@id/gold_shop"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/ic_shop_gold"
+                    app:srcCompat="@drawable/ic_shop_gold"
                     android:visibility="invisible" />
 
                 <ImageView
@@ -129,7 +129,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_weight="1"
-                android:src="@drawable/icon_setting_white" />
+                app:srcCompat="@drawable/icon_setting_white" />
 
             <ImageView
                 android:id="@id/favorite"
@@ -140,7 +140,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_weight="1"
-                android:src="@drawable/icon_favorite_white" />
+                app:srcCompat="@drawable/icon_favorite_white" />
 
             <ImageView
                 android:id="@id/message"
@@ -151,7 +151,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_weight="1"
-                android:src="@drawable/icon_message_white" />
+                app:srcCompat="@drawable/icon_message_white" />
 
             <ImageView
                 android:id="@id/more"
@@ -162,7 +162,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_weight="1"
-                android:src="@drawable/icon_info_white" />
+                app:srcCompat="@drawable/icon_info_white" />
 
             <ImageView
                 android:id="@id/share_but"
@@ -173,7 +173,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
                 android:layout_weight="1"
-                android:src="@drawable/icon_share_white" />
+                app:srcCompat="@drawable/icon_share_white" />
 
         </LinearLayout>
 

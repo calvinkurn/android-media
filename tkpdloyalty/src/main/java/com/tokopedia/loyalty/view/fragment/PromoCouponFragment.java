@@ -203,7 +203,7 @@ public class PromoCouponFragment extends BasePresenterFragment
                 "Anda Tidak Memiliki Kupon",
                 "Tukar poin Anda dengan kupon di halaman TokoPoints.",
                 "",
-                R.drawable.ic_coupon_image, null);
+                R.drawable.ic_coupon_image_big, null);
     }
 
     @Override

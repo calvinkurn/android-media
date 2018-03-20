@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:background="@color/white"
+    android:clipToPadding="false">
+    <RelativeLayout
+        android:id="@+id/search_input_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_200">
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/search_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:siv_search_hint="@string/string_attach_product_search_placeholder_text"
+        android:layout_margin="10dp"
+        />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/send_button_attach_product_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="8dp">
+        <Button
+            android:textAllCaps="false"
+            android:id="@+id/send_button_attach_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_submit_button"
+            android:fontFamily="sans-serif-medium"
+            android:enabled="false"
+            android:background="@drawable/bg_button_green"/>
+    </LinearLayout>
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_input_container"
+        android:layout_above="@id/send_button_attach_product_container">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</RelativeLayout>

@@ -125,8 +125,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     }
                 })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BaseCartData>() {
                     @Override
@@ -142,6 +142,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                             getView().showUpdateDataErrorStateLayout(e);
                             if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
                                 getView().showExpireTransactionDialog();
+                            }else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))){
+                                getView().showSoldOutDialog();
                             }
                         }
                     }

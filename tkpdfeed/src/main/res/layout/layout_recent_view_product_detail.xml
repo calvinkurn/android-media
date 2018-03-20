@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/main_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/product_image"
@@ -24,7 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:elevation="5dp"
-        android:src="@drawable/wishlist_faved"
+        app:srcCompat="@drawable/wishlist_faved"
         android:visibility="invisible"/>
 
     <TextView
@@ -85,7 +86,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_badge_free_return"
+            app:srcCompat="@drawable/ic_badge_free_return"
             tools:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
@@ -120,7 +121,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_toRightOf="@id/product_image"
-            android:src="@drawable/ic_gold"
+            app:srcCompat="@drawable/ic_gold"
             android:visibility="gone"
 
             tools:visibility="visible"/>
@@ -133,7 +134,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_toRightOf="@id/gold_merchant"
-            android:src="@drawable/ic_official"
+            app:srcCompat="@drawable/ic_official"
             android:visibility="gone"
             tools:visibility="gone"/>
 
@@ -167,7 +168,7 @@
             android:layout_height="@dimen/small_badge_size"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_icon_location_grey"
+            app:srcCompat="@drawable/ic_icon_location_grey"
             android:visibility="visible"/>
 
         <TextView

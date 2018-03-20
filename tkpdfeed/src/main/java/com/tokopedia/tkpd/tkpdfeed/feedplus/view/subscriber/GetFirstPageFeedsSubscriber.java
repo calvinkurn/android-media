@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -28,7 +27,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
@@ -59,6 +58,8 @@ import java.util.List;
 
 import rx.Subscriber;
 
+import static com.tokopedia.core.gcm.Constants.Applinks.SHOP;
+
 /**
  * @author by nisie on 5/29/17.
  */
@@ -79,6 +80,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
     private static final String TYPE_FAVORITE_CTA = "favorite_cta";
+    private static final String SHOP_ID_BRACKETS = "{shop_id}";
 
     private final int page;
 
@@ -127,10 +129,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             addMainData(listFeedView, feedDomain, feedResult);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            viewListener.onShowEmptyWithRecentView(listFeedView,
-                    checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmptyWithRecentView(listFeedView);
         } else
-            viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmpty();
 
 
         if (hasFeed(feedDomain)) {
@@ -149,10 +150,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         checkCanLoadNext(feedResult, listFeedView);
     }
 
-    private boolean checkCanShowTopads(int dataSource) {
-        return dataSource == FeedResult.SOURCE_CLOUD;
-    }
-
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
         if (hasFeed(feedResult.getFeedDomain())
@@ -160,7 +157,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
         } else {
-            viewListener.showTopAds(checkCanShowTopads(feedResult.getDataSource()));
             viewListener.onSuccessGetFeedFirstPage(listFeedView);
         }
     }
@@ -225,9 +221,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
+        String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
+        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
         int positionFeedProductCard = cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
+                int currentPosition = viewListener.getAdapterListSize() + listFeedView.size();
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
                         if (domain.getContent().getOfficialStores() != null
@@ -258,11 +257,27 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(model);
 
                             FeedTracking.eventImpressionFeedUploadedProduct(
-                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
+                                    model.getListProductAsObjectDataLayer(
+                                            eventLabel, loginIdString, positionFeedProductCard),
                                     eventLabel
                             );
                             cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
                             cache.applyEditor();
+
+                            String shopId = String.valueOf(model.getHeader().getShopId());
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                            list.add(new FeedEnhancedTracking.Promotion(
+                                    model.getHeader().getShopId(),
+                                    FeedEnhancedTracking.Promotion.createContentNameProductUpload(
+                                            model.getTotalProduct()),
+                                    String.valueOf(model.getTotalProduct()),
+                                    currentPosition,
+                                    "-",
+                                    model.getHeader().getShopId(),
+                                    SHOP.replace(SHOP_ID_BRACKETS, shopId)
+                            ));
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
                         }
                         break;
                     case TYPE_PROMOTION:
@@ -290,7 +305,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
 
                             FeedTracking.eventImpressionFeedInspiration(
-                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
+                                    inspirationViewModel.getListProductAsObjectDataLayer(
+                                            eventLabel, loginIdString, positionFeedProductCard),
                                     eventLabel
                             );
                             cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
@@ -298,6 +314,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_TOPADS:
+                        if (domain.getContent() != null
+                                && domain.getContent().getTopAdsList() != null
+                                && !domain.getContent().getTopAdsList().isEmpty()) {
+                            FeedTopAdsViewModel feedTopAdsViewModel =
+                                    new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
+                            listFeedView.add(feedTopAdsViewModel);
+                        }
                         break;
                     case TYPE_KOL_FOLLOWED:
                     case TYPE_KOL:
@@ -306,10 +329,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             KolViewModel kolViewModel = convertToKolViewModel(domain);
                             listFeedView.add(kolViewModel);
 
-                            List<KolTracking.Promotion> list = new ArrayList<>();
-                            list.add(new KolTracking.Promotion(
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                            list.add(new FeedEnhancedTracking.Promotion(
                                     kolViewModel.getId(),
-                                    KolTracking.Promotion.createContentName(
+                                    FeedEnhancedTracking.Promotion.createContentName(
                                             kolViewModel.getTagsType(),
                                             kolViewModel.getCardType())
                                     ,
@@ -319,8 +342,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     kolViewModel.getContentId(),
                                     kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
                             ));
-                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking
-                                    (list, Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
                         }
                         break;
                     case TYPE_KOL_RECOMMENDATION:
@@ -334,11 +357,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
                             listFeedView.add(kolRecommendationViewModel);
 
-                            List<KolTracking.Promotion> list = new ArrayList<>();
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             for (KolRecommendItemViewModel recItem : kolRecommendationViewModel.getListRecommend()) {
-                                list.add(new KolTracking.Promotion(
+                                list.add(new FeedEnhancedTracking.Promotion(
                                         recItem.getId(),
-                                        KolTracking.Promotion.createContentNameRecommendation(),
+                                        FeedEnhancedTracking.Promotion.createContentNameRecommendation(),
                                         recItem.getName().equals("") ? "-" : recItem.getName(),
                                         listFeedView.size(),
                                         recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
@@ -346,9 +369,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                         recItem.getUrl().equals("") ? "-" : recItem.getUrl()
                                 ));
                             }
-                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
-                                    .getKolImpressionTracking(list,
-                                            Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+                            TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
+                                    .getImpressionTracking(list,
+                                            loginIdInt));
                         }
                         break;
                     case TYPE_FAVORITE_CTA:
@@ -372,11 +395,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                 }
             }
-
-    }
-
-    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
-        return new FeedTopAdsViewModel(page);
     }
 
     private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
