@@ -112,6 +112,7 @@
                 android:id="@+id/add_new_shipment_address_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:padding="16dp">
 
@@ -119,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Tambah Pengiriman Baru"
+                    android:text="@string/label_add_new_shipment"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="12sp" />
 

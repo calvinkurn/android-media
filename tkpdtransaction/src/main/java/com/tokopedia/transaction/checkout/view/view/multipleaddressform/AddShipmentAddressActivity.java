@@ -57,6 +57,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private ViewGroup chooseAddressButton;
     private ViewGroup quantityErrorLayout;
     private TextView quantityErrorTextView;
+    private TextView notesErrorWarningTextView;
 
     @Inject
     IAddShipmentAddressPresenter presenter;
@@ -143,7 +144,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private void showAddressLayout() {
         addressLayout.setVisibility(View.VISIBLE);
         chooseAddressButton.setVisibility(View.GONE);
-        saveChangesButton.setVisibility(View.VISIBLE);
+        setEditButtonVisibility(quantityField.getText(), presenter.getMultipleItemData());
     }
 
     private void setAddressView(MultipleAddressItemData itemData) {
@@ -177,6 +178,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         notesLayout = findViewById(R.id.notes_layout);
         notesEditText = findViewById(R.id.notes_edit_text);
         notesEditText.addTextChangedListener(notesTextWatcher(itemData));
+        notesErrorWarningTextView = findViewById(R.id.note_error_warning);
         if (itemData.getProductNotes().isEmpty()) {
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
@@ -303,11 +305,15 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 quantityErrorLayout.setVisibility(View.VISIBLE);
                 quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                         .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
-            } else if (!addressLayout.isShown()) {
-                saveChangesButton.setVisibility(View.GONE);
             } else {
                 quantityErrorLayout.setVisibility(View.GONE);
-                if (!addAddressErrorTextView.isShown()) {
+            }
+
+            if (!addressLayout.isShown()) {
+                saveChangesButton.setVisibility(View.GONE);
+            } else {
+                if (!addAddressErrorTextView.isShown() && !notesErrorWarningTextView.isShown() &&
+                        !quantityErrorLayout.isShown()) {
                     saveChangesButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -319,13 +325,13 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             MultipleAddressItemData data
     ) {
         if (notes.length() > data.getMaxRemark()) {
-            addAddressErrorTextView.setVisibility(View.VISIBLE);
-            addAddressErrorTextView.setText(data.getErrorFieldMaxChar()
+            notesErrorWarningTextView.setVisibility(View.VISIBLE);
+            notesErrorWarningTextView.setText(data.getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(data.getMaxRemark())));
             saveChangesButton.setVisibility(View.GONE);
         } else {
-            addAddressErrorTextView.setVisibility(View.GONE);
-            if (!quantityErrorLayout.isShown()) {
+            notesErrorWarningTextView.setVisibility(View.GONE);
+            if (!quantityErrorLayout.isShown() && !addAddressErrorTextView.isShown()) {
                 saveChangesButton.setVisibility(View.VISIBLE);
             }
         }
