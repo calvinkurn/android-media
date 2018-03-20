@@ -183,7 +183,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
             int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
             for (int j = 0; j < numOfColumns; j++) {
                 if (seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo() != 0) {
-                    customSeatAreaLayout.addColumn(String.valueOf(seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo()),
+                    customSeatAreaLayout.addColumn(String.valueOf(seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getActualSeat()),
                             seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
                             maxTickets, rowId, currentChar);
                 } else {
@@ -246,7 +246,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
-    public void initializeSeatLayoutModel(List<String> selectedSeatTextList, List<String> rowIds) {
+    public void initializeSeatLayoutModel(List<String> selectedSeatTextList, List<String> rowIds, List<String> actualSeats) {
         selectedSeats = selectedSeatTextList;
         this.rowIds = rowIds;
         selectedSeatViewModel.setAreaCodes(areacodes);
@@ -256,6 +256,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
         selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
+        selectedSeatViewModel.setActualSeatNos(actualSeats);
     }
 
     @Override

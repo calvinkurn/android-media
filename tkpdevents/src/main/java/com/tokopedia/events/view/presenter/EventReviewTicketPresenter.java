@@ -191,6 +191,7 @@ public class EventReviewTicketPresenter
             packageItem.setQuantity(selectedSeatViewModel.getQuantity());
             packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
             packageItem.setAreaId(selectedSeatViewModel.getAreaId());
+            packageItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
         } else {
             packageItem.setAreaCode(new ArrayList<String>());
             packageItem.setSeatId(new ArrayList<String>());
@@ -199,6 +200,7 @@ public class EventReviewTicketPresenter
             packageItem.setSeatPhysicalRowId(new ArrayList<String>());
             packageItem.setQuantity(packageViewModel.getSelectedQuantity());
             packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
+            packageItem.setActualSeatNos(new ArrayList<String>());
         }
         packageItem.setDescription(packageViewModel.getDescription());
 

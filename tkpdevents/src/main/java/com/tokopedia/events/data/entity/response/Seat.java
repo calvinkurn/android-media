@@ -14,6 +14,9 @@ public class Seat {
     @SerializedName("status")
     @Expose
     private int status;
+    @SerializedName("ActualSeat")
+    @Expose
+    private int ActualSeat;
 
     public String getAreaId() {
         return areaId;
@@ -37,6 +40,15 @@ public class Seat {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+
+    public int getActualSeat() {
+        return ActualSeat;
+    }
+
+    public void setActualSeat(int actualSeat) {
+        this.ActualSeat = actualSeat;
     }
 
 }

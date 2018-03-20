@@ -24,6 +24,8 @@ public class SelectedSeatViewModel implements Parcelable {
 
     private List<String> physicalRowIds;
 
+    private List<String> actualSeatNos;
+
     private String areaId;
 
 
@@ -73,6 +75,14 @@ public class SelectedSeatViewModel implements Parcelable {
 
     public void setPhysicalRowIds(List<String> physicalRowIds) {
         this.physicalRowIds = physicalRowIds;
+    }
+
+    public List<String> getActualSeatNos() {
+        return actualSeatNos;
+    }
+
+    public void setActualSeatNos(List<String> actualSeatNos) {
+        this.actualSeatNos = actualSeatNos;
     }
 
     public String getAreaId() {
