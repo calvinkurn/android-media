@@ -1,84 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/digital_padding_16">
-
-    <TextView
-        android:id="@+id/tv_title_category"
-        style="@style/TextTitleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
-        android:paddingBottom="@dimen/digital_padding_16"
-        tools:text="Beli Pulsa" />
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/digital_padding_16"
+        android:paddingLeft="@dimen/digital_padding_16"
+        android:paddingRight="@dimen/digital_padding_16"
+        android:paddingStart="@dimen/digital_padding_16"
+        android:paddingTop="@dimen/digital_padding_16">
 
-    <LinearLayout
-        android:id="@+id/holder_chooser_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/holder_additional_info_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/holder_price_info_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <RelativeLayout
-        android:id="@+id/layout_checkout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/digital_padding_16"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <CheckBox
-            android:id="@+id/cb_instant_checkout"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_title_category"
+            style="@style/TextTitleLarge"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/label_instant_payment_digital"
-            android:textColor="@color/checkbox_text"
-            android:textSize="@dimen/fontvs" />
+            android:paddingBottom="@dimen/digital_padding_16"
+            android:paddingEnd="@null"
+            android:paddingLeft="@dimen/padding_vvs"
+            android:paddingRight="@null"
+            android:paddingStart="@dimen/padding_vvs"
+            tools:text="Beli Pulsa" />
 
-        <ImageView
-            android:id="@+id/tooltip_instant_checkout"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/holder_client_number"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_toRightOf="@+id/cb_instant_checkout"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/info_icon" />
+            android:orientation="vertical" />
 
-    </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/holder_chooser_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/holder_additional_info_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/holder_price_info_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <RelativeLayout
+            android:id="@+id/layout_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/digital_padding_16"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <CheckBox
+                android:id="@+id/cb_instant_checkout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/label_instant_payment_digital"
+                android:textColor="@color/checkbox_text"
+                android:textSize="@dimen/fontvs" />
+
+            <ImageView
+                android:id="@+id/tooltip_instant_checkout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_toRightOf="@+id/cb_instant_checkout"
+                app:srcCompat="@drawable/info_icon" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/btn_buy_digital"
-        style="@style/DigitalButtonBuy"
+        style="@style/Button.Submit.Orange"
         android:layout_height="@dimen/btn_height"
+        android:layout_marginBottom="@dimen/digital_padding_16"
+        android:layout_marginTop="@dimen/digital_padding_16"
         android:layout_weight="0.40"
-        android:layout_marginBottom="@dimen/padding_med"
-        android:layout_marginTop="@dimen/digital_padding_28"
-        android:text="@string/label_btn_buy_digital"/>
+        android:text="@string/label_btn_buy_digital" />
 
 </LinearLayout>
