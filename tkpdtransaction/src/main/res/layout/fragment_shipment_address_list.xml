@@ -45,6 +45,61 @@
             android:orientation="vertical"
             android:visibility="gone" />
 
+        <LinearLayout
+            android:id="@+id/ll_no_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:src="@drawable/ic_empty_search" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="0sp"
+                android:text="@string/label_oops"
+                android:textColor="@color/black_54"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="5sp"
+                android:text="@string/message_address_not_found"
+                android:textColor="@color/black_38"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/bt_change_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_button_green_enabled"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="0sp"
+                android:paddingLeft="27dp"
+                android:paddingRight="27dp"
+                android:text="@string/label_button_change_search"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
     </FrameLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

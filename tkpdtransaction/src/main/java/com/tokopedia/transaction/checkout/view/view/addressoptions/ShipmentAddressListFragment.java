@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +55,9 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     SearchInputView mSvAddressSearchBox;
     SwipeToRefresh swipeToRefreshLayout;
     LinearLayout llNetworkErrorView;
+    LinearLayout llNoResult;
     RelativeLayout rlContent;
+    Button btChangeSearch;
 
     InputMethodManager mInputMethodManager;
     ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
@@ -167,7 +170,15 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
         swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        llNoResult = view.findViewById(R.id.ll_no_result);
         rlContent = view.findViewById(R.id.rl_content);
+        btChangeSearch = view.findViewById(R.id.bt_change_search);
+        btChangeSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSearchReset();
+            }
+        });
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -215,12 +226,16 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     public void showListEmpty() {
         mShipmentAddressListAdapter.setAddressList(new ArrayList<RecipientAddressModel>());
         mShipmentAddressListAdapter.notifyDataSetChanged();
+        rlContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        llNoResult.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showError(String message) {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
+        llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setEnabled(true);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -242,6 +257,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     public void hideLoading() {
         rlContent.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
+        llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(false);
         swipeToRefreshLayout.setEnabled(false);
     }

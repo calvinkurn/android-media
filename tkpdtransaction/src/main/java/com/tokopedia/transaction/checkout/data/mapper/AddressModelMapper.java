@@ -43,8 +43,10 @@ public class AddressModelMapper {
 
     public List<RecipientAddressModel> transform(List<AddressModel> addressModels) {
         List<RecipientAddressModel> recipientAddressModels = new ArrayList<>();
-        for (AddressModel addressModel : addressModels) {
-            recipientAddressModels.add(transform(addressModel));
+        if (addressModels != null) {
+            for (AddressModel addressModel : addressModels) {
+                recipientAddressModels.add(transform(addressModel));
+            }
         }
 
         return recipientAddressModels;
