@@ -184,7 +184,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                 getView().setUIMarkFilter();
                                 getView().setNeedRefreshFromCache(false);
                             }
-                            getView().loadInitialData();
+                            getView().actionFetchFlightSearchData();
                         }
                     }
                 });
