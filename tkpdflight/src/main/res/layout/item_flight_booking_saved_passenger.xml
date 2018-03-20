@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/image_passenger_delete"
+        android:layout_toStartOf="@+id/image_passenger_delete"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_passenger_name"
+            style="@style/TextView.Small.Bold"
+            android:layout_marginRight="@dimen/margin_vs"
+            tools:text="Tn. Karaeng Adjie" />
+
+        <TextView
+            android:id="@+id/tv_default"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:text="(utama)" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_passenger_delete"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_toLeftOf="@+id/image_passenger_edit"
+        android:layout_toStartOf="@+id/image_passenger_edit"
+        android:padding="@dimen/padding_vvs"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_flight_delete" />
+
+    <ImageView
+        android:id="@+id/image_passenger_edit"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:padding="@dimen/padding_vvs"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_flight_edit" />
+
+</RelativeLayout>

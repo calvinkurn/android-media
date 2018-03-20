@@ -28,65 +28,27 @@ import java.util.Map;
 public class ScreenTracking extends TrackingUtils {
 
     private static final String TAG = ScreenTracking.class.getSimpleName();
-    private static final String AF_UNAVAILABLE_VALUE = "none";
 
     public interface IOpenScreenAnalytics {
         String getScreenName();
     }
-    public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics){
-        ScreenTracking.OpenScreenTracking openScreenTracking = ScreenTracking
-                .OpenScreenTracking
-                .newInstance(activity, openScreenAnalytics);
-        openScreenTracking.execute();
-    }
 
-    private static class OpenScreenTracking {
-        private IOpenScreenAnalytics mOpenScreenAnalytics;
-        Authenticated authEvent;
-        Activity mActivity;
-
-        public static OpenScreenTracking newInstance(Activity activity,
-                                                     IOpenScreenAnalytics openScreenAnalytics) {
-            return new OpenScreenTracking(activity, openScreenAnalytics);
-        }
-
-        OpenScreenTracking(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
-            this.mOpenScreenAnalytics = openScreenAnalytics;
-            this.mActivity = activity;
-            authEvent = new Authenticated();
-            authEvent.setUserFullName(SessionHandler.getLoginName(activity));
-            authEvent.setUserID(SessionHandler.getGTMLoginID(activity));
-            authEvent.setShopID(SessionHandler.getShopID(activity));
-            authEvent.setUserSeller(SessionHandler.isUserHasShop(activity) ? 1 : 0);
-            authEvent.setAfUniqueId(getAfUniqueId() != null? getAfUniqueId() : AF_UNAVAILABLE_VALUE);
-
-            if(activity.getClass().getSimpleName().equals("ParentIndexHome")){
-                authEvent.setNetworkSpeed(TrackingUtils.getNetworkSpeed(activity));
-            }
-
-        }
-
-        public void execute() {
-            if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
-                ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
-            } else {
-                ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
-            }
+    public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
+        try {
+            ScreenTrackingBuilder
+                    .newInstance(activity, openScreenAnalytics, getAfUniqueId())
+                    .execute();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static void screen(String screen){
         if(TextUtils.isEmpty(screen)){
-            try {
-                throw new Exception("Fragment ScreenName cannot null");
-            } catch (Exception e) {
-                e.printStackTrace();
-                screen = "Default Fragment Name";
-            }
+            screen = "Default Fragment Name";
         }
 
-        getGTMEngine()
-                .sendScreen(screen);
+        getGTMEngine().sendScreen(screen);
     }
 
     public static void sendAFGeneralScreenEvent(String screenName){

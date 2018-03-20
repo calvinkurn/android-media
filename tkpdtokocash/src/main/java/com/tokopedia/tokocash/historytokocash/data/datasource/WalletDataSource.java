@@ -1,11 +1,8 @@
 package com.tokopedia.tokocash.historytokocash.data.datasource;
 
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
-import com.tokopedia.tokocash.historytokocash.data.entity.OAuthInfoEntity;
-import com.tokopedia.tokocash.historytokocash.data.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
-import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +15,11 @@ import rx.Observable;
 
 public interface WalletDataSource {
 
-    Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, Object> mapParams);
+    Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, String> mapParams);
 
     Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData();
 
-    Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId);
+    Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams);
 
-    Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory);
-
-    Observable<OAuthInfoEntity> getOAuthInfo();
-
-    Observable<Boolean> unlinkAccountTokoCash(String refreshToken, String identifier, String identifierType);
+    Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);
 }

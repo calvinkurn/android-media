@@ -27,4 +27,17 @@ public class FlightSelectPassengerValidator {
     public boolean validateAdultCountAtleastOne(FlightPassengerViewModel passengerPassData) {
         return passengerPassData.getAdult() > 0;
     }
+
+    public boolean validateTotalPassenger(int adult, int children) {
+        int total = adult + children;
+        return total <= MAX_PASSENGER_VALUE;
+    }
+
+    public boolean validateInfantNotGreaterThanAdult(int adult, int infant) {
+        return infant <= adult;
+    }
+
+    public boolean validateAdultCountAtleastOne(int adult) {
+        return adult > 0;
+    }
 }

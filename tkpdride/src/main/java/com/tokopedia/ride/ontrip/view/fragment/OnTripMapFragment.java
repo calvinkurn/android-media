@@ -416,7 +416,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
             if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString(GetOverviewPolylineUseCase.PARAM_WAYPOINTS, String.format("%s,%s",
@@ -445,7 +445,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
         return requestParams;
     }
@@ -564,10 +564,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                 if (data != null) {
                     PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
-                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
-                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                    if (destinationTemp == null || destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
+                    } else if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
                     } else {
                         //update destination
                         changedDestination = destinationTemp;

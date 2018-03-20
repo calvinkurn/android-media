@@ -4,10 +4,7 @@ package com.tokopedia.core.drawer2.data.pojo.topcash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * @author kulomady on 11/08/16
@@ -22,6 +19,9 @@ public class Action implements Parcelable {
     private String mAppLinks;
     @SerializedName("visibility")
     private String mVisibility;
+
+    public Action() {
+    }
 
     protected Action(Parcel in) {
         mRedirectUrl = in.readString();
@@ -49,23 +49,6 @@ public class Action implements Parcelable {
 
     public void setRedirectUrl(String redirect_url) {
         mRedirectUrl = redirect_url;
-    }
-
-    public String getText() {
-        return mText;
-    }
-
-    public void setText(String text) {
-        mText = text;
-    }
-
-
-    public String getmRedirectUrl() {
-        return mRedirectUrl;
-    }
-
-    public void setmRedirectUrl(String mRedirectUrl) {
-        this.mRedirectUrl = mRedirectUrl;
     }
 
     public String getmText() {

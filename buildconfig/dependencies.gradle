@@ -6,7 +6,7 @@ ext {
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
-    permissionDispatcherVersion = '2.2.0'
+    permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'
@@ -29,7 +29,7 @@ ext {
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
-    buildToolsVersion = "25.0.0"
+    buildToolsVersion = "26.0.2"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
@@ -145,7 +145,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
@@ -200,7 +200,41 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12"
+    ]
+
+    features = [
+            loyalty         : ":tkpdloyalty",
+            ride            : ":tkpdride",
+            feed            : ":tkpdfeed",
+            digital         : ":tkpddigital",
+            core            : ":tkpdcore",
+            inbox           : ":tkpdinbox",
+            discovery       : ":tkpddiscovery",
+            transaction     : ":tkpdtransaction",
+            session         : ":tkpdsession",
+            topAdsSdk       : ":tkpdtopadssdk",
+            payment         : ":features:payment:payment",
+            productDetail   : ":tkpdpdp",
+            seller          : ":tkpdseller",
+            topAdsManagement: ":tkpdtopads",
+            goldMerchant    : ":features:merchant:gold_merchant",
+            reputation      : ":features:merchant:reputation",
+            tokoCash        : ":tkpdtokocash",
+            useCase         : ":tkpdusecase",
+            flight          : ":tkpdflight",
+            flightNoOp      : ":features:digital:flight_no_op",
+            mitraToppers    : ":features:fintech:mitra_toppers",
+            event           : ":tkpdevents",
+            home            : ":tkpdhome",
+            content         : ":tkpdcontent"
+    ]
+
+    libraries = [
+            design          : ":tkpddesign",
+            abstraction     : ":tkpdabstraction",
+            cacheApi        : ":tkpdcacheapi",
+            reactNative     : ":libraries:react_native"
     ]
 
 }

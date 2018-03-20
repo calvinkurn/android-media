@@ -27,6 +27,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -34,8 +35,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
-
-import rx.Subscriber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -139,7 +138,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = SellerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
-        TkpdBaseURL.CLOVER_DOMAIN = SellerAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
@@ -170,6 +168,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
+        DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -197,4 +196,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 cacheApiWhiteListDomains,
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
+
+
 }

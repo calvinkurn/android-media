@@ -32,7 +32,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_keyboard_attachment" />
+                app:srcCompat="@drawable/ic_keyboard_attachment" />
 
             <EditText
                 android:id="@+id/et_chat"
@@ -53,7 +53,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_keyboard_send" />
+                app:srcCompat="@drawable/ic_keyboard_send" />
         </LinearLayout>
     </FrameLayout>
 
@@ -120,7 +120,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_med"
-        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+        app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
         android:tint="@color/white"
         android:background="@color/tkpd_main_green"
         app:backgroundTint="@color/tkpd_main_green"

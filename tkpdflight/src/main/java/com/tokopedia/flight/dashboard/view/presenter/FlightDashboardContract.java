@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
@@ -79,6 +80,14 @@ public interface FlightDashboardContract {
         String getInfantPassengerArguments();
 
         String getClassArguments();
+
+        FlightDashboardPassDataViewModel getDashboardPassData();
+
+        void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel);
+
+        void hideProgressBar();
+
+        void showFormContainer();
     }
 
     interface Presenter extends CustomerPresenter<View> {

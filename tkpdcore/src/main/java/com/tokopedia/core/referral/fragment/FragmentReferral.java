@@ -16,6 +16,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
@@ -25,6 +27,7 @@ import com.tokopedia.core.referral.listener.ReferralView;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
 import javax.inject.Inject;
@@ -56,6 +59,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     private ProgressDialog progressBar;
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
+    public static final int LOGIN_REQUEST_CODE=1012;
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -176,7 +180,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
                 if (presenter.isAppShowReferralButtonActivated()) {
                     UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
                 } else {
-                    UnifyTracking.eventAppShare();
+                    UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.CLICK,AppEventTracking.EventLabel.APP_SHARE_LABEL);
                 }
             }
         };
@@ -202,7 +206,8 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     public void navigateToLoginPage() {
-
+        Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
+        startActivityForResult(intent,LOGIN_REQUEST_CODE);
     }
 
     @Override
@@ -226,6 +231,12 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
                 default:
                     presenter.initialize();
                     break;
+            }
+        } else if (requestCode == LOGIN_REQUEST_CODE) {
+            if (!SessionHandler.isV4Login(getActivity())) {
+                closeView();
+            } else {
+                presenter.initialize();
             }
         }
     }
