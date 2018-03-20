@@ -63,7 +63,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_status")
     @Expose
-    private int productStatus; // Product Status (Active=1, Warehouse=3, Pending=-1)
+    private int productStatus = StockTypeDef.TYPE_ACTIVE; // Product Status (Active=1, Warehouse=3, Pending=-1)
 
     @SerializedName("product_stock")
     @Expose
