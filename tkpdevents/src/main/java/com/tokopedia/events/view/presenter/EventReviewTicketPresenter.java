@@ -323,6 +323,7 @@ public class EventReviewTicketPresenter
                             entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
                             entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
                             entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
                         }
                         paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
                         getPaymentLink();

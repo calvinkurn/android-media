@@ -93,6 +93,9 @@ public class SelectedSeatViewModel implements Parcelable {
         this.areaId = areaId;
     }
 
+    public SelectedSeatViewModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -106,10 +109,8 @@ public class SelectedSeatViewModel implements Parcelable {
         dest.writeStringList(this.seatIds);
         dest.writeStringList(this.seatRowIds);
         dest.writeStringList(this.physicalRowIds);
+        dest.writeStringList(this.actualSeatNos);
         dest.writeString(this.areaId);
-    }
-
-    public SelectedSeatViewModel() {
     }
 
     protected SelectedSeatViewModel(Parcel in) {
@@ -119,10 +120,11 @@ public class SelectedSeatViewModel implements Parcelable {
         this.seatIds = in.createStringArrayList();
         this.seatRowIds = in.createStringArrayList();
         this.physicalRowIds = in.createStringArrayList();
+        this.actualSeatNos = in.createStringArrayList();
         this.areaId = in.readString();
     }
 
-    public static final Parcelable.Creator<SelectedSeatViewModel> CREATOR = new Parcelable.Creator<SelectedSeatViewModel>() {
+    public static final Creator<SelectedSeatViewModel> CREATOR = new Creator<SelectedSeatViewModel>() {
         @Override
         public SelectedSeatViewModel createFromParcel(Parcel source) {
             return new SelectedSeatViewModel(source);
