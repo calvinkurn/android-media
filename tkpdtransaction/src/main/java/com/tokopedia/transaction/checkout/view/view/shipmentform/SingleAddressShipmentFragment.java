@@ -600,7 +600,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();
                 intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-                        mSingleAddressShipmentAdapter.getSelectedAddressReceipent());
+                        mSingleAddressShipmentAdapter.getSelectedAddressRecipient());
                 cartShipmentActivityListener.closeWithResult(
                         CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                 break;
