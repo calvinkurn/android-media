@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.tkpdtrain.search.data.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainReturnSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;

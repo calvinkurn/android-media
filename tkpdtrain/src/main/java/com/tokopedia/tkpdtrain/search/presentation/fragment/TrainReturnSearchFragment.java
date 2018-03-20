@@ -10,15 +10,13 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.common.di.utils.TrainComponentUtils;
 import com.tokopedia.tkpdtrain.common.util.TrainDateUtil;
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.tkpdtrain.search.data.ScheduleTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.di.DaggerTrainSearchComponent;
-import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainReturnSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.contract.TrainSearchReturnContract;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.tkpdtrain.search.presentation.presenter.TrainReturnSearchPresenter;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

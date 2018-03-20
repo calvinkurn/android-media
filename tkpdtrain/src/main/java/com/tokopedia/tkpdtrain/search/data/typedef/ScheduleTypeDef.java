@@ -1,9 +1,9 @@
-package com.tokopedia.tkpdtrain.search.data;
+package com.tokopedia.tkpdtrain.search.data.typedef;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.tkpdtrain.search.data.ScheduleTypeDef.DEPARTURE_SCHEDULE;
-import static com.tokopedia.tkpdtrain.search.data.ScheduleTypeDef.RETURN_SCHEDULE;
+import static com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef.DEPARTURE_SCHEDULE;
+import static com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef.RETURN_SCHEDULE;
 
 /**
  * Created by nabillasabbaha on 3/14/18.

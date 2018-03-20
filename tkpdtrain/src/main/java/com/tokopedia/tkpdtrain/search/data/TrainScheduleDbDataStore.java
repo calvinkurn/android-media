@@ -15,6 +15,8 @@ import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainScheduleEntity;
+import com.tokopedia.tkpdtrain.search.data.typedef.AvailabilityTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.ScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 

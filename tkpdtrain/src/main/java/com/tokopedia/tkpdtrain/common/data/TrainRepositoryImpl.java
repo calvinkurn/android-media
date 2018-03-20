@@ -2,9 +2,9 @@ package com.tokopedia.tkpdtrain.common.data;
 
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
-import com.tokopedia.tkpdtrain.search.data.TrainDetailScheduleSpecification;
+import com.tokopedia.tkpdtrain.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
-import com.tokopedia.tkpdtrain.search.data.TrainScheduleSpecification;
+import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.domain.FilterParam;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;

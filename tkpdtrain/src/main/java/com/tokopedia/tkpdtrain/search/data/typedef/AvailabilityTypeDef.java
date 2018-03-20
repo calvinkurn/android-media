@@ -1,8 +1,8 @@
-package com.tokopedia.tkpdtrain.search.data;
+package com.tokopedia.tkpdtrain.search.data.typedef;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.tkpdtrain.search.data.AvailabilityTypeDef.DEFAULT_VALUE;
+import static com.tokopedia.tkpdtrain.search.data.typedef.AvailabilityTypeDef.DEFAULT_VALUE;
 
 /**
  * Created by nabillasabbaha on 3/14/18.

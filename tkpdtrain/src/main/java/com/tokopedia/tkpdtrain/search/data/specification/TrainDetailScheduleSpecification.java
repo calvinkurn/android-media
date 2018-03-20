@@ -1,26 +1,25 @@
-package com.tokopedia.tkpdtrain.search.data;
+package com.tokopedia.tkpdtrain.search.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.tkpdtrain.common.specification.DbFlowSpecification;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 
 /**
- * @author Rizky on 14/03/18.
+ * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainScheduleClassFilterSpecification implements DbFlowSpecification {
+public class TrainDetailScheduleSpecification implements DbFlowSpecification {
 
-    private String trainClass;
+    private String idSchedule;
 
-    public TrainScheduleClassFilterSpecification(String trainClass) {
-        this.trainClass = trainClass;
+    public TrainDetailScheduleSpecification(String idSchedule) {
+        this.idSchedule = idSchedule;
     }
 
     @Override
     public ConditionGroup getCondition() {
         ConditionGroup conditions = ConditionGroup.clause();
-        conditions.and(TrainScheduleDbTable_Table.train_class.eq(trainClass));
+        conditions.and(TrainScheduleDbTable_Table.schedule_id.eq(idSchedule));
         return conditions;
     }
-
 }
