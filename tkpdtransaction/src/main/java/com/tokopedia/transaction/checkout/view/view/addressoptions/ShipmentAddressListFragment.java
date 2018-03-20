@@ -268,7 +268,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
         mSvAddressSearchBox.setListener(this);
         mSvAddressSearchBox.setResetListener(this);
-        mSvAddressSearchBox.setSearchHint("Cari Nama Penerima/Alamat/Kota");
+        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
     }
 
     private View.OnTouchListener onSearchViewTouchListener() {
