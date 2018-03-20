@@ -26,9 +26,11 @@ public class TrainSearchPassDataViewModel implements Parcelable {
     private String destinationCityName;
     private int adult;
     private int infant;
+    private boolean isOneWay;
 
     public TrainSearchPassDataViewModel() {
     }
+
 
     protected TrainSearchPassDataViewModel(Parcel in) {
         departureDate = in.readString();
@@ -39,6 +41,20 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         destinationCityName = in.readString();
         adult = in.readInt();
         infant = in.readInt();
+        isOneWay = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(departureDate);
+        dest.writeString(returnDate);
+        dest.writeString(originStationCode);
+        dest.writeString(destinationStationCode);
+        dest.writeString(originCityName);
+        dest.writeString(destinationCityName);
+        dest.writeInt(adult);
+        dest.writeInt(infant);
+        dest.writeByte((byte) (isOneWay ? 1 : 0));
     }
 
     public static final Creator<TrainSearchPassDataViewModel> CREATOR = new Creator<TrainSearchPassDataViewModel>() {
@@ -117,20 +133,17 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         this.infant = infant;
     }
 
+    public boolean isOneWay() {
+        return isOneWay;
+    }
+
+    public void setOneWay(boolean oneWay) {
+        isOneWay = oneWay;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(departureDate);
-        parcel.writeString(returnDate);
-        parcel.writeString(originStationCode);
-        parcel.writeString(destinationStationCode);
-        parcel.writeString(originCityName);
-        parcel.writeString(destinationCityName);
-        parcel.writeInt(adult);
-        parcel.writeInt(infant);
-    }
 }
