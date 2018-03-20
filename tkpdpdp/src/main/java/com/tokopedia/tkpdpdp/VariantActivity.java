@@ -218,6 +218,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
         intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
+        intent.putExtra(KEY_VARIANT_DATA,productVariant);
         intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
         if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
         return intent;
