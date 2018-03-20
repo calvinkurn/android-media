@@ -86,7 +86,6 @@ public class ProductModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
 
-    //TODO add header error interceptor
     @ProductTomeQualifier
     @ProductScope
     @Provides
@@ -117,7 +116,6 @@ public class ProductModule {
     @ProductTomeQualifier
     @ProductScope
     @Provides
-    //todo hendry change this interceptor to HeaderErrorResponseInterceptor, check
     public ErrorResponseInterceptor provideResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
