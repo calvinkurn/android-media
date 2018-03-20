@@ -1,7 +1,6 @@
 package com.tokopedia.profile.view.customview;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,11 +21,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
@@ -256,15 +255,12 @@ public class PartialUserShopView extends BaseCustomView {
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getContext(), ShopInfoActivity.class);
-            intent.putExtras(
-                    ShopInfoActivity.
-                            createBundle(String.valueOf(data.getShopId()),
-                                    "",
-                                    data.getShopName(),
-                                    data.getShopLogo(),
-                                    data.isFavorite() ? 1 : 0));
-            getContext().startActivity(intent);
+            if (getContext().getApplicationContext() instanceof SessionRouter) {
+                getContext().startActivity(
+                        ((SessionRouter) getContext().getApplicationContext())
+                                .getTopProfileIntent(getContext(),
+                                        String.valueOf(data.getShopId())));
+            }
         }
     }
 
