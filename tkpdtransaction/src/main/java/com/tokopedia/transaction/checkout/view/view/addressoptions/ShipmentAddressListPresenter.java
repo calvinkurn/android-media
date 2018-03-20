@@ -2,7 +2,6 @@ package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.util.PagingHandler;
@@ -81,7 +80,6 @@ public class ShipmentAddressListPresenter
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.d(TAG, throwable.getMessage());
                         throwable.printStackTrace();
                         if (isViewAttached()) {
                             getMvpView().hideLoading();
@@ -115,8 +113,6 @@ public class ShipmentAddressListPresenter
                                 getMvpView().showList(shipmentAddressModels);
                             }
                         }
-
-                        Log.d(TAG, "Size: " + shipmentAddressModels.size());
                     }
                 });
     }
