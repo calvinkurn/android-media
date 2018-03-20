@@ -5,22 +5,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.ShareData;
+import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatViewPagerAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
@@ -32,6 +42,9 @@ import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
 public class GroupChatActivity extends BaseSimpleActivity {
 
     private static final int KEYBOARD_TRESHOLD = 100;
+    private static final int CHATROOM_FRAGMENT = 0;
+
+    public static final String INITIAL_FRAGMENT = "init_fragment";
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -81,14 +94,30 @@ public class GroupChatActivity extends BaseSimpleActivity {
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
-    public Toolbar toolbar;
     public View rootView;
 
+    private TouchViewPager viewPager;
+    private GroupChatViewPagerAdapter pagerAdapter;
+
+    private int initialFragment;
+
+    private Toolbar toolbar;
+    private ImageView channelBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
+        } else if (getIntent().getExtras() != null) {
+            initialFragment = getIntent().getExtras().getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
+        } else {
+            initialFragment = CHATROOM_FRAGMENT;
+        }
+
         initView();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             TransparentStatusBarHelper.assistActivity(this);
         }
@@ -96,6 +125,144 @@ public class GroupChatActivity extends BaseSimpleActivity {
     }
 
     private void initView() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        removePaddingStatusBar();
+
+        setupToolbar();
+        setupViewPager(bundle);
+
+        showFragment(initialFragment);
+
+    }
+
+    private void setupToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        channelBanner = findViewById(R.id.channel_banner);
+
+        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+            params.height = getResources().getDimensionPixelSize(R.dimen.channel_banner_height);
+        } else {
+            params.height = getResources().getDimensionPixelSize(R.dimen
+                    .channel_banner_height_without_status);
+        }
+
+        channelBanner.setLayoutParams(params);
+
+
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.group_chat_room_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.action_share) {
+//            analytics.eventClickShare();
+//            ShareData shareData = ShareData.Builder.aShareData()
+//                    .setId(viewModel.getChannelUuid())
+//                    .setName(viewModel.getChannelName())
+//                    .setDescription(String.format(getString(R.string.lets_join_channel),
+//                            viewModel.getChannelName()))
+//                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
+//                    .setUri(viewModel.getChannelUrl())
+//                    .setType(ShareData.FEED_TYPE)
+//                    .build();
+//
+//            if (shareLayout == null) {
+//                shareLayout = new ShareLayout(
+//                        GroupChatFragment.this,
+//                        callbackManager, viewModel.getChannelUrl(), toolbar.getTitle().toString(), analytics);
+//            }
+//            shareLayout.setShareModel(shareData);
+//            shareLayout.show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
+//            boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+//            channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
+//                    .getChannelInfoViewModel().getChannelViewModel(), false));
+//            channelInfoDialog.show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setupViewPager(Bundle bundle) {
+        viewPager = findViewById(R.id.pager);
+        Tabs tabs = findViewById(R.id.tab);
+        pagerAdapter = GroupChatViewPagerAdapter.createInstance(getSupportFragmentManager());
+        pagerAdapter.addFragment(GroupChatFragment.createInstance(bundle), getString(R.string
+                .title_group_chat));
+        viewPager.setAdapter(pagerAdapter);
+        pagerAdapter.notifyDataSetChanged();
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                KeyboardHandler.hideSoftKeyboard(GroupChatActivity.this);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (tab.getPosition() == CHATROOM_FRAGMENT) {
+                    Fragment fragment = pagerAdapter.getItem(tab.getPosition());
+                    if (fragment != null) {
+                        if (fragment instanceof GroupChatFragment) {
+                            ((GroupChatFragment) fragment).scrollToBottom();
+                        }
+                    }
+                }
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+        tabs.setupWithViewPager(viewPager);
+    }
+
+    private void showFragment(int initialFragment) {
+        if (viewPager != null && viewPager.getAdapter().getCount() < initialFragment) {
+            viewPager.setCurrentItem(initialFragment);
+        }
+    }
+
+    private void removePaddingStatusBar() {
         rootView = findViewById(R.id.root_view);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -109,21 +276,6 @@ public class GroupChatActivity extends BaseSimpleActivity {
                 }
             }
         });
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (GroupChatFragment.class.getSimpleName());
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = GroupChatFragment.createInstance(bundle);
-        }
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
     }
 
     private void addPaddingIfKeyboardIsClosed() {
