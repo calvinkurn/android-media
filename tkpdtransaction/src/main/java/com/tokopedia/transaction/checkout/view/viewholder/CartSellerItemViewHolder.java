@@ -175,7 +175,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private void bindFirstCartItem(CartItemModel cartItemModel) {
         ImageHandler.LoadImage(mIvProductImage, cartItemModel.getImageUrl());
         mTvProductName.setText(cartItemModel.getName());
-        mTvProductPrice.setText(CURRENCY_IDR.format(cartItemModel.getPrice()));
+        mTvProductPrice.setText(CURRENCY_IDR.format(cartItemModel.getPrice())
+                .replace("Rp", "Rp "));
         mTvProductWeight.setText(cartItemModel.getWeightFmt());
         mTvProductTotalItem.setText(String.valueOf(cartItemModel.getQuantity()));
 
@@ -299,7 +300,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CURRENCY_IDR.format(price);
+        return price == 0 ? "-" : CURRENCY_IDR.format(price).replace("Rp", "Rp ");
     }
 
     private String getOtherCartItemsLabel(List<CartItemModel> cartItemList,

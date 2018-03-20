@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -127,7 +126,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
-            setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
+            if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
         }
     }
