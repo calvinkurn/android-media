@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdtrain.search.presentation.TrainSearchAdapterTypeFactory;
+import com.tokopedia.tkpdtrain.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 
 /**
  * Created by nabilla on 3/9/18.
