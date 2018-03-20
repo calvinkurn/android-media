@@ -2,6 +2,7 @@ package com.tokopedia.tkpdtrain.search.di;
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
 import com.tokopedia.tkpdtrain.search.domain.GetAvailabilityScheduleUseCase;
+import com.tokopedia.tkpdtrain.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetFilteredAndSortedScheduleUseCase;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
 
@@ -29,4 +30,8 @@ public class TrainSearchModule {
         return new GetFilteredAndSortedScheduleUseCase(trainRepository);
     }
 
+    @Provides
+    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
+        return new GetDetailScheduleUseCase(trainRepository);
+    }
 }

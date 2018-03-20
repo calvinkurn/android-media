@@ -19,6 +19,8 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainScheduleVi
 
     private String idTrain;
 
+    private int scheduleVariant;
+
     public GetAvailabilityScheduleUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
@@ -27,8 +29,12 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainScheduleVi
         this.idTrain = idTrain;
     }
 
+    public void setScheduleVariant(int scheduleVariant) {
+        this.scheduleVariant = scheduleVariant;
+    }
+
     @Override
     public Observable<List<TrainScheduleViewModel>> createObservable(RequestParams requestParams) {
-        return trainRepository.getAvailabilitySchedule(idTrain);
+        return trainRepository.getAvailabilitySchedule(idTrain, scheduleVariant);
     }
 }

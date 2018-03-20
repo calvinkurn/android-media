@@ -22,14 +22,20 @@ public class GetScheduleUseCase extends UseCase<List<AvailabilityKeySchedule>> {
     public static final String DEST_CODE = "destination";
     public static final String DEST_CITY = "destination_city";
 
+    private int scheduleVariant;
+
     private TrainRepository trainRepository;
 
     public GetScheduleUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
 
+    public void setScheduleVariant(int scheduleVariant) {
+        this.scheduleVariant = scheduleVariant;
+    }
+
     @Override
     public Observable<List<AvailabilityKeySchedule>> createObservable(RequestParams requestParams) {
-        return trainRepository.getSchedule(requestParams.getParameters());
+        return trainRepository.getSchedule(requestParams.getParameters(), scheduleVariant);
     }
 }
