@@ -261,7 +261,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             CommonUtils.hideKeyboard(getActivity(), getView());
             return;
         }
-        if (!checkStockValid((int)counterInputViewStock.getDoubleValue())) {
+        if (!checkStockValid((int) counterInputViewStock.getDoubleValue())) {
             CommonUtils.hideKeyboard(getActivity(), getView());
             return;
         }
@@ -289,7 +289,9 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         // counter input for stock only visible for stock limited only
         if (isStockLimited()) {
             if (isChecked) {
-                counterInputViewStock.setValue(1);
+                if (((int) counterInputViewStock.getDoubleValue()) == 0) {
+                    counterInputViewStock.setValue(1);
+                }
                 counterInputViewStock.setEnabled(true);
             } else {
                 counterInputViewStock.setValue(0);
