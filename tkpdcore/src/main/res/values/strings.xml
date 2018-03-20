@@ -579,6 +579,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_sort_by">Urutkan</string>
     <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
     <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
+    <string name="string_verified">Terverifikasi</string>
     <!-- Strings related Manage People -->
 
 

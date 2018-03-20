@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -128,18 +127,18 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
     private boolean isValid(Context context) {
         boolean validation = true;
 
-        if (view.getPhone().isEmpty()) {
-            view.setPhoneError(context.getString(R.string.error_field_required));
-            validation = false;
-        }
-
-        if (view.getEmail().isEmpty()) {
-            view.setEmailError(context.getString(R.string.error_field_required));
-            validation = false;
-        } else if (!CommonUtils.EmailValidation(view.getEmail())) {
-            view.setEmailError(context.getString(R.string.error_invalid_email));
-            validation = false;
-        }
+//        if (view.getPhone().isEmpty()) {
+//            view.setPhoneError(context.getString(R.string.error_field_required));
+//            validation = false;
+//        }
+//
+//        if (view.getEmail().isEmpty()) {
+//            view.setEmailError(context.getString(R.string.error_field_required));
+//            validation = false;
+//        } else if (!CommonUtils.EmailValidation(view.getEmail())) {
+//            view.setEmailError(context.getString(R.string.error_invalid_email));
+//            validation = false;
+//        }
 
         if (view.getBirthDay().isEmpty()) {
             view.setBirthDayError(context.getString(R.string.error_field_required));

@@ -14,19 +14,19 @@ import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.component.EditTextCompat;
 
 /**
  * Created on 6/9/16.
  */
 public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    public EditText messenger;
+    public TextView messenger;
     public View changeEmailBtn;
     public EditText email;
     public View phoneSection;
     public View changeHpBtn;
-    public EditTextCompat phone;
+    public EditText phone;
+    public TextView tvPhone;
     public View phoneVerificationSection;
     public EditText verification;
     public View verificationBtn;
@@ -63,12 +63,13 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         View view = inflater.inflate(getLayoutView(), this, true);
         tvEmail = (TextView) view.findViewById(R.id.tv_email);
         tvEmailHint = (TextView) view.findViewById(R.id.tv_email_hint);
-        messenger = (EditText) view.findViewById(R.id.messenger);
         changeEmailBtn = view.findViewById(R.id.change_email_button);
         email = view.findViewById(R.id.email);
+        messenger = view.findViewById(R.id.messenger);
         phoneSection = view.findViewById(R.id.phone_section);
         changeHpBtn = view.findViewById(R.id.change_hp_button);
         phone = view.findViewById(R.id.phone);
+        tvPhone = (TextView) view.findViewById(R.id.tv_phone);
         phoneVerificationSection = view.findViewById(R.id.phone_verification_section);
         verification = view.findViewById(R.id.verification);
         verificationBtn = view.findViewById(R.id.verify_phone_button);
@@ -78,7 +79,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     @Override
     public void renderData(@NonNull Profile profile) {
         DataUser dataUser = profile.getDataUser();
-        messenger.setText(dataUser.getUserMessenger());
         renderEmailView(dataUser.getUserEmail());
         renderPhoneView(dataUser.getUserPhone());
         renderPhoneVerificationView(dataUser.getUserPhone());
@@ -114,11 +114,15 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     }
 
     private void renderPhoneView(String userPhone) {
-        phone.setText(userPhone);
+        tvPhone.setText(userPhone);
         if (SessionHandler.isMsisdnVerified()) {
             phoneSection.setVisibility(VISIBLE);
         } else {
             phoneSection.setVisibility(GONE);
+        }
+        if (!TextUtils.isEmpty(userPhone)) {
+            tvPhone.setVisibility(VISIBLE);
+            phone.setVisibility(GONE);
         }
         changeHpBtn.setOnClickListener(new ChangePhoneButtonClick(userPhone));
     }
