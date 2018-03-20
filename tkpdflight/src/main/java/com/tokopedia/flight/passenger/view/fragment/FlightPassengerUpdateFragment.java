@@ -3,6 +3,7 @@ package com.tokopedia.flight.passenger.view.fragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -40,6 +42,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     private AppCompatEditText etPassengerFirstName;
     private AppCompatEditText etPassengerLastName;
     private AppCompatEditText etPassengerBirthdate;
+    private AppCompatButton btnSavePassengerInfo;
 
     public FlightPassengerUpdateFragment() {
     }
@@ -63,11 +66,18 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         etPassengerFirstName = view.findViewById(R.id.et_first_name);
         etPassengerLastName = view.findViewById(R.id.et_last_name);
         etPassengerBirthdate = view.findViewById(R.id.et_birth_date);
+        btnSavePassengerInfo = view.findViewById(R.id.button_submit);
 
         etPassengerBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
+            }
+        });
+        btnSavePassengerInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSaveButtonClicked();
             }
         });
 
@@ -110,6 +120,23 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public String getPassengerBirthdate() {
         return etPassengerBirthdate.getText().toString().trim();
+    }
+
+    @Override
+    public String getPassengerFirstName() {
+        return etPassengerFirstName.getText().toString().trim();
+    }
+
+    @Override
+    public String getPassengerLastName() {
+        return etPassengerLastName.getText().toString().trim();
+    }
+
+    @Override
+    public String getPassengerTitle() {
+        return spPassengerTitle.getSpinnerValue().equalsIgnoreCase(
+                String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED)) ? "" :
+                spPassengerTitle.getSpinnerValue();
     }
 
     @Override
@@ -183,5 +210,69 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         DatePicker datePicker = datePickerDialog.getDatePicker();
         datePicker.setMaxDate(maxDate.getTime());
         datePickerDialog.show();
+    }
+
+    @Override
+    public void showPassengerChildBirthdateShouldMoreThan2Years(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerAdultBirthdateShouldMoreThan12Years(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerNameEmptyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerFirstNameShouldNoMoreThanMaxError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldSameWithFirstNameError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameEmptyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldOneWordError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerTitleEmptyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void showPassengerBirthdateEmptyError(int resId) {
+        showMessageErrorInSnackbar(resId);
+    }
+
+    private void showMessageErrorInSnackbar(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 }

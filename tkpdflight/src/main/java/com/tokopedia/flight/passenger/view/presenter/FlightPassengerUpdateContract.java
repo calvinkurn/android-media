@@ -21,6 +21,12 @@ public interface FlightPassengerUpdateContract {
 
         String getPassengerBirthdate();
 
+        String getPassengerFirstName();
+
+        String getPassengerLastName();
+
+        String getPassengerTitle();
+
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
         void renderSpinnerForAdult();
@@ -39,11 +45,36 @@ public interface FlightPassengerUpdateContract {
 
         void showBirthdatePickerDialog(Date selectedDate, Date maxDate);
 
+        void showPassengerChildBirthdateShouldMoreThan2Years(int resId);
+
+        void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resId);
+
+        void showPassengerAdultBirthdateShouldMoreThan12Years(int resId);
+
+        void showPassengerNameEmptyError(int resId);
+
+        void showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(int resId);
+
+        void showPassengerFirstNameShouldNoMoreThanMaxError(int resId);
+
+        void showPassengerLastNameShouldSameWithFirstNameError(int resId);
+
+        void showPassengerLastNameEmptyError(int resId);
+
+        void showPassengerLastNameShouldOneWordError(int resId);
+
+        void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(int resId);
+
+        void showPassengerTitleEmptyError(int resId);
+
+        void showPassengerBirthdateEmptyError(int resId);
     }
 
     interface Presenter {
 
         void onViewCreated();
+
+        void onSaveButtonClicked();
 
         void onBirthdateClicked();
 
