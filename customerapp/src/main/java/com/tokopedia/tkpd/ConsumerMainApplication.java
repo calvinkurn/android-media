@@ -185,7 +185,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)
+                    || deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
@@ -193,11 +194,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
                 startActivity(intent);
 
-            } else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(deepLinkUri.toString()));
-                intent.putExtra(Constants.EXTRA_APPLINK, deepLinkUri.toString());
-                startActivity(intent);
             } else {
                 CommonUtils.dumper("FCM entered no one");
             }
