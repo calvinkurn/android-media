@@ -14,6 +14,7 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -97,4 +98,8 @@ public interface FlightApi {
     @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
     Observable<Response<Object>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_PASSENGER_SAVED)
+    Observable<Response<Object>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request);
 }
