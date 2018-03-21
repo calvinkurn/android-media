@@ -14,9 +14,9 @@ public class Seat {
     @SerializedName("status")
     @Expose
     private int status;
-    @SerializedName("ActualSeat")
+    @SerializedName("actualSeat")
     @Expose
-    private int ActualSeat;
+    private int actualSeat;
 
     public String getAreaId() {
         return areaId;
@@ -44,11 +44,11 @@ public class Seat {
 
 
     public int getActualSeat() {
-        return ActualSeat;
+        return actualSeat;
     }
 
     public void setActualSeat(int actualSeat) {
-        this.ActualSeat = actualSeat;
+        this.actualSeat = actualSeat;
     }
 
 }
