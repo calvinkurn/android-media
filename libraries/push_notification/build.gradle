@@ -1,6 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'android-apt'
+
+apt {
+    arguments {
+        targetModuleName 'PushNotification'
+    }
+}
 
 
 dependencies {
@@ -9,4 +15,8 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.firebase
     compile project(rootProject.ext.libraries.abstraction)
     compile project(rootProject.ext.libraries.applink)
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
 }

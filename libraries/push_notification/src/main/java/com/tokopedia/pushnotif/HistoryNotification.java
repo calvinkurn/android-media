@@ -3,9 +3,12 @@ package com.tokopedia.pushnotif;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 import com.tokopedia.pushnotif.model.HistoryNotificationModel;
-
+import com.tokopedia.pushnotif.db.model.HistoryNotificationDB_Table;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ricoharisin .
@@ -13,12 +16,7 @@ import java.util.ArrayList;
 
 public class HistoryNotification {
 
-    private ArrayList<HistoryNotificationModel> listHistoryNotificationModel;
-    //private LocalCacheHandler localCacheHandler;
-    private String key;
-    private static final String NOTIFICATION_STORAGE = "NOATIFICATION_STORAGE";
-    public static final String KEY_TALK = "KEY_TALK";
-    public static final String KEY_CHAT = "KEY_CHAT";
+    private int NotificationType;
 
     public HistoryNotification(Context context, String key) {
         /*this.key = key;
@@ -30,33 +28,18 @@ public class HistoryNotification {
     }
 
     public void storeNotification(String message, String senderName) {
-        /*long time = System.currentTimeMillis();
-        HistoryNotificationModel model = new HistoryNotificationModel(message,time,senderName);
-
-        listHistoryNotificationModel.add(model);
-        ArrayList<String> currHistory = localCacheHandler.getArrayListString(key);
-        Gson gson = new Gson();
-        currHistory.add(gson.toJson(model));
-        localCacheHandler.putArrayListString(key, currHistory);
-        localCacheHandler.applyEditor();*/
+        HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();
+        historyNotificationDB.setMessage(message);
+        historyNotificationDB.setSenderName(senderName);
+        historyNotificationDB.setNotificationType(NotificationType);
+        historyNotificationDB.save();
     }
 
-    private void convertToHistoryNotificationModel(ArrayList<String> arrayString) {
-        listHistoryNotificationModel = new ArrayList<>();
-        Gson gson = new Gson();
-        for (String stringDetail : arrayString) {
-            listHistoryNotificationModel.add(gson.fromJson(stringDetail, HistoryNotificationModel.class));
-        }
-    }
+    public List<HistoryNotificationDB> getListHistoryNotification() {
+        return SQLite.select().from(HistoryNotificationDB.class)
+                .where(HistoryNotificationDB_Table.notification_type.eq(NotificationType))
+                .queryList();
 
-    public ArrayList<HistoryNotificationModel> getListHistoryNotificationModel() {
-        return listHistoryNotificationModel;
-    }
-
-    public String getSummary() {
-        int total = listHistoryNotificationModel.size();
-        if (key == KEY_TALK) return total+ " Diskusi Produk";
-        return total+ " Chat";
     }
 
 

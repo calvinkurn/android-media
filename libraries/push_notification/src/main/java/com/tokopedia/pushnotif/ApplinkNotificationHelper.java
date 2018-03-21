@@ -58,7 +58,7 @@ public class ApplinkNotificationHelper {
         builder.setSmallIcon(getDrawableIcon());
 
         if (notificationId == Constant.NotificationId.TALK || notificationId == Constant.NotificationId.CHAT) {
-            String key = notificationId == Constant.NotificationId.TALK ? HistoryNotification.KEY_TALK : HistoryNotification.KEY_CHAT;
+            /*String key = notificationId == Constant.NotificationId.TALK ? HistoryNotification.KEY_TALK : HistoryNotification.KEY_CHAT;
             HistoryNotification historyNotification = new HistoryNotification(context, key);
             if (historyNotification.getListHistoryNotificationModel().size() == 0) {
                 builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationId));
@@ -69,20 +69,20 @@ public class ApplinkNotificationHelper {
                 } else {
                     builder.setContentIntent(createPendingIntent(ApplinkConst.TOPCHAT_IDLESS, notificationId));
                 }
-            }
+            }*/
 
             NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("ME");
 
-            for (HistoryNotificationModel historyNotificationModel : historyNotification.getListHistoryNotificationModel()) {
+            /*for (HistoryNotificationModel historyNotificationModel : historyNotification.getListHistoryNotificationModel()) {
                 messagingStyle.addMessage(historyNotificationModel.getMessage(),
                         historyNotificationModel.getTimeStamp(),
                         historyNotificationModel.getSenderName());
-            }
+            }*/
 
             messagingStyle.addMessage(applinkNotificationModel.getSummary(), System.currentTimeMillis(), applinkNotificationModel.getFullName());
-            messagingStyle.setConversationTitle(historyNotification.getSummary());
+            //messagingStyle.setConversationTitle(historyNotification.getSummary());
 
-            historyNotification.storeNotification(applinkNotificationModel.getSummary(), applinkNotificationModel.getFullName());
+            //historyNotification.storeNotification(applinkNotificationModel.getSummary(), applinkNotificationModel.getFullName());
 
             builder.setStyle(messagingStyle);
 
@@ -99,7 +99,7 @@ public class ApplinkNotificationHelper {
     }
 
     private NotificationCompat.Style generateStyle(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
-        if (notificationId == Constant.NotificationId.TALK) {
+       /* if (notificationId == Constant.NotificationId.TALK) {
             HistoryNotification historyNotification = new HistoryNotification(context, HistoryNotification.KEY_TALK);
             NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle("ME");
 
@@ -116,7 +116,8 @@ public class ApplinkNotificationHelper {
             return messagingStyle;
         } else {
             return new NotificationCompat.BigTextStyle().bigText(applinkNotificationModel.getSummary());
-        }
+        }*/
+       return null;
     }
 
 
