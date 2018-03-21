@@ -23,7 +23,7 @@
 
     <Button
         android:id="@+id/btn_ok_dialog"
-        android:layout_gravity="right|end"
+        android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
@@ -33,7 +33,7 @@
 
     <Button
         android:id="@+id/btn_cancel_dialog"
-        android:layout_gravity="right|end"
+        android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"

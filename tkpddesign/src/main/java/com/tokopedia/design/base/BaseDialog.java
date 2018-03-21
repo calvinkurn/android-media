@@ -2,6 +2,7 @@ package com.tokopedia.design.base;
 
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -10,7 +11,7 @@ import android.view.View;
 
 public abstract class BaseDialog {
 
-    private Activity context;
+    protected Activity context;
 
     private AlertDialog alertDialog;
 
@@ -21,11 +22,15 @@ public abstract class BaseDialog {
     public abstract void initListener(AlertDialog dialog);
 
     public BaseDialog(Activity context) {
+        if (context == null) {
+            Log.e(this.getClass().getSimpleName(), "Context NULL");
+            return;
+        }
         this.context = context;
         init();
     }
 
-    private void init() {
+    protected void init() {
         View dialogView = context.getLayoutInflater().inflate(layoutResId(), null);
         initView(dialogView);
 

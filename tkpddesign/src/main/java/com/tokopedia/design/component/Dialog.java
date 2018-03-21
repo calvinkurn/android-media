@@ -35,8 +35,10 @@ public class Dialog extends BaseDialog {
     }
 
     public Dialog(Activity context, Type type) {
-        super(context);
+        super(null);
+        this.context = context;
         this.type = type;
+        init();
     }
 
     @Override
@@ -44,7 +46,6 @@ public class Dialog extends BaseDialog {
         if (type == Type.LONG_PROMINANCE)
             return R.layout.dialog_longprominance;
         return R.layout.dialog_base;
-
     }
 
     @Override
