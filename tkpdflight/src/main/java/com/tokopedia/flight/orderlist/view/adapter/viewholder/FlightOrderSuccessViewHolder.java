@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
@@ -83,6 +84,10 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
     }
 
+    private void onCancelOptionClicked() {
+        adapterInteractionListener.onCancelOptionClicked(item.getId());
+    }
+
     @Override
     protected void onDetailOptionClicked() {
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
@@ -102,7 +107,18 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_flight_order_success, popup.getMenu());
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked());
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_cancel) {
+                    onCancelOptionClicked();
+                    return true;
+                }
+                return super.onMenuItemClick(item);
+            }
+        });
+
         popup.show();
     }
+
 }

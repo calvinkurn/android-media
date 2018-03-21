@@ -23,6 +23,7 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
@@ -207,6 +208,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onDownloadETicket(String invoiceId) {
         presenter.onDownloadEticket(invoiceId);
+    }
+
+    @Override
+    public void onCancelOptionClicked(String invoideId) {
+        startActivity(FlightCancellationActivity.createIntent(getContext(), invoideId));
     }
 
     @Override
