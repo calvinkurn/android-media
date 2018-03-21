@@ -320,7 +320,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, true,
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, true,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
@@ -411,7 +411,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductImageFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductPictureFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition,
+                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
@@ -420,7 +420,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onProductTitleFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductTitleFeaturedImpression(getString(R.string.shop_info_title_tab_product), shopProductViewModel.getName(),
-                    shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition,
+                    shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
