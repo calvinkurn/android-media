@@ -58,7 +58,6 @@ public class CategoryProductStyle1View extends
     ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
-    private NewWidgetProductChooserView widgetProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -82,7 +81,6 @@ public class CategoryProductStyle1View extends
     protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
-        widgetProductChooserView = new NewWidgetProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView.setActionListener(this);
@@ -108,11 +106,11 @@ public class CategoryProductStyle1View extends
     @Override
     protected void onUpdateSelectedProductData() {
         if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
-            if (source == NATIVE) {
+//            if (source == NATIVE) {
                 this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
-            } else {
+            /*} else {
                 this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
-            }
+            }*/
         }
     }
 
@@ -245,36 +243,7 @@ public class CategoryProductStyle1View extends
     }
 
     private void showProducts() {
-        if (source == NATIVE) {
             renderProductChooserOptions();
-        } else {
-            renderProductChooserOptionsWidget();
-        }
-    }
-
-    private void renderProductChooserOptionsWidget() {
-        clearHolder(holderChooserProduct);
-        widgetProductChooserView.setActionListener(getActionListenerProductChooser());
-        widgetProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
-        widgetProductChooserView.renderInitDataList(operatorSelected.getProductList(),
-                operatorSelected.getRule().isShowPrice(),
-                String.valueOf(operatorSelected.getDefaultProductId())
-        );
-        holderChooserProduct.addView(widgetProductChooserView);
-
-        if (hasLastOrderHistoryData() && operatorSelected != null
-                && operatorSelected.getOperatorId().equalsIgnoreCase(
-                historyClientNumber.getLastOrderClientNumber().getOperatorId()
-        )) {
-            for (Product product : operatorSelected.getProductList()) {
-                if (product.getProductId().equalsIgnoreCase(
-                        historyClientNumber.getLastOrderClientNumber().getProductId()
-                )) {
-                    widgetProductChooserView.renderUpdateDataSelected(product);
-                    break;
-                }
-            }
-        }
     }
 
     private void renderProductChooserOptions() {

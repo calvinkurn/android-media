@@ -38,6 +38,7 @@ import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -243,12 +244,24 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
-
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), categoryId, operatorId, titleChooser
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
     }
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceOperatorChooser(
+                        getActivity(), categoryId, titleChooser,
+                        categoryDataState.getOperatorLabel(),
+                        categoryDataState.getName()
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+        );
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
@@ -372,7 +385,32 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                     }
                 }
                 break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+                if (resultCode == Activity.RESULT_OK && data != null)
+                    handleCallBackProductChooser(
+                            (Product) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
+                            )
+                    );
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    handleCallBackOperatorChooser(
+                            (Operator) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
+                            )
+                    );
+                }
+                break;
         }
+    }
+
+    private void handleCallBackProductChooser(Product product) {
+        digitalProductView.renderUpdateProductSelected(product);
+    }
+
+    private void handleCallBackOperatorChooser(Operator operator) {
+        digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {

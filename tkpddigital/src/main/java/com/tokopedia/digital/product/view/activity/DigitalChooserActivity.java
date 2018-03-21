@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -158,6 +159,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
+        invalidateHomeUpToolbarIndicator();
     }
 
     @Override
@@ -171,10 +173,17 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
         invalidateTitleToolBar();
+        invalidateHomeUpToolbarIndicator();
     }
 
     private void invalidateTitleToolBar() {
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+    }
+
+    private void invalidateHomeUpToolbarIndicator(){
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+        }
     }
 
     @Override
