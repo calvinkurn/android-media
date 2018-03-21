@@ -278,13 +278,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                 if (shopInfo != null) {
                     shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedFeaturedViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                            shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
                 }
             } else if (shopProductBaseViewModel instanceof ShopProductLimitedProductViewModel) {
                 if (shopInfo != null) {
                     shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                             ((ShopProductLimitedProductViewModel) shopProductBaseViewModel).getShopProductViewModelList(),
-                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                            true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()),
+                            false);
                 }
             } else if (shopProductBaseViewModel instanceof ShopProductLimitedPromoViewModel) {
                 if (shopInfo != null) {
@@ -320,7 +321,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, true,
-                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }
