@@ -335,4 +335,5 @@
     <string name="flight_booking_list_passenger_title">Pilih Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
+    <string name="flight_label_show_detail_order">Lihat Order Detail</string>
 </resources>

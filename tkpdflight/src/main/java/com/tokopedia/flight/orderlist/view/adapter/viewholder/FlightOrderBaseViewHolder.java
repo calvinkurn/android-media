@@ -162,7 +162,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         }
     }
 
-    private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
+    protected class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
 
         OnMenuPopupClicked() {
 
@@ -172,6 +172,8 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.action_detail) {
                 onDetailOptionClicked();
+                return true;
+            } else if (item.getItemId() == R.id.action_cancel) {
                 return true;
             } else if (item.getItemId() == R.id.action_help) {
                 onHelpOptionClicked();
