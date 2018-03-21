@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.posapp.product.ProductFactory;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.shop.data.ShopProductResponse;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;

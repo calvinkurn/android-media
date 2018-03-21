@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.domain.model;
+package com.tokopedia.posapp.product.common.domain.model;
 
 /**
  * Created by okasurya on 8/9/17.
@@ -14,6 +14,8 @@ public class ProductDomain {
     private String productImage300;
     private String productImageFull;
     private String etalaseId;
+    private String productOriginalPrice;
+    private double productOriginalPriceUnformatted;
 
     public int getProductId() {
         return productId;
@@ -93,5 +95,21 @@ public class ProductDomain {
 
     public void setEtalaseId(String etalaseId) {
         this.etalaseId = etalaseId;
+    }
+
+    public String getProductOriginalPrice() {
+        return productOriginalPrice;
+    }
+
+    public void setProductOriginalPrice(String productOriginalPrice) {
+        this.productOriginalPrice = productOriginalPrice;
+    }
+
+    public double getProductOriginalPriceUnformatted() {
+        return productOriginalPriceUnformatted;
+    }
+
+    public void setProductOriginalPriceUnformatted(double productOriginalPriceUnformatted) {
+        this.productOriginalPriceUnformatted = productOriginalPriceUnformatted;
     }
 }

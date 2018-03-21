@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import java.util.ArrayList;

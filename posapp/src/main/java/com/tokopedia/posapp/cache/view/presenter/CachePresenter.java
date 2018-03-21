@@ -10,7 +10,7 @@ import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.BankInstallmentDomain;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;

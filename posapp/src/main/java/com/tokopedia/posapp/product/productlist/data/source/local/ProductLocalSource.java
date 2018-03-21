@@ -3,7 +3,7 @@ package com.tokopedia.posapp.product.productlist.data.source.local;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import java.util.List;

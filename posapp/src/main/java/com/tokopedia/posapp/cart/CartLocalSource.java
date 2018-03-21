@@ -8,7 +8,7 @@ import com.tokopedia.posapp.database.model.CartDb_Table;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 
 import java.util.List;
 

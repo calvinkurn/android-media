@@ -3,7 +3,7 @@ package com.tokopedia.posapp.cart.domain.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.base.domain.DefaultParams;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 
 /**
  * Created by okasurya on 8/22/17.

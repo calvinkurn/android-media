@@ -5,7 +5,7 @@ import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.ProductDb;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 
 import java.util.ArrayList;
 import java.util.List;

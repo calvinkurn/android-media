@@ -6,7 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductItem;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductData;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductList;
-import com.tokopedia.posapp.product.productlist.domain.model.ProductDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 
 import java.util.ArrayList;
