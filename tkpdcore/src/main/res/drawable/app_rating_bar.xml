@@ -2,11 +2,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/ic_app_rating_empty"/>
+        android:bottom="@dimen/new_margin_small">
+        <bitmap android:src="@drawable/ic_app_rating_empty"/>
+    </item>
     <item
         android:id="@android:id/secondaryProgress"
-        android:drawable="@drawable/ic_app_rating_empty"/>
-    <item
-        android:id="@android:id/progress"
-        android:drawable="@drawable/ic_app_rating_filled"/>
+        android:bottom="@dimen/new_margin_small">
+        <bitmap android:src="@drawable/ic_app_rating_empty"/>
+    </item>
+    <item android:id="@android:id/progress"
+        android:bottom="@dimen/new_margin_small">
+        <bitmap android:src="@drawable/ic_app_rating_filled" />
+    </item>
 </layer-list>
