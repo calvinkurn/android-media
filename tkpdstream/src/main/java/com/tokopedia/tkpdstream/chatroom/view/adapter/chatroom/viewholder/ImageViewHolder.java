@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
 
 /**
@@ -17,11 +17,11 @@ public class ImageViewHolder extends BaseChatViewHolder<ImageViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.image_view_holder;
-    private final GroupChatContract.View.ImageViewHolderListener listener;
+    private final ChatroomContract.View.ImageViewHolderListener listener;
 
     private ImageView contentImage;
 
-    public ImageViewHolder(View itemView, GroupChatContract.View.ImageViewHolderListener listener) {
+    public ImageViewHolder(View itemView, ChatroomContract.View.ImageViewHolderListener listener) {
         super(itemView);
         this.listener = listener;
         contentImage = itemView.findViewById(R.id.content_image);
