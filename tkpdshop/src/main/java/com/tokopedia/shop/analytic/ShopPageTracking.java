@@ -426,7 +426,7 @@ public class ShopPageTracking {
                     DataLayer.mapOf(
                             ShopPageTrackingConstant.NAME, viewModel.getName(),
                             ShopPageTrackingConstant.ID, viewModel.getId(),
-                            ShopPageTrackingConstant.PRICE, viewModel.getOriginalPrice(),
+                            ShopPageTrackingConstant.PRICE, viewModel.getDisplayedPrice(),
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
