@@ -2,11 +2,23 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/ic_app_rating_empty" />
+        android:drawable="@drawable/ic_app_rating_empty"
+        android:bottom="@dimen/new_margin_tiny"
+        android:left="@dimen/new_margin_tiny"
+        android:right="@dimen/new_margin_tiny"
+        android:top="@dimen/new_margin_tiny"/>
     <item
         android:id="@android:id/secondaryProgress"
-        android:drawable="@drawable/ic_app_rating_empty" />
+        android:drawable="@drawable/ic_app_rating_empty"
+        android:bottom="@dimen/new_margin_tiny"
+        android:left="@dimen/new_margin_tiny"
+        android:right="@dimen/new_margin_tiny"
+        android:top="@dimen/new_margin_tiny"/>
     <item
         android:id="@android:id/progress"
-        android:drawable="@drawable/ic_app_rating_filled" />
+        android:drawable="@drawable/ic_app_rating_filled"
+        android:bottom="@dimen/new_margin_tiny"
+        android:left="@dimen/new_margin_tiny"
+        android:right="@dimen/new_margin_tiny"
+        android:top="@dimen/new_margin_tiny"/>
 </layer-list>
