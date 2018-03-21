@@ -31,8 +31,7 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class
-TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
