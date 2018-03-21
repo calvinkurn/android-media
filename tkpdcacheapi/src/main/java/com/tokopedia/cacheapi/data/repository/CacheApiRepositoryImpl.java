@@ -28,11 +28,6 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return cacheApiDataSource.deleteWhiteList(host, path);
-    }
-
-    @Override
     public Observable<Boolean> deleteCachedData(String host, String path) {
         return cacheApiDataSource.deleteCachedData(host, path);
     }

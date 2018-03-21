@@ -190,16 +190,6 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> deleteWhiteList(final String host, final String path) {
-        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                cacheApiWhitelist.delete();
-                return Observable.just(true);
-            }
-        });
-    }
-
     public Observable<Boolean> updateResponse(final Response response, final int expiredTime) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override

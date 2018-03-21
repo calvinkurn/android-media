@@ -80,10 +80,6 @@ public class CacheApiDataSource {
         return cacheApiDatabaseSource.deleteCachedData(host, path);
     }
 
-    public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return cacheApiDatabaseSource.deleteWhiteList(host, path);
-    }
-
     public Observable<Boolean> updateResponse(Response response, int expiredTime) {
         return cacheApiDatabaseSource.updateResponse(response, expiredTime);
     }

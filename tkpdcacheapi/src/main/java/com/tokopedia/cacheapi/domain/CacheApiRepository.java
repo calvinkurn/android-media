@@ -29,14 +29,6 @@ public interface CacheApiRepository {
      */
     Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> domainList, String versionName);
 
-    /**
-     * bulk delete
-     * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
-     *
-     * @return
-     */
-    Observable<Boolean> deleteWhiteList(String host, String path);
-
     Observable<Boolean> updateResponse(Response response, int expiredTime);
 
     /**
