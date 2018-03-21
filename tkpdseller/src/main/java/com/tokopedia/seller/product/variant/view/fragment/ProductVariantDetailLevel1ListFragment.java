@@ -34,7 +34,6 @@ public class ProductVariantDetailLevel1ListFragment extends BaseVariantImageFrag
 
     private ProductVariantDetailLevel1ListAdapter productVariantDetailLevel1ListAdapter;
 
-//    private ImageView ivVariant;
     private VariantImageView variantImageView;
 
     public interface OnProductVariantDataManageFragmentListener {
