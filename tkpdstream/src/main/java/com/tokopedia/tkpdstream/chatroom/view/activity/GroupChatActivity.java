@@ -40,6 +40,7 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
@@ -52,14 +53,15 @@ import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
+import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
-import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
-import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
-
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +87,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     public static final String INITIAL_FRAGMENT = "init_fragment";
+    private static final int REQUEST_LOGIN = 101;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -525,6 +528,13 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.removeEmptyState(rootView);
+            initData();
+            setUserNameOnReplyText();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -554,6 +564,36 @@ public class GroupChatActivity extends BaseSimpleActivity
         setChannelInfoView(channelInfoViewModel);
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
+    }
+
+    @Override
+    public void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
+                    || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
+                boolean isVoted = viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .isVoted();
+                List<Visitable> tempListOption = new ArrayList<>();
+                tempListOption.addAll(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                        .getListOption());
+                for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
+                    if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
+                        ((VoteViewModel) voteInfoViewModel.getListOption().get(i)).setSelected(
+                                ((VoteViewModel) (tempListOption.get(i))).getSelected());
+                    }
+                }
+                voteInfoViewModel.setVoted(isVoted);
+                viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
+
+            } else {
+                viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
+            }
+        } else if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
+        }
     }
 
     private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {
@@ -605,6 +645,14 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void refreshChat() {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).refreshChat();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (viewModel != null) {
+            viewModel.setTimeStampBeforePause(System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -710,6 +758,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof
                         GroupChatFragment;
+    }
+
+    private void setUserNameOnReplyText() {
+        if (currentFragmentIsChat()) {
+            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                    (GroupChatFragment.class.getSimpleName())).setReplyTextHint();
+
+        }
     }
 
     @Override

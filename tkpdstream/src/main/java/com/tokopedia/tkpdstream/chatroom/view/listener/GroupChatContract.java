@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 /**
  * @author by nisie on 3/21/18.
@@ -21,6 +22,8 @@ public interface GroupChatContract {
         void onErrorGetChannelInfo(String errorMessage);
 
         void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

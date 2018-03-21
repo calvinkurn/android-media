@@ -13,9 +13,7 @@ import com.tokopedia.tkpdstream.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.RefreshMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
@@ -50,7 +48,7 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     public ChatroomPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
                              GetChannelInfoUseCase getChannelInfoUseCase,
                              GetGroupChatMessagesFirstTimeUseCase
-                                      getGroupChatMessagesFirstTimeUseCase,
+                                     getGroupChatMessagesFirstTimeUseCase,
                              RefreshMessageUseCase refreshMessageUseCase,
                              LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase,
                              SendGroupChatMessageUseCase sendMessageUseCase,
@@ -69,23 +67,25 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     }
 
     @Override
-    public void initMessageFirstTime(final String channelUrl, final OpenChannel mChannel) {
-        getGroupChatMessagesFirstTimeUseCase.execute(getView().getContext(), channelUrl, mChannel,
-                new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesFirstTimeListener() {
-                    @Override
-                    public void onGetMessagesFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-                        if (getView() != null) {
-                            getView().onSuccessGetMessageFirstTime(listChat, previousMessageListQuery);
+    public void initMessageFirstTime(final OpenChannel mChannel) {
+        if (mChannel != null) {
+            getGroupChatMessagesFirstTimeUseCase.execute(getView().getContext(), mChannel.getUrl(), mChannel,
+                    new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesFirstTimeListener() {
+                        @Override
+                        public void onGetMessagesFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
+                            if (getView() != null) {
+                                getView().onSuccessGetMessageFirstTime(listChat, previousMessageListQuery);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onErrorGetMessagesFirstTime(String errorMessage) {
-                        if (getView() != null) {
-                            getView().onErrorGetMessageFirstTime(errorMessage);
+                        @Override
+                        public void onErrorGetMessagesFirstTime(String errorMessage) {
+                            if (getView() != null) {
+                                getView().onErrorGetMessageFirstTime(errorMessage);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     @Override
@@ -116,11 +116,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
         loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
                 userAvatar,
                 loginGroupChatListener);
-    }
-
-    @Override
-    public void logoutChannel(OpenChannel mChannel) {
-        logoutGroupChatUseCase.execute(mChannel);
     }
 
     @Override
@@ -169,68 +164,7 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
                     }
                 }
             });
-
-//            getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(mChannel.getUrl()),
-//                    new Subscriber<ChannelInfoViewModel>() {
-//                        @Override
-//                        public void onCompleted() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            if (getView() != null) {
-//                                getView().dismissReconnectingMessage();
-//                                getView().onErrorRefreshChannelInfo(GroupChatErrorHandler.getErrorMessage(
-//                                        getView().getContext(), e, true
-//                                ));
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-//                            if (getView() != null) {
-//                                getView().dismissReconnectingMessage();
-//                                getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
-//                            }
-//                        }
-//                    });
-
         }
-
-
-    }
-
-    @Override
-    public void shareChatRoom(GroupChatViewModel viewModel) {
-
-    }
-
-    @Override
-    public void getChannelInfo(String channelUuid) {
-        getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid),
-                new Subscriber<ChannelInfoViewModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (getView() != null) {
-                            getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
-                                    getView().getContext(), e, false
-                            ));
-                        }
-                    }
-
-                    @Override
-                    public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-                        if (getView() != null) {
-                            getView().onSuccessGetChannelInfo(channelInfoViewModel);
-                        }
-                    }
-                });
     }
 
     @Override

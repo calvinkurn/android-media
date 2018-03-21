@@ -8,9 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -39,10 +37,6 @@ public interface ChatroomContract {
 
         void onErrorGetMessageFirstTime(String errorMessage);
 
-        void onErrorGetChannelInfo(String errorMessage);
-
-        void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
-
         void showLoadingPreviousList();
 
         void dismissLoadingPreviousList();
@@ -63,11 +57,9 @@ public interface ChatroomContract {
 
         void onErrorVote(String errorMessage);
 
-        void onErrorRefreshChannelInfo(String errorMessage);
-
-        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
-
         void refreshChat();
+
+        void setReplyTextHint();
 
         interface ImageViewHolderListener {
             void onRedirectUrl(String url);
@@ -80,20 +72,14 @@ public interface ChatroomContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void initMessageFirstTime(String channelUrl, OpenChannel mChannel);
+        void initMessageFirstTime(OpenChannel mChannel);
 
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                           LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
 
-        void logoutChannel(OpenChannel mChannel);
-
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
-
-        void shareChatRoom(GroupChatViewModel viewModel);
-
-        void getChannelInfo(String channelUuid);
 
         void sendVote(String pollId, boolean voted, VoteViewModel element);
 
