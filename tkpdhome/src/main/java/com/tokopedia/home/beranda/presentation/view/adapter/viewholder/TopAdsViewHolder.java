@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
