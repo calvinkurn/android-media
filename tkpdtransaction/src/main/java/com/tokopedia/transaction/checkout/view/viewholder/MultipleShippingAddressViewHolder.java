@@ -218,10 +218,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         if (isShipmentDataInitiated(data)) {
             itemPrice.setText(formatPrice(data.getProductPriceNumber()));
             deliveryPrice.setText(formatPrice(
-                    getGeneratedShipmentCartData(data).getDeliveryPriceTotal()));
-            insurancePrice.setText(formatPrice(
-                    getGeneratedShipmentCartData(data).getInsurancePrice()
-            ));
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice() +
+                            data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice()));
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                insurancePrice.setText(formatPrice(data.getSelectedShipmentDetailData().getSelectedCourier().getInsurancePrice()));
+            } else {
+                insurancePrice.setText("-");
+            }
         } else {
             itemPrice.setText("-");
             deliveryPrice.setText("-");
@@ -344,20 +347,23 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
 
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
-        if (isShipmentDataInitiated(data))
-            return data.getProductPriceNumber()
-                    + getGeneratedShipmentCartData(data).getDeliveryPriceTotal();
-        else return 0;
+        int subtotal = 0;
+        if (isShipmentDataInitiated(data)) {
+            subtotal += data.getProductPriceNumber() +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice() +
+                    data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice();
+            if (data.getSelectedShipmentDetailData().getUseInsurance()) {
+                subtotal += data.getSelectedShipmentDetailData().getSelectedCourier().getInsurancePrice();
+            }
+
+        }
+        return subtotal;
     }
 
     private boolean isShipmentDataInitiated(MultipleAddressShipmentAdapterData data) {
         return data.getSelectedShipmentDetailData() != null
                 &&
                 data.getSelectedShipmentDetailData().getShipmentCartData() != null;
-    }
-
-    private ShipmentCartData getGeneratedShipmentCartData(MultipleAddressShipmentAdapterData data) {
-        return data.getSelectedShipmentDetailData().getShipmentCartData();
     }
 
     private String formatPrice(long unformattedPrice) {

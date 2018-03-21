@@ -21,10 +21,8 @@ import com.tokopedia.transaction.checkout.view.viewholder.MultipleAddressShipmen
 import com.tokopedia.transaction.checkout.view.viewholder.MultipleShippingAddressViewHolder;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
@@ -95,11 +93,13 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
-        this.addressDataList.get(position).setSubTotal(shipmentDetailData
-                .getShipmentCartData()
-                .getDeliveryPriceTotal()
-                + addressDataList.get(position).getProductPriceNumber()
-        );
+        long subtotal = addressDataList.get(position).getProductPriceNumber() +
+                shipmentDetailData.getSelectedCourier().getDeliveryPrice() +
+                shipmentDetailData.getSelectedCourier().getAdditionalPrice();
+        if (shipmentDetailData.getUseInsurance()) {
+            subtotal += shipmentDetailData.getSelectedCourier().getInsurancePrice();
+        }
+        this.addressDataList.get(position).setSubTotal(subtotal);
     }
 
     @Override

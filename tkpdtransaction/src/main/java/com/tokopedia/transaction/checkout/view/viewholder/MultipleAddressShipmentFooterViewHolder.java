@@ -11,7 +11,9 @@ import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipme
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -118,11 +120,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         long totalShipmentPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
-                totalShipmentPrice = totalShipmentPrice
-                        + getGeneratedShipmentCartData(addressDataList.get(i))
-                        .getDeliveryPriceTotal()
-                        - getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice()
-                        - getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
+                totalShipmentPrice += addressDataList.get(i).getSelectedShipmentDetailData().
+                        getSelectedCourier().getDeliveryPrice();
             }
         }
         return totalShipmentPrice;
@@ -132,8 +131,11 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         long totalInsuranceCost = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
-                totalInsuranceCost = totalInsuranceCost +
-                        getGeneratedShipmentCartData(addressDataList.get(i)).getInsurancePrice();
+                if (addressDataList.get(i).getSelectedShipmentDetailData().getUseInsurance()) {
+                    totalInsuranceCost = totalInsuranceCost +
+                            addressDataList.get(i).getSelectedShipmentDetailData()
+                                    .getSelectedCourier().getInsurancePrice();
+                }
             }
         }
         return totalInsuranceCost;
@@ -144,7 +146,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i))) {
                 totalAdditionalFee = totalAdditionalFee +
-                        getGeneratedShipmentCartData(addressDataList.get(i)).getAdditionalFee();
+                        addressDataList.get(i).getSelectedShipmentDetailData()
+                                .getSelectedCourier().getAdditionalPrice();
             }
         }
         return totalAdditionalFee;

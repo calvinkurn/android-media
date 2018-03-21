@@ -434,10 +434,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             resetView();
             resetSwitch();
             presenter.setSelectedCourier(courierItemData);
-            presenter.getShipmentDetailData().getShipmentCartData()
-                    .setInsurancePrice(courierItemData.getInsurancePrice());
-            presenter.getShipmentDetailData().getShipmentCartData()
-                    .setAdditionalFee(courierItemData.getAdditionalPrice());
             presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                     courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
             setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -822,10 +818,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                     tvInsurancePrice.setText(
                             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                                     presenter.getSelectedCourier().getInsurancePrice(), true));
-                    presenter.getShipmentDetailData().getShipmentCartData()
-                            .setInsurancePrice(presenter.getSelectedCourier().getInsurancePrice());
-                    presenter.getShipmentDetailData().getShipmentCartData()
-                            .setAdditionalFee(presenter.getSelectedCourier().getAdditionalPrice());
                     presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                             presenter.getSelectedCourier().getAdditionalPrice() +
                                     presenter.getSelectedCourier().getDeliveryPrice() +
@@ -834,10 +826,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             }
         } else {
             if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
-                presenter.getShipmentDetailData().getShipmentCartData()
-                        .setInsurancePrice(0);
-                presenter.getShipmentDetailData().getShipmentCartData().setAdditionalFee(presenter
-                        .getSelectedCourier().getAdditionalPrice());
                 presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                         presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
                                 presenter.getSelectedCourier().getInsurancePrice());

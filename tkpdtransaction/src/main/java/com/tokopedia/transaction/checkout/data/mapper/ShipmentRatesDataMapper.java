@@ -71,7 +71,7 @@ public class ShipmentRatesDataMapper {
                                                 CartSellerItemModel cartSellerItemModel) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
-        shipmentCartData.setOrderValue(((Double) cartSellerItemModel.getTotalPrice()).intValue());
+        shipmentCartData.setOrderValue((int) cartSellerItemModel.getTotalItemPrice());
         shipmentCartData.setWeight(cartSellerItemModel.getTotalWeight());
 
         return shipmentCartData;
