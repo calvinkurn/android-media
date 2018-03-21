@@ -89,7 +89,11 @@ public class EventReviewTicketPresenter
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
-        if (code.length() > 0) {
+        if (code.length() > 0 && code.length() <= 3)
+            getView().showPromoSuccessMessage(getView().getActivity().getString(R.string.promocode_minimum_lenght_warning),
+                    getView().getActivity().getResources().getColor(R.color.red_a700));
+        else if (code.length() > 3) {
+            getView().hideSuccessMessage();
             isPromoCodeCase = true;
             verifyCart();
         } else {

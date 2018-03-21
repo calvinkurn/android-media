@@ -112,7 +112,6 @@ public class EventBookTicketActivity
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-        hideProgressBar();
         startActivityForResult(intent, requestCode);
     }
 
@@ -284,5 +283,11 @@ public class EventBookTicketActivity
             super.onBackPressed();
         else
             finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideProgressBar();
     }
 }

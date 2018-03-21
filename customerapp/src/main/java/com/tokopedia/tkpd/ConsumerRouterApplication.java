@@ -76,6 +76,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -1605,5 +1606,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 StreamAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
                 ""
         );
+    }
+
+    @Override
+    public void generateBranchLink(String channelId, String title, String contentMessage, String
+            imgUrl, String
+            shareUrl, Activity activity, final ShareListener
+                                           listener) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setId(channelId)
+                .setName(title)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.GROUPCHAT_TYPE)
+                .build();
+
+        BranchSdkUtils.generateBranchLink(shareData, activity, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                listener.onGenerateLink(shareContents, shareUri);
+            }
+        });
     }
 }
