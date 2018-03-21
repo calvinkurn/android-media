@@ -26,7 +26,7 @@ import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
@@ -272,13 +272,13 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private boolean checkPriceValid(double value) {
-        if (ViewUtils.isPriceValid(value, currencyType, listener.isOfficialStore())) {
+        if (ProductPriceRangeUtils.isPriceValid(value, currencyType, listener.isOfficialStore())) {
             counterInputPrice.setCounterError(null);
             return true;
         }
         counterInputPrice.setCounterError(getContext().getString(R.string.product_error_product_price_not_valid,
-                ViewUtils.getMinPriceString(currencyType, listener.isOfficialStore()),
-                ViewUtils.getMaxPriceString(currencyType, listener.isOfficialStore())));
+                ProductPriceRangeUtils.getMinPriceString(currencyType, listener.isOfficialStore()),
+                ProductPriceRangeUtils.getMaxPriceString(currencyType, listener.isOfficialStore())));
         return false;
     }
 
@@ -332,7 +332,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         }
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -152,14 +153,14 @@ public abstract class BaseImageFragment extends Fragment {
                 !needRetainImage());
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void goToGallery() {
         GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), this,
                 0, 1, true);
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void goToCamera() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, 0,

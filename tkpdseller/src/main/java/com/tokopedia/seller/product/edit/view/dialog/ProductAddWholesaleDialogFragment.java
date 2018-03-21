@@ -19,7 +19,7 @@ import com.tokopedia.design.text.DecimalInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
@@ -192,10 +192,10 @@ public class ProductAddWholesaleDialogFragment extends DialogFragment {
     }
 
     protected boolean isPriceValid(double currencyValue) {
-        if (!ViewUtils.isPriceValid(currencyValue,currencyType, isOfficialStore)) {
+        if (!ProductPriceRangeUtils.isPriceValid(currencyValue,currencyType, isOfficialStore)) {
             priceDecimalInputView.setError(getString(R.string.product_error_product_price_not_valid,
-                    ViewUtils.getMinPriceString(currencyType, isOfficialStore),
-                    ViewUtils.getMaxPriceString(currencyType, isOfficialStore)));
+                    ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
+                    ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
             return false;
         }
 
