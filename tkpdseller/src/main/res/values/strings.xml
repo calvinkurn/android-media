@@ -225,7 +225,7 @@
     <string name="product_label_product_manage">Pengelolaan Produk</string>
     <string name="product_variant_price_must_be_filled">Harga varian tidak boleh kosong.</string>
     <string name="stock_variant_info">Ubah pilihan Status Produk di halaman depan menjadi \"Stok Terbatas\" untuk mengatur jumlah stok varian per produk.</string>
-    <string name="sku_helper_info">SKU adalah kode unik yang diberikan kepada setiap item barang.</string>
+    <string name="sku_helper_info">SKU (Stock Keeping Unit) adalah kode unik yang diberikan kepada setiap item barang.</string>
     <string name="product_sizechart_optional">Panduan Ukuran (Optional)</string>
     <string name="product_sizechart_info">Tambah gambar panduan atau tabel ukuran agar pembeli mengetahui dimensi produk setiap varian.</string>
     <string name="product_variant_option_cannot_empty">Minimum 1 opsi varian harus dipilih</string>
