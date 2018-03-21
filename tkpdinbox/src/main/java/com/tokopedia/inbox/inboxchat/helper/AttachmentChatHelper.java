@@ -93,9 +93,9 @@ public class AttachmentChatHelper {
             }
 
             if(dummy) {
-                ImageHandler.loadImageChatBlurred(view, imageUrl);
+                ImageHandler.loadImageChatBlurred(view, imageUrl, new ChatGlideImageRequestListener());
             }else {
-                ImageHandler.loadImageChat(view, imageUrl);
+                ImageHandler.loadImageChat(view, imageUrl, new ChatGlideImageRequestListener());
                 setVisibility(progressBarSendImage, View.GONE);
             }
             message.setVisibility(View.GONE);
@@ -109,12 +109,12 @@ public class AttachmentChatHelper {
     }
 
     private void parseType(final ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, final String fullTime) {
-        message.setVisibility(View.VISIBLE);
+        message.setVisibility(View.GONE);
         if (attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
             view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
             view.getLayoutParams().height = view.getLayoutParams().width;
-            ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl());
+            ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(),new ChatGlideImageRequestListener());
         } else {
             view.setVisibility(View.GONE);
         }

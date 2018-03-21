@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
     android:padding="@dimen/padding_med">
 
@@ -29,7 +31,7 @@
         android:layout_height="@dimen/image_width_xs"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check"
         android:visibility="gone"
+        app:srcCompat="@drawable/ic_check"
         tools:visibility="visible" />
 </RelativeLayout>

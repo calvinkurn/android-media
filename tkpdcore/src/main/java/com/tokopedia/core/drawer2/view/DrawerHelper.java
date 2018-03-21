@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
@@ -80,11 +81,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                if (context.getApplication() instanceof TkpdInboxRouter) {
-                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    ((TkpdCoreRouter) context.getApplication())
+                            .sendTrackingGroupChatLeftNavigation();
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
@@ -188,11 +191,11 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         return null;
     }
 
-   private void sendReferralGTMNavigationEvent(DrawerItem item){
-        if(context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())){
+    private void sendReferralGTMNavigationEvent(DrawerItem item) {
+        if (context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())) {
             sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
-        }else {
+        } else {
             sendGTMNavigationEvent(AppEventTracking.EventLabel.REFERRAL);
         }
-   }
+    }
 }

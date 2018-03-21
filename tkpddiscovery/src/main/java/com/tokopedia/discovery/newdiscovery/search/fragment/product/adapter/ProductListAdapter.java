@@ -157,8 +157,12 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
-    public void addGuidedSearch() {
+    public void addGuidedSearch(String currentKey, String currentPage) {
         if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
+            for (GuidedSearchViewModel.Item item : guidedSearch.getItemList()) {
+                item.setPreviousKey(currentKey);
+                item.setCurrentPage(currentPage);
+            }
             int start = getItemCount();
             list.add(guidedSearch);
             notifyItemInserted(start);

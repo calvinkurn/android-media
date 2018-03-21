@@ -45,6 +45,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
+    private String mOpenedActivity = null;
 
     private ShakeDetectManager() {
 
@@ -55,7 +56,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void registerShake(String screenName) {
-        sTopActivity = screenName;
+        mOpenedActivity = screenName;
         if(isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
@@ -95,6 +96,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     @Override
     public void hearShake() {
+        sTopActivity = mOpenedActivity;
         if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);

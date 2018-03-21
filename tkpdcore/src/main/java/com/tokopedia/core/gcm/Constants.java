@@ -128,7 +128,7 @@ public interface Constants {
         String FAVORITE = "tokopedia://home/favorite";
 
         String EVENTS = "tokopedia://events";
-        String EVENTS_ACTIVITIES = "tokopedia://events/activities";
+        String EVENTS_HIBURAN = "tokopedia://hiburan";
         String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
@@ -136,6 +136,9 @@ public interface Constants {
         String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
+
+        String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";

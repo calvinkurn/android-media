@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">TkpdStream</string>
+
+    <!--Channel List-->
+    <string name="activity_channel">Channel</string>
+    <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
+    <string name="dot">●</string>
+    <string name="vote">Vote</string>
+    <string name="vote_has_ended">Vote telah berakhir</string>
+    <string name="title_share">Share</string>
+    <string name="title_bagikan">Bagikan</string>
+    <string name="default_sendbird_error">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="sendbird_error_retry">Terjadi kesalahan. Mohon coba kembali</string>
+    <string name="sendbird_error_network">Terjadi kesalahan koneksi. Mohon periksa jaringan internet anda.</string>
+    <string name="sendbird_error_server">Terjadi kesalahan pada server. Mohon coba beberapa saat lagi.</string>
+    <string name="groupchat_action_enter">bergabung</string>
+    <string name="label_admin">Admin</string>
+    <string name="participant">partisipan</string>
+    <string name="view">dilihat</string>
+    <string name="voter">telah memilih</string>
+    <string name="pending">Sedang Mengirim…</string>
+    <string name="groupchat_action_exit">telah keluar dari chat</string>
+    <string name="lets_vote">"Ikutan Vote Yuk!"</string>
+    <string name="lets_chat">"Ikutan Chat"</string>
+    <string name="thanks_voted_title">"Terima Kasih Telah Memilih!"</string>
+    <string name="has_voted">"Anda Telah Memilih!"</string>
+    <string name="wait_voting_winner_info">"Tunggu pengumuman pemenang setelah vote berakhir."</string>
+
+    <string name="share_gplus">Google+</string>
+    <string name="share_fb">Facebook</string>
+    <string name="share_twitter">Twitter</string>
+    <string name="share_line">Line</string>
+    <string name="share_wa">Whatsapp</string>
+    <string name="share_sms">SMS</string>
+    <string name="share_copy">Copy Link</string>
+    <string name="share_others">Lainnya</string>
+
+
+    <string name="title_poll_started">VOTE TELAH DIMULAI</string>
+    <string name="title_poll_finished">VOTE TELAH BERAKHIR</string>
+    <string name="chat_as">Chat sebagai</string>
+    <string name="channel_not_found">Channel tidak ditemukan.</string>
+    <string name="exit">Keluar</string>
+    <string name="user_is_banned">Anda diblokir oleh admin karena melakukan pelanggaran, sehingga tidak dapat melihat konten ini.</string>
+    <string name="please_check_timezone_to_vote">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
+    <string name="new_message">Pesan Baru</string>
+    <string name="title_info">Info</string>
+
+    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+    <string name="default_kicked_title">Akun Anda Terblokir</string>
+    <string name="channel_not_found_message">Channel tidak ditemukan. Silahkan coba beberapa saat lagi.</string>
+    <string name="info_prize">Info hadiah</string>
+    <string name="info_polling">Info Vote</string>
+    <string name="default_banned_title">Akun Anda Terblokir</string>
+    <string name="channel_has_been_deleted">Channel telah dihapus. Silahkan join channel lain.</string>
+    <string name="channel_deactivated">Channel sudah tidak aktif. Silahkan join channel lain.</string>
+    <string name="you_have_been_idle_for_too_long">Anda telah dikeluarkan dari chatroom karena
+        terlalu lama tidak aktif.</string>
+    <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
+    <string name="lets_join_channel">Yuk gabung sekarang di channel %s</string>
+
+</resources>

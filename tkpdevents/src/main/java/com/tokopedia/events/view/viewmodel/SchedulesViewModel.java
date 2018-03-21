@@ -3,14 +3,15 @@ package com.tokopedia.events.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SchedulesViewModel implements Parcelable {
 
-    int startDate;
-    int endDate;
-    String aDdress;
+    private int startDate;
+    private int endDate;
+    private String timeRange;
+    private String aDdress;
+    private String cityName;
     private List<PackageViewModel> packages = null;
 
     public int getStartDate() {
@@ -42,23 +43,28 @@ public class SchedulesViewModel implements Parcelable {
         return packages;
     }
 
+
+    public String getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(String timeRange) {
+        this.timeRange = timeRange;
+    }
+
     public void setPackages(List<PackageViewModel> packages) {
         this.packages = packages;
     }
 
-    public SchedulesViewModel() {
+    public String getCityName() {
+        return cityName;
     }
 
-    protected SchedulesViewModel(Parcel in) {
-        startDate = in.readInt();
-        endDate = in.readInt();
-        aDdress = in.readString();
-        if (in.readByte() == 0x01) {
-            packages = new ArrayList<PackageViewModel>();
-            in.readList(packages, PackageViewModel.class.getClassLoader());
-        } else {
-            packages = null;
-        }
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public SchedulesViewModel() {
     }
 
     @Override
@@ -68,22 +74,27 @@ public class SchedulesViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(startDate);
-        dest.writeInt(endDate);
-        dest.writeString(aDdress);
-        if (packages == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(packages);
-        }
+        dest.writeInt(this.startDate);
+        dest.writeInt(this.endDate);
+        dest.writeString(this.timeRange);
+        dest.writeString(this.aDdress);
+        dest.writeString(this.cityName);
+        dest.writeTypedList(this.packages);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<SchedulesViewModel> CREATOR = new Parcelable.Creator<SchedulesViewModel>() {
+    protected SchedulesViewModel(Parcel in) {
+        this.startDate = in.readInt();
+        this.endDate = in.readInt();
+        this.timeRange = in.readString();
+        this.aDdress = in.readString();
+        this.cityName = in.readString();
+        this.packages = in.createTypedArrayList(PackageViewModel.CREATOR);
+    }
+
+    public static final Creator<SchedulesViewModel> CREATOR = new Creator<SchedulesViewModel>() {
         @Override
-        public SchedulesViewModel createFromParcel(Parcel in) {
-            return new SchedulesViewModel(in);
+        public SchedulesViewModel createFromParcel(Parcel source) {
+            return new SchedulesViewModel(source);
         }
 
         @Override

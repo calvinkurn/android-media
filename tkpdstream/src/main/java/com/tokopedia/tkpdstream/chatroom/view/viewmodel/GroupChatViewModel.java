@@ -1,0 +1,100 @@
+package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * @author by nisie on 2/14/18.
+ */
+
+public class GroupChatViewModel implements Parcelable{
+
+    private String channelUuid;
+    private ChannelInfoViewModel channelInfoViewModel;
+    private long timeStampBeforePause = 0;
+
+    public GroupChatViewModel(String channelUuid) {
+        this.channelUuid = channelUuid;
+        this.channelInfoViewModel = null;
+        this.timeStampBeforePause = 0;
+    }
+
+    protected GroupChatViewModel(Parcel in) {
+        channelUuid = in.readString();
+        channelInfoViewModel = in.readParcelable(ChannelInfoViewModel.class.getClassLoader());
+        timeStampBeforePause = in.readLong();
+    }
+
+    public static final Creator<GroupChatViewModel> CREATOR = new Creator<GroupChatViewModel>() {
+        @Override
+        public GroupChatViewModel createFromParcel(Parcel in) {
+            return new GroupChatViewModel(in);
+        }
+
+        @Override
+        public GroupChatViewModel[] newArray(int size) {
+            return new GroupChatViewModel[size];
+        }
+    };
+
+    public String getChannelUuid() {
+        return channelUuid;
+    }
+
+    public void setTotalParticipant(String totalParticipant) {
+        if (channelInfoViewModel != null) {
+            this.channelInfoViewModel.setTotalParticipant(totalParticipant);
+        }
+    }
+
+    public String getTotalParticipant() {
+        return channelInfoViewModel != null ? channelInfoViewModel.getTotalParticipantsOnline() :
+                "0";
+    }
+
+    public String getChannelName() {
+        return channelInfoViewModel != null ? channelInfoViewModel.getTitle() : "";
+    }
+
+
+    public String getChannelUrl() {
+        return channelInfoViewModel != null ? channelInfoViewModel.getChannelUrl() : "";
+    }
+
+    public void setChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        this.channelInfoViewModel = channelInfoViewModel;
+    }
+
+    public String getPollId() {
+        if (channelInfoViewModel != null
+                && channelInfoViewModel.getVoteInfoViewModel() != null) {
+            return this.channelInfoViewModel.getVoteInfoViewModel().getPollId();
+        } else {
+            return "";
+        }
+    }
+
+    public ChannelInfoViewModel getChannelInfoViewModel() {
+        return channelInfoViewModel;
+    }
+
+    public long getTimeStampBeforePause() {
+        return timeStampBeforePause;
+    }
+
+    public void setTimeStampBeforePause(long timeStampBeforePause) {
+        this.timeStampBeforePause = timeStampBeforePause;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(channelUuid);
+        dest.writeParcelable(channelInfoViewModel, flags);
+        dest.writeLong(timeStampBeforePause);
+    }
+}
