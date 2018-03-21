@@ -288,21 +288,13 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 int k = 0;
                 Character firstChar = selectedSeats.get(i).charAt(k);
                 StringBuilder physicalRowID = new StringBuilder();
-                while(Character.isLetter(firstChar)) {
+                while (Character.isLetter(firstChar)) {
                     physicalRowID.append(firstChar);
                     k++;
                     firstChar = selectedSeats.get(i).charAt(k);
                 }
                 physicalRowIds.add(physicalRowID.toString());
                 seatIds.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
-
-//                if () {
-//
-//                    physicalRowIds.add("" + selectedSeats.get(i).charAt(0));
-//                    seatIds.add(selectedSeats.get(i).substring(1, selectedSeats.get(i).length()));
-//                } else {
-//                    seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
-//                }
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             mPresenter.verifySeatSelection(selectedSeatViewModel);
