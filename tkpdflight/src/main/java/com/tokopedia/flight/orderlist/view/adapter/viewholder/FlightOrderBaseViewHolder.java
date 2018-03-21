@@ -173,8 +173,6 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             if (item.getItemId() == R.id.action_detail) {
                 onDetailOptionClicked();
                 return true;
-            } else if (item.getItemId() == R.id.action_cancel) {
-                return true;
             } else if (item.getItemId() == R.id.action_help) {
                 onHelpOptionClicked();
                 return true;
