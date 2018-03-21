@@ -343,7 +343,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
                 priceSpinnerCounterInputView.setCounterError(
                         priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
                         ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore),
-                        ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore)));
+                        ProductPriceRangeUtils.getMaxPriceString( currencyType, officialStore)));
                 wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
                 return false;
             } else if (ProductPriceRangeUtils.getMinPrice(currencyType, officialStore) == priceValue) {
