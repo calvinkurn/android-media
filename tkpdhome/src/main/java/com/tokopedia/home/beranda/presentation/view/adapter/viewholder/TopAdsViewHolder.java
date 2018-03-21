@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -68,10 +69,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onShopItemClicked(Shop shop) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
-            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-            Intent intent = new Intent(activity, ShopInfoActivity.class);
-            intent.putExtras(bundle);
-            activity.startActivity(intent);
+            Intent intent = ((IHomeRouter) activity.getApplication()).getShopPageIntent(activity,
+                    shop.getId());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         }
     }
 
