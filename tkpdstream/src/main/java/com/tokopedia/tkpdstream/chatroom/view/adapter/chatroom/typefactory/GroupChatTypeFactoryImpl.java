@@ -1,23 +1,23 @@
-package com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.AdminAnnouncementViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ChatViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ImageViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.PendingChatViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.UserActionViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.VoteAnnouncementViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.AdminAnnouncementViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.ImageViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.PendingChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.UserActionViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.VoteAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/7/18.

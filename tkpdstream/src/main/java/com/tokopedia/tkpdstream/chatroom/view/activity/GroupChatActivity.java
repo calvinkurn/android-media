@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -22,24 +24,23 @@ import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.ShareData;
-import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatViewPagerAdapter;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 2/6/18.
  */
 
-public class GroupChatActivity extends BaseSimpleActivity {
+public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTabAdapter.TabListener {
 
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
@@ -95,9 +96,12 @@ public class GroupChatActivity extends BaseSimpleActivity {
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
     public static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
     public View rootView;
+//
+//    private TouchViewPager viewPager;
+//    private GroupChatViewPagerAdapter pagerAdapter;
 
-    private TouchViewPager viewPager;
-    private GroupChatViewPagerAdapter pagerAdapter;
+    private RecyclerView tabs;
+    private GroupChatTabAdapter tabAdapter;
 
     private int initialFragment;
 
@@ -116,30 +120,33 @@ public class GroupChatActivity extends BaseSimpleActivity {
             initialFragment = CHATROOM_FRAGMENT;
         }
 
-        initView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            TransparentStatusBarHelper.assistActivity(this);
-        }
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        initView(savedInstanceState);
     }
 
-    private void initView() {
+    private void initView(Bundle savedInstanceState) {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
 
-        removePaddingStatusBar();
-
         setupToolbar();
         setupViewPager(bundle);
 
-        showFragment(initialFragment);
+    }
+
+    @Override
+    protected void setupStatusBar() {
 
     }
 
     private void setupToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            TransparentStatusBarHelper.assistActivity(this);
+        }
+        removePaddingStatusBar();
+
         toolbar = findViewById(R.id.toolbar);
         channelBanner = findViewById(R.id.channel_banner);
 
@@ -158,7 +165,6 @@ public class GroupChatActivity extends BaseSimpleActivity {
         }
 
         channelBanner.setLayoutParams(params);
-
 
         setSupportActionBar(toolbar);
 
@@ -219,50 +225,95 @@ public class GroupChatActivity extends BaseSimpleActivity {
         }
     }
 
+    //
     private void setupViewPager(Bundle bundle) {
-        viewPager = findViewById(R.id.pager);
-        Tabs tabs = findViewById(R.id.tab);
-        pagerAdapter = GroupChatViewPagerAdapter.createInstance(getSupportFragmentManager());
-        pagerAdapter.addFragment(GroupChatFragment.createInstance(bundle), getString(R.string
-                .title_group_chat));
-        viewPager.setAdapter(pagerAdapter);
-        pagerAdapter.notifyDataSetChanged();
+//        viewPager = findViewById(R.id.pager);
+//        Tabs tabs = findViewById(R.id.tab);
+//        pagerAdapter = GroupChatViewPagerAdapter.createInstance(getSupportFragmentManager());
+//        pagerAdapter.addFragment(GroupChatFragment.createInstance(bundle), getString(R.string
+//                .title_group_chat));
+//        viewPager.setAdapter(pagerAdapter);
+//        pagerAdapter.notifyDataSetChanged();
+//
+//        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager.setCurrentItem(tab.getPosition());
+//                KeyboardHandler.hideSoftKeyboard(GroupChatActivity.this);
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//                if (tab.getPosition() == CHATROOM_FRAGMENT) {
+//                    Fragment fragment = pagerAdapter.getItem(tab.getPosition());
+//                    if (fragment != null) {
+//                        if (fragment instanceof GroupChatFragment) {
+//                            ((GroupChatFragment) fragment).scrollToBottom();
+//                        }
+//                    }
+//                }
+//            }
+//        });
+//
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+//        tabs.setupWithViewPager(viewPager);
 
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                KeyboardHandler.hideSoftKeyboard(GroupChatActivity.this);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                if (tab.getPosition() == CHATROOM_FRAGMENT) {
-                    Fragment fragment = pagerAdapter.getItem(tab.getPosition());
-                    if (fragment != null) {
-                        if (fragment instanceof GroupChatFragment) {
-                            ((GroupChatFragment) fragment).scrollToBottom();
-                        }
-                    }
-                }
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.setupWithViewPager(viewPager);
+        tabs = findViewById(R.id.tab);
+        tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        tabAdapter = GroupChatTabAdapter.createInstance(this, createListFragment());
+        tabs.setAdapter(tabAdapter);
+        showFragment(initialFragment);
     }
 
-    private void showFragment(int initialFragment) {
-        if (viewPager != null && viewPager.getAdapter().getCount() < initialFragment) {
-            viewPager.setCurrentItem(initialFragment);
+    private List<TabViewModel> createListFragment() {
+        List<TabViewModel> list = new ArrayList<>();
+        list.add(new TabViewModel(getString(R.string.title_group_chat)));
+        list.add(new TabViewModel(getString(R.string.title_vote)));
+        return list;
+    }
+
+
+    private void showFragment(int fragmentPosition) {
+//        if (viewPager != null && viewPager.getAdapter().getCount() < initialFragment) {
+//            viewPager.setCurrentItem(initialFragment);
+//        }
+
+        this.initialFragment = fragmentPosition;
+        tabAdapter.setActiveFragment(fragmentPosition);
+
+        switch (fragmentPosition) {
+            case CHATROOM_FRAGMENT:
+                showChatroomFragment();
+                break;
+            default:
+                break;
         }
+
+    }
+
+    private void showChatroomFragment() {
+
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = GroupChatFragment.createInstance(bundle);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 
     private void removePaddingStatusBar() {
+
         rootView = findViewById(R.id.root_view);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -297,6 +348,57 @@ public class GroupChatActivity extends BaseSimpleActivity {
         }
     }
 
+    public static int getSoftButtonsBarSizePort(Activity activity) {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_group_chat;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            startActivity(((StreamModuleRouter) getApplicationContext()).getInboxChannelsIntent(this));
+            finish();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        setContentView(getLayoutRes());
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    public void onTabClicked(int position) {
+        showFragment(position);
+    }
+
+    /**
+     * @param context
+     * @param channelViewModel
+     * only to be used from channel list.
+     * @return Intent
+     */
     public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
@@ -319,51 +421,5 @@ public class GroupChatActivity extends BaseSimpleActivity {
         bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true);
         intent.putExtras(bundle);
         return intent;
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_group_chat;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot()) {
-            startActivity(((StreamModuleRouter) getApplicationContext()).getInboxChannelsIntent(this));
-            finish();
-        }
-        super.onBackPressed();
-    }
-
-    public static int getSoftButtonsBarSizePort(Activity activity) {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int usableHeight = metrics.heightPixels;
-            activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-            int realHeight = metrics.heightPixels;
-            if (realHeight > usableHeight)
-                return realHeight - usableHeight;
-            else
-                return 0;
-        }
-        return 0;
-    }
-
-
-    @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        setContentView(getLayoutRes());
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-        return null;
-    }
-
-    @Override
-    protected void setupStatusBar() {
-
     }
 }

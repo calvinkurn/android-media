@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
+package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 
 import com.tokopedia.tkpdstream.common.util.TimeConverter;
 

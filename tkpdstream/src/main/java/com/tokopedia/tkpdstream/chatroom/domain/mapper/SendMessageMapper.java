@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.sendbird.android.UserMessage;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 
 import javax.inject.Inject;
 

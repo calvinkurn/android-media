@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/27/18.

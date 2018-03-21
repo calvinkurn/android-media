@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.UserActionMapper;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 
 import javax.inject.Inject;
 
