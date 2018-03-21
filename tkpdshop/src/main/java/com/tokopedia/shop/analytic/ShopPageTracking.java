@@ -458,8 +458,8 @@ public class ShopPageTracking {
         );
     }
 
-    private int getProductPosition(int adapterPosition, boolean isGrid) {
-        return isGrid ? (int) Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1;
+    private String getProductPosition(int adapterPosition, boolean isGrid) {
+        return String.valueOf(isGrid ? (int) Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1);
     }
 
     public static int getShopType(ShopInfoDetail info) {
