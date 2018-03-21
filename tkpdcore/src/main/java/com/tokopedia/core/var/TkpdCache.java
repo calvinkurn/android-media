@@ -246,6 +246,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String APP_REFERRAL_TITLE = "app_referral_title";
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
         public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
+        public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
         public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
 
 
