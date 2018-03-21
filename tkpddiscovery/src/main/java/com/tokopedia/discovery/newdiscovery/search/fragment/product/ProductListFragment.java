@@ -644,6 +644,7 @@ public class ProductListFragment extends SearchSectionFragment
         if (!adapter.hasGuidedSearch()) {
             getGuidedSearch();
         }
+        showRefreshLayout();
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -664,7 +665,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void onSwipeToRefresh() {
-        showRefreshLayout();
         reloadData();
     }
 
