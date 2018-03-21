@@ -1,11 +1,11 @@
-package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/7/18.

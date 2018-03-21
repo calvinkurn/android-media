@@ -11,10 +11,10 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.AdminImagePojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 

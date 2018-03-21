@@ -31,7 +31,7 @@ import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
-import com.tokopedia.tkpdstream.chatroom.view.SpaceItemDecoration;
+import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;

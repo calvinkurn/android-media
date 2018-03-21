@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
-import android.util.Log;
-
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -16,9 +14,9 @@ import com.tokopedia.tkpdstream.chatroom.domain.usecase.RefreshMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;

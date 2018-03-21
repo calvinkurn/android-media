@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view;
+package com.tokopedia.tkpdstream.common.design;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
 
 /**
  * @author by nisie on 2/27/18.

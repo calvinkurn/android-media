@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.chatroom.view.adapter;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +11,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.BaseChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;

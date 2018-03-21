@@ -40,27 +40,48 @@
             tools:subtitle="subtitle"
             tools:title="title"/>
 
-        <com.tokopedia.design.tab.Tabs
+        <!--<com.tokopedia.design.tab.Tabs-->
+        <!--android:id="@+id/tab"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/channel_banner"-->
+        <!--app:tabTextAppearance="@style/Tabs.Main"-->
+        <!--app:tabType="main"/>-->
+
+        <!--<com.tokopedia.abstraction.base.view.widget.TouchViewPager-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/pager"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_below="@+id/tab"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_weight="1"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/tab"-->
+        <!--app:layout_constraintVertical_weight="1"/>-->
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/channel_banner"
-            app:tabTextAppearance="@style/Tabs.Main"
-            app:tabType="main"/>
+            app:layout_constraintTop_toBottomOf="@id/channel_banner"/>
 
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/pager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_below="@+id/tab"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tab"
-            app:layout_constraintVertical_weight="1"/>
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     xmlns:tools="http://schemas.android.com/tools"
+                     android:id="@+id/container"
+                     android:layout_width="0dp"
+                     android:layout_height="0dp"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_weight="1"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tab"
+                     app:layout_constraintVertical_weight="1"
+                     tools:ignore="MergeRootFrame"/>
 
     </android.support.constraint.ConstraintLayout>
 

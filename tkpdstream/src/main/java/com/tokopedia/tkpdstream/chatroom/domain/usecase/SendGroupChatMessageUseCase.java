@@ -7,8 +7,8 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.SendMessageMapper;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import javax.inject.Inject;
