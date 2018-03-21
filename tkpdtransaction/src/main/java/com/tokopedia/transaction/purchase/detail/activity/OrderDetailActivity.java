@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -130,6 +130,7 @@ public class OrderDetailActivity extends TActivity
         setStatusView(data);
         setDriverInfoView(data);
         setItemListView(data);
+        setAwbLayout(data);
         setInvoiceView(data);
         setDescriptionView(data);
         setPriceView(data);
@@ -137,8 +138,20 @@ public class OrderDetailActivity extends TActivity
 
     }
 
+    private void setAwbLayout(OrderDetailData data) {
+        if (data.getAwb() != null && !data.getAwb().isEmpty()) {
+            TextView referenceNumber = findViewById(R.id.reference_number);
+            TextView copyButton = findViewById(R.id.copy_reference_number);
+            referenceNumber.setText(data.getAwb());
+            copyButton.setOnClickListener(onCopyAwbListener(referenceNumber));
+        } else {
+            ViewGroup awbLayout = findViewById(R.id.awb_layout);
+            awbLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void setInsuranceNotificationView(OrderDetailData data) {
-        if(data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
+        if (data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
             ViewGroup notificationLayout = findViewById(R.id.notification_layout);
             TextView notificationTextView = findViewById(R.id.notification_text_view);
             notificationLayout.setVisibility(View.VISIBLE);
@@ -356,6 +369,23 @@ public class OrderDetailActivity extends TActivity
         }
     }
 
+    private View.OnClickListener onCopyAwbListener(final TextView awbText) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboardManager =
+                        (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(
+                        ClipData.newPlainText("awb", awbText.getText().toString())
+                );
+                NetworkErrorHelper.showSnackbar(
+                        OrderDetailActivity.this,
+                        getString(R.string.awb_info)
+                );
+            }
+        };
+    }
+
     private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {
         return new View.OnClickListener() {
             @Override
@@ -435,7 +465,7 @@ public class OrderDetailActivity extends TActivity
         String id;
         String name;
         String logoUrl;
-        if(getExtraUserMode() == SELLER_MODE) {
+        if (getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
             name = orderData.getBuyerUserName();
             logoUrl = orderData.getBuyerLogo();

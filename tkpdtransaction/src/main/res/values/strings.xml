@@ -4,6 +4,7 @@
     <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
     <string name="title_scan_awb">Scan Barcode</string>
     <string name="label_insert_awb">Isi Nomor Resi</string>
+    <string name="title_reference_number_alternative">No. Resi</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
@@ -169,6 +170,7 @@
     <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
     <string name="label_explanation">Keterangan</string>
     <string name="label_awb_number">Nomor Resi</string>
+    <string name="notification_awb_copied">Nomor Resi sudah tersalin</string>
     <string name="title_reject_order_weight_price_fragment">Perbarui Harga atau Berat Produk</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
     <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
