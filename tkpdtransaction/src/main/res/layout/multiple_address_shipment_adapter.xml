@@ -27,6 +27,7 @@
                 style="@style/TextSmallMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/new_margin_small"
                 android:lineSpacingExtra="5sp"
                 android:text="@string/label_sent_by"
                 android:textColor="@color/label_color" />
@@ -184,8 +185,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/sub_total_detail_button"
                 android:layout_toStartOf="@id/sub_total_detail_button"
-                android:textColor="@color/orange_900"
                 android:fontFamily="sans-serif-medium"
+                android:textColor="@color/orange_900"
                 tools:text="-" />
 
         </RelativeLayout>

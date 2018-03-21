@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataCheckoutRequest;
@@ -25,10 +26,8 @@ import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCart
 import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -144,7 +143,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     adapterData.setShopId(currentGroupShop.getShop().getShopId());
                     adapterData.setProductName(currentProduct.getProductName());
                     adapterData.setProductPriceNumber(currentProduct.getProductPrice());
-                    adapterData.setProductPrice(formatRupiah(currentProduct.getProductPrice()));
+                    adapterData.setProductPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            currentProduct.getProductPrice(), true));
                     adapterData.setProductImageUrl(currentProduct.getProductImageSrc200Square());
                     adapterData.setSenderName(currentGroupShop.getShop().getShopName());
                     MultipleAddressItemData addressItemData = new MultipleAddressItemData();
@@ -335,12 +335,6 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private int switchValue(boolean isTrue) {
         if (isTrue) return 1;
         else return 0;
-    }
-
-    private String formatRupiah(long rupiahAmount) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(rupiahAmount).replace("Rp", "Rp ");
     }
 
     @Override

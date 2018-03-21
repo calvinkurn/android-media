@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transaction.R;
@@ -39,9 +40,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
-
-    private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final NumberFormat CURRENCY_IDR = NumberFormat.getCurrencyInstance(LOCALE_ID);
 
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
@@ -180,8 +178,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private void bindFirstCartItem(CartItemModel cartItemModel) {
         ImageHandler.LoadImage(mIvProductImage, cartItemModel.getImageUrl());
         mTvProductName.setText(cartItemModel.getName());
-        mTvProductPrice.setText(CURRENCY_IDR.format(cartItemModel.getPrice())
-                .replace("Rp", "Rp "));
+        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (int) cartItemModel.getPrice(), true));
         mTvProductWeight.setText(cartItemModel.getWeightFmt());
         mTvProductTotalItem.setText(String.valueOf(cartItemModel.getQuantity()));
 
@@ -234,15 +232,15 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
 
         mTvShopName.setText(cartSellerItem.getShopName());
 
-        mTvTotalItemPrice.setText(getPriceFormat(cartSellerItem.getTotalItemPrice()));
+        mTvTotalItemPrice.setText(getPriceFormat((int) cartSellerItem.getTotalItemPrice()));
         mTvTotalItemLabel.setText(getTotalItemLabel(cartSellerItem.getTotalQuantity()));
         mTvShippingFeeLabel.setText(getTotalWeightLabel(cartSellerItem.getTotalWeight(),
                 cartSellerItem.getWeightUnit()));
 
-        mTvShippingFee.setText(getPriceFormat(cartSellerItem.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(cartSellerItem.getInsuranceFee()));
+        mTvShippingFee.setText(getPriceFormat((int) cartSellerItem.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat((int) cartSellerItem.getInsuranceFee()));
 
-        mTvSubTotal.setText(getPriceFormat(cartSellerItem.getTotalPrice()));
+        mTvSubTotal.setText(getPriceFormat((int) cartSellerItem.getTotalPrice()));
         mRlSubTotalLayout.setOnClickListener(costDetailOptionListener());
     }
 
@@ -292,8 +290,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         return String.format("Ongkos Kirim (%s %s)", (int) weight, unit);
     }
 
-    private String getPriceFormat(double price) {
-        return price == 0 ? "-" : CURRENCY_IDR.format(price).replace("Rp", "Rp ");
+    private String getPriceFormat(int price) {
+        return price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
     }
 
     private String getOtherCartItemsLabel(List<CartItemModel> cartItemList,

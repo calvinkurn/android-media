@@ -13,6 +13,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -20,9 +21,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressTotalP
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -83,13 +82,11 @@ public class MultipleAddressShipmentFooterTotalPayment extends RecyclerView.View
     }
 
     private String getTotalPayment(List<MultipleAddressShipmentAdapterData> addressDataList) {
-        return formatPrice(calculateTotalPayment(addressDataList));
+        return formatPrice((int) calculateTotalPayment(addressDataList));
     }
 
-    private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(unformattedPrice);
+    private String formatPrice(int unformattedPrice) {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(unformattedPrice, true);
     }
 
     private long calculateTotalPayment(List<MultipleAddressShipmentAdapterData> addressDataList) {

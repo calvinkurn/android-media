@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
@@ -200,9 +201,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         if (unformattedPrice == 0) {
             return "-";
         } else {
-            Locale locale = new Locale("in", "ID");
-            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-            return rupiahCurrencyFormat.format(unformattedPrice);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) unformattedPrice, true);
         }
     }
 

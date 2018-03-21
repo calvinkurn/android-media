@@ -34,6 +34,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest.Data;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.entity.request.CheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.DataCheckoutRequest;
@@ -83,9 +84,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
-
-    private static final Locale LOCALE_ID = new Locale("in", "ID");
-    private static final NumberFormat CURRENCY_ID = NumberFormat.getCurrencyInstance(LOCALE_ID);
 
     private static final String TAG = SingleAddressShipmentFragment.class.getSimpleName();
 
@@ -405,8 +403,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
         double price = shipmentCostModel.getTotalPrice();
-        mTvTotalPayment.setText(price == 0 ? "-" : CURRENCY_ID.format(price)
-                .replace("Rp", "Rp "));
+        mTvTotalPayment.setText(price == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (int) price, true));
     }
 
     @Override

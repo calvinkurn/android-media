@@ -4,15 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -63,7 +62,7 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
                 .toString()
                 .replace("#", priceSummaryData.getQuantityText()));
         totalProductPrice.setText(
-                formatPrice(priceSummaryData.getTotalProductPrice())
+                formatPrice((int) priceSummaryData.getTotalProductPrice())
         );
         totalShippingPrice.setText(priceChecker(
                 priceSummaryData.getTotalShippingPrice(),
@@ -92,10 +91,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         else return 0;
     }
 
-    private String formatPrice(long unformattedPrice) {
-        Locale locale = new Locale("in", "ID");
-        NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        return rupiahCurrencyFormat.format(unformattedPrice);
+    private String formatPrice(int unformattedPrice) {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(unformattedPrice, true);
     }
 
     private long calculateTotalProductCost(List<MultipleAddressShipmentAdapterData> addressDataList) {
@@ -168,7 +165,7 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
     }
 
     private String priceChecker(long price, long shipmentPrice) {
-        if (shipmentPrice > 0) return formatPrice(price);
+        if (shipmentPrice > 0) return formatPrice((int) price);
         else return "-";
     }
 

@@ -49,6 +49,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
@@ -174,7 +175,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvInsurancePrice;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
-    private NumberFormat currencyId;
     private FragmentListener fragmentListener;
 
     @Inject
@@ -256,8 +256,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     protected void initView(View view) {
         ButterKnife.bind(view);
         initializeInjector();
-        Locale localeId = new Locale("in", "ID");
-        currencyId = NumberFormat.getCurrencyInstance(localeId);
         presenter.attachView(this);
         courierChoiceAdapter.setViewListener(this);
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
@@ -391,8 +389,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
         if (shipmentDetailData.getShipmentCartData() != null) {
-            setText(tvDeliveryFeeTotal, currencyId.format(
-                    shipmentDetailData.getShipmentCartData().getDeliveryPriceTotal()));
+            int total = shipmentDetailData.getShipmentCartData().getDeliveryPriceTotal();
+            setText(tvDeliveryFeeTotal, total > 0 ? CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    total, true) : "-");
         } else {
             setText(tvDeliveryFeeTotal, null);
         }
@@ -441,9 +440,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                     .setAdditionalFee(courierItemData.getAdditionalPrice());
             presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                     courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
-            setText(tvDeliveryFeeTotal, currencyId.format(
-                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
-            setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
+            setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal(),
+                    true));
+            setText(tvDeliveryFee, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    courierItemData.getDeliveryPrice(), true));
             if (courierItemData.isUsePinPoint()) {
                 renderShipmentWithMap(presenter.getShipmentDetailData());
             } else {
@@ -462,9 +463,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void renderSelectedCourier(CourierItemData courierItemData) {
-        setText(tvDeliveryFeeTotal, currencyId.format(
-                presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
-        setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
+        setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal(), true));
+        setText(tvDeliveryFee, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                courierItemData.getDeliveryPrice(), true));
         if (courierItemData.isUsePinPoint()) {
             showPinPointMap(presenter.getShipmentDetailData());
         }
@@ -631,7 +633,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void renderAdditionalPriceView(CourierItemData courierItemData) {
         if (courierItemData.getAdditionalPrice() != 0) {
             llAdditionalFee.setVisibility(View.VISIBLE);
-            setText(tvAdditionalFee, currencyId.format(courierItemData.getAdditionalPrice()));
+            setText(tvAdditionalFee, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    courierItemData.getAdditionalPrice(), true));
         } else {
             llAdditionalFee.setVisibility(View.GONE);
         }
@@ -817,7 +820,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 renderInsuranceTncView(presenter.getSelectedCourier());
                 if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
                     tvInsurancePrice.setText(
-                            currencyId.format(presenter.getSelectedCourier().getInsurancePrice()));
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                    presenter.getSelectedCourier().getInsurancePrice(), true));
                     presenter.getShipmentDetailData().getShipmentCartData()
                             .setInsurancePrice(presenter.getSelectedCourier().getInsurancePrice());
                     presenter.getShipmentDetailData().getShipmentCartData()
@@ -844,8 +848,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         updateFeesGroupLayout();
         if (hasPinpoint()) {
             if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
-                setText(tvDeliveryFeeTotal, currencyId.format(
-                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
+                setText(tvDeliveryFeeTotal, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal(), true));
             }
         }
     }

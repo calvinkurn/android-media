@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -32,12 +31,10 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     private ViewListener viewListener;
     private List<CourierItemData> couriers;
-    private NumberFormat currencyId;
 
     @Inject
     public CourierChoiceAdapter() {
-        Locale localeId = new Locale("in", "ID");
-        currencyId = NumberFormat.getCurrencyInstance(localeId);
+
     }
 
     public void setViewListener(ViewListener viewListener) {
@@ -61,8 +58,8 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         CourierItemData courierItemData = couriers.get(position);
         holder.tvCourierName.setText(courierItemData.getName());
         holder.tvPrice.setText(holder.tvPrice.getContext().getResources().getString(
-                R.string.label_shipment_type_format,
-                currencyId.format(courierItemData.getDeliveryPrice())));
+                R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        courierItemData.getDeliveryPrice(), true)));
 
         if (courierItemData.getDeliverySchedule() != null) {
             holder.tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());

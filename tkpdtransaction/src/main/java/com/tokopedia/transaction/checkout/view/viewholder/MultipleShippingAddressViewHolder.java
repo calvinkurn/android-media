@@ -10,15 +10,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia
@@ -366,9 +364,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
         if (unformattedPrice == 0) {
             return "-";
         } else {
-            Locale locale = new Locale("in", "ID");
-            NumberFormat rupiahCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-            return rupiahCurrencyFormat.format(unformattedPrice).replace("Rp", "Rp ");
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) unformattedPrice, true);
         }
     }
 }
