@@ -53,7 +53,7 @@ public interface FlightDetailOrderContract {
 
         FlightOrder getFlightOrder();
 
-        void navigateToContactUs(FlightOrder flightOrder);
+        void navigateToCancellationPage(FlightOrder flightOrder);
 
         void showPaymentInfoLayout();
 

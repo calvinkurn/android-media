@@ -69,7 +69,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void actionCancelOrderButtonClicked() {
-        getView().navigateToContactUs(getView().getFlightOrder());
+        getView().navigateToCancellationPage(getView().getFlightOrder());
     }
 
     @Override
