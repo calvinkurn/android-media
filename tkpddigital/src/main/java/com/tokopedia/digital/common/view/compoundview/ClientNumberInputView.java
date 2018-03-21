@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.support.annotation.NonNull;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -95,7 +97,7 @@ public class ClientNumberInputView extends LinearLayout {
 
     @SuppressWarnings("deprecation")
     private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_clear_widget)
+        /*Glide.with(getContext()).load(VectorDrawableCompat.create(getResources(), R.drawable.ic_digital_widget_close, getContext().getTheme()))
                 .asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
@@ -106,8 +108,8 @@ public class ClientNumberInputView extends LinearLayout {
                         );
                         btnClear.setBackgroundDrawable(drawableClear);
                     }
-                });
-
+                });*/
+//        btnClear.setBackgroundDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_digital_widget_close, getContext().getTheme()));
         Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_phonebook_widget)
                 .asBitmap().into(
                 new SimpleTarget<Bitmap>() {

@@ -80,6 +80,7 @@
 
                 <Button
                     android:id="@+id/btn_clear_client_number"
+                    android:background="@drawable/ic_digital_widget_close"
                     android:layout_width="@dimen/digital_height_width_25"
                     android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
