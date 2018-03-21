@@ -109,14 +109,17 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
                 } else {
                     getView().showErrorNetwork(e);
+                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
                 }
             }
 
             @Override
             public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
                 openActivity(Constants.Schemes.APPLINKS + "://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                CampaignTracking.eventScanQRCode("success","",branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
     }
