@@ -168,4 +168,8 @@
         <key>mainapp_native_promo_list</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_show_recomendation_button</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

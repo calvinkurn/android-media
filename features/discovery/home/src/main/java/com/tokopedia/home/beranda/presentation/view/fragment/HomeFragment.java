@@ -42,6 +42,7 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
@@ -52,6 +53,7 @@ import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.R;
@@ -105,6 +107,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
+    private boolean showRecomendation;
 
     public static HomeFragment newInstance() {
 
@@ -145,6 +148,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, true);
+        showRecomendationButton(showRecomendation);
+    }
+
+    private void showRecomendationButton(boolean showRecomendation) {
+        if(showRecomendation){
+            floatingTextButton.setVisibility(View.VISIBLE);
+        } else {
+            floatingTextButton.setVisibility(View.GONE);
+        }
     }
 
     @Nullable
@@ -186,7 +199,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (SessionHandler.isV4Login(getActivity())) {
+                if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
                     int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
