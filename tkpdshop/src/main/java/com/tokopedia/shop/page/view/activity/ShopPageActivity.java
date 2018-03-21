@@ -529,11 +529,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         switch (shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
-                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
-                break;
             case ShopStatusDef.MODERATED:
-                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
-                break;
             case ShopStatusDef.NOT_ACTIVE:
                 setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
                 break;
