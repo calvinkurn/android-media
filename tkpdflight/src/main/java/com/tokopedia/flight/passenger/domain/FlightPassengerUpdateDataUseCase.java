@@ -58,6 +58,9 @@ public class FlightPassengerUpdateDataUseCase extends UseCase<Boolean> {
         attributesRequest.setFirstName(requestParams.getString(PARAM_PASSENGER_FIRST_NAME, DEFAULT_STRING_VALUE));
         attributesRequest.setLastName(requestParams.getString(PARAM_PASSENGER_LAST_NAME, DEFAULT_STRING_VALUE));
         attributesRequest.setDob(requestParams.getString(PARAM_PASSENGER_BIRTHDATE, DEFAULT_STRING_VALUE));
+        attributesRequest.setPassportCountry("");
+        attributesRequest.setPassportExpiry("");
+        attributesRequest.setPassportNumber("");
 
         UpdatePassengerRequest updatePassengerRequest = new UpdatePassengerRequest(attributesRequest);
         return Observable.just(updatePassengerRequest);
