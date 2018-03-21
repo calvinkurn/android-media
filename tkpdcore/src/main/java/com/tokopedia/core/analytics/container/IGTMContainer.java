@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -127,6 +128,10 @@ public interface IGTMContainer {
     void eventPurchaseMarketplace(Purchase purchase);
 
     void eventPurchaseDigital(Purchase purchase);
+
+    void eventAddToCartPurchase(Product product);
+
+    void eventRemoveFromCartPurchase(Product product);
 
     void eventImpressionPromoList(List<Object> list, String promoName);
 

@@ -25,6 +25,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -610,6 +611,36 @@ public class GTMContainer implements IGTMContainer {
                         )
                 )
         );
+    }
+
+    @Override
+    public void eventAddToCartPurchase(Product product) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf(
+                        AppEventTracking.EVENT, "addToCart",
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add", DataLayer.mapOf(
+                                        "products", product.getProduct())
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventRemoveFromCartPurchase(Product product) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf(
+                        AppEventTracking.EVENT, "addToCart",
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add", DataLayer.mapOf(
+                                        "products", product.getProduct())
+                        )
+                )
+
     }
 
     public void eventImpressionCategoryLifestyle(List<Object> list) {
