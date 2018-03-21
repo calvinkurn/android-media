@@ -1,6 +1,7 @@
 package com.tokopedia.design.component;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
@@ -15,21 +16,23 @@ public class RoundFloatingButton extends ButtonCompat {
 
     public RoundFloatingButton(Context context) {
         super(context);
-        init();
     }
 
     public RoundFloatingButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public RoundFloatingButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
-    private void init() {
+    @Override
+    protected void initUnifyType(TypedArray attributeArray) {
         Drawable drawable = AppCompatResources.getDrawable(getContext(), R.drawable.bg_button_rounded_white);
         this.setBackground(drawable);
+
+        setMinimumHeight(40);
+        setMinHeight(40);
+        setCompoundDrawablePadding(8);
     }
 }

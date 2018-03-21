@@ -50,43 +50,51 @@ public class ButtonCompat extends AppCompatButton {
         if (attrs != null) {
             TypedArray attributeArray = context.obtainStyledAttributes(attrs, R.styleable.ButtonCompat);
 
-            mType = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatType, 0);
-            mSize = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatSize, 0);
+            initImage(context, attributeArray);
 
-            Drawable drawableLeft = null;
-            Drawable drawableRight = null;
-            Drawable drawableBottom = null;
-            Drawable drawableTop = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawableLeft = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableLeftCompat);
-                drawableRight = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableRightCompat);
-                drawableBottom = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableBottomCompat);
-                drawableTop = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableTopCompat);
-            } else {
-                final int drawableLeftId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableLeftCompat, -1);
-                final int drawableRightId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableRightCompat, -1);
-                final int drawableBottomId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableBottomCompat, -1);
-                final int drawableTopId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableTopCompat, -1);
-
-                if (drawableLeftId != -1)
-                    drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
-                if (drawableRightId != -1)
-                    drawableRight = AppCompatResources.getDrawable(context, drawableRightId);
-                if (drawableBottomId != -1)
-                    drawableBottom = AppCompatResources.getDrawable(context, drawableBottomId);
-                if (drawableTopId != -1)
-                    drawableTop = AppCompatResources.getDrawable(context, drawableTopId);
-            }
-            setCompoundDrawablesWithIntrinsicBounds(drawableLeft, drawableTop, drawableRight, drawableBottom);
-
-            defineType();
-            defineSize();
-
-            if (!isEnabled()) {
-                initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
-            }
+            initUnifyType(attributeArray);
 
             attributeArray.recycle();
+        }
+    }
+
+    protected void initImage(Context context, TypedArray attributeArray) {
+        Drawable drawableLeft = null;
+        Drawable drawableRight = null;
+        Drawable drawableBottom = null;
+        Drawable drawableTop = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawableLeft = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableLeftCompat);
+            drawableRight = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableRightCompat);
+            drawableBottom = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableBottomCompat);
+            drawableTop = attributeArray.getDrawable(R.styleable.ButtonCompat_buttonDrawableTopCompat);
+        } else {
+            final int drawableLeftId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableLeftCompat, -1);
+            final int drawableRightId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableRightCompat, -1);
+            final int drawableBottomId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableBottomCompat, -1);
+            final int drawableTopId = attributeArray.getResourceId(R.styleable.ButtonCompat_buttonDrawableTopCompat, -1);
+
+            if (drawableLeftId != -1)
+                drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
+            if (drawableRightId != -1)
+                drawableRight = AppCompatResources.getDrawable(context, drawableRightId);
+            if (drawableBottomId != -1)
+                drawableBottom = AppCompatResources.getDrawable(context, drawableBottomId);
+            if (drawableTopId != -1)
+                drawableTop = AppCompatResources.getDrawable(context, drawableTopId);
+        }
+        setCompoundDrawablesWithIntrinsicBounds(drawableLeft, drawableTop, drawableRight, drawableBottom);
+    }
+
+    protected void initUnifyType(TypedArray attributeArray) {
+        mType = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatType, 0);
+        mSize = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatSize, 0);
+
+        defineType();
+        defineSize();
+
+        if (!isEnabled()) {
+            initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
         }
     }
 
@@ -130,25 +138,19 @@ public class ButtonCompat extends AppCompatButton {
             case DISABLE:
                 initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
-            default:
-                initDraw(R.color.white, R.drawable.bg_button_primary); // default value
-                break;
         }
     }
 
     private void defineSize() {
         switch (mSize) { // this size initiate same as zeplin by px
             case BIG:
-                initSize(14, 48);
+                initSize(14, getResources().getDimensionPixelSize(R.dimen.dp_48));
                 break;
             case MEDIUM:
-                initSize(13, 40);
+                initSize(13, getResources().getDimensionPixelSize(R.dimen.dp_40));
                 break;
             case SMALL:
-                initSize(11, 32);
-                break;
-            default:
-                initSize(13, 40); // default value
+                initSize(11, getResources().getDimensionPixelSize(R.dimen.dp_32));
                 break;
         }
     }
