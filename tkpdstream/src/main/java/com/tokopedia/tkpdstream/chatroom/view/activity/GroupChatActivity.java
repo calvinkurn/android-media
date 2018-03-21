@@ -28,6 +28,7 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
@@ -44,6 +45,7 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
 
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
+    private static final int CHANNEL_VOTE_FRAGMENT = 1;
 
     public static final String INITIAL_FRAGMENT = "init_fragment";
 
@@ -276,7 +278,6 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         return list;
     }
 
-
     private void showFragment(int fragmentPosition) {
 //        if (viewPager != null && viewPager.getAdapter().getCount() < initialFragment) {
 //            viewPager.setCurrentItem(initialFragment);
@@ -288,6 +289,9 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         switch (fragmentPosition) {
             case CHATROOM_FRAGMENT:
                 showChatroomFragment();
+                break;
+            case CHANNEL_VOTE_FRAGMENT:
+                showChannelVoteFragment();
                 break;
             default:
                 break;
@@ -307,6 +311,22 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
             fragment = GroupChatFragment.createInstance(bundle);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+    }
+
+    private void showChannelVoteFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (ChannelVoteFragment.class.getSimpleName());
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = ChannelVoteFragment.createInstance(bundle);
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();

@@ -37,4 +37,5 @@
     <dimen name="label_new_chat_width">120dp</dimen>
     <dimen name="arrow_size">14dp</dimen>
     <dimen name="vote_image_size">130dp</dimen>
+    <dimen name="min_height_login">80dp</dimen>
 </resources>

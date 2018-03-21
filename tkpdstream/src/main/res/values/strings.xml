@@ -61,4 +61,6 @@
     <string name="title_group_chat">Chat</string>
     <string name="title_vote">Vote</string>
 
+    <string name="login_to_chat">Masuk untuk Chat</string>
+
 </resources>

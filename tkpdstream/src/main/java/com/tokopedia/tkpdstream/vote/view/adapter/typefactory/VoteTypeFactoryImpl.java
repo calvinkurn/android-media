@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.vote.view.adapter.viewholder.VoteBarViewHolder;
@@ -20,6 +21,10 @@ public class VoteTypeFactoryImpl extends BaseAdapterTypeFactory implements VoteT
 
     public VoteTypeFactoryImpl(GroupChatFragment context) {
         viewListener = context;
+    }
+
+    public VoteTypeFactoryImpl(ChannelVoteFragment context) {
+
     }
 
     public int type(VoteViewModel voteViewModel) {

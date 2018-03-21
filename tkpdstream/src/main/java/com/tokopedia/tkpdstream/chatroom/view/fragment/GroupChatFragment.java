@@ -121,6 +121,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private LinearLayoutManager layoutManager;
     private ProgressBarWithTimer progressBarWithTimer;
     private View chatNotificationView;
+    private View login;
 
     private OpenChannel mChannel;
     private PreviousMessageListQuery mPrevMessageListQuery;
@@ -187,7 +188,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
+        View view = inflater.inflate(R.layout.fragment_group_chat_room_new, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
         voteRecyclerView = view.findViewById(R.id.vote_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
@@ -225,6 +226,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         .setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
+        login = view.findViewById(R.id.login);
 //        setupToolbar();
         prepareView();
         return view;
@@ -764,7 +766,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
-        chatNotificationView.setVisibility(View.VISIBLE);
+        if(login.getVisibility() != View.VISIBLE) {
+            chatNotificationView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -1096,6 +1100,20 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 expand(voteBody);
                 arrow.setRotation(180f);
             }
+        }
+    }
+
+    private void setForLoginUser(boolean forLoginUser){
+        if(forLoginUser){
+            divider.setVisibility(View.VISIBLE);
+            replyEditText.setVisibility(View.VISIBLE);
+            sendButton.setVisibility(View.VISIBLE);
+            login.setVisibility(View.GONE);
+        }else {
+            divider.setVisibility(View.GONE);
+            replyEditText.setVisibility(View.GONE);
+            sendButton.setVisibility(View.GONE);
+            login.setVisibility(View.VISIBLE);
         }
     }
 }
