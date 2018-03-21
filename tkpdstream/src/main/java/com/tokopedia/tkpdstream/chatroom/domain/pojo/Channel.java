@@ -29,7 +29,10 @@ public class Channel {
     private long endTime;
     @SerializedName("total_participants_online")
     @Expose
-    private int totalParticipantsOnline;
+    private String totalParticipantsOnline;
+    @SerializedName("total_views")
+    @Expose
+    private String totalViews;
     @SerializedName("is_active")
     @Expose
     private boolean isActive;
@@ -45,7 +48,7 @@ public class Channel {
     @SerializedName("moderator_name")
     @Expose
     private String moderatorName;
-    @SerializedName("moderator_profile_url")
+    @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorProfileUrl;
 
@@ -105,11 +108,11 @@ public class Channel {
         this.endTime = endTime;
     }
 
-    public int getTotalParticipantsOnline() {
+    public String getTotalParticipantsOnline() {
         return totalParticipantsOnline;
     }
 
-    public void setTotalParticipantsOnline(int totalParticipantsOnline) {
+    public void setTotalParticipantsOnline(String totalParticipantsOnline) {
         this.totalParticipantsOnline = totalParticipantsOnline;
     }
 
@@ -161,4 +164,7 @@ public class Channel {
         this.moderatorProfileUrl = moderatorProfileUrl;
     }
 
+    public String getTotalViews() {
+        return totalViews;
+    }
 }

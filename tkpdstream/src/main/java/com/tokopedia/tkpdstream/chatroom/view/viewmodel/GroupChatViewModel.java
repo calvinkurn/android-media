@@ -41,14 +41,15 @@ public class GroupChatViewModel implements Parcelable{
         return channelUuid;
     }
 
-    public void setTotalParticipant(int totalParticipant) {
+    public void setTotalParticipant(String totalParticipant) {
         if (channelInfoViewModel != null) {
             this.channelInfoViewModel.setTotalParticipant(totalParticipant);
         }
     }
 
-    public int getTotalParticipant() {
-        return channelInfoViewModel != null ? channelInfoViewModel.getTotalParticipantsOnline() : 0;
+    public String getTotalParticipant() {
+        return channelInfoViewModel != null ? channelInfoViewModel.getTotalParticipantsOnline() :
+                "0";
     }
 
     public String getChannelName() {

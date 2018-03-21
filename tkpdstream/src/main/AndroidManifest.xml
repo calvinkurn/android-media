@@ -13,7 +13,7 @@
             android:label="@string/activity_channel"
             android:resizeableActivity="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent"
+            android:theme="@style/Theme.Transparent.Groupchat"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
     </application>
 

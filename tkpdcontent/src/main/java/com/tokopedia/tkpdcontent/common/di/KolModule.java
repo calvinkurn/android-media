@@ -1,8 +1,12 @@
 package com.tokopedia.tkpdcontent.common.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.common.data.source.KolAuthInterceptor;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.common.network.KolUrl;
@@ -11,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -32,7 +37,8 @@ public class KolModule {
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                         httpLoggingInterceptor,
                                             KolAuthInterceptor kolAuthInterceptor,
-                                            OkHttpRetryPolicy retryPolicy) {
+                                            @KolQualifier OkHttpRetryPolicy retryPolicy,
+                                            @KolChuckQualifier Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -41,6 +47,7 @@ public class KolModule {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
+            clientBuilder.addInterceptor(chuckInterceptor);
         }
 
         return clientBuilder.build();
@@ -68,5 +75,15 @@ public class KolModule {
                 NET_WRITE_TIMEOUT,
                 NET_CONNECT_TIMEOUT,
                 NET_RETRY);
+    }
+
+    @KolScope
+    @Provides
+    @KolChuckQualifier
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        if (context instanceof KolRouter) {
+            return ((KolRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
     }
 }

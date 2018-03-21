@@ -311,6 +311,6 @@ yang ditemukan</string>
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>
 
     <string name="title_personal">Personal</string>
-    <string name="title_community">Komunitas</string>
+    <string name="title_community">Channel</string>
     <string name="chat_title">Chat ( %d )</string>
 </resources>
