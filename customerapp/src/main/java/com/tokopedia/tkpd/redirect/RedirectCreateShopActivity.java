@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.redirect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -39,7 +40,7 @@ public class RedirectCreateShopActivity extends TActivity {
                                             Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
                                     )
                             );
-                        } catch (android.content.ActivityNotFoundException anfe) {
+                        } catch (ActivityNotFoundException anfe) {
                             RedirectCreateShopActivity.this.startActivity(
                                     new Intent(
                                             Intent.ACTION_VIEW,
