@@ -431,7 +431,7 @@ public class ShopPageTracking {
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(i, isGrid),
-                            ShopPageTrackingConstant.POSITION, getProductPosition(i, isGrid))
+                            ShopPageTrackingConstant.POSITION, getProductPosition(i, isGrid)
                     )
             );
         }
