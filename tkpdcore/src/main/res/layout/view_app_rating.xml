@@ -27,10 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/new_margin_med"
         android:layout_below="@id/text_description"
-        android:numStars="5"
-        android:stepSize="1"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
         android:layout_centerHorizontal="true"
         style="@style/Medium.RatingBar"/>
     <TextView

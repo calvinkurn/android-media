@@ -50,6 +50,7 @@ import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
@@ -261,6 +262,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
+
+        AdvancedAppRatingDialog.show(this);
     }
 
     private void addShortcuts() {
