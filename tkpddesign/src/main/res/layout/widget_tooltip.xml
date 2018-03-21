@@ -42,12 +42,13 @@
 
     </LinearLayout>
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_action_tooltip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:textAllCaps="false"
-        style="@style/Button.Primary.Big"/>
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary"/>
 
 </LinearLayout>

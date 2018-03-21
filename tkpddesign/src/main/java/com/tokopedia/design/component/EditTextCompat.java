@@ -39,15 +39,15 @@ public class EditTextCompat extends AppCompatEditText {
             Drawable drawableBottom = null;
             Drawable drawableTop = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawableLeft = attributeArray.getDrawable(R.styleable.EditTextCompat_drawableLeftCompat);
-                drawableRight = attributeArray.getDrawable(R.styleable.EditTextCompat_drawableRightCompat);
-                drawableBottom = attributeArray.getDrawable(R.styleable.EditTextCompat_drawableBottomCompat);
-                drawableTop = attributeArray.getDrawable(R.styleable.EditTextCompat_drawableTopCompat);
+                drawableLeft = attributeArray.getDrawable(R.styleable.EditTextCompat_editTextDrawableLeftCompat);
+                drawableRight = attributeArray.getDrawable(R.styleable.EditTextCompat_editTextDrawableRightCompat);
+                drawableBottom = attributeArray.getDrawable(R.styleable.EditTextCompat_editTextDrawableBottomCompat);
+                drawableTop = attributeArray.getDrawable(R.styleable.EditTextCompat_editTextDrawableTopCompat);
             } else {
-                final int drawableLeftId = attributeArray.getResourceId(R.styleable.EditTextCompat_drawableLeftCompat, -1);
-                final int drawableRightId = attributeArray.getResourceId(R.styleable.EditTextCompat_drawableRightCompat, -1);
-                final int drawableBottomId = attributeArray.getResourceId(R.styleable.EditTextCompat_drawableBottomCompat, -1);
-                final int drawableTopId = attributeArray.getResourceId(R.styleable.EditTextCompat_drawableTopCompat, -1);
+                final int drawableLeftId = attributeArray.getResourceId(R.styleable.EditTextCompat_editTextDrawableLeftCompat, -1);
+                final int drawableRightId = attributeArray.getResourceId(R.styleable.EditTextCompat_editTextDrawableRightCompat, -1);
+                final int drawableBottomId = attributeArray.getResourceId(R.styleable.EditTextCompat_editTextDrawableBottomCompat, -1);
+                final int drawableTopId = attributeArray.getResourceId(R.styleable.EditTextCompat_editTextDrawableTopCompat, -1);
 
                 if (drawableLeftId != -1)
                     drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);

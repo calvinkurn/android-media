@@ -42,10 +42,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_4"/>
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
         android:layout_width="@dimen/button_width"
-        style="@style/Button.Primary.Medium"
+        android:layout_height="wrap_content"
+        app:buttonCompatType="primary"
+        app:buttonCompatSize="medium"
         android:textAllCaps="false"
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"

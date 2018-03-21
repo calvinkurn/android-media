@@ -11,19 +11,19 @@ import com.tokopedia.design.R;
  * Created by meta on 19/03/18.
  */
 
-public class RoundedFloatingButton extends ButtonCompat {
+public class RoundFloatingButton extends ButtonCompat {
 
-    public RoundedFloatingButton(Context context) {
+    public RoundFloatingButton(Context context) {
         super(context);
         init();
     }
 
-    public RoundedFloatingButton(Context context, AttributeSet attrs) {
+    public RoundFloatingButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public RoundedFloatingButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RoundFloatingButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

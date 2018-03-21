@@ -108,66 +108,6 @@
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
-    <style name="Button.Primary">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/bg_button_primary</item>
-    </style>
-
-    <style name="Button.Secondary">
-        <item name="android:textColor">@color/grey_500</item>
-        <item name="android:background">@drawable/bg_button_secondary</item>
-    </style>
-
-    <style name="Button.Disable">
-        <item name="android:textColor">@color/grey_350</item>
-        <item name="android:background">@drawable/bg_button_disabled</item>
-    </style>
-
-    <style name="Button.Primary.Big">
-        <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:layout_height">@dimen/dp_48</item>
-    </style>
-
-    <style name="Button.Primary.Medium">
-        <item name="android:textSize">@dimen/sp_13</item>
-        <item name="android:layout_height">@dimen/dp_40</item>
-    </style>
-
-    <style name="Button.Primary.Small">
-        <item name="android:textSize">@dimen/sp_11</item>
-        <item name="android:layout_height">@dimen/dp_32</item>
-    </style>
-
-    <style name="Button.Secondary.Big">
-        <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:layout_height">@dimen/dp_48</item>
-    </style>
-
-    <style name="Button.Secondary.Medium">
-        <item name="android:textSize">@dimen/sp_11</item>
-        <item name="android:layout_height">@dimen/dp_40</item>
-    </style>
-
-    <style name="Button.Secondary.Small">
-        <item name="android:textSize">@dimen/sp_11</item>
-        <item name="android:layout_height">@dimen/dp_32</item>
-    </style>
-
-    <style name="Button.Disable.Big">
-        <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:layout_height">@dimen/dp_48</item>
-    </style>
-
-    <style name="Button.Disable.Medium">
-        <item name="android:textSize">@dimen/sp_11</item>
-        <item name="android:layout_height">@dimen/dp_40</item>
-    </style>
-
-    <style name="Button.Disable.Small">
-        <item name="android:textSize">@dimen/sp_11</item>
-        <item name="android:layout_height">@dimen/dp_32</item>
-    </style>
-
     <style name="ImageButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -1,17 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+
     <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
     <dimen name="dp_minus4">-4dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_4">4dp</dimen>
-    <dimen name="dp_5">5dp</dimen>
-    <dimen name="dp_7">7dp</dimen>
+    <dimen name="dp_5">5dp</dimen> <!-- not recommended -->
+    <dimen name="dp_7">7dp</dimen> <!-- not recommended -->
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_12">12dp</dimen>
-    <dimen name="dp_14">14dp</dimen> <!-- not recommended -->
+    <dimen name="dp_14">14dp</dimen>
     <dimen name="dp_15">15dp</dimen> <!-- not recommended -->
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_20">20dp</dimen>
@@ -19,13 +20,14 @@
     <dimen name="dp_25">25dp</dimen> <!-- not recommended -->
     <dimen name="dp_30">30dp</dimen> <!-- not recommended -->
     <dimen name="dp_32">32dp</dimen>
-    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_35">35dp</dimen> <!-- not recommended -->
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_40">40dp</dimen>
-    <dimen name="dp_44">44dp</dimen>
+    <dimen name="dp_44">44dp</dimen> <!-- not recommended -->
     <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
+    <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
     <dimen name="dp_72">72dp</dimen>
     <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
     <dimen name="dp_76">76dp</dimen> <!-- not recommended -->
@@ -58,6 +60,6 @@
     <dimen name="sp_24">24sp</dimen>
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
-    <dimen name="sp_56">56sp</dimen> <!-- not recommended -->
+    <dimen name="sp_56">56sp</dimen>
 
 </resources>

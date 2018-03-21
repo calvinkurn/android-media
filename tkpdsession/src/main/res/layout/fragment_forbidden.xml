@@ -34,14 +34,15 @@
             android:textSize="@dimen/sp_14"
             android:gravity="center"/>
 
-        <Button
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_retry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:layout_marginStart="@dimen/dp_32" android:layout_marginLeft="@dimen/dp_32"
             android:layout_marginEnd="@dimen/dp_32" android:layout_marginRight="@dimen/dp_32"
-            style="@style/Button.Primary.Big"/>
+            app:buttonCompatType="primary"
+            app:buttonCompatSize="big"/>
 
     </LinearLayout>
 

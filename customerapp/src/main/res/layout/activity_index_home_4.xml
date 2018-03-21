@@ -50,27 +50,8 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="@dimen/margin_vs"
                 android:listSelector="@android:color/transparent" />
+
         </LinearLayout>
-
-        <com.tokopedia.design.component.ButtonCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Testing"
-            android:textAllCaps="false"
-            android:layout_margin="@dimen/dp_100"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:drawableLeftCompat="@drawable/ic_ticker_close" />
-
-        <com.tokopedia.design.component.RoundedFloatingButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Testing"
-            android:textAllCaps="false"
-            android:layout_margin="@dimen/dp_24"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:drawableLeftCompat="@drawable/ic_ticker_close"/>
 
     </RelativeLayout>
 
