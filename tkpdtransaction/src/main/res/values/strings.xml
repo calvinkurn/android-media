@@ -234,6 +234,8 @@
     <string name="label_main_address">Utama</string>
 
     <string name="show_case_finish">Mengerti</string>
+    <string name="show_case_prev">Sebelumnya</string>
+
     <string name="title_promo_code">Kode Promo</string>
     <string name="title_coupon_code">Kode Kupon</string>
     <string name="label_delivery_hour">\u0020jam perjalanan</string>

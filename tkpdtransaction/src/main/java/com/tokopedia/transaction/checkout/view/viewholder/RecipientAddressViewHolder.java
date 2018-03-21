@@ -2,13 +2,19 @@ package com.tokopedia.transaction.checkout.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+
+import java.util.ArrayList;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -18,45 +24,58 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     private static final int PRIME_ADDRESS = 2;
 
-    private TextView mTvAddressStatus;
-    private TextView mTvAddressName;
-    private TextView mTvRecipientName;
-    private TextView mTvRecipientAddress;
-    private TextView mTvRecipientPhone;
-    private TextView mTvAddOrChangeAddress;
-    private PickupPointLayout mPickupPointLayout;
-    private TextView mTvChangeAddress;
+    private RelativeLayout rlRecipientAddressLayout;
+    private TextView tvAddressStatus;
+    private TextView tvAddressName;
+    private TextView tvRecipientName;
+    private TextView tvRecipientAddress;
+    private TextView tvRecipientPhone;
+    private TextView tvAddOrChangeAddress;
+    private PickupPointLayout pickupPointLayout;
+    private TextView tvChangeAddress;
 
-    private SingleAddressShipmentAdapter.ActionListener mActionListener;
+    private ActionListener actionListener;
 
-    public RecipientAddressViewHolder(View itemView,
-                                      SingleAddressShipmentAdapter.ActionListener actionListener) {
+    public RecipientAddressViewHolder(View itemView, ActionListener actionListener) {
         super(itemView);
 
-        mTvAddressStatus = itemView.findViewById(R.id.tv_address_status);
-        mTvAddressName = itemView.findViewById(R.id.tv_address_name);
-        mTvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
-        mTvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
-        mTvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
-        mTvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
-        mPickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
-        mTvChangeAddress = itemView.findViewById(R.id.tv_change_address);
+        this.actionListener = actionListener;
 
-        mActionListener = actionListener;
+        rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
+        tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
+        tvAddressName = itemView.findViewById(R.id.tv_address_name);
+        tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
+        tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
+        tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+        tvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
+        pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+        tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
     }
 
-    public void bindViewHolder(RecipientAddressModel recipientAddress) {
-        mTvAddressStatus.setVisibility(recipientAddress.getAddressStatus() == PRIME_ADDRESS ?
+    public void bindViewHolder(RecipientAddressModel recipientAddress,
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
+
+        tvAddressStatus.setVisibility(recipientAddress.getAddressStatus() == PRIME_ADDRESS ?
                 View.VISIBLE : View.GONE);
-        mTvAddressName.setText(recipientAddress.getAddressName());
-        mTvRecipientName.setText(recipientAddress.getRecipientName());
-        mTvRecipientAddress.setText(getFullAddress(recipientAddress));
-        mTvRecipientPhone.setText(recipientAddress.getRecipientPhoneNumber());
+        tvAddressName.setText(recipientAddress.getAddressName());
+        tvRecipientName.setText(recipientAddress.getRecipientName());
+        tvRecipientAddress.setText(getFullAddress(recipientAddress));
+        tvRecipientPhone.setText(recipientAddress.getRecipientPhoneNumber());
 
-        mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+        tvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
 
-        renderPickupPoint(mPickupPointLayout, recipientAddress);
-        mTvChangeAddress.setVisibility(View.GONE);
+        renderPickupPoint(pickupPointLayout, recipientAddress);
+        tvChangeAddress.setVisibility(View.GONE);
+
+        setShowCase(rlRecipientAddressLayout, showCaseObjectList);
+    }
+
+    private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
+        showCaseObjectList.add(new ShowCaseObject(viewGroup,
+                "Alamat Pengiriman",
+                "Pastikan alamat pengiriman sudah sesuai dengan\nyang kamu inginkan",
+                ShowCaseContentPosition.UNDEFINED)
+        );
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {
@@ -85,7 +104,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActionListener.onAddOrChangeAddress();
+                actionListener.onAddOrChangeAddress();
             }
         };
     }
@@ -96,17 +115,17 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         return new PickupPointLayout.ViewListener() {
             @Override
             public void onChoosePickupPoint() {
-                mActionListener.onChoosePickupPoint(recipientAddress);
+                actionListener.onChoosePickupPoint(recipientAddress);
             }
 
             @Override
             public void onClearPickupPoint(Store oldStore) {
-                mActionListener.onClearPickupPoint(recipientAddress);
+                actionListener.onClearPickupPoint(recipientAddress);
             }
 
             @Override
             public void onEditPickupPoint(Store oldStore) {
-                mActionListener.onEditPickupPoint(recipientAddress);
+                actionListener.onEditPickupPoint(recipientAddress);
             }
         };
     }

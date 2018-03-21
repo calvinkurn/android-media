@@ -36,7 +36,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST = 1;
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 2;
 
-    private int mTypeRequest;
+    private int typeRequest;
 
     public static Intent createInstance(Activity activity, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
@@ -52,7 +52,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        mTypeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
+        this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
     }
 
     @Override
@@ -73,11 +73,9 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        Fragment fragment;
-
-        switch (mTypeRequest) {
+        switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
-                fragment = CartAddressChoiceFragment.newInstance();
+                Fragment fragment = CartAddressChoiceFragment.newInstance();
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getFragmentManager().beginTransaction()
                         .add(R.id.container, fragment, fragment.getClass().getSimpleName())
@@ -124,7 +122,6 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == REQUEST_CODE_PARAM_CREATE) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
@@ -133,7 +130,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity
 
     @Override
     public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
-        switch (mTypeRequest) {
+        switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, selectedAddressResult);

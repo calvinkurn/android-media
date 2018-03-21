@@ -868,13 +868,14 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
         if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            // dPresenter.processToShipmentForm();
+             dPresenter.processToShipmentForm();
         }
     }
 
     public interface ActionListener {
 
         void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+
     }
 
 }

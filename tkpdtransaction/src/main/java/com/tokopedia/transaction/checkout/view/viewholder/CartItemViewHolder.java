@@ -51,7 +51,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
-        mRlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        mRlProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
