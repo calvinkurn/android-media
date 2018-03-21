@@ -13,6 +13,7 @@ public class CacheApiWhiteListMapper {
         cacheApiWhitelist.setHost(cacheApiWhiteListDomain.getHost());
         cacheApiWhitelist.setPath(cacheApiWhiteListDomain.getPath());
         cacheApiWhitelist.setExpiredTime(cacheApiWhiteListDomain.getExpireTime());
+        cacheApiWhitelist.setDynamicLink(cacheApiWhiteListDomain.isDynamicUrl());
         return cacheApiWhitelist;
     }
 }

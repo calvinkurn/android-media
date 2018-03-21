@@ -18,6 +18,7 @@ import com.tokopedia.cacheapi.util.EncryptionUtils;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -106,9 +107,11 @@ public class CacheApiDatabaseSource {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 CacheApiLoggingUtils.dumper(String.format("Inserting White List"));
+                int i = 0;
                 for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
-                    CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
+                    whiteList.setId(i++);
+                    CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s (id:%s)", whiteList.getHost(), whiteList.getPath(), whiteList.getId()));
                     whiteList.save();
                 }
                 subscriber.onNext(true);
