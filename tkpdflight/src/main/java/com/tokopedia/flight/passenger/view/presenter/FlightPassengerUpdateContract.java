@@ -27,6 +27,8 @@ public interface FlightPassengerUpdateContract {
 
         String getPassengerTitle();
 
+        int getPassengerTitlePosition();
+
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
         void renderSpinnerForAdult();
@@ -68,6 +70,8 @@ public interface FlightPassengerUpdateContract {
         void showPassengerTitleEmptyError(int resId);
 
         void showPassengerBirthdateEmptyError(int resId);
+
+        String getRequestId();
     }
 
     interface Presenter {

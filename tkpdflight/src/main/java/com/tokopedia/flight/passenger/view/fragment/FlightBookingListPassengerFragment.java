@@ -197,7 +197,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void editPassenger(FlightBookingPassengerViewModel passengerViewModel) {
         startActivity(
                 FlightPassengerUpdateActivity.getCallingIntent(getActivity(),
-                        passengerViewModel, departureDate)
+                        passengerViewModel, departureDate, requestId)
         );
     }
 

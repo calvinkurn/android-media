@@ -32,6 +32,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
 
     public static final String EXTRA_PASSENGER_VIEW_MODEL = "EXTRA_PASSENGER_VIEW_MODEL";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
 
     @Inject
     FlightPassengerUpdatePresenter presenter;
@@ -48,11 +49,12 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     public static FlightPassengerUpdateFragment newInstance(FlightBookingPassengerViewModel passengerViewModel,
-                                                            String departureDate) {
+                                                            String departureDate, String requestId) {
         FlightPassengerUpdateFragment flightPassengerUpdateFragment = new FlightPassengerUpdateFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PASSENGER_VIEW_MODEL, passengerViewModel);
         bundle.putString(EXTRA_DEPARTURE_DATE, departureDate);
+        bundle.putString(EXTRA_REQUEST_ID, requestId);
         flightPassengerUpdateFragment.setArguments(bundle);
         return flightPassengerUpdateFragment;
     }
@@ -137,6 +139,11 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
         return spPassengerTitle.getSpinnerValue().equalsIgnoreCase(
                 String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED)) ? "" :
                 spPassengerTitle.getSpinnerValue();
+    }
+
+    @Override
+    public int getPassengerTitlePosition() {
+        return spPassengerTitle.getSpinnerPosition();
     }
 
     @Override
@@ -270,6 +277,11 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public String getRequestId() {
+        return getArguments().getString(EXTRA_REQUEST_ID);
     }
 
     private void showMessageErrorInSnackbar(int resId) {

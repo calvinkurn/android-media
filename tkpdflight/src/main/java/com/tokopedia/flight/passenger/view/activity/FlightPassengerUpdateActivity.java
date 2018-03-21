@@ -18,13 +18,15 @@ public class FlightPassengerUpdateActivity extends BaseSimpleActivity
 
     public static final String EXTRA_PASSENGER_VIEW_MODEL = "EXTRA_PASSENGER_VIEW_MODEL";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
 
     public static Intent getCallingIntent(Activity activity,
                                           FlightBookingPassengerViewModel passengerViewModel,
-                                          String departureDate) {
+                                          String departureDate, String requestId) {
         Intent intent = new Intent(activity, FlightPassengerUpdateActivity.class);
         intent.putExtra(EXTRA_PASSENGER_VIEW_MODEL, passengerViewModel);
         intent.putExtra(EXTRA_DEPARTURE_DATE, departureDate);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
         return intent;
     }
 
@@ -39,7 +41,8 @@ public class FlightPassengerUpdateActivity extends BaseSimpleActivity
                 .getParcelable(EXTRA_PASSENGER_VIEW_MODEL);
         return FlightPassengerUpdateFragment.newInstance(
                 flightBookingPassengerViewModel,
-                getIntent().getExtras().getString(EXTRA_DEPARTURE_DATE)
+                getIntent().getExtras().getString(EXTRA_DEPARTURE_DATE),
+                getIntent().getExtras().getString(EXTRA_REQUEST_ID)
         );
     }
 

@@ -1,15 +1,20 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
+import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateDataUseCase;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
 import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
@@ -31,10 +36,13 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     private static final int PLUS_ONE = 1;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
+    private FlightPassengerUpdateDataUseCase flightPassengerUpdateDataUseCase;
 
     @Inject
-    public FlightPassengerUpdatePresenter(FlightPassengerInfoValidator flightPassengerInfoValidator) {
+    public FlightPassengerUpdatePresenter(FlightPassengerInfoValidator flightPassengerInfoValidator,
+                                          FlightPassengerUpdateDataUseCase flightPassengerUpdateDataUseCase) {
         this.flightPassengerInfoValidator = flightPassengerInfoValidator;
+        this.flightPassengerUpdateDataUseCase = flightPassengerUpdateDataUseCase;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     public void onSaveButtonClicked() {
 
         if (validateFields()) {
-
+            updatePassengerData();
         }
 
     }
@@ -127,6 +135,36 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         }
     }
 
+    private void updatePassengerData() {
+        flightPassengerUpdateDataUseCase.execute(
+                flightPassengerUpdateDataUseCase.generateRequestParams(
+                        getTitleId(),
+                        getView().getPassengerFirstName(),
+                        getView().getPassengerLastName(),
+                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                                FlightDateUtil.FORMAT_DATE_API,
+                                getView().getPassengerBirthdate()),
+                        getView().getRequestId()
+                ),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d("HASILHASIL", aBoolean.toString());
+                    }
+                }
+        );
+    }
+
     private void renderView() {
 
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView().getCurrentPassengerViewModel();
@@ -174,6 +212,23 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
     private boolean isInfantPassenger() {
         return getView().getCurrentPassengerViewModel().getType() == INFANT;
+    }
+
+    private int getTitleId() {
+        switch (getView().getPassengerTitlePosition()) {
+            case 0:
+                return TUAN;
+            case 1:
+                if (isAdultPassenger()) {
+                    return NYONYA;
+                } else if (isChildPassenger() || isInfantPassenger()) {
+                    return NONA;
+                }
+            case 2:
+                return NONA;
+            default:
+                return TUAN;
+        }
     }
 
     private boolean validateFields() {
