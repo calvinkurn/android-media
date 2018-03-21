@@ -96,7 +96,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     );
                 } else if (e instanceof RuntimeException &&
                         e.getLocalizedMessage() != null &&
-                        e.getLocalizedMessage().length() <= 3) {
+                        e.getLocalizedMessage().length() == 3) {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
@@ -126,7 +126,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                         }
                     }, Integer.parseInt(e.getLocalizedMessage()));
                 } else if (e instanceof ErrorMessageException
-                        && e.getLocalizedMessage() != null) {
+                        && e.getLocalizedMessage() != null && e.getLocalizedMessage().length() > 0) {
                     view.renderErrorReRequestSmsOtp(e.getLocalizedMessage());
                 }else {
                     view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
