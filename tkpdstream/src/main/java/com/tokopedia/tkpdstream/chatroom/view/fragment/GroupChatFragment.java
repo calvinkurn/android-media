@@ -26,10 +26,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
-import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -47,24 +45,22 @@ import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
-import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.GroupChatAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
-import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
-import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
+import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
@@ -78,7 +74,6 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -86,17 +81,16 @@ import javax.inject.Inject;
  * @author by nisie on 2/6/18.
  */
 
-public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View,
+public class GroupChatFragment extends BaseDaggerFragment implements ChatroomContract.View,
         ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener,
-        ProgressBarWithTimer.Listener, GroupChatContract.View.ImageViewHolderListener, GroupChatContract.View.VoteAnnouncementViewHolderListener {
+        ProgressBarWithTimer.Listener, ChatroomContract.View.ImageViewHolderListener, ChatroomContract.View.VoteAnnouncementViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final long DELAY_TIME = 1000L;
 
     @Inject
-    GroupChatPresenter presenter;
+    ChatroomPresenter presenter;
 
     @Inject
     StreamAnalytics analytics;
@@ -130,9 +124,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private CloseableBottomSheetDialog channelInfoDialog;
 
     int newMessageCounter;
-    private ShareLayout shareLayout;
 
-    private CallbackManager callbackManager;
     private TextWatcher replyTextWatcher;
 
     @Override
@@ -175,13 +167,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         }
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-
-        if (userSession != null && !userSession.isLoggedIn()) {
-            startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
-                    .getLoginIntent
-                            (getActivity()), REQUEST_LOGIN);
-        }
-        callbackManager = CallbackManager.Factory.create();
+//
+//        if (userSession != null && !userSession.isLoggedIn()) {
+//            startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+//                    .getLoginIntent
+//                            (getActivity()), REQUEST_LOGIN);
+//        }
     }
 
     @Nullable
@@ -225,7 +216,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         .setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
-//        setupToolbar();
         prepareView();
         return view;
     }
@@ -392,7 +382,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void initData() {
         setSendButtonEnabled(false);
-        presenter.getChannelInfo(viewModel.getChannelUuid());
+//        presenter.getChannelInfo(viewModel.getChannelUuid());
+        presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
+
         showLoading();
     }
 
@@ -422,36 +414,28 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             progressBarWithTimer.restart();
         }
 
-        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
-                .CONNECTION_HANDLER_ID, new
-                ConnectionManager.ConnectionManagementHandler() {
-                    @Override
-                    public void onConnected(boolean reconnect) {
-                        if (reconnect || viewModel != null) {
-                            presenter.refreshDataAfterReconnect(mChannel);
-                        }
-                    }
-                });
+//        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
+//                .CONNECTION_HANDLER_ID, new
+//                ConnectionManager.ConnectionManagementHandler() {
+//                    @Override
+//                    public void onConnected(boolean reconnect) {
+//                        if (mChannel != null && reconnect) {
+//                            presenter.refreshDataAfterReconnect(mChannel);
+//                        }
+//                    }
+//                });
 
-        if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
-            presenter.setHandler(viewModel.getChannelUrl(), this);
-
-        kickIfIdleForTooLong();
     }
 
-    private void kickIfIdleForTooLong() {
-        if (viewModel != null) {
-            if (viewModel.getTimeStampBeforePause() > 0
-                    && System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
-                onUserIdleTooLong();
-            }
-        }
+    @Override
+    public void refreshChat() {
+        presenter.refreshDataAfterReconnect(mChannel);
     }
 
     @Override
     public void onPause() {
-        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+//        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+//        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
         progressBarWithTimer.cancel();
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
@@ -462,9 +446,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onDestroy() {
         presenter.detachView();
-        presenter.logoutChannel(mChannel);
-        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+//        presenter.logoutChannel(mChannel);
+//        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+//        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
         progressBarWithTimer.cancel();
         super.onDestroy();
     }
@@ -498,6 +482,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
                 channelInfoDialog.show();
             }
+
+            hideLoading();
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -787,19 +774,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
-
-        try {
-            if (!userActionViewModel.getUserId().equalsIgnoreCase(userSession.getUserId())) {
-                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
-                        1));
-            }
-            setToolbarParticipantCount();
-            adapter.addAction(userActionViewModel);
-            adapter.notifyItemInserted(0);
-            scrollToBottomWhenPossible();
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        adapter.addAction(userActionViewModel);
+        adapter.notifyItemInserted(0);
+        scrollToBottomWhenPossible();
     }
 
     @Override
@@ -809,18 +786,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
-        try {
-            mChannel = openChannel;
-            try {
-                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant())));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-            setToolbarParticipantCount();
+//        try {
+//            mChannel = openChannel;
+//            try {
+//                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant())));
+//            } catch (NumberFormatException e) {
+//                e.printStackTrace();
+//            }
+//            setToolbarParticipantCount();
             presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -839,22 +816,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         }
     }
 
-    private void onUserIdleTooLong() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.you_have_been_kicked);
-        builder.setMessage(R.string.you_have_been_idle_for_too_long);
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                getActivity().setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL);
-                getActivity().finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
-    }
 
     @Override
     public void onUserBanned(final String errorMessage) {
@@ -1048,7 +1009,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_CANCELED) {
             Intent intent = ((StreamModuleRouter) getActivity().getApplicationContext())
                     .getHomeIntent(getActivity());
@@ -1097,5 +1057,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 arrow.setRotation(180f);
             }
         }
+    }
+
+    public void setChannel(OpenChannel mChannel) {
+        this.mChannel = mChannel;
     }
 }

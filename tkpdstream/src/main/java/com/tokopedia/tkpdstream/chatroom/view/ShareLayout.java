@@ -53,10 +53,11 @@ public class ShareLayout {
 
     private String urlLink, channelUrl, channelName;
 
-    public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager, String channelUrl, String channelName, StreamAnalytics analytics) {
+    public ShareLayout(Activity activity, CallbackManager callbackManager, String channelUrl, String
+            channelName, StreamAnalytics analytics) {
         this.fragment = null;
-        this.fragmentV4 = fragment;
-        this.activity = fragment.getActivity();
+        this.fragmentV4 = null;
+        this.activity = activity;
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
         this.dialog.setContentView(R.layout.share_groupchat_dialog);
@@ -64,7 +65,7 @@ public class ShareLayout {
         this.channelUrl = channelUrl;
         this.channelName = channelName;
         this.analytics = analytics;
-        initVar(fragment.getActivity());
+        initVar(activity);
         initAdapter();
         setShareList();
     }

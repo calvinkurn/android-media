@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.Locale;
@@ -22,13 +22,13 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.vote_option_bar;
-    private final GroupChatContract.View viewListener;
+    private final ChatroomContract.View viewListener;
     private ProgressBar progressBar;
     private TextView option;
     private TextView percent;
     private View icon;
 
-    public VoteBarViewHolder(View itemView, GroupChatContract.View viewListener) {
+    public VoteBarViewHolder(View itemView, ChatroomContract.View viewListener) {
         super(itemView);
         progressBar = itemView.findViewById(R.id.progress_bar);
         option = itemView.findViewById(R.id.text_view);
