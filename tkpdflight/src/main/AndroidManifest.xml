@@ -97,6 +97,10 @@
             android:label="@string/activity_label_flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".cancellation.view.activity.FlightCancellationActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
 
         <service
             android:name=".airport.service.GetAirportListService"
