@@ -24,6 +24,7 @@ public class EmptyModel implements Visitable<AdapterTypeFactory> {
     @StringRes
     private int buttonTitleRes;
     private String buttonTitle;
+    private EmptyResultViewHolder.Callback callback;
 
     public EmptyModel() {
     }
@@ -63,6 +64,14 @@ public class EmptyModel implements Visitable<AdapterTypeFactory> {
 
     public void setButtonTitle(String buttonTitle) {
         this.buttonTitle = buttonTitle;
+    }
+
+    public EmptyResultViewHolder.Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(EmptyResultViewHolder.Callback callback) {
+        this.callback = callback;
     }
 
     public int getIconRes() {
