@@ -121,6 +121,22 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, Drawable drawable) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(drawable)
+                    .error(drawable)
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())

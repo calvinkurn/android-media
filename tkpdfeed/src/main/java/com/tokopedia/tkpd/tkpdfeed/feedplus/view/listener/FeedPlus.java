@@ -24,7 +24,6 @@ public interface FeedPlus {
 
         void finishLoadingProgress();
 
-
         interface Kol {
             void onGoToKolProfile(int page, int rowNumber, String url);
 
@@ -193,6 +192,8 @@ public interface FeedPlus {
         void onUserNotLogin();
 
         void onGoToLogin();
+
+        int getAdapterListSize();
     }
 
     interface Presenter extends CustomerPresenter<View> {

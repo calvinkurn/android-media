@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -62,7 +63,7 @@ public class FlightMultiAirlineView extends LinearLayout {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
             ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
             ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList.get(0),
-                    R.drawable.ic_airline_default);
+                    VectorDrawableCompat.create(getResources(), R.drawable.ic_airline_default, getContext().getTheme()));
             addView(view);
         }
     }

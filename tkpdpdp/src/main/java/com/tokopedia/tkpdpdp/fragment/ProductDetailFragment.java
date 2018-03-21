@@ -121,12 +121,14 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 
 /**
  * ProductDetailFragment
@@ -424,10 +426,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onBuyClick(String source) {
         if (SessionHandler.isV4Login(getActivity())) {
-            if (onClickBuyWhileRequestingVariant == false && productData.getInfo().getHasVariant() && productVariant == null) {
+            if (onClickBuyWhileRequestingVariant == false && productData != null &&
+                    productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
                 buttonBuyView.changeToLoading();
-            } else if ( !productData.getInfo().getHasVariant() && productVariant==null ||
+            } else if ( productData != null && !productData.getInfo().getHasVariant() && productVariant==null ||
                     productData.getInfo().getHasVariant() && productVariant!=null && variantLevel1!=null) {
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
@@ -707,9 +710,19 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
-        if (productData.getShopInfo().getShopIsOwner() == 1 || productData.getShopInfo().getShopIsAllowManage() == 1) {
+        if (productData.getShopInfo().getShopIsAllowManage() == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
-            fabWishlist.setOnClickListener(new EditClick(productData));
+            if (!productData.getInfo().getProductStatus().equals(PRD_STATE_PENDING)) {
+                fabWishlist.setOnClickListener(new EditClick(productData));
+            } else {
+                fabWishlist.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showToastMessage(productData.getInfo().getProductStatusTitle());
+                    }
+                });
+            }
+
         } else if (status == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
@@ -1040,14 +1053,19 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
+                if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) != null) {
+                    productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+                }
+                if (productVariant == null && data.getParcelableExtra(KEY_VARIANT_DATA) != null) {
+                    productVariant = data.getParcelableExtra(KEY_VARIANT_DATA);
+                }
                 if (data!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                     variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
                     if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                     }
                     priceSimulationView.updateVariant(generateVariantString());
-                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null && productVariant != null) {
-                        productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+                    if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
                         shopInfoView.renderData(productData);

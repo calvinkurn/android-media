@@ -14,7 +14,6 @@ import java.util.List;
 
 public class VoteInfoViewModel implements Parcelable{
 
-
     public static final int STATUS_ACTIVE = 2;
     public static final int STATUS_FORCE_ACTIVE = 3;
     public static final int STATUS_FINISH = 4;
@@ -22,8 +21,7 @@ public class VoteInfoViewModel implements Parcelable{
     public static final int STATUS_CANCELED = 6;
 
     public static final int VOTE_TYPE_GIFT = 1;
-
-
+    private String question;
     private String pollId;
     private int statusId;
     private String voteOptionType;
@@ -37,11 +35,12 @@ public class VoteInfoViewModel implements Parcelable{
     private long startTime, endTime;
     private String participant;
 
-    public VoteInfoViewModel(String pollId, String title, List<Visitable> listOption, String participant,
+    public VoteInfoViewModel(String pollId, String title, String question, List<Visitable> listOption, String participant,
                              String voteGiftType, String voteOptionType, String voteStatus, int statusId, boolean voted,
                              int voteInfoStringResId, String voteInfoUrl, long startTime, long endTime) {
         this.pollId = pollId;
         this.title = title;
+        this.question = question;
         this.listOption = listOption;
         this.participant = participant;
         this.statusId = statusId;
@@ -56,6 +55,7 @@ public class VoteInfoViewModel implements Parcelable{
     }
 
     protected VoteInfoViewModel(Parcel in) {
+        question = in.readString();
         pollId = in.readString();
         statusId = in.readInt();
         voteOptionType = in.readString();
@@ -68,6 +68,28 @@ public class VoteInfoViewModel implements Parcelable{
         startTime = in.readLong();
         endTime = in.readLong();
         participant = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(question);
+        dest.writeString(pollId);
+        dest.writeInt(statusId);
+        dest.writeString(voteOptionType);
+        dest.writeString(voteGiftType);
+        dest.writeString(voteStatus);
+        dest.writeInt(voteInfoStringResId);
+        dest.writeString(voteInfoUrl);
+        dest.writeByte((byte) (voted ? 1 : 0));
+        dest.writeString(title);
+        dest.writeLong(startTime);
+        dest.writeLong(endTime);
+        dest.writeString(participant);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<VoteInfoViewModel> CREATOR = new Creator<VoteInfoViewModel>() {
@@ -168,25 +190,8 @@ public class VoteInfoViewModel implements Parcelable{
         this.statusId = statusId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(pollId);
-        dest.writeInt(statusId);
-        dest.writeString(voteOptionType);
-        dest.writeString(voteGiftType);
-        dest.writeString(voteStatus);
-        dest.writeInt(voteInfoStringResId);
-        dest.writeString(voteInfoUrl);
-        dest.writeByte((byte) (voted ? 1 : 0));
-        dest.writeString(title);
-        dest.writeLong(startTime);
-        dest.writeLong(endTime);
-        dest.writeString(participant);
+    public String getQuestion() {
+        return question;
     }
 }
 

@@ -110,7 +110,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         if (activityCardViewModel != null) {
             setHeader(activityCardViewModel);
             activityCardViewModel.setRowNumber(getAdapterPosition());
-            adapter.setData(activityCardViewModel);
+            adapter.setData(activityCardViewModel, getAdapterPosition() + 1);
             setFooter(activityCardViewModel);
         }
     }

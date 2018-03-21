@@ -132,8 +132,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView dismissTooltip;
     @BindView(R2.id.tv_ticket_cnt_type)
     TextView tvTicketCntType;
-    @BindView(R2.id.tv_someinfo)
-    TextView tvSomeInfo;
     @BindView(R2.id.selected_seats_layout)
     View selectedSeatLayout;
     @BindView(R2.id.seat_numbers)
@@ -240,9 +238,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
         tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
         buttonTextview.setText(getString(R.string.pay_button));
-        SpannableString someinfo = new SpannableString(getResources().getString(R.string.some_info));
-        someinfo.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green_nob)), 54, 74, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvSomeInfo.setText(someinfo);
         tvTicketCntType.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),

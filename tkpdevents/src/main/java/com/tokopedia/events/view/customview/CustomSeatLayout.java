@@ -33,7 +33,7 @@ public class CustomSeatLayout extends LinearLayout {
 
     public static int numoFSeats;
     int maxCount;
-    char rowName;
+    String rowName;
     String columnName;
     int rowId;
     public static List<String> selectedSeatList = new ArrayList<>();
@@ -44,7 +44,7 @@ public class CustomSeatLayout extends LinearLayout {
         initView();
     }
 
-    public CustomSeatLayout(Context context, SeatSelectionPresenter presenter, int maxTicket, int rowId, char rowName) {
+    public CustomSeatLayout(Context context, SeatSelectionPresenter presenter, int maxTicket, int rowId, String rowName) {
         super(context);
         this.mPresenter = presenter;
         maxCount = maxTicket;
@@ -94,7 +94,7 @@ public class CustomSeatLayout extends LinearLayout {
             individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
             individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
             numoFSeats++;
-            if (rowName != '\0') {
+            if (rowName != null && rowName.length() > 0) {
                 selectedSeatList.add("" + rowName + columnName);
             } else {
                 selectedSeatList.add(columnName);
@@ -105,7 +105,7 @@ public class CustomSeatLayout extends LinearLayout {
             individualSeat.setBackgroundResource(R.drawable.seat_bg);
             individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
             numoFSeats--;
-            if (rowName != '\0') {
+            if (rowName != null && rowName.length() > 0) {
                 selectedSeatList.remove("" + rowName + columnName);
             } else {
                 selectedSeatList.remove(columnName);
