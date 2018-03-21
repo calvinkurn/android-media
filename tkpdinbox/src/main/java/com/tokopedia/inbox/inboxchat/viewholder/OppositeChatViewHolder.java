@@ -43,7 +43,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     ChatRoomContract.View viewListener;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.message_item_their;
+    public static final int LAYOUT = R.layout.chat_opposite;
     private AttachmentChatHelper attachmentChatHelper;
 
     public OppositeChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
