@@ -30,7 +30,7 @@ public class ProductAddImageEditVariantDialogFragment extends DialogFragment {
         void clickRemoveImage();
     }
 
-    public static DialogFragment newInstance() {
+    public static ProductAddImageEditVariantDialogFragment newInstance() {
         ProductAddImageEditVariantDialogFragment f = new ProductAddImageEditVariantDialogFragment();
         Bundle args = new Bundle();
         f.setArguments(args);
