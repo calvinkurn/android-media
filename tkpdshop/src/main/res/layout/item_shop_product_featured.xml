@@ -52,24 +52,24 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_ms">
+                android:layout_marginTop="@dimen/margin_ms"
+                android:gravity="center_vertical">
 
                 <android.support.v7.widget.AppCompatRatingBar
                     android:id="@+id/ratingBar"
                     style="@style/RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_vvs"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/total_review"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_marginLeft="@dimen/new_margin_med"
-                    android:layout_marginStart="@dimen/new_margin_med"
+                    android:layout_marginLeft="@dimen/new_margin_tiny"
+                    android:layout_marginStart="@dimen/new_margin_tiny"
                     android:visibility="gone"
-                    tools:text="TextView"
+                    tools:text="@string/app_name"
                     tools:visibility="visible" />
             </LinearLayout>
 
