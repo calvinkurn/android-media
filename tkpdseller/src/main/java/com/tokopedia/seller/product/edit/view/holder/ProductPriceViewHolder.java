@@ -30,7 +30,7 @@ import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.adapter.WholesaleAdapter;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
@@ -60,13 +60,10 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private Listener listener;
-    private NumberFormat formatter;
     private boolean officialStore;
     private final View vWholeSaleVariantInfo;
 
     public ProductPriceViewHolder(View view, Listener listener) {
-
-        formatter = NumberFormat.getNumberInstance(Locale.US);
         editPriceImageButton = view.findViewById(R.id.image_button_edit_price);
         vWholeSaleVariantInfo = view.findViewById(R.id.v_wholesale_variant_info);
         priceSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
@@ -327,7 +324,8 @@ public class ProductPriceViewHolder extends ProductViewHolder
         updateWholesaleButton();
     }
 
-    public @NonNull List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+    public @NonNull
+    List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         if (wholesaleExpandableOptionSwitch.getVisibility() != View.VISIBLE ||
                 !wholesaleExpandableOptionSwitch.isExpanded()) {
             return new ArrayList<>();
@@ -339,16 +337,16 @@ public class ProductPriceViewHolder extends ProductViewHolder
         if (listener.hasVariant()) {
             return true;
         } else {
-            Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
-                    priceSpinnerCounterInputView.getContext(),
-                    Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()), officialStore);
-
-            if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
-                priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
-                        formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
+            double priceValue = getPriceValue();
+            int currencyType = getCurrencyType();
+            if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, officialStore)) {
+                priceSpinnerCounterInputView.setCounterError(
+                        priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
+                        ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore),
+                        ProductPriceRangeUtils.getMinPriceString( currencyType, officialStore)));
                 wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
                 return false;
-            } else if (minMaxPrice.first == getPriceValue()) {
+            } else if (ProductPriceRangeUtils.getMinPrice(currencyType, officialStore) == priceValue) {
                 wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
             } else {
                 wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);

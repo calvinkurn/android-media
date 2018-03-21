@@ -27,6 +27,8 @@
         <com.tokopedia.design.text.SpinnerTextView
             android:id="@+id/spinner_text_view_condition"
             style="@style/LabelLayout"
+            android:layout_marginLeft="@dimen/text_input_margin_offset"
+            android:layout_marginStart="@dimen/text_input_margin_offset"
             app:spinner_entries="@array/product_condition_entries"
             app:spinner_hint="@string/product_label_condition"
             app:spinner_values="@array/product_condition_values" />

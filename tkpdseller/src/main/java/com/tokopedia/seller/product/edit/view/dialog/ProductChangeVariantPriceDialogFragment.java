@@ -22,7 +22,7 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
@@ -190,13 +190,13 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
     }
 
     private boolean checkPriceValid(double value) {
-        if (ViewUtils.isPriceValid(value, currencyType, isOfficialStore)) {
+        if (ProductPriceRangeUtils.isPriceValid(value, currencyType, isOfficialStore)) {
             counterInputPrice.setCounterError(null);
             return true;
         }
         counterInputPrice.setCounterError(getContext().getString(R.string.product_error_product_price_not_valid,
-                ViewUtils.getMinPriceString(currencyType, isOfficialStore),
-                ViewUtils.getMaxPriceString(currencyType, isOfficialStore)));
+                ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
+                ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
         return false;
     }
 
@@ -209,7 +209,7 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
         }
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public final void onAttach(Context context) {
         super.onAttach(context);

@@ -13,6 +13,13 @@
         android:layout_margin="@dimen/padding_vvs"
         tools:src="@mipmap/ic_launcher"/>
 
+    <ImageView
+        android:id="@+id/iv_plus"
+        android:layout_width="@dimen/image_width_s"
+        android:layout_height="@dimen/image_width_s"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_add_black_48dp"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"

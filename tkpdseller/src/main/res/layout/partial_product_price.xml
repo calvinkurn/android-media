@@ -27,6 +27,8 @@
         <com.tokopedia.design.text.CounterInputView
             android:id="@+id/counter_input_view_minimum_order"
             style="@style/LabelLayout"
+            android:layout_marginLeft="@dimen/text_input_margin_offset"
+            android:layout_marginStart="@dimen/text_input_margin_offset"
             app:counter_hint="@string/product_label_minimum_buy"
             app:counter_min="@integer/product_default_counter_minimum_order_text"
             app:counter_text="@string/product_default_counter_minimum_order_text" />
@@ -38,6 +40,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginLeft="@dimen/text_input_margin_offset"
+                android:layout_marginStart="@dimen/text_input_margin_offset"
                 app:spinner_decimal_entries="@array/product_currency_entries"
                 app:spinner_decimal_hint="@string/product_label_product_price"
                 app:spinner_decimal_max_length="@integer/product_max_counter_length"

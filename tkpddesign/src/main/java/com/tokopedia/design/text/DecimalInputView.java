@@ -149,12 +149,8 @@ public class DecimalInputView extends BaseCustomView {
                 return 0;
             }
             return Double.parseDouble(valueString);
-        } catch (Exception e) {
-            try {
-                return StringUtils.convertToNumeric(valueString, false);
-            } catch (Exception e2) {
-                return 0;
-            }
+        } catch (NumberFormatException e) {
+            return StringUtils.convertToNumeric(valueString, false);
         }
     }
 
