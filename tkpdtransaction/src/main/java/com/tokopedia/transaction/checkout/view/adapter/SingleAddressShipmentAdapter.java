@@ -39,7 +39,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -65,8 +64,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     @Inject
     public SingleAddressShipmentAdapter(ActionListener actionListener,
                                         ShipmentDataRequestConverter requestConverter) {
-        shipmentDataList = new ArrayList<>();
-        showCaseObjectList = new ArrayList<>();
+        this.shipmentDataList = new ArrayList<>();
+        this.showCaseObjectList = new ArrayList<>();
         this.actionListener = actionListener;
         this.requestConverter = requestConverter;
     }
@@ -81,20 +80,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             return new CartPromoSuggestionViewHolder(view, actionListener);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
-            RelativeLayout rlShipmentRecipientAddressLayout = view.findViewById(R.id.rl_shipment_recipient_address_header);
-            showCaseObjectList.add(new ShowCaseObject(rlShipmentRecipientAddressLayout,
-                    "Alamat Pengiriman",
-                    "Pastikan alamat pengiriman sudah sesuai dengan\nyang kamu inginkan",
-                    ShowCaseContentPosition.UNDEFINED)
-            );
             return new RecipientAddressViewHolder(view, actionListener);
         } else if (viewType == ITEM_VIEW_CART) {
-            LinearLayout llShipmentOptionLayout = view.findViewById(R.id.ll_shipment_option_view_layout);
-            showCaseObjectList.add(new ShowCaseObject(llShipmentOptionLayout,
-                    "Pilih Kurir Pengiriman",
-                    "Gunakan layanan jasa pengiriman yang didukung oleh\ntoko ini.",
-                    ShowCaseContentPosition.UNDEFINED)
-            );
             return new CartSellerItemViewHolder(view, context, actionListener);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, actionListener);
@@ -113,10 +100,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) viewHolder).bindData((CartPromoSuggestion) data, position);
         } else if (viewType == ITEM_VIEW_RECIPIENT_ADDRESS) {
-            ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data);
+            ((RecipientAddressViewHolder) viewHolder).bindViewHolder((RecipientAddressModel) data,
+                    showCaseObjectList);
         } else if (viewType == ITEM_VIEW_CART) {
             ((CartSellerItemViewHolder) viewHolder).bindViewHolder((CartSellerItemModel) data,
-                    shipmentCost, recipientAddress);
+                    recipientAddress, showCaseObjectList);
             setShowCase();
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) viewHolder).bindViewHolder((ShipmentCostModel) data);
@@ -431,7 +419,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
-                .useArrow(false)
+                .useArrow(true)
                 .build();
     }
 

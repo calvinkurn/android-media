@@ -2,13 +2,19 @@ package com.tokopedia.transaction.checkout.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+
+import java.util.ArrayList;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -18,6 +24,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     private static final int PRIME_ADDRESS = 2;
 
+    private RelativeLayout rlRecipientAddressLayout;
     private TextView tvAddressStatus;
     private TextView tvAddressName;
     private TextView tvRecipientName;
@@ -34,6 +41,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
         this.actionListener = actionListener;
 
+        rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
         tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
         tvAddressName = itemView.findViewById(R.id.tv_address_name);
         tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
@@ -44,7 +52,9 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
     }
 
-    public void bindViewHolder(RecipientAddressModel recipientAddress) {
+    public void bindViewHolder(RecipientAddressModel recipientAddress,
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
+
         tvAddressStatus.setVisibility(recipientAddress.getAddressStatus() == PRIME_ADDRESS ?
                 View.VISIBLE : View.GONE);
         tvAddressName.setText(recipientAddress.getAddressName());
@@ -56,6 +66,16 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
         renderPickupPoint(pickupPointLayout, recipientAddress);
         tvChangeAddress.setVisibility(View.GONE);
+
+        setShowCase(rlRecipientAddressLayout, showCaseObjectList);
+    }
+
+    private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
+        showCaseObjectList.add(new ShowCaseObject(viewGroup,
+                "Alamat Pengiriman",
+                "Pastikan alamat pengiriman sudah sesuai dengan\nyang kamu inginkan",
+                ShowCaseContentPosition.UNDEFINED)
+        );
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {

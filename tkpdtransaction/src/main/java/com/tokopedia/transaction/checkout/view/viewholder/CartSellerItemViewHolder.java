@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -22,7 +25,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.Ca
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.InnerProductListAdapter;
-import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -95,14 +98,14 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvTextProductWeight;
     private TextView mTvLabelItemCount;
     private LinearLayout mLlSelectedCourier;
+    private LinearLayout llShipmentOptionLayout;
 
-    private SingleAddressShipmentAdapter.ActionListener mActionListener;
+    private ActionListener mActionListener;
 
     private boolean mIsAllCartItemShown;
     private boolean mIsCostDetailShown;
 
-    public CartSellerItemViewHolder(View itemView, Context context,
-                                    SingleAddressShipmentAdapter.ActionListener actionListener) {
+    public CartSellerItemViewHolder(View itemView, Context context, ActionListener actionListener) {
         super(itemView);
         mContext = context;
         mActionListener = actionListener;
@@ -132,6 +135,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvChooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
         mTvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
         mLlSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
+        llShipmentOptionLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
 
         mRlCostDetailLayout = itemView.findViewById(R.id.rl_shipment_cost);
         mTvTotalItemLabel = itemView.findViewById(R.id.tv_total_item);
@@ -143,7 +147,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mRlSubTotalLayout = itemView.findViewById(R.id.rl_cart_sub_total);
         mIvDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
         mTvSubTotal = itemView.findViewById(R.id.tv_sub_total_price);
-
 
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mIvShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
@@ -157,8 +160,9 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
-                               ShipmentCostModel shipmentCostModel,
-                               RecipientAddressModel recipientAddressModel) {
+                               RecipientAddressModel recipientAddressModel,
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
+
         mIsAllCartItemShown = false;
         mIsCostDetailShown = false;
 
@@ -170,6 +174,8 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
                 recipientAddressModel);
         bindCostDetail(cartSellerItemModel);
         bindWarnings(cartSellerItemModel);
+
+        setShowCase(llShipmentOptionLayout, showCaseObjectList);
     }
 
     private void bindFirstCartItem(CartItemModel cartItemModel) {
@@ -355,6 +361,14 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
 
     private int getResourceDrawerChevron(boolean isExpanded) {
         return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
+    }
+
+    private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
+        showCaseObjectList.add(new ShowCaseObject(viewGroup,
+                "Pilih Kurir Pengiriman",
+                "Gunakan layanan jasa pengiriman yang didukung oleh\ntoko ini.",
+                ShowCaseContentPosition.UNDEFINED)
+        );
     }
 
     private void showRedWarning(String message) {
