@@ -298,11 +298,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void showGetListError(Throwable throwable) {
-        super.showGetListError(throwable);
-    }
-
-    @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
         if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),

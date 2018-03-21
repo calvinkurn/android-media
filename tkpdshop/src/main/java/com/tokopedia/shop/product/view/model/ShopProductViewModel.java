@@ -17,7 +17,7 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
     private String imageUrl;
     private String imageUrl300;
     private String imageUrl700;
-    private int totalReview;
+    private String totalReview;
     private double rating;
     private double cashback;
     private boolean wholesale;
@@ -91,11 +91,11 @@ public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFac
         this.imageUrl700 = imageUrl700;
     }
 
-    public int getTotalReview() {
+    public String getTotalReview() {
         return totalReview;
     }
 
-    public void setTotalReview(int totalReview) {
+    public void setTotalReview(String totalReview) {
         this.totalReview = totalReview;
     }
 

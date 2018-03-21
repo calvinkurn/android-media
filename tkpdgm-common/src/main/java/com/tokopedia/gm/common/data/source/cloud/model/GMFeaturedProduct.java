@@ -49,7 +49,7 @@ public class GMFeaturedProduct {
     private double rating;
     @SerializedName("total_review")
     @Expose
-    private int totalReview;
+    private String totalReview;
 
     public String getProductId() {
         return productId;
@@ -155,11 +155,11 @@ public class GMFeaturedProduct {
         this.rating = rating;
     }
 
-    public int getTotalReview() {
+    public String getTotalReview() {
         return totalReview;
     }
 
-    public void setTotalReview(int totalReview) {
+    public void setTotalReview(String totalReview) {
         this.totalReview = totalReview;
     }
 }
