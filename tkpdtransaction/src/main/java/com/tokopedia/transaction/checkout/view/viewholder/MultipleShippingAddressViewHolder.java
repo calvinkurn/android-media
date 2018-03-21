@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -92,9 +92,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView insurancePrice;
 
-    private LinearLayout errorContainer;
+    private FrameLayout layoutError;
+
     private TextView tvError;
-    private TextView tvErrorDetail;
+
+    private FrameLayout layoutWarning;
+
+    private TextView tvWarning;
 
     public MultipleShippingAddressViewHolder(View itemView) {
         super(itemView);
@@ -156,9 +160,13 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
         ivChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
 
-        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
-        this.tvError = itemView.findViewById(R.id.tv_warning);
-        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+        layoutError = itemView.findViewById(R.id.layout_error);
+
+        tvError = itemView.findViewById(R.id.tv_error);
+
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+
+        tvWarning = itemView.findViewById(R.id.tv_warning);
 
         detailPriceLayout = itemView.findViewById(R.id.detail_price_layout);
 
@@ -247,28 +255,19 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
 
 
         if (data.isError()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
-            tvError.setTextColor(context.getResources().getColor(R.color.text_cart_item_error_red));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
-        } else if (data.isWarning()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
-            tvError.setTextColor(context.getResources().getColor(R.color.black_54));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
-            tvError.setText(data.getWarningMessage());
+            layoutError.setVisibility(View.VISIBLE);
         } else {
-            errorContainer.setVisibility(View.GONE);
-            tvError.setVisibility(View.GONE);
-            tvErrorDetail.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
         }
+
+        if (data.isWarning()) {
+            tvWarning.setText(data.getWarningMessage());
+            layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarning.setVisibility(View.GONE);
+        }
+
         //TODO Release Later
 //        renderPickupPoint(itemViewHolder, data);
     }

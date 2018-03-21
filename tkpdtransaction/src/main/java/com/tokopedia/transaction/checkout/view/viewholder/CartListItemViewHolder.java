@@ -12,8 +12,8 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -47,9 +47,11 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView ivWishlistBadge;
     private TextView tvErrorFormValidation;
     private TextView tvErrorFormRemarkValidation;
-    private LinearLayout errorContainer;
+    private FrameLayout layoutError;
     private TextView tvError;
-    private TextView tvErrorDetail;
+    private FrameLayout layoutWarning;
+    private TextView tvWarning;
+
     private View lineBottom;
 
     public CartListItemViewHolder(View itemView, CartListAdapter.ActionListener actionListener) {
@@ -75,9 +77,10 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
         this.ivWishlistBadge = itemView.findViewById(R.id.iv_image_wishlist);
-        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
-        this.tvError = itemView.findViewById(R.id.tv_warning);
-        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+        this.layoutError = itemView.findViewById(R.id.layout_error);
+        this.tvError = itemView.findViewById(R.id.tv_error);
+        this.layoutWarning = itemView.findViewById(R.id.layout_warning);
+        this.tvWarning = itemView.findViewById(R.id.tv_warning);
         this.lineBottom = itemView.findViewById(R.id.line_bottom_remark);
     }
 
@@ -185,7 +188,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
         renderErrorFormItemValidation(data);
         renderErrorItemHeader(data);
-
+        renderWarningItemHeader(data);
 
         this.etRemark.addTextChangedListener(new RemarkTextWatcher(data));
         this.etQty.addTextChangedListener(new QuantityTextWatcher(data));
@@ -248,27 +251,19 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderErrorItemHeader(CartItemHolderData data) {
         if (data.getCartItemData().isError()) {
-            this.errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
-            this.tvError.setTextColor(context.getResources().getColor(R.color.text_cart_item_error_red));
-            this.tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
-                    0, 0, 0);
-            this.errorContainer.setVisibility(View.VISIBLE);
-            this.tvError.setVisibility(View.VISIBLE);
-            this.tvErrorDetail.setVisibility(View.GONE);
             this.tvError.setText(data.getCartItemData().getErrorMessage());
-        } else if (data.getCartItemData().isWarning()) {
-            this.errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
-            this.tvError.setTextColor(context.getResources().getColor(R.color.black_54));
-            this.tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
-                    0, 0, 0);
-            this.errorContainer.setVisibility(View.VISIBLE);
-            this.tvError.setVisibility(View.VISIBLE);
-            this.tvErrorDetail.setVisibility(View.GONE);
-            this.tvError.setText(data.getCartItemData().getWarningMessage());
+            this.layoutError.setVisibility(View.VISIBLE);
         } else {
-            this.errorContainer.setVisibility(View.GONE);
-            this.tvError.setVisibility(View.GONE);
-            this.tvErrorDetail.setVisibility(View.GONE);
+            this.layoutError.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderWarningItemHeader(CartItemHolderData data) {
+        if (data.getCartItemData().isWarning()) {
+            this.tvWarning.setText(data.getCartItemData().getWarningMessage());
+            this.layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            this.layoutWarning.setVisibility(View.GONE);
         }
     }
 

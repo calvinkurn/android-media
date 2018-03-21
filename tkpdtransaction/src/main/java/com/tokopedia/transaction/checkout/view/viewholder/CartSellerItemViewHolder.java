@@ -9,13 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.transaction.R;
@@ -23,7 +23,6 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter.ActionListener;
 
@@ -86,12 +85,10 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlSubTotalLayout;
     private ImageView mIvDetailOptionChevron;
     private TextView mTvSubTotal;
-    private LinearLayout errorContainer;
+    private FrameLayout layoutError;
     private TextView tvError;
-    private TextView tvErrorDetail;
-
-    private LinearLayout mLlWarningContainer;
-    private TextView mTvWarningText;
+    private FrameLayout layoutWarning;
+    private TextView tvWarning;
     private LinearLayout mLlShippingWarningContainer;
     private ImageView mIvShippingWarning;
     private TextView mTvShippingWarning;
@@ -154,9 +151,10 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mTvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
         mTvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
 
-        this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
-        this.tvError = itemView.findViewById(R.id.tv_warning);
-        this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+        layoutError = itemView.findViewById(R.id.layout_error);
+        tvError = itemView.findViewById(R.id.tv_error);
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+        tvWarning = itemView.findViewById(R.id.tv_warning);
     }
 
     public void bindViewHolder(CartSellerItemModel cartSellerItemModel,
@@ -173,6 +171,7 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         bindChooseCourier(cartSellerItemModel, cartSellerItemModel.getSelectedShipmentDetailData(),
                 recipientAddressModel);
         bindCostDetail(cartSellerItemModel);
+        bindError(cartSellerItemModel);
         bindWarnings(cartSellerItemModel);
 
         setShowCase(llShipmentOptionLayout, showCaseObjectList);
@@ -247,33 +246,21 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
         mRlSubTotalLayout.setOnClickListener(costDetailOptionListener());
     }
 
-    private void bindWarnings(CartSellerItemModel data) {
+    private void bindError(CartSellerItemModel data) {
         if (data.isError()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
-            tvError.setTextColor(MainApplication.getAppContext().getResources()
-                    .getColor(R.color.text_cart_item_error_red));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_red,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
             tvError.setText(data.getErrorMessage());
-            disableItemView();
-        } else if (data.isWarning()) {
-            errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
-            tvError.setTextColor(MainApplication.getAppContext().getResources()
-                    .getColor(R.color.black_54));
-            tvError.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_grey,
-                    0, 0, 0);
-            errorContainer.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.VISIBLE);
-            tvErrorDetail.setVisibility(View.GONE);
-            tvError.setText(data.getWarningMessage());
-            enableItemView();
+            layoutError.setVisibility(View.VISIBLE);
         } else {
-            errorContainer.setVisibility(View.GONE);
-            tvError.setVisibility(View.GONE);
-            tvErrorDetail.setVisibility(View.GONE);
+            layoutError.setVisibility(View.GONE);
+        }
+    }
+
+    private void bindWarnings(CartSellerItemModel data) {
+        if (data.isWarning()) {
+            tvWarning.setText(data.getWarningMessage());
+            layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarning.setVisibility(View.GONE);
         }
     }
 
@@ -369,29 +356,6 @@ public class CartSellerItemViewHolder extends RecyclerView.ViewHolder {
                 "Gunakan layanan jasa pengiriman yang didukung oleh\ntoko ini.",
                 ShowCaseContentPosition.UNDEFINED)
         );
-    }
-
-    private void showRedWarning(String message) {
-        mLlWarningContainer.setBackgroundColor(ContextCompat.getColor(
-                mLlWarningContainer.getContext(), R.color.bg_warning_red));
-        mTvWarningText.setText(message);
-        mTvWarningText.setTextColor(ContextCompat.getColor(
-                mLlWarningContainer.getContext(), R.color.text_warning_red));
-        mLlWarningContainer.setVisibility(View.VISIBLE);
-    }
-
-    private void showGreyWarning(String message) {
-        mLlWarningContainer.setBackgroundColor(ContextCompat.getColor(
-                mLlWarningContainer.getContext(), R.color.bg_warning_grey));
-//        imgWarning.setImageResource(R.drawable.ic_warning_grey)
-        mTvWarningText.setText(message);
-        mTvWarningText.setTextColor(ContextCompat.getColor(
-                mLlWarningContainer.getContext(), R.color.black_54));
-        mLlWarningContainer.setVisibility(View.VISIBLE);
-    }
-
-    private void hideWarning() {
-        mLlShippingWarningContainer.setVisibility(View.GONE);
     }
 
     private void showShipmentWarning(String message) {
