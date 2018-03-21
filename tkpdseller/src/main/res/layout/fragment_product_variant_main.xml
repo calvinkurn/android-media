@@ -6,107 +6,128 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/bg_line_separator"
-        android:orientation="vertical"
-        android:showDividers="beginning|middle|end">
-
-        <com.tokopedia.seller.common.widget.LabelView
-            android:id="@+id/label_view_variant_level_one"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:content="@string/product_label_choose"
-            app:content_color="@color/tkpd_main_green"
-            tools:visibility="visible" />
-
-        <com.tokopedia.seller.common.widget.LabelView
-            android:id="@+id/label_view_variant_level_two"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:content="@string/product_label_choose"
-            app:content_color="@color/tkpd_main_green"
-            tools:visibility="visible" />
-
-        <LinearLayout
-            android:id="@+id/vg_sizechart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/margin_sm"
-            android:background="@color/white"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/product_sizechart_optional" />
-
-                <TextView
-                    style="@style/TextView.Micro.BlackDisabled"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_vs"
-                    android:text="@string/product_sizechart_info" />
-            </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/frame_sizechart_image"
-                android:layout_width="@dimen/image_width_variant"
-                android:layout_height="@dimen/image_width_variant"
-                android:background="@drawable/bg_rect_stroke_lighter_gray">
-
-                <ImageView
-                    android:id="@+id/image_view_sizechart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_vvs"
-                    android:background="@color/grey_200"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_add_product"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_vvs"
-                    android:background="@drawable/bg_rect_stroke_gray_dashed" />
-            </FrameLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@id/main_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/padding_ms"
-        android:paddingTop="@dimen/padding_ms" />
+        android:layout_weight="1">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            android:background="#FF0000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/bg_line_separator"
+                android:orientation="vertical"
+                android:showDividers="beginning|middle|end"
+                app:layout_scrollFlags="scroll">
+
+                <com.tokopedia.seller.common.widget.LabelView
+                    android:id="@+id/label_view_variant_level_one"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:content="@string/product_label_choose"
+                    app:content_color="@color/tkpd_main_green"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.seller.common.widget.LabelView
+                    android:id="@+id/label_view_variant_level_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:content="@string/product_label_choose"
+                    app:content_color="@color/tkpd_main_green"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/vg_sizechart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_sm"
+                    android:background="@color/white"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_sizechart_optional" />
+
+                        <TextView
+                            style="@style/TextView.Micro.BlackDisabled"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/padding_vs"
+                            android:text="@string/product_sizechart_info" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/frame_sizechart_image"
+                        android:layout_width="@dimen/image_width_variant"
+                        android:layout_height="@dimen/image_width_variant"
+                        android:background="@drawable/bg_rect_stroke_lighter_gray">
+
+                        <ImageView
+                            android:id="@+id/image_view_sizechart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/padding_vvs"
+                            android:background="@color/grey_200"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_add_product"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/padding_vvs"
+                            android:background="@drawable/bg_rect_stroke_gray_dashed" />
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/padding_ms"
+            android:paddingTop="@dimen/padding_ms"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        style="@style/LabelLayout"
         android:divider="@drawable/bg_line_separator"
-        android:showDividers="beginning">
+        android:showDividers="beginning"
+        android:background="@color/white">
         <Button
             android:id="@+id/button_save"
             style="@style/Button.Submit.Green"
-            android:layout_margin="0dp"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/margin_small_sm"
+            android:layout_marginBottom="@dimen/margin_small_sm"
             android:text="@string/label_variant_save" />
     </LinearLayout>
 

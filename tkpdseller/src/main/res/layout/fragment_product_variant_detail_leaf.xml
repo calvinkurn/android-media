@@ -121,13 +121,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        style="@style/LabelLayout"
         android:divider="@drawable/bg_line_separator"
         android:showDividers="beginning">
         <Button
             android:id="@+id/button_save"
             style="@style/Button.Submit.Green"
-            android:layout_margin="0dp"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/margin_small_sm"
+            android:layout_marginBottom="@dimen/margin_small_sm"
             android:text="@string/label_variant_save" />
     </LinearLayout>
 
