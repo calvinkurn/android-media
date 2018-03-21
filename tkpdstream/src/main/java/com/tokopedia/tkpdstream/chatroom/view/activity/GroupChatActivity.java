@@ -49,6 +49,7 @@ import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
@@ -434,6 +435,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (fragment == null) {
             fragment = ChannelInfoFragment.createInstance(bundle);
         }
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
