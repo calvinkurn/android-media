@@ -36,6 +36,7 @@ import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopAppLink;
+import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
@@ -60,6 +61,8 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
@@ -240,9 +243,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         }
     }
 
-    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange(final Float offset) {
         return new AppBarLayout.OnOffsetChangedListener() {
-            private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.9f;
             boolean toolbarTitleShown = false;
             int scrollRange = -1;
 
@@ -252,10 +254,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 float percentage = (float) Math.abs(verticalOffset) / (float) scrollRange;
-                if (percentage < OFFSET_TOOLBAR_TITLE_SHOWN && toolbarTitleShown) {
+                if (percentage < offset && toolbarTitleShown) {
                     showToolbarTitle(false);
                     toolbarTitleShown = false;
-                } else if (percentage >= OFFSET_TOOLBAR_TITLE_SHOWN && !toolbarTitleShown) {
+                } else if (percentage >= offset && !toolbarTitleShown) {
                     showToolbarTitle(true);
                     toolbarTitleShown = true;
                 }
@@ -525,7 +527,19 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
 
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        switch (shopInfo.getInfo().getShopStatus()) {
+            case ShopStatusDef.CLOSED:
+            case ShopStatusDef.MODERATED:
+            case ShopStatusDef.NOT_ACTIVE:
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
+                break;
+            default:
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN);
+        }
+    }
+
+    public void setOffsetChangeListener(Float offset){
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange(offset));
     }
 
     @Override
