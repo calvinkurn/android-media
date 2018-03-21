@@ -114,15 +114,17 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
 
     private ChannelViewModel mapToChannelDesc(Channel pojo) {
-
+        //TODO milhamj
         return new ChannelViewModel(String.valueOf(pojo.getChannelId()),
-                pojo.getModeratorName()
-                , pojo.getCoverUrl(),
+                pojo.getModeratorName(),
+                pojo.getCoverUrl(),
                 pojo.getModeratorProfileUrl(),
                 pojo.getTitle(),
                 pojo.getDescription(),
                 pojo.getTotalViews(),
-                pojo.getChannelUrl());
+                pojo.getChannelUrl(),
+                "Net TV milik kita bersama sama di dunia ini hanya sementara",
+                "https://cdn-image.hipwee.com/wp-content/uploads/2017/07/hipwee-net_blue.png");
     }
 
     private int checkIfSelected(boolean isAnswered, boolean isSelected) {

@@ -2,6 +2,7 @@
 <resources>
     <dimen name="groupchat_avatar_size">20dp</dimen>
     <dimen name="groupchat_avatar_size_large">30dp</dimen>
+    <dimen name="partner_avatar_size">50dp</dimen>
     <dimen name="card_channel_elevation">3dp</dimen>
 
     <dimen name="space_atomic">0.5dp</dimen>

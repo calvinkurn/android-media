@@ -28,6 +28,7 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
@@ -44,6 +45,7 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
 
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
+    private static final int CHANNEL_INFO_FRAGMENT = 2;
 
     public static final String INITIAL_FRAGMENT = "init_fragment";
 
@@ -273,6 +275,7 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         List<TabViewModel> list = new ArrayList<>();
         list.add(new TabViewModel(getString(R.string.title_group_chat)));
         list.add(new TabViewModel(getString(R.string.title_vote)));
+        list.add(new TabViewModel(getString(R.string.title_info)));
         return list;
     }
 
@@ -288,6 +291,9 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         switch (fragmentPosition) {
             case CHATROOM_FRAGMENT:
                 showChatroomFragment();
+                break;
+            case CHANNEL_INFO_FRAGMENT:
+                showChannelInfoFragment();
                 break;
             default:
                 break;
@@ -307,6 +313,24 @@ public class GroupChatActivity extends BaseSimpleActivity implements GroupChatTa
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
             fragment = GroupChatFragment.createInstance(bundle);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+    }
+
+    private void showChannelInfoFragment() {
+
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().
+                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();

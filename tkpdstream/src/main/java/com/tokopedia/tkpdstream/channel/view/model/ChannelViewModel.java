@@ -12,7 +12,6 @@ import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFact
 
 public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactory> {
 
-    private String channelUrl;
     private String id;
     private String adminName;
     private String image;
@@ -20,41 +19,18 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     private String title;
     private String description;
     private String participant;
-
-    protected ChannelViewModel(Parcel in) {
-        channelUrl = in.readString();
-        id = in.readString();
-        adminName = in.readString();
-        image = in.readString();
-        adminPicture = in.readString();
-        title = in.readString();
-        description = in.readString();
-        participant = in.readString();
-    }
-
-    public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
-        @Override
-        public ChannelViewModel createFromParcel(Parcel in) {
-            return new ChannelViewModel(in);
-        }
-
-        @Override
-        public ChannelViewModel[] newArray(int size) {
-            return new ChannelViewModel[size];
-        }
-    };
+    private String channelUrl;
+    private String partnerName;
+    private String partnerImage;
 
     @Override
     public int type(ChannelTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 
-    public ChannelViewModel() {
-    }
-
     public ChannelViewModel(String id, String adminName, String image, String adminPicture,
-                            String title, String description, String participant, String
-                                    channelUrl) {
+                            String title, String description, String participant, String channelUrl,
+                            String partnerName, String partnerImage) {
         this.id = id;
         this.adminName = adminName;
         this.image = image;
@@ -63,6 +39,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.description = description;
         this.participant = participant;
         this.channelUrl = channelUrl;
+        this.partnerName = partnerName;
+        this.partnerImage = partnerImage;
     }
 
     public String getId() {
@@ -101,6 +79,14 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return channelUrl;
     }
 
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    public String getPartnerImage() {
+        return partnerImage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,14 +94,41 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(channelUrl);
-        dest.writeString(id);
-        dest.writeString(adminName);
-        dest.writeString(image);
-        dest.writeString(adminPicture);
-        dest.writeString(title);
-        dest.writeString(description);
-        dest.writeString(participant);
+        dest.writeString(this.channelUrl);
+        dest.writeString(this.id);
+        dest.writeString(this.adminName);
+        dest.writeString(this.image);
+        dest.writeString(this.adminPicture);
+        dest.writeString(this.title);
+        dest.writeString(this.description);
+        dest.writeString(this.participant);
+        dest.writeString(this.partnerName);
+        dest.writeString(this.partnerImage);
     }
+
+    protected ChannelViewModel(Parcel in) {
+        this.channelUrl = in.readString();
+        this.id = in.readString();
+        this.adminName = in.readString();
+        this.image = in.readString();
+        this.adminPicture = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.participant = in.readString();
+        this.partnerName = in.readString();
+        this.partnerImage = in.readString();
+    }
+
+    public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {
+        @Override
+        public ChannelViewModel createFromParcel(Parcel source) {
+            return new ChannelViewModel(source);
+        }
+
+        @Override
+        public ChannelViewModel[] newArray(int size) {
+            return new ChannelViewModel[size];
+        }
+    };
 }
 

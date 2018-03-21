@@ -2,6 +2,8 @@ package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +28,34 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 public class ChannelInfoFragment extends BaseDaggerFragment
         implements ChannelInfoFragmentListener.View {
+    public static final String ARGS_CI_VIEW_MODEL = "CI_VIEW_MODEL";
+
     private ChannelViewModel channelViewModel;
 
     private View rootView;
-    private TextView actionButton;
-    private ImageView image;
     private ImageView profile;
     private TextView title;
     private TextView subtitle;
     private TextView name;
     private TextView participant;
+    private View partnerLayout;
+    private ImageView partnerAvatar;
+    private TextView partnerName;
+
+
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new ChannelInfoFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            channelViewModel = savedInstanceState.getParcelable(ARGS_CI_VIEW_MODEL);
+        }
+    }
 
     @Nullable
     @Override
@@ -51,6 +71,12 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         initView(view);
         setViewListener();
         populateData();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_CI_VIEW_MODEL, channelViewModel);
     }
 
     @Override
@@ -81,22 +107,17 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     private void initView(View view) {
-        actionButton = view.findViewById(R.id.action_button);
-        image = view.findViewById(R.id.product_image);
         profile = view.findViewById(R.id.prof_pict);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
         participant = view.findViewById(R.id.participant);
+        partnerLayout = view.findViewById(R.id.partner_layout);
+        partnerAvatar = view.findViewById(R.id.partner_avatar);
+        partnerName = view.findViewById(R.id.partner_name);
     }
 
     private void setViewListener() {
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO milhamj
-            }
-        });
     }
 
     private void populateData() {
@@ -108,13 +129,22 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());
-        ImageHandler.loadImage2(image,
-                channelViewModel.getImage(),
-                R.drawable.loading_page);
+
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
                 channelViewModel.getAdminPicture(),
                 R.drawable.loading_page);
+
+        if (!TextUtils.isEmpty(channelViewModel.getPartnerImage())
+                && !TextUtils.isEmpty(channelViewModel.getPartnerName())) {
+            partnerLayout.setVisibility(View.VISIBLE);
+            partnerName.setText(channelViewModel.getPartnerName());
+            ImageHandler.loadImage2(partnerAvatar,
+                    channelViewModel.getPartnerImage(),
+                    R.drawable.loading_page);
+        } else {
+            partnerLayout.setVisibility(View.GONE);
+        }
     }
 
     private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
