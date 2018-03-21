@@ -15,7 +15,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -93,7 +92,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
-                .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
         activity.startActivity(ShareActivity.createIntent(activity, shareData));
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
@@ -103,14 +101,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private void formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
-            contents = getAppShareDescription();
+            contents = getAppShareDescription() + activity.getString(R.string.cek_label);
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        if(!contents.contains(activity.getString(R.string.cek_label))){
-            contents = contents + activity.getString(R.string.cek_label);
-        }
-
     }
 
     @Override
