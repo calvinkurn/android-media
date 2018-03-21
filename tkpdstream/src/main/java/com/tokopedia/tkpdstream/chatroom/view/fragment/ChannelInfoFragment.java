@@ -20,7 +20,6 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListen
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 /**
  * @author by milhamj on 20/03/18.
@@ -145,13 +144,5 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         } else {
             partnerLayout.setVisibility(View.GONE);
         }
-    }
-
-    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-        return (hasPoll
-                && voteInfoViewModel != null
-                && voteInfoViewModel.getStartTime() != 0
-                && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime());
     }
 }
