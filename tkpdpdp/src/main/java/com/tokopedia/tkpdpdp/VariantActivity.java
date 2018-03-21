@@ -392,6 +392,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         Child childSelected = getProductDatumSelected();
         if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+            intent.putExtra(KEY_VARIANT_DATA, productVariant);
+            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
         }
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
