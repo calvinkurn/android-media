@@ -26,8 +26,9 @@ public class CollectionAdapterUtils implements JsonSerializer<Collection<?>> {
             return null;
         }
         if (isRemoveEmpty) {
-            if (src.isEmpty())
+            if (src.isEmpty()) {
                 return null;
+            }
         }
 
         JsonArray array = new JsonArray();
