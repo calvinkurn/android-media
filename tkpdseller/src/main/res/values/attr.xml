@@ -180,4 +180,8 @@
     <declare-styleable name="PriceDifferentInfoView">
         <attr name="pdiv_title" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="VariantImageView">
+        <attr name="showPlusButton" format="boolean" />
+    </declare-styleable>
 </resources>

@@ -66,13 +66,17 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
         variantImageView.setOnImageClickListener(new VariantImageView.OnImageClickListener() {
             @Override
             public void onImageVariantClicked() {
-                if (listener != null) {
-                    listener.onImageViewVariantClicked(model, (VariantPictureViewModel)
-                                    variantImageView.getBasePictureViewModel(),
-                            getAdapterPosition());
-                }
+                onItemClicked(model);
             }
         });
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClicked(model);
+            }
+        };
+        lvPrice.setOnClickListener(onClickListener);
+        lvStock.setOnClickListener(onClickListener);
 
         if (model.has1LevelOnly()) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel =
@@ -143,6 +147,14 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
             }
         } else {
             tvSubtitle.setText(null);
+        }
+    }
+
+    private void onItemClicked(ProductVariantDashboardViewModel model){
+        if (listener != null) {
+            listener.onImageViewVariantClicked(model, (VariantPictureViewModel)
+                            variantImageView.getBasePictureViewModel(),
+                    getAdapterPosition());
         }
     }
 }

@@ -2,12 +2,16 @@ package com.tokopedia.seller.product.variant.view.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -30,10 +34,12 @@ import java.io.File;
 public class VariantImageView extends FrameLayout {
 
     private ImageView ivVariant;
+    private ImageView ivPlus;
     private BasePictureViewModel basePictureViewModel;
 
     private OnImageClickListener onImageClickListener;
     private View viewEmptyStock;
+    private boolean showPlusButton;
 
     public interface OnImageClickListener {
         void onImageVariantClicked();
@@ -45,30 +51,36 @@ public class VariantImageView extends FrameLayout {
 
     public VariantImageView(@NonNull Context context) {
         super(context);
+        apply(null, 0);
     }
 
     public VariantImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        apply(null, 0);
+        apply(attrs, 0);
         init();
     }
 
     public VariantImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        apply(null, 0);
+        apply(attrs, 0);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public VariantImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        apply(null, defStyleAttr);
+        apply(attrs, defStyleAttr);
         init();
     }
 
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
-
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.VariantImageView);
+        try {
+            showPlusButton = styledAttributes.getBoolean(R.styleable.VariantImageView_showPlusButton, false);
+        } finally {
+            styledAttributes.recycle();
+        }
     }
 
     private void init() {
@@ -82,6 +94,8 @@ public class VariantImageView extends FrameLayout {
                 }
             }
         });
+        ivPlus = view.findViewById(R.id.iv_plus);
+        ivPlus.setVisibility(View.GONE);
         viewEmptyStock = view.findViewById(R.id.tv_empty_stock);
     }
 
@@ -126,13 +140,37 @@ public class VariantImageView extends FrameLayout {
                         new File(basePictureViewModel.getFilePath())
                 );
             }
+            ivPlus.setVisibility(View.GONE);
         } else if (!TextUtils.isEmpty(defaultHexColor)) {
-            ivVariant.setBackgroundColor(Color.parseColor(defaultHexColor));
+            int color = Color.parseColor(defaultHexColor);
+            ivVariant.setBackgroundColor(color);
+            if (showPlusButton) {
+                if (isDarkColor(color)) {
+                    ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.white_65), PorterDuff.Mode.SRC_IN);
+                } else {
+                    ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_800), PorterDuff.Mode.SRC_IN);
+                }
+                ivPlus.setVisibility(View.VISIBLE);
+            } else {
+                ivPlus.setVisibility(View.GONE);
+            }
             ivVariant.setImageDrawable(null);
         } else {
             ivVariant.setBackgroundColor(Color.LTGRAY);
             ivVariant.setImageDrawable(null);
+            ivPlus.setVisibility(View.GONE);
         }
+    }
+
+    private boolean isDarkColor(int color) {
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.green(color);
+        return getLuminosity(r, g, b) <= 127;
+    }
+
+    private double getLuminosity(int r, int g, int b){
+        return 0.3 * r + 0.59 * g + 0.11 * b;
     }
 
     public void setStockEmpty(boolean isEmpty) {

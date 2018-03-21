@@ -27,6 +27,8 @@
         <com.tokopedia.design.text.SpinnerCounterInputView
             android:id="@+id/spinner_counter_input_view_weight"
             style="@style/LabelLayout"
+            android:layout_marginLeft="@dimen/text_input_margin_offset"
+            android:layout_marginStart="@dimen/text_input_margin_offset"
             app:spinner_decimal_entries="@array/product_weight_entries"
             app:spinner_decimal_hint="@string/product_label_product_weight"
             app:spinner_decimal_show_counter_button="false"

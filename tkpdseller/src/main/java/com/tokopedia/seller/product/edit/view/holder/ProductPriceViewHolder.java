@@ -60,13 +60,10 @@ public class ProductPriceViewHolder extends ProductViewHolder
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private Listener listener;
-    private NumberFormat formatter;
     private boolean officialStore;
     private final View vWholeSaleVariantInfo;
 
     public ProductPriceViewHolder(View view, Listener listener) {
-
-        formatter = NumberFormat.getNumberInstance(Locale.US);
         editPriceImageButton = view.findViewById(R.id.image_button_edit_price);
         vWholeSaleVariantInfo = view.findViewById(R.id.v_wholesale_variant_info);
         priceSpinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);

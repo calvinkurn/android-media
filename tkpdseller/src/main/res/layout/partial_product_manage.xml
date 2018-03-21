@@ -32,6 +32,8 @@
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/spinner_text_view_stock_status"
                 style="@style/LabelLayout"
+                android:layout_marginLeft="@dimen/text_input_margin_offset"
+                android:layout_marginStart="@dimen/text_input_margin_offset"
                 app:spinner_entries="@array/product_stock_status_entries"
                 app:spinner_hint="@string/product_label_status"
                 app:spinner_selection_index="0"
@@ -40,6 +42,8 @@
             <com.tokopedia.design.text.CounterInputView
                 android:id="@+id/counter_input_view_stock_total"
                 style="@style/LabelLayout"
+                android:layout_marginLeft="@dimen/text_input_margin_offset"
+                android:layout_marginStart="@dimen/text_input_margin_offset"
                 app:counter_hint="@string/product_label_stock_total"
                 app:counter_min="1" />
         </LinearLayout>
