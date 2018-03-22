@@ -264,13 +264,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
+                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY,true);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onAddFromCamera() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
+                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA, true);
     }
 
     public void importFromInstagram() {

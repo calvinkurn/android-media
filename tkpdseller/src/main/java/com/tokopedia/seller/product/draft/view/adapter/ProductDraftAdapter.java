@@ -13,6 +13,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
+import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.io.File;
@@ -92,7 +93,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
 
             if (TextUtils.isEmpty(model.getPrimaryImageUrl())) {
                 ivProduct.setImageResource(R.drawable.ic_image_unavailable);
-            } else if (isValidURL(model.getPrimaryImageUrl())) {
+            } else if (UrlUtils.isValidURL(model.getPrimaryImageUrl())) {
                 ImageHandler.loadImageFitCenter(
                         ivProduct.getContext(),
                         ivProduct,
@@ -107,13 +108,5 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             }
         }
 
-        private boolean isValidURL(String urlStr) {
-            try {
-                URI uri = new URI(urlStr);
-                return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-            } catch (Exception e) {
-                return false;
-            }
-        }
     }
 }
