@@ -1,12 +1,11 @@
 package com.tokopedia.seller.product.edit.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
-import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddVideoFragment;
 
 import dagger.Component;
 
@@ -18,7 +17,7 @@ import dagger.Component;
 public interface YoutubeVideoComponent {
     void inject(ProductAddActivity productAddActivity);
 
-    void inject(YoutubeAddVideoActivity youtubeAddVideoActivity);
+    void inject(ProductAddVideoActivity youtubeAddVideoActivity);
 
-    void inject(YoutubeAddVideoFragment youtubeAddVideoFragment);
+    void inject(ProductAddVideoFragment youtubeAddVideoFragment);
 }

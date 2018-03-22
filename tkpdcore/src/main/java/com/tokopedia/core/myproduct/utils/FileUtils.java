@@ -31,7 +31,7 @@ import java.util.Random;
  */
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
-    public static final String PNG = ".png";
+    public static final String FILE_IMAGE_EXT = ".png"; //to handle transparent issues.
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
@@ -68,7 +68,7 @@ public class FileUtils {
     @NonNull
     public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + FILE_IMAGE_EXT);
     }
 
     /**

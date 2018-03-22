@@ -3,14 +3,12 @@ package com.tokopedia.seller.product.edit.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.FetchEditProductWithVariantUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
 import javax.inject.Inject;
@@ -21,7 +19,7 @@ import rx.Subscriber;
  */
 
 public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditView> {
-    private final FetchEditProductWithVariantUseCase fetchEditProductWithVariantUseCase;
+    private final GetProductDetailUseCase getProductDetailUseCase;
 
     @Inject
     public ProductEditPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
@@ -29,7 +27,7 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
                                 GetCategoryRecommUseCase getCategoryRecommUseCase,
                                 ProductScoringUseCase productScoringUseCase,
                                 AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                FetchEditProductWithVariantUseCase fetchEditProductWithVariantUseCase,
+                                GetProductDetailUseCase getProductDetailUseCase,
                                 FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
                                 FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         super(saveDraftProductUseCase,
@@ -39,22 +37,22 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
                 addProductShopInfoUseCase,
                 fetchCategoryDisplayUseCase,
                 fetchProductVariantByCatUseCase);
-        this.fetchEditProductWithVariantUseCase = fetchEditProductWithVariantUseCase;
+        this.getProductDetailUseCase = getProductDetailUseCase;
     }
 
     public void fetchEditProductData(String productId) {
-        RequestParams editParams = FetchEditProductWithVariantUseCase.createParams(productId);
-        fetchEditProductWithVariantUseCase.execute(editParams, getFetchEditProductFormSubscriber());
+        getProductDetailUseCase.execute(GetProductDetailUseCase.createParams(productId),
+                getFetchEditProductFormSubscriber());
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        fetchEditProductWithVariantUseCase.unsubscribe();
+        getProductDetailUseCase.unsubscribe();
     }
 
-    private Subscriber<UploadProductInputDomainModel> getFetchEditProductFormSubscriber() {
-        return new Subscriber<UploadProductInputDomainModel>() {
+    private Subscriber<ProductViewModel> getFetchEditProductFormSubscriber() {
+        return new Subscriber<ProductViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -69,9 +67,8 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
             }
 
             @Override
-            public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
-                UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
-                getView().onSuccessLoadDraftProduct(model);
+            public void onNext(ProductViewModel productViewModel) {
+                getView().onSuccessLoadProduct(productViewModel);
             }
         };
     }

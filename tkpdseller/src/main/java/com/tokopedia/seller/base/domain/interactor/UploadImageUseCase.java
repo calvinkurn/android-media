@@ -35,6 +35,8 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
     public static final String PATH_FILE = "PATH_FILE";
     public static final String PATH_UPLOAD = "PATH_UPLOAD";
     public static final String HTTPS = "https://";
+    public static final String KEY_LABEL_UPLOAD_IMAGE = "KEY_LABEL_UPLOAD_IMAGE";
+    public static final String PRODUCT_ID = "PRODUCT_ID";
     private UploadImageRepository uploadImageRepository;
     private GenerateHostRepository generateHostRepository;
     private Gson gson;
@@ -62,7 +64,8 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                     @Override
                     public Observable<ImageUploadDomainModel<T>> call(final GenerateHostDomainModel generateHostDomainModel) {
                         return uploadImageRepository.uploadImage(getParamsUploadImage(generateHostDomainModel.getUrl(),
-                                requestParams.getString(PATH_FILE, ""), String.valueOf(generateHostDomainModel.getServerId()), ""),
+                                requestParams.getString(PATH_FILE, ""), String.valueOf(generateHostDomainModel.getServerId()), requestParams.getString(PRODUCT_ID, null),
+                                requestParams.getString(KEY_LABEL_UPLOAD_IMAGE, "")),
                                 generateUploadUrl(requestParams.getString(PATH_UPLOAD, ""), generateHostDomainModel.getUrl()))
                                 .map(new Func1<String, ImageUploadDomainModel<T>>() {
                                     @Override
@@ -83,14 +86,16 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
         return HTTPS + urlUpload + pathUpload;
     }
 
-    public RequestParams createRequestParams(String pathUpload, String pathFile){
+    public RequestParams createRequestParams(String pathUpload, String pathFile, String keyLabelUploadImage, String productId){
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PATH_UPLOAD, pathUpload);
         requestParams.putString(PATH_FILE, pathFile);
+        requestParams.putString(KEY_LABEL_UPLOAD_IMAGE, keyLabelUploadImage);
+        requestParams.putString(PRODUCT_ID, productId);
         return requestParams;
     }
 
-    public Map<String, RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload, String productId) {
+    public Map<String, RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload, String productId, String paramUploadImage) {
         Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
 
         File file = new File(pathFile);
@@ -109,7 +114,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
         paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
         paramsUploadImage.put(NetworkCalculator.HASH, hash);
         paramsUploadImage.put(NetworkCalculator.DEVICE_TIME, deviceTime);
-        paramsUploadImage.put(ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, fileToUpload);
+        paramsUploadImage.put(paramUploadImage, fileToUpload);
         paramsUploadImage.put(ShopSettingNetworkConstant.SERVER_LANGUAGE, newAdd);
         paramsUploadImage.put(ShopSettingNetworkConstant.RESOLUTION, resolution);
         paramsUploadImage.put(ShopSettingNetworkConstant.SERVER_ID, serverId);

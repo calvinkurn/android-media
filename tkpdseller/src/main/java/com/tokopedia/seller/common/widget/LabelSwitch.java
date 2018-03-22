@@ -48,14 +48,14 @@ public class LabelSwitch extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelSwitch);
         try {
-            titleText = styledAttributes.getString(R.styleable.LabelView_title);
-            switchEnable = styledAttributes.getBoolean(R.styleable.LabelView_switch_enable, true);
-            titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_title_text_size, 0);
-            titleTextColor = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, 0);
-            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_content_text_size, 0);
-            contentTextColor = styledAttributes.getColor(R.styleable.LabelView_content_color, 0);
+            titleText = styledAttributes.getString(R.styleable.LabelSwitch_ls_title);
+            switchEnable = styledAttributes.getBoolean(R.styleable.LabelSwitch_ls_switch_enable, true);
+            titleTextSize = styledAttributes.getDimension(R.styleable.LabelSwitch_ls_title_text_size, 0);
+            titleTextColor = styledAttributes.getColor(R.styleable.LabelSwitch_ls_title_color, 0);
+            contentTextSize = styledAttributes.getDimension(R.styleable.LabelSwitch_ls_content_text_size, 0);
+            contentTextColor = styledAttributes.getColor(R.styleable.LabelSwitch_ls_content_color, 0);
         } finally {
             styledAttributes.recycle();
         }

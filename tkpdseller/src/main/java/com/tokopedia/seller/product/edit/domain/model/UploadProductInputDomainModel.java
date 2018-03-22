@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.edit.domain.model;
 
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductStockTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
@@ -12,6 +12,7 @@ import java.util.List;
  * @author sebastianuskh on 4/10/17.
  */
 
+@Deprecated
 public class UploadProductInputDomainModel {
 
     private long id;
@@ -32,11 +33,11 @@ public class UploadProductInputDomainModel {
     private int productMustInsurance;
     private int productPriceCurrency;
     private int productReturnable;
-    @UploadToTypeDef
+    @StockTypeDef
     private int productUploadTo;
-    @InvenageSwitchTypeDef
+    @ProductStockTypeDef
     private int productInvenageSwitch;
-    private int productInvenageValue;
+    private int productStock;
     private int productWeight;
     private int productWeightUnit;
     private int poProcessType;
@@ -199,7 +200,7 @@ public class UploadProductInputDomainModel {
         return productUploadTo;
     }
 
-    public void setProductUploadTo(@UploadToTypeDef int productUploadTo) {
+    public void setProductUploadTo(@StockTypeDef int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 
@@ -211,12 +212,12 @@ public class UploadProductInputDomainModel {
         this.productInvenageSwitch = productInvenageSwitch;
     }
 
-    public int getProductInvenageValue() {
-        return productInvenageValue;
+    public int getProductStock() {
+        return productStock;
     }
 
-    public void setProductInvenageValue(int productInvenageValue) {
-        this.productInvenageValue = productInvenageValue;
+    public void setProductStock(int productStock) {
+        this.productStock = productStock;
     }
 
     public int getProductWeight() {

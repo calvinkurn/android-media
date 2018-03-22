@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.variant.repository;
 
 import com.tokopedia.core.common.category.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 
 import java.util.List;

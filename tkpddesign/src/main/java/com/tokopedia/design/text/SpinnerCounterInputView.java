@@ -126,6 +126,14 @@ public class SpinnerCounterInputView extends BaseCustomView {
         requestLayout();
     }
 
+    public CounterInputView getCounterInputView() {
+        return counterInputView;
+    }
+
+    public SpinnerTextView getSpinnerTextView() {
+        return spinnerTextView;
+    }
+
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
@@ -176,6 +184,10 @@ public class SpinnerCounterInputView extends BaseCustomView {
 
     public void removeTextChangedListener(TextWatcher watcher) {
         counterInputView.removeTextChangedListener(watcher);
+    }
+
+    public void removeDefaultTextWatcher(){
+        counterInputView.removeDefaultTextWatcher();
     }
 
     public int getSpinnerPosition(){

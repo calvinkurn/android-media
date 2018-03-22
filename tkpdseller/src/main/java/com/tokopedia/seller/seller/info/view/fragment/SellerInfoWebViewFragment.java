@@ -20,7 +20,7 @@ public class SellerInfoWebViewFragment extends BaseWebViewFragment {
 
     private UserSession userSession;
 
-    public static Fragment newInstance(String url){
+    public static Fragment newInstance(String url) {
         Fragment fragment = new SellerInfoWebViewFragment();
         Bundle argument = new Bundle();
         argument.putString(EXTRA_URL, url);
@@ -36,11 +36,7 @@ public class SellerInfoWebViewFragment extends BaseWebViewFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if(savedInstanceState==null){
-            if(getArguments()!= null){
-                extraUrl = getArguments().getString(EXTRA_URL);
-            }
-        }
+        extraUrl = getArguments().getString(EXTRA_URL);
         super.onViewCreated(view, savedInstanceState);
     }
 

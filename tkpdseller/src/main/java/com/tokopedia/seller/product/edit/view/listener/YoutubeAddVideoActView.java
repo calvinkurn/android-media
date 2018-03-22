@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.edit.view.listener;
 
-import com.tokopedia.seller.product.edit.view.fragment.YoutubeAddVideoFragment;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddVideoFragment;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public interface YoutubeAddVideoActView {
-    YoutubeAddVideoFragment youtubeAddVideoFragment();
+    ProductAddVideoFragment youtubeAddVideoFragment();
 
     void openAddYoutubeDialog();
 

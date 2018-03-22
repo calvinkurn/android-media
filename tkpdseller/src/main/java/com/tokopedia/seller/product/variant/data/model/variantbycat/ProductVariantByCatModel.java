@@ -14,6 +14,11 @@ import java.util.List;
  */
 
 public class ProductVariantByCatModel implements Parcelable {
+
+    public static final int COLOR_ID = 1; // from API
+
+    public static final int STATUS_LEVEL_1 = 2; // from API
+
     @SerializedName("variant_id")
     @Expose
     private int variantId;
@@ -23,7 +28,7 @@ public class ProductVariantByCatModel implements Parcelable {
     @SerializedName("identifier")
     @Expose
     private String identifier;
-    @SerializedName("status")
+    @SerializedName("status") // 2: level 1, 1: level 2
     @Expose
     private int status;
     @SerializedName("has_unit")
@@ -49,8 +54,20 @@ public class ProductVariantByCatModel implements Parcelable {
         return status;
     }
 
+    public int getLevel(){
+        return status == STATUS_LEVEL_1 ? 1: 2;
+    }
+
     public int getHasUnit() {
         return hasUnit;
+    }
+
+    public boolean hasUnit(){
+        return hasUnit > 0 && unitList!= null && unitList.size() > 0;
+    }
+
+    public boolean isDataColorType(){
+        return variantId == COLOR_ID;
     }
 
     public List<ProductVariantUnit> getUnitList() {
@@ -95,4 +112,5 @@ public class ProductVariantByCatModel implements Parcelable {
             return new ProductVariantByCatModel[size];
         }
     };
+
 }

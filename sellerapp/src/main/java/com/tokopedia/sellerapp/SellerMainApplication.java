@@ -179,15 +179,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public void initDbFlow() {
         super.initDbFlow();
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
-                .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdGMGeneratedDatabaseHolder.class)
-                .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
-                .build());
+        try{
+            FlowManager.getConfig();
+        } catch (IllegalStateException e) {
+            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
+        }
+        FlowManager.initModule(TkpdSellerGeneratedDatabaseHolder.class);
+        FlowManager.initModule(TkpdGMGeneratedDatabaseHolder.class);
+        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
     }
 
     private void initCacheApi() {

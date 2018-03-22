@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.listener;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 
@@ -18,7 +19,7 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadScoringProduct(String errorMessage);
 
-    void onSuccessLoadCatalog(List<Catalog> catalogViewModelList);
+    void onSuccessLoadCatalog(String keyword, long departmentId, List<Catalog> catalogViewModelList);
 
     void onErrorLoadCatalog(String errorMessage);
 
@@ -44,7 +45,9 @@ public interface ProductAddView extends CustomerView {
 
     long getProductDraftId();
 
-    void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList);
+    void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList);
 
     void onErrorGetProductVariantByCat(Throwable throwable);
+
+    void onSuccessLoadProduct(ProductViewModel model);
 }

@@ -11,8 +11,9 @@ import java.util.List;
 
 /**
  * Created by hendry on 8/15/2017.
+ * do not remove. still used in version 1.14 for draft
  */
-
+@Deprecated
 public class ProductVariantDataSubmit implements Parcelable {
 
     @SerializedName("variant")

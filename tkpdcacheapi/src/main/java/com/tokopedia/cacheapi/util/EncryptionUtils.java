@@ -19,7 +19,7 @@ public class EncryptionUtils {
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
 	    	byte[] encryptedData = cipher.doFinal(text.getBytes());     
 	    	encode_result = Base64.encodeToString(encryptedData, 0);
-	    	encode_result.replace("\n", "");
+			encode_result = encode_result.replace("\n", "");
     	}
     	catch (Exception e) {
     		e.printStackTrace();  		

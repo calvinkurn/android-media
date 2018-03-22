@@ -2,54 +2,43 @@ package com.tokopedia.seller.product.draft.view.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
 
-/**
- * Created by User on 6/21/2017.
- */
-
 public class ProductDraftListMapper {
 
-    public static final int MAX_COMPLETION_COUNT = 5;
-    public static final int MIN_COMPLETION_PERCENT = 5;
-    public static final int MAX_COMPLETION_PERCENT = 95;
+    private static final int MAX_COMPLETION_COUNT = 5;
+    private static final int MIN_COMPLETION_PERCENT = 5;
+    private static final int MAX_COMPLETION_PERCENT = 95;
 
-    public static ProductDraftViewModel mapDomainToView(UploadProductInputDomainModel domainModel) {
-        long draftId = domainModel.getId();
+    public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel, long draftId) {
         String primaryPhotoUrl = null;
-        ProductPhotoListDomainModel productPhotos = domainModel.getProductPhotos();
-        if (productPhotos!= null && productPhotos.getProductDefaultPicture() >= 0){
-            List<ImageProductInputDomainModel> imageProductInputDomainModelList = productPhotos.getPhotos();
-            if (imageProductInputDomainModelList!= null && imageProductInputDomainModelList.size() > 0) {
-                ImageProductInputDomainModel imageProductInputDomainModel = imageProductInputDomainModelList.get(productPhotos.getProductDefaultPicture());
-                String imageUrl = imageProductInputDomainModel.getUrl();
-                String imagePath = imageProductInputDomainModel.getImagePath();
-
-                if(StringUtils.isBlank(imageUrl)){
-                    if (StringUtils.isBlank(imagePath)) {
-                        primaryPhotoUrl = null;
-                    } else {
-                        primaryPhotoUrl = imagePath;
-                    }
-                } else {
-                    primaryPhotoUrl = imageUrl;
-                }
-            } else {
-                primaryPhotoUrl = null;
-            }
+        List<ProductPictureViewModel> imageProductInputDomainModelList = domainModel.getProductPictureViewModelList();
+        if (imageProductInputDomainModelList != null && imageProductInputDomainModelList.size() > 0) {
+            ProductPictureViewModel imageProductInputDomainModel = imageProductInputDomainModelList.get(0);
+            primaryPhotoUrl = imageProductInputDomainModel.getUriOrPath();
+        } else {
+            primaryPhotoUrl = null;
         }
         String productName = domainModel.getProductName();
-        long departmentId = domainModel.getProductDepartmentId();
+
+        long departmentId;
+        if (domainModel.getProductCategory() != null) {
+            departmentId = domainModel.getProductCategory().getCategoryId();
+        } else {
+            departmentId = 0;
+        }
         double productPrice = domainModel.getProductPrice();
-        int productWeight = domainModel.getProductWeight();
-        long etalaseId = domainModel.getProductEtalaseId();
+        int productWeight = (int) domainModel.getProductWeight();
+        long etalaseId;
+        if (domainModel.getProductEtalase()!= null) {
+            etalaseId =domainModel.getProductEtalase().getEtalaseId();
+        } else {
+            etalaseId = 0;
+        }
 
         int completionCount = 0;
         int completionPercent;
@@ -68,7 +57,7 @@ public class ProductDraftListMapper {
         if (etalaseId > 0) {
             completionCount++;
         }
-        if (completionCount == MAX_COMPLETION_COUNT){
+        if (completionCount == MAX_COMPLETION_COUNT) {
             completionPercent = MAX_COMPLETION_PERCENT;
         } else {
             completionPercent = completionCount * 100 / MAX_COMPLETION_COUNT;
@@ -82,6 +71,6 @@ public class ProductDraftListMapper {
                 primaryPhotoUrl,
                 productName,
                 completionPercent,
-                domainModel.getProductStatus() == ProductStatus.EDIT);
+                !TextUtils.isEmpty(domainModel.getProductId()));
     }
 }

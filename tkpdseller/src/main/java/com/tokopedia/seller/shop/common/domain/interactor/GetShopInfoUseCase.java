@@ -30,6 +30,10 @@ public class GetShopInfoUseCase extends UseCase<ShopModel> {
         this.shopInfoRepository = shopInfoRepository;
     }
 
+    public Observable<ShopModel> createObservable() {
+        return createObservable(RequestParams.EMPTY);
+    }
+
     @Override
     public Observable<ShopModel> createObservable(RequestParams requestParams) {
         return shopInfoRepository.getShopInfo();
