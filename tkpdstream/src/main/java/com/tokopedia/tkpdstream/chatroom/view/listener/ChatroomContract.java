@@ -61,12 +61,16 @@ public interface ChatroomContract {
 
         void setReplyTextHint();
 
-        interface ImageViewHolderListener {
-            void onRedirectUrl(String url);
+        interface ImageAnnouncementViewHolderListener {
+            void onImageAnnouncementClicked(String url);
         }
 
         interface VoteAnnouncementViewHolderListener {
             void onVoteComponentClicked(String type, String name);
+        }
+
+        interface SprintSaleViewHolderListener {
+            void onFlashSaleClicked(String url);
         }
     }
 
@@ -75,9 +79,6 @@ public interface ChatroomContract {
         void initMessageFirstTime(OpenChannel mChannel);
 
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
-
-        void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                          LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
 
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
 

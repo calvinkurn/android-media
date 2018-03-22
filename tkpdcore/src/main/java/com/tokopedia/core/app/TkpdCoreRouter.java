@@ -175,4 +175,6 @@ public interface TkpdCoreRouter {
     Intent getInboxMessageIntent(Context context);
 
     void sendTrackingGroupChatLeftNavigation();
+
+    String getDesktopLinkGroupChat();
 }

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -64,16 +65,17 @@
         >
 
         <ImageView
-            android:id="@+id/vote_icon"
-            android:layout_width="@dimen/vote_icon_size"
+            android:id="@+id/sprintsale_icon"
+            android:layout_width="10dp"
             android:layout_height="@dimen/vote_icon_size"
             android:layout_marginTop="@dimen/margin_vvvs"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_vote_inactive"/>
+            app:srcCompat="@drawable/ic_vote"
+            tools:layout_editor_absoluteX="12dp"/>
 
         <TextView
-            android:id="@+id/vote_title"
+            android:id="@+id/sprintsale_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/space_mini"
@@ -82,23 +84,19 @@
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_micro"
             android:textStyle="normal"
-            app:layout_constraintStart_toEndOf="@+id/vote_icon"
+            app:layout_constraintStart_toEndOf="@+id/sprintsale_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="VOTE TELAH BERAKHIR"/>
 
-        <TextView
-            android:id="@+id/vote_question"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_product"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="5sp"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/font_small"
-            android:textStyle="normal"
+            android:layout_marginTop="@dimen/margin_ms"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vote_title"
-            tools:text="Menurut topper, siapakah yang akan menang?"/>
+            app:layout_constraintTop_toBottomOf="@+id/sprintsale_title"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

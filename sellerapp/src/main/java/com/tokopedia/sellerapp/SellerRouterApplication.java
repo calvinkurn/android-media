@@ -1146,4 +1146,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendTrackingGroupChatLeftNavigation() {
 
     }
+
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return "";
+    }
 }

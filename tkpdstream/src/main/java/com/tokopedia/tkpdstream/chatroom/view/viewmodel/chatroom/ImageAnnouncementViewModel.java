@@ -7,15 +7,15 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.Group
  * @author by nisie on 2/27/18.
  */
 
-public class ImageViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
+public class ImageAnnouncementViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
     public static final String ADMIN_ANNOUNCEMENT = "announcement";
     private final String redirectUrl;
     private String contentImageUrl;
 
-    public ImageViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,
-                          String senderId, String senderName, String senderIconUrl, boolean isInfluencer,
-                          boolean isAdministrator, String redirectUrl) {
+    public ImageAnnouncementViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,
+                                      String senderId, String senderName, String senderIconUrl, boolean isInfluencer,
+                                      boolean isAdministrator, String redirectUrl) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
                 isInfluencer, isAdministrator);
         this.contentImageUrl = contentImageUrl;

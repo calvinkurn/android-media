@@ -13,7 +13,9 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -85,10 +87,10 @@ public class GroupChatMessagesMapper {
     }
 
     private Visitable mapToImageMessage(FileMessage message) {
-        return new ImageViewModel(
+        return new ImageAnnouncementViewModel(
                 message.getUrl(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -107,19 +109,60 @@ public class GroupChatMessagesMapper {
                 return mapToPollingViewModel(message,
                         message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
-                return mapToAdminChat(message);
-            case ImageViewModel.ADMIN_ANNOUNCEMENT:
+//                return mapToAdminChat(message);
+                return mapToFlashSale(message);
+            case ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT:
                 return mapToAdminImageChat(message, message.getData());
+            case SprintSaleViewModel.SPRINT_SALE:
+                return mapToFlashSale(message);
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToFlashSale(UserMessage message) {
+//        Gson gson = new Gson();
+//        AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
+
+        return new SprintSaleViewModel(
+                message.getCreatedAt(),
+                message.getCreatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true,
+                "",
+                mapToListFlashSaleProducts(),
+                true
+        );
+    }
+
+    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts() {
+        ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            list.add(mapToFlashSaleProduct());
+        }
+        return list;
+    }
+
+    private SprintSaleProductViewModel mapToFlashSaleProduct() {
+        return new SprintSaleProductViewModel(
+                "Tes produk",
+                "https://1.bp.blogspot.com/-oA8c_lREvEM/Wh0egAMmDNI/AAAAAAAABp0/ANKqpBf_c0YjOQSAxFc60E6IV5EEkZa4gCLcBGAs/s1600/8%2BArti%2BMimpi%2BLihat%2BAyam%2BJago%2BBertarung%2BMenurut%2BPrimbon%2BJawa.png",
+                "50% off",
+                "Rp 100.000",
+                "Rp 5.000.000",
+                80,
+                "Sudah mau habis");
     }
 
     private Visitable mapToUserChat(UserMessage message) {
         return new ChatViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -133,10 +176,10 @@ public class GroupChatMessagesMapper {
         Gson gson = new Gson();
         AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
 
-        return new ImageViewModel(
+        return new ImageAnnouncementViewModel(
                 pojo.getImageUrl().trim(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -151,7 +194,7 @@ public class GroupChatMessagesMapper {
         return new ChatViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -170,7 +213,7 @@ public class GroupChatMessagesMapper {
                     pojo.getDescription(),
                     message.getCustomType(),
                     message.getCreatedAt(),
-                    message.getUpdatedAt(),
+                    message.getCreatedAt(),
                     String.valueOf(message.getMessageId()),
                     message.getSender().getUserId(),
                     message.getSender().getNickname(),
@@ -279,7 +322,7 @@ public class GroupChatMessagesMapper {
         return new AdminAnnouncementViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId())
         );
     }
