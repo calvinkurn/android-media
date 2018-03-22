@@ -45,7 +45,7 @@ public class ReactNativeHostFactory {
 
             @Override
             public boolean getUseDeveloperSupport() {
-                return GlobalConfig.DEBUG;
+                return false;
             }
 
             @Override
@@ -59,7 +59,7 @@ public class ReactNativeHostFactory {
         return new ReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
-                return true;
+                return false;
             }
 
             @Override
@@ -83,7 +83,7 @@ public class ReactNativeHostFactory {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),
-                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
+                new CodePush(getCodePushDeploymentKey(), application, false)
         );
     }
 

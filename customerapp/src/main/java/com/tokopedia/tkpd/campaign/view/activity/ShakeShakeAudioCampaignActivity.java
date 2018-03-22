@@ -58,6 +58,7 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void isRequiredPermissionAvailable() {
+        Toast.makeText(this, "Start Recording", Toast.LENGTH_LONG).show();
         presenter.onShakeDetect();
 
     }
