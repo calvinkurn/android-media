@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategoryS
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
@@ -24,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.EmptyBlankViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -95,8 +97,13 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         } else if (DynamicHomeChannel.Channels.LAYOUT_HERO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelHeroViewHolder.LAYOUT;
         } else {
-            return 0;
+            return EmptyBlankViewHolder.LAYOUT;
         }
+    }
+
+    @Override
+    public int type(EmptyBlankViewModel emptyBlankViewModel) {
+        return EmptyBlankViewHolder.LAYOUT;
     }
 
     @Override
@@ -129,6 +136,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new DynamicChannelSprintViewHolder(view, listener);
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
+        else if (type == EmptyBlankViewHolder.LAYOUT)
+            viewHolder = new EmptyBlankViewHolder(view);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;
