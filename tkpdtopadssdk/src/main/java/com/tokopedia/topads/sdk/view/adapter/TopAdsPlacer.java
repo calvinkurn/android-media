@@ -283,12 +283,16 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void onShopItemClicked(int position, Data data) {
-        presenter.openShopTopAds(data.getShopClickUrl(), data.getShop());
+        Shop shop = data.getShop();
+        shop.setAdRefKey(data.getAdRefKey());
+        presenter.openShopTopAds(data.getShopClickUrl(), shop);
     }
 
     @Override
     public void onProductItemClicked(int position, Data data) {
-        presenter.openProductTopAds(data.getProductClickUrl(), data.getProduct());
+        Product product = data.getProduct();
+        product.setAdRefKey(data.getAdRefKey());
+        presenter.openProductTopAds(data.getProductClickUrl(), product);
     }
 
     @Override

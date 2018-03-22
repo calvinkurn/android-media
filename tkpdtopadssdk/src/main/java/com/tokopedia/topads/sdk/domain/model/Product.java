@@ -32,6 +32,7 @@ public class Product {
     private static final String KEY_LABELS = "labels";
 
     private String id;
+    private String adRefKey;
     private String name;
     private ProductImage image;
     private String uri;
@@ -246,5 +247,13 @@ public class Product {
 
     public void setProductRating(int productRating) {
         this.productRating = productRating;
+    }
+
+    public String getAdRefKey() {
+        return adRefKey;
+    }
+
+    public void setAdRefKey(String adRefKey) {
+        this.adRefKey = adRefKey;
     }
 }

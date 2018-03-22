@@ -12,6 +12,8 @@ import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
@@ -88,13 +90,17 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     @Override
     public void onShopItemClicked(int position, Data data) {
-        itemClickListener.onShopItemClicked(data.getShop());
+        Shop shop = data.getShop();
+        shop.setAdRefKey(data.getAdRefKey());
+        itemClickListener.onShopItemClicked(shop);
         openTopAdsUseCase.execute(data.getShopClickUrl());
     }
 
     @Override
     public void onProductItemClicked(int position, Data data) {
-        itemClickListener.onProductItemClicked(data.getProduct());
+        Product product = data.getProduct();
+        product.setAdRefKey(data.getAdRefKey());
+        itemClickListener.onProductItemClicked(product);
         openTopAdsUseCase.execute(data.getProductClickUrl());
     }
 

@@ -30,6 +30,7 @@ public class Shop {
     private static final String KEY_BADGES = "badges";
 
     private String id;
+    private String adRefKey;
     private String name;
     private String domain;
     private String tagline;
@@ -232,5 +233,13 @@ public class Shop {
 
     public void setOwner(boolean owner) {
         this.isOwner = owner;
+    }
+
+    public String getAdRefKey() {
+        return adRefKey;
+    }
+
+    public void setAdRefKey(String adRefKey) {
+        this.adRefKey = adRefKey;
     }
 }
