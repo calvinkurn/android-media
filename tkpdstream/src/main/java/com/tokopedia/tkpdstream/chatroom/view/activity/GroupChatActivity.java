@@ -47,7 +47,9 @@ import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.ShareData;
 import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
@@ -80,6 +82,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final int CHANNEL_INFO_FRAGMENT = 2;
 
 
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
@@ -371,6 +374,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         List<TabViewModel> list = new ArrayList<>();
         list.add(new TabViewModel(getString(R.string.title_group_chat)));
         list.add(new TabViewModel(getString(R.string.title_vote)));
+        list.add(new TabViewModel(getString(R.string.title_info)));
         return list;
     }
 
@@ -386,6 +390,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         switch (fragmentPosition) {
             case CHATROOM_FRAGMENT:
                 showChatroomFragment(mChannel);
+                break;
+            case CHANNEL_INFO_FRAGMENT:
+                showChannelInfoFragment();
                 break;
             default:
                 break;
@@ -412,6 +419,26 @@ public class GroupChatActivity extends BaseSimpleActivity
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
             fragmentTransaction.commit();
         }
+    }
+
+    private void showChannelInfoFragment() {
+
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().
+                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
+        }
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel().getChannelViewModel());
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 
     private void removePaddingStatusBar() {
