@@ -73,11 +73,12 @@ import javax.inject.Inject;
  */
 
 public class GroupChatFragment extends BaseDaggerFragment implements ChatroomContract.View,
-        ProgressBarWithTimer.Listener, ChatroomContract.View.ImageViewHolderListener, ChatroomContract.View.VoteAnnouncementViewHolderListener {
+        ProgressBarWithTimer.Listener, ChatroomContract.View.ImageAnnouncementViewHolderListener,
+        ChatroomContract.View.VoteAnnouncementViewHolderListener, ChatroomContract.View.SprintSaleViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final long DELAY_TIME = 1000L;
-    private static final long VIBRATE_LENGTH = 500;
+    private static final long VIBRATE_LENGTH = 1000;
 
     @Inject
     ChatroomPresenter presenter;
@@ -639,7 +640,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onRedirectUrl(String url) {
+    public void onImageAnnouncementClicked(String url) {
         analytics.eventClickThumbnail(url);
         if (!TextUtils.isEmpty(url)) {
             ((StreamModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
@@ -667,5 +668,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             sendButton.setVisibility(View.GONE);
             login.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onFlashSaleClicked(String url) {
+
     }
 }

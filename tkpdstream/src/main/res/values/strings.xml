@@ -64,5 +64,7 @@
     <string name="official_partner">Official Partner</string>
 
     <string name="login_to_chat">Masuk untuk Chat</string>
+    <string name="title_sprintsale_finished">SPRINT SALE TELAH SELESAI</string>
+    <string name="title_sprintsale_started">SPRINT SALE TELAH DIMULAI</string>
 
 </resources>
