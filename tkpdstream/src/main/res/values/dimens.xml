@@ -40,4 +40,6 @@
     <dimen name="label_new_chat_width">120dp</dimen>
     <dimen name="arrow_size">14dp</dimen>
     <dimen name="vote_image_size">130dp</dimen>
+    <dimen name="margin_chat_right">36dp</dimen>
+    <dimen name="radius_chat_image">12dp</dimen>
 </resources>
