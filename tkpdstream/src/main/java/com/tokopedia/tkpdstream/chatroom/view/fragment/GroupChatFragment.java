@@ -100,12 +100,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View divider;
     private View main, loading;
     private TextView voteStatus;
-    private ImageView arrow;
+//    private ImageView arrow;
     private GroupChatAdapter adapter;
     private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
     private ProgressBarWithTimer progressBarWithTimer;
     private View chatNotificationView;
+    private View login;
 
     private OpenChannel mChannel;
     private PreviousMessageListQuery mPrevMessageListQuery;
@@ -150,7 +151,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
+        View view = inflater.inflate(R.layout.fragment_group_chat_room_new, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
         voteRecyclerView = view.findViewById(R.id.vote_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
@@ -161,7 +162,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         voteTitle = view.findViewById(R.id.vote_title);
         voteParticipant = view.findViewById(R.id.vote_participant);
         voteInfoLink = view.findViewById(R.id.vote_info_link);
-        arrow = view.findViewById(R.id.arrow);
+//        arrow = view.findViewById(R.id.arrow);
         iconVote = view.findViewById(R.id.icon_vote);
         voteStatus = view.findViewById(R.id.vote_status);
         votedView = view.findViewById(R.id.layout_voted);
@@ -188,6 +189,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         .setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
+        login = view.findViewById(R.id.login);
+//        setupToolbar();
         prepareView();
         return view;
     }
@@ -220,7 +223,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
 
                 collapse(voteBody);
-                arrow.setRotation(0f);
+//                arrow.setRotation(0f);
             }
         });
 
@@ -231,13 +234,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             public void onClick(View view) {
                 if (voteBody.getVisibility() == View.VISIBLE) {
                     collapse(voteBody);
-                    arrow.setRotation(0f);
+//                    arrow.setRotation(0f);
                 } else {
                     KeyboardHandler.DropKeyboard(getActivity(), getView());
                     expand(voteBody);
                     analytics.eventClickVoteExpand();
                     voteAdapter.notifyDataSetChanged();
-                    arrow.setRotation(180f);
+//                    arrow.setRotation(180f);
                 }
             }
         });
@@ -270,7 +273,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     collapse(voteBody);
-                    arrow.setRotation(0f);
+//                    arrow.setRotation(0f);
                 }
             });
 
@@ -565,7 +568,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
-        chatNotificationView.setVisibility(View.VISIBLE);
+        if(login.getVisibility() != View.VISIBLE) {
+            chatNotificationView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void onMessageDeleted(long msgId) {
@@ -668,5 +673,19 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void setChannel(OpenChannel mChannel) {
         this.mChannel = mChannel;
+    }
+
+    private void setForLoginUser(boolean forLoginUser){
+        if(forLoginUser){
+            divider.setVisibility(View.VISIBLE);
+            replyEditText.setVisibility(View.VISIBLE);
+            sendButton.setVisibility(View.VISIBLE);
+            login.setVisibility(View.GONE);
+        }else {
+            divider.setVisibility(View.GONE);
+            replyEditText.setVisibility(View.GONE);
+            sendButton.setVisibility(View.GONE);
+            login.setVisibility(View.VISIBLE);
+        }
     }
 }
