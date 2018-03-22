@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -23,7 +23,18 @@
                 android:id="@+id/image"
                 android:layout_width="116dp"
                 android:layout_height="116dp" />
-        </RelativeLayout>
+
+            <TextView
+                android:id="@+id/channel_discount_1"
+                style="@style/TextView.Nano.Red.Bold"
+                android:background="@drawable/home_channel_discount_text_background"
+                android:paddingTop="@dimen/label_padding_top_bottom"
+                android:paddingBottom="@dimen/label_padding_top_bottom"
+                android:paddingLeft="@dimen/label_padding_left_right"
+                android:paddingRight="@dimen/label_padding_left_right"
+                android:layout_gravity="top|right"
+                android:text="50% OFF"/>
+        </FrameLayout>
 
 
         <TextView
@@ -60,7 +71,7 @@
             android:progressBackgroundTint="#e0e0e0"
             android:progressDrawable="@drawable/gradient_progress" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/stock_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,6 +80,7 @@
             android:text="Masih Tersedia"
             android:textColor="@color/black_54"
             android:textSize="12sp"
+            app:drawableLeftCompat="@drawable/ic_flame"
             android:textStyle="normal" />
     </LinearLayout>
 
