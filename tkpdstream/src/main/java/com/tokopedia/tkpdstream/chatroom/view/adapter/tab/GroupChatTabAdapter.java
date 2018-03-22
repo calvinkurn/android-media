@@ -80,7 +80,7 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
             holder.highlight.setVisibility(View.INVISIBLE);
         }
 
-        if(listTab.get(position).isUpdated(){
+        if(listTab.get(position).isUpdated()){
             holder.dot.setVisibility(View.VISIBLE);
         }else{
             holder.dot.setVisibility(View.GONE);
