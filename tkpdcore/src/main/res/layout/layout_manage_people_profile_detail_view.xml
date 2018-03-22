@@ -25,23 +25,51 @@
         android:layout_marginTop="@dimen/margin_vs"
         android:background="@color/greyish_bg" />
 
-    <android.support.design.widget.TextInputLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_sm">
 
-        <EditText
-            android:id="@+id/user_name"
+        <TextView
+            android:id="@+id/change_name_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/string_change"
+            android:background="@drawable/tab_selector"
+            android:textSize="@dimen/font_small"
+            android:textColor="@color/tkpd_main_green"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:enabled="false"
-            android:hint="@string/title_name"
-            android:gravity="left"
-            android:inputType="text"
-            android:textSize="@dimen/font_small" />
+            android:layout_toLeftOf="@id/change_email_button"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_med"
+            android:orientation="vertical">
 
-    </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal"
+                android:textColor="@color/black_38"
+                android:text="@string/title_name"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_name"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                tools:text="shinta.purnawan@tokopedia.com"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -93,7 +121,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/hobbies"

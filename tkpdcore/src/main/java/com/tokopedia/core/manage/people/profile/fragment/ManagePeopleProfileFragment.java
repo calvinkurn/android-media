@@ -387,14 +387,12 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void setEmailError(String errorMessage) {
-        contactSection.email.setError(errorMessage);
-        contactSection.email.requestFocus();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void setVerificationError(String errorMessage) {
-        contactSection.verification.setError(errorMessage);
-        contactSection.verification.requestFocus();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -405,7 +403,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public String getVerifiedPhone() {
-        return String.valueOf(contactSection.verification.getText());
+        return String.valueOf(contactSection.phone.getText());
     }
 
     @Override

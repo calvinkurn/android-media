@@ -164,4 +164,8 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> requestVerification(@FieldMap Map<String,
             Object> parameters);
 
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_CHANGE_NAME)
+    Observable<Response<TkpdResponse>> changeName(@FieldMap Map<String,
+            Object> parameters);
 }

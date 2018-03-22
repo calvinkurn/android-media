@@ -48,12 +48,14 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
             int type = viewModel.getType();
             switch (type) {
                 case VerificationActivity.TYPE_SMS:
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(RequestOtpUseCase.MODE_SMS,
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(getView().getContext(),
+                            RequestOtpUseCase.MODE_SMS,
                             viewModel.getPhoneNumber()), new
                             RequestOtpSubscriber(getView()));
                     break;
                 case VerificationActivity.TYPE_PHONE_CALL:
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(RequestOtpUseCase.MODE_CALL,
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParam(getView().getContext(),
+                            RequestOtpUseCase.MODE_CALL,
                             viewModel.getPhoneNumber()), new
                             RequestOtpSubscriber(getView()));
                     break;

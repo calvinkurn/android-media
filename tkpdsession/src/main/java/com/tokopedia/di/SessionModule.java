@@ -40,6 +40,8 @@ import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
 import com.tokopedia.session.addchangeemail.domain.usecase.AddEmailUseCase;
 import com.tokopedia.session.addchangeemail.domain.usecase.CheckEmailUseCase;
 import com.tokopedia.session.addchangeemail.domain.usecase.RequestVerificationUseCase;
+import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
+import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -448,5 +450,12 @@ SessionModule {
                                              PostExecutionThread postExecutionThread,
                                              AddEmailSource source) {
         return new AddEmailUseCase(threadExecutor, postExecutionThread, source);
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
+                                             ChangeNameMapper changeNameMapper) {
+        return new ChangeNameSource(service, changeNameMapper);
     }
 }

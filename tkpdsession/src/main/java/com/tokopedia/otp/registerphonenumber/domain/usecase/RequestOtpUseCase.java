@@ -1,6 +1,7 @@
 package com.tokopedia.otp.registerphonenumber.domain.usecase;
 
-import com.tokopedia.core.app.MainApplication;
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -46,12 +47,12 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         return otpSource.requestRegisterOtp(requestParams.getParameters());
     }
 
-    public static RequestParams getParam(String mode, String phone) {
+    public static RequestParams getParam(Context context, String mode, String phone) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER);
         param.putString(PARAM_MSISDN, phone);
-        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), param
+        param.putAll(AuthUtil.generateParamsNetwork2(context, param
                 .getParameters()));
         return param;
     }

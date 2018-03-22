@@ -28,7 +28,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public EditText phone;
     public TextView tvPhone;
     public View phoneVerificationSection;
-    public EditText verification;
     public View verificationBtn;
     public TextView checkEmailInfo;
     public TextView tvEmail, tvEmailHint;
@@ -71,7 +70,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         phone = view.findViewById(R.id.phone);
         tvPhone = (TextView) view.findViewById(R.id.tv_phone);
         phoneVerificationSection = view.findViewById(R.id.phone_verification_section);
-        verification = view.findViewById(R.id.verification);
         verificationBtn = view.findViewById(R.id.verify_phone_button);
         checkEmailInfo = view.findViewById(R.id.check_email_info);
     }
@@ -81,7 +79,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         DataUser dataUser = profile.getDataUser();
         renderEmailView(dataUser.getUserEmail());
         renderPhoneView(dataUser.getUserPhone());
-        renderPhoneVerificationView(dataUser.getUserPhone());
     }
 
     private void renderEmailView(String userEmail) {
@@ -91,7 +88,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         } else {
             changeEmailBtn.setVisibility(GONE);
         }
-
         if (!TextUtils.isEmpty(userEmail)) {
             email.setVisibility(GONE);
             email.setClickable(false);
@@ -109,32 +105,22 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
             tvEmailHint.setVisibility(VISIBLE);
             changeEmailBtn.setVisibility(GONE);
         }
-
-
     }
 
     private void renderPhoneView(String userPhone) {
         tvPhone.setText(userPhone);
         if (SessionHandler.isMsisdnVerified()) {
-            phoneSection.setVisibility(VISIBLE);
+            changeHpBtn.setVisibility(VISIBLE);
+            verificationBtn.setVisibility(GONE);
         } else {
-            phoneSection.setVisibility(GONE);
+            changeHpBtn.setVisibility(GONE);
+            verificationBtn.setVisibility(VISIBLE);
         }
         if (!TextUtils.isEmpty(userPhone)) {
             tvPhone.setVisibility(VISIBLE);
             phone.setVisibility(GONE);
         }
         changeHpBtn.setOnClickListener(new ChangePhoneButtonClick(userPhone));
-    }
-
-    private void renderPhoneVerificationView(String userPhone) {
-        verification.setText(userPhone);
-        verification.setEnabled(false);
-        if (SessionHandler.isMsisdnVerified()) {
-            phoneVerificationSection.setVisibility(GONE);
-        } else {
-            phoneVerificationSection.setVisibility(VISIBLE);
-        }
         verificationBtn.setOnClickListener(new VerificationButtonClick(userPhone));
     }
 

@@ -243,6 +243,14 @@
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan email kode verifikasi</string>
     <string name="button_continue">Lanjutkan</string>
 
+    <!--ADD CHANGE NAME-->
+    <string name="title_complete_name">Nama Lengkap</string>
+    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
+    <string name="button_name_continue">Ubah Nama Lengkap</string>
+    <string name="name_confirmation">%$1s, apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
+
+
     <!--WELCOME PAGE-->
     <string name="title_welcome">Selamat Bergabung di Tokopedia</string>
     <string name="sub_title_welcome">Silahkan lanjut atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>!</string>

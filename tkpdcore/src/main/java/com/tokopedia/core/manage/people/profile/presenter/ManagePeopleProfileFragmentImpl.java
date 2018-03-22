@@ -91,15 +91,15 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         param.setYear(
                 generateYear(view.getBirthDay())
         );
-        param.setEmail(view.getEmail());
-        param.setFullName(view.getUserName());
+//        param.setEmail(view.getEmail());
+//        param.setFullName(view.getUserName());
         param.setGender(
                 generateGenderCode(view.getGender())
         );
-        param.setHobby(view.getHobby());
-        param.setMessenger(view.getMessanger());
-        param.setMsisdn(view.getVerifiedPhone());
-        param.setVerifiedPhone(view.getPhone());
+//        param.setHobby(view.getHobby());
+//        param.setMessenger(view.getMessanger());
+//        param.setMsisdn(view.getVerifiedPhone());
+//        param.setVerifiedPhone(view.getPhone());
 
         param.setImagePath(view.getImagePath());
         return param;
