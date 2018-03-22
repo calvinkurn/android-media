@@ -640,7 +640,7 @@ public class GTMContainer implements IGTMContainer {
                                         "products", product.getProduct())
                         )
                 )
-
+        );
     }
 
     public void eventImpressionCategoryLifestyle(List<Object> list) {
