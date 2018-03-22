@@ -110,7 +110,7 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
     private ShippingInfoCheckoutRequest setShippingInfoRequest(ShipmentDetailData data) {
         return new ShippingInfoCheckoutRequest.Builder()
                 .shippingId(data.getSelectedCourier().getShipperId())
-                .spId(data.getSelectedShipment().getServiceId())
+                .spId(data.getSelectedCourier().getShipperProductId())
                 .build();
     }
 

@@ -593,14 +593,13 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void onCartDataEnableToCheckout() {
         confirmButton.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         confirmButton.setTextColor(getResources().getColor(R.color.white));
-        confirmButton.setOnClickListener(onConfirmedButtonClicked());
+        confirmButton.setClickable(true);
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
         confirmButton.setBackgroundResource(R.drawable.bg_button_disabled);
         confirmButton.setTextColor(getResources().getColor(R.color.grey_500));
-        confirmButton.setOnClickListener(null);
-
+        confirmButton.setClickable(false);
     }
 }
