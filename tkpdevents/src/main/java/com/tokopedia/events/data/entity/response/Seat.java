@@ -14,7 +14,7 @@ public class Seat {
     @SerializedName("status")
     @Expose
     private int status;
-    @SerializedName("actualSeat")
+    @SerializedName("ActualSeat")
     @Expose
     private int actualSeat;
 
