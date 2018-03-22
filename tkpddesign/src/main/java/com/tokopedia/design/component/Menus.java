@@ -212,7 +212,7 @@ public class Menus extends BaseBottomSheetView {
         }
     }
 
-    public class ItemMenus {
+    public static class ItemMenus {
 
         public String title;
         public int icon;
