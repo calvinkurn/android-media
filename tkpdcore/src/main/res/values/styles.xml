@@ -240,6 +240,10 @@
 
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/app_rating_bar</item>
+        <item name="android:stepSize">1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:scaleX">1</item>
+        <item name="android:scaleY">1</item>
     </style>
 
 </resources>
