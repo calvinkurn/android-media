@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -23,6 +24,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
@@ -45,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
 
 /**
  * @author by StevenFredian on 20/03/18.
@@ -69,7 +73,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private TextView voteInfoLink;
     private ImageView iconVote;
     private View votedView;
-    private ImageView arrow;
     private TextView voteStatus;
     private CloseableBottomSheetDialog channelInfoDialog;
 
@@ -123,7 +126,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteTitle = view.findViewById(R.id.vote_title);
         voteParticipant = view.findViewById(R.id.vote_participant);
         voteInfoLink = view.findViewById(R.id.vote_info_link);
-        arrow = view.findViewById(R.id.arrow);
         iconVote = view.findViewById(R.id.icon_vote);
         voteStatus = view.findViewById(R.id.vote_status);
         votedView = view.findViewById(R.id.layout_voted);
@@ -137,19 +139,43 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBarWithTimer.setListener(this);
+        Parcelable temp = getArguments().getParcelable(VOTE);
+        showVoteLayout((VoteInfoViewModel) temp);
     }
 
 
     private void prepareView() {
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
+
+        voteBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (voteBody.getVisibility() == View.VISIBLE) {
+                    collapse(voteBody);
+                } else {
+                    KeyboardHandler.DropKeyboard(getActivity(), getView());
+                    expand(voteBody);
+//                    analytics.eventClickVoteExpand();
+                    voteAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
-    public void showVoteLayout(final VoteInfoViewModel model, String voteType) {
+    public void expand(final View v) {
+        v.setVisibility(View.VISIBLE);
+    }
+
+    public void collapse(final View v) {
+        v.setVisibility(View.GONE);
+    }
+
+    public void showVoteLayout(final VoteInfoViewModel model) {
         Log.d("NISNIS", "showVoteLayout");
 
+        this.voteInfoViewModel = model;
         loading.setVisibility(View.GONE);
-        updateVoteViewModel(model, voteType);
 
         voteBar.setVisibility(View.VISIBLE);
 
@@ -200,28 +226,28 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     }
 
-    private void updateVoteViewModel(VoteInfoViewModel model, String voteType) {
-        if (voteInfoViewModel != null) {
-            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
-                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
-                    || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
-                boolean isVoted = voteInfoViewModel.isVoted();
-                List<Visitable> tempListOption = new ArrayList<>();
-                tempListOption.addAll(voteInfoViewModel.getListOption());
-                for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
-                    if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
-                        ((VoteViewModel) voteInfoViewModel.getListOption().get(i)).setSelected(
-                                ((VoteViewModel) (tempListOption.get(i))).getSelected());
-                    }
-                }
-                voteInfoViewModel.setVoted(isVoted);
-                voteInfoViewModel = model;
-
-            } else {
-                voteInfoViewModel = model;
-            }
-        }
-    }
+//    private void updateVoteViewModel(VoteInfoViewModel model, String voteType) {
+//        if (voteInfoViewModel != null) {
+//            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
+//                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
+//                    || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
+//                boolean isVoted = voteInfoViewModel.isVoted();
+//                List<Visitable> tempListOption = new ArrayList<>();
+//                tempListOption.addAll(voteInfoViewModel.getListOption());
+//                for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
+//                    if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
+//                        ((VoteViewModel) voteInfoViewModel.getListOption().get(i)).setSelected(
+//                                ((VoteViewModel) (tempListOption.get(i))).getSelected());
+//                    }
+//                }
+//                voteInfoViewModel.setVoted(isVoted);
+//                voteInfoViewModel = model;
+//
+//            } else {
+//                voteInfoViewModel = model;
+//            }
+//        }
+//    }
 
     public void hideVoteLayout() {
         voteBar.setVisibility(View.GONE);
@@ -234,9 +260,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote_inactive);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_timer_inactive);
             } else {
-                iconVote.setImageResource(R.drawable.ic_vote_inactive);
+                iconVote.setImageResource(R.drawable.ic_timer_inactive);
             }
             voteAdapter.updateStatistic();
         }
@@ -245,12 +271,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void setVoteStarted() {
         if (getActivity() != null) {
             progressBarWithTimer.setVisibility(View.VISIBLE);
-            voteStatus.setText(R.string.vote);
+            voteStatus.setText(R.string.time_remaining);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote);
+                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_timer);
             } else {
-                iconVote.setImageResource(R.drawable.ic_vote);
+                iconVote.setImageResource(R.drawable.ic_timer);
             }
         }
     }
@@ -259,24 +285,24 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         votedView.setVisibility(View.VISIBLE);
     }
 
-    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
-
-        switch (messageItem.getVoteType()) {
-            case VoteAnnouncementViewModel.POLLING_START:
-                votedView.setVisibility(View.GONE);
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-                break;
-            case VoteAnnouncementViewModel.POLLING_UPDATE:
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-                break;
-            case VoteAnnouncementViewModel.POLLING_FINISHED:
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-                break;
-            case VoteAnnouncementViewModel.POLLING_CANCEL:
-                hideVoteLayout();
-                break;
-        }
-    }
+//    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
+//
+//        switch (messageItem.getVoteType()) {
+//            case VoteAnnouncementViewModel.POLLING_START:
+//                votedView.setVisibility(View.GONE);
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                break;
+//            case VoteAnnouncementViewModel.POLLING_UPDATE:
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                break;
+//            case VoteAnnouncementViewModel.POLLING_FINISHED:
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                break;
+//            case VoteAnnouncementViewModel.POLLING_CANCEL:
+//                hideVoteLayout();
+//                break;
+//        }
+//    }
 
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {

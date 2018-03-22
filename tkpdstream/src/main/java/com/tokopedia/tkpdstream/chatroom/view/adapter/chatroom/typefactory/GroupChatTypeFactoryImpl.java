@@ -11,7 +11,7 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.Pendin
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.UserActionViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.viewholder.VoteAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
-import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
@@ -25,8 +25,8 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncemen
 
 public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements GroupChatTypeFactory {
 
-    GroupChatContract.View.ImageViewHolderListener imageListener;
-    GroupChatContract.View.VoteAnnouncementViewHolderListener voteAnnouncementViewHolderListener;
+    ChatroomContract.View.ImageViewHolderListener imageListener;
+    ChatroomContract.View.VoteAnnouncementViewHolderListener voteAnnouncementViewHolderListener;
 
     public GroupChatTypeFactoryImpl(GroupChatFragment fragment) {
         imageListener = fragment;

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 
 /**
@@ -28,9 +28,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     TextView voteQuestion;
     View voteLayout;
     Context context;
-    private final GroupChatContract.View.VoteAnnouncementViewHolderListener listener;
+    private final ChatroomContract.View.VoteAnnouncementViewHolderListener listener;
 
-    public VoteAnnouncementViewHolder(View itemView, GroupChatContract.View.VoteAnnouncementViewHolderListener imageListener) {
+    public VoteAnnouncementViewHolder(View itemView, ChatroomContract.View.VoteAnnouncementViewHolderListener imageListener) {
         super(itemView);
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);

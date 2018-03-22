@@ -7,6 +7,7 @@
     <string name="dot">●</string>
     <string name="vote">Vote</string>
     <string name="vote_has_ended">Vote telah berakhir</string>
+    <string name="time_remaining">Sisa Waktu</string>
     <string name="title_share">Share</string>
     <string name="title_bagikan">Bagikan</string>
     <string name="default_sendbird_error">Terjadi kesalahan. Mohon coba kembali.</string>
