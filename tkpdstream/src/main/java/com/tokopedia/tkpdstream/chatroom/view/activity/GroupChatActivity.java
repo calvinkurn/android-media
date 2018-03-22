@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -136,10 +137,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
-
-//
-//    private TouchViewPager viewPager;
-//    private GroupChatViewPagerAdapter pagerAdapter;
 
     public View rootView, loading, main;
     private Toolbar toolbar;
@@ -329,43 +326,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     //
     private void setupViewPager(Bundle bundle) {
-//        viewPager = findViewById(R.id.pager);
-//        Tabs tabs = findViewById(R.id.tab);
-//        pagerAdapter = GroupChatViewPagerAdapter.createInstance(getSupportFragmentManager());
-//        pagerAdapter.addFragment(GroupChatFragment.createInstance(bundle), getString(R.string
-//                .title_group_chat));
-//        viewPager.setAdapter(pagerAdapter);
-//        pagerAdapter.notifyDataSetChanged();
-//
-//        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                viewPager.setCurrentItem(tab.getPosition());
-//                KeyboardHandler.hideSoftKeyboard(GroupChatActivity.this);
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//                if (tab.getPosition() == CHATROOM_FRAGMENT) {
-//                    Fragment fragment = pagerAdapter.getItem(tab.getPosition());
-//                    if (fragment != null) {
-//                        if (fragment instanceof GroupChatFragment) {
-//                            ((GroupChatFragment) fragment).scrollToBottom();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-//        tabs.setupWithViewPager(viewPager);
 
         tabs = findViewById(R.id.tab);
-        tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        tabs.setLayoutManager(new GridLayoutManager(this, 4,
+                GridLayoutManager.VERTICAL, false));
         tabAdapter = GroupChatTabAdapter.createInstance(this, createListFragment());
         tabs.setAdapter(tabAdapter);
     }
@@ -380,9 +344,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
 
     private void showFragment(int fragmentPosition) {
-//        if (viewPager != null && viewPager.getAdapter().getCount() < initialFragment) {
-//            viewPager.setCurrentItem(initialFragment);
-//        }
 
         this.initialFragment = fragmentPosition;
         tabAdapter.setActiveFragment(fragmentPosition);
@@ -621,6 +582,12 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(voteInfoViewModel);
         }
+    }
+
+    @Override
+    public void setChannelHandler() {
+        presenter.setHandler(viewModel.getChannelUrl(), this);
+
     }
 
     private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {

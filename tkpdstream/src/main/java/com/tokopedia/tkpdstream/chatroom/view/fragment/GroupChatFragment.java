@@ -406,6 +406,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
             hideLoading();
 
+            if(getActivity() instanceof GroupChatActivity){
+                ((GroupChatActivity)getActivity()).setChannelHandler();
+            }
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
