@@ -93,15 +93,6 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> isInWhiteList(final String host, final String path) {
-        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                return Observable.just(cacheApiWhitelist != null);
-            }
-        });
-    }
-
     public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -175,16 +166,15 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> deleteCachedData(final String host, final String path) {
+    public Observable<Boolean> deleteCachedData(final long whiteListId) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete()
                         .from(CacheApiData.class)
-                        .where(CacheApiData_Table.host.eq(host))
-                        .and(CacheApiData_Table.path.eq(path))
+                        .where(CacheApiData_Table.white_list_id.eq(whiteListId))
                         .execute();
-                CacheApiLoggingUtils.dumper(String.format("Cache deleted: %s - %s", host, path));
+                CacheApiLoggingUtils.dumper(String.format("Cache whiteListId deleted: %s", whiteListId));
                 subscriber.onNext(true);
             }
         });
