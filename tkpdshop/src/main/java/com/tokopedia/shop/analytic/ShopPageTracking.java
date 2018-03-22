@@ -319,13 +319,18 @@ public class ShopPageTracking {
     }
 
     public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean myShop, int shopType, boolean isGrid) {
-        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
-                getEventCategory(myShop, shopType),
-                titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
-                ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
-        eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
-        shopModuleRouter.sendEventTrackingShopPage(eventMap);
+        try {
+            HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
+                    getEventCategory(myShop, shopType),
+                    titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
+                    ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
+            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
+            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
+            shopModuleRouter.sendEventTrackingShopPage(eventMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CommonUtils.dumper("GAv4 " + e.getMessage());
+        }
     }
 
     public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
@@ -338,8 +343,9 @@ public class ShopPageTracking {
             eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
             eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
             shopModuleRouter.sendEventTrackingShopPage(eventMap);
-        }catch (Exception e){
-            CommonUtils.dumper(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            CommonUtils.dumper("GAv4 " + e.getMessage());
         }
     }
 
@@ -355,14 +361,19 @@ public class ShopPageTracking {
 
 
     public void eventClickProductImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
-        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
-                getEventCategory(myShop, shopType),
-                titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
-                        + " - " + ShopPageTrackingConstant.CLICK,
-                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
-        eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition, isGrid));
-        shopModuleRouter.sendEventTrackingShopPage(eventMap);
+        try {
+            HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
+                    getEventCategory(myShop, shopType),
+                    titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
+                            + " - " + ShopPageTrackingConstant.CLICK,
+                    ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
+            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
+            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition, isGrid));
+            shopModuleRouter.sendEventTrackingShopPage(eventMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CommonUtils.dumper("GAv4 " + e.getMessage());
+        }
     }
 
     public void eventClickBannerImpression(String titlePage, String shopName, String shopId, boolean myShop, int shopType) {
@@ -434,8 +445,8 @@ public class ShopPageTracking {
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid? Math.ceil((i + 1) / 2) : i + 1),
-                            ShopPageTrackingConstant.POSITION, (isGrid? Math.ceil((i + 1) / 2) : i + 1)
+                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid ? Math.ceil((i + 1) / 2) : i + 1),
+                            ShopPageTrackingConstant.POSITION, (isGrid ? Math.ceil((i + 1) / 2) : i + 1)
                     )
             );
         }
@@ -454,8 +465,8 @@ public class ShopPageTracking {
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1),
-                                        ShopPageTrackingConstant.POSITION, (isGrid? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1)
+                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid ? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1),
+                                        ShopPageTrackingConstant.POSITION, (isGrid ? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1)
                                 )
                         )
                 )
