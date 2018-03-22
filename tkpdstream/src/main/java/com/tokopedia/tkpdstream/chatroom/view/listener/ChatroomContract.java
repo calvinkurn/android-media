@@ -76,9 +76,6 @@ public interface ChatroomContract {
 
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
-        void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                          LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
-
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
 
         void sendVote(String pollId, boolean voted, VoteViewModel element);

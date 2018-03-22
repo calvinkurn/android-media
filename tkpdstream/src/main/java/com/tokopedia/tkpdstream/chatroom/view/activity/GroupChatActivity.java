@@ -6,13 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
@@ -59,9 +61,11 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewM
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.tkpdstream.common.applink.ApplinkConstant;
+import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
+import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -143,6 +147,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private ImageView channelBanner;
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
+    private CloseableBottomSheetDialog channelInfoDialog;
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
@@ -157,7 +162,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     StreamAnalytics analytics;
 
     private UserSession userSession;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,10 +187,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             finish();
         }
 
-        initView(savedInstanceState);
-        initInjector();
         callbackManager = CallbackManager.Factory.create();
 
+        initView();
+        initInjector();
         initData();
     }
 
@@ -202,7 +206,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         presenter.attachView(this);
     }
 
-    private void initView(Bundle savedInstanceState) {
+    private void initView() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         Bundle bundle = new Bundle();
@@ -211,10 +215,23 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setupToolbar();
-        setupViewPager(bundle);
+        setupViewPager();
 
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
+
+        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this);
+        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
 
     }
 
@@ -313,10 +330,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             return true;
 
         } else if (item.getItemId() == R.id.action_info) {
-//            boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-//            channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
-//                    .getChannelInfoViewModel().getChannelViewModel(), false));
-//            channelInfoDialog.show();
+            boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+            channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
+                    .getChannelInfoViewModel().getChannelViewModel()));
+            channelInfoDialog.show();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -324,8 +341,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    //
-    private void setupViewPager(Bundle bundle) {
+    private void setupViewPager() {
 
         tabs = findViewById(R.id.tab);
         tabs.setLayoutManager(new GridLayoutManager(this, 4,
@@ -590,14 +606,69 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
+    @Override
+    public void showInfoDialog() {
+        channelInfoDialog.setContentView(
+                createBottomSheetView(
+                        checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(),
+                                viewModel.getChannelInfoViewModel().getVoteInfoViewModel()),
+                        viewModel.getChannelInfoViewModel().getChannelViewModel()));
+
+        if (getIntent().getExtras() != null & getIntent().getExtras().getBoolean(GroupChatActivity
+                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+            channelInfoDialog.show();
+        }
+    }
+
     private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {
         this.viewModel.setChannelInfo(channelInfoViewModel);
 
         setToolbarData(channelInfoViewModel.getTitle(),
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
+    }
 
+    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
+        return (hasPoll
+                && voteInfoViewModel != null
+                && voteInfoViewModel.getStartTime() != 0
+                && voteInfoViewModel.getEndTime() != 0
+                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime());
+    }
 
+    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {
+        View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
+
+        TextView actionButton = view.findViewById(R.id.action_button);
+        ImageView image = view.findViewById(R.id.product_image);
+        ImageView profile = view.findViewById(R.id.prof_pict);
+        TextView title = view.findViewById(R.id.title);
+        TextView subtitle = view.findViewById(R.id.subtitle);
+        TextView name = view.findViewById(R.id.name);
+        TextView participant = view.findViewById(R.id.participant);
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                channelInfoDialog.dismiss();
+                analytics.eventClickJoin();
+            }
+        });
+        if (hasValidPoll)
+            actionButton.setText(R.string.lets_vote);
+        else
+            actionButton.setText(R.string.lets_chat);
+
+        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
+        name.setText(channelViewModel.getAdminName());
+        title.setText(channelViewModel.getTitle());
+        subtitle.setText(channelViewModel.getDescription());
+
+        ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
+                .drawable.loading_page);
+
+        return view;
     }
 
     private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
@@ -785,13 +856,13 @@ public class GroupChatActivity extends BaseSimpleActivity
                     (GroupChatFragment.class.getSimpleName())).onMessageUpdated(map);
         }
     }
-
+i
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                    (GroupChatFragment.class.getSimpleName())).onUserEntered(userActionViewModel,
-                    participantCount);
+                    (GroupChatFragment.class.getSimpleName())).onUserEntered(userActionViewModel
+            );
         }
 
         try {
@@ -807,7 +878,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
-
+        if (currentFragmentIsChat()) {
+            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                    (GroupChatFragment.class.getSimpleName())).onUserExited(userActionViewModel
+            );
+        }
     }
 
     @Override

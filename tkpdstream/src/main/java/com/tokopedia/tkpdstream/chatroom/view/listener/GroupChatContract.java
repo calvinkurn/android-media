@@ -26,6 +26,8 @@ public interface GroupChatContract {
         void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType);
 
         void setChannelHandler();
+
+        void showInfoDialog();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

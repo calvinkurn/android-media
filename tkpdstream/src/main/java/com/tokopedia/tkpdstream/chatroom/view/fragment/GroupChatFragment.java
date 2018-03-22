@@ -8,12 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,18 +37,13 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
-import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
-import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.GroupChatAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatRoomViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -58,7 +53,6 @@ import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
-import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
@@ -301,46 +295,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         progressBarWithTimer.setListener(this);
     }
 
-    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel, boolean showActionButton) {
-        View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
-
-        TextView actionButton = view.findViewById(R.id.action_button);
-        ImageView image = view.findViewById(R.id.product_image);
-        ImageView profile = view.findViewById(R.id.prof_pict);
-        TextView title = view.findViewById(R.id.title);
-        TextView subtitle = view.findViewById(R.id.subtitle);
-        TextView name = view.findViewById(R.id.name);
-        TextView participant = view.findViewById(R.id.participant);
-
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                channelInfoDialog.dismiss();
-                analytics.eventClickJoin();
-            }
-        });
-        if (hasValidPoll)
-            actionButton.setText(R.string.lets_vote);
-        else
-            actionButton.setText(R.string.lets_chat);
-
-        if (showActionButton)
-            actionButton.setVisibility(View.VISIBLE);
-        else
-            actionButton.setVisibility(View.GONE);
-
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
-        name.setText(channelViewModel.getAdminName());
-        title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getDescription());
-
-        ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
-                .drawable.loading_page);
-
-        return view;
-    }
-
     private void initData() {
         setSendButtonEnabled(false);
         presenter.initMessageFirstTime(mChannel);
@@ -399,15 +353,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             replyEditText.addTextChangedListener(replyTextWatcher);
             scrollToBottom();
 
-            if (getArguments() != null & getArguments().getBoolean(GroupChatActivity
-                    .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
-                channelInfoDialog.show();
-            }
-
             hideLoading();
 
             if(getActivity() instanceof GroupChatActivity){
                 ((GroupChatActivity)getActivity()).setChannelHandler();
+                ((GroupChatActivity)getActivity()).showInfoDialog();
             }
 
         } catch (NullPointerException e) {
@@ -588,14 +538,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         v.setVisibility(View.GONE);
     }
 
-    public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
+    public void onUserEntered(UserActionViewModel userActionViewModel) {
+        Log.d("NISNIS", "onUserEntered " + userActionViewModel.getUserName());
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
         scrollToBottomWhenPossible();
     }
 
-    public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
-
+    public void onUserExited(UserActionViewModel userActionViewModel) {
+        Log.d("NISNIS", "onUserExited " + userActionViewModel.getUserName());
     }
 
 
