@@ -52,7 +52,6 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     private Listener listener;
 
     private String descriptionText;
-    private boolean goldMerchant;
 
     private SpinnerTextView conditionSpinnerTextView;
 
@@ -71,16 +70,11 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View v) {
                 if (ProductDescriptionViewHolder.this.listener != null) {
-                    if (!goldMerchant) {
-                        UnifyTracking.eventClickVideoAddProduct();
-                        ProductDescriptionViewHolder.this.listener.showDialogMoveToGM(R.string.add_product_label_alert_dialog_video);
+                    if (GlobalConfig.isSellerApp()) {
+                        ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(
+                                convertToListString(ProductDescriptionViewHolder.this.listener.getVideoIdList()));
                     } else {
-                        if (GlobalConfig.isSellerApp()) {
-                            ProductDescriptionViewHolder.this.listener.startYoutubeVideoActivity(
-                                    convertToListString(ProductDescriptionViewHolder.this.listener.getVideoIdList()));
-                        } else {
-                            ProductDescriptionViewHolder.this.listener.showInstallSellerApp();
-                        }
+                        ProductDescriptionViewHolder.this.listener.showInstallSellerApp();
                     }
                 }
             }
@@ -155,14 +149,6 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     public void setListener(Listener listener) {
         this.listener = listener;
-    }
-
-    public void updateViewGoldMerchant(boolean isGoldMerchant) {
-        goldMerchant = isGoldMerchant;
-        if (!isGoldMerchant) {
-            ProductDescriptionViewHolder.this.listener.updateVideoIdList(new ArrayList<String>());
-        }
-        labelAddVideoView.setVisibility(View.VISIBLE);
     }
 
     private void setDescriptionText(String descriptionText) {

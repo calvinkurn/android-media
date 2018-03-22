@@ -144,20 +144,24 @@ public class VariantImageView extends FrameLayout {
         } else if (!TextUtils.isEmpty(defaultHexColor)) {
             int color = Color.parseColor(defaultHexColor);
             ivVariant.setBackgroundColor(color);
-            if (showPlusButton) {
-                if (isDarkColor(color)) {
-                    ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.white_65), PorterDuff.Mode.SRC_IN);
-                } else {
-                    ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_800), PorterDuff.Mode.SRC_IN);
-                }
-                ivPlus.setVisibility(View.VISIBLE);
-            } else {
-                ivPlus.setVisibility(View.GONE);
-            }
             ivVariant.setImageDrawable(null);
+            showPlusButton(color);
         } else {
             ivVariant.setBackgroundColor(Color.LTGRAY);
             ivVariant.setImageDrawable(null);
+            showPlusButton(Color.LTGRAY);
+        }
+    }
+
+    private void showPlusButton(int color){
+        if (showPlusButton) {
+            if (isDarkColor(color)) {
+                ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.white_65), PorterDuff.Mode.SRC_IN);
+            } else {
+                ivPlus.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_800), PorterDuff.Mode.SRC_IN);
+            }
+            ivPlus.setVisibility(View.VISIBLE);
+        } else {
             ivPlus.setVisibility(View.GONE);
         }
     }

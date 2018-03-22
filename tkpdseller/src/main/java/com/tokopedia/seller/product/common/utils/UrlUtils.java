@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.common.utils;
 
+import android.text.TextUtils;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -12,7 +14,8 @@ public class UrlUtils {
     public static boolean isValidURL(String urlStr) {
         try {
             URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
+            String scheme = uri.getScheme();
+            return !TextUtils.isEmpty(scheme) && (scheme.equals("http") || scheme.equals("https"));
         } catch (URISyntaxException e) {
             return false;
         }
