@@ -441,6 +441,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         this.mPrevMessageListQuery = previousMessageListQuery;
         adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         scrollToBottom();
+
+        if (getActivity() instanceof GroupChatActivity) {
+            ((GroupChatActivity) getActivity()).setChannelHandler();
+        }
+
     }
 
     @Override

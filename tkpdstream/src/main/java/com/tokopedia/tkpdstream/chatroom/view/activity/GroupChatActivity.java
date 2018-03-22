@@ -618,7 +618,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void setChannelHandler() {
-        presenter.setHandler(viewModel.getChannelUrl(), this);
+        if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
+            presenter.setHandler(viewModel.getChannelUrl(), this);
 
     }
 
@@ -704,9 +705,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
-            presenter.setHandler(viewModel.getChannelUrl(), this);
-
         kickIfIdleForTooLong();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
@@ -734,6 +732,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
         }
+        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
     }
 
     @Override
@@ -741,8 +741,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         super.onDestroy();
         presenter.detachView();
         presenter.logoutChannel(mChannel);
-        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
     }
 
     private void kickIfIdleForTooLong() {
