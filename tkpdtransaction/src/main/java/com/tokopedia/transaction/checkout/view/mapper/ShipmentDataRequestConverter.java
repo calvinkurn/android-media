@@ -56,13 +56,13 @@ public class ShipmentDataRequestConverter {
         ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
                 .isPreorder(cartSellerItem.getIsPreOrder())
-                .finsurance(cartSellerItem.getIsFinsurance())
+                .finsurance(shipmentDetailData.getUseInsurance() ? 1 : 0)
                 .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductDataCheckout(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
+                .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0);
 
         if (shipmentDetailData.getUseDropshipper()) {
             shopProductCheckoutBuilder.isDropship(1)
@@ -85,13 +85,13 @@ public class ShipmentDataRequestConverter {
         CheckPromoCodeCartShipmentRequest.ShopProduct.Builder shopProductBuilder = new CheckPromoCodeCartShipmentRequest.ShopProduct.Builder()
                 .shopId(Integer.valueOf(cartSellerItem.getShopId()))
                 .isPreorder(cartSellerItem.getIsPreOrder())
-                .finsurance(cartSellerItem.getIsFinsurance())
+                .finsurance(shipmentDetailData.getUseInsurance() ? 1 : 0)
                 .shippingInfo(new CheckPromoCodeCartShipmentRequest.ShippingInfo.Builder()
                         .shippingId(courierItemData.getShipperId())
                         .spId(courierItemData.getShipperProductId())
                         .build())
                 .productData(convertToProductData(cartSellerItem.getCartItemModels()))
-                .fcancelPartial(cartSellerItem.getIsFcancelPartial());
+                .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0);
 
         if (shipmentDetailData.getUseDropshipper()) {
             shopProductBuilder.dropshipData(new CheckPromoCodeCartShipmentRequest.DropshipData.Builder()

@@ -80,10 +80,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
             shopCheckoutBuilder
                     .fcancelPartial(
-                            switchValue(currentShipmentAdapterData.isProductFcancelPartial())
+                            switchValue(currentShipmentDetailData.getUsePartialOrder())
                     );
             shopCheckoutBuilder
-                    .finsurance(switchValue(currentShipmentAdapterData.isProductFinsurance()));
+                    .finsurance(switchValue(currentShipmentDetailData.getUseInsurance()));
             shopCheckoutBuilder
                     .isPreorder(switchValue(currentShipmentAdapterData.isProductIsPreorder()));
             shopCheckoutBuilder
@@ -231,8 +231,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
             shopProduct.productData(productDatas)
                     .shopId(shipmentData.get(i).getShopId())
-                    .fcancelPartial(switchValue(shipmentData.get(i).isProductFcancelPartial()))
-                    .finsurance(switchValue(shipmentData.get(i).isProductFinsurance()))
+                    .fcancelPartial(switchValue(shipmentData.get(i).getSelectedShipmentDetailData().getUsePartialOrder()))
+                    .finsurance(switchValue(shipmentData.get(i).getSelectedShipmentDetailData().getUseInsurance()))
                     .isPreorder(switchValue(shipmentData.get(i).isProductIsPreorder()))
                     .shippingInfo(shipmentInfo.build());
 
