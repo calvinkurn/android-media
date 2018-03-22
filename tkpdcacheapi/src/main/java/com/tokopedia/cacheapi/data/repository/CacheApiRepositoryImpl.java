@@ -38,11 +38,6 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return cacheApiDataSource.getWhiteList(host, path);
-    }
-
-    @Override
     public Observable<Boolean> deleteAllCacheData() {
         return cacheApiDataSource.deleteAllCacheData();
     }
@@ -58,7 +53,7 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return cacheApiDataSource.updateResponse(response, expiredTime);
+    public Observable<Boolean> saveResponse(String host, String path, Response response) {
+        return cacheApiDataSource.saveResponse(host, path, response);
     }
 }

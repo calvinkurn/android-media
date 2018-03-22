@@ -3,6 +3,7 @@ package com.tokopedia.cacheapi.data.source;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.exception.UrlNotRegisteredOnWhiteListException;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
@@ -56,10 +57,6 @@ public class CacheApiDataSource {
         });
     }
 
-    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return cacheApiDatabaseSource.getWhiteList(host, path);
-    }
-
     public Observable<Boolean> isInWhiteList(String host, String path) {
         return cacheApiDatabaseSource.isInWhiteList(host, path);
     }
@@ -80,7 +77,15 @@ public class CacheApiDataSource {
         return cacheApiDatabaseSource.deleteCachedData(host, path);
     }
 
-    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return cacheApiDatabaseSource.updateResponse(response, expiredTime);
+    public Observable<Boolean> saveResponse(String host, String path, final Response response) {
+        return cacheApiDatabaseSource.getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                if (cacheApiWhitelist == null) {
+                    return Observable.error(new UrlNotRegisteredOnWhiteListException());
+                }
+                return cacheApiDatabaseSource.updateResponse(response, cacheApiWhitelist);
+            }
+        });
     }
 }

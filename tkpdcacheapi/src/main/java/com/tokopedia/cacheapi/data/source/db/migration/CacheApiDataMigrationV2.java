@@ -4,7 +4,7 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 import com.tokopedia.cacheapi.data.source.db.DbFlowDatabase;
-import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiData;
 
 /**
  * Created by hendry on 6/22/2017.
@@ -14,16 +14,15 @@ import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
  * Add column dynamic link
  */
 @Migration(version = 2, database = DbFlowDatabase.class)
-public class CacheApiMigrationV2 extends AlterTableMigration<CacheApiWhitelist> {
+public class CacheApiDataMigrationV2 extends AlterTableMigration<CacheApiData> {
 
-    public CacheApiMigrationV2(Class<CacheApiWhitelist> table) {
+    public CacheApiDataMigrationV2(Class<CacheApiData> table) {
         super(table);
     }
 
     @Override
     public void onPreMigrate() {
         super.onPreMigrate();
-        addColumn(SQLiteType.INTEGER, CacheApiWhitelist.COLUMN_ID);
-        addColumn(SQLiteType.INTEGER, CacheApiWhitelist.COLUMN_DYNAMIC_LINK);
+        addColumn(SQLiteType.INTEGER, CacheApiData.COLUMN_WHITE_LIST_ID);
     }
 }

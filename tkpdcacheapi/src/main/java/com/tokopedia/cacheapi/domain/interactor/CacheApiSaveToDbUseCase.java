@@ -28,16 +28,7 @@ public class CacheApiSaveToDbUseCase extends UseCase<Boolean> {
         String host = requestParams.getString(CacheApiConstant.PARAM_HOST, "");
         String path = requestParams.getString(CacheApiConstant.PARAM_PATH, "");
         final Response response = (Response) requestParams.getObject(CacheApiConstant.PARAM_RESPONSE);
-        return cacheApiRepository.getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                if (cacheApiWhitelist != null) {
-                    return cacheApiRepository.updateResponse(response, (int) cacheApiWhitelist.getExpiredTime());
-                } else {
-                    return Observable.just(false);
-                }
-            }
-        });
+        return cacheApiRepository.saveResponse(host, path, response);
     }
 
     public static RequestParams createParams(String host, String path, Response response) {

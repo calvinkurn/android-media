@@ -190,7 +190,7 @@ public class CacheApiDatabaseSource {
         });
     }
 
-    public Observable<Boolean> updateResponse(final Response response, final int expiredTime) {
+    public Observable<Boolean> updateResponse(final Response response, final CacheApiWhitelist cacheApiWhitelist) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -208,7 +208,8 @@ public class CacheApiDatabaseSource {
                 cacheApiData.setRequestParam(getEncrypted(CacheApiUtils.getRequestParam(response.request())));
                 cacheApiData.setResponseBody(getEncrypted(responseBody));
                 cacheApiData.setResponseTime(responseTime);
-                cacheApiData.setExpiredTime(responseTime + expiredTime);
+                cacheApiData.setExpiredTime(responseTime + cacheApiWhitelist.getExpiredTime());
+                cacheApiData.setWhiteListId(cacheApiWhitelist.getId());
                 cacheApiData.save();
                 subscriber.onNext(true);
             }
