@@ -5,12 +5,13 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
 /**
  * Created by meta on 22/03/18.
  */
 
-public class EmptyBlankViewHolder extends AbstractViewHolder<EmptyBlankViewHolder> {
+public class EmptyBlankViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_blank;
@@ -20,6 +21,7 @@ public class EmptyBlankViewHolder extends AbstractViewHolder<EmptyBlankViewHolde
     }
 
     @Override
-    public void bind(EmptyBlankViewHolder element) {
+    public void bind(DynamicChannelViewModel element) {
+
     }
 }

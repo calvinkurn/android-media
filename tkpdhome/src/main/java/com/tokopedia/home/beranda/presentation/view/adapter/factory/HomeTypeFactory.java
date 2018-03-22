@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.EmptyBlankViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -39,6 +38,4 @@ public interface HomeTypeFactory {
     int type(InspirationViewModel inspirationViewModel);
 
     int type(DynamicChannelViewModel dynamicChannelViewModel);
-
-    int type(EmptyBlankViewModel emptyBlankViewModel);
 }

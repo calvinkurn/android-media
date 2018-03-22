@@ -25,7 +25,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.EmptyBlankViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -99,11 +98,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         } else {
             return EmptyBlankViewHolder.LAYOUT;
         }
-    }
-
-    @Override
-    public int type(EmptyBlankViewModel emptyBlankViewModel) {
-        return EmptyBlankViewHolder.LAYOUT;
     }
 
     @Override
