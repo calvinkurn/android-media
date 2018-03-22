@@ -26,6 +26,9 @@ public class SubmitRawProductUseCase extends UseCase<Boolean> {
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
         if (TextUtils.isEmpty(productViewModel.getProductId())) {
+            productViewModel.resetPictureId();
+            productViewModel.setProductPosition(null);
+            productViewModel.setProductLastUpdatePrice(null);
             return productRepository.addProductSubmit(productViewModel);
         } else {
             return productRepository.editProductSubmit(productViewModel);

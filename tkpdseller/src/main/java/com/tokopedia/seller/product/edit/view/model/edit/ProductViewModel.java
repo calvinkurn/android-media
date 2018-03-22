@@ -447,8 +447,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         productPrice = value;
     }
 
-    public void resetId(){
-        productId = null;
+    public void resetPictureId(){
         if (productPictureViewModelList!= null) {
             for (ProductPictureViewModel productPictureViewModel: productPictureViewModelList) {
                 productPictureViewModel.setId(0);

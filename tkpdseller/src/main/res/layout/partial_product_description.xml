@@ -45,11 +45,9 @@
             android:id="@+id/label_add_video_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:content="@string/label_add"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/product_label_video"
-            tools:visibility="visible" />
+            app:title="@string/product_label_video" />
 
         <com.tokopedia.expandable.ExpandableOptionSwitch
             android:id="@+id/expandable_option_switch_pre_order"

@@ -647,7 +647,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
         valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
 
-        productDescriptionViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setOfficialStore(officialStore);
         productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);

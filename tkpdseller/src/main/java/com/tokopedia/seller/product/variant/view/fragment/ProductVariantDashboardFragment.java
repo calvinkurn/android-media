@@ -296,7 +296,9 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             variantLevelTwoLabelView.resetContentText();
             // if level 1 is chosen, set enabled to true
             if (productVariantViewModel != null) {
-                variantLevelTwoLabelView.setEnabled(productVariantViewModel.getVariantOptionParent(0) != null);
+                boolean hasVariantLv1 = productVariantViewModel.getVariantOptionParent(0) != null &&
+                        productVariantViewModel.getVariantOptionParent(0).hasProductVariantOptionChild();
+                variantLevelTwoLabelView.setEnabled(hasVariantLv1);
             } else {
                 variantLevelTwoLabelView.setEnabled(false);
             }
