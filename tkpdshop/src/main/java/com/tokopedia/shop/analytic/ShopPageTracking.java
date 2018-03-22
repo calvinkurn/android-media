@@ -321,34 +321,24 @@ public class ShopPageTracking {
     }
 
     public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean myShop, int shopType, boolean isGrid) {
-        try {
-            HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
-                    getEventCategory(myShop, shopType),
-                    titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
-                    ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
-            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
-            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
-            shopModuleRouter.sendEventTrackingShopPage(eventMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CommonUtils.dumper("GAv4 " + e.getMessage());
-        }
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
+                getEventCategory(myShop, shopType),
+                titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
+                ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
+        eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
+        shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
     public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
-        try {
-            HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
-                    getEventCategory(myShop, shopType),
-                    titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
-                            + " - " + ShopPageTrackingConstant.IMPRESSION,
-                    ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_PICTURES, shopType);
-            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
-            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
-            shopModuleRouter.sendEventTrackingShopPage(eventMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CommonUtils.dumper("GAv4 " + e.getMessage());
-        }
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
+                getEventCategory(myShop, shopType),
+                titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
+                        + " - " + ShopPageTrackingConstant.IMPRESSION,
+                ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_PICTURES, shopType);
+        eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, isGrid));
+        shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
     public void eventClickProductTitleFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean myShop, int shopType) {
@@ -363,7 +353,6 @@ public class ShopPageTracking {
 
 
     public void eventClickProductImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
-        try {
             HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
                     getEventCategory(myShop, shopType),
                     titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
@@ -372,10 +361,6 @@ public class ShopPageTracking {
             eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
             eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition, isGrid));
             shopModuleRouter.sendEventTrackingShopPage(eventMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CommonUtils.dumper("GAv4 " + e.getMessage());
-        }
     }
 
     public void eventClickBannerImpression(String titlePage, String shopName, String shopId, boolean myShop, int shopType) {
@@ -456,11 +441,11 @@ public class ShopPageTracking {
     }
 
     private String formatPrice(String displayedPrice) {
-        if(!TextUtils.isEmpty(displayedPrice)){
+        if (!TextUtils.isEmpty(displayedPrice)) {
             displayedPrice = displayedPrice.replace(".", "");
             displayedPrice = displayedPrice.replace("Rp", "");
             return displayedPrice;
-        }else{
+        } else {
             return "";
         }
     }
