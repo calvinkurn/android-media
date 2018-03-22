@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/iv_icon_tooltip"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+            android:layout_width="@dimen/dp_75"
+            android:layout_height="@dimen/dp_75"
             android:layout_gravity="center_vertical"
             android:foregroundGravity="center_vertical"/>
 

@@ -14,21 +14,6 @@ import com.tokopedia.design.base.BaseBottomSheetView;
 
 /**
  * Created by meyta on 2/13/18.
- *
- * How to use?
- * Tooltip tooltip = new Tooltip(this);
- * tooltip.setTitle("Title Goes Here");
- * tooltip.setDesc("Type your information about the hint in a compact way, don’t take it to long.");
- * tooltip.setTextButton("CTA Here");
- * tooltip.setIcon(R.drawable.ic_search_icon);
-
- * tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
- *  @Override
- *  public void onClick(View view) {
- *      Toast.makeText(MainActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
- *  }
- * });
- * tooltip.show();
  */
 
 public class Tooltip extends BaseBottomSheetView {
