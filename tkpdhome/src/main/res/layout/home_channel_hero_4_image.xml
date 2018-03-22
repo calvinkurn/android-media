@@ -37,8 +37,7 @@
 
         <ImageView
             android:id="@+id/channel_hero_image"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/home_channel_hero_width"
             android:layout_height="@dimen/home_channel_hero_height"
             tools:src="@color/green_80"
             />
