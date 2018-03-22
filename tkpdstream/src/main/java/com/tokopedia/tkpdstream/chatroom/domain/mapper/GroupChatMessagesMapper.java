@@ -88,7 +88,7 @@ public class GroupChatMessagesMapper {
         return new ImageViewModel(
                 message.getUrl(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -119,7 +119,7 @@ public class GroupChatMessagesMapper {
         return new ChatViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -136,7 +136,7 @@ public class GroupChatMessagesMapper {
         return new ImageViewModel(
                 pojo.getImageUrl().trim(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -151,7 +151,7 @@ public class GroupChatMessagesMapper {
         return new ChatViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
                 message.getSender().getUserId(),
                 message.getSender().getNickname(),
@@ -170,7 +170,7 @@ public class GroupChatMessagesMapper {
                     pojo.getDescription(),
                     message.getCustomType(),
                     message.getCreatedAt(),
-                    message.getUpdatedAt(),
+                    message.getCreatedAt(),
                     String.valueOf(message.getMessageId()),
                     message.getSender().getUserId(),
                     message.getSender().getNickname(),
@@ -279,7 +279,7 @@ public class GroupChatMessagesMapper {
         return new AdminAnnouncementViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getUpdatedAt(),
+                message.getCreatedAt(),
                 String.valueOf(message.getMessageId())
         );
     }

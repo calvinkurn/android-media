@@ -38,7 +38,6 @@ public class BaseChatViewModel implements Parcelable{
         this.formattedCreatedAt = TimeConverter.convertToHourFormat(this.createdAt);
         this.formattedUpdatedAt = TimeConverter.convertToHourFormat(this.updatedAt);
         this.messageId = messageId;
-
         this.senderId = "";
         this.senderName = "";
         this.senderIconUrl = "";

@@ -42,7 +42,7 @@ abstract class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolde
 
             ImageHandler.loadImageCircle2(avatar.getContext(), avatar, viewModel.getSenderIconUrl());
             nickname.setText(MethodChecker.fromHtml(viewModel.getSenderName()));
-            postTime.setText(viewModel.getFormattedUpdatedAt());
+            postTime.setText(viewModel.getFormattedCreatedAt());
 
             if (viewModel.isAdministrator()) {
                 nickname.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
