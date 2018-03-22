@@ -1,6 +1,9 @@
 package com.tokopedia.shop.analytic;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoDetail;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -308,8 +311,7 @@ public class ShopPageTracking {
     }
 
     public void eventClickProductPictureFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean myShop, int shopType) {
-
-        HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType),
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
@@ -319,7 +321,7 @@ public class ShopPageTracking {
     }
 
     public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean myShop, int shopType, boolean isGrid) {
-        HashMap<String, Object> eventMap = createEventMap(getEventNameView(myShop, shopType),
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
@@ -329,7 +331,7 @@ public class ShopPageTracking {
     }
 
     public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
-        HashMap<String, Object> eventMap = createEventMap(getEventNameView(myShop, shopType),
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.IMPRESSION,
@@ -340,7 +342,7 @@ public class ShopPageTracking {
     }
 
     public void eventClickProductTitleFeaturedImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean myShop, int shopType) {
-        HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType),
+        HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_NAME, shopType);
@@ -351,14 +353,14 @@ public class ShopPageTracking {
 
 
     public void eventClickProductImpression(String titlePage, String name, String id, String price, int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
-        HashMap<String, Object> eventMap = createEventMap(getEventNameCLick(myShop, shopType),
-                getEventCategory(myShop, shopType),
-                titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
-                        + " - " + ShopPageTrackingConstant.CLICK,
-                ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
-        eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition, isGrid));
-        shopModuleRouter.sendEventTrackingShopPage(eventMap);
+            HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
+                    getEventCategory(myShop, shopType),
+                    titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
+                            + " - " + ShopPageTrackingConstant.CLICK,
+                    ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
+            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
+            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, adapterPosition, isGrid));
+            shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
     public void eventClickBannerImpression(String titlePage, String shopName, String shopId, boolean myShop, int shopType) {
@@ -426,16 +428,26 @@ public class ShopPageTracking {
                     DataLayer.mapOf(
                             ShopPageTrackingConstant.NAME, viewModel.getName(),
                             ShopPageTrackingConstant.ID, viewModel.getId(),
-                            ShopPageTrackingConstant.PRICE, viewModel.getDisplayedPrice(),
+                            ShopPageTrackingConstant.PRICE, formatPrice(viewModel.getDisplayedPrice()),
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(i, isGrid),
-                            ShopPageTrackingConstant.POSITION, getProductPosition(i, isGrid)
+                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(i , isGrid),
+                            ShopPageTrackingConstant.POSITION, getProductPosition(i , isGrid)
                     )
             );
         }
         return list;
+    }
+
+    private String formatPrice(String displayedPrice) {
+        if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice = displayedPrice.replace(".", "");
+            displayedPrice = displayedPrice.replace("Rp", "");
+            return displayedPrice;
+        } else {
+            return "";
+        }
     }
 
     private Map<String, Object> createMapProductClickImpression(String name, String id, String price, int adapterPosition, boolean isGrid) {
@@ -446,12 +458,12 @@ public class ShopPageTracking {
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
                                         ShopPageTrackingConstant.ID, id,
-                                        ShopPageTrackingConstant.PRICE, price,
+                                        ShopPageTrackingConstant.PRICE, formatPrice(price),
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid),
-                                        ShopPageTrackingConstant.POSITION, getProductPosition(adapterPosition, isGrid)
+                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition , isGrid),
+                                        ShopPageTrackingConstant.POSITION, getProductPosition(adapterPosition , isGrid)
                                 )
                         )
                 )
