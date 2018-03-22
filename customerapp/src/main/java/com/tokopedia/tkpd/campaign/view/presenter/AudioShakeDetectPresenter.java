@@ -64,7 +64,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
     WavRecorder recorder;
 
     private void startRecording() throws IOException {
-        recorder = new WavRecorder(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sdcard/campaign.wav");
+        recorder = new WavRecorder();
         recorder.startRecording(this);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -81,7 +81,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
         getView().showErrorNetwork("Record Complete");
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "true");
-        requestParams.putString(AUDIO_PATH, Environment.getExternalStorageDirectory().getAbsolutePath()+"/sdcard/campaign.wav");
+        requestParams.putString(AUDIO_PATH, WavRecorder.getFilePath());
         postShakeDetectUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
