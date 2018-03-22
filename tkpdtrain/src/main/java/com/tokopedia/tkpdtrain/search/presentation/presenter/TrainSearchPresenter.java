@@ -92,7 +92,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         });
     }
 
-    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, String trainClass, List<String> trains, int sortOptionId) {
+    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, String trainClass, List<String> trains, final int sortOptionId) {
         FilterParam filterParam = new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
@@ -118,10 +118,9 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 Log.d(TAG, "onNext size: " + trainSchedulesViewModel.size());
                 if (trainSchedulesViewModel != null) {
                     getView().showLayoutTripInfo();
-                    getView().renderList(trainSchedulesViewModel);
-                } else {
-
+                    getView().showDataFromCache(trainSchedulesViewModel);
                 }
+                getView().setSortOptionId(sortOptionId);
             }
         });
     }

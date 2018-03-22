@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         TrainSearchAdapterTypeFactory> implements TrainSearchContract.View {
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
+    private static final int EMPTY_MARGIN = 0;
+    private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
+    private static final int PADDING_SEARCH_LIST = 60;
 
     protected TrainSearchPassDataViewModel trainSearchPassDataViewModel;
     protected String dateDeparture;
@@ -63,6 +67,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private TextView destinationCityTv;
     private LinearLayout tripInfoLinearLayout;
     protected TrainSearchComponent trainSearchComponent;
+    private int selectedSortOption;
 
     private BottomActionView filterAndSortBottomAction;
 
@@ -98,6 +103,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         presenter.getTrainSchedules(getScheduleVariant());
 
         setUpButtonActionView(view);
+        selectedSortOption = TrainSortOption.CHEAPEST;
+
         originCodeTv.setText(originCode);
         originCityTv.setText(originCity);
         destinationCodeTv.setText(destinationCode);
@@ -183,6 +190,37 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     @Override
+    public void showDataFromCache(List<TrainScheduleViewModel> trainScheduleViewModels) {
+        getAdapter().hideLoading();
+        getAdapter().clearAllElements();
+        if (trainScheduleViewModels.size() > 0) {
+            float scale = getResources().getDisplayMetrics().density;
+            RecyclerView recyclerView = getRecyclerView(getView());
+            recyclerView.setPadding(
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+            );
+            getAdapter().addElement(trainScheduleViewModels);
+        } else {
+            RecyclerView recyclerView = getRecyclerView(getView());
+            recyclerView.setPadding(
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN
+            );
+            getAdapter().addElement(getEmptyDataViewModel());
+        }
+    }
+
+    @Override
+    public void setSortOptionId(int sortOptionId) {
+        selectedSortOption = sortOptionId;
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -219,14 +257,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem("Urutkan");
 
-        bottomSheetBuilder.addItem(TrainSortOption.EARLIEST_DEPARTURE, "Waktu Keberangkatan Terpagi", null);
-        bottomSheetBuilder.addItem(TrainSortOption.LATEST_DEPARTURE, "Waktu Keberangkatan Termalam", null);
-        bottomSheetBuilder.addItem(TrainSortOption.SHORTEST_DURATION, "Durasi Terpendek", null);
-        bottomSheetBuilder.addItem(TrainSortOption.LONGEST_DURATION, "Durasi Terlama", null);
-        bottomSheetBuilder.addItem(TrainSortOption.EARLIEST_ARRIVAL, "Waktu Tiba Terpagi", null);
-        bottomSheetBuilder.addItem(TrainSortOption.LATEST_ARRIVAL, "Waktu Tiba Termalam", null);
-        bottomSheetBuilder.addItem(TrainSortOption.CHEAPEST, "Harga Termurah", null);
-        bottomSheetBuilder.addItem(TrainSortOption.MOST_EXPENSIVE, "Harga Termahal", null);
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_DEPARTURE, "Waktu Keberangkatan Terpagi", null, isSortSelected(TrainSortOption.EARLIEST_DEPARTURE));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_DEPARTURE, "Waktu Keberangkatan Termalam", null, isSortSelected(TrainSortOption.LATEST_DEPARTURE));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.SHORTEST_DURATION, "Durasi Terpendek", null, isSortSelected(TrainSortOption.SHORTEST_DURATION));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LONGEST_DURATION, "Durasi Terlama", null, isSortSelected(TrainSortOption.LONGEST_DURATION));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_ARRIVAL, "Waktu Tiba Terpagi", null, isSortSelected(TrainSortOption.EARLIEST_ARRIVAL));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_ARRIVAL, "Waktu Tiba Termalam", null, isSortSelected(TrainSortOption.LATEST_ARRIVAL));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.CHEAPEST, "Harga Termurah", null, isSortSelected(TrainSortOption.CHEAPEST));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.MOST_EXPENSIVE, "Harga Termahal", null, isSortSelected(TrainSortOption.MOST_EXPENSIVE));
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(new BottomSheetItemClickListener() {
@@ -234,11 +272,16 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
                         List<String> trains = new ArrayList<>();
+                        getAdapter().showLoading();
                         presenter.getFilteredAndSortedSchedules(0, 200000, "", trains, item.getItemId());
                     }
                 })
                 .createDialog();
         bottomSheetDialog.show();
+    }
+
+    private boolean isSortSelected(int sortOption) {
+        return selectedSortOption == sortOption;
     }
 
 }
