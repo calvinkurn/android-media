@@ -34,7 +34,9 @@ import java.util.List;
 
 public class Menus extends BaseBottomSheetView {
 
-    private MenusAdapter menusAdapter;
+    public interface OnItemMenuClickListener {
+        void onClick(ItemMenus itemMenus, int pos);
+    }
 
     public Menus(@NonNull Context context) {
         super(context);
@@ -46,22 +48,6 @@ public class Menus extends BaseBottomSheetView {
 
     protected Menus(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.widget_menu;
-    }
-
-    @Override
-    protected void initView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.rv_menu);
-
-        menusAdapter = new MenusAdapter();
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(menusAdapter);
     }
 
     public List<ItemMenus> getItemMenuList() {
@@ -107,8 +93,22 @@ public class Menus extends BaseBottomSheetView {
         }
     }
 
-    public interface OnItemMenuClickListener {
-        void onClick(ItemMenus itemMenus, int pos);
+    private MenusAdapter menusAdapter;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.widget_menu;
+    }
+
+    @Override
+    protected void initView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.rv_menu);
+
+        menusAdapter = new MenusAdapter();
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(menusAdapter);
     }
 
     private class MenusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -144,7 +144,7 @@ public class Menus extends BaseBottomSheetView {
             }
         }
 
-        MenusAdapter() {
+        private MenusAdapter() {
             itemMenusList = new ArrayList<>();
         }
 

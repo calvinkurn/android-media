@@ -11,14 +11,6 @@ import com.tokopedia.design.base.BaseDialog;
 
 /**
  * Created by meyta on 2/14/18.
- *
- * How to use?
- * setTitle("Title Goes Here");
- * setDesc("Make the copy compact to communicate what you want, approx 50 character like this");
- * setBtnOk("CTA Here");
- * setBtnCancel("CTA Here");
- * setOnOkClickListener(View.OnClickListener());
- * setOnCancelClickListener(View.OnClickListener());
  */
 
 public class Dialog extends BaseDialog {
