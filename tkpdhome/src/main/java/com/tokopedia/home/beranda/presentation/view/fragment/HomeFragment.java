@@ -615,6 +615,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onSixGridItemClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         trackScreen(isVisibleToUser);
