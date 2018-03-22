@@ -13,6 +13,7 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.addchangeemail.view.fragment.AddEmailFragment;
 import com.tokopedia.session.addchangeemail.view.fragment.AddEmailVerificationFragment;
+import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
@@ -82,6 +83,8 @@ public interface SessionComponent {
     void inject(AddEmailFragment addEmailFragment);
 
     void inject(AddEmailVerificationFragment addEmailVerificationFragment);
+
+    void inject(ChangeNameFragment changeNameFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
 

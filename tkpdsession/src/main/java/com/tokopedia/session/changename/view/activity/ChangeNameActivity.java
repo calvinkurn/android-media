@@ -19,7 +19,7 @@ import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 public class ChangeNameActivity extends BasePresenterActivity implements HasComponent {
 
     public static Intent newInstance(Context context) {
-        Intent intent = new Intent(context, AddEmailActivity.class);
+        Intent intent = new Intent(context, ChangeNameActivity.class);
         Bundle bundle = new Bundle();
         intent.putExtras(bundle);
         return intent;
@@ -53,7 +53,7 @@ public class ChangeNameActivity extends BasePresenterActivity implements HasComp
     @Override
     protected void initView() {
         String TAG = ChangeNameFragment.class.getSimpleName();
-        AddEmailFragment fragment = ChangeNameFragment.newInstance();
+        ChangeNameFragment fragment = ChangeNameFragment.newInstance(new Bundle());
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(com.tokopedia.core.R.id.container,

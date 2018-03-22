@@ -81,5 +81,7 @@ public interface ManagePeopleProfileFragmentView {
 
     void startAddEmailActivity();
 
+    void startChangeNameActivity();
+
     void storeImageToUserSession(String userImage);
 }

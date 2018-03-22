@@ -23,6 +23,7 @@ import com.tokopedia.core.var.TkpdState;
 public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
     public TextView userName;
+    public TextView btnChangeName;
     public EditText birthDate;
     public RadioGroup genderRadioGroup;
     public EditText hobby;
@@ -54,6 +55,7 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
     protected void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(getLayoutView(),this, true);
         userName = (TextView) view.findViewById(R.id.user_name);
+        btnChangeName = (TextView) view.findViewById(R.id.change_name_button);
         birthDate = (EditText) view.findViewById(R.id.birth_date);
         genderRadioGroup = (RadioGroup) view.findViewById(R.id.gender);
         hobby = (EditText) view.findViewById(R.id.hobbies);
@@ -63,6 +65,7 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
     public void renderData(@NonNull Profile profile) {
         DataUser dataUser = profile.getDataUser();
         renderUserName(dataUser.getFullName());
+        renderChangeNameButton(dataUser.isUserGeneratedName());
         renderBirthDate(dataUser);
         renderGender(dataUser.getGender());
         renderHobby(dataUser.getHobby());
@@ -78,6 +81,11 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
         } else if (gender.equals(TkpdState.Gender.FEMALE)) {
             genderRadioGroup.check(R.id.female);
         }
+    }
+
+    private void renderChangeNameButton(boolean isUserGeneratedName) {
+        btnChangeName.setVisibility(isUserGeneratedName ? VISIBLE : GONE);
+        btnChangeName.setOnClickListener(new ChangeNameListener());
     }
 
     private void renderUserName(String fullName) {
@@ -150,6 +158,13 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
 
         public String checkNumber(int number) {
             return number <= 9 ? "0" + number : String.valueOf(number);
+        }
+    }
+
+    private class ChangeNameListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            presenter.setOnChangeNameClick(getContext());
         }
     }
 }

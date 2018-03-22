@@ -37,8 +37,8 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     @Inject
     ChangeNamePresenter presenter;
 
-    public static Fragment newInstance(Bundle bundle) {
-        Fragment fragment = new ChangeNameFragment();
+    public static ChangeNameFragment newInstance(Bundle bundle) {
+        ChangeNameFragment fragment = new ChangeNameFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

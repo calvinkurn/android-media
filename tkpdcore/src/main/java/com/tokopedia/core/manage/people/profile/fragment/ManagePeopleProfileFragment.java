@@ -65,6 +65,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public static final int RESULT_EMAIL_SENT = 111;
 
     public static final int REQUEST_ADD_EMAIL = 1001;
+    public static final int REQUEST_CHANGE_NAME = 1002;
 
 
     @BindView(R2.id.layout_main)
@@ -321,7 +322,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
             if (resultCode == RESULT_EMAIL_SENT) {
                 contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
             }
-        } else if (requestCode == REQUEST_ADD_EMAIL) {
+        } else if (requestCode == REQUEST_ADD_EMAIL || requestCode == REQUEST_CHANGE_NAME) {
             if (resultCode == Activity.RESULT_OK)
                 presenter.setOnFirstTimeLaunch(getActivity());
         } else if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
@@ -550,6 +551,13 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         startActivityForResult(
                 ((TkpdCoreRouter)getActivity().getApplicationContext())
                         .getAddEmailIntent(getActivity()), REQUEST_ADD_EMAIL);
+    }
+
+    @Override
+    public void startChangeNameActivity() {
+        startActivityForResult(
+                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                        .getChangeNameIntent(getActivity()), REQUEST_CHANGE_NAME);
     }
 
     @Override

@@ -31,6 +31,8 @@ public interface ManagePeopleProfileFragmentPresenter {
 
     void setOnAddEmailClick(Context click);
 
+    void setOnChangeNameClick(Context context);
+
     void setOnNotifiedEmailChanged(Context context);
 
     void refreshPage(Context context);

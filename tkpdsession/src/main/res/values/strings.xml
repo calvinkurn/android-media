@@ -244,6 +244,7 @@
     <string name="button_continue">Lanjutkan</string>
 
     <!--ADD CHANGE NAME-->
+    <string name="title_change_name">Ubah Nama Lengkap</string>
     <string name="title_complete_name">Nama Lengkap</string>
     <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
     <string name="button_name_continue">Ubah Nama Lengkap</string>

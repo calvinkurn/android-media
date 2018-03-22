@@ -42,6 +42,7 @@ import com.tokopedia.session.addchangeemail.domain.usecase.CheckEmailUseCase;
 import com.tokopedia.session.addchangeemail.domain.usecase.RequestVerificationUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
+import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -457,5 +458,13 @@ SessionModule {
     ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
                                              ChangeNameMapper changeNameMapper) {
         return new ChangeNameSource(service, changeNameMapper);
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameUseCase provideChangeNameUseCase(ThreadExecutor threadExecutor,
+                                             PostExecutionThread postExecutionThread,
+                                             ChangeNameSource source) {
+        return new ChangeNameUseCase(threadExecutor, postExecutionThread, source);
     }
 }

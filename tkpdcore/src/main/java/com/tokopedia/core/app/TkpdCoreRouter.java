@@ -168,6 +168,8 @@ public interface TkpdCoreRouter {
 
     Intent getAddEmailIntent(Context context);
 
+    Intent getChangeNameIntent(Context context);
+
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);

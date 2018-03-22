@@ -1,62 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
+    <include
+        layout="@layout/layout_name_top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/margin_sm"
-        android:background="@color/white">
+        android:layout_height="wrap_content"/>
 
-        <include
-            layout="@layout/layout_name_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/wrapper_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        app:counterEnabled="true"
+        app:counterMaxLength="128">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/wrapper_name"
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/et_name"
+            android:hint="@string/title_email"
+            android:textColorHint="@color/black_54"
+            android:textColor="@color/black_70"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/font_medium"
             android:layout_marginTop="@dimen/margin_sm"
-            app:counterEnabled="true"
-            app:counterMaxLength="128">
+            />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_name"
-                android:hint="@string/title_email"
-                android:textColorHint="@color/black_54"
-                android:textColor="@color/black_70"
-                android:inputType="textPersonName"
-                android:textSize="@dimen/font_medium"
-                android:layout_marginTop="@dimen/margin_sm"
-                />
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/we_will_send_email_verification_code"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/black_38"
+        android:layout_marginTop="@dimen/margin_ms"/>
 
-        <TextView
-            android:id="@+id/tv_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/we_will_send_email_verification_code"
-            android:textSize="@dimen/text_size_12"
-            android:textColor="@color/black_38"
-            android:layout_marginTop="@dimen/margin_ms"/>
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/button_name_continue"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:background="@drawable/bg_button_enable"
+        android:layout_marginTop="@dimen/margin_sm"/>
 
-        <Button
-            android:id="@+id/btn_continue"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/button_name_continue"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:background="@drawable/bg_button_enable"
-            android:layout_marginTop="@dimen/margin_sm"/>
-
-    </LinearLayout>
 </LinearLayout>
