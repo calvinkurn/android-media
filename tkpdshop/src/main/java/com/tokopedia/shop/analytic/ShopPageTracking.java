@@ -457,8 +457,8 @@ public class ShopPageTracking {
 
     private String formatPrice(String displayedPrice) {
         if(!TextUtils.isEmpty(displayedPrice)){
-            displayedPrice.replace(".", "");
-            displayedPrice.replace("Rp", "");
+            displayedPrice = displayedPrice.replace(".", "");
+            displayedPrice = displayedPrice.replace("Rp", "");
             return displayedPrice;
         }else{
             return "";
