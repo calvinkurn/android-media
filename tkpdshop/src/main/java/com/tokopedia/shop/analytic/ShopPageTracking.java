@@ -1,5 +1,7 @@
 package com.tokopedia.shop.analytic;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -441,7 +443,7 @@ public class ShopPageTracking {
                     DataLayer.mapOf(
                             ShopPageTrackingConstant.NAME, viewModel.getName(),
                             ShopPageTrackingConstant.ID, viewModel.getId(),
-                            ShopPageTrackingConstant.PRICE, viewModel.getDisplayedPrice(),
+                            ShopPageTrackingConstant.PRICE, formatPrice(viewModel.getDisplayedPrice()),
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
@@ -453,6 +455,16 @@ public class ShopPageTracking {
         return list;
     }
 
+    private String formatPrice(String displayedPrice) {
+        if(!TextUtils.isEmpty(displayedPrice)){
+            displayedPrice.replace(".", "");
+            displayedPrice.replace("Rp", "");
+            return displayedPrice;
+        }else{
+            return "";
+        }
+    }
+
     private Map<String, Object> createMapProductClickImpression(String name, String id, String price, int adapterPosition, boolean isGrid) {
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK, DataLayer.mapOf(
@@ -461,7 +473,7 @@ public class ShopPageTracking {
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
                                         ShopPageTrackingConstant.ID, id,
-                                        ShopPageTrackingConstant.PRICE, price,
+                                        ShopPageTrackingConstant.PRICE, formatPrice(price),
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
