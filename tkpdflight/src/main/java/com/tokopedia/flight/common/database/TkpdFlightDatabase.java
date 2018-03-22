@@ -10,5 +10,5 @@ import com.raizlabs.android.dbflow.annotation.Database;
 public class TkpdFlightDatabase {
     public static final String NAME = "tkpd_flight";
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 }

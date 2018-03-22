@@ -21,6 +21,8 @@ public interface FlightBookingPassengerContract {
 
         FlightBookingPassengerViewModel getCurrentPassengerViewModel();
 
+        void setCurrentPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+
         void renderSpinnerForAdult();
 
         void renderSpinnerForChildAndInfant();
@@ -61,6 +63,8 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resID);
 
+        void showPassengerAdultBirthdateShouldMoreThan12Years(int resID);
+
         void navigateResultUpdatePassengerData(FlightBookingPassengerViewModel currentPassengerViewModel);
 
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
@@ -73,11 +77,15 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
+        void renderSelectedList(String passengerName);
+
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
 
-        int getPassengerTitleId();
+        void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
+
+        int getTitleSpinnerPosition();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
@@ -95,11 +103,15 @@ public interface FlightBookingPassengerContract {
 
         void hideKeyboard();
 
-        boolean isAirAsiaAirline();
+        boolean isMandatoryDoB();
 
         String getDepartureDateString();
 
         void showPassengerLastNameShouldSameWithFirstNameError(int resId);
+
+        void canGoBack();
+
+        String getString(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -123,6 +135,14 @@ public interface FlightBookingPassengerContract {
         void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel);
 
         void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
+
+        void onSavedPassengerClicked();
+
+        void onNewPassengerChoosed();
+
+        void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
+
+        void onUnselectPassengerList(String passengerId);
 
     }
 }

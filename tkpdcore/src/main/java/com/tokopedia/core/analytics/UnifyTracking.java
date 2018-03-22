@@ -2492,6 +2492,11 @@ public class UnifyTracking extends TrackingUtils {
                 event, category, action, "").getEvent());
     }
 
+    public static void eventAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
     public static void eventInsertAttachment(String category, String action, String event) {
         sendGTMEvent(new EventTracking(
                 event, category, action, "").getEvent());
@@ -3178,6 +3183,24 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(eventTracking.getEvent());
     }
 
+    public static EventTracking eventResoDetailClickBackEditAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public static EventTracking eventResoDetailClickBackInputAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
 
     public static void eventPromoListClickCategory(String categoryName) {
         sendGTMEvent(new EventTracking(
@@ -3308,4 +3331,5 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
         ).setUserId().getEvent());
     }
+
 }

@@ -95,12 +95,13 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
     @Override
     public void handleSelectDestinationOnMap(PlacePassViewModel destination) {
-        if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
-            RideGATracking.eventClickDoneDestinationMap(getScreenName(), destination.getAddress()); // 15
-        } else {
-            RideGATracking.eventClickDoneSourceMap(getScreenName(), destination.getAddress()); // 12
-        }
         if (destination != null) {
+            if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
+                RideGATracking.eventClickDoneDestinationMap(getScreenName(), destination.getAddress()); // 15
+            } else {
+                RideGATracking.eventClickDoneSourceMap(getScreenName(), destination.getAddress()); // 12
+            }
+
             Intent intent = getIntent();
             intent.putExtra(EXTRA_SELECTED_PLACE, destination);
             setResult(RESULT_OK, intent);

@@ -98,15 +98,29 @@ public interface FlightBookingContract {
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 
-        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
+        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel,
+                                           boolean isAirAsiaAirline, String departureDate,
+                                           String requestId);
 
         Observable<ProfileInfo> getProfileObservable();
+
+        void setContactBirthdate(String birthdate);
+
+        String getContactBirthdate();
+
+        void setContactGender(int gender);
+
+        int getContactGender();
 
         void showContactEmailInvalidSymbolError(@StringRes int resId);
 
         void navigateToOtpPage();
 
         void closePage();
+
+        void setSameAsContactChecked(boolean isChecked);
+
+        Date getExpiredTransactionDate();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -133,7 +147,7 @@ public interface FlightBookingContract {
 
         void onPause();
 
-        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
+        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate);
 
         void onGetProfileData();
 
@@ -142,5 +156,12 @@ public interface FlightBookingContract {
         void onReceiveOtpSuccessResult();
 
         void onReceiveOtpCancelResult();
+
+        void toggleSameAsContactCheckbox();
+
+        void onSameAsContactClicked(boolean navigateToPassengerInfo);
+
+        void deleteAllPassengerList();
+
     }
 }

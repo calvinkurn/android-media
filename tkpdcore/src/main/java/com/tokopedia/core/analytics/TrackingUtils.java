@@ -256,10 +256,18 @@ public class TrackingUtils extends TrackingConfig {
     public static void sendMoEngageOpenProductEvent(ProductDetailData productData) {
         PayloadBuilder builder = new PayloadBuilder();
         if (productData.getBreadcrumb().size() > 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentName()
+            );
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY_ID,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentId()
+            );
         } else if (productData.getBreadcrumb().size() == 1) {
             builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
             builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
@@ -312,10 +320,18 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productData.getShopInfo().getShopIsOfficial() == 1);
 
         if (productData.getBreadcrumb().size() > 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentName()
+            );
+            builder.putAttrString(
+                    AppEventTracking.MOENGAGE.CATEGORY_ID,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size()-1)
+                            .getDepartmentId()
+            );
         }
 
         if (productData.getBreadcrumb().size() == 1) {

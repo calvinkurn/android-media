@@ -553,4 +553,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                 ((TkpdCoreRouter)getActivity().getApplicationContext())
                         .getAddEmailIntent(getActivity()), REQUEST_ADD_EMAIL);
     }
+
+    @Override
+    public void storeImageToUserSession(String userImage) {
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        sessionHandler.setProfilePicture(userImage);
+    }
 }

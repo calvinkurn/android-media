@@ -78,6 +78,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
+
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -228,7 +230,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
-                    openCatalogProduct(linkSegment, uriData);
+                    openCatalogDetail(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
@@ -282,6 +284,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_REFERRAL;
                     openReferralScreen(uriData);
                     break;
+                case DeepLinkChecker.GROUPCHAT:
+                    openGroupChat(linkSegment);
+                    screenName = AppScreen.GROUP_CHAT;
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -289,6 +295,23 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
             sendCampaignGTM(uriData.toString(), screenName);
         }
+    }
+
+    private void openGroupChat(List<String> linkSegment) {
+        int SEGMENT_GROUPCHAT = 2;
+        Intent intent;
+        if (linkSegment.size() == SEGMENT_GROUPCHAT) {
+            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
+                    context, linkSegment.get(1));
+        } else {
+            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
+                    context);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openDigitalPage(String applink) {
@@ -320,7 +343,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 Log.d(TAG, "onSuccess: ");
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
-                } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter){
+                } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
@@ -488,9 +511,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.hideActionBar();
     }
 
-    private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
+    private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailListFragment(context, linkSegment.get(1)), "CATALOG_PRODUCT");
+                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
@@ -517,17 +540,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-      context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
-              context,
-              ReactConst.Screen.DISCOVERY_PAGE,
-              "",
-              DeepLinkChecker.getDiscoveryPageId(url))
-      );
+        context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
+                context,
+                ReactConst.Screen.DISCOVERY_PAGE,
+                "",
+                DeepLinkChecker.getDiscoveryPageId(url))
+        );
     }
 
     private void openHomepageHot() {
         Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
         context.startActivity(intent);
         context.finish();

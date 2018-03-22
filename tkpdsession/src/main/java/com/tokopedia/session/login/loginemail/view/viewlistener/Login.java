@@ -72,6 +72,8 @@ public interface Login {
         void disableArrow();
 
         void enableArrow();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {

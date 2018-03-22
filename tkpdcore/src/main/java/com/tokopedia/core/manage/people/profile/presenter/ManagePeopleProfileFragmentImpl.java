@@ -65,6 +65,8 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         view.setLoadingView(false);
         view.setMainView(true);
         view.storeImageToDrawer(result.getDataUser().getUserImage100());
+        view.storeImageToUserSession(result.getDataUser().getUserImage());
+
     }
 
     @Override

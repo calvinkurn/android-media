@@ -80,4 +80,6 @@ public interface ManagePeopleProfileFragmentView {
     void startChangePhoneNumber();
 
     void startAddEmailActivity();
+
+    void storeImageToUserSession(String userImage);
 }

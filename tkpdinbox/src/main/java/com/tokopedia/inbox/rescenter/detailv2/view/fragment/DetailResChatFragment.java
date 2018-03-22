@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -72,6 +73,7 @@ import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -349,6 +351,8 @@ public class DetailResChatFragment
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     fabChat.hide();
                 } else {
+                    UnifyTracking.eventTracking(
+                            InboxAnalytics.eventResoChatImpressionGreenArrow(resolutionId));
                     fabChat.show();
                 }
 
@@ -411,6 +415,8 @@ public class DetailResChatFragment
         cvNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatClickNextAction(resolutionId));
                 startActivity(NextActionActivity.newInstance(
                         getActivity(),
                         resolutionId,
@@ -457,6 +463,7 @@ public class DetailResChatFragment
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickGreenArrow(resolutionId));
                 scrollChatToBottom(false);
             }
         });
@@ -658,6 +665,7 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickAskHelp(resolutionId));
                         showActionDialog(buttonDomain.getReportLabel(), buttonDomain
                                 .getReportText(), new View.OnClickListener() {
                             @Override
@@ -666,9 +674,22 @@ public class DetailResChatFragment
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
                         });
                     }
                 });
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionAskHelp(resolutionId));
             }
 
             if (buttonDomain.getCancel() == 1) {
@@ -678,17 +699,39 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickCancelComplaint(resolutionId));
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatImpressionCancelComplaintDialog(resolutionId));
                         showActionDialog(buttonDomain.getCancelLabel(), buttonDomain
                                 .getCancelText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 presenter.actionCancelComplaint();
+                                UnifyTracking.eventTracking(
+                                        InboxAnalytics.eventResoChatClickYesCancelComplaintDialog(resolutionId));
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                UnifyTracking.eventTracking(
+                                        InboxAnalytics.eventResoChatClickBackCancelComplaintDialog(resolutionId));
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
                         });
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionCancelComplaint(resolutionId));
             }
 
             if (buttonDomain.getEdit() == 1) {
@@ -698,9 +741,13 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickChangeSolution(resolutionId));
                         doEditSolution();
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionChangeSolution(resolutionId));
             }
 
             if (buttonDomain.getInputAddress() == 1) {
@@ -711,9 +758,13 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickInputAddress(resolutionId));
                         doInputAddress();
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionInputAddress(resolutionId));
             }
 
             if (buttonDomain.getAppeal() == 1) {
@@ -723,9 +774,13 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickAppeal(resolutionId));
                         doAppealSolution();
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionAppeal(resolutionId));
             }
 
             if (buttonDomain.getInputAWB() == 1) {
@@ -738,6 +793,8 @@ public class DetailResChatFragment
                         doInputAWB();
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionInputAWB(resolutionId));
             }
             if (buttonDomain.getFinish() == 1) {
                 final Button button = getChatActionButton(buttonDomain.getFinishLabel());
@@ -747,17 +804,39 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatClickAcceptSolution(resolutionId));
+                        UnifyTracking.eventTracking(
+                                InboxAnalytics.eventResoChatImpressionAcceptSolutionDialog(resolutionId));
                         showActionDialog(buttonDomain.getFinishLabel(), buttonDomain
                                 .getFinishText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                UnifyTracking.eventTracking(
+                                        InboxAnalytics.eventResoChatClickYesAcceptSolutionDialog(resolutionId));
                                 presenter.actionFinish();
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                UnifyTracking.eventTracking(
+                                        InboxAnalytics.eventResoChatClickBackAcceptSolutionDialog(resolutionId));
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
                         });
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionGetSolution(resolutionId));
             }
 
             if (!isAcceptShown) {
@@ -768,18 +847,40 @@ public class DetailResChatFragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            UnifyTracking.eventTracking(
+                                    InboxAnalytics.eventResoChatClickAcceptSolution(resolutionId));
+                            UnifyTracking.eventTracking(
+                                    InboxAnalytics.eventResoChatImpressionAcceptSolutionDialog(resolutionId));
                             showActionDialog(buttonDomain.getAcceptLabel(),
                                     buttonDomain.getAcceptTextLite(),
                                     new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            UnifyTracking.eventTracking(
+                                                    InboxAnalytics.eventResoChatClickYesAcceptSolutionDialog(resolutionId));
                                             presenter.actionAcceptSolution();
+                                            if (resCenterDialog != null)
+                                                resCenterDialog.dismiss();
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            UnifyTracking.eventTracking(
+                                                    InboxAnalytics.eventResoChatClickBackAcceptSolutionDialog(resolutionId));
+                                            if (resCenterDialog != null)
+                                                resCenterDialog.dismiss();
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
                                             if (resCenterDialog != null)
                                                 resCenterDialog.dismiss();
                                         }
                                     });
                         }
                     });
+                    UnifyTracking.eventTracking(
+                            InboxAnalytics.eventResoChatImpressionGetSolution(resolutionId));
                 }
             }
 
@@ -797,6 +898,8 @@ public class DetailResChatFragment
                         startActivity(intent);
                     }
                 });
+                UnifyTracking.eventTracking(
+                        InboxAnalytics.eventResoChatImpressionRecomplaint(resolutionId));
             }
         }
     }
@@ -821,7 +924,10 @@ public class DetailResChatFragment
         return spaceView;
     }
 
-    private void showActionDialog(String title, String solution, View.OnClickListener action) {
+    private void showActionDialog(String title, String solution,
+                                  View.OnClickListener acceptAction,
+                                  View.OnClickListener backAction,
+                                  View.OnClickListener closeAction) {
         resCenterDialog = new Dialog(getActivity());
         resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_dialog);
@@ -833,54 +939,49 @@ public class DetailResChatFragment
         String newTitle = title + "?";
         tvTitle.setText(newTitle);
         tvSolution.setText(MethodChecker.fromHtml(solution));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(action);
+        btnBack.setOnClickListener(backAction);
+        ivClose.setOnClickListener(closeAction);
+        btnAccept.setOnClickListener(acceptAction);
         resCenterDialog.show();
     }
 
     private void doInputAWB() {
         startActivityForResult(
-                InputShippingActivity.createNewPageIntent(getActivity(), resolutionId),
+                InputShippingActivity.createNewPageIntentFromChat(getActivity(), resolutionId),
                 REQUEST_INPUT_SHIPPING
         );
         getBottomSheetActivityTransition();
     }
 
     private void doInputAddress() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
     }
 
     private void doEditAddress() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(true);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
+    }
+
+    public Intent getChooseAddressIntent(boolean isEditAddress) {
+        return ChooseAddressActivity.createResolutionInstance(
+                getActivity(), resolutionId, true, isEditAddress);
     }
 
     private Intent getIntentEditResCenter() {
         if (isSeller()) {
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    resolutionId);
+                    resolutionId, true);
         } else {
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    resolutionId);
+                    resolutionId, true);
         }
     }
 
     private Intent getAppealResCenter() {
-        return SolutionListActivity.newAppealInstance(getActivity(), resolutionId);
+        return SolutionListActivity.newAppealInstance(getActivity(), resolutionId, true);
     }
 
     private boolean isSeller() {
@@ -1012,6 +1113,7 @@ public class DetailResChatFragment
 
     @Override
     public void intentToEditAddress(int conversationId, int oldAddressId) {
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickChangeAddress(resolutionId));
         doEditAddress();
         this.conversationId = conversationId;
         this.oldAddressId = oldAddressId;
@@ -1124,6 +1226,7 @@ public class DetailResChatFragment
 
     @Override
     public void doTrackShipping(String shipmentID, String shipmentRef) {
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickTrack(resolutionId));
         startActivity(TrackShippingActivity.newInstance(
                 getActivity(),
                 shipmentID,
@@ -1135,7 +1238,8 @@ public class DetailResChatFragment
     @Override
     public void doEditAwb(String conversationId,
                           String shippingId, String shippingRefNum) {
-        startActivityForResult(InputShippingActivity.createEditPageIntent(
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickEditAwb(resolutionId));
+        startActivityForResult(InputShippingActivity.createEditPageIntentFromChat(
                 getActivity(),
                 resolutionId,
                 conversationId,
@@ -1151,6 +1255,7 @@ public class DetailResChatFragment
 
     @Override
     public void goToProductDetail(ConversationProductDomain product) {
+        UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickProductOnChat(resolutionId));
         startActivity(
                 ProductDetailActivity.newInstance(context,
                         resolutionId,
