@@ -62,7 +62,7 @@ public class EventReviewTicketPresenter
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
     private RequestParams paymentparams;
-    private String INVALID_EMAIL = "com.tokopedia.core.network.exception.model.UnProcessableHttpException: Invalid Email";
+    private String INVALID_EMAIL = "Invalid Email";
 
     @Inject
     public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment, ProfileUseCase profileUseCase) {
@@ -360,10 +360,9 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("PaymentLinkUseCase", "ON ERROR");
                 throwable.printStackTrace();
                 getView().hideProgressBar();
-                if (throwable.toString().equalsIgnoreCase(INVALID_EMAIL))
+                if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
                     getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
                 else {
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
