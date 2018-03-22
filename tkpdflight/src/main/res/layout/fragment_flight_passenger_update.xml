@@ -49,16 +49,15 @@
                 android:paddingRight="@dimen/padding_16"
                 android:paddingStart="@dimen/padding_16">
 
-                <android.support.v7.widget.AppCompatEditText
+                <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/et_passenger_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="false"
-                    android:drawableEnd="@drawable/ic_arrow_down_grey"
-                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey"
                     android:focusable="false"
-                    android:paddingEnd="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
                     android:singleLine="true"
                     android:text="@string/flightbooking_price_adult_label"
                     android:textColor="@color/font_black_disabled_38" />

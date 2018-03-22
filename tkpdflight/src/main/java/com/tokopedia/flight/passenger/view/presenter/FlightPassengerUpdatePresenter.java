@@ -159,7 +159,9 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        Log.d("HASILHASIL", aBoolean.toString());
+                        if (aBoolean) {
+                            getView().onSuccessUpdatePassengerData();
+                        }
                     }
                 }
         );

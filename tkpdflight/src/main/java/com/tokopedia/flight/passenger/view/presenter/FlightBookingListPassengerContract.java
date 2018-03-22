@@ -34,6 +34,9 @@ public interface FlightBookingListPassengerContract {
         void onGetListError(Throwable throwable);
 
         String getDepartureDate();
+
+        void showSuccessChangePassengerData();
+
     }
 
     interface Presenter {
@@ -46,5 +49,7 @@ public interface FlightBookingListPassengerContract {
         void onDestroyView();
 
         void deletePassenger(String passengerId);
+
+        void onSuccessUpdatePassengerData();
     }
 }

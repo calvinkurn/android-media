@@ -29,6 +29,8 @@ public interface FlightPassengerUpdateContract {
 
         int getPassengerTitlePosition();
 
+        String getRequestId();
+
         void setPassengerViewModel(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
 
         void renderSpinnerForAdult();
@@ -71,7 +73,8 @@ public interface FlightPassengerUpdateContract {
 
         void showPassengerBirthdateEmptyError(int resId);
 
-        String getRequestId();
+        void onSuccessUpdatePassengerData();
+
     }
 
     interface Presenter {
@@ -85,6 +88,7 @@ public interface FlightPassengerUpdateContract {
         void onBirthdateChanged(int year, int month, int date, Date minDate, Date maxDate);
 
         void onBirthdateChanged(int year, int month, int date, Date maxDate);
+
     }
 
 }

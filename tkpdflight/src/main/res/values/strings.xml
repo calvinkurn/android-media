@@ -344,4 +344,5 @@
     <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Passport</string>
     <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
     <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Passport</string>
+    <string name="flight_passenger_update_success">Data penumpang berhasil diubah</string>
 </resources>

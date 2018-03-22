@@ -1,5 +1,6 @@
 package com.tokopedia.flight.passenger.view.fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -277,6 +278,12 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public void showPassengerBirthdateEmptyError(int resId) {
         showMessageErrorInSnackbar(resId);
+    }
+
+    @Override
+    public void onSuccessUpdatePassengerData() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override

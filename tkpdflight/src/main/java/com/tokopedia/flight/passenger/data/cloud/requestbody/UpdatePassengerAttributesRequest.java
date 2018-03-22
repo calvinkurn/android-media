@@ -20,18 +20,18 @@ public class UpdatePassengerAttributesRequest {
     @SerializedName("dob")
     @Expose
     private String dob;
-    @SerializedName("nationality")
-    @Expose
-    private String nationality;
-    @SerializedName("passport_no")
-    @Expose
-    private String passportNumber;
-    @SerializedName("passport_country")
-    @Expose
-    private String passportCountry;
-    @SerializedName("passport_expiry")
-    @Expose
-    private String passportExpiry;
+//    @SerializedName("nationality")
+//    @Expose
+//    private String nationality;
+//    @SerializedName("passport_no")
+//    @Expose
+//    private String passportNumber;
+//    @SerializedName("passport_country")
+//    @Expose
+//    private String passportCountry;
+//    @SerializedName("passport_expiry")
+//    @Expose
+//    private String passportExpiry;
 
     public UpdatePassengerAttributesRequest() {
     }
@@ -66,37 +66,5 @@ public class UpdatePassengerAttributesRequest {
 
     public void setDob(String dob) {
         this.dob = dob;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public void setPassportNumber(String passportNumber) {
-        this.passportNumber = passportNumber;
-    }
-
-    public String getPassportCountry() {
-        return passportCountry;
-    }
-
-    public void setPassportCountry(String passportCountry) {
-        this.passportCountry = passportCountry;
-    }
-
-    public String getPassportExpiry() {
-        return passportExpiry;
-    }
-
-    public void setPassportExpiry(String passportExpiry) {
-        this.passportExpiry = passportExpiry;
     }
 }

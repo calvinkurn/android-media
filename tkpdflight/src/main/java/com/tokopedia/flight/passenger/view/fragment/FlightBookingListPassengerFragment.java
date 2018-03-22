@@ -1,6 +1,5 @@
 package com.tokopedia.flight.passenger.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * @author by furqan on 26/02/18.
  */
@@ -34,6 +36,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingNewPassengerViewHolder.ListenerClickedNewPassenger,
         FlightBookingListPassengerContract.View {
 
+    public static final int REQUEST_EDIT_PASSENGER_CODE = 1;
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
@@ -157,9 +160,9 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         if (selectedPassenger != null) {
             Intent intent = new Intent();
             intent.putExtra(EXTRA_SELECTED_PASSENGER, selectedPassenger);
-            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().setResult(RESULT_OK, intent);
         } else {
-            getActivity().setResult(Activity.RESULT_OK, null);
+            getActivity().setResult(RESULT_OK, null);
         }
         getActivity().finish();
     }
@@ -195,9 +198,10 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void editPassenger(FlightBookingPassengerViewModel passengerViewModel) {
-        startActivity(
+        startActivityForResult(
                 FlightPassengerUpdateActivity.getCallingIntent(getActivity(),
-                        passengerViewModel, departureDate, requestId)
+                        passengerViewModel, departureDate, requestId),
+                REQUEST_EDIT_PASSENGER_CODE
         );
     }
 
@@ -224,5 +228,24 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         return new FlightBookingNewPassengerViewModel(
                 getString(R.string.flight_list_passenger_add_passenger_label)
         );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_EDIT_PASSENGER_CODE:
+                if (resultCode == RESULT_OK) {
+                    presenter.onSuccessUpdatePassengerData();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void showSuccessChangePassengerData() {
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
+                getString(R.string.flight_passenger_update_success));
     }
 }

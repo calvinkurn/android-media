@@ -139,6 +139,12 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         );
     }
 
+    @Override
+    public void onSuccessUpdatePassengerData() {
+        getSavedPassengerList();
+        getView().showSuccessChangePassengerData();
+    }
+
     private void getSavedPassengerList() {
         flightBookingGetSavedPassengerUseCase.execute(
                 getSavedPassengerRequestParams(),
