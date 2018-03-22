@@ -8,8 +8,11 @@ import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
@@ -28,12 +31,14 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<SprintSaleC
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
     private Context context;
+    private TextView title;
 
     public SprintSaleCarouselViewHolder(View itemView) {
         super(itemView);
         this.context = itemView.getContext();
         itemAdapter = new ItemAdapter();
         container = itemView.findViewById(R.id.container);
+        title = itemView.findViewById(R.id.title);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
@@ -61,7 +66,9 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<SprintSaleC
 
         @Override
         public void onBindViewHolder(ItemViewHolder holder, int position) {
-
+            Glide.with(context)
+                    .load("https://multimedia.bbycastatic.ca/multimedia/products/500x500/104/10423/10423856.jpg")
+                    .into(holder.imageView);
         }
 
         @Override
@@ -72,9 +79,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<SprintSaleC
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
 
+        public ImageView imageView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            imageView = itemView.findViewById(R.id.image);
         }
 
     }
