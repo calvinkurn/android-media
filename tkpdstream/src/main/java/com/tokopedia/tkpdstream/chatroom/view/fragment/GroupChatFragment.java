@@ -188,7 +188,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
         login = view.findViewById(R.id.login);
-//        setupToolbar();
         prepareView();
         return view;
     }
@@ -221,7 +220,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
 
                 collapse(voteBody);
-//                arrow.setRotation(0f);
             }
         });
 
@@ -232,13 +230,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             public void onClick(View view) {
                 if (voteBody.getVisibility() == View.VISIBLE) {
                     collapse(voteBody);
-//                    arrow.setRotation(0f);
                 } else {
                     KeyboardHandler.DropKeyboard(getActivity(), getView());
                     expand(voteBody);
                     analytics.eventClickVoteExpand();
                     voteAdapter.notifyDataSetChanged();
-//                    arrow.setRotation(180f);
                 }
             }
         });
@@ -263,6 +259,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         };
+
+        setForLoginUser(userSession.isLoggedIn());
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -550,11 +548,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     public void onMessageDeleted(long msgId) {
-        //TODO : Implement this later
+        adapter.deleteMessage(msgId);
     }
 
-    public void onMessageUpdated(Visitable map) {
-        //TODO : Implement this later
+    public void onMessageUpdated(Visitable visitable) {
+        adapter.updateMessage(visitable);
     }
 
     public void expand(final View v) {
@@ -652,8 +650,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         this.mChannel = mChannel;
     }
 
-    private void setForLoginUser(boolean forLoginUser) {
-        if (forLoginUser) {
+    private void setForLoginUser(boolean isLoggedIn) {
+        if (isLoggedIn) {
             divider.setVisibility(View.VISIBLE);
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);

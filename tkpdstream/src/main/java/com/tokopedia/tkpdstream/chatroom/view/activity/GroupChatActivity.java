@@ -332,12 +332,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             shareLayout.show();
             return true;
 
-        } else if (item.getItemId() == R.id.action_info) {
-            boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-            channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
-                    .getChannelInfoViewModel().getChannelViewModel()));
-            channelInfoDialog.show();
-            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }

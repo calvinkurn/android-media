@@ -205,4 +205,32 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.canLoadMore = canLoadMore;
     }
 
+    public void deleteMessage(long msgId) {
+        for (Visitable visitable : list) {
+            if (visitable instanceof BaseChatViewModel
+                    && ((BaseChatViewModel) visitable).getMessageId().equals(String.valueOf(msgId))) {
+                int position = list.indexOf(visitable);
+                list.remove(visitable);
+                notifyItemRemoved(position);
+
+                break;
+            }
+        }
+    }
+
+    public void updateMessage(Visitable updatedMessage) {
+        if (updatedMessage instanceof BaseChatViewModel) {
+            for (Visitable visitable : list) {
+                if (visitable instanceof BaseChatViewModel
+                        && ((BaseChatViewModel) visitable).getMessageId()
+                        .equals(String.valueOf(((BaseChatViewModel) updatedMessage).getMessageId()))) {
+                    int position = list.indexOf(visitable);
+                    list.remove(visitable);
+                    list.add(position, updatedMessage);
+                    notifyItemChanged(position);
+                    break;
+                }
+            }
+        }
+    }
 }
