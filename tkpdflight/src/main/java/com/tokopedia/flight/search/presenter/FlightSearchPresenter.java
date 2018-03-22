@@ -184,7 +184,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                 getView().setUIMarkFilter();
                                 getView().setNeedRefreshFromCache(false);
                             }
-                            getView().actionFetchFlightSearchData();
+                            if (getView().isNeedRefreshAirline()) {
+                                initialize();
+                            } else {
+                                getView().actionFetchFlightSearchData();
+                            }
                         }
                     }
                 });
@@ -370,6 +374,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
                 @Override
                 public void onNext(Boolean aBoolean) {
+                    getView().setNeedRefreshAirline(false);
                     getView().actionFetchFlightSearchData();
                 }
             });
