@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -146,6 +147,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     private ImageView channelBanner;
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
+    private LinearLayout sponsorLayout;
+    private ImageView sponsorImage;
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
@@ -218,7 +221,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
-
+        sponsorLayout = findViewById(R.id.sponsor_layout);
+        sponsorImage = findViewById(R.id.sponsor_image);
     }
 
     private void initData() {
@@ -243,7 +247,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setupToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isLollipopOrNewer()) {
             TransparentStatusBarHelper.assistActivity(this);
         }
         removePaddingStatusBar();
@@ -251,28 +255,47 @@ public class GroupChatActivity extends BaseSimpleActivity
         toolbar = findViewById(R.id.toolbar);
         channelBanner = findViewById(R.id.channel_banner);
 
-        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isLollipopOrNewer()) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-            params.height = getResources().getDimensionPixelSize(R.dimen.channel_banner_height);
-        } else {
-            params.height = getResources().getDimensionPixelSize(R.dimen
-                    .channel_banner_height_without_status);
         }
 
-        channelBanner.setLayoutParams(params);
-
+        setupChannelBannerParams(false);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+    }
+
+    private void setupChannelBannerParams(boolean isThereSponsor) {
+        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
+        if (isThereSponsor) {
+            if (isLollipopOrNewer()) {
+                params.height = getResources().getDimensionPixelSize(
+                        R.dimen.channel_banner_height_and_sponsor);
+            } else {
+                params.height = getResources().getDimensionPixelSize(
+                        R.dimen.channel_banner_height_and_sponsor_without_status);
+            }
+        } else {
+            if (isLollipopOrNewer()) {
+                params.height = getResources().getDimensionPixelSize(
+                        R.dimen.channel_banner_height);
+            } else {
+                params.height = getResources().getDimensionPixelSize(
+                        R.dimen.channel_banner_height_without_status);
+            }
+        }
+        channelBanner.setLayoutParams(params);
+    }
+
+    private boolean isLollipopOrNewer() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     public int getStatusBarHeight() {
@@ -629,8 +652,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         setToolbarData(channelInfoViewModel.getTitle(),
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
-
-
+        setSponsorData();
     }
 
     private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
@@ -644,6 +666,19 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void setToolbarParticipantCount(String totalParticipant) {
         String textParticipant = String.format("%s %s", totalParticipant, getString(R.string.view));
         toolbar.setSubtitle(textParticipant);
+    }
+
+    private void setSponsorData() {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getSponsorUrl())) {
+            sponsorLayout.setVisibility(View.VISIBLE);
+            ImageHandler.loadImage2(sponsorImage,
+                    viewModel.getChannelInfoViewModel().getSponsorUrl(),
+                    R.drawable.loading_page);
+            setupChannelBannerParams(true);
+        } else {
+            sponsorLayout.setVisibility(View.GONE);
+            setupChannelBannerParams(false);
+        }
     }
 
     @Override

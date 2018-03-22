@@ -30,6 +30,8 @@
     <dimen name="bar_size">40dp</dimen>
     <dimen name="channel_banner_height">75dp</dimen>
     <dimen name="channel_banner_height_without_status">56dp</dimen>
+    <dimen name="channel_banner_height_and_sponsor">147dp</dimen>
+    <dimen name="channel_banner_height_and_sponsor_without_status">128dp</dimen>
     <dimen name="badge_size">10dp</dimen>
     <dimen name="font_label">10sp</dimen>
     <dimen name="font_time">11sp</dimen>

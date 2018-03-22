@@ -38,11 +38,13 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
+        //TODO milhamj get sponsor url from pojo
         return new ChannelInfoViewModel(
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getCoverUrl(),
                 pojo.getChannel().getTitle(),
                 hasPoll(pojo.getChannel().getActivePolls()),
+                "https://images-na.ssl-images-amazon.com/images/I/81K%2BADxzx4L._SY355_.jpg",
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()));
     }

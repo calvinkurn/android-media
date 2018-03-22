@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/root_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_content"
@@ -16,14 +16,14 @@
         <ImageView
             android:id="@+id/channel_banner"
             android:layout_width="0dp"
-            android:layout_height="@dimen/channel_banner_height"
+            android:layout_height="128dp"
             android:alpha="0.8"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/cardview_dark_background"/>
+            tools:src="@color/cardview_dark_background" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -36,9 +36,59 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
             app:titleTextAppearance="@style/ToolbarGroupChat"
-            tools:layout_height="64dp"
+            tools:layout_height="?attr/actionBarSize"
             tools:subtitle="subtitle"
-            tools:title="title"/>
+            tools:title="title" />
+
+        <LinearLayout
+            android:id="@+id/sponsor_layout"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_sponsor_rounded_left"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <TextView
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:padding="8dp"
+                android:text="@string/sponsored_by"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/sponsor_image"
+                android:layout_width="96dp"
+                android:layout_height="match_parent"
+                tools:src="@drawable/ic_network_error"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/channel_banner" />
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tab"
+            app:layout_constraintVertical_weight="1"
+            tools:ignore="MergeRootFrame" />
 
         <!--<com.tokopedia.design.tab.Tabs-->
         <!--android:id="@+id/tab"-->
@@ -62,27 +112,6 @@
         <!--app:layout_constraintTop_toBottomOf="@id/tab"-->
         <!--app:layout_constraintVertical_weight="1"/>-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/channel_banner"/>
-
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                     xmlns:tools="http://schemas.android.com/tools"
-                     android:id="@+id/container"
-                     android:layout_width="0dp"
-                     android:layout_height="0dp"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintEnd_toEndOf="parent"
-                     app:layout_constraintHorizontal_weight="1"
-                     app:layout_constraintStart_toStartOf="parent"
-                     app:layout_constraintTop_toBottomOf="@id/tab"
-                     app:layout_constraintVertical_weight="1"
-                     tools:ignore="MergeRootFrame"/>
-
     </android.support.constraint.ConstraintLayout>
 
     <ProgressBar
@@ -91,7 +120,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical"/>
-
+        android:orientation="vertical" />
 
 </RelativeLayout>
