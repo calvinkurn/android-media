@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -35,6 +34,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
@@ -71,7 +71,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private View mTintView;
     private SearchMainFragment mSuggestionFragment;
     private RelativeLayout mSuggestionView;
-    private EditText mSearchSrcTextView;
+    private EditTextCompat mSearchSrcTextView;
     private ImageButton mBackBtn;
     private ImageButton mVoiceBtn;
     private ImageButton mImageSearchButton;
@@ -238,7 +238,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSearchLayout = findViewById(R.id.search_layout);
         mSearchContainer = (LinearLayout) mSearchLayout.findViewById(R.id.search_container);
         mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
-        mSearchSrcTextView = (EditText) mSearchLayout.findViewById(R.id.searchTextView);
+        mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
         mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);
         mImageSearchButton = (ImageButton) mSearchLayout.findViewById(R.id.action_image_search_btn);

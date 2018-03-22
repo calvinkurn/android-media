@@ -20,7 +20,7 @@
             android:id="@+id/image_add_video_url"
             android:layout_width="@dimen/image_width_xl"
             android:layout_height="@dimen/image_width_xl"
-            android:src="@drawable/akun_lainnya" />
+            app:srcCompat="@drawable/akun_lainnya" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,7 +69,7 @@
             android:id="@+id/image_add_video_url_remove"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
-            android:src="@drawable/ic_delete" />
+            app:srcCompat="@drawable/ic_delete" />
     </LinearLayout>
 
 </LinearLayout>

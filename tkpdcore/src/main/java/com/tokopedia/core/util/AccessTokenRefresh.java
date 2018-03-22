@@ -48,7 +48,7 @@ public class AccessTokenRefresh {
             sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
         }
 
-        return model.getRefreshToken();
+        return model.getAccessToken();
     }
 
     private Retrofit getRetrofit() {

@@ -120,71 +120,51 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        if (!isRefreshCart(data)) {
-            String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-            String category = Uri.parse(applinks).getHost();
-            String customIndex = "";
-            String serverId = "";
-            switch (category) {
-                case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                        customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
-                        if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                            serverId = Uri.parse(applinks).getLastPathSegment();
-                        }
-                        saveApplinkPushNotification(
-                                category,
-                                convertBundleToJsonString(data),
-                                customIndex,
-                                serverId,
-                                new SavePushNotificationCallback()
-                        );
-                    }
-                    break;
-                case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
-                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
-                    if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                        serverId = Uri.parse(applinks).getLastPathSegment();
-                    }
-                    saveApplinkPushNotification(
-                            category,
-                            convertBundleToJsonString(data),
-                            customIndex,
-                            serverId,
-                            new SavePushNotificationCallback()
-                    );
-                    break;
-                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
-                        buildNotifByData(data);
-                    } else {
-                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                        push.processReceivedNotification(data);
-                    }
-                    break;
+        if (!isRefreshCart(data)) {String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+        String category = Uri.parse(applinks).getHost();
+        String customIndex = "";
+        String serverId = "";
+        switch (category) {
+            case  Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
+                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                    serverId = Uri.parse(applinks).getLastPathSegment();
+                }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
+                    buildNotifByData(data);
+                } else {
+                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                    push.processReceivedNotification(data);
+                }
+                break;
 
-                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                        if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                            ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                        } else {
-                            String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                            String fullname = data
-                                    .getString("full_name");
-                            applink += "?" + "fullname=" + fullname;
-                            data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                            buildNotifByData(data);
-                        }
-                    }
-                    break;
-                case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                    if (SessionHandler.isUserHasShop(mContext)) {
+            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data.getString("full_name");
+                        applink = String.format("%s?fullname=%s", applink, fullname);
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
-                    }
-                    break;
-                default:
+
+                }
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                if (SessionHandler.isUserHasShop(mContext)) {
+                buildNotifByData(data);
+                }break;default:
                     buildNotifByData(data);
                     break;
             }

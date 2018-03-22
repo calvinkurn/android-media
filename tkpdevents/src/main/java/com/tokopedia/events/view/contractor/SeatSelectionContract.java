@@ -58,5 +58,7 @@ public class SeatSelectionContract {
 
         void validateSelection();
 
+        void onActivityResult(int requestCode);
+
     }
 }

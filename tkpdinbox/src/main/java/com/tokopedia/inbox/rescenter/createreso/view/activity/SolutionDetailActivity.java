@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -12,6 +13,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailAct
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by yoasfs on 28/08/17.
@@ -99,4 +101,21 @@ public class SolutionDetailActivity extends
     public Object getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (editAppealSolutionModel != null) {
+            if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
+            } else {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
+                        editAppealSolutionModel.resolutionId,
+                        editAppealSolutionModel.getSolutionName()));
+            }
+        }
+        super.onBackPressed();
+    }
+
 }

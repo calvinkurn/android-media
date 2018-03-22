@@ -27,6 +27,8 @@ public interface ChooseTokocashAccount {
 
         void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel);
 
+        void onForbidden();
+
         Context getContext();
     }
 

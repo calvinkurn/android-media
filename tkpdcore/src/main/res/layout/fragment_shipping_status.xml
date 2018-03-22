@@ -26,5 +26,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/tkpd_dark_green"
         app:backgroundTint="@color/green_500"
-        android:src="@drawable/ic_action_filter_white_24dp"/>
+        app:srcCompat="@drawable/ic_action_filter_white_24dp"/>
 </android.support.design.widget.CoordinatorLayout>

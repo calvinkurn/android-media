@@ -5,9 +5,11 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchViewHolder;
 import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -24,14 +26,6 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
         this.onFlightSearchListener = onFlightSearchListener;
     }
 
-    public int type(EmptyResultViewModel viewModel) {
-        return EmptyResultViewHolder.LAYOUT;
-    }
-
-    public int type(ErrorNetworkModel viewModel) {
-        return ErrorNetworkViewHolder.LAYOUT;
-    }
-
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightSearchViewHolder.LAYOUT) {
@@ -40,6 +34,8 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
+        } else if (type == FlightSearchShimmeringViewHolder.LAYOUT) {
+            return new FlightSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -52,6 +48,18 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
 
     public int type(FlightSearchViewModel flightSearchViewModel) {
         return FlightSearchViewHolder.LAYOUT;
+    }
+
+    public int type(LoadingModel flightSearchShimmeringViewModel) {
+        return FlightSearchShimmeringViewHolder.LAYOUT;
+    }
+
+    public int type(EmptyResultViewModel viewModel) {
+        return EmptyResultViewHolder.LAYOUT;
+    }
+
+    public int type(ErrorNetworkModel viewModel) {
+        return ErrorNetworkViewHolder.LAYOUT;
     }
 
     public interface OnFlightSearchListener {

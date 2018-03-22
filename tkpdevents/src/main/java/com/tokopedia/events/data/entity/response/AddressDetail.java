@@ -8,16 +8,16 @@ public class AddressDetail {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("product_schedule_id")
     @Expose
-    private Integer productScheduleId;
+    private int productScheduleId;
     @SerializedName("product_schedule_package_id")
     @Expose
-    private Integer productSchedulePackageId;
+    private int productSchedulePackageId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -41,7 +41,7 @@ public class AddressDetail {
     private String longitude;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -49,35 +49,35 @@ public class AddressDetail {
     @Expose
     private String updatedAt;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public Integer getProductScheduleId() {
+    public int getProductScheduleId() {
         return productScheduleId;
     }
 
-    public void setProductScheduleId(Integer productScheduleId) {
+    public void setProductScheduleId(int productScheduleId) {
         this.productScheduleId = productScheduleId;
     }
 
-    public Integer getProductSchedulePackageId() {
+    public int getProductSchedulePackageId() {
         return productSchedulePackageId;
     }
 
-    public void setProductSchedulePackageId(Integer productSchedulePackageId) {
+    public void setProductSchedulePackageId(int productSchedulePackageId) {
         this.productSchedulePackageId = productSchedulePackageId;
     }
 
@@ -137,11 +137,11 @@ public class AddressDetail {
         this.longitude = longitude;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

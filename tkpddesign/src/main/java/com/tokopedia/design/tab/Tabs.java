@@ -78,10 +78,11 @@ public class Tabs extends TabLayout {
     }
 
     private void secondaryStyle() {
+        int gray = ContextCompat.getColor(getContext(), R.color.font_black_disabled_38);
         int green = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         this.setSelectedTabIndicatorColor(green);
-        this.setTabTextColors(green, green);
+        this.setTabTextColors(gray, green);
         this.setTabMode(MODE_SCROLLABLE);
     }
 

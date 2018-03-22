@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.view.View;
@@ -12,9 +13,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
@@ -34,11 +36,9 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 1/3/18.
  */
 
-public class NominalQrPaymentActivity extends TActivity implements QrPaymentContract.View,
+public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPaymentContract.View,
         HasComponent<TokoCashComponent> {
 
-    private static final int REQUEST_CODE_SUCCESS = 121;
-    private static final int REQUEST_CODE_FAILED = 111;
     private static final int MAX_DIGIT_NOMINAL = 10;
     private static final String INFO_QR = "info_qr";
     private static final String IDENTIFIER = "identifier";
@@ -67,16 +67,26 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_nominal_qr);
         initInjector();
         presenter.attachView(this);
 
-        toolbar.setTitle(getString(R.string.title_input_nominal));
-        infoQrTokoCash = getIntent().getParcelableExtra(INFO_QR);
+        updateTitle(getString(R.string.title_input_nominal));
+        Bundle bundle = getIntent().getExtras();
+        infoQrTokoCash = bundle.getParcelable(INFO_QR);
 
         initView();
         setVar();
         presenter.getBalanceTokoCash();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_nominal_qr;
     }
 
     private void setVar() {
@@ -109,11 +119,6 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public TokoCashComponent getComponent() {
         if (tokoCashComponent == null) initInjector();
         return tokoCashComponent;
@@ -142,7 +147,9 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         progressBar.setVisibility(View.GONE);
         Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), true);
-        startActivityForResult(intent, REQUEST_CODE_SUCCESS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -150,7 +157,9 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         progressBar.setVisibility(View.GONE);
         Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), false);
-        startActivityForResult(intent, REQUEST_CODE_FAILED);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -204,7 +213,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     @Override
-    public void showErrorBalanceTokoCash(String message) {
+    public void showErrorBalanceTokoCash(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getApplicationContext(), throwable);
         progressBar.setVisibility(View.GONE);
         tokocashValue.setVisibility(View.VISIBLE);
         tokocashValue.setText(getString(R.string.error_message_tokocash));
@@ -217,30 +227,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
                 }).showRetrySnackbar();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SUCCESS) {
-            Intent intent = new Intent();
-            setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
-            finish();
-        } else {
-            Intent intent = new Intent();
-            setResult(CustomScannerTokoCashActivity.RESULT_CODE__SCANNER, intent);
-            finish();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         presenter.onDestroyPresenter();
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
-        finish();
     }
 }

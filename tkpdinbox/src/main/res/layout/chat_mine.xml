@@ -90,7 +90,6 @@
             android:scaleType="fitEnd"
             android:visibility="gone"
             tools:visibility="visible" />
-
     </android.support.v7.widget.CardView>
 
     <ImageView
@@ -102,7 +101,7 @@
         android:layout_toLeftOf="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        android:src="@drawable/ic_error_to_send"/>
+        app:srcCompat="@drawable/ic_error_to_send"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"

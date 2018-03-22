@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:id="@+id/header_time"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_gravity="center_horizontal"
+    android:fontFamily="sans-serif"
+    android:textColor="@color/font_black_disabled_38"
+    android:textSize="@dimen/font_micro"
+    android:textStyle="normal"
+    tools:text="HARI INI"/>

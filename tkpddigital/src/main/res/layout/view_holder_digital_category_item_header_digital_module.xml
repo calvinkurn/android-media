@@ -1,11 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_gravity="center"
-              android:background="@drawable/digital_bg_item_product_selected"
-              android:gravity="center"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:background="@drawable/digital_bg_item_product_selected"
+    android:gravity="center"
+    android:orientation="vertical">
 
 
     <ImageView
@@ -16,7 +17,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
         android:scaleType="fitCenter"
-        android:src="@drawable/facebook_square"
+        app:srcCompat="@drawable/facebook_square"
         android:visibility="visible"
         tools:ignore="ContentDescription"/>
 
