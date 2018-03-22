@@ -17,8 +17,6 @@ public interface ChannelVoteContract {
 
         Context getContext();
 
-        void onVoteOptionClicked(VoteViewModel element);
-
         void showHasVoted();
 
         void showSuccessVoted();
@@ -26,6 +24,10 @@ public interface ChannelVoteContract {
         void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel);
 
         void onErrorVote(String errorMessage);
+
+        interface VoteOptionListener{
+            void onVoteOptionClicked(VoteViewModel element);
+        }
 
         interface VoteAnnouncementViewHolderListener {
             void onVoteComponentClicked(String type, String name);
