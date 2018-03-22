@@ -16,12 +16,18 @@ import java.util.List;
 public class FlightCancellationViewModel implements Parcelable,
         Visitable<FlightCancellationTypeFactory> {
 
-    private long journeyId;
+    private String journeyId;
     private List<FlightBookingPassengerViewModel> passengerViewModelList;
 
     protected FlightCancellationViewModel(Parcel in) {
-        journeyId = in.readLong();
+        journeyId = in.readString();
         passengerViewModelList = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(journeyId);
+        dest.writeTypedList(passengerViewModelList);
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -46,17 +52,11 @@ public class FlightCancellationViewModel implements Parcelable,
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(journeyId);
-        dest.writeTypedList(passengerViewModelList);
-    }
-
-    public long getJourneyId() {
+    public String getJourneyId() {
         return journeyId;
     }
 
-    public void setJourneyId(long journeyId) {
+    public void setJourneyId(String journeyId) {
         this.journeyId = journeyId;
     }
 
