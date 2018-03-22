@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -72,22 +73,24 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void change(GroupChatViewModel viewModel, VoteViewModel element,
                        VoteStatisticViewModel voteStatisticViewModel) {
+        change(viewModel.getChannelInfoViewModel().getVoteInfoViewModel(), element, voteStatisticViewModel);
+    }
+
+    public void change(VoteInfoViewModel viewModel, VoteViewModel element,
+                       VoteStatisticViewModel voteStatisticViewModel) {
         int index = list.indexOf(element);
         for (int i = 0; i < list.size(); i++) {
             VoteViewModel temp = (VoteViewModel) list.get(i);
             if (index == i) {
                 temp.setSelected(VoteViewModel.SELECTED);
-                ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
-                        .getListOption().get(i)).setSelected(VoteViewModel.SELECTED);
+                ((VoteViewModel) viewModel.getListOption().get(i)).setSelected(VoteViewModel.SELECTED);
 
             } else {
                 temp.setSelected(VoteViewModel.UNSELECTED);
-                ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
-                        .getListOption().get(i)).setSelected(VoteViewModel.UNSELECTED);
+                ((VoteViewModel) viewModel.getListOption().get(i)).setSelected(VoteViewModel.UNSELECTED);
 
             }
-            ((VoteViewModel) viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
-                    .getListOption().get(i)).setPercentage(
+            ((VoteViewModel) viewModel.getListOption().get(i)).setPercentage(
                     voteStatisticViewModel.getListOptions().get(i).getPercentage());
         }
         notifyItemRangeChanged(0, list.size());

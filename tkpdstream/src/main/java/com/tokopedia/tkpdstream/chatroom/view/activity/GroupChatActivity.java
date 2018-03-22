@@ -51,6 +51,7 @@ import com.tokopedia.tkpdstream.chatroom.view.ShareData;
 import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
@@ -86,6 +87,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
+    private static final int CHANNEL_VOTE_FRAGMENT = 1;
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final int CHANNEL_INFO_FRAGMENT = 2;
 
@@ -96,6 +98,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     public static final String INITIAL_FRAGMENT = "init_fragment";
     private static final int REQUEST_LOGIN = 101;
+    public static final String VOTE = "vote";
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -358,7 +361,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         return list;
     }
 
-
     private void showFragment(int fragmentPosition) {
 
         this.initialFragment = fragmentPosition;
@@ -367,6 +369,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         switch (fragmentPosition) {
             case CHATROOM_FRAGMENT:
                 showChatroomFragment(mChannel);
+                break;
+            case CHANNEL_VOTE_FRAGMENT:
+                showChannelVoteFragment(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
                 break;
             case CHANNEL_INFO_FRAGMENT:
                 showChannelInfoFragment();
@@ -414,6 +419,23 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         ((ChannelInfoFragmentListener.View) fragment).renderData(
                 viewModel.getChannelInfoViewModel().getChannelViewModel());
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+    }
+
+    private void showChannelVoteFragment(VoteInfoViewModel voteInfoViewModel) {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+        bundle.putParcelable(VOTE, voteInfoViewModel);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (ChannelVoteFragment.class.getSimpleName());
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = ChannelVoteFragment.createInstance(bundle);
+        }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }

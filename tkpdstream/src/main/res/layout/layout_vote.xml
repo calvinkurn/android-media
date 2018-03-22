@@ -25,7 +25,7 @@
                 android:id="@+id/icon_vote"
                 android:layout_width="@dimen/size_icon_vote"
                 android:layout_height="@dimen/size_icon_vote"
-                app:srcCompat="@drawable/ic_vote" />
+                app:srcCompat="@drawable/ic_timer" />
 
             <Space
                 android:layout_width="@dimen/space_mini"
@@ -39,9 +39,8 @@
                 android:gravity="center"
                 android:paddingBottom="@dimen/space_med"
                 android:paddingTop="@dimen/space_med"
-                android:text="@string/vote_has_ended"
+                android:text="@string/time_remaining"
                 android:textAllCaps="true"
-
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/font_micro"
                 android:textStyle="normal" />
@@ -95,21 +94,7 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/space_med"
-            app:srcCompat="@drawable/ic_chevron" />
     </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/space_atomic"
-        android:background="@color/grey_hint" />
 
     <LinearLayout
         android:id="@+id/vote_body"
