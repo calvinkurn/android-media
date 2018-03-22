@@ -8,12 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -39,6 +41,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
@@ -83,7 +86,8 @@ import javax.inject.Inject;
 
 public class GroupChatActivity extends BaseSimpleActivity
         implements GroupChatTabAdapter.TabListener, GroupChatContract.View,
-        LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener {
+        LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
+        , ToolTipUtils.ToolTipListener {
 
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
@@ -99,6 +103,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String INITIAL_FRAGMENT = "init_fragment";
     private static final int REQUEST_LOGIN = 101;
     public static final String VOTE = "vote";
+    public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
+    public static final String VOTE_TYPE = "vote_type";
+    private String voteType;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -154,6 +161,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
+    private VoteAnnouncementViewModel voteAnnouncementViewModel;
 
     private CallbackManager callbackManager;
     private OpenChannel mChannel;
@@ -338,11 +346,23 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    private void setupViewPager() {
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showTooltip();
+            }
+        }, 1500L);
+    }
 
+    //
+    private void setupViewPager() {
         tabs = findViewById(R.id.tab);
-        tabs.setLayoutManager(new GridLayoutManager(this, 4,
-                GridLayoutManager.VERTICAL, false));
+//        tabs.setLayoutManager(new GridLayoutManager(this, 4,
+//                GridLayoutManager.VERTICAL, false));
+        tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tabAdapter = GroupChatTabAdapter.createInstance(this, createListFragment());
         tabs.setAdapter(tabAdapter);
     }
@@ -365,7 +385,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showChatroomFragment(mChannel);
                 break;
             case CHANNEL_VOTE_FRAGMENT:
-                showChannelVoteFragment(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+                showChannelVoteFragment();
                 break;
             case CHANNEL_INFO_FRAGMENT:
                 showChannelInfoFragment();
@@ -374,6 +394,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 break;
         }
 
+    }
+
+    private void showTooltip() {
+        ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this), tabs.getChildAt(1));
     }
 
     private void showChatroomFragment(OpenChannel mChannel) {
@@ -417,12 +441,17 @@ public class GroupChatActivity extends BaseSimpleActivity
         fragmentTransaction.commit();
     }
 
-    private void showChannelVoteFragment(VoteInfoViewModel voteInfoViewModel) {
+    private void showChannelVoteFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        bundle.putParcelable(VOTE, voteInfoViewModel);
+        bundle.putParcelable(VOTE, viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+
+        if(voteAnnouncementViewModel != null){
+            bundle.putParcelable(VOTE_ANNOUNCEMENT, voteAnnouncementViewModel);
+            bundle.putString(VOTE_TYPE, voteType);
+        }
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (ChannelVoteFragment.class.getSimpleName());
@@ -914,5 +943,23 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onChannelFrozen() {
         onChannelNotFound(getString(R.string.channel_deactivated));
 
+    }
+
+    @Override
+    public void setView(View view) {
+
+    }
+
+    @Override
+    public void setListener() {
+
+    }
+
+    public void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem, String voteType) {
+//        voteAnnouncementViewModel = messageItem;
+//        this.voteType = voteType;
+
+        updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
+        tabAdapter.change(CHANNEL_VOTE_FRAGMENT);
     }
 }

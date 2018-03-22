@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:elevation="3dp"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -104,7 +103,6 @@
         android:paddingBottom="@dimen/space_med"
         android:paddingLeft="@dimen/space_sm"
         android:paddingRight="@dimen/space_sm"
-        android:paddingTop="@dimen/space_med"
         android:visibility="gone"
         tools:visibility="gone">
 

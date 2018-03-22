@@ -515,21 +515,22 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         switch (messageItem.getVoteType()) {
             case VoteAnnouncementViewModel.POLLING_START:
-                votedView.setVisibility(View.GONE);
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                votedView.setVisibility(View.GONE);
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
                 addIncomingMessage(messageItem);
                 break;
             case VoteAnnouncementViewModel.POLLING_UPDATE:
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
                 break;
             case VoteAnnouncementViewModel.POLLING_FINISHED:
-                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
                 addIncomingMessage(messageItem);
                 break;
             case VoteAnnouncementViewModel.POLLING_CANCEL:
-                hideVoteLayout();
+//                hideVoteLayout();
                 break;
         }
+        ((GroupChatActivity)getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
     }
 
     private void addIncomingMessage(Visitable messageItem) {

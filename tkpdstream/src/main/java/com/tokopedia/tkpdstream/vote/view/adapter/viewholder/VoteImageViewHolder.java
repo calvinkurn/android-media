@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -28,7 +29,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.vote_option_image;
-    private ChatroomContract.View viewListener;
+    private ChannelVoteContract.View.VoteOptionListener viewListener;
     private ProgressBar progressBar;
     private TextView option;
     private TextView percent;
@@ -37,7 +38,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
     private View percentLayout;
     private View shadowLayer;
 
-    public VoteImageViewHolder(View itemView, ChatroomContract.View viewListener) {
+    public VoteImageViewHolder(View itemView, ChannelVoteContract.View.VoteOptionListener viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         shadowLayer = itemView.findViewById(R.id.shadow_layer);

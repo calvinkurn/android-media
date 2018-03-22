@@ -49,12 +49,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
+import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE_ANNOUNCEMENT;
 
 /**
  * @author by StevenFredian on 20/03/18.
  */
 
-public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVoteContract.View, ProgressBarWithTimer.Listener {
+public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVoteContract.View
+        , ProgressBarWithTimer.Listener, ChannelVoteContract.View.VoteOptionListener {
 
     private RecyclerView voteRecyclerView;
 
@@ -131,6 +133,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         votedView = view.findViewById(R.id.layout_voted);
         progressBarWithTimer = view.findViewById(R.id.timer);
 
+        KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
         prepareView();
         return view;
     }
@@ -147,20 +150,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private void prepareView() {
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
-
-        voteBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (voteBody.getVisibility() == View.VISIBLE) {
-                    collapse(voteBody);
-                } else {
-                    KeyboardHandler.DropKeyboard(getActivity(), getView());
-                    expand(voteBody);
-//                    analytics.eventClickVoteExpand();
-                    voteAdapter.notifyDataSetChanged();
-                }
-            }
-        });
     }
 
     public void expand(final View v) {
@@ -177,6 +166,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         this.voteInfoViewModel = model;
         loading.setVisibility(View.GONE);
 
+        voteBody.setVisibility(View.VISIBLE);
         voteBar.setVisibility(View.VISIBLE);
 
         LinearLayoutManager voteLayoutManager;
@@ -284,19 +274,19 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void setVoted() {
         votedView.setVisibility(View.VISIBLE);
     }
-
+//
 //    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
 //
 //        switch (messageItem.getVoteType()) {
 //            case VoteAnnouncementViewModel.POLLING_START:
 //                votedView.setVisibility(View.GONE);
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_UPDATE:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_FINISHED:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_CANCEL:
 //                hideVoteLayout();

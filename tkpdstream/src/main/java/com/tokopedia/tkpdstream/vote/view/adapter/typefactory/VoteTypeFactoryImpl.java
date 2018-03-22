@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.vote.view.adapter.viewholder.VoteBarViewHolder;
 import com.tokopedia.tkpdstream.vote.view.adapter.viewholder.VoteImageViewHolder;
@@ -17,14 +18,13 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 public class VoteTypeFactoryImpl extends BaseAdapterTypeFactory implements VoteTypeFactory{
 
-    ChatroomContract.View viewListener;
+    ChannelVoteContract.View.VoteOptionListener viewListener;
 
     public VoteTypeFactoryImpl(GroupChatFragment context) {
-        viewListener = context;
     }
 
     public VoteTypeFactoryImpl(ChannelVoteFragment context) {
-
+        viewListener = context;
     }
 
     public int type(VoteViewModel voteViewModel) {
