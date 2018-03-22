@@ -10,9 +10,9 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 
 public interface TopAdsItemClickListener {
 
-    void onProductItemClicked(Product product);
+    void onProductItemClicked(int position, Product product);
 
-    void onShopItemClicked(Shop shop);
+    void onShopItemClicked(int position, Shop shop);
 
     void onAddFavorite(int position, Data data);
 

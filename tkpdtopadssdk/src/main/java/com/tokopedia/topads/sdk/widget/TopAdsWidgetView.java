@@ -92,7 +92,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     public void onShopItemClicked(int position, Data data) {
         Shop shop = data.getShop();
         shop.setAdRefKey(data.getAdRefKey());
-        itemClickListener.onShopItemClicked(shop);
+        shop.setAdId(data.getId());
+        itemClickListener.onShopItemClicked(position, shop);
         openTopAdsUseCase.execute(data.getShopClickUrl());
     }
 
@@ -100,7 +101,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     public void onProductItemClicked(int position, Data data) {
         Product product = data.getProduct();
         product.setAdRefKey(data.getAdRefKey());
-        itemClickListener.onProductItemClicked(product);
+        product.setAdId(data.getId());
+        itemClickListener.onProductItemClicked(position, product);
         openTopAdsUseCase.execute(data.getProductClickUrl());
     }
 

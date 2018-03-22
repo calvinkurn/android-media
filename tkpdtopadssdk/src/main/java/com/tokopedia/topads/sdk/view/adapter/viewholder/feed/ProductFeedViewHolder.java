@@ -34,6 +34,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     public TextView productPrice;
     public ImageView productImage;
     private ImageLoader imageLoader;
+    private int adapterPosition = 0;
 
 
     public ProductFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
@@ -71,9 +72,12 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+            itemClickListener.onProductItemClicked(adapterPosition, data);
         }
     }
 
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
+    }
 
 }

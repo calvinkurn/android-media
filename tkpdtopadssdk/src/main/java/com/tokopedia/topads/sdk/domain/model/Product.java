@@ -33,6 +33,7 @@ public class Product {
 
     private String id;
     private String adRefKey;
+    private String adId;
     private String name;
     private ProductImage image;
     private String uri;
@@ -255,5 +256,13 @@ public class Product {
 
     public void setAdRefKey(String adRefKey) {
         this.adRefKey = adRefKey;
+    }
+
+    public String getAdId() {
+        return adId;
+    }
+
+    public void setAdId(String adId) {
+        this.adId = adId;
     }
 }

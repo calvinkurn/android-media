@@ -16,7 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsView
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
@@ -48,7 +47,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
             ProductItem data = new ProductItem();
@@ -65,7 +64,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
             Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");

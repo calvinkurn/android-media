@@ -126,15 +126,15 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
 
     @Override
-    public void openProductTopAds(String click_url, final Product product) {
+    public void openProductTopAds(int position, String click_url, final Product product) {
         openTopAdsUseCase.execute(click_url, adsView);
-        adsView.notifyProductClickListener(product);
+        adsView.notifyProductClickListener(position, product);
     }
 
     @Override
-    public void openShopTopAds(String click_url, final Shop shop) {
+    public void openShopTopAds(int position, String click_url, final Shop shop) {
         openTopAdsUseCase.execute(click_url, adsView);
-        adsView.notifyShopClickListener(shop);
+        adsView.notifyShopClickListener(position, shop);
     }
 
     @Override

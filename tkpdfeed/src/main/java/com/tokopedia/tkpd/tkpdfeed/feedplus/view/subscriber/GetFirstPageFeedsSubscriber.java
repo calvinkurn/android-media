@@ -329,25 +329,25 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 Data data = listData.get(i);
                                 if (data.getProduct() != null){
                                 listTopAds.add(new FeedEnhancedTracking.Promotion(
-                                        Integer.getInteger(data.getId()),
+                                        Integer.valueOf(data.getId()),
                                         FeedEnhancedTracking.Promotion
                                                 .createContentNameTopadsProduct(),
                                         data.getAdRefKey(),
                                         currentPosition,
                                         String.valueOf(data.getProduct().getCategory()),
-                                        Integer.getInteger(data.getId()),
+                                        Integer.valueOf(data.getId()),
                                         "-"
                                         ));
                                 }
                                 else if (data.getShop() != null){
                                     listTopAds.add(new FeedEnhancedTracking.Promotion(
-                                            Integer.getInteger(data.getId()),
+                                            Integer.valueOf(data.getId()),
                                             FeedEnhancedTracking.Promotion
                                                     .createContentNameTopadsShop(),
                                             data.getAdRefKey(),
                                             currentPosition,
                                             "-",
-                                            Integer.getInteger(data.getId()),
+                                            Integer.valueOf(data.getId()),
                                             "-"
                                     ));
                                 }
