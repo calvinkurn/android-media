@@ -11,6 +11,8 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -443,6 +445,34 @@ public class ProductViewModel implements ItemType, Parcelable {
         }
         productPriceCurrency = currencyType;
         productPrice = value;
+    }
+
+    public void resetId(){
+        productId = null;
+        if (productPictureViewModelList!= null) {
+            for (ProductPictureViewModel productPictureViewModel: productPictureViewModelList) {
+                productPictureViewModel.setId(0);
+            }
+        }
+        if (productSizeChart!= null) {
+            for (ProductPictureViewModel productPictureViewModel: productSizeChart) {
+                productPictureViewModel.setId(0);
+            }
+        }
+        if (productVariant!= null && productVariant.hasSelectedVariant()) {
+            for (int i = 0, sizei = productVariant.getVariantOptionParent().size(); i<sizei; i++) {
+                ProductVariantOptionParent productVariantOptionParent = productVariant.getVariantOptionParent(i);
+                if (productVariantOptionParent != null && productVariantOptionParent.hasProductVariantOptionChild()) {
+                    for (ProductVariantOptionChild productVariantOptionChild : productVariantOptionParent.getProductVariantOptionChild()) {
+                        if (productVariantOptionChild.getProductPictureViewModelList() != null) {
+                            for (VariantPictureViewModel variantPictureViewModel : productVariantOptionChild.getProductPictureViewModelList()) {
+                                variantPictureViewModel.setId(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
