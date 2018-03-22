@@ -1,9 +1,12 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -44,6 +47,7 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.Group
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -73,6 +77,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final long DELAY_TIME = 1000L;
+    private static final long VIBRATE_LENGTH = 500;
 
     @Inject
     ChatroomPresenter presenter;
@@ -94,7 +99,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View divider;
     private View main, loading;
     private TextView voteStatus;
-//    private ImageView arrow;
+    //    private ImageView arrow;
     private GroupChatAdapter adapter;
     private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
@@ -125,7 +130,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         DaggerChatroomComponent.builder()
                 .streamComponent(streamComponent)
                 .build().inject(this);
-
 
         presenter.attachView(this);
     }
@@ -358,9 +362,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
             hideLoading();
 
-            if(getActivity() instanceof GroupChatActivity){
-                ((GroupChatActivity)getActivity()).setChannelHandler();
-                ((GroupChatActivity)getActivity()).showInfoDialog();
+            if (getActivity() instanceof GroupChatActivity) {
+                ((GroupChatActivity) getActivity()).setChannelHandler();
+                ((GroupChatActivity) getActivity()).showInfoDialog();
             }
 
         } catch (NullPointerException e) {
@@ -483,6 +487,24 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         } else {
             addIncomingMessage(messageItem);
         }
+
+        if (messageItem instanceof BaseChatViewModel
+                && ((BaseChatViewModel) messageItem).isAdministrator()) {
+            vibratePhone();
+        }
+    }
+
+
+    private void vibratePhone() {
+        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
+                        .DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(VIBRATE_LENGTH);
+            }
+        }
     }
 
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
@@ -522,7 +544,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
-        if(login.getVisibility() != View.VISIBLE) {
+        if (login.getVisibility() != View.VISIBLE) {
             chatNotificationView.setVisibility(View.VISIBLE);
         }
     }
@@ -556,8 +578,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
 
     public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
-        if(getActivity() instanceof GroupChatActivity){
-            ((GroupChatActivity)getActivity()).updateVoteViewModel(voteInfoViewModel, voteType);
+        if (getActivity() instanceof GroupChatActivity) {
+            ((GroupChatActivity) getActivity()).updateVoteViewModel(voteInfoViewModel, voteType);
         }
     }
 
@@ -630,13 +652,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         this.mChannel = mChannel;
     }
 
-    private void setForLoginUser(boolean forLoginUser){
-        if(forLoginUser){
+    private void setForLoginUser(boolean forLoginUser) {
+        if (forLoginUser) {
             divider.setVisibility(View.VISIBLE);
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
-        }else {
+        } else {
             divider.setVisibility(View.GONE);
             replyEditText.setVisibility(View.GONE);
             sendButton.setVisibility(View.GONE);

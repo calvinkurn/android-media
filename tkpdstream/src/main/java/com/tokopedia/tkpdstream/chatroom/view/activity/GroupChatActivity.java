@@ -878,7 +878,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                     (GroupChatFragment.class.getSimpleName())).onMessageUpdated(map);
         }
     }
-i
+
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
         if (currentFragmentIsChat()) {
