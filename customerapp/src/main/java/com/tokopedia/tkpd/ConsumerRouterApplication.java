@@ -1630,4 +1630,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             }
         });
     }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return AddEmailActivity.newInstance(context);
+    }
 }
