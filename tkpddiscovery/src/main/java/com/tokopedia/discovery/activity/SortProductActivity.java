@@ -170,6 +170,9 @@ public class SortProductActivity extends TActivity {
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) {
+                        return;
+                    }
                     selectedKey = sortList.get(holder.getAdapterPosition()).getKey();
                     selectedValue = sortList.get(holder.getAdapterPosition()).getValue();
                     String selectedName = sortList.get(holder.getAdapterPosition()).getName();

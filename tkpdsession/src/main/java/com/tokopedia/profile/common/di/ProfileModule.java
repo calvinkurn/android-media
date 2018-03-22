@@ -2,14 +2,12 @@ package com.tokopedia.profile.common.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.profile.data.network.ProfileApi;
 import com.tokopedia.profile.data.network.ProfileUrl;
@@ -18,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -38,9 +37,9 @@ public class ProfileModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                     httpLoggingInterceptor,
-                                            @ApplicationContext Context context,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
-                                            OkHttpRetryPolicy retryPolicy) {
+                                            @ProfileQualifier OkHttpRetryPolicy retryPolicy,
+                                            @ProfileChuckQualifier Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -49,17 +48,8 @@ public class ProfileModule {
                 .addInterceptor(new FingerprintInterceptor());
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler localCacheHandler =
-                    new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
-            clientBuilder.addInterceptor(
-                    new ChuckInterceptor(context).showNotification(
-                            localCacheHandler.getBoolean(
-                                    DeveloperOptions.IS_CHUCK_ENABLED,
-                                    false
-                            )
-                    )
-            );
             clientBuilder.addInterceptor(httpLoggingInterceptor);
+            clientBuilder.addInterceptor(chuckInterceptor);
         }
 
         return clientBuilder.build();
@@ -89,5 +79,15 @@ public class ProfileModule {
                 NET_WRITE_TIMEOUT,
                 NET_CONNECT_TIMEOUT,
                 NET_RETRY);
+    }
+
+    @ProfileScope
+    @Provides
+    @ProfileChuckQualifier
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        if (context instanceof SessionRouter) {
+            return ((SessionRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + SessionRouter.class.getSimpleName());
     }
 }

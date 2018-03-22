@@ -37,7 +37,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -276,6 +275,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -320,6 +321,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -340,17 +343,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public int getPassengerTitleId() {
-        switch (spTitle.getSpinnerPosition()) {
-            case 0:
-                return FlightPassengerTitleType.TUAN;
-            case 1:
-                return FlightPassengerTitleType.NYONYA;
-            case 2:
-                return FlightPassengerTitleType.NONA;
-            default:
-                return 0;
-        }
+    public int getTitleSpinnerPosition() {
+        return spTitle.getSpinnerPosition();
     }
 
     @Override
@@ -461,7 +455,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public boolean isAirAsiaAirline() {
+    public boolean isMandatoryDoB() {
         return isAirAsiaAirlines;
     }
 
@@ -572,7 +566,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
         Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(),
-                selected, requestId);
+                selected, requestId, departureDate);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 
@@ -598,8 +592,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                         FlightBookingPassengerViewModel flightBookingPassengerViewModel = data.getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
                         presenter.onChangeFromSavedPassenger(flightBookingPassengerViewModel);
                     } else {
-                        etSavedPassenger.setText(getString(R.string.flight_booking_passenger_saved_secondary_hint));
-                        viewModel.setPassengerId("");
+                        presenter.onNewPassengerChoosed();
                     }
                     break;
             }

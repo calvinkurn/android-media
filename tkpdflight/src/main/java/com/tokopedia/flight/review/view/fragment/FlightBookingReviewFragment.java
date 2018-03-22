@@ -402,6 +402,26 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
+    public void showSoldOutDialog() {
+        if (isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_booking_sold_out_label);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                    getActivity().getIntent(),
+                                    FlightFlowConstant.EXPIRED_JOURNEY
+                            );
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
+    }
+
+    @Override
     public void setCartId(String id) {
         flightBookingReviewModel.setId(id);
     }

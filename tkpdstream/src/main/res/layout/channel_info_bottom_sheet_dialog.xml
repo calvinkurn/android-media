@@ -102,7 +102,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/participant"
                 android:layout_toStartOf="@+id/participant"
-                app:srcCompat="@drawable/ic_group_chat_participant" />
+                app:srcCompat="@drawable/ic_eyes_view" />
 
 
             <TextView
