@@ -7,10 +7,12 @@ package com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab;
 public class TabViewModel {
     private String title;
     private boolean isActive;
+    private boolean isUpdated;
 
     public TabViewModel(String title) {
         this.title = title;
         this.isActive = false;
+        this.isUpdated = false;
     }
 
     public String getTitle() {
@@ -27,5 +29,13 @@ public class TabViewModel {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public boolean isUpdated() {
+        return isUpdated;
+    }
+
+    public void setUpdated(boolean updated) {
+        isUpdated = updated;
     }
 }

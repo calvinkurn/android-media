@@ -33,36 +33,24 @@ import rx.Subscriber;
 public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View> implements
         ChatroomContract.Presenter {
 
-    private final GetChannelInfoUseCase getChannelInfoUseCase;
     private final SendVoteUseCase sendVoteUseCase;
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final RefreshMessageUseCase refreshMessageUseCase;
     private final LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase;
-    private final LoginGroupChatUseCase loginGroupChatUseCase;
     private final SendGroupChatMessageUseCase sendMessageUseCase;
-    private final LogoutGroupChatUseCase logoutGroupChatUseCase;
-    private final ChannelHandlerUseCase channelHandlerUseCase;
 
     @Inject
-    public ChatroomPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
-                             GetChannelInfoUseCase getChannelInfoUseCase,
-                             GetGroupChatMessagesFirstTimeUseCase
+    public ChatroomPresenter(GetGroupChatMessagesFirstTimeUseCase
                                      getGroupChatMessagesFirstTimeUseCase,
                              RefreshMessageUseCase refreshMessageUseCase,
                              LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase,
                              SendGroupChatMessageUseCase sendMessageUseCase,
-                             LogoutGroupChatUseCase logoutGroupChatUseCase,
-                             ChannelHandlerUseCase channelHandlerUseCase,
                              SendVoteUseCase sendVoteUseCase) {
-        this.getChannelInfoUseCase = getChannelInfoUseCase;
-        this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
         this.refreshMessageUseCase = refreshMessageUseCase;
         this.loadPreviousChatMessagesUseCase = loadPreviousChatMessagesUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
-        this.logoutGroupChatUseCase = logoutGroupChatUseCase;
-        this.channelHandlerUseCase = channelHandlerUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
     }
 
@@ -108,14 +96,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
                         }
                     }
                 });
-    }
-
-    @Override
-    public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener) {
-        loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
-                userAvatar,
-                loginGroupChatListener);
     }
 
     @Override
@@ -202,10 +182,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     public void detachView() {
         super.detachView();
         sendVoteUseCase.unsubscribe();
-        getChannelInfoUseCase.unsubscribe();
     }
 
-    public void setHandler(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
-        channelHandlerUseCase.execute(channelUrl, listener);
-    }
 }

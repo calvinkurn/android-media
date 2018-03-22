@@ -49,6 +49,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
+import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE_ANNOUNCEMENT;
 
 /**
  * @author by StevenFredian on 20/03/18.
@@ -142,7 +143,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         super.onViewCreated(view, savedInstanceState);
         progressBarWithTimer.setListener(this);
         Parcelable temp = getArguments().getParcelable(VOTE);
-
         showVoteLayout((VoteInfoViewModel) temp);
     }
 
@@ -274,19 +274,19 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void setVoted() {
         votedView.setVisibility(View.VISIBLE);
     }
-
+//
 //    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
 //
 //        switch (messageItem.getVoteType()) {
 //            case VoteAnnouncementViewModel.POLLING_START:
 //                votedView.setVisibility(View.GONE);
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_UPDATE:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_FINISHED:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+//                showVoteLayout(messageItem.getVoteInfoViewModel());
 //                break;
 //            case VoteAnnouncementViewModel.POLLING_CANCEL:
 //                hideVoteLayout();

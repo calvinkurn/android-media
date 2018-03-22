@@ -29,12 +29,14 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
         TextView title;
         View highlight;
         View mainLayout;
+        View dot;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             highlight = itemView.findViewById(R.id.highlight);
             mainLayout = itemView.findViewById(R.id.main_layout);
+            dot = itemView.findViewById(R.id.dot);
 
             mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,6 +79,12 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
             holder.title.setTextColor(MethodChecker.getColor(holder.title.getContext(), R.color.black_38));
             holder.highlight.setVisibility(View.INVISIBLE);
         }
+
+        if(listTab.get(position).isUpdated(){
+            holder.dot.setVisibility(View.VISIBLE);
+        }else{
+            holder.dot.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -92,4 +100,11 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
             notifyDataSetChanged();
         }
     }
+
+
+    public void change(int position) {
+        listTab.get(position).setUpdated(true);
+        notifyItemChanged(position);
+    }
+
 }

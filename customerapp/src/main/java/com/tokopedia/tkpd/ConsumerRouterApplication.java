@@ -205,6 +205,7 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
+import com.tokopedia.tkpdstream.chatroom.data.ChatroomUrl;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tokocash.WalletUserSession;
@@ -1611,7 +1612,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
-            shareUrl, Activity activity, final ShareListener
+                                           shareUrl, Activity activity, final ShareListener
                                            listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
@@ -1628,5 +1629,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 listener.onGenerateLink(shareContents, shareUri);
             }
         });
+    }
+
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return ChatroomUrl.DESKTOP_URL;
     }
 }
