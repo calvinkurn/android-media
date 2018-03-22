@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
@@ -26,6 +27,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -88,6 +90,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(SprintSaleCarouselViewModel sprintSaleCarouselViewModel) {
+        return SprintSaleCarouselViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(DynamicChannelViewModel dynamicChannelViewModel) {
         if (DynamicHomeChannel.Channels.LAYOUT_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())
                 || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())) {
@@ -129,6 +136,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new DynamicChannelSprintViewHolder(view, listener);
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
+        else if (type == SprintSaleCarouselViewHolder.LAYOUT)
+            viewHolder = new SprintSaleCarouselViewHolder(view);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;
