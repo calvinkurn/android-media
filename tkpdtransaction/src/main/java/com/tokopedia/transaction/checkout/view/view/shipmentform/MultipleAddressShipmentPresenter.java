@@ -51,7 +51,8 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<MultipleAddressShipmentAdapterData> shipmentData,
-                                                   MultipleAddressPriceSummaryData priceData) {
+                                                   MultipleAddressPriceSummaryData priceData,
+                                                   String promoCode) {
         CheckoutRequest.Builder checkoutRequest = new CheckoutRequest.Builder();
         List<DataCheckoutRequest> dataCheckoutRequests = new ArrayList<>();
         for (int i = 0; i < shipmentData.size(); i++) {
@@ -98,7 +99,10 @@ public class MultipleAddressShipmentPresenter implements IMultipleAddressShipmen
                     .shopProducts(shopCheckoutRequests).build();
             dataCheckoutRequests.add(checkoutData.build());
         }
-        return checkoutRequest.data(dataCheckoutRequests).build();
+        checkoutRequest.isDonation(0)
+                .promoCode(promoCode)
+                .data(dataCheckoutRequests);
+        return checkoutRequest.build();
     }
 
     private DropshipDataCheckoutRequest setDropshipDataCheckoutRequest(ShipmentDetailData data) {

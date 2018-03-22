@@ -216,12 +216,14 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
                 );
 
         if (isShipmentDataInitiated(data)) {
-            itemPrice.setText(formatPrice(data.getProductPriceNumber()));
+            itemPrice.setText(formatPrice(data.getProductPriceNumber() *
+                    Integer.parseInt(data.getItemData().getProductQty())));
             deliveryPrice.setText(formatPrice(
                     data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice() +
                             data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice()));
             if (data.getSelectedShipmentDetailData().getUseInsurance()) {
-                insurancePrice.setText(formatPrice(data.getSelectedShipmentDetailData().getSelectedCourier().getInsurancePrice()));
+                insurancePrice.setText(formatPrice(data.getSelectedShipmentDetailData()
+                        .getSelectedCourier().getInsurancePrice()));
             } else {
                 insurancePrice.setText("-");
             }
@@ -349,7 +351,7 @@ public class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
     private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
         int subtotal = 0;
         if (isShipmentDataInitiated(data)) {
-            subtotal += data.getProductPriceNumber() +
+            subtotal += (data.getProductPriceNumber() * Integer.parseInt(data.getItemData().getProductQty())) +
                     data.getSelectedShipmentDetailData().getSelectedCourier().getAdditionalPrice() +
                     data.getSelectedShipmentDetailData().getSelectedCourier().getDeliveryPrice();
             if (data.getSelectedShipmentDetailData().getUseInsurance()) {

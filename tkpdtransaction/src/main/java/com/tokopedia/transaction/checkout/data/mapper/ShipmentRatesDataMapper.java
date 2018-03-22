@@ -60,8 +60,9 @@ public class ShipmentRatesDataMapper {
                                                 MultipleAddressShipmentAdapterData adapterData) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(cartShipmentAddressFormData, userAddress, groupShop, shipmentCartData);
-        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber());
-        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight());
+        int productQuantity = Integer.parseInt(adapterData.getItemData().getProductQty());
+        shipmentCartData.setOrderValue((int) adapterData.getProductPriceNumber() * productQuantity);
+        shipmentCartData.setWeight(adapterData.getItemData().getProductRawWeight() * productQuantity);
 
         return shipmentCartData;
     }

@@ -101,7 +101,8 @@ public class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHo
         long totalProductPrice = 0;
         for (int i = 0; i < addressDataList.size(); i++) {
             if (isShipmentDataInitiated(addressDataList.get(i)))
-                totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
+                totalProductPrice += (addressDataList.get(i).getProductPriceNumber() *
+                        Integer.parseInt(addressDataList.get(i).getItemData().getProductQty()));
         }
         return totalProductPrice;
     }

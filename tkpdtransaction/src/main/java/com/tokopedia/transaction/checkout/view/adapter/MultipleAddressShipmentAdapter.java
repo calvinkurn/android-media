@@ -93,7 +93,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     private void calculateTemporarySubTotalForFloatingIndicator(int position, ShipmentDetailData shipmentDetailData) {
-        long subtotal = addressDataList.get(position).getProductPriceNumber() +
+        long subtotal = (addressDataList.get(position).getProductPriceNumber() *
+                Integer.parseInt(addressDataList.get(position).getItemData().getProductQty())) +
                 shipmentDetailData.getSelectedCourier().getDeliveryPrice() +
                 shipmentDetailData.getSelectedCourier().getAdditionalPrice();
         if (shipmentDetailData.getUseInsurance()) {
@@ -251,6 +252,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     public CartItemPromoHolderData getAppliedPromo() {
         return cartItemPromoHolderData;
+    }
+
+    public String getAppliedPromoCode() {
+        if (cartItemPromoHolderData != null) {
+            if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                return cartItemPromoHolderData.getVoucherCode();
+            } else if (cartItemPromoHolderData.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                return cartItemPromoHolderData.getCouponCode();
+            }
+        }
+        return "";
     }
 
     private long calculateTotalPayment() {

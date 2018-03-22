@@ -484,7 +484,7 @@ public class MultipleAddressShipmentFragment extends BasePresenterFragment imple
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         cartShipmentActivity.checkoutCart(
                 presenter.generateCheckoutRequest(shipmentAdapter.getAddressDataList(),
-                        shipmentAdapter.getPriceSummaryData())
+                        shipmentAdapter.getPriceSummaryData(), shipmentAdapter.getAppliedPromoCode())
         );
     }
 

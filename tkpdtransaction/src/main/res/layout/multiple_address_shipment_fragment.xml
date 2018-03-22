@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Total Pembayaran"/>
+                    android:text="@string/label_payment_total"/>
 
                 <TextView
                     android:id="@+id/total_payment_text_view"
