@@ -79,8 +79,10 @@ public class FeedEnhancedTracking {
     public static class Promotion {
 
         private static final String CONTENT_FEED = "content feed";
-        private static final String FOLLOWED_KOL_POST = "followedkolpost";
-        private static final String KOL_POST = "kolpost";
+        private static final String TOPADS = "topads";
+        private static final String PRODUCT = "product";
+        private static final String SHOP = "shop";
+        private static final String TOKOPEDIA_CONTENT = "tokopedia_content";
         private static final String KOL_RECOMMENDATION = "kolrecommendation";
         private static final String PRODUCT_UPLOAD = "product_upload";
         private static final String SINGLE = "single";
@@ -135,6 +137,14 @@ public class FeedEnhancedTracking {
 
         public static String createContentNameRecommendation() {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
+        }
+
+        public static String createContentNameTopadsProduct(){
+            return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT);
+        }
+
+        public static String createContentNameTopadsShop(){
+            return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP);
         }
 
         public static String createContentNameProductUpload(int totalProduct) {

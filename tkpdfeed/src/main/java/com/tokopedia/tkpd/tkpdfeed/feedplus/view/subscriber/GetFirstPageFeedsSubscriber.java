@@ -52,6 +52,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentView
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -320,6 +321,41 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             FeedTopAdsViewModel feedTopAdsViewModel =
                                     new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
                             listFeedView.add(feedTopAdsViewModel);
+
+                            List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
+                            List<Data> listData = feedTopAdsViewModel.getList();
+
+                            for (int i = 0; i < listData.size(); i++) {
+                                Data data = listData.get(i);
+                                if (data.getProduct() != null){
+                                listTopAds.add(new FeedEnhancedTracking.Promotion(
+                                        Integer.getInteger(data.getId()),
+                                        FeedEnhancedTracking.Promotion
+                                                .createContentNameTopadsProduct(),
+                                        data.getAdRefKey(),
+                                        currentPosition,
+                                        String.valueOf(data.getProduct().getCategory()),
+                                        Integer.getInteger(data.getId()),
+                                        "-"
+                                        ));
+                                }
+                                else if (data.getShop() != null){
+                                    listTopAds.add(new FeedEnhancedTracking.Promotion(
+                                            Integer.getInteger(data.getId()),
+                                            FeedEnhancedTracking.Promotion
+                                                    .createContentNameTopadsShop(),
+                                            data.getAdRefKey(),
+                                            currentPosition,
+                                            "-",
+                                            Integer.getInteger(data.getId()),
+                                            "-"
+                                    ));
+                                }
+
+                            }
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.
+                                            getImpressionTracking(listTopAds, loginIdInt));
                         }
                         break;
                     case TYPE_KOL_FOLLOWED:
