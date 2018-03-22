@@ -298,11 +298,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void showGetListError(Throwable throwable) {
-        super.showGetListError(throwable);
-    }
-
-    @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
         if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
@@ -360,7 +355,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && shopPageTracking != null && shopProductListLimitedPresenter != null && shopInfo != null) {
                     String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
                     shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),

@@ -43,7 +43,7 @@ public class ShopProductMapper {
         shopProductViewModel.setProductUrl(shopProduct.getProductUrl());
 //        shopProductViewModel.setRating(); Api not support
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
-        shopProductViewModel.setTotalReview(Integer.valueOf(shopProduct.getProductReviewCount()));
+        shopProductViewModel.setTotalReview(shopProduct.getProductReviewCount());
         shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
         if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
             for (ShopProductBadge badge : shopProduct.getBadges()) {

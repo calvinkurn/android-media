@@ -432,8 +432,8 @@ public class ShopPageTracking {
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid ? Math.ceil((i + 1) / 2) : i + 1),
-                            ShopPageTrackingConstant.POSITION, (isGrid ? Math.ceil((i + 1) / 2) : i + 1)
+                            ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(i , isGrid),
+                            ShopPageTrackingConstant.POSITION, getProductPosition(i , isGrid)
                     )
             );
         }
@@ -462,12 +462,16 @@ public class ShopPageTracking {
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + (isGrid ? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1),
-                                        ShopPageTrackingConstant.POSITION, (isGrid ? Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1)
+                                        ShopPageTrackingConstant.LIST, ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition , isGrid),
+                                        ShopPageTrackingConstant.POSITION, getProductPosition(adapterPosition , isGrid)
                                 )
                         )
                 )
         );
+    }
+
+    private String getProductPosition(int adapterPosition, boolean isGrid) {
+        return String.valueOf(isGrid ? (int) Math.ceil((adapterPosition + 1) / 2) : adapterPosition + 1);
     }
 
     public static int getShopType(ShopInfoDetail info) {

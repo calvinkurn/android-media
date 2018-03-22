@@ -94,9 +94,6 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
         @BindView(R2.id.main_view)
         View mainView;
 
-        @BindView(R2.id.empty_view)
-        View emptyView;
-
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -146,10 +143,8 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindShopTalk(ViewHolder holder, final int position) {
         if (!isHaveNext && position == list.size()) {
-            holder.emptyView.setVisibility(View.VISIBLE);
             holder.mainView.setVisibility(View.GONE);
         } else {
-            holder.emptyView.setVisibility(View.GONE);
             holder.mainView.setVisibility(View.VISIBLE);
             list.get(position).setPosition(position);
             ImageHandler.LoadImage(holder.productImage, list.get(position).getTalkProductImage());
