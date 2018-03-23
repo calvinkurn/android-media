@@ -114,7 +114,13 @@ android {
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        instrumentTest.setRoot('tests')
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -135,6 +141,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
+            testCoverageEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
         }
@@ -200,6 +207,8 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
+//        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -210,7 +219,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "8g"
+        javaMaxHeapSize "4g"
         keepRuntimeAnnotatedClasses false
     }
 
@@ -286,4 +295,37 @@ dependencies {
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
+
+    //[START] test and androidTest dependencies
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile rootProject.ext.miscDependencies.rxJava
+    androidTestCompile rootProject.ext.miscDependencies.rxJava
+    androidTestCompile rootProject.ext.testDependencies.uiautomator
+    androidTestCompile rootProject.ext.testDependencies.spoon
+    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile rootProject.ext.testDependencies.retrofitMock
+    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
+    androidTestCompile rootProject.ext.miscDependencies.dagger
+    androidTestCompile rootProject.ext.miscDependencies.gson
+    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
+    androidTestApt rootProject.ext.miscDependencies.parceler
+    androidTestCompile rootProject.ext.testDependencies.dexMaker
+    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    //[END] test and androidTest dependencies
 }
