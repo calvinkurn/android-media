@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.react.datasource;
 
 import com.tokopedia.posapp.react.exception.TableNotFoundException;
-import com.tokopedia.posapp.react.factory.ReactCacheFactory;
+import com.tokopedia.posapp.react.factory.ReactDataFactory;
 
 import javax.inject.Inject;
 
@@ -12,17 +12,17 @@ import rx.Observable;
  */
 
 public class ReactCacheRepositoryImpl implements ReactCacheRepository {
-    ReactCacheFactory reactCacheFactory;
+    ReactDataFactory reactDataFactory;
 
     @Inject
-    public ReactCacheRepositoryImpl(ReactCacheFactory reactCacheFactory) {
-        this.reactCacheFactory = reactCacheFactory;
+    public ReactCacheRepositoryImpl(ReactDataFactory reactDataFactory) {
+        this.reactDataFactory = reactDataFactory;
     }
 
     @Override
     public Observable<String> getData(String tableName, String id) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).getData(id);
+            return reactDataFactory.createDataSource(tableName).getData(id);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -31,7 +31,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> getDataList(String tableName, int offset, int limit) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).getDataList(offset, limit);
+            return reactDataFactory.createDataSource(tableName).getDataList(offset, limit);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -40,7 +40,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> getDataAll(String tableName) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).getDataAll();
+            return reactDataFactory.createDataSource(tableName).getDataAll();
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -49,7 +49,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> deleteAll(String tableName) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).deleteAll();
+            return reactDataFactory.createDataSource(tableName).deleteAll();
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -58,7 +58,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> deleteItem(String tableName, String id) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).deleteItem(id);
+            return reactDataFactory.createDataSource(tableName).deleteItem(id);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -67,7 +67,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> update(String tableName, String data) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).update(data);
+            return reactDataFactory.createDataSource(tableName).update(data);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }
@@ -76,7 +76,7 @@ public class ReactCacheRepositoryImpl implements ReactCacheRepository {
     @Override
     public Observable<String> insert(String tableName, String data) {
         try {
-            return reactCacheFactory.createCacheDataSource(tableName).insert(data);
+            return reactDataFactory.createDataSource(tableName).insert(data);
         } catch (TableNotFoundException e) {
             return Observable.error(e);
         }

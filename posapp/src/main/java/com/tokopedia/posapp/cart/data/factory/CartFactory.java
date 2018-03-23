@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.cart.data.factory;
 
-import com.tokopedia.posapp.cart.CartLocalSource;
+import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 
 /**
  * Created by okasurya on 8/22/17.

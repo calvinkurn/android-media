@@ -3,6 +3,8 @@ package com.tokopedia.posapp.product.productdetail.data.mapper;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -11,6 +13,7 @@ import rx.functions.Func1;
  */
 
 public class GetProductMapper implements Func1<Response<TkpdResponse>, ProductDetailData>{
+    @Inject
     public GetProductMapper() {
 
     }

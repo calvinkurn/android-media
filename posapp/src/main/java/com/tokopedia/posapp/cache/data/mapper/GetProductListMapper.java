@@ -12,6 +12,8 @@ import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -22,6 +24,7 @@ import rx.functions.Func1;
 public class GetProductListMapper implements Func1<Response<TkpdResponse>, ProductListDomain> {
     private Gson gson;
 
+    @Inject
     public GetProductListMapper(Gson gson) {
         this.gson = gson;
     }

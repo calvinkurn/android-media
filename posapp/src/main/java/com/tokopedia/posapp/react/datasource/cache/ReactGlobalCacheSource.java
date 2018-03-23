@@ -2,10 +2,12 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.SimpleDatabaseModel;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ReactGlobalCacheData;
 import com.tokopedia.posapp.react.datasource.model.StatusResult;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -14,10 +16,11 @@ import rx.functions.Func1;
  * Created by okasurya on 11/7/17.
  */
 
-public class ReactGlobalCacheSource implements ReactCacheSource {
+public class ReactGlobalCacheSource implements ReactDataSource {
     private GlobalCacheManager globalCacheManager;
     private Gson gson;
 
+    @Inject
     public ReactGlobalCacheSource(Gson gson) {
         this.globalCacheManager = new GlobalCacheManager();
         globalCacheManager.setCacheDuration(3600000);

@@ -7,10 +7,13 @@ import com.tokopedia.posapp.bank.data.pojo.InstallmentResponse;
 import com.tokopedia.posapp.base.data.pojo.ListResponse;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.InstallmentDomain;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,10 +22,11 @@ import rx.functions.Func1;
  * Created by okasurya on 9/8/17.
  */
 
-public class ReactBankCacheSource implements ReactCacheSource {
+public class ReactBankCacheSource implements ReactDataSource {
     private Gson gson;
     private BankFactory bankFactory;
 
+    @Inject
     public ReactBankCacheSource(BankFactory bankFactory, Gson gson) {
         this.gson = gson;
         this.bankFactory = bankFactory;

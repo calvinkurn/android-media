@@ -1,14 +1,20 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.product.ProductFactory;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.posapp.di.qualifier.LocalSource;
 import com.tokopedia.posapp.base.data.pojo.Paging;
+import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
+import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.shop.data.ShopProductResponse;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -17,20 +23,22 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class ReactProductCacheSource implements ReactCacheSource {
+public class ReactProductCacheSource implements ReactDataSource {
     private Gson gson;
-    private ProductFactory productFactory;
+    private ProductRepository productRepository;
 
-    public ReactProductCacheSource(ProductFactory productFactory, Gson gson) {
+    @Inject
+    public ReactProductCacheSource(@LocalSource ProductRepository productRepository, Gson gson) {
         this.gson = gson;
-        this.productFactory = productFactory;
+        this.productRepository = productRepository;
     }
 
     @Override
     public Observable<String> getData(String id) {
         try {
-            int productId = Integer.parseInt(id);
-            return productFactory.local().getProduct(productId)
+            RequestParams requestParams = RequestParams.EMPTY;
+            requestParams.putInt(ProductRepository.PRODUCT_ID, Integer.parseInt(id));
+            return productRepository.getProductDomain(requestParams)
                     .map(getProductMapper())
                     .map(mapToJson());
         } catch (Exception e) {
@@ -40,14 +48,17 @@ public class ReactProductCacheSource implements ReactCacheSource {
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return productFactory.local().getListProduct(offset, limit)
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putInt(ProductRepository.OFFSET, offset);
+        requestParams.putInt(ProductRepository.LIMIT, limit);
+        return productRepository.getProductList(requestParams)
                 .map(getListMapper())
                 .map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return productFactory.local().getAllProduct()
+        return productRepository.getProductList(RequestParams.EMPTY)
                 .map(getListMapper())
                 .map(mapToJson());
     }
@@ -73,22 +84,25 @@ public class ReactProductCacheSource implements ReactCacheSource {
     }
 
     public Observable<String> search(String keyword, String etalaseId) {
-        return productFactory.local().searchProduct(keyword, etalaseId)
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putString(ProductRepository.KEYWORD, keyword);
+        requestParams.putString(ProductRepository.ETALASE_ID, etalaseId);
+        return productRepository.getProductList(requestParams)
                 .map(getListMapper())
                 .map(mapToJson());
     }
 
-    private Func1<List<ProductDomain>, CacheResult> getListMapper() {
-        return new Func1<List<ProductDomain>, CacheResult>() {
+    private Func1<ProductListDomain, CacheResult> getListMapper() {
+        return new Func1<ProductListDomain, CacheResult>() {
             @Override
-            public CacheResult call(List<ProductDomain> productDomains) {
+            public CacheResult call(ProductListDomain productDomains) {
                 ShopProductResponse shopProductResponse = new ShopProductResponse();
                 List<com.tokopedia.core.shopinfo.models.productmodel.List> productList = new ArrayList<>();
-                for (ProductDomain productDomain : productDomains) {
+                for (ProductDomain productDomain : productDomains.getProductDomains()) {
                     productList.add(domainToResponse(productDomain));
                 }
                 shopProductResponse.setList(productList);
-                shopProductResponse.setTotalData(productDomains.size());
+                shopProductResponse.setTotalData(productDomains.getProductDomains().size());
                 shopProductResponse.setPaging(new Paging());
 
                 CacheResult<ShopProductResponse> cacheResult = new CacheResult<>();

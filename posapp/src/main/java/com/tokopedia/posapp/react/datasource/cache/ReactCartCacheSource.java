@@ -6,12 +6,15 @@ import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.cart.data.pojo.CartResponse;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
 import com.tokopedia.posapp.react.datasource.model.StatusResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -20,10 +23,11 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class ReactCartCacheSource implements ReactCacheSource {
+public class ReactCartCacheSource implements ReactDataSource {
     private Gson gson;
     private CartFactory cartFactory;
 
+    @Inject
     public ReactCartCacheSource(CartFactory cartFactory,
                                 Gson gson) {
         this.gson = gson;

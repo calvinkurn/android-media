@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.product.productlist.data.source.local;
+package com.tokopedia.posapp.product.common.data.source.local;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.tokopedia.posapp.base.domain.model.DataStatus;

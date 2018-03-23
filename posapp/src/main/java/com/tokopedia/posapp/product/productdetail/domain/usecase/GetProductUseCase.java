@@ -5,7 +5,10 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.posapp.di.qualifier.CloudSource;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,9 +19,10 @@ import rx.Observable;
 public class GetProductUseCase extends UseCase<ProductDetailData> {
     private ProductRepository productRepository;
 
+    @Inject
     public GetProductUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             ProductRepository productRepository) {
+                             @CloudSource ProductRepository productRepository) {
         super(threadExecutor, postExecutionThread);
         this.productRepository = productRepository;
     }

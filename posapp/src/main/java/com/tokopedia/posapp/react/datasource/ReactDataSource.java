@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.react.datasource.cache;
+package com.tokopedia.posapp.react.datasource;
 
 import rx.Observable;
 
@@ -6,7 +6,7 @@ import rx.Observable;
  * Created by okasurya on 8/28/17.
  */
 
-public interface ReactCacheSource {
+public interface ReactDataSource {
     Observable<String> getData(String id);
 
     Observable<String> getDataList(int offset, int limit);

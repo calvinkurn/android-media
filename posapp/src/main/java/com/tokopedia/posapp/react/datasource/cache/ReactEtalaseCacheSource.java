@@ -2,11 +2,14 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
+import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -15,10 +18,11 @@ import rx.functions.Func1;
  * Created by okasurya on 9/25/17.
  */
 
-public class ReactEtalaseCacheSource implements ReactCacheSource {
+public class ReactEtalaseCacheSource implements ReactDataSource {
     private Gson gson;
     private EtalaseFactory etalaseFactory;
-    
+
+    @Inject
     public ReactEtalaseCacheSource(EtalaseFactory etalaseFactory, Gson gson) {
         this.gson = gson;
         this.etalaseFactory = etalaseFactory;

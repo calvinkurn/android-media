@@ -1,20 +1,22 @@
 package com.tokopedia.posapp.di.module;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.cache.data.mapper.GetProductListMapper;
-import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
-import com.tokopedia.posapp.product.ProductFactory;
-import com.tokopedia.posapp.product.productdetail.data.mapper.GetProductMapper;
-import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
-import com.tokopedia.posapp.product.common.data.repository.ProductRepositoryImpl;
-import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
+import com.tokopedia.posapp.di.qualifier.CloudSource;
+import com.tokopedia.posapp.di.qualifier.LocalSource;
 import com.tokopedia.posapp.di.scope.ProductScope;
+import com.tokopedia.posapp.product.common.data.repository.ProductCloudRepository;
+import com.tokopedia.posapp.product.common.data.repository.ProductLocalRepository;
+import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
+import com.tokopedia.posapp.product.common.data.source.cloud.ProductCloudSource;
+import com.tokopedia.posapp.product.common.data.source.local.ProductLocalSource;
+import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.product.productdetail.domain.usecase.GetProductUseCase;
-import com.tokopedia.posapp.etalase.StoreProductCacheUseCase;
+import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
+import com.tokopedia.posapp.product.productlist.domain.usecase.GetAllProductUseCase;
+import com.tokopedia.posapp.product.productlist.domain.usecase.GetProductListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,44 +39,14 @@ public class ProductModule {
     }
 
     @Provides
-    GetProductMapper provideGetProductMapper() {
-        return new GetProductMapper();
+    @CloudSource
+    ProductRepository provideProductCloudRepository(ProductCloudSource productCloudSource) {
+        return new ProductCloudRepository(productCloudSource);
     }
 
     @Provides
-    GetProductListMapper provideGetGatewayProductListMapper(Gson gson) {
-        return new GetProductListMapper(gson);
-    }
-
-    @Provides
-    ProductFactory provideProductFactory(ProductListApi productListApi,
-                                         ProductApi productApi,
-                                         GetProductMapper getProductMapper,
-                                         GetProductListMapper getProductListMapper) {
-        return new ProductFactory(
-                productListApi,
-                productApi,
-                getProductMapper,
-                getProductListMapper
-        );
-    }
-
-    @Provides
-    ProductRepository provideProductRepository(ProductFactory productFactory) {
-        return new ProductRepositoryImpl(productFactory);
-    }
-
-    @Provides
-    GetProductUseCase provideGetProductUseCase(ThreadExecutor threadExecutor,
-                                               PostExecutionThread postExecutionThread,
-                                               ProductRepository productRepository) {
-        return new GetProductUseCase(threadExecutor, postExecutionThread, productRepository);
-    }
-
-    @Provides
-    StoreProductCacheUseCase provideStoreProductCacheUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             ProductRepository productRepository) {
-        return new StoreProductCacheUseCase(threadExecutor, postExecutionThread, productRepository);
+    @LocalSource
+    ProductRepository provideProductLocalRepository(ProductLocalSource source) {
+        return new ProductLocalRepository(source);
     }
 }
