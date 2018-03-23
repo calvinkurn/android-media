@@ -228,6 +228,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 int currentPosition = viewListener.getAdapterListSize() + listFeedView.size();
+                if (viewListener.getAdapterListSize() > 1) {currentPosition-- ;}
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
                         if (domain.getContent().getOfficialStores() != null
