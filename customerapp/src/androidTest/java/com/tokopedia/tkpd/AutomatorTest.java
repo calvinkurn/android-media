@@ -129,13 +129,13 @@ public class AutomatorTest {
         UiObject threeButton = uiDevice.findObject(new UiSelector().text("3"));
         threeButton.click();
 
-        UiObject plusButton = uiDevice.findObject(new UiSelector().text("+"));
+        UiObject plusButton = uiDevice.findObject(new UiSelector().resourceId("com.android.calculator2:id/op_add"));
         plusButton.click();
 
         UiObject fiveButton = uiDevice.findObject(new UiSelector().text("5"));
         fiveButton.click();
 
-        UiObject equalsButton = uiDevice.findObject(new UiSelector().text("="));
+        UiObject equalsButton = uiDevice.findObject(new UiSelector().resourceId("com.android.calculator2:id/eq"));
         equalsButton.click();
 
         UiObject display = uiDevice.findObject(new UiSelector()
