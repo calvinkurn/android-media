@@ -11,48 +11,32 @@ import java.util.List;
 
 public class Attribute {
 
-    @SerializedName("id")
+    @SerializedName("service_name")
     @Expose
-    private int id;
-    @SerializedName("shipper_name")
-    @Expose
-    private String shipperName;
+    private String serviceName;
     @SerializedName("service_id")
     @Expose
     private int serviceId;
-    @SerializedName("origin_id")
-    @Expose
-    private int originId;
-    @SerializedName("destination_id")
-    @Expose
-    private int destinationId;
-    @SerializedName("weight")
-    @Expose
-    private int weight;
     @SerializedName("service_etd")
     @Expose
     private String serviceEtd;
-    @SerializedName("weight_service")
+    @SerializedName("service_order")
     @Expose
-    private int weightService;
+    private int serviceOrder;
+    @SerializedName("service_range_price")
+    @Expose
+    private String serviceRangePrice;
+
     @SerializedName("products")
     @Expose
     private List<Product> products;
 
-    public int getId() {
-        return id;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getShipperName() {
-        return shipperName;
-    }
-
-    public void setShipperName(String shipperName) {
-        this.shipperName = shipperName;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public int getServiceId() {
@@ -63,30 +47,6 @@ public class Attribute {
         this.serviceId = serviceId;
     }
 
-    public int getOriginId() {
-        return originId;
-    }
-
-    public void setOriginId(int originId) {
-        this.originId = originId;
-    }
-
-    public int getDestinationId() {
-        return destinationId;
-    }
-
-    public void setDestinationId(int destinationId) {
-        this.destinationId = destinationId;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
     public String getServiceEtd() {
         return serviceEtd;
     }
@@ -95,12 +55,20 @@ public class Attribute {
         this.serviceEtd = serviceEtd;
     }
 
-    public int getWeightService() {
-        return weightService;
+    public int getServiceOrder() {
+        return serviceOrder;
     }
 
-    public void setWeightService(int weightService) {
-        this.weightService = weightService;
+    public void setServiceOrder(int serviceOrder) {
+        this.serviceOrder = serviceOrder;
+    }
+
+    public String getServiceRangePrice() {
+        return serviceRangePrice;
+    }
+
+    public void setServiceRangePrice(String serviceRangePrice) {
+        this.serviceRangePrice = serviceRangePrice;
     }
 
     public List<Product> getProducts() {
@@ -110,4 +78,6 @@ public class Attribute {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+
 }

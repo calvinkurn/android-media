@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
+import com.tokopedia.transaction.checkout.data.service.RatesService;
 
 import javax.inject.Inject;
 
@@ -16,10 +17,10 @@ import rx.functions.Func1;
  */
 
 public class RatesDataStore {
-    private final KeroAuthService service;
+    private final RatesService service;
 
     @Inject
-    public RatesDataStore(KeroAuthService service) {
+    public RatesDataStore(RatesService service) {
         this.service = service;
     }
 

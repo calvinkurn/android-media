@@ -9,12 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Product {
 
-    @SerializedName("service_id")
-    @Expose
-    private int serviceId;
-    @SerializedName("service_desc")
-    @Expose
-    private String serviceDesc;
     @SerializedName("shipper_name")
     @Expose
     private String shipperName;
@@ -33,39 +27,30 @@ public class Product {
     @SerializedName("is_show_map")
     @Expose
     private int isShowMap;
-    @SerializedName("price")
+    @SerializedName("shipper_price")
     @Expose
-    private int price;
-    @SerializedName("formatted_price")
+    private int shipperPrice;
+    @SerializedName("shipper_formatted_price")
     @Expose
-    private String formattedPrice;
-    @SerializedName("etd")
+    private String shipperFormattedPrice;
+    @SerializedName("shipper_etd")
     @Expose
-    private String etd;
+    private String shipperEtd;
     @SerializedName("min_etd")
     @Expose
     private int minEtd;
     @SerializedName("max_etd")
     @Expose
     private int maxEtd;
+    @SerializedName("shipper_weight")
+    @Expose
+    private int shipperWeight;
     @SerializedName("check_sum")
     @Expose
     private String checkSum;
     @SerializedName("ut")
     @Expose
     private String ut;
-    @SerializedName("max_hours_id")
-    @Expose
-    private String maxHoursId;
-    @SerializedName("desc_hours_id")
-    @Expose
-    private String descHoursId;
-    @SerializedName("max_hours")
-    @Expose
-    private String masHours;
-    @SerializedName("desc_hours")
-    @Expose
-    private String descHours;
     @SerializedName("insurance_price")
     @Expose
     private int insurancePrice;
@@ -75,37 +60,15 @@ public class Product {
     @SerializedName("insurance_type_info")
     @Expose
     private String insuranceTypeInfo;
-    @SerializedName("weight_product")
-    @Expose
-    private int weightProduct;
-    @SerializedName("weight_order_spid")
-    @Expose
-    private int weightOrderSpid;
     @SerializedName("insurance_used_type")
     @Expose
     private int insuranceUsedType;
-    @SerializedName("insurance_used_default")
-    @Expose
-    private int insuranceUsedDefault;
     @SerializedName("insurance_used_info")
     @Expose
     private String insuranceUsedInfo;
-
-    public int getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceDesc() {
-        return serviceDesc;
-    }
-
-    public void setServiceDesc(String serviceDesc) {
-        this.serviceDesc = serviceDesc;
-    }
+    @SerializedName("insurance_used_default")
+    @Expose
+    private int insuranceUsedDefault;
 
     public String getShipperName() {
         return shipperName;
@@ -155,28 +118,28 @@ public class Product {
         this.isShowMap = isShowMap;
     }
 
-    public int getPrice() {
-        return price;
+    public int getShipperPrice() {
+        return shipperPrice;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setShipperPrice(int shipperPrice) {
+        this.shipperPrice = shipperPrice;
     }
 
-    public String getFormattedPrice() {
-        return formattedPrice;
+    public String getShipperFormattedPrice() {
+        return shipperFormattedPrice;
     }
 
-    public void setFormattedPrice(String formattedPrice) {
-        this.formattedPrice = formattedPrice;
+    public void setShipperFormattedPrice(String shipperFormattedPrice) {
+        this.shipperFormattedPrice = shipperFormattedPrice;
     }
 
-    public String getEtd() {
-        return etd;
+    public String getShipperEtd() {
+        return shipperEtd;
     }
 
-    public void setEtd(String etd) {
-        this.etd = etd;
+    public void setShipperEtd(String shipperEtd) {
+        this.shipperEtd = shipperEtd;
     }
 
     public int getMinEtd() {
@@ -195,6 +158,14 @@ public class Product {
         this.maxEtd = maxEtd;
     }
 
+    public int getShipperWeight() {
+        return shipperWeight;
+    }
+
+    public void setShipperWeight(int shipperWeight) {
+        this.shipperWeight = shipperWeight;
+    }
+
     public String getCheckSum() {
         return checkSum;
     }
@@ -209,38 +180,6 @@ public class Product {
 
     public void setUt(String ut) {
         this.ut = ut;
-    }
-
-    public String getMaxHoursId() {
-        return maxHoursId;
-    }
-
-    public void setMaxHoursId(String maxHoursId) {
-        this.maxHoursId = maxHoursId;
-    }
-
-    public String getDescHoursId() {
-        return descHoursId;
-    }
-
-    public void setDescHoursId(String descHoursId) {
-        this.descHoursId = descHoursId;
-    }
-
-    public String getMasHours() {
-        return masHours;
-    }
-
-    public void setMasHours(String masHours) {
-        this.masHours = masHours;
-    }
-
-    public String getDescHours() {
-        return descHours;
-    }
-
-    public void setDescHours(String descHours) {
-        this.descHours = descHours;
     }
 
     public int getInsurancePrice() {
@@ -267,28 +206,20 @@ public class Product {
         this.insuranceTypeInfo = insuranceTypeInfo;
     }
 
-    public int getWeightProduct() {
-        return weightProduct;
-    }
-
-    public void setWeightProduct(int weightProduct) {
-        this.weightProduct = weightProduct;
-    }
-
-    public int getWeightOrderSpid() {
-        return weightOrderSpid;
-    }
-
-    public void setWeightOrderSpid(int weightOrderSpid) {
-        this.weightOrderSpid = weightOrderSpid;
-    }
-
     public int getInsuranceUsedType() {
         return insuranceUsedType;
     }
 
     public void setInsuranceUsedType(int insuranceUsedType) {
         this.insuranceUsedType = insuranceUsedType;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
     }
 
     public int getInsuranceUsedDefault() {
@@ -299,11 +230,4 @@ public class Product {
         this.insuranceUsedDefault = insuranceUsedDefault;
     }
 
-    public String getInsuranceUsedInfo() {
-        return insuranceUsedInfo;
-    }
-
-    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
-        this.insuranceUsedInfo = insuranceUsedInfo;
-    }
 }

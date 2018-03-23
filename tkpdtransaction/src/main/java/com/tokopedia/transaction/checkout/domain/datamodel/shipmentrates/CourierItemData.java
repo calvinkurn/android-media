@@ -11,10 +11,8 @@ public class CourierItemData implements Parcelable {
     private int shipperId;
     private int shipperProductId;
     private String name;
-    private String estimatedDayDelivery;
-    private String estimatedHourDelivery;
     private String deliverySchedule;
-    private String defaultEtd;
+    private String estimatedTimeDelivery;
     private int minEtd;
     private int maxEtd;
     private int deliveryPrice;
@@ -36,10 +34,8 @@ public class CourierItemData implements Parcelable {
         shipperId = in.readInt();
         shipperProductId = in.readInt();
         name = in.readString();
-        estimatedDayDelivery = in.readString();
-        estimatedHourDelivery = in.readString();
         deliverySchedule = in.readString();
-        defaultEtd = in.readString();
+        estimatedTimeDelivery = in.readString();
         minEtd = in.readInt();
         maxEtd = in.readInt();
         deliveryPrice = in.readInt();
@@ -89,14 +85,6 @@ public class CourierItemData implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEstimatedDayDelivery() {
-        return estimatedDayDelivery;
-    }
-
-    public void setEstimatedDayDelivery(String estimatedDayDelivery) {
-        this.estimatedDayDelivery = estimatedDayDelivery;
     }
 
     public boolean isSelected() {
@@ -187,14 +175,6 @@ public class CourierItemData implements Parcelable {
         this.usePinPoint = usePinPoint;
     }
 
-    public String getEstimatedHourDelivery() {
-        return estimatedHourDelivery;
-    }
-
-    public void setEstimatedHourDelivery(String estimatedHourDelivery) {
-        this.estimatedHourDelivery = estimatedHourDelivery;
-    }
-
     public boolean isAllowDropshiper() {
         return allowDropshiper;
     }
@@ -219,12 +199,12 @@ public class CourierItemData implements Parcelable {
         this.maxEtd = maxEtd;
     }
 
-    public String getDefaultEtd() {
-        return defaultEtd;
+    public String getEstimatedTimeDelivery() {
+        return estimatedTimeDelivery;
     }
 
-    public void setDefaultEtd(String defaultEtd) {
-        this.defaultEtd = defaultEtd;
+    public void setEstimatedTimeDelivery(String estimatedTimeDelivery) {
+        this.estimatedTimeDelivery = estimatedTimeDelivery;
     }
 
     @Override
@@ -237,10 +217,8 @@ public class CourierItemData implements Parcelable {
         dest.writeInt(shipperId);
         dest.writeInt(shipperProductId);
         dest.writeString(name);
-        dest.writeString(estimatedDayDelivery);
-        dest.writeString(estimatedHourDelivery);
         dest.writeString(deliverySchedule);
-        dest.writeString(defaultEtd);
+        dest.writeString(estimatedTimeDelivery);
         dest.writeInt(minEtd);
         dest.writeInt(maxEtd);
         dest.writeInt(deliveryPrice);
