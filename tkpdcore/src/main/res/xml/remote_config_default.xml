@@ -177,4 +177,8 @@
         <key>mainapp_native_promo_list</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_flight_transaction_menu</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

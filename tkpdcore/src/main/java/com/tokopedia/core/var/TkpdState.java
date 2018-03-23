@@ -202,6 +202,9 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int PEOPLE_CONFIRM_SHIPPING = 203;
         public static final int PEOPLE_TRANSACTION_LIST = 204;
         public static final int PEOPLE_TRANSACTION_CANCELED = 205;
+        public static final int PEOPLE_SHOPPING_LIST = 206;
+        public static final int PEOPLE_DIGITAL_TRANSACTION_LIST = 207;
+        public static final int PEOPLE_FLIGHT_TRANSACTION_LIST = 208;
 
         public static final int SHOP_NEW_ORDER = 301;
         public static final int SHOP_CONFIRM_SHIPPING = 302;
@@ -241,6 +244,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int FEATURED_PRODUCT = 99;
 
         public static final int APPSHARE = 58;
+
     }
 
     public class Application {

@@ -599,6 +599,7 @@ public interface AppEventTracking {
         String RECEIVE_CONFIRMATION = "Receive Confirmation";
         String CANCELLED_ORDER = "Cancelled Order";
         String PURCHASE_LIST = "Purchase List";
+        String FLIGHT_TRANSACTION_LIST = "Flight Transaction List";
         String SALES = "Sales";
         String NEW_ORDER = "New Order";
         String DELIVERY_CONFIRMATION = "Delivery Confirmation";
