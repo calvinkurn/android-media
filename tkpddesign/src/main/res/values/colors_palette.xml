@@ -47,4 +47,12 @@
     <color name="preview_bg">#d3f0d4</color>
     <color name="grey_150">#4a4a4a</color>
 
+    <!--contactus_colors-->
+    <color name="grey_text">#141414</color>
+    <color name="green_text">#399c3f</color>
+    <color name="yellow_1">#ffc107</color>
+    <color name="yellow_text">#f5a623</color>
+    <color name="red_text">#f44336</color>
+    <color name="grey2_text">#de000000</color>
+    <color name="black3_text">#b3000000</color>
 </resources>
