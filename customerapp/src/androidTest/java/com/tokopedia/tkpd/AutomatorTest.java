@@ -53,75 +53,6 @@ public class AutomatorTest {
     }
 
     @Test
-    public void testCalculator() throws Exception {
-        uiDevice.findObject(new UiSelector().descriptionContains("Apps")).clickAndWaitForNewWindow();
-
-//        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
-//        appViews.setAsHorizontalList();
-
-        uiDevice.findObject(new UiSelector().descriptionContains("Calculator")).clickAndWaitForNewWindow();
-
-//        UiObject calculatorApp = appViews.getChildByText(new UiSelector()
-//                .className(android.widget.TextView.class.getName()), "Calculator");
-//        calculatorApp.clickAndWaitForNewWindow();
-
-        // Calculator app
-        UiObject threeButton = uiDevice.findObject(new UiSelector().text("3"));
-        threeButton.click();
-
-        UiObject plusButton = uiDevice.findObject(new UiSelector().text("+"));
-        plusButton.click();
-
-        UiObject fiveButton = uiDevice.findObject(new UiSelector().text("5"));
-        fiveButton.click();
-
-        UiObject equalsButton = uiDevice.findObject(new UiSelector().text("="));
-        equalsButton.click();
-
-        UiObject display = uiDevice.findObject(new UiSelector()
-                .resourceId("com.android.calculator2:id/display"));
-        UiObject displayNumber = display.getChild(new UiSelector().index(0));
-
-        assertEquals(displayNumber.getText(), "8");
-
-        uiDevice.pressHome();
-    }
-
-    public void testBrowserApp() throws Exception {
-        uiDevice.findObject(new UiSelector().descriptionContains("Apps")).clickAndWaitForNewWindow();
-
-        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
-        appViews.setAsHorizontalList();
-
-        UiObject browserApp = appViews.getChildByText(new UiSelector()
-                .className(android.widget.TextView.class.getName()), "Browser");
-        browserApp.clickAndWaitForNewWindow();
-
-        // Browser App set url
-        UiObject urlForm = uiDevice.findObject(new UiSelector()
-                .resourceId("com.android.browser:id/url"));
-        urlForm.setText("http://www.google.cz");
-        //uiDevice.pressKeyCode(KeyEvent.KEYCODE_ENTER);
-        uiDevice.pressEnter();
-
-        // Wait to load page
-        SystemClock.sleep(10000);
-
-        // Click on webview to lose focus from form
-        UiObject webView = uiDevice.findObject(new UiSelector()
-                .className("android.webkit.WebView"));
-        webView.click();
-
-        uiDevice.pressMenu();
-
-        // Sleep to show the menu
-        SystemClock.sleep(1000);
-        UiObject refreshButton = uiDevice.findObject(new UiSelector()
-                .text("Refresh"));
-        refreshButton.click();
-    }
-
-    @Test
     public void test() throws InterruptedException, UiObjectNotFoundException {
         openApp("com.android.calculator2");
 
@@ -148,13 +79,7 @@ public class AutomatorTest {
 
         takeScreenshot("screenshot-1.png");
 
-//        editText.setText("123456");
-//        UiObject2 protectObject = waitForObject(By.text("Submit"));
-//        protectObject.click();
-//
-//        takeScreenshot("screenshot-2.png");
-
-        Thread.sleep(10000);
+        Thread.sleep(1_000);
     }
 
     private void openApp(String packageName) {
