@@ -12,6 +12,8 @@ import javax.inject.Inject;
 public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCancellationContract.View>
         implements FlightCancellationContract.Presenter{
 
+
+
     @Inject
     public FlightCancellationPresenter() {
     }

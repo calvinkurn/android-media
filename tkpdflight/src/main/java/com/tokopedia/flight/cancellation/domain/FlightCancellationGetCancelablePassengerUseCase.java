@@ -18,7 +18,7 @@ import rx.functions.Func1;
  * @author by furqan on 23/03/18.
  */
 
-public class FlightPassengerGetCancelablePassengerUseCase extends UseCase<List<FlightCancellationViewModel>> {
+public class FlightCancellationGetCancelablePassengerUseCase extends UseCase<List<FlightCancellationViewModel>> {
 
     private static final String PARAM_INVOICE_ID = "invoice_id";
 
@@ -26,8 +26,8 @@ public class FlightPassengerGetCancelablePassengerUseCase extends UseCase<List<F
     private FlightCancellationViewModelMapper flightCancellationViewModelMapper;
 
     @Inject
-    public FlightPassengerGetCancelablePassengerUseCase(FlightRepository flightRepository,
-                                                        FlightCancellationViewModelMapper flightCancellationViewModelMapper) {
+    public FlightCancellationGetCancelablePassengerUseCase(FlightRepository flightRepository,
+                                                           FlightCancellationViewModelMapper flightCancellationViewModelMapper) {
         this.flightRepository = flightRepository;
         this.flightCancellationViewModelMapper = flightCancellationViewModelMapper;
     }
