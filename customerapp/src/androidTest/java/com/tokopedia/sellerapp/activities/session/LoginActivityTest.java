@@ -1,9 +1,13 @@
 package com.tokopedia.sellerapp.activities.session;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -43,6 +47,10 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -54,11 +62,11 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
+
     @Rule
-    public ActivityTestRule<LoginActivity> activityTestRule =
-            new ActivityTestRule<LoginActivity>(
-                    LoginActivity.class, true, false
-            );
+    public IntentsTestRule<LoginActivity> mIntentsRule = new IntentsTestRule<LoginActivity>(
+            LoginActivity.class, true, false
+    );
 
     @Inject
     GCMHandler gcmHandler;
@@ -164,6 +172,15 @@ public class LoginActivityTest {
      */
     @Test
     public void testFirstRunSellerHome2() throws Exception{
+        Intent resultData = new Intent();
+        String phoneNumber = "123-345-6789";
+        resultData.putExtra("phone", phoneNumber);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
+        intending(toPackage("com.tokopedia.session.register.view.activity"))
+                .respondWith(result);
+
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
         startEmptyIntentLoginActivity();
@@ -184,11 +201,11 @@ public class LoginActivityTest {
         intent.putExtra("method", 444);
         intent.putExtra("email", "noiz354@gmail.com");
         intent.putExtra("pws", "lalala");
-        activityTestRule.launchActivity(intent);
+        mIntentsRule.launchActivity(intent);
     }
 
     private void startEmptyIntentLoginActivity(){
-        activityTestRule.launchActivity(null);
+        mIntentsRule.launchActivity(null);
     }
 
     @After
