@@ -85,15 +85,10 @@ public class SearchItemRequestLocal extends RoaAcsRequest<NewImageSearchResponse
                 kv.put("cat_id", this.catId);
             }
 
-//            org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
-
-
-            String encodePicName = Base64.encodeToString("searchPic".getBytes(), Base64.NO_WRAP | Base64.NO_CLOSE);//base64.encodeToString("searchPic".getBytes());
-            String encodePicContent = Base64.encodeToString(this.searchPicture, Base64.NO_WRAP | Base64.NO_CLOSE);//;
-
-            Log.e("Encoded picName", encodePicName);
-            Log.e("Encode picCont", encodePicContent);
-
+            String encodePicName = Base64.encodeToString("searchPic".getBytes(),
+                    Base64.NO_WRAP | Base64.NO_CLOSE);
+            String encodePicContent = Base64.encodeToString(this.searchPicture,
+                    Base64.NO_WRAP | Base64.NO_CLOSE);
             kv.put("pic_list", encodePicName);
             kv.put(encodePicName, encodePicContent);
             String content = buildContent(kv);
@@ -103,7 +98,6 @@ public class SearchItemRequestLocal extends RoaAcsRequest<NewImageSearchResponse
             if (content.length() > 8388608) {
                 return false;
             } else {
-
                 this.putHeaderParameter("Accept-Encoding", "");
                 this.setHttpContent(content.getBytes(), "UTF-8", FormatType.RAW);
                 this.setAcceptFormat(FormatType.JSON);

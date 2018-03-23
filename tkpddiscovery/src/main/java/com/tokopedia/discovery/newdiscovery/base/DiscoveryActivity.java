@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +45,6 @@ import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -562,63 +559,11 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void addImageToGallery(final Bitmap filePath) {
-
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
         String fname = "Image-" + n;
         MediaStore.Images.Media.insertImage(getContentResolver(), filePath, fname, "");
-
-
-        /*ContentValues values = new ContentValues();
-
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.MediaColumns.DATA, filePath);
-
-        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);*/
-    }
-
-    private void saveImage(Bitmap bitmap) {
-
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-
-        File file = new File(dir, fname);
-        FileOutputStream fOut;
-        try {
-            fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fOut);
-            fOut.flush();
-            fOut.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveImageToGallery(Bitmap finalBitmap) {
-
-        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root);
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-        File file = new File(myDir, fname);
-        if (file.exists()) file.delete();
-        Log.i("LOAD", root + fname);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void showSnackBarView(String message) {

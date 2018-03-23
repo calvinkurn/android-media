@@ -1,11 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.util.Log;
-
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
@@ -31,6 +30,14 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
     private GetProductUseCase getProductUseCase;
     private GetImageSearchUseCase getImageSearchUseCase;
+
+    private final String REGION_ID = "ap-southeast-1";
+    private final String ACCESS_KEY_ID = "LTAIUeEWSvia1KkW";
+    private final String SECRET_KEY = "eJLV3PJCCEn7sqf5vVrIzaESTfsNdm";
+    private final String END_POINT_NAME = "ap-southeast-1";
+    private final String PRODUCT = "ImageSearch";
+    private final String IMAGE_SEARCH_ALIYUN_DOMAIN = "imagesearch.ap-southeast-1.aliyuncs.com";
+    private final String IMAGE_SEARCH_INSTANCE = "productsearch01";
 
     public DiscoveryPresenter(GetProductUseCase getProductUseCase) {
         this.getProductUseCase = getProductUseCase;
@@ -68,27 +75,25 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
             @Override
             public Object call() throws Exception {
 
-                IClientProfile profile = DefaultProfile.getProfile("ap-southeast-1", "LTAIUeEWSvia1KkW",
-                        "eJLV3PJCCEn7sqf5vVrIzaESTfsNdm");
-                // add endpoint, no need to modify
-                DefaultProfile.addEndpoint("ap-southeast-1", "ap-southeast-1",
-                        "ImageSearch", "imagesearch.ap-southeast-1.aliyuncs.com");
+                IClientProfile profile = DefaultProfile.getProfile(REGION_ID, ACCESS_KEY_ID,
+                        SECRET_KEY);
+                DefaultProfile.addEndpoint(END_POINT_NAME, REGION_ID,
+                        PRODUCT, IMAGE_SEARCH_ALIYUN_DOMAIN);
 
                 IAcsClient client = new DefaultAcsClient(profile);
 
                 SearchItemRequestLocal request = new SearchItemRequestLocal();
-                request.setInstanceName("productsearch01");
+                request.setInstanceName(IMAGE_SEARCH_INSTANCE);
                 request.setSearchPicture(imageByteArray);
 
                 if (!request.buildPostContent()) {
-                    System.out.println("build post content failed.");
+                    CommonUtils.dumper("Image Search build post content failed.");
                     return new NewImageSearchResponse();
                 }
 
                 NewImageSearchResponse response = null;
                 try {
                     response = client.getAcsResponse(request);
-                    Log.e("ImageSearch Res: ", response.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -98,11 +103,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultImageSearchSubscriber(getBaseDiscoveryView()));
-
-       /* getImageSearchUseCase.execute(
-                GetImageSearchUseCase.initializeSearchRequestParam(imageByteArray),
-                new DefaultImageSearchSubscriber(getBaseDiscoveryView())
-        );*/
 
     }
 
