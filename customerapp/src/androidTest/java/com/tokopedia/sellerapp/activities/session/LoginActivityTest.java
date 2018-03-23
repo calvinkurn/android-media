@@ -9,6 +9,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -39,9 +40,11 @@ import rx.schedulers.Schedulers;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
@@ -165,12 +168,13 @@ public class LoginActivityTest {
 
         startEmptyIntentLoginActivity();
 
-        Thread.sleep(3_000);
+        Thread.sleep(500);
 
         UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
 
         if(smartlock.exists()){
-            device.pressBack();
+            Log.i("NORMANSYAH", "smartlock exists");
+            onView(isRoot()).perform(pressBack());
         }
     }
 
