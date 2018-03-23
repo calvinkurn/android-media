@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
@@ -20,15 +22,18 @@ import rx.functions.Func1;
 
 public class LoginRegisterPhoneNumberUseCase extends UseCase<LoginRegisterPhoneNumberModel> {
     private RegisterPhoneNumberUseCase registerPhoneNumberUseCase;
+    private GetUserInfoUseCase getUserInfoUseCase;
     private MakeLoginUseCase makeLoginUseCase;
 
     @Inject
     public LoginRegisterPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                            PostExecutionThread postExecutionThread,
                                            RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+                                           GetUserInfoUseCase getUserInfoUseCase,
                                            MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
         this.registerPhoneNumberUseCase = registerPhoneNumberUseCase;
+        this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
     }
 
@@ -36,6 +41,8 @@ public class LoginRegisterPhoneNumberUseCase extends UseCase<LoginRegisterPhoneN
     public Observable<LoginRegisterPhoneNumberModel> createObservable(RequestParams requestParams) {
         LoginRegisterPhoneNumberModel loginRegisterPhoneNumberModel = new LoginRegisterPhoneNumberModel();
         return getObservableRegisterPhoneNumber(requestParams, loginRegisterPhoneNumberModel)
+                .flatMap(getObservableGetInfo(loginRegisterPhoneNumberModel))
+                .flatMap(addGetInfoResult(loginRegisterPhoneNumberModel))
                 .flatMap(getObservableMakeLogin(loginRegisterPhoneNumberModel))
                 .flatMap(addMakeLoginResult(loginRegisterPhoneNumberModel));
     }
@@ -52,6 +59,27 @@ public class LoginRegisterPhoneNumberUseCase extends UseCase<LoginRegisterPhoneN
             @Override
             public Observable<LoginRegisterPhoneNumberModel> call(RegisterPhoneNumberModel registerPhoneNumberModel) {
                 viewModel.setRegisterPhoneNumberModel(registerPhoneNumberModel);
+                return Observable.just(viewModel);
+            }
+        };
+    }
+
+    private Func1<LoginRegisterPhoneNumberModel, Observable<GetUserInfoDomainModel>>
+    getObservableGetInfo(LoginRegisterPhoneNumberModel viewModel) {
+        return new Func1<LoginRegisterPhoneNumberModel, Observable<GetUserInfoDomainModel>>() {
+            @Override
+            public Observable<GetUserInfoDomainModel> call(LoginRegisterPhoneNumberModel viewModel1) {
+                return getUserInfoUseCase.createObservable(GetUserInfoUseCase.generateParam());
+            }
+        };
+    }
+
+    private Func1<GetUserInfoDomainModel, Observable<LoginRegisterPhoneNumberModel>>
+    addGetInfoResult(final LoginRegisterPhoneNumberModel viewModel) {
+        return new Func1<GetUserInfoDomainModel, Observable<LoginRegisterPhoneNumberModel>> (){
+            @Override
+            public Observable<LoginRegisterPhoneNumberModel> call(GetUserInfoDomainModel getUserInfoDomainModel) {
+                viewModel.setGetUserInfoDomainModel(getUserInfoDomainModel);
                 return Observable.just(viewModel);
             }
         };

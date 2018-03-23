@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
@@ -24,6 +25,7 @@ import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActi
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     private ListView lvManage;
     private ArrayList<String> Name = new ArrayList<String>();
     private ArrayList<Integer> ResID = new ArrayList<Integer>();
+
+    private SessionHandler sessionHandler;
 
 
     public static FragmentSettingPeople newInstance() {
@@ -52,6 +56,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sessionHandler = new SessionHandler(getActivity().getApplicationContext());
         View mainView = inflater.inflate(R.layout.fragment_manage_general, container, false);
         Name.clear();
         ResID.clear();
@@ -140,8 +145,14 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
 					break;*/
                     case 5:
-                        intent = new Intent(getActivity(), ManagePasswordActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
+                            startActivity(intent);
+                        } else {
+                            startActivity(
+                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
+                                            .getAddPasswordIntent(getActivity()));
+                        }
                         break;
                 }
             }
@@ -182,8 +193,14 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
 					break;*/
                     case 5:
-                        intent = new Intent(getActivity(), ManagePasswordActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
+                            startActivity(intent);
+                        } else {
+                            startActivity(
+                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
+                                            .getAddPasswordIntent(getActivity()));
+                        }
                         break;
                 }
             }

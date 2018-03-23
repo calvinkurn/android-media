@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
@@ -19,6 +20,7 @@ import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActi
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class ManagePeople extends TkpdActivity {
     private ListView lvManage;
     private ArrayList<String> Name = new ArrayList<String>();
     private ArrayList<Integer> ResID = new ArrayList<Integer>();
+    private SessionHandler sessionHandler;
 
 	@Override
 	public String getScreenName() {
@@ -49,6 +52,7 @@ public class ManagePeople extends TkpdActivity {
         lvManage = (ListView) findViewById(R.id.list_manage);
         lvAdapter = new SimpleListTabViewAdapter(ManagePeople.this, Name, ResID);
         lvManage.setAdapter(lvAdapter);
+        sessionHandler = new SessionHandler(getApplicationContext());
         if(GlobalConfig.isSellerApp()) {
             Name.add(getString(R.string.title_personal_profile));
             Name.add(getString(R.string.title_address));
@@ -147,8 +151,14 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 5:
-                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
+                            startActivity(intent);
+                        } else {
+                            startActivity(
+                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
+                                            .getAddPasswordIntent(getActivity()));
+                        }
                         break;
                 }
 
@@ -185,8 +195,14 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 5:
-                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
-                        startActivity(intent);
+                        if (sessionHandler.isHasPassword()) {
+                            intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
+                            startActivity(intent);
+                        } else {
+                            startActivity(
+                                    ((TkpdCoreRouter)getActivity().getApplicationContext())
+                                            .getAddPasswordIntent(getActivity()));
+                        }
                         break;
                 }
 

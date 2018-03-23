@@ -32,6 +32,9 @@ public class AddEmailSubscriber extends Subscriber<AddEmailViewModel> {
     @Override
     public void onNext(AddEmailViewModel addEmailViewModel) {
         mainView.dismissLoading();
-        mainView.onSuccessVerify();
+        if (addEmailViewModel.isSuccess())
+            mainView.onSuccessVerify();
+        else
+            mainView.onErrorVerify(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()));
     }
 }

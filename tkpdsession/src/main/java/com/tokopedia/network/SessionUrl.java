@@ -78,6 +78,7 @@ public class SessionUrl {
         public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
         public static final String PATH_ADD_EMAIL = BASE_UPDATE;
         public static final String PATH_CHANGE_NAME = BASE_UPDATE;
+        public static final String PATH_ADD_PASSWORD = BASE_UPDATE;
 
     }
 

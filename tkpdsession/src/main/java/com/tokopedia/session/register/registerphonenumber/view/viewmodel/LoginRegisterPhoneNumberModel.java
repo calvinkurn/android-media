@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.registerphonenumber.view.viewmodel;
 
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 
@@ -10,6 +11,7 @@ import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
 public class LoginRegisterPhoneNumberModel {
     private RegisterPhoneNumberModel registerPhoneNumberModel;
     private MakeLoginDomain makeLoginDomain;
+    private GetUserInfoDomainModel getUserInfoDomainModel;
 
     public RegisterPhoneNumberModel getRegisterPhoneNumberModel() {
         return registerPhoneNumberModel;
@@ -25,5 +27,13 @@ public class LoginRegisterPhoneNumberModel {
 
     public void setMakeLoginDomain(MakeLoginDomain makeLoginDomain) {
         this.makeLoginDomain = makeLoginDomain;
+    }
+
+    public GetUserInfoDomainModel getGetUserInfoDomainModel() {
+        return getUserInfoDomainModel;
+    }
+
+    public void setGetUserInfoDomainModel(GetUserInfoDomainModel getUserInfoDomainModel) {
+        this.getUserInfoDomainModel = getUserInfoDomainModel;
     }
 }

@@ -25,7 +25,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -79,6 +78,7 @@ public class SessionHandler {
     private static final String TEMP_EMAIL = "TEMP_EMAIL";
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
+    private static final String HAS_PASSWORD = "HAS_PASSWORD";
 
     private Context context;
     private String email;
@@ -140,6 +140,8 @@ public class SessionHandler {
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
+        editor.putBoolean(HAS_PASSWORD, true);
+
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -717,5 +719,16 @@ public class SessionHandler {
 
     public interface onLogoutListener {
         void onLogout(Boolean success);
+    }
+
+    public void setHasPassword(boolean hasPassword) {
+        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
+        cache.putBoolean(HAS_PASSWORD, hasPassword);
+        cache.applyEditor();
+    }
+
+    public boolean isHasPassword() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(HAS_PASSWORD, true);
     }
 }

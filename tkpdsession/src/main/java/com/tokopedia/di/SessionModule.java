@@ -40,6 +40,9 @@ import com.tokopedia.session.addchangeemail.data.source.AddEmailSource;
 import com.tokopedia.session.addchangeemail.domain.usecase.AddEmailUseCase;
 import com.tokopedia.session.addchangeemail.domain.usecase.CheckEmailUseCase;
 import com.tokopedia.session.addchangeemail.domain.usecase.RequestVerificationUseCase;
+import com.tokopedia.session.addchangepassword.data.mapper.AddPasswordMapper;
+import com.tokopedia.session.addchangepassword.data.source.AddPasswordSource;
+import com.tokopedia.session.addchangepassword.domain.usecase.AddPasswordUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
@@ -385,14 +388,17 @@ SessionModule {
         return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
     }
 
+
+
     @SessionScope
     @Provides
     LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+            GetUserInfoUseCase getUserInfoUseCase,
             MakeLoginUseCase makeLoginUseCase) {
-        return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, makeLoginUseCase);
+        return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 
     @SessionScope
@@ -466,5 +472,21 @@ SessionModule {
                                              PostExecutionThread postExecutionThread,
                                              ChangeNameSource source) {
         return new ChangeNameUseCase(threadExecutor, postExecutionThread, source);
+    }
+
+    @SessionScope
+    @Provides
+    AddPasswordSource provideAddPasswordSource(@Named(BEARER_SERVICE) AccountsService service,
+                                             AddPasswordMapper addPasswordMapper) {
+        return new AddPasswordSource(service, addPasswordMapper);
+    }
+
+
+    @SessionScope
+    @Provides
+    AddPasswordUseCase provideAddPasswordUseCase(ThreadExecutor threadExecutor,
+                                                PostExecutionThread postExecutionThread,
+                                                AddPasswordSource source) {
+        return new AddPasswordUseCase(threadExecutor, postExecutionThread, source);
     }
 }

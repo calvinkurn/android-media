@@ -252,6 +252,14 @@
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
 
 
+    <!--ADD CHANGE PASSWORD-->
+    <string name="title_add_password">Buat Kata Sandi</string>
+    <string name="add_password_top">Membuat kata sandi membantu menjaga keamanan\n akun dan transaksi Anda di Tokopedia.</string>
+    <string name="title_add_password_hint">Masukkan Kata Sandi Baru</string>
+    <string name="info_password_min_char">Minimal 6 karakter</string>
+    <string name="button_password_continue">Buat Kata Sandi</string>
+
+
     <!--WELCOME PAGE-->
     <string name="title_welcome">Selamat Bergabung di Tokopedia</string>
     <string name="sub_title_welcome">Silahkan lanjut atau lengkapi profil \nuntuk menjadi <i>Verified Account</i>!</string>

@@ -1,12 +1,12 @@
-package com.tokopedia.session.changename.data.pojo;
+package com.tokopedia.session.addchangepassword.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by yfsx on 22/03/18.
+ * @author by yfsx on 23/03/18.
  */
 
-public class ChangeNameResponse {
+public class AddPasswordResponse {
     @SerializedName("is_success")
     private int isSuccess;
 

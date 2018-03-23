@@ -31,6 +31,9 @@ public class ChangeNameSubscriber extends Subscriber<ChangeNameViewModel> {
     @Override
     public void onNext(ChangeNameViewModel changeNameViewModel) {
         mainView.dismissLoading();
-        mainView.onSuccessSubmitName();
+        if (changeNameViewModel.isSuccess())
+            mainView.onSuccessSubmitName();
+        else
+            mainView.onErrorSubmitName(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()));
     }
 }

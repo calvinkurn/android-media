@@ -168,4 +168,9 @@ public interface AccountsApi {
     @POST(SessionUrl.UpdateProfile.PATH_CHANGE_NAME)
     Observable<Response<TkpdResponse>> changeName(@FieldMap Map<String,
             Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_ADD_PASSWORD)
+    Observable<Response<TkpdResponse>> addPassword(@FieldMap Map<String,
+            Object> parameters);
 }

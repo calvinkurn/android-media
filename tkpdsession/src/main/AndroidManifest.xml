@@ -161,6 +161,11 @@
             android:label="@string/title_add_email"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".addchangepassword.view.activity.AddPasswordActivity"
+            android:label="@string/title_add_password"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".changename.view.activity.ChangeNameActivity"

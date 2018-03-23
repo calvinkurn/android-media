@@ -54,6 +54,7 @@ public class CloudRegisterPhoneNumberSource {
                         EncoderDecoder.Encrypt(tokenModel.getRefreshToken(),
                                 SessionHandler.getRefreshTokenIV(context.getApplicationContext()))
                 );
+                sessionHandler.setHasPassword(false);
             }
         };
     }
