@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.common.di.component;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tkpdstream.common.BaseStreamActivity;
@@ -23,6 +24,8 @@ public interface StreamComponent {
     Retrofit.Builder retrofitBuilder();
 
     void inject(BaseStreamActivity baseChatActivity);
+
+    void inject(BaseDaggerFragment baseChatActivity);
 
     AnalyticTracker provideAnalyticTracker();
 

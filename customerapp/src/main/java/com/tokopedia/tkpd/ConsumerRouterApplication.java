@@ -1582,7 +1582,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void openTokoPoint(Context context, String url) {
-        startActivity(TokoPointWebviewActivity.getIntent(context, url));
+        context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
@@ -1597,6 +1597,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isEnabledGroupChat() {
+//        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
         return true;
     }
 

@@ -102,8 +102,8 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
     }
 
 
-    public void change(int position) {
-        listTab.get(position).setUpdated(true);
+    public void change(int position, boolean update) {
+        listTab.get(position).setUpdated(update);
         notifyItemChanged(position);
     }
 

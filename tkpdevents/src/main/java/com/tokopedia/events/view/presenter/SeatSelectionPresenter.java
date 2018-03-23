@@ -147,8 +147,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     }
 
-    public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds) {
-        getView().initializeSeatLayoutModel(selectedSeatList, rowIds);
+    public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
+        getView().initializeSeatLayoutModel(selectedSeatList, rowIds,actualSeatNo);
     }
 
     public void setSeatData() {
@@ -216,6 +216,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
         packageItem.setSeatId(mSelectedSeatViewModel.getSeatIds());
         packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
+        packageItem.setActualSeatNos(mSelectedSeatViewModel.getActualSeatNos());
         packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
