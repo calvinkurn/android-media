@@ -30,6 +30,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_HERO = "hero_4_image";
         public static final String LAYOUT_3_IMAGE = "3_image";
         public static final String LAYOUT_SPRINT = "sprint_3_image";
+        public static final String LAYOUT_6_IMAGE = "6_image";
 
         @Expose
         @SerializedName("id")
