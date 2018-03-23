@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.draft.data.mapper;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -74,7 +75,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     private ProductViewModel mapDraftToDomain(ProductDraftModel draftModel) {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductPictureViewModelList(mapPhotosDraftToProductViewModel(draftModel.getProductPhotos().getPhotos()));
-        productViewModel.setProductWholesale(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
+        productViewModel.setProductWholesale(null);
         productViewModel.setProductVideo(mapToProductVideo(draftModel.getProductVideos()));
         productViewModel.setProductName(draftModel.getProductName());
         productViewModel.setProductDescription(draftModel.getProductDescription());
@@ -95,7 +96,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         productViewModel.setProductId(draftModel.getProductId());
         productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 
-        productViewModel.setProductVariant(mapProductDraftOldVersion(draftModel));
+        productViewModel.setProductVariant(null);
         return productViewModel;
     }
 
@@ -251,21 +252,28 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
         for (ImageProductInputDraftModel draftModel : photos) {
             ProductPictureViewModel productPictureViewModel = generateProductPictureModel(draftModel);
-            productPictureViewModelList.add(productPictureViewModel);
+            if (productPictureViewModel!= null) {
+                productPictureViewModelList.add(productPictureViewModel);
+            }
         }
         return productPictureViewModelList;
     }
 
     private ProductPictureViewModel generateProductPictureModel(ImageProductInputDraftModel draftModel) {
-        ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
-        productPictureViewModel.setDescription(draftModel.getDescription());
+        ProductPictureViewModel productPictureViewModel = null;
         try {
-            ProductPictureResultUploadedViewModel resultUploadedViewModel = generatePicObj(draftModel.getPicObj());
-            productPictureViewModel.setY(Long.parseLong(resultUploadedViewModel.getH()));
-            productPictureViewModel.setX(Long.parseLong(resultUploadedViewModel.getW()));
-            productPictureViewModel.setFilePath(resultUploadedViewModel.getFilePath());
-            productPictureViewModel.setFileName(resultUploadedViewModel.getFileName());
-        } catch (UnsupportedEncodingException e) {
+            if (draftModel!= null) {
+                productPictureViewModel = new ProductPictureViewModel();
+                productPictureViewModel.setDescription(draftModel.getDescription());
+                if (TextUtils.isEmpty(draftModel.getPicId())) {
+                    productPictureViewModel.setId(0);
+                } else {
+                    productPictureViewModel.setId(Long.parseLong(draftModel.getPicId()));
+                }
+                productPictureViewModel.setFilePath(draftModel.getImagePath());
+                productPictureViewModel.setUrlThumbnail(draftModel.getUrl());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return productPictureViewModel;

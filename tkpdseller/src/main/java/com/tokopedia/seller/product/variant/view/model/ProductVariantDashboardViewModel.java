@@ -32,8 +32,8 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
     }
 
     public void addCombinationModelIfAligned(@NonNull ProductVariantCombinationViewModel productVariantCombinationViewModel,
-                                             @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp,
-                                             SparseIntArray mapPvoToIndex){
+                                                @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp,
+                                                SparseIntArray mapPvoToIndex){
         List<Integer> optionIntegerList = productVariantCombinationViewModel.getOpt();
         if (optionIntegerList != null && optionIntegerList.size() != 0) {
             int level1IdOrPvo = productVariantOptionChildLv1.gettId() > 0 ? productVariantOptionChildLv1.gettId():
@@ -54,6 +54,32 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
             if (productVariantCombinationViewModel.getLevel1String().equalsIgnoreCase(productVariantOptionChildLv1.getValue())) {
                 this.productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
             }
+        }
+    }
+
+    public void addCombinationModel(@Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp){
+        if (productVariantOptionChildLv2LookUp == null || productVariantOptionChildLv2LookUp.size() == 0){
+            ProductVariantCombinationViewModel productVariantCombinationViewModel = new ProductVariantCombinationViewModel(
+                    false,
+                    0,
+                    0,
+                    "",
+                    productVariantOptionChildLv1.getValue(),
+                    ""
+                    );
+            productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
+            return;
+        }
+        for (int j = 0, sizej = productVariantOptionChildLv2LookUp.size(); j < sizej; j++) {
+            ProductVariantCombinationViewModel productVariantCombinationViewModel = new ProductVariantCombinationViewModel(
+                false,
+                    0,
+                    0,
+                    "",
+                    productVariantOptionChildLv1.getValue(),
+                    productVariantOptionChildLv2LookUp.get(j).getValue()
+            );
+            productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
         }
     }
 

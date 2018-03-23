@@ -175,6 +175,7 @@ public class ProductVariantViewModel implements Parcelable {
             for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
                 if (stockType == StockTypeDef.TYPE_WAREHOUSE) {
                     productVariantCombinationViewModel.setActive(false);
+                    productVariantCombinationViewModel.setStock(0);
                 } else {
                     productVariantCombinationViewModel.setActive(true);
                     if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
@@ -255,7 +256,7 @@ public class ProductVariantViewModel implements Parcelable {
             String level1String = productVariantCombinationViewModel.getLevel1String();
 
             List<Integer> integerList = new ArrayList<>();
-            Integer indexLevel1 = null;
+            Integer indexLevel1;
             if (TextUtils.isEmpty(level1String)) {
                 // using pvo
                 indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.getOpt().get(0));
@@ -266,7 +267,7 @@ public class ProductVariantViewModel implements Parcelable {
             integerList.add(tIdLevel1);
             if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
                 String level2String = productVariantCombinationViewModel.getLevel2String();
-                Integer indexLevel2 = null;
+                Integer indexLevel2;
                 if (TextUtils.isEmpty(level1String)) {
                     // using pvo
                     indexLevel2 = mapPvoLevel2.get(productVariantCombinationViewModel.getOpt().get(1));

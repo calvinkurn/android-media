@@ -94,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/TextView.Title"
-                    android:text="@string/product_add_sku_hint"/>
+                    android:text="@string/product_add_sku_title"/>
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/text_input_layout_sku"

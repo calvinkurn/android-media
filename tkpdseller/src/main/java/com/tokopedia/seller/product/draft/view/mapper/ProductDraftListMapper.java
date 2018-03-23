@@ -17,7 +17,8 @@ public class ProductDraftListMapper {
     public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel, long draftId) {
         String primaryPhotoUrl = null;
         List<ProductPictureViewModel> imageProductInputDomainModelList = domainModel.getProductPictureViewModelList();
-        if (imageProductInputDomainModelList != null && imageProductInputDomainModelList.size() > 0) {
+        if (imageProductInputDomainModelList != null && imageProductInputDomainModelList.size() > 0 &&
+                imageProductInputDomainModelList.get(0)!= null) {
             ProductPictureViewModel imageProductInputDomainModel = imageProductInputDomainModelList.get(0);
             primaryPhotoUrl = imageProductInputDomainModel.getUriOrPath();
         } else {
