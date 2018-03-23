@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -29,11 +30,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
+import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
+import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
+import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
 import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
@@ -95,7 +100,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     protected void initInjector() {
+        StreamComponent streamComponent = DaggerStreamComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
 
+        DaggerChatroomComponent.builder()
+                .streamComponent(streamComponent)
+                .build().inject(this);
+
+        presenter.attachView(this);
     }
 
     @Override
@@ -323,7 +335,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             public void run() {
                 channelInfoDialog.show();
             }
-        }, 1000);
+        }, 500);
     }
 
     @Override
@@ -354,5 +366,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onFinishTick() {
         setVoteHasEnded();
+    }
+
+    public void onMessageReceived(Visitable messageItem) {
+        if (messageItem instanceof VoteAnnouncementViewModel) {
+            VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
+            VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
+            showVoteLayout(temp);
+            ((GroupChatActivity)getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
+        }
     }
 }
