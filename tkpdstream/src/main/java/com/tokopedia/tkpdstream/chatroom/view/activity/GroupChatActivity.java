@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -157,7 +156,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
     private CloseableBottomSheetDialog channelInfoDialog;
-    private LinearLayout sponsorLayout;
+    private View sponsorLayout;
     private ImageView sponsorImage;
 
     private int initialFragment;

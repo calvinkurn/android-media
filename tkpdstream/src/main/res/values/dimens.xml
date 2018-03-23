@@ -43,4 +43,5 @@
     <dimen name="min_height_login">80dp</dimen>
     <dimen name="margin_chat_right">36dp</dimen>
     <dimen name="radius_chat_image">12dp</dimen>
+    <dimen name="sponsor_height">48dp</dimen>
 </resources>
