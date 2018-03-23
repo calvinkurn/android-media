@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.domain.datamodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 /**

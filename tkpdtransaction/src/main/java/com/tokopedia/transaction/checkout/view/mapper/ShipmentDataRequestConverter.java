@@ -6,8 +6,8 @@ import com.tokopedia.transaction.checkout.data.entity.request.DropshipDataChecko
 import com.tokopedia.transaction.checkout.data.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.ShippingInfoCheckoutRequest;
 import com.tokopedia.transaction.checkout.data.entity.request.ShopProductCheckoutRequest;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;

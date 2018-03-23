@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
 
 import java.util.List;
 

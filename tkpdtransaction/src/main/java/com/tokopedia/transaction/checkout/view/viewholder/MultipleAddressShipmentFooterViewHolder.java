@@ -8,12 +8,10 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by kris on 3/7/18. Tokopedia

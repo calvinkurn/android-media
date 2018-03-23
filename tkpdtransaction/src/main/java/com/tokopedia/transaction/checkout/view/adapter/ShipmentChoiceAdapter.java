@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 
 import java.util.List;
 

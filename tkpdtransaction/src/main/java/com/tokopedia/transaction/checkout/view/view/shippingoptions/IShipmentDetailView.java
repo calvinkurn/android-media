@@ -3,8 +3,8 @@ package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.

@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -52,17 +51,14 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.constants.InsuranceConstant;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.transaction.checkout.view.di.component.ShipmentDetailComponent;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
-
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
