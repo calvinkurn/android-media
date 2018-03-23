@@ -140,7 +140,7 @@ public class AutomatorTest {
 
         UiObject display = uiDevice.findObject(new UiSelector()
                 .resourceId("com.android.calculator2:id/display"));
-        UiObject displayNumber = display.getChild(new UiSelector().index(0));
+        UiObject displayNumber = display.getChild(new UiSelector().index(1));
 
         assertEquals(displayNumber.getText(), "8");
 
