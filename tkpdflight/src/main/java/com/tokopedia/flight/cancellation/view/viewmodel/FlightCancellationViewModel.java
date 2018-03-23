@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.view;
+package com.tokopedia.flight.cancellation.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,17 +17,18 @@ public class FlightCancellationViewModel implements Parcelable,
         Visitable<FlightCancellationTypeFactory> {
 
     private String journeyId;
-    private List<FlightBookingPassengerViewModel> passengerViewModelList;
+    private List<FlightCancellationPassengerViewModel> passengerViewModelList;
+
+    public FlightCancellationViewModel() {
+    }
 
     protected FlightCancellationViewModel(Parcel in) {
         journeyId = in.readString();
-        passengerViewModelList = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(journeyId);
-        dest.writeTypedList(passengerViewModelList);
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -60,11 +61,11 @@ public class FlightCancellationViewModel implements Parcelable,
         this.journeyId = journeyId;
     }
 
-    public List<FlightBookingPassengerViewModel> getPassengerViewModelList() {
+    public List<FlightCancellationPassengerViewModel> getPassengerViewModelList() {
         return passengerViewModelList;
     }
 
-    public void setPassengerViewModelList(List<FlightBookingPassengerViewModel> passengerViewModelList) {
+    public void setPassengerViewModelList(List<FlightCancellationPassengerViewModel> passengerViewModelList) {
         this.passengerViewModelList = passengerViewModelList;
     }
 }

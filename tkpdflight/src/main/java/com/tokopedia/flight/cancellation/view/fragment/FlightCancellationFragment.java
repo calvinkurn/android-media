@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
-import com.tokopedia.flight.cancellation.view.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresenter;

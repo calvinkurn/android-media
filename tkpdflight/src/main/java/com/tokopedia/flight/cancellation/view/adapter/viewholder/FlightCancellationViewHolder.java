@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.view.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 
 /**
  * @author by furqan on 21/03/18.
