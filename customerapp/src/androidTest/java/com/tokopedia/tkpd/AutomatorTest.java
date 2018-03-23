@@ -121,6 +121,7 @@ public class AutomatorTest {
         refreshButton.click();
     }
 
+    @Test
     public void test() throws InterruptedException, UiObjectNotFoundException {
         openApp("com.android.calculator2");
 
