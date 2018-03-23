@@ -1,11 +1,9 @@
 package com.tokopedia.session.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -37,10 +35,7 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
     private final GetTokenDataSource repository;
 
     @Inject
-    public GetTokenUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           GetTokenDataSource repository) {
-        super(threadExecutor, postExecutionThread);
+    public GetTokenUseCase(GetTokenDataSource repository) {
         this.repository = repository;
     }
 

@@ -37,7 +37,7 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> makeLogin(@FieldMap Map<String, String> params);
 
     @GET(SessionUrl.PATH_DISCOVER_LOGIN)
-    Observable<Response<TkpdResponse>> discoverLogin(@QueryMap TKPDMapParam<String, Object> parameters);
+    Observable<Response<TkpdResponse>> discoverLogin(@QueryMap Map<String, Object> parameters);
 
     @FormUrlEncoded
     @POST(SessionUrl.CREATE_PASSWORD)

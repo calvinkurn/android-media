@@ -1,11 +1,9 @@
 package com.tokopedia.profilecompletion.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -19,10 +17,7 @@ public class GetUserInfoUseCase extends UseCase<GetUserInfoDomainModel> {
 
     private final ProfileRepository profileRepository;
 
-    public GetUserInfoUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              ProfileRepository profileRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetUserInfoUseCase(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
 

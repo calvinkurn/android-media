@@ -146,7 +146,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     @Override
     public void discoverLogin() {
         getView().showLoadingDiscover();
-        discoverUseCase.execute(RequestParams.EMPTY, new LoginDiscoverSubscriber(getView()));
+        discoverUseCase.execute(com.tokopedia.usecase.RequestParams.EMPTY, new LoginDiscoverSubscriber(getView()));
 
     }
 

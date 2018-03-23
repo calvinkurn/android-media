@@ -155,7 +155,11 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         logoutInstagram(context);
-        MethodChecker.removeAllCookies(context);
+        try {
+            MethodChecker.removeAllCookies(context);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
 
