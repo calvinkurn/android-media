@@ -61,12 +61,16 @@ public interface ChatroomContract {
 
         void setReplyTextHint();
 
-        interface ImageViewHolderListener {
-            void onRedirectUrl(String url);
+        interface ImageAnnouncementViewHolderListener {
+            void onImageAnnouncementClicked(String url);
         }
 
         interface VoteAnnouncementViewHolderListener {
             void onVoteComponentClicked(String type, String name);
+        }
+
+        interface SprintSaleViewHolderListener {
+            void onFlashSaleClicked(String url);
         }
     }
 

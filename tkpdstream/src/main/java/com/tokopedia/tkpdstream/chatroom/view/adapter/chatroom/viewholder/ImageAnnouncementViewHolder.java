@@ -7,34 +7,34 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/27/18.
  */
 
-public class ImageViewHolder extends BaseChatViewHolder<ImageViewModel> {
+public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnouncementViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.image_view_holder;
-    private final ChatroomContract.View.ImageViewHolderListener listener;
+    private final ChatroomContract.View.ImageAnnouncementViewHolderListener listener;
 
     private ImageView contentImage;
 
-    public ImageViewHolder(View itemView, ChatroomContract.View.ImageViewHolderListener listener) {
+    public ImageAnnouncementViewHolder(View itemView, ChatroomContract.View.ImageAnnouncementViewHolderListener listener) {
         super(itemView);
         this.listener = listener;
         contentImage = itemView.findViewById(R.id.content_image);
     }
 
     @Override
-    public void bind(final ImageViewModel element) {
+    public void bind(final ImageAnnouncementViewModel element) {
         super.bind(element);
         ImageHandler.LoadImage(contentImage, element.getContentImageUrl());
         contentImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onRedirectUrl(element.getRedirectUrl());
+                listener.onImageAnnouncementClicked(element.getRedirectUrl());
             }
         });
     }

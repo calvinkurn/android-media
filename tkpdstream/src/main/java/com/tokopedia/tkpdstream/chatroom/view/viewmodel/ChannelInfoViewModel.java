@@ -16,42 +16,23 @@ public class ChannelInfoViewModel implements Parcelable{
     private String channelUrl;
     private String bannerUrl;
     private boolean hasPoll;
+    private String sponsorUrl;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
     private ChannelViewModel channelViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
-                                @Nullable VoteInfoViewModel voteInfoViewModel,
+                                String sponsorUrl, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
         this.hasPoll = hasPoll;
+        this.sponsorUrl = sponsorUrl;
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
     }
-
-    protected ChannelInfoViewModel(Parcel in) {
-        title = in.readString();
-        channelUrl = in.readString();
-        bannerUrl = in.readString();
-        hasPoll = in.readByte() != 0;
-        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
-    }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel in) {
-            return new ChannelInfoViewModel(in);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
 
     public String getChannelUrl() {
         return channelUrl;
@@ -83,6 +64,10 @@ public class ChannelInfoViewModel implements Parcelable{
         return hasPoll;
     }
 
+    public String getSponsorUrl() {
+        return sponsorUrl;
+    }
+
     @Nullable
     public VoteInfoViewModel getVoteInfoViewModel() {
         return voteInfoViewModel;
@@ -107,11 +92,35 @@ public class ChannelInfoViewModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(channelUrl);
-        dest.writeString(bannerUrl);
-        dest.writeByte((byte) (hasPoll ? 1 : 0));
-        dest.writeParcelable(voteInfoViewModel, flags);
-        dest.writeParcelable(channelViewModel, flags);
+        dest.writeString(this.title);
+        dest.writeString(this.channelUrl);
+        dest.writeString(this.bannerUrl);
+        dest.writeByte(this.hasPoll ? (byte) 1 : (byte) 0);
+        dest.writeString(this.sponsorUrl);
+        dest.writeParcelable(this.voteInfoViewModel, flags);
+        dest.writeParcelable(this.channelViewModel, flags);
     }
+
+    protected ChannelInfoViewModel(Parcel in) {
+        this.title = in.readString();
+        this.channelUrl = in.readString();
+        this.bannerUrl = in.readString();
+        this.hasPoll = in.readByte() != 0;
+        this.sponsorUrl = in.readString();
+        this.voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        this.channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>
+            () {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel source) {
+            return new ChannelInfoViewModel(source);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
 }
