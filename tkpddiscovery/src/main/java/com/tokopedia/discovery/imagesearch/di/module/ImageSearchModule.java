@@ -3,7 +3,6 @@ package com.tokopedia.discovery.imagesearch.di.module;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -12,7 +11,6 @@ import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
-import com.tokopedia.discovery.imagesearch.data.mapper.ImageSearchResultMapper;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository;
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepositoryImpl;
 import com.tokopedia.discovery.imagesearch.data.source.ImageSearchDataSource;
@@ -57,10 +55,5 @@ public class ImageSearchModule {
     @Provides
     ImageSearchDataSource imageSearchDataSource(ProductMapper productMapper, BrowseApi browseApi) {
         return new ImageSearchDataSource(productMapper, browseApi);
-    }
-
-    @Provides
-    ImageSearchResultMapper imageSearchResultMapper(Gson gson) {
-        return new ImageSearchResultMapper(gson);
     }
 }
