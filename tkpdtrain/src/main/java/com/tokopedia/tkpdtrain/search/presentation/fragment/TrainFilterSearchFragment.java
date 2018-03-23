@@ -10,11 +10,17 @@ import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.intdef.CurrencyEnum;
+import com.tokopedia.design.label.selection.SelectionItem;
+import com.tokopedia.design.label.selection.SelectionLabelView;
+import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.tkpdtrain.search.domain.FilterSearchData;
 import com.tokopedia.tkpdtrain.search.presentation.contract.FilterSearchActionView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nabillasabbaha on 3/20/18.
@@ -46,6 +52,33 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
         filterSearchData = listener.getFilterSearchData();
 
         renderPriceRangeFilter(view);
+        renderTrainNameFilter(view);
+    }
+
+    private void renderTrainNameFilter(View view) {
+        SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_train_name);
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        if (filterSearchData.getTrains() != null) {
+            for (int i = 0, sizei = filterSearchData.getTrains().size(); i < sizei; i++) {
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(filterSearchData.getTrains().get(0));
+                selectionItem.setValue(filterSearchData.getTrains().get(0));
+                selectionItemList.add(selectionItem);
+            }
+        }
+        selectionTextLabelViewName.setItemList(selectionItemList);
+        selectionTextLabelViewName.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+            @Override
+            public void onDelete(SelectionItem<String> selectionItem) {
+                //TODO delete
+            }
+        });
+        selectionTextLabelViewName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onNameFilterSearchTrainClicked();
+            }
+        });
     }
 
     private void renderPriceRangeFilter(View view) {

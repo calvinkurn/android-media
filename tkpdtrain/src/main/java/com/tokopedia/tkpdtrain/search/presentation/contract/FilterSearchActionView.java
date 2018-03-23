@@ -11,4 +11,8 @@ public interface FilterSearchActionView {
     FilterSearchData getFilterSearchData();
 
     void onChangeFilterSearchData(FilterSearchData filterSearchData);
+
+    void setTitleToolbar(String titleToolbar);
+
+    void onNameFilterSearchTrainClicked();
 }

@@ -20,6 +20,7 @@ import com.tokopedia.tkpdtrain.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.domain.FilterSearchData;
 import com.tokopedia.tkpdtrain.search.presentation.contract.FilterSearchActionView;
 import com.tokopedia.tkpdtrain.search.presentation.contract.TrainFilterSearchContract;
+import com.tokopedia.tkpdtrain.search.presentation.fragment.TrainFilterNameFragment;
 import com.tokopedia.tkpdtrain.search.presentation.fragment.TrainFilterSearchFragment;
 import com.tokopedia.tkpdtrain.search.presentation.presenter.TrainFilterSearchPresenter;
 
@@ -107,6 +108,27 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     }
 
     @Override
+    public FilterSearchData getFilterSearchData() {
+        return filterSearchData;
+    }
+
+    @Override
+    public void onChangeFilterSearchData(FilterSearchData filterSearchData) {
+        this.filterSearchData = filterSearchData;
+        presenter.getCountScheduleAvailable(filterSearchData);
+    }
+
+    @Override
+    public void setTitleToolbar(String titleToolbar) {
+        updateTitle(titleToolbar);
+    }
+
+    @Override
+    public void onNameFilterSearchTrainClicked() {
+        replaceFragment(TrainFilterNameFragment.newInstance(this.filterSearchData.getTrains()), TrainFilterNameFragment.TAG);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_train_filter_reset, menu);
         return true;
@@ -130,13 +152,23 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     }
 
     @Override
-    public FilterSearchData getFilterSearchData() {
-        return filterSearchData;
+    public void onBackPressed() {
+        this.onBackPressed(false);
     }
 
-    @Override
-    public void onChangeFilterSearchData(FilterSearchData filterSearchData) {
-        this.filterSearchData = filterSearchData;
-        presenter.getCountScheduleAvailable(filterSearchData);
+    private void onBackPressed(boolean submitFilter) {
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            if (!submitFilter) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+            }
+        }
+    }
+
+    public void replaceFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
     }
 }
