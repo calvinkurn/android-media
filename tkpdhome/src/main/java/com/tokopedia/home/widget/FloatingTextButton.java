@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ public class FloatingTextButton extends FrameLayout {
     private Drawable leftIcon;
     private Drawable rightIcon;
     private int background;
+    private boolean titleAllCaps;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -144,7 +146,8 @@ public class FloatingTextButton extends FrameLayout {
         leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
         rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
         background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE);
-
+        titleAllCaps = styleable.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, true);
+        titleView.setAllCaps(titleAllCaps);
         styleable.recycle();
     }
 
@@ -156,12 +159,20 @@ public class FloatingTextButton extends FrameLayout {
         setBackgroundColor(background);
 
         container.setContentPadding(
-                getHorizontalPaddingValue(16),
+                getHorizontalPaddingValue(8),
                 getVerticalPaddingValue(8),
-                getHorizontalPaddingValue(16),
+                getHorizontalPaddingValue(8),
                 getVerticalPaddingValue(8)
         );
         initViewRadius();
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if(visibility==VISIBLE) {
+            initViewRadius();
+        }
     }
 
     private void initViewRadius() {

@@ -10,6 +10,9 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 import java.util.List;
 
@@ -60,11 +63,11 @@ public class HomeRecycleAdapter extends BaseAdapter {
         this.visitables.addAll(items);
     }
 
-    public Visitable getItem(int pos){
+    public Visitable getItem(int pos) {
         return visitables.get(pos);
     }
 
-    public List<Visitable> getItems(){
+    public List<Visitable> getItems() {
         return visitables;
     }
 
@@ -80,13 +83,13 @@ public class HomeRecycleAdapter extends BaseAdapter {
         this.visitables.remove(emptyModel);
     }
 
-    public void showRetry(){
+    public void showRetry() {
         int positionStart = getItemCount();
         this.visitables.add(retryModel);
         notifyItemRangeInserted(positionStart, 1);
     }
 
-    public void removeRetry(){
+    public void removeRetry() {
         int index = this.visitables.indexOf(retryModel);
         this.visitables.remove(retryModel);
         notifyItemRemoved(index);
@@ -94,5 +97,16 @@ public class HomeRecycleAdapter extends BaseAdapter {
 
     public boolean isRetryShown() {
         return visitables.contains(retryModel);
+    }
+
+    public int findFirstInspirationPosition() {
+        int pos = 0;
+        for (int i = 0; i < getItemCount(); i++) {
+            if (getItems().get(i) instanceof DigitalsViewModel) {
+                pos = (i + 1);
+                break;
+            }
+        }
+        return pos;
     }
 }

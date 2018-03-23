@@ -19,7 +19,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
 import java.util.ArrayList;
@@ -65,8 +64,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
             }
 
-            list.add(new SprintSaleCarouselViewModel());
-
             if (homeData.getDynamicHomeChannel() != null
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
@@ -76,6 +73,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
                                 channel.getEnhanceImpressionSprintSaleHomePage()
                         );
+                    } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)){
+
                     } else {
                         position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));

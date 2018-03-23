@@ -34,9 +34,12 @@
                 android:layout_marginRight="6dp"
                 android:gravity="center"
                 android:maxLines="1"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:letterSpacing="0.02"
                 android:textAllCaps="true"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                tools:text="Text button"
                 tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry" />
 
             <ImageView

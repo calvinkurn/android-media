@@ -42,6 +42,7 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
@@ -52,6 +53,7 @@ import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.R;
@@ -67,6 +69,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
 import java.util.ArrayList;
@@ -101,6 +106,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
+    private FloatingTextButton floatingTextButton;
+    private boolean showRecomendation;
 
     public static HomeFragment newInstance() {
 
@@ -140,7 +147,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchRemoteConfig() {
-        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        showRecomendationButton(showRecomendation);
+    }
+
+    private void showRecomendationButton(boolean showRecomendation) {
+        if(showRecomendation){
+            floatingTextButton.setVisibility(View.VISIBLE);
+        } else {
+            floatingTextButton.setVisibility(View.GONE);
+        }
     }
 
     @Nullable
@@ -151,6 +168,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
         tabContainer = view.findViewById(R.id.tab_container);
+        floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         presenter.attachView(this);
         presenter.setFeedListener(this);
@@ -172,6 +190,29 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         fetchRemoteConfig();
+        floatingTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
+                    int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
+                    Visitable visitable = adapter.getItem(firstVisibleItemPos);
+                    if ((visitable instanceof InspirationViewModel || visitable instanceof TopAdsViewModel)
+                            && floatingTextButton.getVisibility() == View.VISIBLE) {
+                        floatingTextButton.setVisibility(View.GONE);
+                    } else if (firstVisibleItemPos == 0 && floatingTextButton.getVisibility() == View.GONE) {
+                        floatingTextButton.setVisibility(View.VISIBLE);
+                    }
+                } else if (floatingTextButton.getVisibility() == View.VISIBLE) {
+                    floatingTextButton.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initTabNavigation() {

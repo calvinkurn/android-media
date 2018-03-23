@@ -31,6 +31,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_3_IMAGE = "3_image";
         public static final String LAYOUT_SPRINT = "sprint_3_image";
         public static final String LAYOUT_6_IMAGE = "6_image";
+        public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
 
         @Expose
         @SerializedName("id")
@@ -375,6 +376,28 @@ public class DynamicHomeChannel {
         @SerializedName("slashedPrice")
         private String slashedPrice;
 
+        @SerializedName("label")
+        private String label;
+
+        @SerializedName("soldPercentage")
+        private int soldPercentage;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public int getSoldPercentage() {
+            return soldPercentage;
+        }
+
+        public void setSoldPercentage(int soldPercentage) {
+            this.soldPercentage = soldPercentage;
+        }
+
         public String getId() {
             return id;
         }
@@ -461,6 +484,12 @@ public class DynamicHomeChannel {
         @SerializedName("url")
         private String url;
 
+        @SerializedName("backColor")
+        private String backColor;
+
+        @SerializedName("backImage")
+        private String backImage;
+
         public String getId() {
             return id;
         }
@@ -499,6 +528,22 @@ public class DynamicHomeChannel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getBackColor() {
+            return backColor;
+        }
+
+        public void setBackColor(String backColor) {
+            this.backColor = backColor;
+        }
+
+        public String getBackImage() {
+            return backImage;
+        }
+
+        public void setBackImage(String backImage) {
+            this.backImage = backImage;
         }
     }
 }
