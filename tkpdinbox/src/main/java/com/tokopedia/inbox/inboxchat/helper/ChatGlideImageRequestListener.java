@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.helper;
 
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -26,11 +27,15 @@ public class ChatGlideImageRequestListener implements RequestListener<String, Gl
             int width = glideDrawable.getIntrinsicWidth();
             int height = glideDrawable.getIntrinsicHeight();
             if (width > height) {
-                targetImageView.getLayoutParams().width = targetImageView.getMaxWidth();
+                if (targetImageView.getLayoutParams().width != ViewGroup.LayoutParams.MATCH_PARENT) {
+                    targetImageView.getLayoutParams().width = targetImageView.getMaxWidth();
+                }
                 targetImageView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 targetImageView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                targetImageView.getLayoutParams().height = targetImageView.getMaxHeight();
+                if(targetImageView.getLayoutParams().height != ViewGroup.LayoutParams.MATCH_PARENT) {
+                    targetImageView.getLayoutParams().height = targetImageView.getMaxHeight();
+                }
             }
             targetImageView.requestLayout();
         }
