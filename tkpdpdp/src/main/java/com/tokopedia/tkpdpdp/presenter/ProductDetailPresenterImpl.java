@@ -12,12 +12,14 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
+import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -297,7 +299,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
-                            setGoldMerchantFeatures(context, productDetailData);
+                            setVideoProduct(context, productDetailData);
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -811,7 +813,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
-                        setGoldMerchantFeatures(context, data);
+                        setVideoProduct(context, data);
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -904,6 +906,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.VideoLoadedListener() {
                     @Override
                     public void onSuccess(@NonNull VideoData data) {
+                        Log.e("data", new Gson().toJson(data));
                         viewListener.loadVideo(data);
                     }
 
@@ -914,10 +917,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 });
     }
 
-    private void setGoldMerchantFeatures(Context context, ProductDetailData productDetailData) {
-        if (productDetailData.getShopInfo().getShopIsGold() == 1) {
-            requestVideo(context, productDetailData.getInfo().getProductId().toString());
-        }
+    private void setVideoProduct(Context context, ProductDetailData productDetailData) {
+        requestVideo(context, productDetailData.getInfo().getProductId().toString());
     }
 
     public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId, @NonNull final String shopType) {
