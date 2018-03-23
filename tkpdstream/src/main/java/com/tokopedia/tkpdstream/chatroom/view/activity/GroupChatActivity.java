@@ -296,25 +296,25 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setupChannelBannerParams(boolean isThereSponsor) {
-        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
-        if (isThereSponsor) {
-            if (isLollipopOrNewer()) {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_and_sponsor);
-            } else {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_and_sponsor_without_status);
-            }
-        } else {
-            if (isLollipopOrNewer()) {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height);
-            } else {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_without_status);
-            }
-        }
-        channelBanner.setLayoutParams(params);
+//        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
+//        if (isThereSponsor) {
+//            if (isLollipopOrNewer()) {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_and_sponsor);
+//            } else {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_and_sponsor_without_status);
+//            }
+//        } else {
+//            if (isLollipopOrNewer()) {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height);
+//            } else {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_without_status);
+//            }
+//        }
+//        channelBanner.setLayoutParams(params);
     }
 
     private boolean isLollipopOrNewer() {

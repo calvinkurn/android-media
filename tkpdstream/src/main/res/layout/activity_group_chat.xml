@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/root_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_content"
@@ -16,14 +16,16 @@
         <ImageView
             android:id="@+id/channel_banner"
             android:layout_width="0dp"
-            android:layout_height="@dimen/channel_banner_height_and_sponsor_without_status"
+            android:layout_height="0dp"
             android:alpha="0.8"
             android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/cardview_dark_background" />
+            app:layout_constraintVertical_weight="1"
+            tools:src="@color/cardview_dark_background"/>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -38,30 +40,44 @@
             app:titleTextAppearance="@style/ToolbarGroupChat"
             tools:layout_height="?attr/actionBarSize"
             tools:subtitle="subtitle"
-            tools:title="title" />
+            tools:title="title"/>
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:id="@+id/sponsor_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/sponsor_height"
-            android:layout_marginLeft="@dimen/new_margin_med"
-            android:layout_marginRight="@dimen/new_margin_med"
-            android:layout_marginTop="@dimen/new_margin_small"
-            android:background="@color/white"
-            android:foreground="@drawable/bg_sponsor_border"
-            app:cardCornerRadius="@dimen/card_channel_elevation"
-            app:cardElevation="0dp"
-            app:contentPadding="@dimen/space_atomic"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            >
 
-            <ImageView
-                android:id="@+id/sponsor_image"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars" />
-        </android.support.v7.widget.CardView>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_ms"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:background="@color/white"
+                android:foreground="@drawable/bg_sponsor_border"
+                app:cardCornerRadius="@dimen/card_channel_elevation"
+                app:cardElevation="0dp"
+                app:contentPadding="@dimen/space_atomic"
+                >
+
+                <ImageView
+                    android:id="@+id/sponsor_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:src="@tools:sample/avatars"/>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.Space
+
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_ms"/>
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/tab"
@@ -69,20 +85,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/channel_banner" />
+            app:layout_constraintTop_toBottomOf="@id/channel_banner"/>
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tab"
-            app:layout_constraintVertical_weight="1"
-            tools:ignore="MergeRootFrame" />
+                     xmlns:tools="http://schemas.android.com/tools"
+                     android:id="@+id/container"
+                     android:layout_width="0dp"
+                     android:layout_height="0dp"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_weight="1"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tab"
+                     app:layout_constraintVertical_weight="1"
+                     tools:ignore="MergeRootFrame"/>
 
         <!--<com.tokopedia.design.tab.Tabs-->
         <!--android:id="@+id/tab"-->
@@ -114,6 +130,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
 </RelativeLayout>
