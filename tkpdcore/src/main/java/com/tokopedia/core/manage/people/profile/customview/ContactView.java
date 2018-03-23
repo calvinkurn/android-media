@@ -27,7 +27,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public View changeHpBtn;
     public EditText phone;
     public TextView tvPhone;
-    public View phoneVerificationSection;
     public View verificationBtn;
     public TextView checkEmailInfo;
     public TextView tvEmail, tvEmailHint;
@@ -69,7 +68,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
         changeHpBtn = view.findViewById(R.id.change_hp_button);
         phone = view.findViewById(R.id.phone);
         tvPhone = (TextView) view.findViewById(R.id.tv_phone);
-        phoneVerificationSection = view.findViewById(R.id.phone_verification_section);
         verificationBtn = view.findViewById(R.id.verify_phone_button);
         checkEmailInfo = view.findViewById(R.id.check_email_info);
     }
