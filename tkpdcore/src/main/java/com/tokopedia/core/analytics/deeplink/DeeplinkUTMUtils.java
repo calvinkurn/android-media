@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class DeeplinkUTMUtils {
                     try {
                         queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
                                 URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
