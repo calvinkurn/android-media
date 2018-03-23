@@ -409,6 +409,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showChatroomFragment(mChannel);
                 break;
             case CHANNEL_VOTE_FRAGMENT:
+                tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
                 showChannelVoteFragment();
                 break;
             case CHANNEL_INFO_FRAGMENT:
@@ -902,8 +903,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private boolean currentFragmentIsChat() {
         return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                        GroupChatFragment;
+                getSupportFragmentManager().findFragmentById(R.id.container) instanceof GroupChatFragment;
+    }
+
+    private boolean currentFragmentIsVote() {
+        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelVoteFragment;
     }
 
     private void setUserNameOnReplyText() {
@@ -919,6 +924,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
+        }
+
+        else if (currentFragmentIsVote()) {
+            ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
+                    (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
         }
     }
 
@@ -998,6 +1008,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 //        this.voteType = voteType;
 
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
-        tabAdapter.change(CHANNEL_VOTE_FRAGMENT);
+        if(!currentFragmentIsVote()) {
+            tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
+        }
+
     }
 }
