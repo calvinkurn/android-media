@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/channel_banner"
             android:layout_width="0dp"
-            android:layout_height="128dp"
+            android:layout_height="@dimen/channel_banner_height_and_sponsor_without_status"
             android:alpha="0.8"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,34 +40,28 @@
             tools:subtitle="subtitle"
             tools:title="title" />
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:id="@+id/sponsor_layout"
-            android:layout_width="160dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_sponsor_rounded_left"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sponsor_height"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/new_margin_small"
+            android:background="@color/white"
+            android:foreground="@drawable/bg_sponsor_border"
+            app:cardCornerRadius="@dimen/card_channel_elevation"
+            app:cardElevation="0dp"
+            app:contentPadding="@dimen/space_atomic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <TextView
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="8dp"
-                android:text="@string/sponsored_by"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="normal" />
-
             <ImageView
                 android:id="@+id/sponsor_image"
-                android:layout_width="96dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:src="@drawable/ic_network_error"
-                android:scaleType="centerCrop"/>
-        </LinearLayout>
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+        </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/tab"
