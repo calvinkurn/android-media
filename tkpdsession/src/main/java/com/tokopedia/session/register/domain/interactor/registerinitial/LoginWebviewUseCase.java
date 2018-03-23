@@ -1,6 +1,5 @@
 package com.tokopedia.session.register.domain.interactor.registerinitial;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
@@ -8,6 +7,7 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -21,13 +21,11 @@ import rx.functions.Func1;
 public class LoginWebviewUseCase extends LoginWithSosmedUseCase {
 
     @Inject
-    public LoginWebviewUseCase(ThreadExecutor threadExecutor,
-                               PostExecutionThread postExecutionThread,
-                               SessionHandler sessionHandler,
+    public LoginWebviewUseCase(SessionHandler sessionHandler,
                                GetTokenUseCase getTokenUseCase,
                                GetUserInfoUseCase getUserInfoUseCase,
                                MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread, sessionHandler, getTokenUseCase,
+        super(sessionHandler, getTokenUseCase,
                 getUserInfoUseCase, makeLoginUseCase);
     }
 
