@@ -163,7 +163,7 @@ public class LoginActivityTest {
     public void testFirstRunSellerHome2() throws Exception{
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
-        startLoginActivity();
+        startEmptyIntentLoginActivity();
 
         UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
 
