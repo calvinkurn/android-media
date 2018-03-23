@@ -30,6 +30,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
@@ -45,6 +46,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -293,7 +295,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.PEOPLE,
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 getTotalBuyerNotif());
-        /*buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_payment_status),
+        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_payment_status),
                 TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS,
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM)));
@@ -312,7 +314,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_purchase_list),
                 TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST,
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false)));
-*/
+
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_shopping_list),
                         TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST,
@@ -515,11 +517,12 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST:
-                    context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
+                    context.startActivity(TransactionPurchaseRouter.createIntentTxSummary(context));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    context.startActivity(DigitalCategoryListActivity.newInstance(context));
+                    context.startActivity(DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
