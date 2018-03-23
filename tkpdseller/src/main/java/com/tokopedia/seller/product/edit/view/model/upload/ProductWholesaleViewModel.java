@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.edit.view.model.upload;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-
+@Deprecated
 public class ProductWholesaleViewModel {
     private int qtyMin;
     private int qtyMax;

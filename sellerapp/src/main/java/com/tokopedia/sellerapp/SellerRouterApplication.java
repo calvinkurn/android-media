@@ -530,7 +530,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToProductDetailById(Context activity, String productId) {
-        startActivity(ProductInfoActivity.createInstance(activity, productId));
+        activity.startActivity(ProductInfoActivity.createInstance(activity, productId));
     }
 
     @Override
@@ -845,7 +845,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-            ProductAddActivity.start(activity);
+             ProductAddActivity.start(activity);
         }
     }
 

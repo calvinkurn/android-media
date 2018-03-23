@@ -78,7 +78,7 @@ public class StringUtils {
             }
             try {
                 return Double.parseDouble(result);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 return Double.parseDouble(omitNonNumeric(result));
             }
         }

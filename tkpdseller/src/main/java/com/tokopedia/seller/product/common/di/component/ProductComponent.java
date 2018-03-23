@@ -21,9 +21,11 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.common.di.scope.ProductScope;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import dagger.Component;
@@ -70,6 +72,8 @@ public interface ProductComponent {
     @TomeQualifier
     Retrofit tomeRetrofit();
 
+    TomeProductApi tomeProductApi();
+
     Retrofit.Builder retrofitBuilder();
 
     Gson gson();
@@ -91,4 +95,6 @@ public interface ProductComponent {
     ImageHandler imageHandler();
 
     ShopInfoRepository shopInfoRepository();
+
+    BearerInterceptor bearerInterceptor();
 }

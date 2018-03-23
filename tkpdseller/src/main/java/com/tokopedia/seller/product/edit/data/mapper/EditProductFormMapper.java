@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproductform.ProductEditForm;
@@ -25,6 +25,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/21/17.
  */
 
+@Deprecated
 public class EditProductFormMapper implements Func1<EditProductFormServiceModel, UploadProductInputDomainModel> {
     @Inject
     public EditProductFormMapper() {
@@ -56,16 +57,16 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setProductWeight(Integer.parseInt(product.getProductWeight()));
         domainModel.setProductName(product.getProductName());
         domainModel.setProductReturnable(data.getInfo().getProductReturnable());
-        @UploadToTypeDef int uploadTo = Integer.parseInt(product.getProductUploadTo());
-        if (uploadTo == UploadToTypeDef.TYPE_WAREHOUSE) {
-            uploadTo = UploadToTypeDef.TYPE_NOT_ACTIVE;
+        @StockTypeDef int uploadTo = Integer.parseInt(product.getProductUploadTo());
+        if (uploadTo == StockTypeDef.TYPE_WAREHOUSE) {
+            uploadTo = StockTypeDef.TYPE_ACTIVE_LIMITED;
         }
         domainModel.setProductUploadTo(uploadTo);
         if (product.getProductInvenageSwitch() != null) {
             domainModel.setProductInvenageSwitch(Integer.parseInt(product.getProductInvenageSwitch()));
         }
         if (product.getProductInvenageValue() != null) {
-            domainModel.setProductInvenageValue(Integer.parseInt(product.getProductInvenageValue()));
+            domainModel.setProductStock(Integer.parseInt(product.getProductInvenageValue()));
         }
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));

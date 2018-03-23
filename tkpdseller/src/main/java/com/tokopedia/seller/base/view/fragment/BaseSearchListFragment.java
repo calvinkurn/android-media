@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {

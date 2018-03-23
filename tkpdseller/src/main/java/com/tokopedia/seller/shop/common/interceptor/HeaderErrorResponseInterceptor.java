@@ -2,8 +2,8 @@ package com.tokopedia.seller.shop.common.interceptor;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
+import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 
 import okhttp3.Response;
 
@@ -12,7 +12,7 @@ import okhttp3.Response;
  * If the header is success, do not process the error.
  */
 
-public class HeaderErrorResponseInterceptor extends TkpdErrorResponseInterceptor {
+public class HeaderErrorResponseInterceptor extends ErrorResponseInterceptor {
 
     public static final int HEADER_ERROR_CODE = 422;
 

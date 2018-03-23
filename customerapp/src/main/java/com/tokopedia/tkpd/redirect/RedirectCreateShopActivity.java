@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.redirect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +15,9 @@ import com.tokopedia.tkpd.R;
 
 public class RedirectCreateShopActivity extends TActivity {
 
-    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
-    private static final String MARKET_URL = "market://details?id=";
+    private static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
+    private static final String APPLINK_PLAYSTORE = "market://details?id=";
+    private static final String URL_PLAYSTORE = "https://play.google.com/store/apps/details?id=";
 
     @Override
     public String getScreenName() {
@@ -31,8 +33,22 @@ public class RedirectCreateShopActivity extends TActivity {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(MARKET_URL + TOP_SELLER_APPLICATION_PACKAGE)));
+                        try {
+                            RedirectCreateShopActivity.this.startActivity(
+                                    new Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
+                                    )
+                            );
+                        } catch (ActivityNotFoundException anfe) {
+                            RedirectCreateShopActivity.this.startActivity(
+                                    new Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)
+                                    )
+                            );
+                        }
+
                         UnifyTracking.eventDownloadFromSwitcher();
                     }
                 });

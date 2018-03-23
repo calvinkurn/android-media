@@ -3,14 +3,12 @@ package com.tokopedia.seller.shop.open.view.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,11 +31,11 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
-import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditDialogFragment;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
@@ -239,8 +237,8 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         CommonUtils.hideKeyboard(getActivity(), getView());
         FragmentManager fm = getActivity().getSupportFragmentManager();
         ShopOpenMandatoryImageDialogFragment dialogFragment = ShopOpenMandatoryImageDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+        dialogFragment.show(fm, ProductAddImageEditDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageEditListener(new ProductAddImageEditDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditProductFromCamera(int position) {

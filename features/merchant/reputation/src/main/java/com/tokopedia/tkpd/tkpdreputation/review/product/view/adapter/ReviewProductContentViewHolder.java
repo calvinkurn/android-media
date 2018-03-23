@@ -115,9 +115,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             @Override
             public void onClick(View v) {
                 if (review.getText().toString().endsWith(MainApplication.getAppContext().getString(R.string.more_to_complete))) {
-                    review.setText(element.getReviewMessage());
+                    review.setText(MethodChecker.fromHtml(element.getReviewMessage()));
                 }
-
             }
         });
 

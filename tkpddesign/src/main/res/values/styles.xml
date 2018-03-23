@@ -5,10 +5,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:background">@android:color/white</item>
-        <item name="android:paddingTop">@dimen/margin_sm</item>
-        <item name="android:paddingLeft">@dimen/margin_sm</item>
-        <item name="android:paddingRight">@dimen/margin_sm</item>
-        <item name="android:paddingBottom">@dimen/margin_sm</item>
+        <item name="android:paddingTop">@dimen/new_margin_med</item>
+        <item name="android:paddingLeft">@dimen/new_margin_med</item>
+        <item name="android:paddingRight">@dimen/new_margin_med</item>
+        <item name="android:paddingBottom">@dimen/new_margin_med</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
@@ -184,8 +184,6 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/text_input_margin_offset</item>
-        <item name="android:layout_marginRight">@dimen/text_input_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
 

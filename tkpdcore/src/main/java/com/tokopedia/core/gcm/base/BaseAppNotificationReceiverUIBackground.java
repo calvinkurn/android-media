@@ -105,7 +105,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     public abstract void handlePromotionNotification(Bundle data);
 
-    public abstract void notifyReceiverBackgroundMessage(Bundle bundle);
+    public abstract void notifyReceiverBackgroundMessage(Observable<Bundle> data);
 
     protected Map<Integer, Visitable> getCommonDedicatiedObject() {
         Map<Integer, Visitable> dedicatedNotification = new HashMap<>();

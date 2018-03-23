@@ -32,6 +32,7 @@
             app:expandedTitleMarginEnd="12dp"
             app:expandedTitleMarginStart="12dp"
             app:expandedTitleTextAppearance="@style/TextView.Title"
+            app:scrimAnimationDuration="@integer/shop_page_collapsing_toolbar_hide_time"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include

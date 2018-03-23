@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:divider="@drawable/bg_line_separator"
+            android:orientation="vertical"
+            android:showDividers="beginning|middle">
+
+            <LinearLayout
+                style="@style/LabelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.tokopedia.seller.product.variant.view.widget.VariantImageView
+                    android:id="@+id/variant_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_ms"
+                    android:layout_marginEnd="@dimen/padding_ms"
+                    app:showPlusButton="true"/>
+
+                <com.tokopedia.seller.common.widget.VerticalLabelView
+                    android:id="@+id/lv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.seller.common.widget.LabelSwitch
+                    android:id="@+id/label_switch_product_status"
+                    style="@style/LabelLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:ls_content_color="@color/font_black_primary_70"
+                    app:ls_content_text_size="@dimen/font_title"
+                    app:ls_title="@string/product_variant_status"
+                    app:ls_title_color="@color/font_black_secondary_54"
+                    app:ls_title_text_size="@dimen/font_small" />
+
+                <com.tokopedia.design.text.CounterInputView
+                    android:id="@+id/counter_input_view_stock_total"
+                    style="@style/LabelLayout"
+                    app:counter_hint="@string/product_label_stock_total"
+                    app:counter_min="1" />
+
+                <TextView
+                    android:id="@+id/tv_variant_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    style="@style/TextView.Micro"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:text="@string/stock_variant_info"/>
+
+            </LinearLayout>
+
+            <com.tokopedia.design.text.SpinnerCounterInputView
+                android:id="@+id/spinner_counter_input_view_price"
+                style="@style/LabelLayout"
+                app:spinner_decimal_entries="@array/product_currency_entries"
+                app:spinner_decimal_hint="@string/product_label_variant_price"
+                app:spinner_decimal_max_length="@integer/product_max_counter_length"
+                app:spinner_decimal_show_counter_button="false"
+                app:spinner_decimal_values="@array/product_currency_values" />
+
+            <LinearLayout
+                style="@style/LabelLayout"
+                android:orientation="vertical"
+                android:id="@+id/vg_sku">
+
+                <TextView
+                    android:id="@+id/tv_sku_helper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextView.Title"
+                    android:text="@string/product_add_sku_hint"/>
+
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
+                    android:id="@+id/text_input_layout_sku"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:hint="@string/sku_helper_info">
+
+                    <EditText
+                        android:id="@+id/edit_text_sku"
+                        style="@style/EditText"
+                        android:layout_width="match_parent"
+                        android:digits="@string/product_add_sku_allowed_character"
+                        android:hint="@string/product_add_sku_hint"
+                        android:maxLength="@integer/product_max_character_sku"
+                        android:maxLines="1" />
+
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning">
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.Submit.Green"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/margin_small_sm"
+            android:layout_marginBottom="@dimen/margin_small_sm"
+            android:text="@string/label_variant_save" />
+    </LinearLayout>
+
+</LinearLayout>

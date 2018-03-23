@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/image_width_xxxl"
+    android:layout_height="@dimen/image_width_xxxl"
+    android:background="@drawable/bg_rect_stroke_lighter_gray"
     android:clickable="true"
-    android:background="?attr/selectableItemBackground"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:focusable="true">
 
-    <com.tokopedia.core.customwidget.SquareHImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageview_picture"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
         android:scaleType="fitCenter"
         tools:src="@mipmap/ic_launcher"
-        android:layout_gravity="center_vertical"/>
+        android:layout_margin="@dimen/padding_vs"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_vs"
+        android:background="@drawable/bg_rect_stroke_gray_dashed" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_mainpicture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="main picture"
+        android:layout_gravity="center_horizontal|bottom"
         android:background="#AA000000"
-        android:textSize="@dimen/font_small"
-        android:textColor="@android:color/white"
         android:gravity="center"
-        android:layout_gravity="center_horizontal|bottom" />
-
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_small"
+        tools:text="main picture" />
 </FrameLayout>

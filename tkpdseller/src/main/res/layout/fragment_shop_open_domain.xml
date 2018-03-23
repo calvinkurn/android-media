@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:text="@string/fill_domain_and_shop" />
 
-        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_shop_name"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                 android:inputType="textNoSuggestions"
                 android:maxLength="24"
                 android:singleLine="true" />
-        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <TextView
             style="@style/TextView.Micro.BlackDisabled"
@@ -66,7 +66,7 @@
             android:layout_marginBottom="@dimen/padding_vs"
             android:text="@string/shop_open_info_shop_domain_definition" />
 
-        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                 android:maxLength="@integer/max_domain_name_plus_tokopedia"
                 app:prefixTextColor="@color/font_black_secondary_54" />
 
-        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <View
             android:layout_width="wrap_content"

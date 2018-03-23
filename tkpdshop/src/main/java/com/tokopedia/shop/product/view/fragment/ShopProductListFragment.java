@@ -282,7 +282,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         showBottomActionView();
         if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                    list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    list, false, shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()),
+                    (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
     }
 
@@ -332,8 +333,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getOriginalPrice(), adapterPosition, false,
-                    shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), adapterPosition, false,
+                    shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getProductUrl());
     }

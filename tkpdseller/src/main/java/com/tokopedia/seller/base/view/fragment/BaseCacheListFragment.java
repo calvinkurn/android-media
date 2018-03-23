@@ -1,5 +1,6 @@
 package com.tokopedia.seller.base.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
@@ -18,15 +19,12 @@ import java.util.List;
 
 public abstract class BaseCacheListFragment<T extends ItemPickerType> extends BaseListFragment<BlankPresenter, T> implements BasePickerItemCacheList<T> {
 
-    protected BasePickerMultipleItem pickerMultipleItem;
+    protected BasePickerMultipleItem<T> pickerMultipleItem;
     protected List<T> itemList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getActivity() instanceof BasePickerMultipleItem) {
-            pickerMultipleItem = (BasePickerMultipleItem) getActivity();
-        }
         itemList = new ArrayList<>();
     }
 
@@ -65,5 +63,13 @@ public abstract class BaseCacheListFragment<T extends ItemPickerType> extends Ba
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_base_cache_list;
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        if (context instanceof BasePickerMultipleItem) {
+            pickerMultipleItem = (BasePickerMultipleItem<T>) context;
+        }
     }
 }

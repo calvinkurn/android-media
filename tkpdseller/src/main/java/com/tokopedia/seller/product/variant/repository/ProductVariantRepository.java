@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.variant.repository;
 
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 
 import java.util.List;
 

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_apps">
+    android:background="@color/background_apps"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -24,7 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_med"
             android:paddingBottom="@dimen/margin_ms"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </android.support.design.widget.AppBarLayout>
 

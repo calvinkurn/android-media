@@ -3,13 +3,14 @@ package com.tokopedia.shop.page.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
+import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
-import com.tokopedia.shop.page.domain.interactor.GetShopPageDataByDomainUseCase;
-import com.tokopedia.shop.page.domain.interactor.GetShopPageDataUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
-import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 
 import javax.inject.Inject;
 
@@ -21,18 +22,21 @@ import rx.Subscriber;
 
 public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
-    private final GetShopPageDataUseCase getShopPageDataUseCase;
-    private final GetShopPageDataByDomainUseCase getShopPageDataByDomainUseCase;
+    private final GetShopInfoUseCase getShopInfoUseCase;
+    private final GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
+    private final GetReputationSpeedUseCase getReputationSpeedUseCase;
     private final ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopPagePresenter(GetShopPageDataUseCase getShopPageDataUseCase,
-                             GetShopPageDataByDomainUseCase getShopInfoByDomainUseCase,
+    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase,
+                             GetShopInfoByDomainUseCase getShopInfoByDomainUseCase,
+                             GetReputationSpeedUseCase getReputationSpeedUseCase,
                              ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase,
                              UserSession userSession) {
-        this.getShopPageDataUseCase = getShopPageDataUseCase;
-        this.getShopPageDataByDomainUseCase = getShopInfoByDomainUseCase;
+        this.getShopInfoUseCase = getShopInfoUseCase;
+        this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
+        this.getReputationSpeedUseCase = getReputationSpeedUseCase;
         this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;
         this.userSession = userSession;
     }
@@ -42,7 +46,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     }
 
     public void getShopInfo(String shopId) {
-        getShopPageDataUseCase.execute(GetShopPageDataUseCase.createRequestParam(shopId), new Subscriber<ShopPageViewModel>() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -52,19 +56,20 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().onErrorGetShopPageInfo(e);
+                    getView().onErrorGetShopInfo(e);
                 }
             }
 
             @Override
-            public void onNext(ShopPageViewModel shopPageViewModel) {
-                getView().onSuccessGetShopPageInfo(shopPageViewModel);
+            public void onNext(ShopInfo shopInfo) {
+                getView().onSuccessGetShopInfo(shopInfo);
             }
         });
+        getShopReputationSpeed(shopId);
     }
 
     public void getShopInfoByDomain(String shopDomain) {
-        getShopPageDataByDomainUseCase.execute(GetShopPageDataByDomainUseCase.createRequestParam(shopDomain), new Subscriber<ShopPageViewModel>() {
+        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -73,13 +78,35 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onErrorGetShopPageInfo(e);
+                    getView().onErrorGetShopInfo(e);
                 }
             }
 
             @Override
-            public void onNext(ShopPageViewModel shopPageViewModel) {
-                getView().onSuccessGetShopPageInfo(shopPageViewModel);
+            public void onNext(ShopInfo shopInfo) {
+                getView().onSuccessGetShopInfo(shopInfo);
+                getShopReputationSpeed(shopInfo.getInfo().getShopId());
+            }
+        });
+    }
+
+    public void getShopReputationSpeed(String shopId) {
+        getReputationSpeedUseCase.execute(GetReputationSpeedUseCase.createRequestParam(shopId), new Subscriber<ReputationSpeed>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetReputation(e);
+                }
+            }
+
+            @Override
+            public void onNext(ReputationSpeed reputationSpeed) {
+                getView().onSuccessGetReputation(reputationSpeed);
             }
         });
     }
@@ -114,11 +141,14 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     @Override
     public void detachView() {
         super.detachView();
-        if (getShopPageDataUseCase != null) {
-            getShopPageDataUseCase.unsubscribe();
+        if (getShopInfoUseCase != null) {
+            getShopInfoUseCase.unsubscribe();
         }
-        if (getShopPageDataByDomainUseCase != null) {
-            getShopPageDataByDomainUseCase.unsubscribe();
+        if (getShopInfoByDomainUseCase != null) {
+            getShopInfoByDomainUseCase.unsubscribe();
+        }
+        if (getReputationSpeedUseCase != null) {
+            getReputationSpeedUseCase.unsubscribe();
         }
         if (toggleFavouriteShopAndDeleteCacheUseCase != null) {
             toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe();

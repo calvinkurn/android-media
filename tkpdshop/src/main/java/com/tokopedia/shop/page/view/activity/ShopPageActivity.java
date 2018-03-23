@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -31,11 +30,13 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopAppLink;
+import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity;
@@ -45,7 +46,6 @@ import com.tokopedia.shop.page.di.module.ShopPageModule;
 import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
-import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
@@ -60,6 +60,8 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
+    private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     private static final String SHOP_ID = "EXTRA_SHOP_ID";
     private static final String SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
@@ -207,7 +209,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(shopPageTracking != null) {
+                if(shopPageTracking != null && shopPagePresenter != null && shopInfo != null) {
                     shopPageTracking.eventClickTabShopPage(getTitlePage(tab.getPosition()), shopId,
                             shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
@@ -240,9 +242,8 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
         }
     }
 
-    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange(final Float offset) {
         return new AppBarLayout.OnOffsetChangedListener() {
-            private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.9f;
             boolean toolbarTitleShown = false;
             int scrollRange = -1;
 
@@ -252,10 +253,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 float percentage = (float) Math.abs(verticalOffset) / (float) scrollRange;
-                if (percentage < OFFSET_TOOLBAR_TITLE_SHOWN && toolbarTitleShown) {
+                if (percentage < offset && toolbarTitleShown) {
                     showToolbarTitle(false);
                     toolbarTitleShown = false;
-                } else if (percentage >= OFFSET_TOOLBAR_TITLE_SHOWN && !toolbarTitleShown) {
+                } else if (percentage >= offset && !toolbarTitleShown) {
                     showToolbarTitle(true);
                     toolbarTitleShown = true;
                 }
@@ -508,28 +509,40 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
+    public void onSuccessGetShopInfo(final ShopInfo shopInfo) {
         setViewState(VIEW_CONTENT);
-        shopInfo = shopPageViewModel.getShopInfo();
-        shopId = shopInfo.getInfo().getShopId();
-        shopDomain = shopInfo.getInfo().getShopDomain();
-        shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
+        this.shopInfo = shopInfo;
+        shopId = this.shopInfo.getInfo().getShopId();
+        shopDomain = this.shopInfo.getInfo().getShopDomain();
+        shopName = MethodChecker.fromHtml(this.shopInfo.getInfo().getShopName()).toString();
 
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
-            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(shopInfo);
+            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(this.shopInfo);
         }
-        shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
-        if(shopInfo != null) {
+        shopPageViewHolder.renderData(shopInfo, shopPagePresenter.isMyShop(shopId));
+        if(this.shopInfo != null) {
             shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
-                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(this.shopInfo.getInfo()));
         }
 
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        switch (this.shopInfo.getInfo().getShopStatus()) {
+            case ShopStatusDef.CLOSED:
+            case ShopStatusDef.MODERATED:
+            case ShopStatusDef.NOT_ACTIVE:
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED);
+                break;
+            default:
+                setOffsetChangeListener(OFFSET_TOOLBAR_TITLE_SHOWN);
+        }
+    }
+
+    public void setOffsetChangeListener(Float offset){
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange(offset));
     }
 
     @Override
-    public void onErrorGetShopPageInfo(Throwable e) {
+    public void onErrorGetShopInfo(Throwable e) {
         setViewState(VIEW_ERROR);
         textRetryError.setText(ErrorHandler.getErrorMessage(this, e));
         buttonRetryError.setOnClickListener(new View.OnClickListener() {
@@ -538,6 +551,16 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getShopInfo();
             }
         });
+    }
+
+    @Override
+    public void onSuccessGetReputation(ReputationSpeed reputationSpeed) {
+        shopPageViewHolder.renderData(reputationSpeed);
+    }
+
+    @Override
+    public void onErrorGetReputation(Throwable e) {
+        // Do nothing
     }
 
     @Override
