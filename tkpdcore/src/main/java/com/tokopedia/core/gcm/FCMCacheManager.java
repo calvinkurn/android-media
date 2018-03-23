@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -147,7 +148,7 @@ public class FCMCacheManager {
 
     public Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean("notifications_new_message_vibrate", false);
+        return settings.getBoolean(SettingsFragment.SETTING_NOTIFICATION_VIBRATE, false);
     }
 
     public Uri getSoundUri() {
