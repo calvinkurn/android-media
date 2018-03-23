@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCustomContentView;
 import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -46,7 +46,6 @@ import com.tokopedia.shop.page.di.module.ShopPageModule;
 import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
-import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
@@ -510,24 +509,24 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
+    public void onSuccessGetShopInfo(final ShopInfo shopInfo) {
         setViewState(VIEW_CONTENT);
-        shopInfo = shopPageViewModel.getShopInfo();
-        shopId = shopInfo.getInfo().getShopId();
-        shopDomain = shopInfo.getInfo().getShopDomain();
-        shopName = MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString();
+        this.shopInfo = shopInfo;
+        shopId = this.shopInfo.getInfo().getShopId();
+        shopDomain = this.shopInfo.getInfo().getShopDomain();
+        shopName = MethodChecker.fromHtml(this.shopInfo.getInfo().getShopName()).toString();
 
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
-            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(shopInfo);
+            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(this.shopInfo);
         }
-        shopPageViewHolder.renderData(shopPageViewModel, shopPagePresenter.isMyShop(shopId));
-        if(shopInfo != null) {
+        shopPageViewHolder.renderData(shopInfo, shopPagePresenter.isMyShop(shopId));
+        if(this.shopInfo != null) {
             shopPageTracking.eventViewShopPage(getTitlePage(viewPager.getCurrentItem()), shopId,
-                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    shopPagePresenter.isMyShop(shopId), ShopPageTracking.getShopType(this.shopInfo.getInfo()));
         }
 
-        switch (shopInfo.getInfo().getShopStatus()) {
+        switch (this.shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
             case ShopStatusDef.MODERATED:
             case ShopStatusDef.NOT_ACTIVE:
@@ -543,7 +542,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     }
 
     @Override
-    public void onErrorGetShopPageInfo(Throwable e) {
+    public void onErrorGetShopInfo(Throwable e) {
         setViewState(VIEW_ERROR);
         textRetryError.setText(ErrorHandler.getErrorMessage(this, e));
         buttonRetryError.setOnClickListener(new View.OnClickListener() {
@@ -552,6 +551,16 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                 getShopInfo();
             }
         });
+    }
+
+    @Override
+    public void onSuccessGetReputation(ReputationSpeed reputationSpeed) {
+        shopPageViewHolder.renderData(reputationSpeed);
+    }
+
+    @Override
+    public void onErrorGetReputation(Throwable e) {
+        // Do nothing
     }
 
     @Override
