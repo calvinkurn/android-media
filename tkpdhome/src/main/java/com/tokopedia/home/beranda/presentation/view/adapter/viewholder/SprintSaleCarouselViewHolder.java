@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,8 +26,10 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
+import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.listener.GridItemClickListener;
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
@@ -39,12 +43,12 @@ import java.util.Date;
  */
 
 public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChannelViewModel>
-        implements View.OnClickListener, GridItemClickListener {
+        implements GridItemClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_sprint_card_item;
     private static final String TAG = SprintSaleCarouselViewHolder.class.getSimpleName();
-    private LinearLayout container;
+    private RelativeLayout container;
     private RecyclerView recyclerView;
     private ItemAdapter itemAdapter;
     private Context context;
@@ -52,10 +56,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private TextView seeMore;
     private ImageView headerBg;
     private CountDownView countDownView;
+    private HomeCategoryListener listener;
 
-    public SprintSaleCarouselViewHolder(View itemView) {
+    public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.context = itemView.getContext();
+        this.listener = listener;
         itemAdapter = new ItemAdapter();
         countDownView = itemView.findViewById(R.id.count_down);
         container = itemView.findViewById(R.id.container);
@@ -69,27 +75,19 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         recyclerView.addItemDecoration(new SpacingItemDecoration(context.getResources().getDimensionPixelSize(R.dimen.item_space), SpacingItemDecoration.HORIZONTAL));
         SnapHelper snapHelper = new StartSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
-        seeMore.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.see_more) {
-            Log.d(TAG, "see more click");
-        }
     }
 
     @Override
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
-
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));
     }
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        DynamicHomeChannel.Channels channels = element.getChannel();
+        final DynamicHomeChannel.Channels channels = element.getChannel();
         title.setText(channels.getHeader().getName());
         Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
-        container.setBackgroundColor(Color.parseColor(channels.getHeader().getBackColor()));
+        recyclerView.setBackgroundColor(Color.parseColor(channels.getHeader().getBackColor()));
         itemAdapter.setList(channels.getGrids());
         itemAdapter.setGridItemClickListener(this);
         Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
@@ -97,6 +95,12 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             @Override
             public void onCountDownFinished() {
                 itemAdapter.setGridItemClickListener(null);
+            }
+        });
+        seeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()));
             }
         });
     }
@@ -149,7 +153,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.stockProgress.setVisibility(View.VISIBLE);
                     holder.stockProgress.setProgress(grid.getSoldPercentage());
                 } else {
-                    holder.stockProgress.setVisibility(View.GONE);
+                    holder.stockProgress.setVisibility(View.INVISIBLE);
                 }
                 if (gridItemClickListener != null) {
                     holder.countainer.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +172,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
         @Override
         public int getItemCount() {
-            return 10;
+            return list.length;
         }
     }
 

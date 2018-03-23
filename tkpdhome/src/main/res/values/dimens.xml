@@ -28,6 +28,6 @@
     <dimen name="keyline_1_minus_8dp">8dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
     <dimen name="discount_background_radius">16dp</dimen>
-    <dimen name="item_space">16dp</dimen>
+    <dimen name="item_space">20dp</dimen>
     <dimen name="pading_4dp">4dp</dimen>
 </resources>

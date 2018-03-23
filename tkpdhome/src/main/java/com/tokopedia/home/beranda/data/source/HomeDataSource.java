@@ -82,7 +82,7 @@ public class HomeDataSource {
     }
 
     private String getRequestPayload() {
-        return loadRawString(context.getResources(), R.raw.home_data_query);
+        return loadRawString(context.getResources(), R.raw.home_query);
     }
 
     private String loadRawString(Resources resources, int resId) {

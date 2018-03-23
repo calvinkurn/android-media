@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_ms"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true" />
+
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/header_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="7sp"
+            android:paddingBottom="@dimen/page_margin"
             android:paddingLeft="@dimen/page_margin"
             android:paddingTop="@dimen/page_margin"
-            android:paddingBottom="@dimen/page_margin"
+            android:text="Lucky Hours"
             android:textColor="#ffffff"
             android:textSize="17sp"
-            android:textStyle="bold"
-            android:text="Lucky Hours" />
+            android:textStyle="bold" />
 
         <com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/title"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_ms"
+            android:layout_toRightOf="@id/title"
             app:coundDownBackgroud="@drawable/background_countdown_white"
-            app:countDownTxtColor="@color/black_70"/>
+            app:countDownTxtColor="@color/black_70"
+            app:countDownSparatorColor="@color/white"/>
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
@@ -62,10 +66,10 @@
                 android:paddingLeft="@dimen/margin_ms"
                 android:paddingRight="@dimen/margin_ms"
                 android:paddingTop="@dimen/pading_4dp"
+                android:text="@string/lihat_semua"
                 android:textColor="#399c3f"
                 android:textSize="12sp"
-                android:textStyle="normal"
-                android:text="@string/lihat_semua" />
+                android:textStyle="normal" />
 
         </android.support.v7.widget.CardView>
 
@@ -74,5 +78,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header" />
+</RelativeLayout>
