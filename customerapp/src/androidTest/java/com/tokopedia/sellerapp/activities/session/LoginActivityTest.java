@@ -7,6 +7,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiSelector;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -42,6 +44,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -77,6 +80,8 @@ public class LoginActivityTest {
         server.start();
 
         device = UiDevice.getInstance(getInstrumentation());
+
+        assertTrue("Back button can't be pressed", device.pressBack());
 
         RxJavaHooks.setOnIOScheduler(new Func1<Scheduler, Scheduler>() {
             @Override
@@ -148,9 +153,24 @@ public class LoginActivityTest {
 
         onView(withId(R.id.accounts_sign_in))
                 .perform(click());
-
     }
 
+    /**
+     * try to press back smart lock object
+     * @throws Exception
+     */
+    @Test
+    public void testFirstRunSellerHome2() throws Exception{
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startLoginActivity();
+
+        UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
+
+        if(smartlock.exists()){
+            device.pressBack();
+        }
+    }
 
     private void startLoginActivity() {
         Intent intent = new Intent();
@@ -159,6 +179,10 @@ public class LoginActivityTest {
         intent.putExtra("email", "noiz354@gmail.com");
         intent.putExtra("pws", "lalala");
         activityTestRule.launchActivity(intent);
+    }
+
+    private void startEmptyIntentLoginActivity(){
+        activityTestRule.launchActivity(null);
     }
 
     @After
