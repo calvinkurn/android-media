@@ -165,6 +165,8 @@ public class LoginActivityTest {
 
         startEmptyIntentLoginActivity();
 
+        Thread.sleep(3_000);
+
         UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
 
         if(smartlock.exists()){
