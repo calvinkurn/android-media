@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/new_margin_med"
     android:layout_marginStart="@dimen/new_margin_med"
-    android:layout_marginRight="@dimen/new_margin_med"
-    android:layout_marginEnd="@dimen/new_margin_med"
+    android:layout_marginRight="@dimen/margin_chat_right"
+    android:layout_marginEnd="@dimen/margin_chat_right"
     >
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"

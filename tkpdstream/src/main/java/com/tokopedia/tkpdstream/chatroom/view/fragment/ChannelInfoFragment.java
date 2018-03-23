@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
@@ -106,6 +107,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     private void initView(View view) {
+        KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
