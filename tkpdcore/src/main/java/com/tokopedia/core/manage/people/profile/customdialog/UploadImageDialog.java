@@ -42,9 +42,9 @@ public class UploadImageDialog {
         this.context = fragment.getActivity();
     }
 
-    public UploadImageDialog(Activity fragment) {
-        this.activity = fragment;
-        this.context = fragment;
+    public UploadImageDialog(Activity activity) {
+        this.activity = activity;
+        this.context = activity;
     }
 
     public void openImagePicker() {

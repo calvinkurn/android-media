@@ -4,30 +4,14 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
-apply plugin: 'com.apollographql.android'
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
 def getTopAdsSdk() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
-}
-
-def getTkpdPdp() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.tkpdpdp : project(':tkpdpdp');
-}
-
-def getTkpdDesign() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
 }
 
 publishing {
@@ -126,10 +110,6 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-    compile rootProject.ext.apolloDependencies.apolloRuntime
-    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 
     compile rootProject.ext.alibabaDependencies.coreLib
 

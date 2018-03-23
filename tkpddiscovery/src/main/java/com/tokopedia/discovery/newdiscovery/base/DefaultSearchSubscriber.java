@@ -64,7 +64,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
                 break;
             case DISCOVERY_URL_SEARCH:
 //                ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult, imageSearch);
-                ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult, imageSearch);
+                ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult);
                 model.setSearchParameter(searchParameter);
                 model.setForceSearch(forceSearch);
                 model.setImageSearch(imageSearch);

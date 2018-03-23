@@ -474,12 +474,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-
-//            SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
-//            searchImageAsyncTask.execute(byteArray);
-
-//            showLoadingView(true);
-//
             tkpdProgressDialog = new TkpdProgressDialog(this, 1);
             tkpdProgressDialog.showDialog();
             getPresenter().requestImageSearch(byteArray);
@@ -494,7 +488,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (tkpdProgressDialog != null) {
                 tkpdProgressDialog.dismiss();
             }
-
             // TODO: 3/13/18 show appropriate error
             Toast.makeText(this, "Invalid Response", Toast.LENGTH_SHORT).show();
             return;

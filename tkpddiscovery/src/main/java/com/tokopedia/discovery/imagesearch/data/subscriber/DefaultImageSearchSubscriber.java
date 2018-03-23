@@ -12,13 +12,11 @@ import rx.Subscriber;
 public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         extends Subscriber<NewImageSearchResponse> {
 
-
     private D2 discoveryView;
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
         this.discoveryView = discoveryView;
     }
-
 
     @Override
     public void onCompleted() {
@@ -33,7 +31,6 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     @Override
     public void onNext(NewImageSearchResponse searchItemResponse) {
-
         discoveryView.onHandleImageSearchResponse(searchItemResponse);
     }
 }
