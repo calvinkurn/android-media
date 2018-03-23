@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SixGridViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
@@ -33,6 +34,8 @@ public interface HomeTypeFactory {
     int type(HeaderViewModel headerViewModel);
 
     int type(TopAdsViewModel topAdsViewModel);
+
+    int type(SprintSaleCarouselViewModel sprintSaleCarouselViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 

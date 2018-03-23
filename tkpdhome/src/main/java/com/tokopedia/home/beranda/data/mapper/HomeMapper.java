@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SixGridViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
@@ -64,6 +65,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
             }
+
+            list.add(new SprintSaleCarouselViewModel());
 
             if (homeData.getDynamicHomeChannel() != null
                     && homeData.getDynamicHomeChannel().getChannels() != null
