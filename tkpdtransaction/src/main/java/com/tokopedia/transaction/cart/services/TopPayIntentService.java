@@ -2,6 +2,11 @@ package com.tokopedia.transaction.cart.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Build;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
+import android.util.Base64;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMContainer;
@@ -20,6 +25,10 @@ import com.tokopedia.transaction.exception.ResponseErrorException;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -56,7 +65,6 @@ public class TopPayIntentService extends IntentService {
                 String paymentId = intent.getStringExtra(EXTRA_PAYMENT_ID);
                 getThanksTopPay(paymentId);
                 break;
-
         }
     }
 
@@ -176,6 +184,7 @@ public class TopPayIntentService extends IntentService {
         }
         params.put(IS_THANKYOU_NATIVE, "1");
         params.put(IS_THANKYOU_NATIVE_NEW, "1");
+        params = createParamFingerprint(params);
 
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
         Intent intent = new Intent(TopPayBroadcastReceiver.ACTION_TOP_PAY);
@@ -184,6 +193,7 @@ public class TopPayIntentService extends IntentService {
         intent.putExtra(TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
                 "Melakukan proses checkout");
         sendBroadcast(intent);
+
         cartDataInteractor.getParameterTopPay(
                 AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {
@@ -241,5 +251,36 @@ public class TopPayIntentService extends IntentService {
                     }
                 }
         );
+    }
+
+    private TKPDMapParam<String, String> createParamFingerprint(TKPDMapParam<String, String> params) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(this);
+            if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
+                String publicKey = "";
+                try {
+                    KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+                    KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder("tes",
+                            KeyProperties.PURPOSE_ENCRYPT |
+                                    KeyProperties.PURPOSE_DECRYPT)
+                            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
+                            .setBlockModes(KeyProperties.BLOCK_MODE_ECB);
+                    keyPairGenerator.initialize(builder.build());
+                    byte[] publicKeyBytes = Base64.encode(keyPairGenerator.generateKeyPair().getPublic().getEncoded(), 0);
+                    publicKey = new String(publicKeyBytes);
+                } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (NoSuchProviderException e) {
+                    e.printStackTrace();
+                }
+                params.put("fingerprint_publickey", publicKey);
+                params.put("fingerprint_support", "true");
+            }else{
+                params.put("fingerprint_support", "false");
+            }
+        }
+        return params;
+
     }
 }

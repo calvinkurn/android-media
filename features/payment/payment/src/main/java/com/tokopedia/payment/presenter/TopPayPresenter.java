@@ -1,5 +1,6 @@
 package com.tokopedia.payment.presenter;
 
+import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
@@ -13,9 +14,11 @@ import java.io.UnsupportedEncodingException;
 public class TopPayPresenter implements ITopPayPresenter {
 
     private final ITopPayView view;
+    private SaveFingerPrintUseCase saveFingerPrintUseCase;
 
-    public TopPayPresenter(ITopPayView view) {
+    public TopPayPresenter(ITopPayView view, SaveFingerPrintUseCase saveFingerPrintUseCase) {
         this.view = view;
+        this.saveFingerPrintUseCase = saveFingerPrintUseCase;
     }
 
     @Override

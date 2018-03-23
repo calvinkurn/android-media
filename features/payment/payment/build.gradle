@@ -1,7 +1,15 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
+
+    compile project(rootProject.ext.libraries.abstraction)
+    compile project(rootProject.ext.features.useCase)
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
