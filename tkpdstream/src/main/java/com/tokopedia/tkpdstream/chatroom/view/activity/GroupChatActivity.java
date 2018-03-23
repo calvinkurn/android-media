@@ -6,15 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -90,12 +89,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
         , ToolTipUtils.ToolTipListener {
 
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
     private static final int CHANNEL_VOTE_FRAGMENT = 1;
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final int CHANNEL_INFO_FRAGMENT = 2;
-
 
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
@@ -370,17 +368,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showTooltip();
-            }
-        }, 1500L);
-    }
-
     //
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
@@ -418,10 +405,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 break;
         }
 
-    }
-
-    private void showTooltip() {
-        ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this), tabs.getChildAt(1));
     }
 
     private void showChatroomFragment(OpenChannel mChannel) {
@@ -472,7 +455,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         bundle.putParcelable(VOTE, viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
 
-        if(voteAnnouncementViewModel != null){
+        if (voteAnnouncementViewModel != null) {
             bundle.putParcelable(VOTE_ANNOUNCEMENT, voteAnnouncementViewModel);
             bundle.putString(VOTE_TYPE, voteType);
         }
@@ -680,8 +663,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void showInfoDialog() {
         channelInfoDialog.setContentView(
                 createBottomSheetView(
-                        checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(),
-                                viewModel.getChannelInfoViewModel().getVoteInfoViewModel()),
+                        checkPollValid(),
                         viewModel.getChannelInfoViewModel().getChannelViewModel()));
 
         if (getIntent().getExtras() != null & getIntent().getExtras().getBoolean(GroupChatActivity
@@ -697,14 +679,44 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
         setSponsorData();
+
+        setTooltip();
     }
 
-    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-        return (hasPoll
-                && voteInfoViewModel != null
-                && voteInfoViewModel.getStartTime() != 0
-                && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime());
+    private void setTooltip() {
+        if (checkPollValid()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showTooltip();
+                }
+            }, 1500L);
+        }
+    }
+
+    private void showTooltip() {
+        if (tabs != null
+                && tabAdapter != null
+                && tabAdapter.getItemCount() > 1
+                && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
+            ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this),
+                    tabs.getChildAt(CHANNEL_VOTE_FRAGMENT));
+        }
+    }
+
+    private boolean checkPollValid() {
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            VoteInfoViewModel voteInfoViewModel = viewModel.getChannelInfoViewModel()
+                    .getVoteInfoViewModel();
+            return viewModel.getChannelInfoViewModel().isHasPoll()
+                    && voteInfoViewModel.getStartTime() != 0
+                    && voteInfoViewModel.getEndTime() != 0
+                    && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime();
+        } else {
+            return false;
+        }
     }
 
     private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {

@@ -150,7 +150,7 @@ public class GroupChatMessagesMapper {
     private SprintSaleProductViewModel mapToFlashSaleProduct() {
         return new SprintSaleProductViewModel(
                 "Tes produk",
-                "https://1.bp.blogspot.com/-oA8c_lREvEM/Wh0egAMmDNI/AAAAAAAABp0/ANKqpBf_c0YjOQSAxFc60E6IV5EEkZa4gCLcBGAs/s1600/8%2BArti%2BMimpi%2BLihat%2BAyam%2BJago%2BBertarung%2BMenurut%2BPrimbon%2BJawa.png",
+                "https://1.bp.blogspot.com/-aPRfVXxmg00/WDK2Ih86XzI/AAAAAAAAP0Y/pSAzMNQz6HIfNfcmH6ly38epjl8mS-tnQCLcB/s1600/Kerbau.bmp",
                 "50% off",
                 "Rp 100.000",
                 "Rp 5.000.000",
