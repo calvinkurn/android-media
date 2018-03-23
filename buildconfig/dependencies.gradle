@@ -236,10 +236,11 @@ ext {
     ]
 
     libraries = [
-            design          : ":tkpddesign",
-            abstraction     : ":tkpdabstraction",
-            cacheApi        : ":tkpdcacheapi",
-            reactNative     : ":libraries:react_native"
+            design              : ":tkpddesign",
+            abstraction         : ":tkpdabstraction",
+            cacheApi            : ":tkpdcacheapi",
+            reactNative         : ":libraries:react_native",
+            aliyunImageSearch   : ":libraries:aliyun_image_search"
     ]
 
 }

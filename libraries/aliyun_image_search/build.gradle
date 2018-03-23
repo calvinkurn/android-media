@@ -1,0 +1,13 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.neenbedankt.android-apt'
+
+dependencies {
+    compile project(rootProject.ext.features.core)
+    compile rootProject.ext.alibabaDependencies.coreLib
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
+}

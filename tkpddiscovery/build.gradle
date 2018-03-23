@@ -104,14 +104,13 @@ dependencies {
     compile project(rootProject.ext.features.topAdsSdk)
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.libraries.aliyunImageSearch)
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.alibabaDependencies.coreLib
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
