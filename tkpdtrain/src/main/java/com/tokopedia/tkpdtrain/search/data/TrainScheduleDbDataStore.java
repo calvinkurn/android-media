@@ -134,8 +134,21 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
     }
 
     @Override
-    public Observable<Integer> getCount(Specification specification) {
-        return null;
+    public Observable<Integer> getCount(final Specification specification) {
+        return Observable.just(true).map(new Func1<Boolean, Integer>() {
+            @Override
+            public Integer call(Boolean aBoolean) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                if (specification instanceof DbFlowSpecification) {
+                    conditions = ((DbFlowSpecification) specification).getCondition();
+                }
+                List<TrainScheduleDbTable> trainScheduleDbTables = new Select()
+                        .from(TrainScheduleDbTable.class)
+                        .where(conditions)
+                        .queryList();
+                return (trainScheduleDbTables.size());
+            }
+        });
     }
 
     public Observable<Boolean> updateDataAvailability(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {

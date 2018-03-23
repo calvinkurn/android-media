@@ -2,10 +2,11 @@ package com.tokopedia.tkpdtrain.common.data;
 
 
 import com.tokopedia.tkpdtrain.common.domain.TrainRepository;
-import com.tokopedia.tkpdtrain.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.data.TrainScheduleDataStoreFactory;
+import com.tokopedia.tkpdtrain.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.domain.FilterParam;
+import com.tokopedia.tkpdtrain.search.domain.FilterSearchData;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.tkpdtrain.station.data.TrainStationDataStoreFactory;
@@ -70,5 +71,15 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule) {
         return trainScheduleDataStoreFactory.getDetailScheduleById(new TrainDetailScheduleSpecification(idSchedule));
+    }
+
+    @Override
+    public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData) {
+        return trainScheduleDataStoreFactory.getCountSchedule(filterSearchData);
+    }
+
+    @Override
+    public Observable<List<TrainScheduleViewModel>> getFilterSearchParamData(Map<String, Object> mapParam, int scheduleVariant) {
+        return trainScheduleDataStoreFactory.getFilterSearchParamData(mapParam, scheduleVariant);
     }
 }

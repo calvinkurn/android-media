@@ -27,5 +27,8 @@ public interface TrainSearchContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void getTrainSchedules(int scheduleVariant);
+
+        void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
+                                           List<String> trains, int sortOptionId);
     }
 }

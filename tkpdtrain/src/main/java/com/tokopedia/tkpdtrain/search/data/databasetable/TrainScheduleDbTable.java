@@ -31,6 +31,7 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "arrival_timestamp")
     private
     String arrivalTimestamp;
+
     @Column(name = "departure_timestamp")
     private
     String departureTimestamp;

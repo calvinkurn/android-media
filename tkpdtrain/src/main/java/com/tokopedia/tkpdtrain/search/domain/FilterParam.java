@@ -10,14 +10,16 @@ public class FilterParam {
 
     private long minPrice;
     private long maxPrice;
+    private String[] departureTimeList;
     private List<String> trains;
-    private String trainClass;
+    private List<String> trainClass;
 
     private FilterParam(Builder builder) {
         this.setMinPrice(builder.minPrice);
         this.setMaxPrice(builder.maxPrice);
         this.setTrains(builder.trains);
         this.setTrainClass(builder.trainClass);
+        this.setDepartureTimeList(builder.departureTimeList);
     }
 
     public long getMinPrice() {
@@ -44,11 +46,19 @@ public class FilterParam {
         this.trains = trains;
     }
 
-    public String getTrainClass() {
+    public String[] getDepartureTimeList() {
+        return departureTimeList;
+    }
+
+    public void setDepartureTimeList(String[] departureTimeList) {
+        this.departureTimeList = departureTimeList;
+    }
+
+    public List<String> getTrainClass() {
         return trainClass;
     }
 
-    public void setTrainClass(String trainClass) {
+    public void setTrainClass(List<String> trainClass) {
         this.trainClass = trainClass;
     }
 
@@ -56,8 +66,9 @@ public class FilterParam {
 
         private long minPrice;
         private long maxPrice;
+        private String[] departureTimeList;
         private List<String> trains;
-        private String trainClass;
+        private List<String> trainClass;
 
         public Builder minPrice(long minPrice) {
             this.minPrice = minPrice;
@@ -74,8 +85,13 @@ public class FilterParam {
             return this;
         }
 
-        public Builder trainClass(String trainClass) {
+        public Builder trainClass(List<String> trainClass) {
             this.trainClass = trainClass;
+            return this;
+        }
+
+        public Builder departureTimeList(String[] departureTimeList) {
+            this.departureTimeList = departureTimeList;
             return this;
         }
 

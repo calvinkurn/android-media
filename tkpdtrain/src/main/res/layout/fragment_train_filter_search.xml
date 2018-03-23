@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.design.text.RangeInputView
+        android:id="@+id/price_filter_search"
+        style="@style/TrainFilterLabel"
+        app:driv_label_max="@string/sort_label_max_price"
+        app:driv_label_min="@string/sort_label_min_price"
+        app:driv_typable="false"
+        app:driv_value_max_length="@integer/max_length_price_input"
+        app:driv_value_text_appearance="@style/TextView.Small.Bold"/>
+
+    <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+        android:id="@+id/selection_label_time_departure"
+        style="@style/TrainFilterLabel"
+        app:slv_title="@string/filter_time_departure" />
+
+    <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+        android:id="@+id/selection_label_train_name"
+        style="@style/TrainFilterLabel"
+        app:slv_title="@string/filter_train_name" />
+
+    <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+        android:id="@+id/selection_label_class_name"
+        style="@style/TrainFilterLabel"
+        app:slv_title="@string/filter_class_name" />
+
+
+</LinearLayout>

@@ -92,7 +92,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         });
     }
 
-    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, String trainClass, List<String> trains, final int sortOptionId) {
+    @Override
+    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass, List<String> trains, final int sortOptionId) {
         FilterParam filterParam = new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)

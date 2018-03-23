@@ -31,6 +31,7 @@ import com.tokopedia.tkpdtrain.search.constant.TrainSortOption;
 import com.tokopedia.tkpdtrain.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.di.TrainSearchComponent;
 import com.tokopedia.tkpdtrain.search.domain.GetScheduleUseCase;
+import com.tokopedia.tkpdtrain.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.tkpdtrain.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 import com.tokopedia.tkpdtrain.search.presentation.contract.TrainSearchContract;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
@@ -133,8 +134,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO filter button action
-                Toast.makeText(getActivity(), "filter", Toast.LENGTH_SHORT).show();
+                startActivity(TrainFilterSearchActivity.getCallingIntent(getActivity(),
+                        getRequestParam().getParameters(), getScheduleVariant()));
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -273,7 +274,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     public void onBottomSheetItemClick(MenuItem item) {
                         List<String> trains = new ArrayList<>();
                         getAdapter().showLoading();
-                        presenter.getFilteredAndSortedSchedules(0, 200000, "", trains, item.getItemId());
+                        presenter.getFilteredAndSortedSchedules(0, 200000, new ArrayList<String>(), trains, item.getItemId());
                     }
                 })
                 .createDialog();

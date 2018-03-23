@@ -32,8 +32,6 @@ import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainPassengerViewMod
 import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 import com.tokopedia.tkpdtrain.search.presentation.activity.TrainDepartureSearchActivity;
-import com.tokopedia.tkpdtrain.search.presentation.activity.TrainSearchActivity;
-import com.tokopedia.tkpdtrain.search.presentation.fragment.TrainDepartureSearchFragment;
 import com.tokopedia.tkpdtrain.station.presentation.TrainStationsActivity;
 import com.tokopedia.tkpdtrain.station.presentation.adapter.viewmodel.TrainStationViewModel;
 

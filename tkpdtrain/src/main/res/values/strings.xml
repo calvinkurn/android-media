@@ -38,4 +38,12 @@
     <!-- TODO check with designer again for this bottom action -->
     <string name="sort">Urutkan</string>
     <string name="filter">Filter</string>
+    <string name="filter_time_departure">Waktu Keberangkatan</string>
+    <string name="filter_train_name">Kereta</string>
+    <string name="filter_class_name">Kelas</string>
+    <string name="filter_menu_reset">Reset</string>
+
+    <!-- sort -->
+    <string name="sort_label_min_price">Harga Minimum</string>
+    <string name="sort_label_max_price">Harga Maksimum</string>
 </resources>

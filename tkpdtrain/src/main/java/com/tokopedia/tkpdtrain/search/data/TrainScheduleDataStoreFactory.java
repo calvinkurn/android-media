@@ -10,13 +10,16 @@ import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleClassFilte
 import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleNameFilterSpecification;
 import com.tokopedia.tkpdtrain.search.data.specification.TrainSchedulePriceFilterSpecification;
 import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleSortSpecification;
+import com.tokopedia.tkpdtrain.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.domain.FilterParam;
+import com.tokopedia.tkpdtrain.search.domain.FilterSearchData;
 import com.tokopedia.tkpdtrain.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -43,7 +46,7 @@ public class TrainScheduleDataStoreFactory {
                                                                       final int scheduleVariant) {
         if (scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE) {
             return getDataFromCloud(specification, scheduleVariant);
-        } else if (scheduleVariant == TrainScheduleTypeDef.DEPARTURE_SCHEDULE){
+        } else if (scheduleVariant == TrainScheduleTypeDef.DEPARTURE_SCHEDULE) {
             return dbDataStore.deleteAll().flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
                 @Override
                 public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessDelete) {
@@ -114,8 +117,26 @@ public class TrainScheduleDataStoreFactory {
         return dbDataStore.getDatas(specification);
     }
 
+    public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData) {
+        DbFlowSpecification specification = new TrainSchedulePriceFilterSpecification(filterSearchData.getMinPrice(), filterSearchData.getMaxPrice());
+        if (filterSearchData.getTrainClass() != null && !filterSearchData.getTrainClass().isEmpty()) {
+            specification = new AndDbFlowSpecification(specification,
+                    new TrainScheduleClassFilterSpecification(filterSearchData.getTrainClass()));
+        }
+        if (filterSearchData.getTrainClass() != null && !filterSearchData.getTrains().isEmpty()) {
+            specification = new AndDbFlowSpecification(specification,
+                    new TrainScheduleNameFilterSpecification(filterSearchData.getTrains()));
+        }
+        return dbDataStore.getCount(specification);
+    }
+
     public Observable<TrainScheduleViewModel> getDetailScheduleById(Specification specification) {
         return dbDataStore.getData(specification);
     }
 
+    public Observable<List<TrainScheduleViewModel>> getFilterSearchParamData(Map<String, Object> mapParam, int scheduleVariant) {
+        TrainScheduleSpecification trainScheduleSpecification = new TrainScheduleSpecification(mapParam);
+        trainScheduleSpecification.setScheduleVariant(scheduleVariant);
+        return dbDataStore.getDatas(trainScheduleSpecification);
+    }
 }
