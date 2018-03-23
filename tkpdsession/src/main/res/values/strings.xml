@@ -248,7 +248,7 @@
     <string name="title_complete_name">Nama Lengkap</string>
     <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
     <string name="button_name_continue">Ubah Nama Lengkap</string>
-    <string name="name_confirmation">%$1s, apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation">%1$s, apakah nama lengkap Anda sudah benar?</string>
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
 
 

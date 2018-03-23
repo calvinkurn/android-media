@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +54,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
         setView();
         setViewListener();
     }
@@ -77,7 +77,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(String.format(getResources().getString(R.string.name_confirmation), name));
         builder.setMessage(getResources().getString(R.string.name_confirmation_content));
-        builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 presenter.submitName(name);
