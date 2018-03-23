@@ -376,9 +376,11 @@ public class DynamicHomeChannel {
         @SerializedName("slashedPrice")
         private String slashedPrice;
 
+        @Expose
         @SerializedName("label")
         private String label;
 
+        @Expose
         @SerializedName("soldPercentage")
         private int soldPercentage;
 
@@ -484,9 +486,11 @@ public class DynamicHomeChannel {
         @SerializedName("url")
         private String url;
 
+        @Expose
         @SerializedName("backColor")
         private String backColor;
 
+        @Expose
         @SerializedName("backImage")
         private String backImage;
 
