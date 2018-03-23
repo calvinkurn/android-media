@@ -20,7 +20,6 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.page.view.widget.ShopWarningTickerView;
 
@@ -214,10 +213,13 @@ public class ShopPageHeaderViewHolder {
         listener.onToggleFavouriteShop(favouriteShop);
     }
 
-    public void renderData(ShopPageViewModel shopPageViewModel, boolean myShop) {
-        updateShopInfo(shopPageViewModel.getShopInfo(), myShop);
-        updateReputationSpeed(shopPageViewModel.getReputationSpeed());
-        updateViewShopOpen(shopPageViewModel.getShopInfo());
+    public void renderData(ShopInfo shopInfo, boolean myShop) {
+        updateShopInfo(shopInfo, myShop);
+        updateViewShopOpen(shopInfo);
+    }
+
+    public void renderData(ReputationSpeed reputationSpeed) {
+        updateReputationSpeed(reputationSpeed);
     }
 
     public void updateShopInfo(ShopInfo shopInfo, boolean myShop) {
@@ -315,7 +317,10 @@ public class ShopPageHeaderViewHolder {
         }
     }
 
-    public void updateReputationSpeed(ReputationSpeed reputationSpeed) {
+    private void updateReputationSpeed(ReputationSpeed reputationSpeed) {
+        if (reputationSpeed == null) {
+            return;
+        }
         final int speedLevel = reputationSpeed.getRecent12Month().getSpeedLevel();
         final int reputationIcon = getReputationSpeedIcon(speedLevel);
         final String speedLevelDescription = reputationSpeed.getRecent12Month().getSpeedLevelDescription();
