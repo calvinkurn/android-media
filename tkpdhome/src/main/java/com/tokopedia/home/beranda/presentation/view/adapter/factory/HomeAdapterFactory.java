@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategoryS
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
@@ -29,7 +30,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SixGridViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -103,14 +103,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return DynamicChannelSprintViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_HERO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelHeroViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_6_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return SixGridChannelViewHolder.LAYOUT;
         } else {
-            return 0;
+            return EmptyBlankViewHolder.LAYOUT;
         }
-    }
-
-    @Override
-    public int type(SixGridViewModel sixGridViewModel) {
-        return SixGridChannelViewHolder.LAYOUT;
     }
 
     @Override
@@ -147,6 +144,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SprintSaleCarouselViewHolder(view);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener);
+        else if (type == EmptyBlankViewHolder.LAYOUT)
+            viewHolder = new EmptyBlankViewHolder(view);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

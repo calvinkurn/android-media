@@ -9,14 +9,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SixGridViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
 /**
  * Created by henrypriyono on 22/03/18.
  */
 
-public class SixGridChannelViewHolder extends AbstractViewHolder<SixGridViewModel> {
+public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_six_grid_channel;
 
@@ -47,16 +48,16 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<SixGridViewMode
     }
 
     @Override
-    public void bind(SixGridViewModel element) {
-        bindImageView(image1, element.getItemList().get(0));
-        bindImageView(image2, element.getItemList().get(1));
-        bindImageView(image3, element.getItemList().get(2));
-        bindImageView(image4, element.getItemList().get(3));
-        bindImageView(image5, element.getItemList().get(4));
-        bindImageView(image6, element.getItemList().get(5));
+    public void bind(DynamicChannelViewModel element) {
+        bindImageView(image1, element.getChannel().getGrids()[0]);
+        bindImageView(image2, element.getChannel().getGrids()[1]);
+        bindImageView(image3, element.getChannel().getGrids()[2]);
+        bindImageView(image4, element.getChannel().getGrids()[3]);
+        bindImageView(image5, element.getChannel().getGrids()[4]);
+        bindImageView(image6, element.getChannel().getGrids()[5]);
     }
 
-    private void bindImageView(SquareImageView imageView, final SixGridViewModel.Item item) {
+    private void bindImageView(SquareImageView imageView, final DynamicHomeChannel.Grid item) {
         ImageHandler.loadImageFitCenter(context, imageView, item.getImageUrl());
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

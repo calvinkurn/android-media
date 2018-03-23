@@ -20,7 +20,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SprintSaleCarouselViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SixGridViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
 import java.util.ArrayList;
@@ -88,8 +87,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 }
             }
 
-            list.add(convertToSixGridViewModel());
-
             list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
 
             return list;
@@ -101,31 +98,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
-    }
-
-    private SixGridViewModel convertToSixGridViewModel() {
-        SixGridViewModel model = new SixGridViewModel();
-        List<SixGridViewModel.Item> itemList = new ArrayList<>();
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/aahkz9r2z/tile_image_www.imagesplitter.net_-0-0.jpg",
-                "https://www.tokopedia.com/p/fashion-pria",
-                ""));
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/vwwlgg2jv/tile_image_www.imagesplitter.net_-0-1.jpg",
-                "https://www.tokopedia.com/p/fashion-wanita",
-                ""));
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/wz6rz0vnv/tile_image_www.imagesplitter.net_-0-2.jpg",
-                "https://www.tokopedia.com/p/souvenir-kado",
-                ""));
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/uumexy9gr/tile_image_www.imagesplitter.net_-1-0.jpg",
-                "https://www.tokopedia.com/p/souvenir-kado",
-                "tokopedia://search?q=baju"));
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/7t5ts84ob/tile_image_www.imagesplitter.net_-1-1.jpg",
-                "https://www.tokopedia.com/p/souvenir-kado",
-                "tokopedia://search?q=buku"));
-        itemList.add(new SixGridViewModel.Item("https://s31.postimg.org/aahkzijfv/tile_image_www.imagesplitter.net_-1-2.jpg",
-                "",
-                "tokopedia://search?q=sepatu"));
-        model.setItemList(itemList);
-        return model;
     }
 
     private Visitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
