@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@null"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@null"
         android:text="@string/label_title_price_info_digital"
         android:textSize="@dimen/font_small"/>
 

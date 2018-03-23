@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:animateLayoutChanges="true"
-              android:orientation="vertical"
-              tools:background="@color/grey_100">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    tools:background="@color/grey_100">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,35 +27,39 @@
                 android:layout_height="0px"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                tools:ignore="UselessLeaf"/>
+                tools:ignore="UselessLeaf" />
 
             <TextView
                 android:id="@+id/tv_label_client_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@null"
-                android:paddingLeft="@dimen/padding_vvs"
-                android:paddingRight="@null"
-                android:paddingStart="@dimen/padding_vvs"
                 android:textColor="@color/digital_voucher_notes"
                 android:textSize="@dimen/font_small"
                 android:visibility="gone"
                 tools:text="@string/prompt_phone"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
-            <AutoCompleteTextView
-                android:id="@+id/ac_client_number"
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/wrapper_email"
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_label_client_number"
-                android:focusableInTouchMode="true"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:nextFocusLeft="@id/pulsa_autocompleteview"
-                android:nextFocusUp="@id/pulsa_autocompleteview"
-                android:popupBackground="@color/white"
-                android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/fonts"/>
+                android:layout_below="@+id/tv_label_client_number">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ac_client_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_label_client_number"
+                    android:focusableInTouchMode="true"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:nextFocusLeft="@id/pulsa_autocompleteview"
+                    android:nextFocusUp="@id/pulsa_autocompleteview"
+                    android:popupBackground="@color/white"
+                    android:textColorHint="@color/grey_400"
+                    android:textSize="@dimen/fonts" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -76,16 +80,16 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:contentDescription="@string/app_name"
-                    tools:src="@drawable/ic_close_24dp"/>
+                    tools:src="@drawable/ic_close_24dp" />
 
                 <Button
                     android:id="@+id/btn_clear_client_number"
-                    android:background="@drawable/ic_digital_widget_close"
                     android:layout_width="@dimen/digital_height_width_25"
                     android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_small"
-                    android:layout_marginRight="@dimen/margin_small"/>
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:background="@drawable/ic_digital_widget_close" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -102,9 +106,10 @@
                 android:id="@+id/btn_contact_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/img_thumb_bit_small"
-                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginBottom="@dimen/margin_ms"
                 android:layout_marginEnd="2dp"
-                android:layout_marginRight="2dp"/>
+                android:layout_marginRight="2dp"
+                android:background="@drawable/ic_phonebook_widget" />
 
         </LinearLayout>
 
@@ -114,16 +119,16 @@
         android:id="@+id/tv_error_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/digital_padding_4"
         android:paddingEnd="@null"
         android:paddingLeft="@dimen/padding_vvs"
         android:paddingRight="@null"
         android:paddingStart="@dimen/padding_vvs"
-        android:paddingBottom="@dimen/digital_padding_4"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </LinearLayout>
 

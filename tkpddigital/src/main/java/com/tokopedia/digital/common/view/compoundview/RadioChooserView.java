@@ -3,6 +3,8 @@ package com.tokopedia.digital.common.view.compoundview;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -73,14 +75,17 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     @Override
     public void renderInitDataList(final List<Operator> data, String defaultOperatorId) {
-        radioGroup = new RadioGroup(getContext());
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View viewRadioGroup = inflater.inflate(R.layout.view_digital_radio_group_button,null, false);
+        radioGroup  = (RadioGroup) viewRadioGroup.findViewById(R.id.radio_group_button);
         radioGroupContainer.addView(radioGroup);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
         this.operators = data;
 
         for (int i = 0; i < data.size(); i++) {
-            RadioButton radioButton = new RadioButton(getContext());
+            View v = inflater.inflate(R.layout.view_digital_radio_button,null, false);
+            RadioButton radioButton  = (RadioButton) v.findViewById(R.id.radio_button);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /

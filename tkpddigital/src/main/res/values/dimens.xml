@@ -20,4 +20,6 @@
     <dimen name="digital_height_width_25">25dp</dimen>
 
     <dimen name="digital_height_60">60dp</dimen>
+    <dimen name="digital_margin_min_5">-5dp</dimen>
+
 </resources>

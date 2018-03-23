@@ -86,44 +86,12 @@ public class ClientNumberInputView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
         initialTextWatcher();
-        initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
         setBtnClearInvisible();
     }
 
     private void initialTextWatcher() {
 
-    }
-
-    @SuppressWarnings("deprecation")
-    private void initBackgroundContactButtonAndClearButton() {
-        /*Glide.with(getContext()).load(VectorDrawableCompat.create(getResources(), R.drawable.ic_digital_widget_close, getContext().getTheme()))
-                .asBitmap().into(
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        Drawable drawableClear = new BitmapDrawable(
-                                getContext().getResources(), resource
-                        );
-                        btnClear.setBackgroundDrawable(drawableClear);
-                    }
-                });*/
-//        btnClear.setBackgroundDrawable(VectorDrawableCompat.create(getResources(), R.drawable.ic_digital_widget_close, getContext().getTheme()));
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_phonebook_widget)
-                .asBitmap().into(
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-
-                        Drawable drawablePhoneBook = new BitmapDrawable(
-                                getContext().getResources(), resource
-                        );
-                        btnContactPicker.setBackgroundDrawable(drawablePhoneBook);
-                    }
-                }
-        );
     }
 
     private OnFocusChangeListener getFocusChangeListener() {

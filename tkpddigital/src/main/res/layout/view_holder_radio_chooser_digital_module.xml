@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              tools:background="@color/grey_100">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:background="@color/grey_100">
 
     <TextView
         android:id="@+id/tv_label_chooser"
@@ -19,6 +20,7 @@
         tools:visibility="visible"/>
 
     <RadioGroup
+        app:theme="@style/DigitalCheckboxAndRadioButton"
         android:id="@+id/rg_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

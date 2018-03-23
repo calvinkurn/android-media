@@ -71,6 +71,9 @@
 
             <CheckBox
                 android:id="@+id/cb_instant_checkout"
+                app:theme="@style/DigitalCheckboxAndRadioButton"
+                android:layout_marginLeft="@dimen/digital_margin_min_5"
+                android:layout_marginStart="@dimen/digital_margin_min_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

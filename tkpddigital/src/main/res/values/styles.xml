@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-           xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="DigitalWebView" parent="@style/Theme.Tokopedia3">
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
@@ -107,4 +106,9 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="DigitalCheckboxAndRadioButton">
+        <item name="colorControlNormal">#bdbdbd</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
 </resources>
