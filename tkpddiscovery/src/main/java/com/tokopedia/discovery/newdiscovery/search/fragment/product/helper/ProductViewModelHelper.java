@@ -35,7 +35,6 @@ public class ProductViewModelHelper {
     private static void clearPositionCache() {
         LocalCacheHandler.clearCache(MainApplication.getAppContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
     }
-    
 
     public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();
