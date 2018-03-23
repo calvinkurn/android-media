@@ -235,48 +235,6 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    // Required -- JUnit 4 framework
-    testCompile rootProject.ext.testDependencies.junit
-
-    // Optional -- Mockito framework
-    testCompile rootProject.ext.testDependencies.mockitorCore
-
-    testCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
-
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
-
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    androidTestCompile(rootProject.ext.testDependencies.androidTestRunner) {
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile(rootProject.ext.testDependencies.androidRulesVersion) {
-        exclude module: 'support-annotations'
-    }
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoIntents) {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
-
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
