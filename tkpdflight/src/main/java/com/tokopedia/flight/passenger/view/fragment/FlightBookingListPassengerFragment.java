@@ -260,6 +260,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
             @Override
             public void onClick(View v) {
                 presenter.deletePassenger(passengerId);
+                dialog.dismiss();
             }
         });
         dialog.setOnCancelClickListener(new View.OnClickListener() {
@@ -268,6 +269,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
                 dialog.dismiss();
             }
         });
+        dialog.show();
     }
 
 }
