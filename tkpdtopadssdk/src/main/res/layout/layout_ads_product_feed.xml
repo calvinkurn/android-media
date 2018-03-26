@@ -32,9 +32,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_card"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="2"
@@ -49,10 +49,10 @@
         android:layout_below="@id/title"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_vs">
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_5">
 
         <TextView
             android:id="@+id/price"

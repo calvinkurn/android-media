@@ -13,10 +13,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/margin_med"
-        android:paddingRight="@dimen/margin_med"
-        android:paddingTop="@dimen/margin_med"
-        android:paddingBottom="@dimen/margin_med"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20"
         android:background="#66000000">
         <ImageView
             android:id="@+id/close_button"
@@ -46,8 +46,8 @@
             android:layout_toEndOf="@id/close_button"
             android:layout_toLeftOf="@id/download_image"
             android:layout_toStartOf="@id/download_image"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
             tools:text="Store"/>
 
         <TextView
@@ -61,8 +61,8 @@
             android:layout_toEndOf="@id/close_button"
             android:layout_toLeftOf="@id/download_image"
             android:layout_toStartOf="@id/download_image"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
             tools:text="12:20"/>
     </RelativeLayout>
 

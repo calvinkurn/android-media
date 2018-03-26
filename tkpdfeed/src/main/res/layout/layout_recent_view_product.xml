@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:layout_marginTop="@dimen/margin_sm">
+    android:layout_marginTop="@dimen/dp_15">
 
     <LinearLayout
         android:id="@+id/main_content"
@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/sub_history_product"
             android:textStyle="bold" />
 
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/title_see_all"
             android:textColor="@color/href_link"
             android:textSize="@dimen/fontvs" />
@@ -36,7 +36,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/history_product_recycler_view"
         android:layout_width="match_parent"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:layout_height="@dimen/history_height"
         android:scrollbars="horizontal" />
 

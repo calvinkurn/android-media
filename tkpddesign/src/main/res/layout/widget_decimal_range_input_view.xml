@@ -42,8 +42,8 @@
             style="@style/TextView.Title.BlackPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/range_input_margin_input_text"
-            android:layout_marginRight="@dimen/range_input_margin_input_text"
+            android:layout_marginLeft="@dimen/dp_minus4"
+            android:layout_marginRight="@dimen/dp_minus4"
             android:layout_weight="1"
             android:digits="0123456789"
             android:gravity="start"
@@ -56,8 +56,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:text="@string/price_range_separator_symbol" />
 
         <EditText
@@ -65,8 +65,8 @@
             style="@style/TextView.Title.BlackPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/range_input_margin_input_text"
-            android:layout_marginRight="@dimen/range_input_margin_input_text"
+            android:layout_marginLeft="@dimen/dp_minus4"
+            android:layout_marginRight="@dimen/dp_minus4"
             android:layout_weight="1"
             android:digits="0123456789"
             android:gravity="end"
@@ -80,7 +80,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms">
+        android:layout_marginTop="@dimen/dp_8">
 
         <com.tokopedia.design.price.DynamicBackgroundSeekBar
             android:id="@+id/seekbar_background"
@@ -92,18 +92,18 @@
 
         <View
             android:id="@+id/min_button"
-            android:layout_width="@dimen/price_seekbar_button_size"
-            android:layout_height="@dimen/price_seekbar_button_size"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/margin_ms"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/price_input_seekbar_button_pressed" />
 
         <View
             android:id="@+id/max_button"
-            android:layout_width="@dimen/price_seekbar_button_size"
-            android:layout_height="@dimen/price_seekbar_button_size"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/margin_ms"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/price_input_seekbar_button_pressed" />
 
     </RelativeLayout>

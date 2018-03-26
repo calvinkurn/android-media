@@ -2,7 +2,7 @@
 <FrameLayout android:id="@+id/view_empty_state_with_reset"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_small"
+    android:layout_margin="@dimen/dp_10"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="top"
-        android:layout_marginTop="@dimen/margin_med">
+        android:layout_marginTop="@dimen/dp_20">
 
         <ImageView
             app:srcCompat="@drawable/ic_empty_search"
@@ -32,13 +32,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/black_54"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:gravity="center"
             android:text="@string/string_empty_inbox_2_desc"/>
 
         <Button
             android:id="@+id/btn_reset_filter"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center"

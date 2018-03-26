@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:minHeight="72dp"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/padding_activity"
         android:paddingRight="@dimen/padding_activity"
         android:paddingTop="@dimen/padding_activity">
@@ -26,8 +26,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -40,7 +40,7 @@
                 android:lineSpacingExtra="8sp"
                 android:maxLines="1"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 tools:text="Pretty Sugar Shop"
                 />
@@ -49,7 +49,7 @@
                 android:id="@+id/user_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:visibility="gone"
                 app:usv_show_tooltip="true"/>
 
@@ -57,7 +57,7 @@
                 android:id="@+id/shop_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:visibility="gone"
                 app:srv_show_tooltip="true"/>
         </LinearLayout>
@@ -78,8 +78,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/margin_small"
-                android:padding="@dimen/padding_vvs"
+                android:layout_marginRight="@dimen/dp_10"
+                android:padding="@dimen/dp_3"
                 tools:src="@drawable/ic_done_24dp"/>
 
             <TextView
@@ -126,7 +126,7 @@
                 android:id="@+id/icon_deadline"
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
-                android:layout_margin="@dimen/margin_vs"
+                android:layout_margin="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_red_hourglass"/>
 
             <TextView
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_deadline"
                 android:gravity="center_vertical"
                 android:fontFamily="sans-serif-medium"
@@ -174,7 +174,7 @@
                 android:id="@+id/icon_locked"
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
-                android:layout_margin="@dimen/margin_vs"
+                android:layout_margin="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_locked2"/>
 
             <TextView
@@ -183,7 +183,7 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/locked_reputation"
@@ -206,7 +206,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_activity"
         android:layout_marginRight="@dimen/padding_activity"
-        android:layout_marginTop="@dimen/margin_small">
+        android:layout_marginTop="@dimen/dp_10">
 
         <TextView
             android:id="@+id/prompt_text"
@@ -253,14 +253,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:padding="@dimen/padding_vs">
+        android:padding="@dimen/dp_5">
 
         <TextView
             android:id="@+id/opponent_smiley_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
@@ -275,7 +275,7 @@
             android:layout_width="@dimen/opponent_smiley"
             android:layout_height="@dimen/opponent_smiley"
             android:layout_centerVertical="true"
-            android:layout_margin="@dimen/margin_vs"
+            android:layout_margin="@dimen/dp_5"
             android:layout_toEndOf="@id/opponent_smiley_text"
             android:layout_toRightOf="@id/opponent_smiley_text"
             android:gravity="center_vertical"

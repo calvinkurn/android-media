@@ -16,20 +16,20 @@
     <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view_minimum_whole_sale"
         style="@style/LabelLayout.NoPadding"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:counter_enabled="false"
         app:counter_hint="@string/product_label_minimum_whole_sale" />
 
     <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view_maximum_whole_sale"
         style="@style/LabelLayout.NoPadding"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:counter_hint="@string/product_label_maximum_whole_sale" />
 
     <com.tokopedia.design.text.DecimalInputView
         android:id="@+id/counter_input_view_wholesale_price"
         style="@style/LabelLayout.NoPadding"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:decimal_input_hint="@string/product_label_price_whole_sale" />
 
     <RelativeLayout

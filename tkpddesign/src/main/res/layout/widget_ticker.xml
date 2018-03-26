@@ -4,10 +4,10 @@
 <!--android:layout_width="match_parent"-->
 <!--android:layout_height="wrap_content"-->
 <!--android:id="@+id/parent_view"-->
-<!--app:contentPaddingTop="@dimen/padding_vvs"-->
-<!--app:contentPaddingBottom="@dimen/padding_vvs"-->
-<!--app:contentPaddingLeft="@dimen/padding_small"-->
-<!--app:contentPaddingRight="@dimen/padding_vvs"-->
+<!--app:contentPaddingTop="@dimen/dp_3"-->
+<!--app:contentPaddingBottom="@dimen/dp_3"-->
+<!--app:contentPaddingLeft="@dimen/dp_10"-->
+<!--app:contentPaddingRight="@dimen/dp_3"-->
 <!--app:cardCornerRadius="2dp">-->
 
 <!--<RelativeLayout-->
@@ -26,7 +26,7 @@
 <!--android:layout_height="wrap_content"-->
 <!--android:layout_centerHorizontal="true"-->
 <!--android:layout_alignParentBottom="true"-->
-<!--android:padding="@dimen/padding_vs"-->
+<!--android:padding="@dimen/dp_5"-->
 <!--/>-->
 
 <!--</RelativeLayout>-->
@@ -37,12 +37,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_widget_ticker"
+    android:layout_height="@dimen/dp_90"
     android:background="@drawable/bg_ticker"
-    android:paddingTop="@dimen/padding_vvvs"
-    android:paddingBottom="@dimen/padding_vvvs"
-    android:paddingLeft="@dimen/padding_vvs"
-    android:paddingRight="@dimen/margin_vvvs">
+    android:paddingTop="@dimen/dp_2"
+    android:paddingBottom="@dimen/dp_2"
+    android:paddingLeft="@dimen/dp_3"
+    android:paddingRight="@dimen/dp_2">
 
     <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/padding_vs"
+        android:padding="@dimen/dp_5"
         />
 
     <ImageView
@@ -66,9 +66,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginEnd="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
         app:srcCompat="@drawable/ic_ticker_action_close_12dp"
         android:contentDescription="@string/text_ticker_action_close"
         />

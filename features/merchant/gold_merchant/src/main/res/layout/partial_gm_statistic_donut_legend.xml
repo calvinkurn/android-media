@@ -35,7 +35,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center_horizontal"
         android:text="@string/gm_statistic_data_not_followed_the_date_range"
         android:textColor="@color/grey_400"

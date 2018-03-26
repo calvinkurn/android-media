@@ -1,162 +1,68 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <dimen name="font_headline3">56sp</dimen>
-    <dimen name="font_headline2">45sp</dimen>
-    <dimen name="font_headline">34sp</dimen>
-    <dimen name="font_sub_headline">24sp</dimen>
-    <dimen name="font_title_big">20sp</dimen>
-    <dimen name="font_title">16sp</dimen>
-    <dimen name="font_small">14sp</dimen>
-    <dimen name="font_smaller">13sp</dimen>
-    <dimen name="font_micro">12sp</dimen>
-    <dimen name="font_tiny">11sp</dimen>
-    <dimen name="font_nano">8sp</dimen>
+    <dimen name="dp_minus8">-8dp</dimen>
+    <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
+    <dimen name="dp_minus4">-4dp</dimen>
+    <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_5">5dp</dimen> <!-- not recommended -->
+    <dimen name="dp_7">7dp</dimen> <!-- not recommended -->
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
+    <dimen name="dp_15">15dp</dimen> <!-- not recommended -->
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_25">25dp</dimen> <!-- not recommended -->
+    <dimen name="dp_30">30dp</dimen> <!-- not recommended -->
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_35">35dp</dimen> <!-- not recommended -->
+    <dimen name="dp_36">36dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_44">44dp</dimen> <!-- not recommended -->
+    <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
+    <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
+    <dimen name="dp_72">72dp</dimen>
+    <dimen name="dp_75">75dp</dimen>
+    <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
+    <dimen name="dp_76">76dp</dimen> <!-- not recommended -->
+    <dimen name="dp_80">80dp</dimen>
+    <dimen name="dp_90">90dp</dimen> <!-- not recommended -->
+    <dimen name="dp_96">96dp</dimen>
+    <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
+    <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
+    <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
+    <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
+    <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
+    <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
+    <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
+    <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
+    <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
+    <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
+    <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
 
-    <dimen name="font_line_spacing_headline">38sp</dimen>
-    <dimen name="font_line_spacing_subheadline">28sp</dimen>
-    <dimen name="font_line_spacing_title_big">24sp</dimen>
-    <dimen name="font_line_spacing_title">22sp</dimen>
-    <dimen name="font_line_spacing_small">18sp</dimen>
-    <dimen name="font_line_spacing_micro">16sp</dimen>
+    <dimen name="sp_8">8sp</dimen> <!-- not recommended -->
+    <dimen name="sp_10">10sp</dimen> <!-- not recommended -->
+    <dimen name="sp_11">11sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_13">13sp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_15">15sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_22">22sp</dimen>
+    <dimen name="sp_24">24sp</dimen>
+    <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
+    <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
+    <dimen name="sp_56">56sp</dimen>
 
-    <dimen name="font_loading_height_display4">112dp</dimen>
-    <dimen name="font_loading_height_display3">56dp</dimen>
-    <dimen name="font_loading_height_display2">45dp</dimen>
-    <dimen name="font_loading_height_display1">34dp</dimen>
-    <dimen name="font_loading_height_headline">24dp</dimen>
-    <dimen name="font_loading_height_title">20dp</dimen>
-    <dimen name="font_loading_height_subheading">16dp</dimen>
-    <dimen name="font_loading_height_body2">14dp</dimen>
-    <dimen name="font_loading_height_body1">14dp</dimen>
-    <dimen name="font_loading_height_caption">12dp</dimen>
-    <dimen name="font_loading_height_button">14dp</dimen>
-
-    <dimen name="font_loading_width_xxxs">3dp</dimen>
-    <dimen name="font_loading_width_xxs">7dp</dimen>
-    <dimen name="font_loading_width_xs">15dp</dimen>
-    <dimen name="font_loading_width_s">30dp</dimen>
-    <dimen name="font_loading_width_m">50dp</dimen>
-    <dimen name="font_loading_width_l">100dp</dimen>
-    <dimen name="font_loading_width_xl">150dp</dimen>
-    <dimen name="font_loading_width_xxl">200dp</dimen>
-    <dimen name="font_loading_width_xxxl">300dp</dimen>
-
-    <dimen name="image_width_xxxs">8dp</dimen>
-    <dimen name="image_width_xxs">16dp</dimen>
-    <dimen name="image_width_xs">24dp</dimen>
-    <dimen name="image_width_s">32dp</dimen>
-    <dimen name="image_width_ms">33dp</dimen>
-    <dimen name="image_width_m">40dp</dimen>
-    <dimen name="image_width_l">48dp</dimen>
-    <dimen name="image_width_xl">72dp</dimen>
-    <dimen name="image_width_xll">72dp</dimen>
-    <dimen name="image_width_xxl">96dp</dimen>
-    <dimen name="image_width_xxxl">128dp</dimen>
-
-    <dimen name="new_margin_tiny">4dp</dimen>
-    <dimen name="new_margin_small">8dp</dimen>
-    <dimen name="new_margin_medsmall">12dp</dimen>
-    <dimen name="new_margin_med">16dp</dimen>
-    <dimen name="new_margin_sm">24dp</dimen>
-    <dimen name="new_margin_big">32dp</dimen>
-    <dimen name="new_margin_lilbig">40dp</dimen>
-    <dimen name="new_margin_huge">48dp</dimen>
-
-    <dimen name="margin_vs">5dp</dimen>
-    <dimen name="margin_ms">8dp</dimen>
-    <dimen name="margin_vvs">3.3dp</dimen>
-    <dimen name="margin_vvvs">2dp</dimen>
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_sm">15dp</dimen>
-    <dimen name="margin_med">20dp</dimen>
-    <dimen name="margin_large">30dp</dimen>
-    <dimen name="margin_vl">40dp</dimen>
-    <dimen name="padding_vs">5dp</dimen>
-    <dimen name="padding_vvs">3dp</dimen>
-    <dimen name="padding_vvvs">2dp</dimen>
-    <dimen name="padding_ms">8dp</dimen>
-    <dimen name="padding_small">10dp</dimen>
-    <dimen name="padding_med">20dp</dimen>
-    <dimen name="large_dp">30dp</dimen>
-
-    <dimen name="small_icon_size">24dp</dimen>
-    <dimen name="icon_size">36dp</dimen>
-    <dimen name="large_icon_size">48dp</dimen>
-
-    <dimen name="text_input_margin_offset">-4dp</dimen>
-    <dimen name="text_input_margin_top_offset">-8dp</dimen>
-    <dimen name="text_input_margin_bottom_offset">-6dp</dimen>
-    <dimen name="text_input_horizontal_padding">4dp</dimen>
-    <dimen name="text_input_counter_horizontal_padding">2dp</dimen>
-
-    <dimen name="spinner_decimal_spinner_width">80dp</dimen>
-
-    <dimen name="height_widget_ticker">90dp</dimen>
-    <dimen name="image_medal_size">20dp</dimen>
-
-    <dimen name="height_button_voucher">44dp</dimen>
-    <dimen name="font_small_caption_voucher">10dp</dimen>
-
-    <dimen name="image_smiley_size">35dp</dimen>
-
-    <dimen name="price_seekbar_button_size">30dp</dimen>
-    <dimen name="price_range_separator_margin">16dp</dimen>
-    <dimen name="deletable_item_button_size">30dp</dimen>
-    <dimen name="deletable_item_max_width">78dp</dimen>
-    <dimen name="deletable_item_max_height">14dp</dimen>
-    <dimen name="empty_search_result_icon_height">145dp</dimen>
-    <dimen name="empty_search_result_padding_side">45dp</dimen>
-    <dimen name="empty_search_result_padding_top">80dp</dimen>
-    <dimen name="empty_search_result_title_margin_top">16dp</dimen>
-    <dimen name="empty_search_result_content_margin_top">8dp</dimen>
-    <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
-    <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
-    <dimen name="alphabetical_section_header_padding">16dp</dimen>
-
-    <dimen name="medal_size">20dp</dimen>
-    <dimen name="smiley_reputation_size">24dp</dimen>
-    <dimen name="reputation_view_smiley">14dp</dimen>
-
-    <dimen name="lv_min_title_width">100dp</dimen>
-
-    <dimen name="empty_min_width">200dp</dimen>
-    <dimen name="empty_max_width">250dp</dimen>
-
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="toolbar_elevation">4dp</dimen>
-
-    <dimen name="range_input_margin_input_text">-4dp</dimen>
-
-    <dimen name="layout_bav_width_min">80dp</dimen>
-
-    <!-- Events Dimen. -->
-    <dimen name="icon_size_small">16dp</dimen>
-    <dimen name="icon_size_large">32dp</dimen>
-    <dimen name="margin_default">16dp</dimen>
-    <dimen name="card_corner_default">2dp</dimen>
-    <dimen name="margin_padding_small">4dp</dimen>
-    <dimen name="divider_height_thin">2dp</dimen>
-    <dimen name="banner_height">180dp</dimen>
-    <dimen name="progbar_height">50dp</dimen>
-    <dimen name="textsize_large">16sp</dimen>
-    <dimen name="textsize_tiny">10sp</dimen>
-    <dimen name="textsize_big">18sp</dimen>
-    <dimen name="margin_padding_medium">8dp</dimen>
-    <dimen name="textsize_huge">22sp</dimen>
-    <dimen name="margin_padding_large">10dp</dimen>
-    <dimen name="searchview_height">40dp</dimen>
-    <dimen name="margin_25">25dp</dimen>
-    <dimen name="promo_layout_height">45dp</dimen>
-    <dimen name="circle_indicator_height">12dp</dimen>
-    <dimen name="seat_plan_height">350dp</dimen>
-    <dimen name="seatmap_fixed_height">340dp</dimen>
-    <dimen name="height_tablayout">76dp</dimen>
-    <dimen name="smallicon_size">24dp</dimen>
-
-    <dimen name="widget_bottom_action_radius">20dp</dimen>
-    <dimen name="widget_bottom_action_elevation">3dp</dimen>
 </resources>

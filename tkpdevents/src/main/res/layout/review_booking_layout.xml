@@ -2,6 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_100">
@@ -16,14 +18,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/dp_16"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
 
@@ -31,18 +31,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_default"
-                    android:paddingTop="@dimen/margin_default">
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/margin_default"
-                        android:paddingLeft="@dimen/margin_default"
-                        android:paddingStart="@dimen/margin_default"
+                        android:paddingBottom="@dimen/dp_16"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingStart="@dimen/dp_16"
                         android:text="@string/detail_tiket"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -50,9 +50,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="@dimen/margin_default"
-                        android:layout_marginEnd="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:scaleType="centerCrop"
                         android:src="@color/deep_orange_500" />
 
@@ -60,11 +60,11 @@
                         android:id="@+id/event_name_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/margin_default"
-                        android:paddingRight="@dimen/margin_default"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
                         android:text="@string/rp_5980000"
                         android:textColor="@color/grey_150"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="bold" />
 
                     <include
@@ -72,25 +72,25 @@
                         layout="@layout/image_textview_holder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
-                        android:layout_marginTop="@dimen/margin_default" />
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16" />
 
                     <include
                         android:id="@+id/event_address_tv"
                         layout="@layout/image_textview_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginTop="@dimen/keyline_1_minus_8dp" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/divider_height_thin"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
-                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_height="@dimen/dp_2"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:background="@color/grey_100" />
 
                     <RelativeLayout
@@ -102,21 +102,21 @@
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
                             android:layout_alignParentLeft="true"
-                            android:layout_marginTop="@dimen/margin_default"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="@string/tiket"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/tv_ticket_cnt_type"
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
-                            android:layout_marginLeft="@dimen/margin_25"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:layout_marginTop="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
                             android:layout_toRightOf="@+id/tv_ticket_summary"
                             android:text="@string/rp_5980000"
                             android:textColor="@color/green_nob"
@@ -135,9 +135,9 @@
                             android:id="@+id/event_total_tickets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_padding_small"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="@string/nomor_kursi"
                             android:textColor="@color/black_70"
                             android:textSize="12sp"
@@ -147,13 +147,13 @@
                             android:id="@+id/seat_numbers"
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
-                            android:layout_marginLeft="@dimen/margin_25"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:layout_marginTop="@dimen/margin_padding_small"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_4"
                             android:layout_toRightOf="@+id/event_total_tickets"
                             android:text="@string/rp_5980000"
                             android:textColor="@color/black_54"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -164,7 +164,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/dp_16"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
 
@@ -172,19 +172,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_default"
-                    android:paddingTop="@dimen/margin_default">
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16">
 
                     <TextView
                         android:id="@+id/tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:paddingBottom="8dp"
                         android:text="@string/tujuan_pengiriman_tiket"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -192,9 +192,9 @@
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_alignBottom="@+id/tv1"
-                        android:layout_marginBottom="@dimen/margin_default"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:layout_toEndOf="@+id/tv1"
                         android:layout_toRightOf="@+id/tv1"
                         app:srcCompat="@drawable/ic_info" />
@@ -207,17 +207,17 @@
                         android:layout_alignBottom="@+id/tv_telephone"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
                         android:background="@drawable/rounded_rectangle_grey_solid"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
-                        android:padding="@dimen/divider_height_thin"
+                        android:padding="@dimen/dp_2"
                         android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="bold" />
 
                     <TextView
@@ -226,11 +226,11 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv1"
                         android:layout_marginBottom="-8dp"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:text="@string/email"
                         android:textColor="@color/grey_700"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
                     <EditText
@@ -238,13 +238,13 @@
                         android:layout_width="@dimen/edittext_width"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv2"
-                        android:layout_marginBottom="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/dp_16"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:focusableInTouchMode="true"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
 
                     <TextView
@@ -255,17 +255,17 @@
                         android:layout_alignBottom="@+id/tv_visitor_names"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
                         android:background="@drawable/rounded_rectangle_grey_solid"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
-                        android:padding="@dimen/divider_height_thin"
+                        android:padding="@dimen/dp_2"
                         android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="bold" />
 
                     <TextView
@@ -274,11 +274,11 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_visitor_names"
                         android:layout_marginBottom="-8dp"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:text="No. Telepon"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/font_micro"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
                     <EditText
@@ -292,7 +292,7 @@
                         android:paddingBottom="8dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
                 </RelativeLayout>
 
@@ -302,7 +302,7 @@
                 android:id="@+id/form_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:visibility="gone"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
@@ -311,8 +311,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_default"
-                    android:paddingTop="@dimen/margin_default">
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -323,12 +323,12 @@
                             android:id="@+id/tv_more_info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_ms"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/data_pelanggan_tambahan"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/textsize_huge"
+                            android:textSize="@dimen/sp_22"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -337,22 +337,22 @@
                             android:layout_height="15dp"
                             android:layout_gravity="bottom"
                             android:layout_marginBottom="14dp"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             app:srcCompat="@drawable/ic_info" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_default"
-                        android:layout_marginEnd="@dimen/margin_default"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:text="Informasi ini akan digunakan pada saat penukaran tiket"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal" />
 
                     <EditText
@@ -362,7 +362,7 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -374,7 +374,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -386,7 +386,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -396,9 +396,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
-                        android:paddingBottom="@dimen/margin_padding_medium"
+                        android:paddingBottom="@dimen/dp_8"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -408,7 +408,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/dp_16"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
 
@@ -421,7 +421,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="@dimen/margin_default">
+                        android:padding="@dimen/dp_16">
 
                         <CheckBox
                             android:id="@+id/promo_checkbox"
@@ -431,11 +431,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/promo_section"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -444,8 +444,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingBottom="@dimen/margin_padding_medium"
-                        android:paddingTop="@dimen/margin_padding_medium"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingTop="@dimen/dp_8"
                         android:visibility="gone">
 
                         <EditText
@@ -453,14 +453,14 @@
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:hint="@string/kode_promo"
                             android:paddingEnd="0dp"
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
                             android:paddingStart="0dp"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
 
                         <TextView
@@ -469,32 +469,32 @@
                             android:layout_height="32dp"
                             android:layout_alignParentRight="true"
                             android:layout_gravity="end|center_vertical"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
                             android:background="@drawable/rounded_rectangle_green_solid"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="@string/cek_kode"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/batal"
                             android:layout_width="80dp"
-                            android:layout_height="@dimen/icon_size_large"
+                            android:layout_height="@dimen/dp_32"
                             android:layout_alignParentRight="true"
                             android:layout_below="@+id/update_promo"
                             android:layout_gravity="end|center_vertical"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/rounded_rectangle_grey_solid"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="Batal"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -504,14 +504,14 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@+id/update_promo"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginStart="@dimen/margin_default"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="Anda mendapatkan promo:"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="visible" />
 
@@ -521,17 +521,17 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@+id/tv_promo_success_msg"
-                            android:layout_marginLeft="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_padding_medium"
-                            android:layout_marginStart="@dimen/margin_default"
-                            android:layout_marginTop="@dimen/margin_padding_medium"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_8"
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:layout_toLeftOf="@+id/batal"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:maxLines="2"
                             android:text="cashback mesage"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -544,7 +544,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/dp_16"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
 
@@ -552,36 +552,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_default"
-                    android:paddingTop="@dimen/margin_default">
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv3"
                         android:paddingBottom="8dp"
-                        android:paddingEnd="@dimen/margin_default"
-                        android:paddingStart="@dimen/margin_default"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingStart="@dimen/dp_16"
                         android:text="Rincian Harga"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/textsize_huge"
+                        android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/basefare"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingEnd="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Base Fare"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -590,13 +590,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -607,29 +607,29 @@
                             android:layout_alignParentStart="true"
                             android:layout_below="@+id/basefare"
                             android:layout_marginBottom="4dp"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="@string/rp_5980000"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_padding_medium"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingEnd="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Biaya Layanan"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -638,37 +638,37 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/font_micro"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/divider_height_thin"
-                        android:layout_marginEnd="@dimen/margin_default"
-                        android:layout_marginStart="@dimen/margin_default"
+                        android:layout_height="@dimen/dp_2"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:background="@color/black_12" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingEnd="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Pembayaran Anda"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/font_small"
+                            android:textSize="@dimen/sp_14"
                             android:textStyle="bold" />
 
                         <TextView
@@ -677,13 +677,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginEnd="@dimen/margin_default"
-                            android:layout_marginRight="@dimen/margin_default"
-                            android:paddingLeft="@dimen/margin_default"
-                            android:paddingStart="@dimen/margin_default"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
                             android:textColor="@color/price_pdp"
-                            android:textSize="@dimen/textsize_big"
+                            android:textSize="@dimen/sp_18"
                             android:textStyle="bold" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -692,21 +692,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="144dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="@color/white"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_someinfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_default"
-                    android:layout_marginRight="@dimen/margin_default"
-                    android:layout_marginTop="@dimen/margin_default"
-                    android:text="@string/some_info"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_micro" />
 
                 <include
                     android:id="@+id/btn_go_to_payment"
@@ -731,8 +720,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/progbar_height"
-            android:layout_height="@dimen/progbar_height"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 

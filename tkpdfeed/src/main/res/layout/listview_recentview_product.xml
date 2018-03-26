@@ -9,7 +9,7 @@
     android:clickable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/padding_vs">
+    android:padding="@dimen/dp_5">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_alignRight="@id/product_image"
-            android:layout_marginRight="@dimen/margin_vvs"
+            android:layout_marginRight="@dimen/dp_3"
             android:orientation="vertical">
 
         </LinearLayout>
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="@dimen/padding_vs">
+        android:padding="@dimen/dp_5">
 
         <TextView
             android:id="@+id/product_name"

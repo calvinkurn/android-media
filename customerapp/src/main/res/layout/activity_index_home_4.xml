@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         tools:context=".ParentIndexHome">
 
-        <com.tokopedia.design.tab.Tabs
+        <com.tokopedia.design.component.Tabs
             android:id="@+id/tab"
             app:tabType="main"
             android:layout_width="match_parent"
@@ -50,6 +50,7 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="@dimen/margin_vs"
                 android:listSelector="@android:color/transparent" />
+
         </LinearLayout>
 
     </RelativeLayout>

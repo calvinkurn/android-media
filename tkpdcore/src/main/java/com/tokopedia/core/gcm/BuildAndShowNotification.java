@@ -333,8 +333,8 @@ public class BuildAndShowNotification {
                             mBuilder.setLargeIcon(
                                     Bitmap.createScaledBitmap(
                                             BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.dp_36),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.dp_36),
                                             true
                                     )
                             );

@@ -95,7 +95,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_positif"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -132,7 +132,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_netral"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -169,7 +169,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_negatif"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                     </LinearLayout>
 
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:text="42%"
                     android:id="@+id/user_reputation"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:layout_gravity="center"
                     android:gravity="center" />
 
@@ -211,7 +211,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_positif"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </LinearLayout>
 
             <LinearLayout
@@ -240,7 +240,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_positive"
                         android:textStyle="bold" />
 
@@ -268,7 +268,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_neutral"
                         android:textStyle="bold" />
 
@@ -296,7 +296,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11"
-                        android:textSize="@dimen/font_small"
+                        android:textSize="@dimen/sp_14"
                         android:id="@+id/counter_negative"
                         android:textStyle="bold" />
 

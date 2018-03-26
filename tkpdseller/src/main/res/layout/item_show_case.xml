@@ -7,7 +7,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <android.support.v7.widget.AppCompatTextView
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         android:paddingLeft="@dimen/opportunity_showcase_padding"
         android:paddingRight="@dimen/opportunity_showcase_padding"
         android:id="@+id/text_title"
@@ -20,16 +20,16 @@
         android:id="@+id/text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         android:paddingLeft="@dimen/opportunity_showcase_padding"
         android:paddingRight="@dimen/opportunity_showcase_padding"
-        android:paddingBottom="@dimen/margin_ms"
+        android:paddingBottom="@dimen/dp_8"
         android:lineSpacingExtra="4dp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/grey_600"/>
 
     <android.support.v7.widget.LinearLayoutCompat

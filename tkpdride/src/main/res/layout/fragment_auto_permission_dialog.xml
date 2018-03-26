@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingBottom="@dimen/margin_sm"
-        android:paddingTop="@dimen/margin_sm"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_15"
         android:text="Allow Auto Debit"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/font_medium" />
@@ -31,13 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_sm">
+        android:paddingBottom="@dimen/dp_15">
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginRight="@dimen/padding_med"
+            android:layout_marginRight="@dimen/dp_20"
             android:layout_weight="1"
             android:background="@drawable/button_rounded"
             android:foreground="?attr/selectableItemBackground"

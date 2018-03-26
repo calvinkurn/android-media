@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="@dimen/padding_vs"
-    android:paddingBottom="@dimen/padding_vs"
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -19,13 +19,13 @@
 
     <TextView
         style="@style/TextView.Small.Bold"
-        android:layout_marginRight="@dimen/margin_vvs"
-        android:layout_marginLeft="@dimen/margin_vvs"
+        android:layout_marginRight="@dimen/dp_3"
+        android:layout_marginLeft="@dimen/dp_3"
         android:text=":"/>
 
     <TextView
         android:id="@+id/desc_info"
         style="@style/TextView.Small.BlackSecondary"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/dp_10"
         tools:text="34 inci"/>
 </LinearLayout>

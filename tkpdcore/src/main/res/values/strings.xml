@@ -1132,7 +1132,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_select_agency_error">Kurir harus dipilih</string>
     <string name="title_index_prod_shop">Feed</string>
     <string name="title_index_hot_list">Hot List</string>
-    <string name="title_index_favorite">FAVORIT</string>
+    <string name="title_index_favorite">Favorit</string>
 
     <string name="title_done">Selesai</string>
     <string name="title_understand">Mengerti</string>
@@ -1308,7 +1308,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_receive_name">Penerima</string>
     <string name="title_sender_city">Asal</string>
     <string name="title_receiver_city">Tujuan</string>
-    <!--string related to Android PlayStore Review Dialog -->
+    <!--string related to Android PlayStore RevBaseDialogalog -->
     <string name="label_find_own_product">Cari Produk </string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->

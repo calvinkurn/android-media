@@ -31,15 +31,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_horizontal_margin">
+        android:layout_marginTop="@dimen/dp_16">
 
         <TextView
             style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_variant_manage_variant"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/margin_small"/>
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_10"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

@@ -279,7 +279,7 @@
             android:padding="24dp"
             android:text="@string/message_uber_waiting_receipt"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
     </RelativeLayout>
 

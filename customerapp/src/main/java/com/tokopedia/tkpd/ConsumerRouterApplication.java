@@ -76,6 +76,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -155,10 +156,10 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
 import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
 import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -230,8 +231,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -1581,7 +1581,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void openTokoPoint(Context context, String url) {
-        startActivity(TokoPointWebviewActivity.getIntent(context, url));
+        context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
     public Intent getProductDetailIntent(Context context, ProductPass productPass) {
@@ -1596,7 +1596,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isEnabledGroupChat() {
-        return true;
+        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
     }
 
     @Override
@@ -1606,5 +1606,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 StreamAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
                 ""
         );
+    }
+
+    @Override
+    public void generateBranchLink(String channelId, String title, String contentMessage, String
+            imgUrl, String
+            shareUrl, Activity activity, final ShareListener
+                                           listener) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setId(channelId)
+                .setName(title)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.GROUPCHAT_TYPE)
+                .build();
+
+        BranchSdkUtils.generateBranchLink(shareData, activity, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                listener.onGenerateLink(shareContents, shareUri);
+            }
+        });
     }
 }

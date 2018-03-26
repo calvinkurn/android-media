@@ -278,7 +278,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
-        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
+        adapter.setFontSize(getResources().getDimension(R.dimen.sp_12));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -324,7 +324,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
-        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
+        adapter.setFontSize(getResources().getDimension(R.dimen.sp_12));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {

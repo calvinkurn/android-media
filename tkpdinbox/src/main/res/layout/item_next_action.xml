@@ -15,7 +15,7 @@
             android:id="@+id/fl_icon"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginTop="@dimen/margin_vvvs">
+            android:layout_marginTop="@dimen/dp_2">
 
             <ImageView
                 android:id="@+id/iv_indicator_circle"
@@ -29,7 +29,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_vvvs"/>
+                android:layout_marginTop="@dimen/dp_2"/>
         </FrameLayout>
 
         <ImageView
@@ -48,17 +48,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/margin_vs">
+        android:layout_marginTop="@dimen/dp_5">
 
         <TextView
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/tv_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/fontvs"
             android:textColor="@color/black_54"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/padding_vs"
+            android:paddingBottom="@dimen/dp_5"
             context:text="asd"/>
 
         <View

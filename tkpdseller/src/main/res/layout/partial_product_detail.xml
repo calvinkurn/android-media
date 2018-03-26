@@ -54,7 +54,7 @@
     <com.tokopedia.design.text.SpinnerCounterInputView
         android:id="@+id/spinner_counter_input_view_weight"
         style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:spinner_decimal_entries="@array/product_weight_entries"
         app:spinner_decimal_hint="@string/product_label_product_weight"
         app:spinner_decimal_show_counter_button="false"
@@ -63,7 +63,7 @@
     <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view_minimum_order"
         style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:counter_hint="@string/product_label_minimum_buy"
         app:counter_min="@integer/product_default_counter_minimum_order_text"
         app:counter_text="@string/product_default_counter_minimum_order_text" />
@@ -94,7 +94,7 @@
         android:id="@+id/label_view_shop_window"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:focusable="true"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
@@ -103,7 +103,7 @@
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_condition"
         style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         app:spinner_entries="@array/product_condition_entries"
         app:spinner_hint="@string/product_label_condition"
         app:spinner_values="@array/product_condition_values" />

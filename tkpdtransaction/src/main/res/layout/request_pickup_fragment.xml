@@ -14,8 +14,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:padding="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:padding="@dimen/dp_10"
             android:text="@string/button_order_detail_confirm_request_pickup"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold" />
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="30dp"
@@ -44,8 +44,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/request_pickup_step_1" />
 
         </LinearLayout>
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="30dp"
@@ -75,8 +75,8 @@
                 android:id="@+id/request_pickup_step_2_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/request_pickup_step_2" />
 
         </LinearLayout>
@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="30dp"
@@ -105,8 +105,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 android:orientation="vertical">
 
                 <TextView
@@ -118,7 +118,7 @@
                     android:id="@+id/request_pickup_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_large"
+                    android:layout_marginTop="@dimen/dp_30"
                     android:text="@string/request_pickup_info" />
 
             </LinearLayout>

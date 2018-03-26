@@ -13,7 +13,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:maxEms="10"
-        android:textSize="@dimen/font_title"
+        android:textSize="@dimen/sp_16"
         tools:text="Denpasar - Bali" />
 
     <android.support.v7.widget.AppCompatImageView
@@ -21,8 +21,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         app:srcCompat="@drawable/ic_arrow_right_flight" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -33,6 +33,6 @@
         android:ellipsize="end"
         android:lines="1"
         android:maxEms="10"
-        android:textSize="@dimen/font_title"
+        android:textSize="@dimen/sp_16"
         tools:text="London" />
 </LinearLayout>

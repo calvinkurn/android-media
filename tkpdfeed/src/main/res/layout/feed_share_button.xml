@@ -24,8 +24,8 @@
             android:id="@+id/share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:text="@string/action_share"
             android:textColor="@color/black_70"
             android:textSize="13sp" />

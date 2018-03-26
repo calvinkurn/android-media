@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textColor="@color/black_70"/>
 
     <android.support.v7.widget.RecyclerView
@@ -17,6 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layoutDirection="ltr"
-        android:layout_marginTop="@dimen/margin_sm"/>
+        android:layout_marginTop="@dimen/dp_15"/>
 
 </LinearLayout>

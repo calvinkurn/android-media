@@ -56,7 +56,7 @@
                     <ImageView
                         android:id="@+id/event_detail_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/banner_height"
+                        android:layout_height="@dimen/dp_180"
                         android:scaleType="centerCrop"
                         app:layout_collapseMode="pin" />
 
@@ -84,7 +84,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/divider_height_thin"
+                        android:layout_height="@dimen/dp_2"
                         android:background="@color/grey_100" />
 
                     <!--<View-->
@@ -125,8 +125,8 @@
 
             <ProgressBar
                 android:id="@+id/prog_bar"
-                android:layout_width="@dimen/progbar_height"
-                android:layout_height="@dimen/progbar_height"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:layout_gravity="center" />
         </FrameLayout>
     </RelativeLayout>

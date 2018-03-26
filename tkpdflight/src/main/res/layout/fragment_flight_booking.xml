@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:padding="@dimen/padding_med"
+            android:padding="@dimen/dp_20"
             tools:visibility="gone">
 
             <ProgressBar
@@ -29,7 +29,7 @@
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/dp_15"
                 android:gravity="center"
                 android:text="@string/flight_booking_atc_loading_label" />
         </LinearLayout>
@@ -51,12 +51,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/padding_med"
+                    android:paddingBottom="@dimen/dp_20"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_med">
+                    android:paddingTop="@dimen/dp_20">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.Micro"
@@ -101,22 +101,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingBottom="@dimen/dp_10"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_small">
+                    android:paddingTop="@dimen/dp_10">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_15"
                         android:text="@string/flight_booking_passenger_data_label" />
 
                     <LinearLayout
@@ -136,8 +136,8 @@
 
                         <android.support.v7.widget.AppCompatCheckBox
                             android:id="@+id/checkbox"
-                            android:layout_width="@dimen/icon_size"
-                            android:layout_height="@dimen/icon_size"
+                            android:layout_width="@dimen/dp_36"
+                            android:layout_height="@dimen/dp_36"
                             android:layout_gravity="center_vertical"
                             android:theme="@style/checkBoxStyle" />
                     </LinearLayout>
@@ -151,29 +151,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingBottom="@dimen/dp_10"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_small">
+                    android:paddingTop="@dimen/dp_10">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_15"
                         android:text="@string/flight_booking_price_detail" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_price_lists"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_ms" />
+                        android:layout_marginBottom="@dimen/dp_8" />
 
                     <View
                         android:layout_width="match_parent"
@@ -183,8 +183,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_15"
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatTextView
@@ -211,8 +211,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/background_apps"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingTop="@dimen/padding_small">
+                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingTop="@dimen/dp_10">
 
                     <android.support.v7.widget.AppCompatButton
                         android:id="@+id/button_submit"

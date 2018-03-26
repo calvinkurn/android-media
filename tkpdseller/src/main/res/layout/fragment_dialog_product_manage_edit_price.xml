@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/padding_med">
+    android:padding="@dimen/dp_20">
 
     <TextView
         android:id="@+id/string_picker_dialog_title"
         style="@style/TextView.TitleBig"
-        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
         android:text="@string/product_manage_menu_set_price" />
 
     <com.tokopedia.design.text.SpinnerCounterInputView
@@ -25,22 +25,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med">
+        android:layout_marginTop="@dimen/dp_20">
 
         <TextView
             android:id="@+id/string_picker_dialog_confirm"
             style="@style/TextView.Small.Green"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:text="@string/title_save" />
 
         <TextView
             android:id="@+id/string_picker_dialog_cancel"
             style="@style/TextView.Small.Green"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:layout_toLeftOf="@id/string_picker_dialog_confirm"
             android:layout_toStartOf="@id/string_picker_dialog_confirm"
             android:text="@string/title_cancel" />

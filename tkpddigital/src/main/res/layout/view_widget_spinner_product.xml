@@ -8,16 +8,16 @@
         android:id="@+id/nominal_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:textColor="@color/digital_voucher_notes"
         android:text="@string/title_nominal"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <Spinner
         android:id="@+id/spinner_nominal"
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/margin_vl"
+        android:layout_height="@dimen/dp_40"
         android:layout_gravity="bottom"
         android:spinnerMode="dialog" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/error_nominal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"/>

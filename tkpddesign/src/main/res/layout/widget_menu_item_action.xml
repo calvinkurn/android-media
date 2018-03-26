@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/btn_action_menus"
+    android:textAllCaps="false"
+    android:background="@null"
+    android:textColor="@color/tkpd_main_green"
+    android:layout_margin="@dimen/dp_8" />

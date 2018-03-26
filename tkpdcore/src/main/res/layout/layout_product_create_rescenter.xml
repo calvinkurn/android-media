@@ -102,7 +102,7 @@
             android:maxLines="2"
             android:minLines="2"
             android:gravity="center_vertical"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:hint="@string/prompt_desc"/>
 
     </android.support.design.widget.TextInputLayout>

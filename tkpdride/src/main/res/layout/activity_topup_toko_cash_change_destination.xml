@@ -42,23 +42,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:paddingLeft="@dimen/new_margin_med"
-            android:paddingRight="@dimen/new_margin_med"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:text="@string/change_destination_insufficient_balance_title"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:paddingLeft="@dimen/new_margin_med"
-            android:paddingRight="@dimen/new_margin_med"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/margin_small_sm"
             android:text="@string/change_destination_insufficient_balance_message"
             android:textColor="@color/grey_500"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <View
             android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/add_tokocash"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/tv_choose_tokocash_amount_label"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/complete_trip_choose_tokocash_amount"
                 android:textColor="@color/grey_500"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
 
             <RelativeLayout
@@ -108,10 +108,10 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/iv_arrow"
                     android:layout_toStartOf="@+id/iv_arrow"
-                    android:padding="@dimen/padding_vs"
+                    android:padding="@dimen/dp_5"
                     android:text="250000"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <View
                     android:layout_width="match_parent"
@@ -145,14 +145,14 @@
                 android:id="@+id/btn_topup_tokocash"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/rounded_filled_green_bttn"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:text="@string/complete_trip_top_up_tokocash"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
         </LinearLayout>
 
 

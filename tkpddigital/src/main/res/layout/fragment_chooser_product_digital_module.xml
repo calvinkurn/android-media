@@ -21,21 +21,21 @@
             android:layout_margin="@dimen/small_dp"
             android:background="@color/digital_operator_search_bar_color"
             app:drawableLeftCompat="@drawable/search_operator"
-            android:drawablePadding="@dimen/padding_small"
+            android:drawablePadding="@dimen/dp_10"
             android:hint="@string/action_search"
             android:inputType="text"
             android:lines="1"
             android:maxLines="1"
-            android:paddingEnd="@dimen/padding_med"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingStart="@dimen/padding_med"/>
+            android:paddingEnd="@dimen/dp_20"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingStart="@dimen/dp_20"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_list_chooser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"/>
+            android:layout_marginTop="@dimen/dp_5"/>
 
     </LinearLayout>
 

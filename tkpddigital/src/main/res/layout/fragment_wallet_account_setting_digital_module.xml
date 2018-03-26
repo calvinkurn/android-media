@@ -49,7 +49,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:text="Nama"
                         android:textColor="@color/digital_voucher_notes"
                         android:textSize="@dimen/fontvs"/>
@@ -58,21 +58,21 @@
                         android:id="@+id/name_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginBottom="@dimen/dp_5"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:textColor="@color/digital_voucher"
                         android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
                         android:background="@color/separator_tokocash"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:text="Email"
                         android:textColor="@color/digital_voucher_notes"
                         android:textSize="@dimen/fontvs"/>
@@ -81,21 +81,21 @@
                         android:id="@+id/email_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginBottom="@dimen/dp_5"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:textColor="@color/digital_voucher"
                         android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
                         android:background="@color/separator_tokocash"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:text="Nomor Handphone"
                         android:textColor="@color/digital_voucher_notes"
                         android:textSize="@dimen/fontvs"/>
@@ -104,15 +104,15 @@
                         android:id="@+id/phone_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_vs"
-                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginBottom="@dimen/dp_5"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:textColor="@color/digital_voucher"
                         android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/dp_15"
                         android:background="@color/separator_tokocash"/>
 
 

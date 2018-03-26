@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
+        android:padding="@dimen/dp_16"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -28,8 +28,8 @@
             <TextView
                 android:id="@+id/rating_value"
                 style="@style/TextView.SubHeadline.Bold"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_5"
                 tools:text="4.0" />
 
             <TextView
@@ -55,7 +55,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin"
+        android:padding="@dimen/dp_16"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

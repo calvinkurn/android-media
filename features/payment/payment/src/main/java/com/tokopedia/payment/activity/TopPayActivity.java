@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v4.os.CancellationSignal;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -90,6 +91,7 @@ public class TopPayActivity extends Activity implements ITopPayView, FingerPrint
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -143,6 +145,7 @@ public class TopPayActivity extends Activity implements ITopPayView, FingerPrint
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
         scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
+        btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

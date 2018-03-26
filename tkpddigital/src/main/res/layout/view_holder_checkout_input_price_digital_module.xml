@@ -4,9 +4,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:paddingLeft="@dimen/padding_small"
-              android:paddingRight="@dimen/padding_small"
-              android:paddingTop="@dimen/padding_small">
+              android:paddingLeft="@dimen/dp_10"
+              android:paddingRight="@dimen/dp_10"
+              android:paddingTop="@dimen/dp_10">
 
     <android.support.v7.widget.CardView style="@style/CardViewDigital">
 
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/input_price_info"
