@@ -1,9 +1,11 @@
-package com.tokopedia.tkpdtrain.search.presentation;
+package com.tokopedia.tkpdtrain.search.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 /**
  * Created by nabillasabbaha on 3/13/18.
@@ -17,9 +19,16 @@ public interface TrainSearchContract {
         void hideLayoutTripInfo();
 
         void showLayoutTripInfo();
+
+        void showDataFromCache(List<TrainScheduleViewModel> trainScheduleViewModels);
+
+        void setSortOptionId(int sortOptionId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getTrainSchedules();
+        void getTrainSchedules(int scheduleVariant);
+
+        void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
+                                           List<String> trains, int sortOptionId);
     }
 }

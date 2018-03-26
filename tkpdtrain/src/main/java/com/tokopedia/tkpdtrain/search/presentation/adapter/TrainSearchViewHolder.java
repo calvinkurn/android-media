@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdtrain.search.presentation;
+package com.tokopedia.tkpdtrain.search.presentation.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -71,7 +71,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
 
     private void setColorTextItem(boolean isScheduleOutOfStock) {
         trainNameTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
-                R.color.font_black_disabled_38 : R.color.font_black_primary_70 ));
+                R.color.font_black_disabled_38 : R.color.font_black_primary_70));
         classNameTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
                 R.color.font_black_disabled_38 : R.color.font_black_primary_70));
         originCodeTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
@@ -169,7 +169,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
             if (availableSeat == OUT_OF_STOCK) {
                 availabilitySeatTv.setText("Penuh");
                 setColorTextDisable(availabilitySeatTv);
-            } else {
+            } else if (availableSeat > OUT_OF_STOCK) {
                 availabilitySeatTv.setText("Sisa " + availableSeat + " kursi");
                 setColorTextEnable(availabilitySeatTv, R.color.colorRed);
             }

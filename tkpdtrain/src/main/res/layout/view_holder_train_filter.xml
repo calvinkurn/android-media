@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/margin_sm"
+    android:paddingEnd="@dimen/margin_sm"
+    android:paddingLeft="@dimen/margin_med"
+    android:paddingRight="@dimen/margin_sm"
+    android:paddingStart="@dimen/margin_med"
+    android:paddingTop="@dimen/margin_sm">
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        tools:text="Langsung" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_alignParentRight="true"
+        android:theme="@style/checkBoxStyle" />
+</RelativeLayout>

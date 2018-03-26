@@ -31,6 +31,7 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "arrival_timestamp")
     private
     String arrivalTimestamp;
+
     @Column(name = "departure_timestamp")
     private
     String departureTimestamp;
@@ -73,6 +74,9 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "fastest_flag")
     private
     boolean fastestFlag;
+    @Column(name = "is_return_schedule")
+    private
+    boolean isReturnSchedule;
 
     public String getIdSchedule() {
         return idSchedule;
@@ -232,5 +236,13 @@ public class TrainScheduleDbTable extends BaseModel {
 
     public void setFastestFlag(boolean fastestFlag) {
         this.fastestFlag = fastestFlag;
+    }
+
+    public boolean isReturnSchedule() {
+        return isReturnSchedule;
+    }
+
+    public void setReturnSchedule(boolean returnSchedule) {
+        isReturnSchedule = returnSchedule;
     }
 }

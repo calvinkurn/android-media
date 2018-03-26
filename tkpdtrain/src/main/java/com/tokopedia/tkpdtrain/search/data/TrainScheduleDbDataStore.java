@@ -15,6 +15,8 @@ import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable;
 import com.tokopedia.tkpdtrain.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.tkpdtrain.search.data.entity.ScheduleAvailabilityEntity;
 import com.tokopedia.tkpdtrain.search.data.entity.TrainScheduleEntity;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainAvailabilityTypeDef;
+import com.tokopedia.tkpdtrain.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.tkpdtrain.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.tkpdtrain.search.presentation.model.TrainScheduleViewModel;
 
@@ -57,24 +59,21 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
 
     @Override
     public Observable<Boolean> insert(final TrainScheduleEntity trainScheduleEntity) {
-        return Observable.just(trainScheduleEntity)
-                .map(new Func1<TrainScheduleEntity, Boolean>() {
-                    @Override
-                    public Boolean call(TrainScheduleEntity trainScheduleEntity) {
-                        insertSchedule(trainScheduleEntity);
-                        return true;
-                    }
-                });
+        return null;
     }
 
     @Override
     public Observable<Boolean> insertAll(final List<TrainScheduleEntity> datas) {
+        return null;
+    }
+
+    public Observable<Boolean> insertAllData(final List<TrainScheduleEntity> datas, final int scheduleVariant) {
         return Observable.just(datas)
                 .map(new Func1<List<TrainScheduleEntity>, Boolean>() {
                     @Override
                     public Boolean call(List<TrainScheduleEntity> trainScheduleEntities) {
                         for (TrainScheduleEntity trainListSchedulesEntity : datas) {
-                            insertSchedule(trainListSchedulesEntity);
+                            insertSchedule(trainListSchedulesEntity, scheduleVariant);
                         }
                         updateFilterCheapest();
                         updateFilterFastest();
@@ -83,7 +82,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 });
     }
 
-    private void insertSchedule(TrainScheduleEntity trainScheduleEntity) {
+    private void insertSchedule(TrainScheduleEntity trainScheduleEntity, int scheduleVariant) {
         ModelAdapter<TrainScheduleDbTable> adapter = FlowManager.getModelAdapter(TrainScheduleDbTable.class);
         TrainScheduleDbTable trainScheduleDbTable = new TrainScheduleDbTable();
         trainScheduleDbTable.setIdSchedule(trainScheduleEntity.getIdSchedule());
@@ -103,9 +102,10 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
         trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
         trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNumber());
-        trainScheduleDbTable.setAvailableSeat(AvailabilityTypeDef.DEFAULT_VALUE);
+        trainScheduleDbTable.setAvailableSeat(TrainAvailabilityTypeDef.DEFAULT_VALUE);
         trainScheduleDbTable.setCheapestFlag(false);
         trainScheduleDbTable.setFastestFlag(false);
+        trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
         adapter.insert(trainScheduleDbTable);
     }
 
@@ -134,8 +134,21 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
     }
 
     @Override
-    public Observable<Integer> getCount(Specification specification) {
-        return null;
+    public Observable<Integer> getCount(final Specification specification) {
+        return Observable.just(true).map(new Func1<Boolean, Integer>() {
+            @Override
+            public Integer call(Boolean aBoolean) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                if (specification instanceof DbFlowSpecification) {
+                    conditions = ((DbFlowSpecification) specification).getCondition();
+                }
+                List<TrainScheduleDbTable> trainScheduleDbTables = new Select()
+                        .from(TrainScheduleDbTable.class)
+                        .where(conditions)
+                        .queryList();
+                return (trainScheduleDbTables.size());
+            }
+        });
     }
 
     public Observable<Boolean> updateDataAvailability(final List<ScheduleAvailabilityEntity> scheduleAvailabilityEntities) {

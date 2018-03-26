@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdtrain.search.presentation;
+package com.tokopedia.tkpdtrain.search.presentation.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;

@@ -29,4 +29,11 @@
         <item name="android:layout_height">36dp</item>
     </style>
 
+    <style name="TrainFilterLabel" parent="LabelLayout">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
 </resources>

@@ -153,6 +153,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
             passDataViewModel.setDestinationCityName(viewModel.getDestinationStation().getCityName());
             passDataViewModel.setOriginStationCode(viewModel.getOriginStation().getStationCode());
             passDataViewModel.setOriginCityName(viewModel.getOriginStation().getStationName());
+            passDataViewModel.setOneWay(viewModel.isOneWay());
             getView().navigateToSearchPage(passDataViewModel);
         }
     }

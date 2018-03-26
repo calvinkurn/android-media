@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_departure_detail"
+            layout="@layout/view_train_summary_departure" />
+
+        <include
+            android:id="@+id/layout_trip_info"
+            layout="@layout/view_train_header_search_result" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator_vertical" />
+
+        <com.tokopedia.tkpdtrain.search.presentation.TrainSearchRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true" />
+
+    </LinearLayout>
+
+    <include layout="@layout/view_filter_and_sort_search" />
+
+</android.support.design.widget.CoordinatorLayout>
