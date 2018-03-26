@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +21,7 @@
             android:id="@+id/checkbox"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             android:theme="@style/checkBoxStyle" />
 
         <LinearLayout
@@ -32,35 +33,38 @@
             <TextView
                 android:id="@+id/tv_departure_time_label"
                 style="@style/TextView.Micro.BlackSecondary"
-                tools:text="@string/flight_label_departure_flight"/>
+                android:padding="@dimen/padding_vvvs"
+                tools:text="@string/flight_label_departure_flight" />
 
             <TextView
                 android:id="@+id/tv_journey_detail_label"
-                style="@style/TextView.Small.Bold"
-                tools:text="@string/flight_label_departure_flight"/>
+                style="@style/TextView.Title.Bold"
+                android:padding="@dimen/padding_vvvs"
+                tools:text="@string/flight_label_departure_flight" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_vvvs">
 
                 <TextView
                     android:id="@+id/airline_name"
-                    style="@style/TextView.Small"
+                    style="@style/TextView.Micro.Bold"
                     android:layout_marginEnd="@dimen/padding_ms"
                     android:layout_marginRight="@dimen/padding_ms"
-                    tools:text="Garuda"/>
+                    tools:text="Garuda" />
 
                 <TextView
                     android:id="@+id/duration"
-                    style="@style/TextView.Micro.BlackSecondary"/>
+                    style="@style/TextView.Micro.BlackSecondary" />
             </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/line_divider"/>
+            android:background="@drawable/line_divider" />
 
     </LinearLayout>
 

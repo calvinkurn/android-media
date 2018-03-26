@@ -33,6 +33,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     private String invoiceId;
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
+    List<FlightCancellationJourney> flightCancellationJourneyList;
 
     @Inject
     FlightCancellationPresenter flightCancellationPresenter;
@@ -58,6 +59,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         super.onViewCreated(view, savedInstanceState);
 
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
+        flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
 
         flightCancellationPresenter.attachView(this);
         flightCancellationPresenter.onViewCreated();
@@ -90,7 +92,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void renderCancelableList() {
-        renderList(getCurrentFlightCancellationViewModel());
+        renderList(flightCancellationViewModelList);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public List<FlightCancellationJourney> getFlightCancellationJourney() {
-        return getArguments().getParcelable(EXTRA_CANCEL_JOURNEY);
+        return flightCancellationJourneyList;
     }
 
     @Override

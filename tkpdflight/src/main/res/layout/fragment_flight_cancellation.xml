@@ -5,10 +5,18 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <TextView
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_apps"
+        android:padding="@dimen/padding_small"
+        android:text="@string/flight_cancellation_choose_to_cancel_hint" />
+
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 </LinearLayout>

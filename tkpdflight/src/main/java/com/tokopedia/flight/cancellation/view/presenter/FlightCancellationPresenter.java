@@ -50,14 +50,21 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
 
                     @Override
                     public void onNext(List<FlightCancellationViewModel> flightCancellationViewModels) {
-                        getView().setFlightCancellationViewModel(flightCancellationViewModels);
-                        getView().renderCancelableList();
+                        transformJourneyToCancellationViewModel(flightCancellationViewModels);
                     }
                 }
         );
     }
 
     private void transformJourneyToCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModels) {
+        int index = 0;
 
+        for (FlightCancellationViewModel item : flightCancellationViewModels) {
+            item.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
+            index++;
+        }
+
+        getView().setFlightCancellationViewModel(flightCancellationViewModels);
+        getView().renderCancelableList();
     }
 }
