@@ -3,10 +3,13 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -31,6 +34,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private boolean wishlist;
     private boolean isWishlistButtonEnabled;
     private boolean featured;
+    private String trackerName;
+    private String trackerPosition;
+    private String homeAttribution;
 
     public HotlistProductViewModel() {
         isWishlistButtonEnabled = true;
@@ -162,6 +168,60 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     public boolean isFeatured() {
         return featured;
+    }
+
+    public Map<String, Object> generateImpressionDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                        getPrice()
+                )),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", getTrackerName(),
+                "position", getTrackerPosition(),
+                "home_attribution", getHomeAttribution()
+        );
+    }
+
+    public String getTrackerName() {
+        return trackerName;
+    }
+
+    public void setTrackerName(String trackerName) {
+        this.trackerName = trackerName;
+    }
+
+    public String getTrackerPosition() {
+        return trackerPosition;
+    }
+
+    public void setTrackerPosition(String trackerPosition) {
+        this.trackerPosition = trackerPosition;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getHomeAttribution() {
+        if (homeAttribution == null || homeAttribution.isEmpty()) return "none / other";
+        else return homeAttribution;
+    }
+
+    public Map<String, Object> generateClickDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "position", getTrackerPosition(),
+                "home_attribution", getHomeAttribution()
+        );
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -299,6 +359,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeByte(this.wishlist ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.featured ? (byte) 1 : (byte) 0);
+        dest.writeString(this.trackerName);
+        dest.writeString(this.trackerPosition);
+        dest.writeString(this.homeAttribution);
     }
 
     protected HotlistProductViewModel(Parcel in) {
@@ -318,6 +381,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.wishlist = in.readByte() != 0;
         this.isWishlistButtonEnabled = in.readByte() != 0;
         this.featured = in.readByte() != 0;
+        this.trackerName = in.readString();
+        this.trackerPosition = in.readString();
+        this.homeAttribution = in.readString();
     }
 
     public static final Creator<HotlistProductViewModel> CREATOR = new Creator<HotlistProductViewModel>() {

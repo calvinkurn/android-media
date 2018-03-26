@@ -27,13 +27,28 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL";
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
+    private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
 
     @Inject
     HotlistPresenter hotlistPresenter;
 
     @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
     public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
-        return HotlistActivity.createInstanceUsingAlias(context, bundle.getString("alias", ""));
+        return HotlistActivity.createInstanceUsingAlias(context,
+                bundle.getString("alias", ""),
+                bundle.getString("tracker_attribution", "")
+        );
+    }
+
+    private static Intent createInstanceUsingAlias(Context context,
+                                                   String alias,
+                                                   String trackerAttribution) {
+        Intent intent = new Intent(context, HotlistActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias);
+        extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution);
+        intent.putExtras(extras);
+        return intent;
     }
 
     public static Intent createInstanceUsingAlias(Context context, String alias) {
@@ -75,8 +90,9 @@ public class HotlistActivity extends DiscoveryActivity
         String url = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_URL, "");
         String alias = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_ALIAS, "");
         String searchQuery = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_QUERY, "");
+        String trackerAttribution = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_TRACKER, "");
         if (!alias.isEmpty()) {
-            return HotlistFragment.createInstanceUsingAlias(alias);
+            return HotlistFragment.createInstanceUsingAlias(alias, trackerAttribution);
         }
         return HotlistFragment.createInstanceUsingURL(url, searchQuery);
     }
