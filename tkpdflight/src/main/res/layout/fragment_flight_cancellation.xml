@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_apps"
-        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small"
         android:text="@string/flight_cancellation_choose_to_cancel_hint" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
