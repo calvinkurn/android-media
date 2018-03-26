@@ -46,6 +46,7 @@ public class ProductDuplicateFragment extends ProductEditFragment implements Pro
     @Override
     public void onSuccessLoadProduct(ProductViewModel productViewModel) {
         productViewModel.setProductId(null);
+        productViewModel.setProductNameEditable(true);
         super.onSuccessLoadProduct(productViewModel);
     }
 
