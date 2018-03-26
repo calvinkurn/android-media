@@ -33,6 +33,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -100,7 +101,7 @@ public interface FlightApi {
                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
 
     @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_PASSENGER_SAVED)
+    @PATCH(FlightUrl.FLIGHT_PASSENGER_SAVED)
     Observable<Response<Object>> updatePassengerListData(@Body DataRequest<UpdatePassengerRequest> request,
                                                          @Header("Idempotency-Key") String idemPotencyKeyHeader);
 }
