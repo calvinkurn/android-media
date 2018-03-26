@@ -16,13 +16,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sendbird.android.OpenChannel;
@@ -32,14 +30,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
-import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.GroupChatAdapter;
@@ -57,10 +51,8 @@ import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
-import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -73,8 +65,9 @@ import javax.inject.Inject;
  */
 
 public class GroupChatFragment extends BaseDaggerFragment implements ChatroomContract.View,
-        ProgressBarWithTimer.Listener, ChatroomContract.View.ImageAnnouncementViewHolderListener,
-        ChatroomContract.View.VoteAnnouncementViewHolderListener, ChatroomContract.View.SprintSaleViewHolderListener {
+        ChatroomContract.View.ImageAnnouncementViewHolderListener,
+        ChatroomContract.View.VoteAnnouncementViewHolderListener,
+        ChatroomContract.View.SprintSaleViewHolderListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final long DELAY_TIME = 1000L;
@@ -87,24 +80,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     StreamAnalytics analytics;
 
     private RecyclerView chatRecyclerView;
-    private RecyclerView voteRecyclerView;
     private EditText replyEditText;
     private View sendButton;
-    private View voteBar;
-    private View voteBody;
-    private TextView voteTitle;
-    private TextView voteParticipant;
-    private TextView voteInfoLink;
-    private ImageView iconVote;
-    private View votedView;
     private View divider;
     private View main, loading;
-    private TextView voteStatus;
-    //    private ImageView arrow;
     private GroupChatAdapter adapter;
-    private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
-    private ProgressBarWithTimer progressBarWithTimer;
     private View chatNotificationView;
     private View login;
 
@@ -152,20 +133,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room_new, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
-        voteRecyclerView = view.findViewById(R.id.vote_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
-
-        voteBar = view.findViewById(R.id.vote_header);
-        voteBody = view.findViewById(R.id.vote_body);
-        voteTitle = view.findViewById(R.id.vote_title);
-        voteParticipant = view.findViewById(R.id.vote_participant);
-        voteInfoLink = view.findViewById(R.id.vote_info_link);
-//        arrow = view.findViewById(R.id.arrow);
-        iconVote = view.findViewById(R.id.icon_vote);
-        voteStatus = view.findViewById(R.id.vote_status);
-        votedView = view.findViewById(R.id.layout_voted);
-        progressBarWithTimer = view.findViewById(R.id.timer);
         divider = view.findViewById(R.id.view);
         loading = view.findViewById(R.id.loading);
         main = view.findViewById(R.id.main_content);
@@ -205,7 +174,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         chatRecyclerView.addItemDecoration(itemDecoration);
 
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
-        voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
 
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -220,25 +188,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     resetNewMessageCounter();
                 }
 
-                collapse(voteBody);
             }
         });
 
         setReplyTextHint();
-
-        voteBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (voteBody.getVisibility() == View.VISIBLE) {
-                    collapse(voteBody);
-                } else {
-                    KeyboardHandler.DropKeyboard(getActivity(), getView());
-                    expand(voteBody);
-                    analytics.eventClickVoteExpand();
-                    voteAdapter.notifyDataSetChanged();
-                }
-            }
-        });
 
         replyTextWatcher = new TextWatcher() {
             @Override
@@ -266,13 +219,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setSendButtonEnabled(boolean isEnabled) {
         if (isEnabled) {
-            replyEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    collapse(voteBody);
-//                    arrow.setRotation(0f);
-                }
-            });
 
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -298,7 +244,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
-        progressBarWithTimer.setListener(this);
     }
 
     private void initData() {
@@ -325,14 +270,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onPause() {
-        progressBarWithTimer.cancel();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         presenter.detachView();
-        progressBarWithTimer.cancel();
         super.onDestroy();
     }
 
@@ -406,7 +349,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onErrorGetMessageFirstTime(String errorMessage) {
-        hideVoteLayout();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -515,21 +457,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         switch (messageItem.getVoteType()) {
             case VoteAnnouncementViewModel.POLLING_START:
-//                votedView.setVisibility(View.GONE);
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
+            case VoteAnnouncementViewModel.POLLING_FINISHED:
                 addIncomingMessage(messageItem);
                 break;
             case VoteAnnouncementViewModel.POLLING_UPDATE:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-                break;
-            case VoteAnnouncementViewModel.POLLING_FINISHED:
-//                showVoteLayout(messageItem.getVoteInfoViewModel(), messageItem.getVoteType());
-                addIncomingMessage(messageItem);
-                break;
             case VoteAnnouncementViewModel.POLLING_CANCEL:
-//                hideVoteLayout();
                 break;
         }
+
         ((GroupChatActivity) getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
     }
 
@@ -562,72 +497,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         adapter.updateMessage(visitable);
     }
 
-    public void expand(final View v) {
-        v.setVisibility(View.VISIBLE);
-    }
-
-    public void collapse(final View v) {
-        v.setVisibility(View.GONE);
-    }
-
     public void onUserEntered(UserActionViewModel userActionViewModel) {
-        Log.d("NISNIS", "onUserEntered " + userActionViewModel.getUserName());
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
         scrollToBottomWhenPossible();
     }
 
     public void onUserExited(UserActionViewModel userActionViewModel) {
-        Log.d("NISNIS", "onUserExited " + userActionViewModel.getUserName());
-    }
-
-
-    public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
-        if (getActivity() instanceof GroupChatActivity) {
-            ((GroupChatActivity) getActivity()).updateVoteViewModel(voteInfoViewModel, voteType);
-        }
-    }
-
-    public void hideVoteLayout() {
-        voteBar.setVisibility(View.GONE);
-        voteBody.setVisibility(View.GONE);
-    }
-
-    public void setVoteHasEnded() {
-        if (getActivity() != null) {
-            progressBarWithTimer.setVisibility(View.GONE);
-            voteStatus.setText(R.string.vote_has_ended);
-            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote_inactive);
-            } else {
-                iconVote.setImageResource(R.drawable.ic_vote_inactive);
-            }
-            voteAdapter.updateStatistic();
-        }
-    }
-
-    public void setVoteStarted() {
-        if (getActivity() != null) {
-            progressBarWithTimer.setVisibility(View.VISIBLE);
-            voteStatus.setText(R.string.vote);
-            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_vote);
-            } else {
-                iconVote.setImageResource(R.drawable.ic_vote);
-            }
-        }
-    }
-
-    @Override
-    public void onStartTick() {
-        setVoteStarted();
-    }
-
-    @Override
-    public void onFinishTick() {
-        setVoteHasEnded();
     }
 
     public void showLoading() {
