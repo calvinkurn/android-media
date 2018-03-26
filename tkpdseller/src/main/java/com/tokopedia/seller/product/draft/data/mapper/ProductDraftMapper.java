@@ -52,13 +52,12 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     @Override
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
         ProductViewModel productViewModel;
-        //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
-        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL) {
+        try {
             productViewModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
             );
-        } else {
+        } catch (Exception e) {
             ProductDraftModel draftModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductDraftModel.class
