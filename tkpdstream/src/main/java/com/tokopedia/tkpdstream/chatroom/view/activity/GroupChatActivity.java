@@ -245,6 +245,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         sponsorLayout = findViewById(R.id.sponsor_layout);
         sponsorImage = findViewById(R.id.sponsor_image);
+
+        sponsorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void initData() {
