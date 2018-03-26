@@ -138,6 +138,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     private void updatePassengerData() {
         flightPassengerUpdateDataUseCase.execute(
                 flightPassengerUpdateDataUseCase.generateRequestParams(
+                        getView().getCurrentPassengerViewModel().getPassengerId(),
                         getTitleId(),
                         getView().getPassengerFirstName(),
                         getView().getPassengerLastName(),

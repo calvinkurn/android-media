@@ -37,6 +37,8 @@ public interface FlightBookingListPassengerContract {
 
         void showSuccessChangePassengerData();
 
+        void onSuccessDeletePassengerData();
+
     }
 
     interface Presenter {

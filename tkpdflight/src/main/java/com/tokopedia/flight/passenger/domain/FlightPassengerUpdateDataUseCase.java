@@ -18,6 +18,7 @@ import rx.functions.Func1;
 
 public class FlightPassengerUpdateDataUseCase extends UseCase<Boolean> {
 
+    private static final String PARAM_PASSENGER_ID = "PARAM_PASSENGER_ID";
     private static final String PARAM_PASSENGER_TITLE = "PARAM_PASSENGER_TITLE";
     private static final String PARAM_PASSENGER_FIRST_NAME = "PARAM_PASSENGER_FIRST_NAME";
     private static final String PARAM_PASSENGER_LAST_NAME = "PARAM_PASSENGER_LAST_NAME";
@@ -59,16 +60,20 @@ public class FlightPassengerUpdateDataUseCase extends UseCase<Boolean> {
         attributesRequest.setLastName(requestParams.getString(PARAM_PASSENGER_LAST_NAME, DEFAULT_STRING_VALUE));
         attributesRequest.setDob(requestParams.getString(PARAM_PASSENGER_BIRTHDATE, DEFAULT_STRING_VALUE));
 
-        UpdatePassengerRequest updatePassengerRequest = new UpdatePassengerRequest(attributesRequest);
+        UpdatePassengerRequest updatePassengerRequest = new UpdatePassengerRequest(
+                requestParams.getString(PARAM_PASSENGER_ID, ""),
+                attributesRequest);
         return Observable.just(updatePassengerRequest);
     }
 
-    public RequestParams generateRequestParams(int title,
+    public RequestParams generateRequestParams(String passengerId,
+                                               int title,
                                                String firstName,
                                                String lastName,
                                                String birthdate,
                                                String idempotencyKey) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_PASSENGER_ID, passengerId);
         requestParams.putInt(PARAM_PASSENGER_TITLE, title);
         requestParams.putString(PARAM_PASSENGER_FIRST_NAME, firstName);
         requestParams.putString(PARAM_PASSENGER_LAST_NAME, lastName);
