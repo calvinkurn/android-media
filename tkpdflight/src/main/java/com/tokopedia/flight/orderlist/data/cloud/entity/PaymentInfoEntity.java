@@ -20,6 +20,9 @@ public class PaymentInfoEntity {
     @SerializedName("transaction_code")
     @Expose
     private String transactionCode;
+    @SerializedName("total_amt")
+    @Expose
+    private int totalAmount;
     @SerializedName("manual_transfer")
     @Expose
     private ManualTransferEntity manualTransfer;
@@ -42,5 +45,9 @@ public class PaymentInfoEntity {
 
     public ManualTransferEntity getManualTransfer() {
         return manualTransfer;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
     }
 }

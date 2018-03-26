@@ -16,7 +16,7 @@
     <string name="groupchat_action_enter">bergabung</string>
     <string name="label_admin">Admin</string>
     <string name="participant">partisipan</string>
-    <string name="view">melihat</string>
+    <string name="view">dilihat</string>
     <string name="voter">telah memilih</string>
     <string name="pending">Sedang Mengirim…</string>
     <string name="groupchat_action_exit">telah keluar dari chat</string>
@@ -57,5 +57,6 @@
     <string name="you_have_been_idle_for_too_long">Anda telah dikeluarkan dari chatroom karena
         terlalu lama tidak aktif.</string>
     <string name="you_have_been_kicked">Anda Telah Dikeluarkan</string>
+    <string name="lets_join_channel">Yuk gabung sekarang di channel %s</string>
 
 </resources>

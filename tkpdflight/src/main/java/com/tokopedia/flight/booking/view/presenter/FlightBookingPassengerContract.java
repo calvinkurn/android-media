@@ -103,7 +103,7 @@ public interface FlightBookingPassengerContract {
 
         void hideKeyboard();
 
-        boolean isAirAsiaAirline();
+        boolean isMandatoryDoB();
 
         String getDepartureDateString();
 

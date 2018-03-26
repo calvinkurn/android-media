@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_CLICK;
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_VIEW;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
 
 /**
  * @author by nisie on 1/2/18.
  */
 
-public class KolTracking {
+public class FeedEnhancedTracking {
 
     private static final String EVENT = "event";
     private static final String KEY_USER_ID = "userId";
@@ -40,11 +40,11 @@ public class KolTracking {
         private static final String KEY_PROMO_CODE = "promo_code";
 
 
-        public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
+        public static Map<String, Object> getEcommerceView(List<Promotion> listPromotion) {
             return DataLayer.mapOf(PROMO_VIEW, getListPromotions(listPromotion));
         }
 
-        public static Map<String, Object> getKolContentEcommerceClick(List<Promotion> listPromotion) {
+        public static Map<String, Object> getEcommerceClick(List<Promotion> listPromotion) {
             return DataLayer.mapOf(PROMO_CLICK, getListPromotions(listPromotion));
 
         }
@@ -82,6 +82,9 @@ public class KolTracking {
         private static final String FOLLOWED_KOL_POST = "followedkolpost";
         private static final String KOL_POST = "kolpost";
         private static final String KOL_RECOMMENDATION = "kolrecommendation";
+        private static final String PRODUCT_UPLOAD = "product_upload";
+        private static final String SINGLE = "single";
+        private static final String MULTIPLE = "multiple";
         private static String PROFILE = "profile";
         int id;
         String name;
@@ -102,16 +105,10 @@ public class KolTracking {
             this.promoCode = promoCode;
         }
 
-        /**
-         * kolId
-         */
         public int getId() {
             return id;
         }
 
-        /**
-         * kolId
-         */
         public String getName() {
             return name;
         }
@@ -140,6 +137,15 @@ public class KolTracking {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
         }
 
+        public static String createContentNameProductUpload(int totalProduct) {
+            if (totalProduct == 1) {
+                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, SINGLE);
+            } else if (totalProduct > 1) {
+                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, MULTIPLE);
+            }
+            return "";
+        }
+
         public static String createContentName(String tagsType, String cardType) {
             return CONTENT_FEED + " - "
                     + cardType + " - "
@@ -147,21 +153,21 @@ public class KolTracking {
         }
     }
 
-    public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion, int
-            userId) {
+    public static Map<String, Object> getImpressionTracking(List<Promotion> listPromotion,
+                                                            int userId) {
         return DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 KEY_USER_ID, String.valueOf(userId),
                 KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
+                ECOMMERCE, Ecommerce.getEcommerceView(listPromotion));
     }
 
-    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion, int
-            userId) {
+    public static Map<String, Object> getClickTracking(List<Promotion> listPromotion,
+                                                       int userId) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 KEY_USER_ID, String.valueOf(userId),
                 KEY_USER_ID_MOD, String.valueOf(userId % 50),
-                ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
+                ECOMMERCE, Ecommerce.getEcommerceClick(listPromotion));
     }
 }

@@ -29,7 +29,7 @@ public class Channel {
     private long endTime;
     @SerializedName("total_views")
     @Expose
-    private int totalViews;
+    private String totalViews;
     @SerializedName("is_active")
     @Expose
     private boolean isActive;
@@ -105,11 +105,11 @@ public class Channel {
         this.endTime = endTime;
     }
 
-    public int getTotalViews() {
+    public String getTotalViews() {
         return totalViews;
     }
 
-    public void setTotalViews(int totalViews) {
+    public void setTotalViews(String totalViews) {
         this.totalViews = totalViews;
     }
 

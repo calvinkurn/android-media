@@ -275,6 +275,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -319,6 +321,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
         adapter.setArrowVisible(true);
         adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
@@ -451,7 +455,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public boolean isAirAsiaAirline() {
+    public boolean isMandatoryDoB() {
         return isAirAsiaAirlines;
     }
 
