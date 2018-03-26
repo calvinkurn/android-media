@@ -3,7 +3,6 @@ package com.tokopedia.flight.cancellation.view.contract;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
 
@@ -20,6 +19,8 @@ public interface FlightCancellationContract {
         void setFlightCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
 
         String getInvoiceId();
+
+        String getString(int resId);
 
         List<FlightCancellationJourney> getFlightCancellationJourney();
 
