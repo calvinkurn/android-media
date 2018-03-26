@@ -22,29 +22,28 @@ import rx.functions.Func1;
  * Created by okasurya on 9/8/17.
  */
 
-public class ReactBankCacheSource implements ReactDataSource {
-    private Gson gson;
+public class ReactBankCacheSource extends ReactDataSource {
     private BankFactory bankFactory;
 
     @Inject
     public ReactBankCacheSource(BankFactory bankFactory, Gson gson) {
-        this.gson = gson;
+        super(gson);
         this.bankFactory = bankFactory;
     }
 
     @Override
     public Observable<String> getData(String id) {
-        return bankFactory.local().getBank(id).map(mapData());
+        return bankFactory.local().getBank(id).map(mapData()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return bankFactory.local().getBanks(offset, limit).map(mapListData());
+        return bankFactory.local().getBanks(offset, limit).map(mapListData()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return bankFactory.local().getAllBank().map(mapListData());
+        return bankFactory.local().getAllBank().map(mapListData()).map(mapToJson());
     }
 
     @Override
@@ -67,22 +66,21 @@ public class ReactBankCacheSource implements ReactDataSource {
         return Observable.error(new RuntimeException("Method not implemented yet"));
     }
 
-    private Func1<BankDomain, String> mapData() {
-        return new Func1<BankDomain, String>() {
+    private Func1<BankDomain, CacheResult> mapData() {
+        return new Func1<BankDomain, CacheResult>() {
             @Override
-            public String call(BankDomain bankDomain) {
+            public CacheResult call(BankDomain bankDomain) {
                 CacheResult<BankItemResponse> result = new CacheResult<>();
                 result.setData(getBankItemResponse(bankDomain));
-
-                return gson.toJson(result);
+                return result;
             }
         };
     }
 
-    private Func1<List<BankDomain>, String> mapListData() {
-        return new Func1<List<BankDomain>, String>() {
+    private Func1<List<BankDomain>, CacheResult> mapListData() {
+        return new Func1<List<BankDomain>, CacheResult>() {
             @Override
-            public String call(List<BankDomain> bankDomains) {
+            public CacheResult call(List<BankDomain> bankDomains) {
                 CacheResult<ListResponse<BankItemResponse>> result = new CacheResult<>();
                 ListResponse<BankItemResponse> bankItemReponses = new ListResponse<>();
                 List<BankItemResponse> list = new ArrayList<>();
@@ -93,7 +91,7 @@ public class ReactBankCacheSource implements ReactDataSource {
                 bankItemReponses.setList(list);
 
                 result.setData(bankItemReponses);
-                return gson.toJson(result);
+                return result;
             }
         };
     }

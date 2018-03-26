@@ -1,17 +1,15 @@
 package com.tokopedia.posapp.di.module;
 
-import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.cache.data.factory.EtalaseFactory;
-import com.tokopedia.posapp.etalase.GetEtalaseMapper;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
-import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
 import com.tokopedia.posapp.di.scope.EtalaseScope;
-import com.tokopedia.posapp.product.productlist.domain.usecase.GetEtalaseCacheUseCase;
-import com.tokopedia.posapp.cache.domain.usecase.GetEtalaseUseCase;
-import com.tokopedia.posapp.cache.domain.usecase.StoreEtalaseCacheUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,15 +21,7 @@ import dagger.Provides;
 @EtalaseScope
 @Module
 public class EtalaseModule {
-    @Provides
-    GetEtalaseMapper provideGetEtalaseMapper(Gson gson) {
-        return new GetEtalaseMapper(gson);
-    }
-
-    @Provides
-    EtalaseFactory provideEtalaseFactory(ProductListApi posProductApi, GetEtalaseMapper getEtalaseMapper) {
-        return new EtalaseFactory(posProductApi, getEtalaseMapper);
-    }
+    public static final String POS = "POS_CACHE";
 
     @Provides
     EtalaseRepository provideEtalaseRepository(EtalaseFactory etalaseFactory) {
@@ -39,23 +29,8 @@ public class EtalaseModule {
     }
 
     @Provides
-    GetEtalaseUseCase provideGetEtalaseUseCase(ThreadExecutor threadExecutor,
-                                               PostExecutionThread postExecutionThread,
-                                               EtalaseRepository etalaseRepository) {
-        return new GetEtalaseUseCase(threadExecutor, postExecutionThread, etalaseRepository);
-    }
-
-    @Provides
-    StoreEtalaseCacheUseCase provideStoreEtalaseCacheUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             EtalaseRepository etalaseRepository) {
-        return new StoreEtalaseCacheUseCase(threadExecutor, postExecutionThread, etalaseRepository);
-    }
-
-    @Provides
-    GetEtalaseCacheUseCase provideGetEtalaseCacheUseCase(ThreadExecutor threadExecutor,
-                                                         PostExecutionThread postExecutionThread,
-                                                         EtalaseRepository etalaseRepository) {
-        return new GetEtalaseCacheUseCase(threadExecutor, postExecutionThread, etalaseRepository);
+    @Named(POS)
+    LocalCacheHandler providePosLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, POS);
     }
 }

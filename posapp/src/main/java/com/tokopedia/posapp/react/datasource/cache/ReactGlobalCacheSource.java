@@ -16,15 +16,14 @@ import rx.functions.Func1;
  * Created by okasurya on 11/7/17.
  */
 
-public class ReactGlobalCacheSource implements ReactDataSource {
+public class ReactGlobalCacheSource extends ReactDataSource {
     private GlobalCacheManager globalCacheManager;
-    private Gson gson;
 
     @Inject
     public ReactGlobalCacheSource(Gson gson) {
+        super(gson);
         this.globalCacheManager = new GlobalCacheManager();
         globalCacheManager.setCacheDuration(3600000);
-        this.gson = gson;
     }
 
     @Override

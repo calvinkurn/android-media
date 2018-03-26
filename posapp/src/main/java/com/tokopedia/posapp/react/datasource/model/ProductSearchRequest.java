@@ -16,6 +16,14 @@ public class ProductSearchRequest {
     @Expose
     private String etalaseId;
 
+    @SerializedName("offset")
+    @Expose
+    private Integer offset;
+
+    @SerializedName("limit")
+    @Expose
+    private Integer limit;
+
     public String getKeyword() {
         return keyword;
     }
@@ -30,5 +38,21 @@ public class ProductSearchRequest {
 
     public void setEtalaseId(String etalaseId) {
         this.etalaseId = etalaseId;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

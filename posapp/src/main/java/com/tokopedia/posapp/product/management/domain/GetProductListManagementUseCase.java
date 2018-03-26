@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.product.management.domain;
 
-import com.tokopedia.posapp.di.qualifier.CloudSource;
+import com.tokopedia.posapp.product.management.data.repository.ProductManagementCloudRepository;
 import com.tokopedia.posapp.product.management.data.repository.ProductManagementRepository;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -18,8 +18,8 @@ public class GetProductListManagementUseCase extends UseCase<ProductListDomain> 
     private ProductManagementRepository ProductManagementRepository;
 
     @Inject
-    GetProductListManagementUseCase(@CloudSource ProductManagementRepository ProductManagementRepository) {
-        this.ProductManagementRepository = ProductManagementRepository;
+    GetProductListManagementUseCase(ProductManagementCloudRepository productManagementRepository) {
+        this.ProductManagementRepository = productManagementRepository;
     }
 
     @Override

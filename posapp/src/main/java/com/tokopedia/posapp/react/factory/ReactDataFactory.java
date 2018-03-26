@@ -7,6 +7,7 @@ import com.tokopedia.posapp.react.datasource.cache.ReactCartCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactEtalaseCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactGlobalCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
+import com.tokopedia.posapp.react.datasource.cloud.ReactProductCloudSource;
 import com.tokopedia.posapp.react.exception.TableNotFoundException;
 
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ public class ReactDataFactory {
 
     @Inject
     public ReactDataFactory(ReactCartCacheSource cartSource,
-                            ReactProductCacheSource productSource,
+                            ReactProductCloudSource productSource,
                             ReactBankCacheSource bankSource,
                             ReactEtalaseCacheSource etalaseSource,
                             ReactGlobalCacheSource globalSource) {

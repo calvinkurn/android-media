@@ -9,6 +9,8 @@ import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class StoreEtalaseCacheUseCase extends UseCase<DataStatus>{
 
     private EtalaseRepository etalaseRepository;
 
+    @Inject
     public StoreEtalaseCacheUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     EtalaseRepository etalaseRespository) {

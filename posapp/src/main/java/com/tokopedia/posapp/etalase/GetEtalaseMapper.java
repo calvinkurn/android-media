@@ -7,6 +7,8 @@ import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -17,6 +19,7 @@ import rx.functions.Func1;
 public class GetEtalaseMapper implements Func1<Response<TkpdResponse>, List<EtalaseDomain>> {
     private Gson gson;
 
+    @Inject
     public GetEtalaseMapper(Gson gson) {
         this.gson = gson;
     }

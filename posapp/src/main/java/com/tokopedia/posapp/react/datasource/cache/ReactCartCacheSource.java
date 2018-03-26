@@ -23,14 +23,13 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class ReactCartCacheSource implements ReactDataSource {
-    private Gson gson;
+public class ReactCartCacheSource extends ReactDataSource {
     private CartFactory cartFactory;
 
     @Inject
     public ReactCartCacheSource(CartFactory cartFactory,
                                 Gson gson) {
-        this.gson = gson;
+        super(gson);
         this.cartFactory = cartFactory;
     }
 

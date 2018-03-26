@@ -124,7 +124,7 @@ public class CachePresenter implements Cache.Presenter {
                     @Override
                     public void onNext(DataStatus dataStatus) {
                         Log.d("CachePresenter", dataStatus.getMessage());
-                        getAllProduct();
+//                        getAllProduct();
                     }
                 });
     }

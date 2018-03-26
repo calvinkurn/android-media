@@ -8,6 +8,8 @@ import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,8 +17,9 @@ import rx.Observable;
  */
 
 public class EtalaseRepositoryImpl implements EtalaseRepository {
-    EtalaseFactory etalaseFactory;
+    private EtalaseFactory etalaseFactory;
 
+    @Inject
     public EtalaseRepositoryImpl(EtalaseFactory etalaseFactory) {
         this.etalaseFactory = etalaseFactory;
     }

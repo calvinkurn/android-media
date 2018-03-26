@@ -18,13 +18,12 @@ import rx.functions.Func1;
  * Created by okasurya on 9/25/17.
  */
 
-public class ReactEtalaseCacheSource implements ReactDataSource {
-    private Gson gson;
+public class ReactEtalaseCacheSource extends ReactDataSource {
     private EtalaseFactory etalaseFactory;
 
     @Inject
     public ReactEtalaseCacheSource(EtalaseFactory etalaseFactory, Gson gson) {
-        this.gson = gson;
+        super(gson);
         this.etalaseFactory = etalaseFactory;
     }
 
@@ -35,12 +34,12 @@ public class ReactEtalaseCacheSource implements ReactDataSource {
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return etalaseFactory.local().getListEtalase(offset, limit).map(getListMapper()).map(toJson());
+        return etalaseFactory.local().getListEtalase(offset, limit).map(getListMapper()).map(mapToJson());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return etalaseFactory.local().getAllEtalase().map(getListMapper()).map(toJson());
+        return etalaseFactory.local().getAllEtalase().map(getListMapper()).map(mapToJson());
     }
 
     @Override
@@ -72,15 +71,6 @@ public class ReactEtalaseCacheSource implements ReactDataSource {
                 list.setList(etalaseDomains);
                 result.setData(list);
                 return result;
-            }
-        };
-    }
-
-    private Func1<CacheResult, String> toJson() {
-        return new Func1<CacheResult, String>() {
-            @Override
-            public String call(CacheResult cacheResult) {
-                return gson.toJson(cacheResult);
             }
         };
     }

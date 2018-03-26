@@ -9,6 +9,8 @@ import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ import rx.Observable;
 public class GetEtalaseCacheUseCase extends UseCase<List<EtalaseDomain>> {
     private EtalaseRepository etalaseRepository;
 
+    @Inject
     public GetEtalaseCacheUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
                                   EtalaseRepository etalaseRepository) {

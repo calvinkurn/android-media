@@ -1,15 +1,17 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.posapp.di.qualifier.LocalSource;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.posapp.base.data.pojo.Paging;
+import com.tokopedia.posapp.product.common.data.repository.ProductLocalRepository;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.product.productlist.domain.model.ProductListDomain;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
-import com.tokopedia.posapp.shop.data.ShopProductResponse;
-import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
+import com.tokopedia.posapp.shop.data.ShopProductResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +25,13 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class ReactProductCacheSource implements ReactDataSource {
-    private Gson gson;
+public class ReactProductCacheSource extends ReactDataSource {
     private ProductRepository productRepository;
 
     @Inject
-    public ReactProductCacheSource(@LocalSource ProductRepository productRepository, Gson gson) {
-        this.gson = gson;
+    public ReactProductCacheSource(ProductLocalRepository productRepository,
+                                   Gson gson) {
+        super(gson);
         this.productRepository = productRepository;
     }
 
@@ -87,9 +89,7 @@ public class ReactProductCacheSource implements ReactDataSource {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString(ProductRepository.KEYWORD, keyword);
         requestParams.putString(ProductRepository.ETALASE_ID, etalaseId);
-        return productRepository.getProductList(requestParams)
-                .map(getListMapper())
-                .map(mapToJson());
+        return productRepository.getProductList(requestParams).map(getListMapper()).map(mapToJson());
     }
 
     private Func1<ProductListDomain, CacheResult> getListMapper() {
@@ -134,14 +134,5 @@ public class ReactProductCacheSource implements ReactDataSource {
         item.productImage300 = productDomain.getProductImage300();
         item.productImageFull = productDomain.getProductImageFull();
         return item;
-    }
-
-    private Func1<CacheResult, String> mapToJson() {
-        return new Func1<CacheResult, String>() {
-            @Override
-            public String call(CacheResult cacheResult) {
-                return gson.toJson(cacheResult);
-            }
-        };
     }
 }

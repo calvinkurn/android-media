@@ -11,6 +11,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.component.DaggerReactCacheComponent;
 import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
+import com.tokopedia.posapp.react.datasource.cloud.ReactProductCloudSource;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
 
 import javax.inject.Inject;
@@ -25,7 +26,7 @@ public class ProductDiscoveryRNModule extends ReactContextBaseJavaModule {
     private Context context;
 
     @Inject
-    ReactProductCacheSource reactProductCacheSource;
+    ReactProductCloudSource reactProductCacheSource;
 
     @Inject
     Gson gson;
@@ -55,7 +56,7 @@ public class ProductDiscoveryRNModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void search(String data, final Promise promise) {
         ProductSearchRequest request = gson.fromJson(data, ProductSearchRequest.class);
-        reactProductCacheSource.search(request.getKeyword(), request.getEtalaseId())
+        reactProductCacheSource.search(request)
                 .subscribe(
                     new Subscriber<String>() {
                         @Override
