@@ -47,7 +47,7 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
     }
 
     private ChannelViewModel convertToViewModel(Channel channelPojo) {
-        //TODO milhamj
+        //TODO milhamj set channel mapper from API
         return new ChannelViewModel(
                 String.valueOf(channelPojo.getChannelId()),
                 channelPojo.getModeratorName()!= null ? channelPojo.getModeratorName() : "",
@@ -57,8 +57,7 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
                 channelPojo.getDescription() != null ? channelPojo.getDescription() : "",
                 channelPojo.getTotalViews(),
                 channelPojo.getChannelUrl(),
-                "Net TV milik kita bersama sama di dunia ini hanya sementara",
-                "https://cdn-image.hipwee.com/wp-content/uploads/2017/07/hipwee-net_blue.png"
+                null
         );
     }
 }

@@ -6,7 +6,11 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/space_med"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:id="@+id/partner_child_layout"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <android.support.v7.widget.CardView
         android:layout_width="@dimen/partner_avatar_size"

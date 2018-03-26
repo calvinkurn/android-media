@@ -23,6 +23,7 @@
         tools:text="@string/official_partner"/>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/partner_children"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:itemCount="2"
