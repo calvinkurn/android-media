@@ -40,10 +40,14 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.GroupChatAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
@@ -51,12 +55,12 @@ import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
-import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
-import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -69,9 +73,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ChatroomContract.View.VoteAnnouncementViewHolderListener,
         ChatroomContract.View.SprintSaleViewHolderListener {
 
-    public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final long DELAY_TIME = 1000L;
     private static final long VIBRATE_LENGTH = 1000;
+    private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
 
     @Inject
     ChatroomPresenter presenter;
@@ -153,8 +157,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
                 FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
         login = view.findViewById(R.id.login);
@@ -172,8 +178,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         chatRecyclerView.setAdapter(adapter);
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
         chatRecyclerView.addItemDecoration(itemDecoration);
-
-        VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
 
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -269,6 +273,46 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
+    public void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+        //TODO SHOW SPRINT SALE ICON
+    }
+
+    @Override
+    public void autoAddSprintSaleAnnouncement(@Nullable final SprintSaleViewModel
+                                                      sprintSaleViewModel,
+                                              @Nullable final ChannelInfoViewModel channelInfoViewModel) {
+        if (sprintSaleViewModel != null
+                && channelInfoViewModel != null
+                && channelInfoViewModel.getChannelViewModel() != null) {
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
+                            new Date().getTime(),
+                            new Date().getTime(),
+                            "0",
+                            "0",
+                            channelInfoViewModel.getChannelViewModel().getAdminName(),
+                            channelInfoViewModel.getChannelViewModel().getAdminPicture(),
+                            false,
+                            true,
+                            sprintSaleViewModel.getRedirectUrl(),
+                            sprintSaleViewModel.getListProduct(),
+                            false,
+                            sprintSaleViewModel.getCampaignName(),
+                            sprintSaleViewModel.getStartDate(),
+                            sprintSaleViewModel.getEndDate(),
+                            false
+                    );
+                    addIncomingMessage(sprintSaleAnnouncementViewModel);
+                }
+            }, DELAY_TIME_SPRINT_SALE);
+
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
     }
@@ -307,8 +351,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             if (getActivity() instanceof GroupChatActivity) {
                 ((GroupChatActivity) getActivity()).setChannelHandler();
                 ((GroupChatActivity) getActivity()).showInfoDialog();
+                autoAddSprintSaleAnnouncement(
+                        ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
+                        ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
             }
-
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -430,6 +476,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
+        } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
+            handleSprintSaleAnnouncement((SprintSaleAnnouncementViewModel) messageItem);
         } else {
             addIncomingMessage(messageItem);
         }
@@ -439,7 +487,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             vibratePhone();
         }
     }
-
 
     private void vibratePhone() {
         Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -465,7 +512,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 break;
         }
 
-        ((GroupChatActivity) getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
+        ((GroupChatContract.View) getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
+    }
+
+    private void handleSprintSaleAnnouncement(SprintSaleAnnouncementViewModel messageItem) {
+        ((GroupChatContract.View) getActivity()).updateSprintSaleData(messageItem);
+        addIncomingMessage(messageItem);
     }
 
     private void addIncomingMessage(Visitable messageItem) {

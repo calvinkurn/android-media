@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -18,6 +19,8 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
@@ -104,6 +107,18 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     public void renderData(ChannelViewModel channelViewModel) {
         this.channelViewModel = channelViewModel;
         populateData();
+    }
+
+    @Override
+    public void onMessageReceived(Visitable map) {
+        if (map instanceof SprintSaleAnnouncementViewModel) {
+            //showSprintSale();
+        }
+    }
+
+    @Override
+    public void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+//TODO SHOW SPRINTSALE ICON
     }
 
     private void initView(View view) {

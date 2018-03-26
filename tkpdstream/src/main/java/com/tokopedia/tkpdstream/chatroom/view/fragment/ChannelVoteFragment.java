@@ -48,13 +48,9 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
-import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE_ANNOUNCEMENT;
 
 /**
  * @author by StevenFredian on 20/03/18.

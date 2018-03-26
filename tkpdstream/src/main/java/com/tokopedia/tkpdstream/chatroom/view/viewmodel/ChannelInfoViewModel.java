@@ -5,13 +5,14 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 /**
  * @author by nisie on 2/22/18.
  */
 
-public class ChannelInfoViewModel implements Parcelable{
+public class ChannelInfoViewModel implements Parcelable {
     private String title;
     private String channelUrl;
     private String bannerUrl;
@@ -22,11 +23,16 @@ public class ChannelInfoViewModel implements Parcelable{
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
+
     private ChannelViewModel channelViewModel;
+
+    @Nullable
+    private SprintSaleViewModel sprintSaleViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
                                 String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
-                                ChannelViewModel channelViewModel) {
+                                ChannelViewModel channelViewModel,
+                                @Nullable SprintSaleViewModel sprintSaleViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
@@ -36,6 +42,7 @@ public class ChannelInfoViewModel implements Parcelable{
         this.bannerName = bannerName;
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
+        this.sprintSaleViewModel = sprintSaleViewModel;
     }
 
     public String getChannelUrl() {
@@ -97,10 +104,26 @@ public class ChannelInfoViewModel implements Parcelable{
         return bannerName;
     }
 
+    @Nullable
+    public SprintSaleViewModel getSprintSaleViewModel() {
+        return sprintSaleViewModel;
+    }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setSprintSaleViewModel(@Nullable SprintSaleViewModel sprintSaleViewModel) {
+        this.sprintSaleViewModel = sprintSaleViewModel;
+    }
+
+    protected ChannelInfoViewModel(Parcel in) {
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        hasPoll = in.readByte() != 0;
+        sponsorUrl = in.readString();
+        adsLink = in.readString();
+        bannerName = in.readString();
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+        sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
     }
 
     @Override
@@ -114,18 +137,12 @@ public class ChannelInfoViewModel implements Parcelable{
         dest.writeString(bannerName);
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(channelViewModel, flags);
+        dest.writeParcelable(sprintSaleViewModel, flags);
     }
 
-    protected ChannelInfoViewModel(Parcel in) {
-        title = in.readString();
-        channelUrl = in.readString();
-        bannerUrl = in.readString();
-        hasPoll = in.readByte() != 0;
-        sponsorUrl = in.readString();
-        adsLink = in.readString();
-        bannerName = in.readString();
-        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {

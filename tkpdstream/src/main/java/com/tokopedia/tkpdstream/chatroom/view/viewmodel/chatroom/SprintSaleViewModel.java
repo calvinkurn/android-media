@@ -1,65 +1,103 @@
 package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
 /**
- * @author by nisie on 3/22/18.
+ * @author by nisie on 3/26/18.
  */
 
-public class SprintSaleViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
+public class SprintSaleViewModel implements Parcelable{
 
-    public static final String SPRINT_SALE = "flashsale_add";
-    private ArrayList<SprintSaleProductViewModel> listProducts;
-    private String redirectUrl;
-    private boolean isActive;
+
+    private ArrayList<SprintSaleProductViewModel> listProduct;
     private String campaignName;
-    private int startDate;
-    private int endDate;
+    private long startDate;
+    private long endDate;
+    private String redirectUrl;
 
-    public SprintSaleViewModel(long createdAt, long updatedAt, String messageId,
-                               String senderId, String senderName, String senderIconUrl,
-                               boolean isInfluencer, boolean isAdministrator, String redirectUrl,
-                               ArrayList<SprintSaleProductViewModel> listProducts, boolean isActive,
-                               String campaignName, int startDate, int endDate) {
-        super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator);
-        this.redirectUrl = redirectUrl;
-        this.listProducts = listProducts;
-        this.isActive = isActive;
+    public SprintSaleViewModel(ArrayList<SprintSaleProductViewModel> listProduct,
+                               String campaignName, long startDate, long endDate, String redirectUrl) {
+        this.listProduct = listProduct;
         this.campaignName = campaignName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.redirectUrl = redirectUrl;
     }
 
-    @Override
-    public int type(GroupChatTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
-    public ArrayList<SprintSaleProductViewModel> getListProducts() {
-        return listProducts;
-    }
-
-    public boolean isActive() {
-        return isActive;
+    public ArrayList<SprintSaleProductViewModel> getListProduct() {
+        return listProduct;
     }
 
     public String getCampaignName() {
         return campaignName;
     }
 
-    public int getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public int getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setListProduct(ArrayList<SprintSaleProductViewModel> listProduct) {
+        this.listProduct = listProduct;
+    }
+
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(listProduct);
+        dest.writeString(campaignName);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(redirectUrl);
+    }
+
+
+    protected SprintSaleViewModel(Parcel in) {
+        listProduct = in.createTypedArrayList(SprintSaleProductViewModel.CREATOR);
+        campaignName = in.readString();
+        startDate = in.readLong();
+        endDate = in.readLong();
+        redirectUrl = in.readString();
+    }
+
+    public static final Creator<SprintSaleViewModel> CREATOR = new Creator<SprintSaleViewModel>() {
+        @Override
+        public SprintSaleViewModel createFromParcel(Parcel in) {
+            return new SprintSaleViewModel(in);
+        }
+
+        @Override
+        public SprintSaleViewModel[] newArray(int size) {
+            return new SprintSaleViewModel[size];
+        }
+    };
 }

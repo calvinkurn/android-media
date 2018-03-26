@@ -26,9 +26,9 @@ public class VoteAnnouncementViewModel extends BaseChatViewModel implements Visi
                                      long updatedAt, String messageId, String senderId,
                                      String senderName, String senderIconUrl,
                                      boolean isInfluencer, boolean isAdministrator,
-                                     VoteInfoViewModel voteInfoViewModel) {
+                                     VoteInfoViewModel voteInfoViewModel, boolean canVibrate) {
         super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator);
+                isInfluencer, isAdministrator, canVibrate);
         this.voteType = voteType;
         this.voteInfoViewModel = voteInfoViewModel;
     }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -55,10 +56,13 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
@@ -162,7 +166,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
-    private VoteAnnouncementViewModel voteAnnouncementViewModel;
 
     private CallbackManager callbackManager;
     private OpenChannel mChannel;
@@ -458,11 +461,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         bundle.putParcelable(VOTE, viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
 
-        if (voteAnnouncementViewModel != null) {
-            bundle.putParcelable(VOTE_ANNOUNCEMENT, voteAnnouncementViewModel);
-            bundle.putString(VOTE_TYPE, voteType);
-        }
-
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (ChannelVoteFragment.class.getSimpleName());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -621,8 +619,22 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
+        showSprintSale(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
+    }
+
+    private void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+        if (sprintSaleViewModel != null) {
+            if (currentFragmentIsChat()) {
+                ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
+                        (GroupChatFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
+            } else if (currentFragmentIsInfo()) {
+                ((ChannelInfoFragmentListener.View) getSupportFragmentManager().findFragmentByTag
+                        (ChannelInfoFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
+            }
+
+        }
     }
 
     @Override
@@ -936,6 +948,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelVoteFragment;
     }
 
+    private boolean currentFragmentIsInfo() {
+        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
+    }
+
     private void setUserNameOnReplyText() {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -952,6 +969,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsVote()) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
+        } else if (currentFragmentIsInfo()) {
+            ((ChannelInfoFragment) getSupportFragmentManager().findFragmentByTag
+                    (ChannelInfoFragment.class.getSimpleName())).onMessageReceived(map);
         }
     }
 
@@ -1026,14 +1046,59 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
+    @Override
     public void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem, String voteType) {
-//        voteAnnouncementViewModel = messageItem;
-//        this.voteType = voteType;
-
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
         if (!currentFragmentIsVote()) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 
+    }
+
+    @Override
+    @Nullable
+    public SprintSaleViewModel getSprintSaleViewModel() {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
+                .getChannelInfoViewModel().getSprintSaleViewModel() != null) {
+            return viewModel.getChannelInfoViewModel().getSprintSaleViewModel();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Nullable
+    public ChannelInfoViewModel getChannelInfoViewModel() {
+        if(viewModel!= null && viewModel.getChannelInfoViewModel()!= null) {
+            return viewModel.getChannelInfoViewModel();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public void updateSprintSaleData(SprintSaleAnnouncementViewModel messageItem) {
+        if (this.viewModel != null
+                && this.viewModel.getChannelInfoViewModel() != null
+                && this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel() != null) {
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setCampaignName(messageItem.getCampaignName());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setListProduct(messageItem.getListProducts());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setEndDate(messageItem.getEndDate());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setStartDate(messageItem.getStartDate());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setRedirectUrl(messageItem.getRedirectUrl());
+        } else if (this.viewModel != null
+                && this.viewModel.getChannelInfoViewModel() != null) {
+            this.viewModel.getChannelInfoViewModel().setSprintSaleViewModel(new SprintSaleViewModel(
+                    messageItem.getListProducts(),
+                    messageItem.getCampaignName(),
+                    messageItem.getStartDate(),
+                    messageItem.getEndDate(),
+                    messageItem.getRedirectUrl()));
+        }
     }
 }
