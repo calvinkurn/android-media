@@ -307,10 +307,10 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     public void initCrashlytics() {
-        if (!BuildConfig.DEBUG) {
+        //if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier("");
-        }
+        //}
     }
 
 	protected void initDbFlow() {
