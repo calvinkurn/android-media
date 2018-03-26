@@ -9,6 +9,7 @@ import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.AppCompatImageView;
@@ -518,7 +519,10 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
-            ((ShopProductListLimitedFragment) adapter.getRegisteredFragment(0)).displayProduct(this.shopInfo);
+            Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, 0);
+            if(fragment instanceof ShopProductListLimitedFragment){
+                ((ShopProductListLimitedFragment) fragment).displayProduct(this.shopInfo);
+            }
         }
         shopPageViewHolder.renderData(shopInfo, shopPagePresenter.isMyShop(shopId));
         if(this.shopInfo != null) {

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.page.view.adapter;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,17 +12,19 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
+import java.util.Arrays;
+
 /**
  * Created by normansyahputa on 3/13/18.
  */
 
 public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
+    public static final String STATES = "states";
     private final String[] title;
     private final ShopModuleRouter shopModuleRouter;
     private final ShopPagePromoWebView.Listener listener;
     private final String shopId;
     private final String shopDomain;
-    private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<Fragment>();
 
     public ShopPagePagerAdapter(FragmentManager fragmentManager, String[] title, ShopModuleRouter shopModuleRouter,
                                 ShopPagePromoWebView.Listener listener, String shopId, String shopDomain) {
@@ -71,19 +75,16 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        Object o = super.instantiateItem(container, position);
-        registeredFragments.put(position, (Fragment) o);
-        return o;
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        registeredFragments.remove(position);
-        super.destroyItem(container, position, object);
-    }
-
-    public Fragment getRegisteredFragment(int position) {
-        return registeredFragments.get(position);
+    public Parcelable saveState() {
+        Bundle bundle = (Bundle) super.saveState();
+        if (bundle != null) {
+            Parcelable[] states = bundle.getParcelableArray(STATES); // Subset only last 3 states
+            if (states != null)
+                states = Arrays.copyOfRange(states, states.length > 3 ? states.length - 3 : 0, states.length - 1);
+            bundle.putParcelableArray(STATES, states);
+        } else {
+            bundle = new Bundle();
+        }
+        return bundle;
     }
 }
