@@ -17,19 +17,22 @@ public class ChannelInfoViewModel implements Parcelable{
     private String bannerUrl;
     private boolean hasPoll;
     private String sponsorUrl;
+    private String adsLink;
+
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
     private ChannelViewModel channelViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
-                                String sponsorUrl, @Nullable VoteInfoViewModel voteInfoViewModel,
+                                String sponsorUrl, String adsLink, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
         this.hasPoll = hasPoll;
         this.sponsorUrl = sponsorUrl;
+        this.adsLink = adsLink;
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
     }
@@ -66,6 +69,10 @@ public class ChannelInfoViewModel implements Parcelable{
 
     public String getSponsorUrl() {
         return sponsorUrl;
+    }
+
+    public String getAdsLink() {
+        return adsLink;
     }
 
     @Nullable

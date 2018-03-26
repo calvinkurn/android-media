@@ -52,6 +52,15 @@ public class Channel {
     @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorProfileUrl;
+    @SerializedName("banner_url")
+    @Expose
+    private String bannerImageUrl;
+    @SerializedName("ads_url")
+    @Expose
+    private String adsUrl;
+    @SerializedName("ads_link")
+    @Expose
+    private String adsLink;
 
     public int getChannelId() {
         return channelId;
@@ -167,5 +176,17 @@ public class Channel {
 
     public String getTotalViews() {
         return totalViews;
+    }
+
+    public String getBannerImageUrl() {
+        return bannerImageUrl;
+    }
+
+    public String getAdsUrl() {
+        return adsUrl;
+    }
+
+    public String getAdsLink() {
+        return adsLink;
     }
 }
