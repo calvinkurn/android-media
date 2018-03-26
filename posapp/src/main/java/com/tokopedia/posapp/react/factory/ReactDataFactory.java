@@ -7,6 +7,7 @@ import com.tokopedia.posapp.react.datasource.cache.ReactCartCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactEtalaseCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactGlobalCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
+import com.tokopedia.posapp.react.datasource.cloud.ReactEtalaseCloudSource;
 import com.tokopedia.posapp.react.datasource.cloud.ReactProductCloudSource;
 import com.tokopedia.posapp.react.exception.TableNotFoundException;
 
@@ -27,7 +28,7 @@ public class ReactDataFactory {
     public ReactDataFactory(ReactCartCacheSource cartSource,
                             ReactProductCloudSource productSource,
                             ReactBankCacheSource bankSource,
-                            ReactEtalaseCacheSource etalaseSource,
+                            ReactEtalaseCloudSource etalaseSource,
                             ReactGlobalCacheSource globalSource) {
         this.cartSource = cartSource;
         this.productSource = productSource;

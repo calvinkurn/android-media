@@ -15,7 +15,6 @@ import rx.Observable;
  */
 
 public interface ProductManagementApi {
-
     @GET(PosUrl.Product.PRODUCT_LIST_V2)
     Observable<Response<TkpdResponse>> getProducts(@QueryMap Map<String, String> params);
 }
