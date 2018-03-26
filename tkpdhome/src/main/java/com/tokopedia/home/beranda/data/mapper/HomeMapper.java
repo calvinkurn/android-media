@@ -69,6 +69,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
+                    position++;
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
                                 channel.getEnhanceImpressionSprintSaleHomePage()
@@ -76,14 +77,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)){
 
                     } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
-                        position++;
                         channel.setPromoName(String.format("/ - p%d - lego banner", position));
                         channel.setHomeAttribution(String.format("%d - legoBanner - $1 - $2", position));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
                                 channel.getEnhanceImpressionLegoBannerHomePage()
                         );
                     } else {
-                        position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
                         channel.setHomeAttribution(String.format("%d - curatedListBanner - %s - $1 - $2", position, channel.getHeader().getName()));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
