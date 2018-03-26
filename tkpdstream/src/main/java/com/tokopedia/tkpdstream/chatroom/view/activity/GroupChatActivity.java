@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -1056,7 +1055,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-    @Nullable
     public SprintSaleViewModel getSprintSaleViewModel() {
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
                 .getChannelInfoViewModel().getSprintSaleViewModel() != null) {
@@ -1067,11 +1065,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-    @Nullable
+
     public ChannelInfoViewModel getChannelInfoViewModel() {
-        if(viewModel!= null && viewModel.getChannelInfoViewModel()!= null) {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
             return viewModel.getChannelInfoViewModel();
-        }else{
+        } else {
             return null;
         }
     }
