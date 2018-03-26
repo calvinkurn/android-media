@@ -12,14 +12,6 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/vote_bar"
-            layout="@layout/layout_vote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-
         <RelativeLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
@@ -100,7 +92,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vote_bar"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="1"
             app:reverseLayout="true"
             app:stackFromEnd="true"
