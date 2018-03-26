@@ -13,6 +13,8 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -46,17 +48,22 @@ import rx.subscriptions.CompositeSubscription;
  * Created by zulfikarrahman on 12/13/17.
  */
 
-public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
+public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View>
+        implements FlightDetailOrderContract.Presenter {
 
     private static final String NEW_LINE = "\n";
+
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+    private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSession userSession;
     private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
     private String userResendEmail = "";
 
     @Inject
-    public FlightDetailOrderPresenter(UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+    public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
+                                      UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+        this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
         compositeSubscription = new CompositeSubscription();
@@ -165,6 +172,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     }
                 })
         );
+    }
+
+    @Override
+    public List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList) {
+        return flightOrderToCancellationJourneyMapper.transform(flightOrderJourneyList);
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 
@@ -38,7 +39,11 @@ public class FlightCancellationViewModelMapper {
 
         for (Map.Entry<String, List<FlightCancellationPassengerViewModel>> entry : map.entrySet()) {
             FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
-            flightCancellationViewModel.setJourneyId(entry.getKey());
+
+            FlightCancellationJourney flightCancellationJourney = new FlightCancellationJourney();
+            flightCancellationJourney.setJourneyId(entry.getKey());
+
+            flightCancellationViewModel.setFlightCancellationJourney(flightCancellationJourney);
             flightCancellationViewModel.setPassengerViewModelList(entry.getValue());
 
             flightCancellationViewModelList.add(flightCancellationViewModel);

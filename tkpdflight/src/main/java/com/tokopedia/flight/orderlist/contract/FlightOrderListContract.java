@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
 
@@ -42,5 +45,7 @@ public interface FlightOrderListContract {
         void onDownloadEticket(String invoiceId);
 
         void onGetProfileData();
+
+        List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney);
     }
 }

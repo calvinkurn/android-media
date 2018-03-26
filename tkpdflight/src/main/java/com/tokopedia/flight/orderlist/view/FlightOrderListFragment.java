@@ -37,6 +37,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
+    private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
@@ -211,8 +213,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onCancelOptionClicked(String invoideId) {
-        startActivity(FlightCancellationActivity.createIntent(getContext(), invoideId));
+    public void onCancelOptionClicked(FlightOrderSuccessViewModel item) {
+        startActivityForResult(FlightCancellationActivity.createIntent(getContext(),
+                item.getId(),
+                presenter.transformOrderToCancellation(item.getOrderJourney())),
+                REQUEST_CODE_CANCELLATION);
     }
 
     @Override

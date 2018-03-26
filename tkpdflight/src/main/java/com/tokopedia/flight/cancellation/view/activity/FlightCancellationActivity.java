@@ -2,10 +2,10 @@ package com.tokopedia.flight.cancellation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -14,15 +14,22 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment.EXTRA_CANCEL_JOURNEY;
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment.EXTRA_INVOICE_ID;
 
 public class FlightCancellationActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
-    public static Intent createIntent(Context context, String invoiceId) {
+    public static Intent createIntent(Context context, String invoiceId,
+                                      List<FlightCancellationJourney> flightCancellationJourneyList) {
         Intent intent = new Intent(context, FlightCancellationActivity.class);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
+        intent.putParcelableArrayListExtra(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationJourneyList);
         return intent;
     }
 
@@ -45,8 +52,10 @@ public class FlightCancellationActivity extends BaseFlightActivity implements Ha
 
     @Override
     protected Fragment getNewFragment() {
+        List<FlightCancellationJourney> flightCancellationJourneyList = getIntent().getExtras().getParcelable(EXTRA_CANCEL_JOURNEY);
         return FlightCancellationFragment.createInstance(
-                getIntent().getExtras().getString(EXTRA_INVOICE_ID)
+                getIntent().getExtras().getString(EXTRA_INVOICE_ID),
+                flightCancellationJourneyList
         );
     }
 

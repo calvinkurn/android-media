@@ -16,19 +16,14 @@ import java.util.List;
 public class FlightCancellationViewModel implements Parcelable,
         Visitable<FlightCancellationTypeFactory> {
 
-    private String journeyId;
+    private FlightCancellationJourney flightCancellationJourney;
     private List<FlightCancellationPassengerViewModel> passengerViewModelList;
 
     public FlightCancellationViewModel() {
     }
 
     protected FlightCancellationViewModel(Parcel in) {
-        journeyId = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(journeyId);
+        flightCancellationJourney = in.readParcelable(FlightCancellationJourney.class.getClassLoader());
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -48,17 +43,23 @@ public class FlightCancellationViewModel implements Parcelable,
         return typeFactory.type(this);
     }
 
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    public String getJourneyId() {
-        return journeyId;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(flightCancellationJourney, flags);
     }
 
-    public void setJourneyId(String journeyId) {
-        this.journeyId = journeyId;
+    public FlightCancellationJourney getFlightCancellationJourney() {
+        return flightCancellationJourney;
+    }
+
+    public void setFlightCancellationJourney(FlightCancellationJourney flightCancellationJourney) {
+        this.flightCancellationJourney = flightCancellationJourney;
     }
 
     public List<FlightCancellationPassengerViewModel> getPassengerViewModelList() {
