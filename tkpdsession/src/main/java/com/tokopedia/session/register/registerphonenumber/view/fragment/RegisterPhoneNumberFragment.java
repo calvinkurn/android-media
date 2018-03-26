@@ -175,6 +175,12 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             errorText.setText(getResources().getString(R.string.error_char_count_under));
             return false;
         }
+
+        if (phoneNumber.length() > 15) {
+            message.setVisibility(View.GONE);
+            errorText.setVisibility(View.VISIBLE);
+            errorText.setText(getResources().getString(R.string.error_char_count_over));
+        }
         message.setVisibility(View.VISIBLE);
         errorText.setVisibility(View.GONE);
         errorText.setText("");
@@ -203,6 +209,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void goToLoginPhoneNumber() {
         startActivity(LoginPhoneNumberActivity.getCallingIntent(getActivity()));
+        getActivity().finish();
     }
 
     @Override
@@ -250,7 +257,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
         builder.setPositiveButton(getResources().getString(R.string.phone_number_already_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-            //go to login
                 goToLoginPhoneNumber();
             }
         });
