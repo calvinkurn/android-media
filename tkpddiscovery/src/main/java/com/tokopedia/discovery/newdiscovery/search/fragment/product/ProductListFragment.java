@@ -85,6 +85,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
+    private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
 
     protected RecyclerView recyclerView;
     @Inject
@@ -100,7 +101,7 @@ public class ProductListFragment extends SearchSectionFragment
     private SearchParameter searchParameter;
     private boolean forceSearch;
 
-    private List<Option> quickFilterOptions;
+    private ArrayList<Option> quickFilterOptions;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -124,6 +125,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
+        quickFilterOptions = savedInstanceState.getParcelableArrayList(EXTRA_QUICK_FILTER_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
     }
@@ -233,6 +235,9 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
+        if (quickFilterOptions != null && !quickFilterOptions.isEmpty()) {
+            headerViewModel.setQuickFilterList(quickFilterOptions);
+        }
         list.add(headerViewModel);
         list.addAll(productViewModel.getProductList());
         return list;
@@ -431,6 +436,7 @@ public class ProductListFragment extends SearchSectionFragment
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
         outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
+        outState.putParcelableArrayList(EXTRA_QUICK_FILTER_LIST, quickFilterOptions);
     }
 
     @Override
@@ -801,8 +807,8 @@ public class ProductListFragment extends SearchSectionFragment
         }
     }
 
-    private List<Option> getOptionList(DynamicFilterModel dynamicFilterModel) {
-        List<Option> optionList = new ArrayList<>();
+    private ArrayList<Option> getOptionList(DynamicFilterModel dynamicFilterModel) {
+        ArrayList<Option> optionList = new ArrayList<>();
         for (Filter filter : dynamicFilterModel.getData().getFilter()) {
             for (Option option : filter.getOptions()) {
                 optionList.add(option);
