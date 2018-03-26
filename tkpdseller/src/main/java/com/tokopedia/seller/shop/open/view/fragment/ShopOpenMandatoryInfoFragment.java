@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,11 +144,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         }
         shopDescEditText.setText(userData.getShortDesc());
         shopSloganEditText.setText(userData.getTagLine());
+
+        Drawable imgAddPhotoBox = AppCompatResources.getDrawable(getActivity(), R.drawable.ic_add_photo_box);
         Glide.with(imagePicker.getContext())
                 .load(userData.getLogo())
                 .dontAnimate()
-                .placeholder(R.drawable.ic_add_photo_box)
-                .error(R.drawable.ic_add_photo_box)
+                .placeholder(imgAddPhotoBox)
+                .error(imgAddPhotoBox)
                 .centerCrop()
                 .into(imagePicker);
     }
