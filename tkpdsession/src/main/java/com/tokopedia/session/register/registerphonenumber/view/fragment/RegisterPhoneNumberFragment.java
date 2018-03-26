@@ -153,6 +153,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });
+        nextButton.setClickable(false);
 
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
@@ -382,6 +383,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     private void disableButton(TextView button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setEnabled(true);
+        button.setEnabled(false);
     }
 }
