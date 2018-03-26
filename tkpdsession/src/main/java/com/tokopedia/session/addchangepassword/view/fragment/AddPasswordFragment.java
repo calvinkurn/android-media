@@ -71,6 +71,8 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
         View view = inflater.inflate(R.layout.fragment_add_password, container, false);
         etPassword = (EditText) view.findViewById(R.id.et_password);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
+        error = (TextView) view.findViewById(R.id.tv_error);
+        message = (TextView) view.findViewById(R.id.tv_message);
         return view;
     }
 
@@ -122,6 +124,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     public void disableNextButton() {
         disableButton(btnContinue);
     }
+
 
     @Override
     public void onErrorSubmitPassword(String error) {

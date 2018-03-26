@@ -17,6 +17,7 @@ public class AddPasswordPresenter
         implements AddPasswordListener.Presenter {
 
     private final static int MIN_COUNT = 6;
+    private final static int MAX_COUNT = 32;
 
     private AddPasswordUseCase addPasswordUseCase;
 
@@ -50,6 +51,7 @@ public class AddPasswordPresenter
 
     public boolean isValidPassword(String password) {
         if (password.length() < MIN_COUNT) return false;
+        else if(password.length() > MAX_COUNT) return false;
         return true;
     }
 
