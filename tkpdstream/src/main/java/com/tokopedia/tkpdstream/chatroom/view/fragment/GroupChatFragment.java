@@ -100,6 +100,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     private static final int REQUEST_LOGIN = 101;
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final long DELAY_TIME = 1000L;
 
     @Inject
     GroupChatPresenter presenter;
@@ -134,7 +135,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private PreviousMessageListQuery mPrevMessageListQuery;
     private GroupChatViewModel viewModel;
     private UserSession userSession;
-    private String channelUrl;
 
     private CloseableBottomSheetDialog channelInfoDialog;
 
@@ -293,17 +293,19 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (item.getItemId() == R.id.action_share) {
             analytics.eventClickShare();
             ShareData shareData = ShareData.Builder.aShareData()
-                    .setName("Judul")
-                    .setDescription("Konten")
-                    .setImgUri("ImageUri")
-                    .setUri("URL")
+                    .setId(viewModel.getChannelUuid())
+                    .setName(viewModel.getChannelName())
+                    .setDescription(String.format(getString(R.string.lets_join_channel),
+                            viewModel.getChannelName()))
+                    .setImgUri(viewModel.getChannelInfoViewModel().getBannerUrl())
+                    .setUri(viewModel.getChannelUrl())
                     .setType(ShareData.FEED_TYPE)
                     .build();
 
             if (shareLayout == null) {
                 shareLayout = new ShareLayout(
                         GroupChatFragment.this,
-                        callbackManager, channelUrl, toolbar.getTitle().toString(), analytics);
+                        callbackManager, viewModel.getChannelUrl(), toolbar.getTitle().toString(), analytics);
             }
             shareLayout.setShareModel(shareData);
             shareLayout.show();
@@ -311,7 +313,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         } else if (item.getItemId() == R.id.action_info) {
             boolean temp = checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(), viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
             channelInfoDialog.setContentView(createBottomSheetView(temp, viewModel
-                    .getChannelInfoViewModel().getChannelViewModel()));
+                    .getChannelInfoViewModel().getChannelViewModel(), false));
             channelInfoDialog.show();
             return true;
         } else {
@@ -427,10 +429,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         super.onViewCreated(view, savedInstanceState);
         initData();
         progressBarWithTimer.setListener(this);
-
     }
 
-    private View createBottomSheetView(boolean hasValidPoll, final ChannelViewModel channelViewModel) {
+    private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel, boolean showActionButton) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
         TextView actionButton = view.findViewById(R.id.action_button);
@@ -453,7 +454,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(channelViewModel.getParticipant()));
+        if (showActionButton)
+            actionButton.setVisibility(View.VISIBLE);
+        else
+            actionButton.setVisibility(View.GONE);
+
+        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());
@@ -465,10 +471,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         return view;
     }
 
+    private View createBottomSheetView(boolean hasValidPoll, final ChannelViewModel channelViewModel) {
+        return createBottomSheetView(hasValidPoll, channelViewModel, true);
+    }
 
     private void setToolbarParticipantCount() {
-        String textParticipant = String.format("%d %s", viewModel.getTotalParticipant()
-                , getActivity().getString(R.string.participant));
+        String textParticipant = String.format("%s %s", viewModel.getTotalParticipant()
+                , getActivity().getString(R.string.view));
         toolbar.setSubtitle(textParticipant);
     }
 
@@ -509,9 +518,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        Log.d("NISNIS", "onConnected " + reconnect);
-
-                        if (reconnect) {
+                        if (reconnect || viewModel != null) {
                             presenter.refreshDataAfterReconnect(mChannel);
                         }
                     }
@@ -647,17 +654,35 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
 
         hideLoading();
+        setChannelInfoView(channelInfoViewModel);
+        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                userSession.getName(), userSession.getProfilePicture(), this);
+        if (channelInfoViewModel.getVoteInfoViewModel() != null) {
+            autoExpand(channelInfoViewModel.getVoteInfoViewModel().isVoted());
+        }
+    }
+
+    @Override
+    public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        setChannelInfoView(channelInfoViewModel);
+    }
+
+    private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {
         this.viewModel.setChannelInfo(channelInfoViewModel);
         toolbar.setTitle(channelInfoViewModel.getTitle());
         setToolbarParticipantCount();
         ImageHandler.loadImageBlur(getActivity(), channelBanner, channelInfoViewModel
                 .getBannerUrl());
-        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
         setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
-        channelUrl = channelInfoViewModel.getChannelUrl();
         channelInfoDialog.setContentView(createBottomSheetView(checkPollValid(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel()), channelInfoViewModel.getChannelViewModel()));
+
+    }
+
+    private void autoExpand(boolean voted) {
+        if (!voted) {
+            expand(voteBody);
+        }
     }
 
     void setVisibilityHeader(int visible) {
@@ -748,14 +773,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void showSuccessVoted() {
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
         channelInfoDialog.setContentView(view);
-        channelInfoDialog.show();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 channelInfoDialog.show();
             }
-        },1500);
+        }, DELAY_TIME);
     }
 
     @Override
@@ -777,6 +800,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorVote(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorRefreshChannelInfo(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -848,32 +876,36 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onUserEntered(UserActionViewModel userActionViewModel, int participantCount) {
+    public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
 
-        viewModel.setTotalParticipant(participantCount);
-        setToolbarParticipantCount();
-        adapter.addAction(userActionViewModel);
-        adapter.notifyItemInserted(0);
-        scrollToBottomWhenPossible();
+        try {
+            if (!userActionViewModel.getUserId().equalsIgnoreCase(userSession.getUserId())) {
+                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
+                        1));
+            }
+            setToolbarParticipantCount();
+            adapter.addAction(userActionViewModel);
+            adapter.notifyItemInserted(0);
+            scrollToBottomWhenPossible();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onUserExited(UserActionViewModel userActionViewModel, int participantCount) {
-        try {
-            viewModel.setTotalParticipant(participantCount);
-            setToolbarParticipantCount();
-//        adapter.addAction(userActionViewModel);
-//        adapter.notifyItemInserted(0);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+    public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
+
     }
 
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
             mChannel = openChannel;
-            viewModel.setTotalParticipant(openChannel.getParticipantCount());
+            try {
+                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant())));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             setToolbarParticipantCount();
             presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
         } catch (NullPointerException e) {
@@ -967,25 +999,28 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     public void showVoteLayout(final VoteInfoViewModel voteInfoViewModel, String voteType) {
-        Log.d("NISNIS", "showVoteLayout");
-
         updateVoteViewModel(voteInfoViewModel, voteType);
 
         voteBar.setVisibility(View.VISIBLE);
 
         LinearLayoutManager voteLayoutManager;
         RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
+        if (voteInfoViewModel.getVoteOptionType().equalsIgnoreCase(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
         }
+
+        if (voteRecyclerView.getItemDecorationAt(0) != null) {
+            voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(0));
+        }
+
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
-        voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getTitle());
+        voteTitle.setText(viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getQuestion());
 
         voteAdapter.addList(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                 .getListOption());
@@ -1023,6 +1058,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void setVoteParticipant(String participant) {
         voteParticipant.setText(String.format("%s %s", TextFormatter.format(participant)
                 , getActivity().getString(R.string.voter)));
+        voteParticipant.setVisibility(View.GONE);
     }
 
     private void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
@@ -1132,7 +1168,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onRedirectUrl(String url) {
         analytics.eventClickThumbnail(url);
-        ((StreamModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+        if (!TextUtils.isEmpty(url)) {
+            ((StreamModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+        }
     }
 
     @Override

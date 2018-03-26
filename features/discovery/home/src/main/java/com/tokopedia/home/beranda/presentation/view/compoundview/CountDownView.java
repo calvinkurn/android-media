@@ -1,17 +1,23 @@
 package com.tokopedia.home.beranda.presentation.view.compoundview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.home.R;
+
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.Locale;
@@ -26,6 +32,7 @@ public class CountDownView extends FrameLayout {
     private TextView hourView;
     private TextView minuteView;
     private TextView secondView;
+    private TextView col1, col2;
     private View rootView;
 
     private int hour;
@@ -55,6 +62,28 @@ public class CountDownView extends FrameLayout {
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);
         secondView = (TextView) rootView.findViewById(R.id.secondView);
+        col1 = rootView.findViewById(R.id.col1);
+        col2 = rootView.findViewById(R.id.col2);
+        TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.CountDownView, 0, 0);
+        try {
+            hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
+            minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
+            secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
+            col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
+            col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                hourView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
+                minuteView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
+                secondView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
+            } else {
+                final int drawableBackgroud = a.getResourceId(R.styleable.CountDownView_coundDownBackgroud, -1);
+                hourView.setBackgroundResource(drawableBackgroud);
+                minuteView.setBackgroundResource(drawableBackgroud);
+                secondView.setBackgroundResource(drawableBackgroud);
+            }
+        } finally {
+            a.recycle();
+        }
         displayTime();
     }
 

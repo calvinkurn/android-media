@@ -119,7 +119,7 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                                         .flatMap(new Func1<String, Observable<FlightAirlineDB>>() {
                                             @Override
                                             public Observable<FlightAirlineDB> call(String airlineId) {
-                                                return Observable.zip(flightRepository.getAirlineById(airlineId), Observable.just(airlineId), new Func2<FlightAirlineDB, String, FlightAirlineDB>() {
+                                                return Observable.zip(flightRepository.getAirlineCacheById(airlineId), Observable.just(airlineId), new Func2<FlightAirlineDB, String, FlightAirlineDB>() {
                                                     @Override
                                                     public FlightAirlineDB call(FlightAirlineDB flightAirlineDB, String s) {
                                                         return flightAirlineDB;

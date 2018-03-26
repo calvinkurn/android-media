@@ -36,4 +36,6 @@ public interface HomeCategoryListener {
     void onRefreshTokoPointButtonClicked();
 
     void onRefreshTokoCashButtonClicked();
+
+    void onSixGridItemClicked(String actionLink);
 }

@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 
+import okhttp3.Interceptor;
+
 /**
  * @author by nisie on 2/6/18.
  */
@@ -26,4 +28,6 @@ public interface KolRouter {
     void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
 
     void actionApplinkFromActivity(Activity activity, String linkUrl);
+
+    Interceptor getChuckInterceptor();
 }

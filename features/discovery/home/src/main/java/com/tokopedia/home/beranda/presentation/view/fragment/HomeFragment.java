@@ -68,6 +68,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -185,6 +186,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        presenter.onFirstLaunch();
         initTabNavigation();
         initAdapter();
         initRefreshLayout();
@@ -228,6 +230,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        presenter.onResume();
     }
 
     @Override
@@ -467,6 +470,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public boolean isLoading() {
+        return refreshLayout.isRefreshing();
+    }
+
+    @Override
     public void showLoading() {
         refreshLayout.setRefreshing(true);
     }
@@ -479,6 +487,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items) {
         adapter.setItems(items);
+    }
+
+    @Override
+    public void updateListOnResume(List<Visitable> visitables) {
+        adapter.updateItems(visitables);
     }
 
     @Override
@@ -653,6 +666,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRefreshTokoCashButtonClicked() {
         presenter.onRefreshTokoCash();
+    }
+
+    @Override
+    public void onSixGridItemClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
     }
 
     @Override

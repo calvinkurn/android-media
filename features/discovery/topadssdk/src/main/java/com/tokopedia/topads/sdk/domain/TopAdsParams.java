@@ -38,7 +38,7 @@ public class TopAdsParams {
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
     public static final String DEFAULT_KEY_DEVICE = "android";
-    public static final String DEFAULT_KEY_PAGE = "0";
+    public static final String DEFAULT_KEY_PAGE = "1";
     public static final String DEFAULT_KEY_SRC = "search";
 
     public static final String SRC_PRODUCT_FEED = "fav_product";
