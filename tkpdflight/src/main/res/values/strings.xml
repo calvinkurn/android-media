@@ -339,5 +339,6 @@
     <string name="activity_label_flight_cancellation">Pembatalan Pesanan</string>
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_choose_to_cancel_hint">Pilih Penerbangan dan Penumpang</string>
+    <string name="flight_cancellation_next_button">Selanjutnya</string>
 
 </resources>
