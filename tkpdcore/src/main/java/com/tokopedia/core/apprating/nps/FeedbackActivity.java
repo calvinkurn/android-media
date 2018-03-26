@@ -36,9 +36,13 @@ public class FeedbackActivity extends BaseSimpleActivity {
     private float rating;
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_feedback;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedback);
 
         rating = getIntent().getFloatExtra(FeedbackActivity.class.getSimpleName(), 0);
 
