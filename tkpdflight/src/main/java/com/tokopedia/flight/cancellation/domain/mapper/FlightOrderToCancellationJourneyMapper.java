@@ -23,9 +23,11 @@ public class FlightOrderToCancellationJourneyMapper {
 
         FlightCancellationJourney flightCancellationJourney = new FlightCancellationJourney();
         flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
+        flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
         flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());
         flightCancellationJourney.setDepartureAiportId(flightOrderJourney.getDepartureAiportId());
         flightCancellationJourney.setArrivalTime(flightOrderJourney.getArrivalTime());
+        flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
         flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
         flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
         flightCancellationJourney.setAirlineName(flightOrderJourney.getRouteViewModels().get(0).getAirlineName());
@@ -40,9 +42,11 @@ public class FlightOrderToCancellationJourneyMapper {
         for (FlightOrderJourney flightOrderJourney : flightOrderJourneyList) {
             FlightCancellationJourney flightCancellationJourney = new FlightCancellationJourney();
             flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
+            flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
             flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());
             flightCancellationJourney.setDepartureAiportId(flightOrderJourney.getDepartureAiportId());
             flightCancellationJourney.setArrivalTime(flightOrderJourney.getArrivalTime());
+            flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
             flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
             flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
             flightCancellationJourney.setAirlineName(flightOrderJourney.getRouteViewModels().get(0).getAirlineName());
