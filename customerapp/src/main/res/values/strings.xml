@@ -86,4 +86,7 @@
     <string name="coupon_copy_text">Kode voucher tersalin</string>
     <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
+
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
 </resources>

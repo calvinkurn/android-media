@@ -13,6 +13,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -821,5 +822,31 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                         startActivity(intent);
                     }
                 });
+    }
+
+    boolean exit = false;
+
+    private final static int EXIT_DELAY_MILLIS = 2000;
+
+    @Override
+    public void onBackPressed() {
+        if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
+        } else {
+            if (exit) {
+                this.finish();
+                return;
+            }
+
+            exit = true;
+            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, EXIT_DELAY_MILLIS);
+        }
     }
 }
