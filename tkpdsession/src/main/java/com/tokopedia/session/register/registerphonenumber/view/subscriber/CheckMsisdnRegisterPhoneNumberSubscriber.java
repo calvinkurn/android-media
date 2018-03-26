@@ -35,9 +35,9 @@ public class CheckMsisdnRegisterPhoneNumberSubscriber extends Subscriber<CheckMs
     public void onNext(CheckMsisdnDomain model) {
         view.dismissLoading();
         if (!model.isExist()) {
-            view.showConfirmationPhoneNumber(phoneNumber);
+            view.showConfirmationPhoneNumber(model.getPhoneText());
         } else {
-            view.showAlreadyRegisteredDialog(phoneNumber);
+            view.showAlreadyRegisteredDialog(model.getPhoneText());
         }
     }
 }

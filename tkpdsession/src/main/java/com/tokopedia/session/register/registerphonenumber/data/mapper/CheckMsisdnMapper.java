@@ -53,6 +53,6 @@ public class CheckMsisdnMapper implements Func1<Response<TkpdResponse>, CheckMsi
 
     private CheckMsisdnDomain mappingToViewModel(CheckMsisdnResponse pojo,
                                                           String statusMessage) {
-        return new CheckMsisdnDomain(pojo.isExist());
+        return new CheckMsisdnDomain(pojo.isExist(), pojo.getPhoneView());
     }
 }

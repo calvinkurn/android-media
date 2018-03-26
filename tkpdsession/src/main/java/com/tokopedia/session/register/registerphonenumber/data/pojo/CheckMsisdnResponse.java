@@ -11,11 +11,22 @@ public class CheckMsisdnResponse {
     @SerializedName("isExist")
     private boolean isExist;
 
+    @SerializedName("phone_view")
+    private String phoneView;
+
     public boolean isExist() {
         return isExist;
     }
 
     public void setExist(boolean exist) {
         isExist = exist;
+    }
+
+    public String getPhoneView() {
+        return phoneView;
+    }
+
+    public void setPhoneView(String phoneView) {
+        this.phoneView = phoneView;
     }
 }

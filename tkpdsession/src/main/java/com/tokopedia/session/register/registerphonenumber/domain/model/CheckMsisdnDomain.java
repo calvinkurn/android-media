@@ -8,8 +8,11 @@ public class CheckMsisdnDomain {
 
     private boolean isExist;
 
-    public CheckMsisdnDomain(boolean isExist) {
+    private String phoneText;
+
+    public CheckMsisdnDomain(boolean isExist, String phoneText) {
         this.isExist = isExist;
+        this.phoneText = phoneText;
     }
 
     public boolean isExist() {
@@ -20,4 +23,11 @@ public class CheckMsisdnDomain {
         isExist = exist;
     }
 
+    public String getPhoneText() {
+        return phoneText;
+    }
+
+    public void setPhoneText(String phoneText) {
+        this.phoneText = phoneText;
+    }
 }

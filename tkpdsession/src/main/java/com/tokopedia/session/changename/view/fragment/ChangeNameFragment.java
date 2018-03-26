@@ -60,7 +60,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     }
 
     private void setView() {
-
+        disableButton(btnContinue);
     }
 
     private void setViewListener() {
@@ -171,6 +171,6 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
     private void disableButton(Button button) {
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setEnabled(true);
+        button.setEnabled(false);
     }
 }
