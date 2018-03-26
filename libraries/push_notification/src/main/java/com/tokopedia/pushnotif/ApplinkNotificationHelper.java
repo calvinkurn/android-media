@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
+import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.model.HistoryNotificationModel;
 
@@ -39,9 +41,17 @@ public class ApplinkNotificationHelper {
     public void notifyApplinkNotification(Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = convertToApplinkModel(data);
 
-        if (allowToShow(applinkNotificationModel.getToUserId())) {
+        if (allowToShow(context, applinkNotificationModel.getToUserId())) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = generateNotifictionId(applinkNotificationModel.getApplinks());
+
+            if (notificationId == Constant.NotificationId.TALK) {
+                Notification notifTalk = new TalkNotificationFactory(context)
+                        .createTalkNotification(applinkNotificationModel, notificationId);
+
+                Notification notifSummary = new SummaryNotificationFactory(context)
+                        .createSummaryNotification(applinkNotificationModel, notificationId);
+            }
 
             Notification notif = buildNotification(applinkNotificationModel, notificationId).build();
 
@@ -49,6 +59,8 @@ public class ApplinkNotificationHelper {
         }
 
     }
+
+
 
     private NotificationCompat.Builder buildNotification(ApplinkNotificationModel applinkNotificationModel, int notificationId) {
 
@@ -121,7 +133,7 @@ public class ApplinkNotificationHelper {
     }
 
 
-    private ApplinkNotificationModel convertToApplinkModel(Bundle data) {
+    public static ApplinkNotificationModel convertToApplinkModel(Bundle data) {
         ApplinkNotificationModel model = new ApplinkNotificationModel();
         model.setApplinks(data.getString("applinks", "tokopedia://home"));
         model.setCounter(data.getString("counter", ""));
@@ -139,12 +151,21 @@ public class ApplinkNotificationHelper {
         return model;
     }
 
-    private Boolean allowToShow(String toUserId) {
+    public static Boolean allowToShow(Context context, String toUserId) {
         String loginId = ((AbstractionRouter) context.getApplicationContext()).getSession().getUserId();
         return toUserId.equals(loginId);
     }
 
-    private int generateNotifictionId(String appLink) {
+    public static int getNotificationId(String appLinks) {
+        Uri uri = Uri.parse(appLinks);
+        if (appLinks.contains("talk") || appLinks.contains("chat")) {
+            return Integer.parseInt(uri.getLastPathSegment());
+        }
+
+        return 0;
+    }
+
+    public static int generateNotifictionId(String appLink) {
         if (appLink.contains("talk")) {
             return Constant.NotificationId.TALK;
         } else if (appLink.contains("message")) {
