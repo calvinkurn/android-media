@@ -2,6 +2,7 @@ package com.tokopedia.posapp.product.productlist.data.source.cloud;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.common.PosUrl;
 
 import java.util.Map;
 
@@ -18,10 +19,10 @@ import rx.Observable;
 
 public interface ProductListApi {
 
-    @GET(TkpdBaseURL.Pos.GET_PRODUCT_LIST)
+    @GET(PosUrl.Product.PRODUCT_LIST_V1)
     Observable<Response<TkpdResponse>> getProductList(@QueryMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.Pos.GET_ETALASE)
+    @GET(PosUrl.Product.GET_ETALASE)
     Observable<Response<TkpdResponse>> getEtalase(@QueryMap Map<String, String> params);
 
 }

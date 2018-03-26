@@ -15,6 +15,6 @@ import rx.Observable;
  */
 
 public interface OutletApi {
-    @GET(PosUrl.Outlet.OUTLET_LIST_V1)
+    @GET(PosUrl.Shop.OUTLET_LIST_V1)
     Observable<Response<TkpdResponse>> getAddress(@QueryMap Map<String, String> params);
 }

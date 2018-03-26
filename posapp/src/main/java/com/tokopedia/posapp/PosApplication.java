@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.facebook.soloader.SoLoader;
+import com.tokopedia.posapp.common.PosUrl;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -39,33 +40,9 @@ public class PosApplication extends PosRouterApplication {
     }
 
     private void generatePosAppBaseUrl() {
-        TkpdBaseURL.BASE_DOMAIN = PosAppBaseUrl.BASE_DOMAIN;
-        TkpdBaseURL.ACE_DOMAIN = PosAppBaseUrl.BASE_ACE_DOMAIN;
-        TkpdBaseURL.TOME_DOMAIN = PosAppBaseUrl.BASE_TOME_DOMAIN;
-        TkpdBaseURL.CLOVER_DOMAIN = PosAppBaseUrl.BASE_CLOVER_DOMAIN;
-        TkpdBaseURL.TOPADS_DOMAIN = PosAppBaseUrl.BASE_TOPADS_DOMAIN;
-        TkpdBaseURL.MOJITO_DOMAIN = PosAppBaseUrl.BASE_MOJITO_DOMAIN;
-        TkpdBaseURL.HADES_DOMAIN = PosAppBaseUrl.BASE_HADES_DOMAIN;
-        TkpdBaseURL.ACCOUNTS_DOMAIN = PosAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
-        TkpdBaseURL.INBOX_DOMAIN = PosAppBaseUrl.BASE_INBOX_DOMAIN;
-        TkpdBaseURL.JS_DOMAIN = PosAppBaseUrl.BASE_JS_DOMAIN;
-        TkpdBaseURL.KERO_DOMAIN = PosAppBaseUrl.BASE_KERO_DOMAIN;
-        TkpdBaseURL.JAHE_DOMAIN = PosAppBaseUrl.BASE_JAHE_DOMAIN;
-        TkpdBaseURL.PULSA_WEB_DOMAIN = PosAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
-        TkpdBaseURL.GOLD_MERCHANT_DOMAIN = PosAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
-        TkpdBaseURL.WEB_DOMAIN = PosAppBaseUrl.BASE_WEB_DOMAIN;
-        TkpdBaseURL.MOBILE_DOMAIN = PosAppBaseUrl.BASE_MOBILE_DOMAIN;
-        TkpdBaseURL.BASE_CONTACT_US = PosAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
-        TkpdBaseURL.RIDE_DOMAIN = PosAppBaseUrl.BASE_RIDE_DOMAIN;
-        TkpdBaseURL.TOKO_CASH_DOMAIN = PosAppBaseUrl.BASE_TOKO_CASH_DOMAIN;
-        TkpdBaseURL.BASE_ACTION = PosAppBaseUrl.BASE_DOMAIN + "v4/action/";
-        TkpdBaseURL.DIGITAL_API_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
-        TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
-        TkpdBaseURL.GRAPHQL_DOMAIN = PosAppBaseUrl.GRAPHQL_DOMAIN;
-        TkpdBaseURL.SCROOGE_DOMAIN = PosAppBaseUrl.SCROOGE_DOMAIN;
-        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = PosAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
-        TkpdBaseURL.PAYMENT_DOMAIN = PosAppBaseUrl.PAYMENT_DOMAIN;
+        // TODO: 3/26/18 remove tkpdbaseurl
         TkpdBaseURL.POS_DOMAIN = PosAppBaseUrl.POS_DOMAIN;
+        PosUrl.POS_DOMAIN = PosAppBaseUrl.POS_DOMAIN;
     }
 
     private void initReact() {

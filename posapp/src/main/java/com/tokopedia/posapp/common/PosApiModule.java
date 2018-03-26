@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +45,7 @@ public class PosApiModule {
     public Retrofit providePosAuthRetrofit(OkHttpClient okHttpClient,
                                            Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder
-                .baseUrl(TkpdBaseURL.POS_DOMAIN)
+                .baseUrl(PosUrl.POS_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }

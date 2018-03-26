@@ -2,6 +2,7 @@ package com.tokopedia.posapp.payment.otp.data.source;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.common.PosUrl;
 
 import java.util.Map;
 
@@ -20,10 +21,10 @@ import rx.Observable;
 public interface PaymentApi {
     String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: application/json";
 
-    @POST(TkpdBaseURL.Pos.CREATE_ORDER)
+    @POST(PosUrl.Payment.CREATE_ORDER)
     @Headers(CONTENT_TYPE_APPLICATION_JSON)
     Observable<Response<TkpdResponse>> createOrder(@Body String json);
 
-    @GET(TkpdBaseURL.Pos.GET_PAYMENT_STATUS)
+    @GET(PosUrl.Payment.GET_PAYMENT_STATUS)
     Observable<Response<TkpdResponse>> getPaymentStatus(@QueryMap Map<String, String> param);
 }
