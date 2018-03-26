@@ -16,8 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
@@ -27,6 +29,7 @@ import com.tokopedia.discovery.intermediary.domain.model.LabelModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,11 +81,30 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         itemViewHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackingClickEnhance(productModel);
                 onItemClickListener.onItemClicked(productModel,curatedName);
             }
         });
 
 
+    }
+
+    private void trackingClickEnhance(ProductModel product) {
+        Map<String, Object> map = DataLayer.mapOf("event", "productClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click product curation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
+        CategoryPageTracking.eventEnhance(map);
     }
 
     @Override

@@ -34,8 +34,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     private FragmentManager fragmentManager;
     MenuItem searchItem;
     public static final String CATEGORY_DEFAULT_TITLE = "";
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
 
     private String departmentId = "";
+    private String trackerAttribution = "";
     private String categoryName = CATEGORY_DEFAULT_TITLE;
 
     Toolbar toolbar;
@@ -114,6 +116,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+        trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
         if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
                 && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
             categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
@@ -188,9 +191,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
-            fragment = IntermediaryFragment.createInstance(departmentId);
+            fragment = IntermediaryFragment.createInstance(departmentId, trackerAttribution);
         } else if (fragment instanceof IntermediaryFragment) {
             ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment)fragment).setTrackerAttribution(trackerAttribution);
         }
         inflateFragment(
                 fragment,

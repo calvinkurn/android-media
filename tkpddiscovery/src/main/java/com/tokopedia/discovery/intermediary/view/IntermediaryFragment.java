@@ -26,11 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -84,6 +86,7 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,6 +175,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private Runnable incrementPage;
 
     private String departmentId = "";
+    private String trackerAttribution = "";
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
@@ -182,9 +186,10 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
 
-    public static IntermediaryFragment createInstance(String departmentId) {
+    public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
         intermediaryFragment.departmentId = departmentId;
+        intermediaryFragment.setTrackerAttribution(trackerAttribution);
         return intermediaryFragment;
     }
 
@@ -336,6 +341,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         curationRecyclerView.setAdapter(curationAdapter);
         curationAdapter.setDataList(curatedSectionModelList);
         curationAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void trackEventEnhance(Map<String, Object> maps) {
+        CategoryPageTracking.eventEnhance(maps);
     }
 
     @Override
@@ -628,6 +638,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    @Override
+    public String getTrackerAttribution() {
+        return trackerAttribution;
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
