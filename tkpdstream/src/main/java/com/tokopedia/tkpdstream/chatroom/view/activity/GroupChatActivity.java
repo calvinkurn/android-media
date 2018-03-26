@@ -22,7 +22,6 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -285,36 +284,12 @@ public class GroupChatActivity extends BaseSimpleActivity
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
             toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
         }
-
-        setupChannelBannerParams(false);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-    }
-
-    private void setupChannelBannerParams(boolean isThereSponsor) {
-//        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
-//        if (isThereSponsor) {
-//            if (isLollipopOrNewer()) {
-//                params.height = getResources().getDimensionPixelSize(
-//                        R.dimen.channel_banner_height_and_sponsor);
-//            } else {
-//                params.height = getResources().getDimensionPixelSize(
-//                        R.dimen.channel_banner_height_and_sponsor_without_status);
-//            }
-//        } else {
-//            if (isLollipopOrNewer()) {
-//                params.height = getResources().getDimensionPixelSize(
-//                        R.dimen.channel_banner_height);
-//            } else {
-//                params.height = getResources().getDimensionPixelSize(
-//                        R.dimen.channel_banner_height_without_status);
-//            }
-//        }
-//        channelBanner.setLayoutParams(params);
     }
 
     private boolean isLollipopOrNewer() {
@@ -773,10 +748,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getSponsorUrl(),
                     R.drawable.loading_page);
-            setupChannelBannerParams(true);
         } else {
             sponsorLayout.setVisibility(View.GONE);
-            setupChannelBannerParams(false);
         }
     }
 
