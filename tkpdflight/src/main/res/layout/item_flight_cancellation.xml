@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_green"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_ms"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/padding_ms">
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="center_vertical"
+            android:theme="@style/checkBoxStyle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_departure_time_label"
+                style="@style/TextView.Micro.BlackSecondary"
+                tools:text="@string/flight_label_departure_flight"/>
+
+            <TextView
+                android:id="@+id/tv_journey_detail_label"
+                style="@style/TextView.Small.Bold"
+                tools:text="@string/flight_label_departure_flight"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/airline_name"
+                    style="@style/TextView.Small"
+                    android:layout_marginEnd="@dimen/padding_ms"
+                    android:layout_marginRight="@dimen/padding_ms"
+                    tools:text="Garuda"/>
+
+                <TextView
+                    android:id="@+id/duration"
+                    style="@style/TextView.Micro.BlackSecondary"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/line_divider"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView>
+
+</LinearLayout>

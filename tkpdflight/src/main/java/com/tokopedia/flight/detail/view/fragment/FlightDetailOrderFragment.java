@@ -33,6 +33,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
@@ -63,10 +64,10 @@ import rx.Observable;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final String CANCEL_SOLUTION_ID = "1378";
-    private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
@@ -414,15 +415,20 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void navigateToContactUs(FlightOrder flightOrder) {
-        startActivityForResult(getCallintIntent(
-                CANCEL_SOLUTION_ID,
-                flightOrder.getId(),
-                getString(R.string.flight_contact_us_cancel_desc),
-                getString(R.string.flight_contact_us_cancel_attc),
-                cancelMessage,
-                getString(R.string.flight_contact_us_cancel_toolbar))
-                , CONTACT_US_REQUEST_CODE);
+    public void navigateToCancellationPage(FlightOrder flightOrder) {
+//        startActivityForResult(getCallintIntent(
+//                CANCEL_SOLUTION_ID,
+//                flightOrder.getId(),
+//                getString(R.string.flight_contact_us_cancel_desc),
+//                getString(R.string.flight_contact_us_cancel_attc),
+//                cancelMessage,
+//                getString(R.string.flight_contact_us_cancel_toolbar))
+//                , CANCEL_REQUEST_CODE);
+        startActivityForResult(
+                FlightCancellationActivity.createIntent(getContext(), flightOrder.getId(),
+                        flightDetailOrderPresenter.transformOrderToCancellation(flightOrder.getJourneys())),
+                REQUEST_CODE_CANCELLATION
+        );
     }
 
     private Intent getCallintIntent(String solutionId,

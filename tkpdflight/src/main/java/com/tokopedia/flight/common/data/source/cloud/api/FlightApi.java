@@ -10,6 +10,7 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
@@ -97,4 +98,8 @@ public interface FlightApi {
     @HTTP(method = "DELETE", path = FlightUrl.FLIGHT_PASSENGER_SAVED, hasBody = true)
     Observable<Response<Object>> deleteSavedPassengerData(@Body DataRequest<DeletePassengerRequest> request,
                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
+
+    @GET(FlightUrl.FLIGHT_CANCEL_PASSENGER_PATH)
+    Observable<Response<DataResponse<CancelPassengerEntity>>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
+
 }

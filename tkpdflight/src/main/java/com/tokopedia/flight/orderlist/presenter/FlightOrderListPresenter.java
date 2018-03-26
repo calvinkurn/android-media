@@ -7,10 +7,12 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
-import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
+    private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private CompositeSubscription compositeSubscription;
 
     private String userResendEmail = "";
@@ -39,10 +42,12 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Inject
     public FlightOrderListPresenter(UserSession userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
-                                    FlightOrderViewModelMapper flightOrderViewModelMapper) {
+                                    FlightOrderViewModelMapper flightOrderViewModelMapper,
+                                    FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
+        this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -154,5 +159,10 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                     }
                 })
         );
+    }
+
+    @Override
+    public List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
+        return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
     }
 }

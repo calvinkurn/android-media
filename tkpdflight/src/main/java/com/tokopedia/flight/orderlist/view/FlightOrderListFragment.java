@@ -23,6 +23,7 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
@@ -36,6 +37,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
+    private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
@@ -207,6 +210,14 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onDownloadETicket(String invoiceId) {
         presenter.onDownloadEticket(invoiceId);
+    }
+
+    @Override
+    public void onCancelOptionClicked(FlightOrderSuccessViewModel item) {
+        startActivityForResult(FlightCancellationActivity.createIntent(getContext(),
+                item.getId(),
+                presenter.transformOrderToCancellation(item.getOrderJourney())),
+                REQUEST_CODE_CANCELLATION);
     }
 
     @Override

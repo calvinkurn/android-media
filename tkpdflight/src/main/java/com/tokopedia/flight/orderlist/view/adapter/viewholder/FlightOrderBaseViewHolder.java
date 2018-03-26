@@ -162,7 +162,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         }
     }
 
-    private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
+    protected class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
 
         OnMenuPopupClicked() {
 
