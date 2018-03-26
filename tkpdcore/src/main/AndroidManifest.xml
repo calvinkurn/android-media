@@ -373,6 +373,17 @@
         <activity
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".apprating.nps.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/fb_app_title"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".apprating.nps.FeedbackThankPageActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/fb_app_title"
+            android:theme="@style/Theme.White"/>
+
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->

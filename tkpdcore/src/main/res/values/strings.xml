@@ -2178,8 +2178,25 @@ di Tokopedia Sekarang!</string>
     <string name="cek_label"> Cek : </string>
     <string name="referral_welcome_desc" formatted="false" ><![CDATA[Hai %s, kamu mendapatkan kode referral dari %s. Gunakan kode ini saat transaksi pertamamu di Tokopedia & nikmati bonus cashback ke TokoCash.]]></string>
 
-
     <!--QR CODE-->
     <string name="scan_qr">Scan Kode QR</string>
-</resources>
 
+    <!--Feedback-->
+    <string name="fb_app_title">Feedback</string>
+    <string name="fb_title">Ayo Terlibat Langsung dalam Peningkatan Kualitas Aplikasi Tokopedia</string>
+    <string name="fb_desc_1">Apa saran Anda untuk peningkatan kualitas aplikasi Tokpedia</string>
+    <string name="fb_desc_2">Jelaskan lebih lanjut tentang saran Anda (opsional)</string>
+    <string name="fb_cat_selectoption">Pilih salah satu jawaban</string>
+    <string name="fb_cat_addfeature">Tambah fitur</string>
+    <string name="fb_cat_fix">Perbaiki/tingkatkan</string>
+    <string name="fb_cat_reduce">Kurangi</string>
+    <string name="fb_cat_etc">Lainnya</string>
+    <string name="fb_thank_title">Terima kasih, Toppers!</string>
+    <string name="fb_warning">Mohon memilih salah satu kategori.</string>
+    <string name="fb_thank_desc">Saran Anda akan sangat membantu kami meningkatkan kualitas aplikasi Tokopedia.</string>
+    <string name="fb_thank_desc_1">Jika Anda puas dengan aplikasi Tokopedia, jangan lupa berikan penilaian di Play Store ya! Penilaian dari Anda, sangat berharga untuk peningkatan kualitas layanan kami.</string>
+    <string name="fb_send">Kirim</string>
+    <string name="fb_close">Tutup</string>
+    <string name="fb_give_rating">Berikan Penilaian</string>
+
+</resources>

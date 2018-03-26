@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.apprating.nps.FeedbackActivity;
+import com.tokopedia.core.apprating.nps.FeedbackThankPageActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
@@ -20,6 +22,9 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class AdvancedAppRatingDialog extends AppRatingDialog {
+
+    public static final int MIN_RATING = 3;
+
     private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
     private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
     private static final String HIDE_ADVANCED_APP_RATING = "HideAdvancedAppRating";
@@ -64,8 +69,10 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                 UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
                 dialog.dismiss();
                 saveVersionCodeForState();
-                if(appRatingView.getRating() > 3) {
-                    openPlayStore();
+                if(appRatingView.getRating() > MIN_RATING) {
+                    FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
+                } else {
+                    FeedbackActivity.startActivity(activity, appRatingView.getRating());
                 }
             }
         });
