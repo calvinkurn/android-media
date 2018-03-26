@@ -254,15 +254,16 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     protected void setupAdapter() {
 
-        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this, query);
-        catalogAdapter = new CatalogAdapter(this, typeFactory);
-
-        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
+
+        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this, topAdsConfig);
+        catalogAdapter = new CatalogAdapter(this, typeFactory);
+
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
