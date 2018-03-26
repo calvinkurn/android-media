@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,11 @@ public class ChannelPartnerChildAdapter
         holder.partnerChildLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.channelPartnerClicked(list.get(holder.getAdapterPosition()).getPartnerUrl());
+                String redirectUrl = list.get(holder.getAdapterPosition()).getPartnerUrl();
+                if (!TextUtils.isEmpty(redirectUrl)) {
+                    listener.channelPartnerClicked(
+                            list.get(holder.getAdapterPosition()).getPartnerUrl());
+                }
             }
         });
     }
