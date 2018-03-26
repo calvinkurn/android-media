@@ -188,6 +188,43 @@ public class DynamicHomeChannel {
             );
         }
 
+        public Map<String, Object> getEnhanceImpressionLegoBannerHomePage() {
+            List<Object> list = convertPromoEnhanceLegoBannerDataLayer(getGrids(), getPromoName());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    )
+            );
+        }
+
+        private List<Object> convertPromoEnhanceLegoBannerDataLayer(Grid[] grids, String promoName) {
+            List<Object> list = new ArrayList<>();
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", promoName,
+                                    "creative", grid.getName(),
+                                    "creative_url", grid.getImageUrl(),
+                                    "position", String.valueOf(i + 1)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
         public Map<String, Object> getEnhanceImpressionDynamicChannelHomePage() {
             List<Object> list = convertPromoEnhanceDynamicChannelDataLayer(getHero(), getGrids(), getPromoName());
             return DataLayer.mapOf(
@@ -267,6 +304,29 @@ public class DynamicHomeChannel {
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getName(),
+                                                    "position", String.valueOf(position),
+                                                    "home_attribution", getHomeAttribution(position, grid.getName())
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner click",
+                    "eventLabel", grid.getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getName(),
+                                                    "creative_url", grid.getImageUrl(),
                                                     "position", String.valueOf(position),
                                                     "home_attribution", getHomeAttribution(position, grid.getName())
                                             )

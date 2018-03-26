@@ -75,6 +75,13 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         );
                     } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)){
 
+                    } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
+                        position++;
+                        channel.setPromoName(String.format("/ - p%d - lego banner", position));
+                        channel.setHomeAttribution(String.format("%d - legoBanner - $1 - $2", position));
+                        HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                channel.getEnhanceImpressionLegoBannerHomePage()
+                        );
                     } else {
                         position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
