@@ -18,14 +18,14 @@ public class ChannelInfoViewModel implements Parcelable{
     private boolean hasPoll;
     private String sponsorUrl;
     private String adsLink;
-
+    private String bannerName;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
     private ChannelViewModel channelViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
-                                String sponsorUrl, String adsLink, @Nullable VoteInfoViewModel voteInfoViewModel,
+                                String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -33,6 +33,7 @@ public class ChannelInfoViewModel implements Parcelable{
         this.hasPoll = hasPoll;
         this.sponsorUrl = sponsorUrl;
         this.adsLink = adsLink;
+        this.bannerName = bannerName;
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
     }
@@ -92,6 +93,11 @@ public class ChannelInfoViewModel implements Parcelable{
         this.voteInfoViewModel = voteInfoViewModel;
     }
 
+    public String getBannerName() {
+        return bannerName;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -99,30 +105,33 @@ public class ChannelInfoViewModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
-        dest.writeString(this.channelUrl);
-        dest.writeString(this.bannerUrl);
-        dest.writeByte(this.hasPoll ? (byte) 1 : (byte) 0);
-        dest.writeString(this.sponsorUrl);
-        dest.writeParcelable(this.voteInfoViewModel, flags);
-        dest.writeParcelable(this.channelViewModel, flags);
+        dest.writeString(title);
+        dest.writeString(channelUrl);
+        dest.writeString(bannerUrl);
+        dest.writeByte((byte) (hasPoll ? 1 : 0));
+        dest.writeString(sponsorUrl);
+        dest.writeString(adsLink);
+        dest.writeString(bannerName);
+        dest.writeParcelable(voteInfoViewModel, flags);
+        dest.writeParcelable(channelViewModel, flags);
     }
 
     protected ChannelInfoViewModel(Parcel in) {
-        this.title = in.readString();
-        this.channelUrl = in.readString();
-        this.bannerUrl = in.readString();
-        this.hasPoll = in.readByte() != 0;
-        this.sponsorUrl = in.readString();
-        this.voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        this.channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        hasPoll = in.readByte() != 0;
+        sponsorUrl = in.readString();
+        adsLink = in.readString();
+        bannerName = in.readString();
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
     }
 
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>
-            () {
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
         @Override
-        public ChannelInfoViewModel createFromParcel(Parcel source) {
-            return new ChannelInfoViewModel(source);
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
         }
 
         @Override

@@ -61,6 +61,9 @@ public class Channel {
     @SerializedName("ads_link")
     @Expose
     private String adsLink;
+    @SerializedName("banner_name")
+    @Expose
+    private String bannerName;
 
     public int getChannelId() {
         return channelId;
@@ -188,5 +191,9 @@ public class Channel {
 
     public String getAdsLink() {
         return adsLink;
+    }
+
+    public String getBannerName() {
+        return bannerName;
     }
 }
