@@ -44,7 +44,6 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
     private void initTopAds(Config topAdsConfig) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().putAll(topAdsConfig.getTopAdsParams().getParam());
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
 
         Config config = new Config.Builder()
