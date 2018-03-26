@@ -15,15 +15,15 @@ import rx.Observable;
  */
 
 public class GetProductListManagementUseCase extends UseCase<ProductListDomain> {
-    private ProductManagementRepository ProductManagementRepository;
+    private ProductManagementRepository productManagementRepository;
 
     @Inject
     GetProductListManagementUseCase(ProductManagementCloudRepository productManagementRepository) {
-        this.ProductManagementRepository = productManagementRepository;
+        this.productManagementRepository = productManagementRepository;
     }
 
     @Override
     public Observable<ProductListDomain> createObservable(RequestParams requestParams) {
-        return ProductManagementRepository.getList(requestParams);
+        return productManagementRepository.getList(requestParams);
     }
 }

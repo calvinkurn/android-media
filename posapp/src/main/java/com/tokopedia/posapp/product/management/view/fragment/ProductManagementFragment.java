@@ -55,7 +55,7 @@ public class ProductManagementFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.reload();
+        presenter.reload("11105119");
     }
 
     @Override
@@ -92,5 +92,10 @@ public class ProductManagementFragment
     @Override
     public void onLoadMore(List<Visitable> list) {
         renderList(list);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
     }
 }

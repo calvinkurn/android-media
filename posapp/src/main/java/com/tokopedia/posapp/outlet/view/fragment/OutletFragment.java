@@ -29,7 +29,7 @@ import com.tokopedia.posapp.shop.view.presenter.ShopPresenter;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletItemViewModel;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletViewModel;
 import com.tokopedia.posapp.shop.view.viewmodel.ShopViewModel;
-import com.tokopedia.posapp.base.widget.PosAlertDialog;
+import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 
 import javax.inject.Inject;
 

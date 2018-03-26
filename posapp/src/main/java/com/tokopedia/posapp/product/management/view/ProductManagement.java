@@ -13,14 +13,16 @@ import java.util.List;
 
 public interface ProductManagement {
     interface Presenter extends CustomerPresenter<View> {
-        void reload();
+        void reload(String etalaseId);
 
-        void loadMore();
+        void loadMore(String etalaseId);
     }
 
     interface View extends CustomerView {
         void onReloadData(List<Visitable> list);
 
         void onLoadMore(List<Visitable> list);
+
+        void onError(Throwable e);
     }
 }

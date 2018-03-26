@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.base.widget;
+package com.tokopedia.posapp.base.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;

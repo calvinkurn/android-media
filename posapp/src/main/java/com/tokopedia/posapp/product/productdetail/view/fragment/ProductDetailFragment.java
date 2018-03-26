@@ -38,7 +38,7 @@ import com.tokopedia.posapp.cart.view.AddToCartPresenter;
 import com.tokopedia.posapp.product.productdetail.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView;
 import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView;
-import com.tokopedia.posapp.base.widget.PosAlertDialog;
+import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.customview.PictureView;

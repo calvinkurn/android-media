@@ -11,7 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -22,6 +30,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -41,8 +50,12 @@ import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
+import java.io.IOException;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import okhttp3.Response;
 import rx.Observable;
 
 /**
@@ -50,7 +63,8 @@ import rx.Observable;
  */
 
 public class PosRouterApplication extends MainApplication implements
-        TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter {
+        TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter,
+        AbstractionRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -58,6 +72,8 @@ public class PosRouterApplication extends MainApplication implements
     ReactUtils reactUtils;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ReactNativeComponent reactNativeComponent;
+    private UserSession userSession;
+    private CacheManager cacheManager;
 
     @Override
     public String getOutletName() {
@@ -497,5 +513,93 @@ public class PosRouterApplication extends MainApplication implements
         if (reactNativeComponent == null)
             reactNativeComponent = daggerReactNativeBuilder.build();
         return reactNativeComponent;
+    }
+
+    @Override
+    public void onForceLogout(Activity activity) {
+
+    }
+
+    @Override
+    public void showTimezoneErrorSnackbar() {
+
+    }
+
+    @Override
+    public void showMaintenancePage() {
+
+    }
+
+    @Override
+    public void showForceLogoutDialog(Response response) {
+
+    }
+
+    @Override
+    public void showServerError(Response response) {
+
+    }
+
+    @Override
+    public void gcmUpdate() throws IOException {
+
+    }
+
+    @Override
+    public void refreshToken() throws IOException {
+
+    }
+
+    @Override
+    public UserSession getSession() {
+        if(userSession == null) userSession = new UserSessionImpl(this);
+
+        return userSession;
+    }
+
+    @Override
+    public CacheManager getGlobalCacheManager() {
+        if(cacheManager == null) cacheManager = new GlobalCacheManager();
+        return cacheManager;
+    }
+
+    @Override
+    public AnalyticTracker getAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(Map<String, Object> events) {
+
+            }
+
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+                UnifyTracking.sendGTMEvent(new EventTracking(
+                        event,
+                        category,
+                        action,
+                        label
+                ).getEvent());
+            }
+
+            @Override
+            public void sendScreen(Activity activity, final String screenName) {
+                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
+                    @Override
+                    public String getScreenName() {
+                        return screenName;
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
+    public void showForceHockeyAppDialog() {
+//        ServerErrorHandler.showForceHockeyAppDialog();
+    }
+
+    @Override
+    public void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
 }
