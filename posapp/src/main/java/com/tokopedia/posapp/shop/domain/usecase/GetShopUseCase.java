@@ -1,11 +1,12 @@
 package com.tokopedia.posapp.shop.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.posapp.shop.data.repository.ShopCloudRepository;
 import com.tokopedia.posapp.shop.data.repository.ShopRepository;
 import com.tokopedia.posapp.shop.domain.model.ShopDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,12 +15,10 @@ import rx.Observable;
  */
 
 public class GetShopUseCase extends UseCase<ShopDomain> {
-    ShopRepository shopRepository;
+    private ShopRepository shopRepository;
 
-    public GetShopUseCase(ThreadExecutor threadExecutor,
-                          PostExecutionThread postExecutionThread,
-                          ShopRepository shopRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetShopUseCase(ShopCloudRepository shopRepository) {
         this.shopRepository = shopRepository;
     }
 

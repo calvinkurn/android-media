@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.outlet.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

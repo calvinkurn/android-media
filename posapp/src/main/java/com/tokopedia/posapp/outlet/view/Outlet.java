@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.outlet.view;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletItemViewModel;
 import com.tokopedia.posapp.outlet.view.viewmodel.OutletViewModel;
 
@@ -24,7 +24,7 @@ public interface Outlet {
         void finishLoading();
     }
 
-    interface Presenter extends CustomerPresenter<Outlet.View> {
+    interface Presenter extends CustomerPresenter<View> {
         void getOutlet(String query);
 
         void setHasNextPage(String uriNext);

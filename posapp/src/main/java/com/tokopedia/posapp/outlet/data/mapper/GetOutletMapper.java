@@ -8,6 +8,8 @@ import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -17,6 +19,7 @@ import rx.functions.Func1;
 
 public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDomain> {
 
+    @Inject
     public GetOutletMapper() {
     }
 

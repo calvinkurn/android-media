@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.shop.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.shop.data.source.cloud.ShopCloudSource;
 import com.tokopedia.posapp.shop.domain.model.ShopDomain;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -10,10 +12,11 @@ import rx.Observable;
  * Created by okasurya on 8/3/17.
  */
 
-public class ShopRepositoryImpl implements ShopRepository {
+public class ShopCloudRepository implements ShopRepository {
     private ShopCloudSource shopCloudSource;
 
-    public ShopRepositoryImpl(ShopCloudSource shopCloudSource) {
+    @Inject
+    public ShopCloudRepository(ShopCloudSource shopCloudSource) {
         this.shopCloudSource = shopCloudSource;
     }
 

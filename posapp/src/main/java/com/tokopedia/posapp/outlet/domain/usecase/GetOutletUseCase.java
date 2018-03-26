@@ -1,11 +1,11 @@
 package com.tokopedia.posapp.outlet.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.outlet.data.repository.OutletRepository;
 import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,12 +14,10 @@ import rx.Observable;
  */
 
 public class GetOutletUseCase extends UseCase<OutletDomain> {
-    public OutletRepository outletRepository;
+    private OutletRepository outletRepository;
 
-    public GetOutletUseCase(ThreadExecutor threadExecutor,
-                            PostExecutionThread postExecutionThread,
-                            OutletRepository outletRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetOutletUseCase(OutletRepository outletRepository) {
         this.outletRepository = outletRepository;
     }
 

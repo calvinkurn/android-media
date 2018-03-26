@@ -36,6 +36,7 @@
                 android:padding="@dimen/padding_vvs"
                 tools:text="Shop Name" />
         </LinearLayout>
+        <!-- no search right now -->
         <EditText
             android:id="@+id/edit_search_outlet"
             android:layout_width="0dp"
@@ -49,7 +50,8 @@
             android:padding="@dimen/new_margin_med"
             android:imeOptions="actionSearch"
             android:layout_weight="2"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

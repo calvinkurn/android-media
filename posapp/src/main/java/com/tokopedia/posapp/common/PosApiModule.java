@@ -9,9 +9,6 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +23,7 @@ import retrofit2.Retrofit;
  */
 
 @Module
-public class ApiModule {
+public class PosApiModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
@@ -39,7 +36,7 @@ public class ApiModule {
                 .addInterceptor(posAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor);
 
-        if(GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new ChuckInterceptor(context)).addInterceptor(new DebugInterceptor());
         }
         return builder.build();

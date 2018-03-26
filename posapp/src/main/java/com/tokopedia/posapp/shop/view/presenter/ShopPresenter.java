@@ -1,15 +1,14 @@
 package com.tokopedia.posapp.shop.view.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.shop.domain.usecase.GetShopUseCase;
 import com.tokopedia.posapp.shop.view.Shop;
 import com.tokopedia.posapp.shop.view.GetShopSubscriber;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -17,38 +16,43 @@ import javax.inject.Inject;
  * Created by okasurya on 8/3/17.
  */
 
-public class ShopPresenter extends BaseDaggerPresenter<Shop.View>
-    implements Shop.Presenter {
+public class ShopPresenter implements Shop.Presenter {
 
-    public static final String SHOP_ID = "shop_id";
-    public static final String SHOP_DOMAIN = "shop_domain";
-    public static final String SHOW_ALL = "show_all";
+    private static final String SHOP_ID = "shop_id";
+    private static final String SHOP_DOMAIN = "shop_domain";
+    private static final String SHOW_ALL = "show_all";
 
-    private Context context;
+    private Shop.View view;
     private GetShopUseCase shopUseCase;
+    private UserSession userSession;
 
     @Inject
-    public ShopPresenter(@ApplicationContext Context context, GetShopUseCase outletUseCase) {
-        this.context = context;
-        this.shopUseCase = outletUseCase;
+    public ShopPresenter(GetShopUseCase shopUseCase,
+                         UserSession userSession) {
+        this.shopUseCase = shopUseCase;
+        this.userSession = userSession;
     }
 
     @Override
     public void attachView(Shop.View view) {
-        super.attachView(view);
+        this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+
     }
 
 
     @Override
     public void getUserShop() {
-        RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
-        if(SessionHandler.getShopID(context) != null
-                && !SessionHandler.getShopID(context).isEmpty()) {
-            params.putString(SHOP_ID, SessionHandler.getShopID(context));
-            params.putString(SHOP_DOMAIN, SessionHandler.getShopDomain(context));
+        if(TextUtils.isEmpty(userSession.getShopId())) {
+            RequestParams params = RequestParams.create();
+            params.putString(SHOP_ID, userSession.getShopId());
+//            params.putString(SHOP_DOMAIN, SessionHandler.getShopDomain(context));
             params.putString(SHOW_ALL, "1");
 
-            shopUseCase.execute(params, new GetShopSubscriber(getView()));
+            shopUseCase.execute(params, new GetShopSubscriber(view));
         }
     }
 }

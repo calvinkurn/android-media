@@ -29,8 +29,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.cart.view.AddToCart;
+import com.tokopedia.posapp.product.common.di.ProductComponent;
+import com.tokopedia.posapp.product.common.di.DaggerProductComponent;
 import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.posapp.cart.view.LocalCartActivity;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
@@ -128,8 +129,8 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerProductComponent daggerProductComponent =
-                (DaggerProductComponent) DaggerProductComponent.builder()
+        ProductComponent daggerProductComponent =
+                DaggerProductComponent.builder()
                         .appComponent(appComponent)
                         .build();
 

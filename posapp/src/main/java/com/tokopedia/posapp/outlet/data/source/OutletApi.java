@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.outlet.data.source;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.common.PosUrl;
 
 import java.util.Map;
 
@@ -15,6 +15,6 @@ import rx.Observable;
  */
 
 public interface OutletApi {
-    @GET("v4/people/" + TkpdBaseURL.User.PATH_GET_ADDRESS)
+    @GET(PosUrl.Outlet.OUTLET_LIST_V1)
     Observable<Response<TkpdResponse>> getAddress(@QueryMap Map<String, String> params);
 }

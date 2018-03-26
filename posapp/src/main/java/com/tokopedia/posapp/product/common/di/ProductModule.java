@@ -1,8 +1,8 @@
-package com.tokopedia.posapp.di.module;
+package com.tokopedia.posapp.product.common.di;
 
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.posapp.di.scope.ProductScope;
+import com.tokopedia.posapp.product.common.di.ProductScope;
 import com.tokopedia.posapp.product.productdetail.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.product.productlist.data.source.cloud.ProductListApi;
 

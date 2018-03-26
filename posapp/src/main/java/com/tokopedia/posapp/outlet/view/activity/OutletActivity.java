@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -21,7 +23,7 @@ import com.tokopedia.posapp.outlet.view.fragment.OutletFragment;
 /**
  * @author okasurya on 7/31/17
  */
-public class OutletActivity extends DrawerPresenterActivity implements HasComponent {
+public class OutletActivity extends DrawerPresenterActivity {
 
     LocalCacheHandler drawerCache;
     DrawerHelper drawerHelper;
@@ -122,10 +124,5 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
     }
 }

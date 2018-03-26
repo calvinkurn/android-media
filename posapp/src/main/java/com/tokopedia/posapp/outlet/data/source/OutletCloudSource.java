@@ -1,8 +1,10 @@
 package com.tokopedia.posapp.outlet.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.outlet.data.mapper.GetOutletMapper;
 import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,6 +16,7 @@ public class OutletCloudSource {
     private OutletApi outletApi;
     private GetOutletMapper getOutletMapper;
 
+    @Inject
     public OutletCloudSource(OutletApi outletApi, GetOutletMapper getOutletMapper) {
         this.outletApi = outletApi;
         this.getOutletMapper = getOutletMapper;

@@ -1,8 +1,8 @@
 package com.tokopedia.posapp.shop.data.source.cloud;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.shop.data.GetShopMapper;
 import com.tokopedia.posapp.shop.domain.model.ShopDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

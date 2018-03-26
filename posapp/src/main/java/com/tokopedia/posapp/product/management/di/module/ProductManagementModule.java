@@ -1,8 +1,7 @@
 package com.tokopedia.posapp.product.management.di.module;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
-import com.tokopedia.posapp.common.ApiModule;
+import com.tokopedia.posapp.common.PosApiModule;
 import com.tokopedia.posapp.product.management.data.source.ProductManagementApi;
 import com.tokopedia.posapp.product.management.di.scope.ProductManagementScope;
 import com.tokopedia.posapp.product.management.domain.GetProductListManagementUseCase;
@@ -18,7 +17,7 @@ import retrofit2.Retrofit;
  */
 
 @ProductManagementScope
-@Module(includes = ApiModule.class)
+@Module(includes = PosApiModule.class)
 public class ProductManagementModule {
     @Provides
     @ProductManagementScope
