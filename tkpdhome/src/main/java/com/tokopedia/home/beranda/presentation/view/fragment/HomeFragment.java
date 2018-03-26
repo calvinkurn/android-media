@@ -528,11 +528,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String actionLink) {
-        onActionLinkClicked(actionLink);
+    public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
     }
 
     private void onActionLinkClicked(String actionLink) {
+        onActionLinkClicked(actionLink, "");
+    }
+
+    private void onActionLinkClicked(String actionLink, String trackingAttribution) {
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }
@@ -540,17 +544,35 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
-            openApplink(actionLink);
+            openApplink(actionLink, trackingAttribution);
         } else {
             openWebViewURL(actionLink, getContext());
         }
     }
 
     private void openApplink(String applink) {
+        openApplink(applink, "");
+    }
+
+    private void openApplink(String applink, String trackingAttribution) {
         if (!TextUtils.isEmpty(applink)) {
+            applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution);
             ((TkpdCoreRouter) getActivity().getApplicationContext())
                     .actionApplink(getActivity(), applink);
         }
+    }
+
+    private String appendTrackerAttributionIfNeeded(String applink, String trackingAttribution) {
+        if (isDiscoveryPage(applink) && !TextUtils.isEmpty(trackingAttribution)) {
+            return applink + "?tracker_attribution=" + trackingAttribution;
+        } else {
+            return applink;
+        }
+    }
+
+    private static boolean isDiscoveryPage(String applink) {
+        return !TextUtils.isEmpty(applink) &&
+                applink.contains("tokopedia://discovery");
     }
 
     @Override
@@ -669,8 +691,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onSixGridItemClicked(String actionLink) {
-        onActionLinkClicked(actionLink);
+    public void onSixGridItemClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
     }
 
     @Override

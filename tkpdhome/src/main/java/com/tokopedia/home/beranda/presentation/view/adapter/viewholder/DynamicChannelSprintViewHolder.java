@@ -151,7 +151,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), "");
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]),
+                        channel.getHomeAttribution(1, channel.getGrids()[0].getName())
+                );
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +175,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]),
+                        channel.getHomeAttribution(2, channel.getGrids()[1].getName())
+                );
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +188,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]));
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]),
+                        channel.getHomeAttribution(3, channel.getGrids()[2].getName())
+                );
             }
         });
     }

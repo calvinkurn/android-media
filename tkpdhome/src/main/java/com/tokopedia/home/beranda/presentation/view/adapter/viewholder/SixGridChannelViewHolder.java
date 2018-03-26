@@ -68,7 +68,8 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickLegoBannerHomePage(item, position + 1)
                 );
-                listener.onSixGridItemClicked(getAvailableLink(item.getApplink(), item.getUrl()));
+                listener.onSixGridItemClicked(getAvailableLink(item.getApplink(), item.getUrl()),
+                        element.getChannel().getHomeAttribution(position + 1, item.getName()));
             }
         });
     }
