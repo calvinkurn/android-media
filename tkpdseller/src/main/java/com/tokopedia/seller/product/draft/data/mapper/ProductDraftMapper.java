@@ -271,6 +271,10 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                 }
                 productPictureViewModel.setFilePath(draftModel.getImagePath());
                 productPictureViewModel.setUrlThumbnail(draftModel.getUrl());
+                productPictureViewModel.setUrlOriginal(draftModel.getUrl());
+                if (TextUtils.isEmpty( productPictureViewModel.getUriOrPath())){
+                    return null;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

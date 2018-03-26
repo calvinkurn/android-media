@@ -128,6 +128,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (TextUtils.isEmpty(url)) {
                 url = productPictureViewModel.getFilePath();
             }
+            if (TextUtils.isEmpty(url)) {
+                continue;
+            }
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPictureViewModel.getDescription(),
