@@ -22,7 +22,6 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
 
     private ChannelInfoFragmentListener.View.ChannelPartnerViewHolderListener listener;
     private List<ChannelPartnerViewModel> list;
-    private ChannelPartnerChildAdapter childAdapter;
 
     private ChannelPartnerAdapter(ChannelInfoFragmentListener
                                           .View
@@ -65,7 +64,8 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
                 false);
         holder.partnerChildren.setLayoutManager(linearLayoutManager);
 
-        childAdapter = ChannelPartnerChildAdapter.createInstance(listener);
+        ChannelPartnerChildAdapter childAdapter =
+                ChannelPartnerChildAdapter.createInstance(listener);
         childAdapter.setList(list.get(position).getChild());
         holder.partnerChildren.setAdapter(childAdapter);
     }

@@ -43,7 +43,6 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private TextView name;
     private TextView participant;
     private RecyclerView channelPartners;
-    private ChannelPartnerAdapter channelPartnerAdapter;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChannelInfoFragment();
@@ -149,7 +148,8 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                     false);
             channelPartners.setLayoutManager(linearLayoutManager);
 
-            channelPartnerAdapter = ChannelPartnerAdapter.createInstance(this);
+            ChannelPartnerAdapter channelPartnerAdapter =
+                    ChannelPartnerAdapter.createInstance(this);
             channelPartnerAdapter.setList(channelViewModel.getChannelPartnerViewModels());
             channelPartners.setAdapter(channelPartnerAdapter);
         }
