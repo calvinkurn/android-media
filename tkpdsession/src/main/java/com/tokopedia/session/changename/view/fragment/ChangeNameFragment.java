@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +72,29 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
                 showConfirmationDialog(etName.getText().toString());
             }
         });
+
+        etName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (isValidName(charSequence.toString())) enableNextButton();
+                else disableNextButton();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private boolean isValidName(String name) {
+        if (name.length() < 3) return false;
+        return true;
     }
 
     private void showConfirmationDialog(final String name) {

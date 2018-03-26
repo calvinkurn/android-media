@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_name"
-            android:hint="@string/title_email"
+            android:hint="@string/title_name"
             android:textColorHint="@color/black_54"
             android:textColor="@color/black_70"
             android:inputType="textPersonName"
