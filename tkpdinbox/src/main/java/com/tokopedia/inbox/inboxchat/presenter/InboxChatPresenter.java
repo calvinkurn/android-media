@@ -283,7 +283,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToShop(int shopId) {
-        Intent intent = ((TkpdInboxRouter) getView().getActivity()).getShopPageIntent(getView().getActivity(), String.valueOf(shopId));
+        Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext()).getShopPageIntent(getView().getActivity(), String.valueOf(shopId));
         getView().startActivity(intent);
     }
 
