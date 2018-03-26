@@ -36,7 +36,7 @@ public class TkpdBaseURL {
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
     public static String KERO_DOMAIN = "https://kero.tokopedia.com/";
-    public static String KERO_DOMAIN_2 = "https://gw-staging.tokopedia.com/";
+    public static String KERO_RATES_DOMAIN = "https://gw.tokopedia.com/";
     public static String JAHE_DOMAIN = "https://jahe.tokopedia.com";
     public static String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";

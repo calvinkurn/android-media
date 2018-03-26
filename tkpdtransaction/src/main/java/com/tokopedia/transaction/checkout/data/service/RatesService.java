@@ -18,7 +18,7 @@ public class RatesService extends AuthService<RatesApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.KERO_DOMAIN_2;
+        return TkpdBaseURL.KERO_RATES_DOMAIN;
     }
 
     @Override
