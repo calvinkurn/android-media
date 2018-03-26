@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 
 import java.util.ArrayList;
@@ -19,15 +20,22 @@ import java.util.List;
 
 public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAdapter.ViewHolder> {
 
+    private ChannelInfoFragmentListener.View.ChannelPartnerViewHolderListener listener;
     private List<ChannelPartnerViewModel> list;
     private ChannelPartnerChildAdapter childAdapter;
 
-    public static ChannelPartnerAdapter createInstance() {
-        return new ChannelPartnerAdapter();
+    private ChannelPartnerAdapter(ChannelInfoFragmentListener
+                                          .View
+                                          .ChannelPartnerViewHolderListener listener) {
+        this.listener = listener;
+        this.list = new ArrayList<>();
     }
 
-    private ChannelPartnerAdapter() {
-        this.list = new ArrayList<>();
+    public static ChannelPartnerAdapter createInstance(ChannelInfoFragmentListener
+                                                               .View
+                                                               .ChannelPartnerViewHolderListener
+                                                               listener) {
+        return new ChannelPartnerAdapter(listener);
     }
 
     public List<ChannelPartnerViewModel> getList() {
@@ -36,18 +44,6 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
 
     public void setList(List<ChannelPartnerViewModel> list) {
         this.list = list;
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView partnerTitle;
-        RecyclerView partnerChildren;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            partnerTitle = itemView.findViewById(R.id.partner_title);
-            partnerChildren = itemView.findViewById(R.id.partner_children);
-        }
     }
 
     @Override
@@ -69,7 +65,7 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
                 false);
         holder.partnerChildren.setLayoutManager(linearLayoutManager);
 
-        childAdapter = ChannelPartnerChildAdapter.createInstance();
+        childAdapter = ChannelPartnerChildAdapter.createInstance(listener);
         childAdapter.setList(list.get(position).getChild());
         holder.partnerChildren.setAdapter(childAdapter);
     }
@@ -77,5 +73,17 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView partnerTitle;
+        RecyclerView partnerChildren;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            partnerTitle = itemView.findViewById(R.id.partner_title);
+            partnerChildren = itemView.findViewById(R.id.partner_children);
+        }
     }
 }

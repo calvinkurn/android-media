@@ -14,5 +14,9 @@ public interface ChannelInfoFragmentListener {
         Context getContext();
 
         void renderData(ChannelViewModel channelViewModel);
+
+        interface ChannelPartnerViewHolderListener {
+            void channelPartnerClicked(String url);
+        }
     }
 }

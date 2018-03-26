@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.ChannelPartnerAdapter;
@@ -29,7 +30,8 @@ import com.tokopedia.tkpdstream.common.util.TextFormatter;
  */
 
 public class ChannelInfoFragment extends BaseDaggerFragment
-        implements ChannelInfoFragmentListener.View {
+        implements ChannelInfoFragmentListener.View,
+        ChannelInfoFragmentListener.View.ChannelPartnerViewHolderListener {
     public static final String ARGS_CI_VIEW_MODEL = "CI_VIEW_MODEL";
 
     private ChannelViewModel channelViewModel;
@@ -106,6 +108,12 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         populateData();
     }
 
+    @Override
+    public void channelPartnerClicked(String url) {
+        StreamModuleRouter router = ((StreamModuleRouter) getActivity().getApplicationContext());
+        router.openRedirectUrl(getActivity(), url);
+    }
+
     private void initView(View view) {
         KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);
@@ -141,7 +149,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                     false);
             channelPartners.setLayoutManager(linearLayoutManager);
 
-            channelPartnerAdapter = ChannelPartnerAdapter.createInstance();
+            channelPartnerAdapter = ChannelPartnerAdapter.createInstance(this);
             channelPartnerAdapter.setList(channelViewModel.getChannelPartnerViewModels());
             channelPartners.setAdapter(channelPartnerAdapter);
         }
