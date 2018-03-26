@@ -62,6 +62,7 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.partnerTitle.setText(list.get(position).getPartnerTitle());
 
+        holder.partnerChildren.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 holder.partnerChildren.getContext(),
                 LinearLayoutManager.VERTICAL,
