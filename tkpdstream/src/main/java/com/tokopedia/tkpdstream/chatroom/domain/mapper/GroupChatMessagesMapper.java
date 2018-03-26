@@ -7,10 +7,12 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.AdminImagePojo;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.Product;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.UpcomingSprintSalePojo;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
@@ -110,19 +112,19 @@ public class GroupChatMessagesMapper {
                         message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
 //                return mapToAdminChat(message);
-                return mapToFlashSale(message);
+                return mapToFlashSale(message, message.getData());
             case ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT:
                 return mapToAdminImageChat(message, message.getData());
             case SprintSaleViewModel.SPRINT_SALE:
-                return mapToFlashSale(message);
+                return mapToFlashSale(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
     }
 
-    private Visitable mapToFlashSale(UserMessage message) {
-//        Gson gson = new Gson();
-//        AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
+    private Visitable mapToFlashSale(UserMessage message, String json) {
+        Gson gson = new Gson();
+        UpcomingSprintSalePojo pojo = gson.fromJson(json, UpcomingSprintSalePojo.class);
 
         return new SprintSaleViewModel(
                 message.getCreatedAt(),
@@ -134,26 +136,29 @@ public class GroupChatMessagesMapper {
                 false,
                 true,
                 "",
-                mapToListFlashSaleProducts(),
-                true
+                mapToListFlashSaleProducts(pojo.getUpcomingFlashsale().getProducts()),
+                true,
+                pojo.getUpcomingFlashsale().getCampaignName(),
+                pojo.getUpcomingFlashsale().getStartDate(),
+                pojo.getUpcomingFlashsale().getEndDate()
         );
     }
 
-    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts() {
+    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Product> pojo) {
         ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            list.add(mapToFlashSaleProduct());
+        for (Product product : pojo) {
+            list.add(mapToFlashSaleProduct(product));
         }
         return list;
     }
 
-    private SprintSaleProductViewModel mapToFlashSaleProduct() {
+    private SprintSaleProductViewModel mapToFlashSaleProduct(Product product) {
         return new SprintSaleProductViewModel(
-                "Tes produk",
-                "https://1.bp.blogspot.com/-aPRfVXxmg00/WDK2Ih86XzI/AAAAAAAAP0Y/pSAzMNQz6HIfNfcmH6ly38epjl8mS-tnQCLcB/s1600/Kerbau.bmp",
-                "50% off",
-                "Rp 100.000",
-                "Rp 5.000.000",
+                product.getName(),
+                product.getImageUrl(),
+                product.getDiscountPercentage(),
+                product.getDiscountedPrice(),
+                product.getOriginalPrice(),
                 80,
                 "Sudah mau habis");
     }

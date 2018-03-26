@@ -1,8 +1,9 @@
 
-package com.tokopedia.tkpdstream.chatroom.domain.pojo;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 
 public class Channel {
 
