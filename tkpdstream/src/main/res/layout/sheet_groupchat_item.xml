@@ -36,7 +36,7 @@
             android:lineSpacingExtra="2sp"
             android:maxLines="1"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             tools:text="Google+" />
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/padding_vs">
+    android:padding="@dimen/dp_5">
 
     <TextView
         android:id="@+id/date"
@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:background="@color/grey_100"
-        android:padding="@dimen/padding_vs"
+        android:padding="@dimen/dp_5"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
         tools:text="13:16 wib" />
@@ -35,8 +35,8 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:layout_below="@id/date"-->
-        <!--android:layout_marginLeft="@dimen/margin_vs"-->
-        <!--android:layout_marginRight="@dimen/margin_vs"-->
+        <!--android:layout_marginLeft="@dimen/dp_5"-->
+        <!--android:layout_marginRight="@dimen/dp_5"-->
         <!--android:layout_toRightOf="@id/username"-->
         <!--android:padding="2dp"-->
         <!--android:text="@string/dot"-->
@@ -58,12 +58,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/label"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@drawable/left_bubble"
         android:gravity="left"
         android:maxWidth="@dimen/message_width"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@+id/message"
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/attachment"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_below="@id/message"
             android:textStyle="bold"/>
 
@@ -99,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:gravity="left"
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"

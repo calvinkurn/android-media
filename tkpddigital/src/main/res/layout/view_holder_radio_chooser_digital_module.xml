@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@dimen/dp_3"
         android:text="@string/prompt_phone"
         android:visibility="gone"
         tools:visibility="visible"/>
@@ -22,7 +22,7 @@
         android:id="@+id/rg_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:orientation="horizontal"/>
 
     <TextView
@@ -30,9 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@dimen/dp_3"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"

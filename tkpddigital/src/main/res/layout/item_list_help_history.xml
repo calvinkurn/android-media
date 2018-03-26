@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_horizontal_margin">
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16">
 
     <TextView
         android:id="@+id/help_category"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         tools:text="KENDALA"
-        android:layout_marginBottom="@dimen/margin_vs"/>
+        android:layout_marginBottom="@dimen/dp_5"/>
 
     <View
         android:id="@+id/Divider1"

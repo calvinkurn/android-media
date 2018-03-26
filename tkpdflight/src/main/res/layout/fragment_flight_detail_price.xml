@@ -11,15 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="@dimen/padding_med"
-        android:paddingBottom="@dimen/padding_med">
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:layout_marginBottom="@dimen/margin_small">
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/label_adult_price"
@@ -39,9 +39,9 @@
             android:id="@+id/container_child_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -63,9 +63,9 @@
             android:id="@+id/container_infant_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -86,9 +86,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@color/grey_200" />
 
         <LinearLayout
@@ -102,9 +102,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
-                android:layout_marginBottom="@dimen/margin_small">
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10">
 
                 <TextView
                     style="@style/TextView.Small"
@@ -121,10 +121,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small">
+                android:layout_marginBottom="@dimen/dp_10">
 
                 <TextView
                     style="@style/TextView.Small"
@@ -142,9 +142,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/padding_small"
-                android:layout_marginRight="@dimen/padding_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@color/grey_200" />
 
         </LinearLayout>
@@ -152,9 +152,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:layout_marginBottom="@dimen/margin_small">
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10">
 
             <TextView
                 style="@style/TextView.Small.Bold"

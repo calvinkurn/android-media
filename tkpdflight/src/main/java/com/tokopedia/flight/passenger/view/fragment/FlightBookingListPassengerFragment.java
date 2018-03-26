@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -193,7 +194,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void deletePassenger(String passengerId) {
-        presenter.deletePassenger(passengerId);
+        showDeleteDialog(passengerId);
     }
 
     @Override
@@ -248,4 +249,25 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
                 getString(R.string.flight_passenger_update_success));
     }
+
+    private void showDeleteDialog(final String passengerId) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_passenger_delete_dialog_title));
+        dialog.setDesc(getString(R.string.flight_passenger_delete_dialog_description));
+        dialog.setBtnOk("Hapus");
+        dialog.setBtnCancel("Batal");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.deletePassenger(passengerId);
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
 }

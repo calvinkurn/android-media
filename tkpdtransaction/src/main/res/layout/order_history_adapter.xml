@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_vs">
+    android:padding="@dimen/dp_5">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,8 +39,8 @@
                     android:id="@+id/history_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="10"
                     tools:text="Loren Ipsum" />
 
@@ -48,8 +48,8 @@
                     android:id="@+id/history_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:textSize="10sp"
                     tools:text="20 Mei 2017" />
 
@@ -83,10 +83,10 @@
                     android:id="@+id/history_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
-                    android:paddingBottom="@dimen/padding_vs"
-                    android:paddingTop="@dimen/padding_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:paddingTop="@dimen/dp_5"
                     android:textColor="@color/label_color"
                     tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
@@ -94,10 +94,10 @@
                     android:id="@+id/history_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
-                    android:paddingBottom="@dimen/padding_vs"
-                    android:paddingTop="@dimen/padding_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:paddingTop="@dimen/dp_5"
                     tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
             </LinearLayout>

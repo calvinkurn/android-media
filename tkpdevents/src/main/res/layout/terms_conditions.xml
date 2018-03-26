@@ -16,25 +16,25 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
             android:text="@string/show_tnc"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             android:textStyle="bold" />
 
         <at.blogc.android.views.ExpandableTextView
             android:id="@+id/tv_expandable_tnc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="3"
             android:text="@string/bigcontent"
             android:textColor="@color/grey_500"
-            android:textSize="@dimen/font_micro"
+            android:textSize="@dimen/sp_12"
             app:animation_duration="300" />
 
         <LinearLayout
@@ -47,22 +47,22 @@
                 android:id="@+id/seemorebutton_tnc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_default"
-                android:layout_marginLeft="@dimen/margin_default"
-                android:layout_marginTop="@dimen/margin_padding_medium"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/expand"
                 android:textColor="@color/green_nob"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/down_arrow_tnc"
-                android:layout_width="@dimen/margin_padding_medium"
-                android:layout_height="@dimen/margin_padding_medium"
-                android:layout_marginBottom="@dimen/margin_padding_medium"
-                android:layout_marginLeft="@dimen/margin_padding_medium"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:layout_marginTop="@dimen/font_micro"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/sp_12"
                 android:tint="@color/green_nob"
                 app:srcCompat="@drawable/ic_arrow_down" />
         </LinearLayout>

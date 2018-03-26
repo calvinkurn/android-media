@@ -71,7 +71,7 @@ public class LabelView extends BaseCustomView {
             showArrow = styledAttributes.getBoolean(R.styleable.LabelView_lv_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
-                    getResources().getDimension(com.tokopedia.design.R.dimen.font_title));
+                    getResources().getDimension(com.tokopedia.design.R.dimen.sp_16));
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, textSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {

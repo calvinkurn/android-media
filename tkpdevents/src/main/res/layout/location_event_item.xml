@@ -32,7 +32,7 @@
             android:text=""
             android:textStyle="normal"
             android:textColor="@color/grey_700"
-            android:textSize="@dimen/textsize_tiny"
+            android:textSize="@dimen/sp_10"
             android:visibility="visible" />
     </LinearLayout>
 
@@ -43,7 +43,7 @@
         android:layout_toEndOf="@+id/indicator_layout"
         android:layout_toRightOf="@+id/indicator_layout"
         android:orientation="vertical"
-        android:paddingTop="@dimen/margin_padding_medium">
+        android:paddingTop="@dimen/dp_8">
 
         <TextView
             android:id="@+id/tv_city_name"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:textStyle="normal"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/tv_district"
@@ -61,12 +61,12 @@
             android:textStyle="normal"
             android:text="Kebon Jeruk, Central Jakarta City"
             android:textColor="@color/grey_600"
-            android:textSize="@dimen/font_micro" />
+            android:textSize="@dimen/sp_12" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@color/grey" />
     </LinearLayout>
 </RelativeLayout>

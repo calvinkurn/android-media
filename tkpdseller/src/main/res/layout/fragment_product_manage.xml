@@ -38,7 +38,7 @@
         android:id="@+id/bottom_action_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
+        android:paddingBottom="@dimen/dp_20"
         app:bav_icon_1="@drawable/ic_sort"
         app:bav_icon_2="@drawable/ic_bottom_action_filter"
         app:bav_1_display="true"

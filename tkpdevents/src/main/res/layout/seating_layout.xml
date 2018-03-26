@@ -20,12 +20,12 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:orientation="horizontal"
-            android:padding="@dimen/margin_default">
+            android:padding="@dimen/dp_16">
 
             <ImageView
                 android:id="@+id/iv_arrow_seating"
-                android:layout_width="@dimen/icon_size_small"
-                android:layout_height="@dimen/icon_size_small"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
@@ -35,11 +35,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/margin_default"
-                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
                 android:text="@string/seating_layout"
                 android:textColor="@color/grey_700"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -47,13 +47,13 @@
         <ImageView
             android:id="@+id/imgv_seating_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/seatmap_fixed_height"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_height="@dimen/dp_340"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:scaleType="fitXY"
             android:visibility="visible" />
 

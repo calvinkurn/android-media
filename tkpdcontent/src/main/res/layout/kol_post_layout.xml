@@ -57,12 +57,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/black_tooltip"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingLeft="@dimen/new_margin_med" android:paddingStart="@dimen/new_margin_med"
-                    android:paddingRight="@dimen/new_margin_sm" android:paddingEnd="@dimen/new_margin_sm"
-                    android:paddingBottom="@dimen/padding_ms"
-                    android:paddingTop="@dimen/padding_ms"
+                    android:paddingLeft="@dimen/dp_16" android:paddingStart="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_24" android:paddingEnd="@dimen/dp_24"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     tools:text="Rp 249000 - Lihat Produk" />
             </RelativeLayout>
@@ -75,9 +75,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tooltip_image"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             android:lineSpacingExtra="5sp"
             tools:text="The snapback’s predecessor, the baseball cap, must be proud of its stylish spawn. Compared to fitted baseball caps worn by pro players, snapback are less expensive and much more attuned to contemporary urban culture. But earliest versions of the snapbac… Read More" />
@@ -113,7 +113,7 @@
                     android:layout_width="@dimen/kol_post_icon_size"
                     android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_thumb" />
 
                 <TextView
@@ -127,7 +127,7 @@
                     android:lineSpacingExtra="6sp"
                     android:text="@string/action_like"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal" />
 
             </RelativeLayout>
@@ -148,7 +148,7 @@
                     android:layout_width="@dimen/kol_post_icon_size"
                     android:layout_height="@dimen/kol_post_icon_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_comment" />
 
                 <TextView
@@ -161,7 +161,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="6sp"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     tools:text="935" />
 

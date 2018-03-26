@@ -42,7 +42,7 @@
             android:singleLine="true"
             android:text="User Name"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <TextView

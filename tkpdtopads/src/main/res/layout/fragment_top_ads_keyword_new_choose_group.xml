@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:padding="@dimen/dp_16">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:id="@+id/spinner_keyword_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 app:spinner_entries="@array/top_ads_keyword_type_entries"
                 app:spinner_hint="@string/top_ads_choose_keyword_type"
                 app:spinner_selection_index="-1"
@@ -43,6 +43,6 @@
         style="@style/Button.Submit.Green"
         android:enabled="false"
         android:text="@string/next"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        android:layout_marginBottom="@dimen/dp_16"/>
 
 </LinearLayout>

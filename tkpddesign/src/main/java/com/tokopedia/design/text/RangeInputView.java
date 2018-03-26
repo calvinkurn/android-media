@@ -105,7 +105,7 @@ public class RangeInputView extends BaseCustomView {
 
     private void init() {
         final View view = inflate(getContext(), R.layout.widget_decimal_range_input_view, this);
-        seekBarButtonSize = getResources().getDimensionPixelSize(R.dimen.price_seekbar_button_size);
+        seekBarButtonSize = getResources().getDimensionPixelSize(R.dimen.dp_30);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override

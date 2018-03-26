@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
-    android:paddingEnd="@dimen/margin_default"
-    android:paddingStart="@dimen/margin_default"
-    android:paddingTop="@dimen/margin_padding_medium"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
     android:id="@+id/filter_item">
 
     <CheckBox
@@ -19,6 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="normal"
-        android:textSize="@dimen/font_micro" />
+        android:textSize="@dimen/sp_12" />
 
 </LinearLayout>

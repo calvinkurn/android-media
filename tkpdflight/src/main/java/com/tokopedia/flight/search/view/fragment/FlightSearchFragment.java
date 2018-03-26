@@ -77,6 +77,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
+    private static final String SAVED_NEED_REFRESH_AIRLINE = "svd_need_refresh_airline";
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
@@ -97,6 +98,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private AirportCombineModelList airportCombineModelList;
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
+    private boolean needRefreshAirline = true;
     private boolean inFilterMode = false;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
@@ -120,6 +122,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             setUpCombinationAirport();
             progress = 0;
         } else {
+            needRefreshAirline = savedInstanceState.getBoolean(SAVED_NEED_REFRESH_AIRLINE);
             flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
             airportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE);
@@ -321,7 +324,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void addToolbarElevation() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(getResources().getDimension(R.dimen.dp_4));
     }
 
     @Override
@@ -375,6 +378,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         if (!anyLoadToCloud) {
             reloadDataFromCache();
         }
+    }
+
+    @Override
+    public void setNeedRefreshAirline(boolean needRefresh) {
+        needRefreshAirline = needRefresh;
+    }
+
+    @Override
+    public boolean isNeedRefreshAirline() {
+        return needRefreshAirline;
     }
 
     /**
@@ -762,6 +775,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_NEED_REFRESH_AIRLINE, needRefreshAirline);
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
         outState.putParcelable(SAVED_AIRPORT_COMBINE, airportCombineModelList);

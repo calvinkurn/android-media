@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:padding="@dimen/dp_16">
 
         <ImageView
-            android:layout_width="@dimen/image_width_xxxl"
+            android:layout_width="@dimen/dp_128"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
@@ -36,7 +36,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:hint="@string/shop_name"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/max_shop_name">
@@ -55,15 +55,15 @@
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_vs"
-            android:layout_marginTop="@dimen/padding_med"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_20"
             android:text="@string/shop_open_label_shop_domain" />
 
         <TextView
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/dp_5"
             android:text="@string/shop_open_info_shop_domain_definition" />
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
@@ -71,7 +71,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:hint="@string/domain_name"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/max_domain_name"
@@ -102,7 +102,7 @@
             style="@style/Button.Submit.Green"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/title_open_shop" />
     </LinearLayout>

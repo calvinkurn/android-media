@@ -69,7 +69,7 @@
             android:gravity="center"
             android:layout_height="wrap_content"
             android:text="@string/gold_merchant_redirect_text"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     </LinearLayout>
 
 </RelativeLayout>

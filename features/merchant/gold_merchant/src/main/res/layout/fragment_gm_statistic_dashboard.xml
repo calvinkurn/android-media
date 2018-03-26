@@ -16,7 +16,7 @@
             style="@style/LabelLayout.BorderBottom" />
 
         <android.support.v7.widget.CardView
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
             style="@style/CardViewLayoutMatchParent">
 
             <LinearLayout
@@ -37,12 +37,12 @@
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/popular_product_card_view"
             style="@style/CardViewLayoutMatchParent"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
             app:tcv_empty_layout="@layout/partial_gm_statistic_popular_product_empty_state"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_popular_product_loading"
             app:tcv_title="@string/gm_statistic_product_data"
-            app:tcv_title_text_size="@dimen/font_small">
+            app:tcv_title_text_size="@dimen/sp_14">
 
             <include layout="@layout/partial_gm_statistic_popular_product_content" />
 
@@ -50,11 +50,11 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/transaction_data_card_view"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_transaction_data_loading"
             app:tcv_title="@string/gm_statistic_sales_data"
-            app:tcv_title_text_size="@dimen/font_small"
+            app:tcv_title_text_size="@dimen/sp_14"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/partial_gm_statistic_transaction_content" />
@@ -63,11 +63,11 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/buyer_data_card_view"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginTop="@dimen/dp_15"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/widget_buyer_data_loading"
             app:tcv_title="@string/gm_statistic_buyer_data"
-            app:tcv_title_text_size="@dimen/font_small"
+            app:tcv_title_text_size="@dimen/sp_14"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/widget_buyer_data_content" />
@@ -76,12 +76,12 @@
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/market_insight_card_view"
-            android:layout_marginBottom="@dimen/margin_sm"
-            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_15"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_market_insight_loading"
             app:tcv_title="@string/gm_statistic_market_insight"
-            app:tcv_title_text_size="@dimen/font_small"
+            app:tcv_title_text_size="@dimen/sp_14"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/partial_gm_statistic_market_insight_content" />

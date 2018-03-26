@@ -28,9 +28,9 @@
 
             <com.tokopedia.design.voucher.VoucherCartHachikoView
                 android:id="@+id/voucher_cart_holder_view"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingTop="@dimen/padding_small"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

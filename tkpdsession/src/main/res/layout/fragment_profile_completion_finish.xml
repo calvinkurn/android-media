@@ -66,7 +66,7 @@
         android:background="@color/medium_green"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:text="@string/see_your_profile"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_14"

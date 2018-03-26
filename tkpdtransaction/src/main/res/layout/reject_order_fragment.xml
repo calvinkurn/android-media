@@ -8,13 +8,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Pilih Alasan Penolakan"
         android:textSize="@dimen/text_size_large"
         android:textStyle="bold" />
@@ -24,13 +24,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Persediaan Barang Habis"
         android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
     <TextView
@@ -49,13 +49,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Varian Tidak Tersedia"
         android:textStyle="bold" />
 
@@ -66,7 +66,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
     <TextView
@@ -74,13 +74,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Salah harga atau berat Produk"
         android:textStyle="bold" />
 
@@ -91,7 +91,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
     <TextView
@@ -99,13 +99,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Toko sedang tutup"
         android:textStyle="bold" />
 
@@ -116,7 +116,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
     <TextView
@@ -124,13 +124,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Kendala Kurir"
         android:textStyle="bold" />
 
@@ -141,7 +141,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
     <TextView
@@ -149,13 +149,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/dp_10"
         android:text="Permintaan Pembeli"
         android:textStyle="bold" />
 
@@ -166,7 +166,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/white_four" />
 
 </LinearLayout>

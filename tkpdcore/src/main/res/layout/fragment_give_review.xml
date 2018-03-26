@@ -41,7 +41,7 @@
                 android:maxLines="1"
                 android:text="@string/prompt_product_name"
                 android:textColor="@color/tkpd_dark_green"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -182,7 +182,7 @@
             android:hint="@string/hint_review"
             android:inputType="textMultiLine"
             android:nestedScrollingEnabled="true"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/sp_14" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/image_holder"

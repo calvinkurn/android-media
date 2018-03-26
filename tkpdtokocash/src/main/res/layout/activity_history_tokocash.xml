@@ -27,7 +27,7 @@
                     layout="@layout/view_tokocash_waiting_transaction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_ms"/>
+                    android:layout_marginBottom="@dimen/dp_8"/>
 
                 <include
                     layout="@layout/view_tokocash_date_label"
@@ -76,7 +76,7 @@
         android:id="@+id/bottom_action_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
+        android:paddingBottom="@dimen/dp_20"
         app:bav_2_display="true"
         app:bav_icon_2="@drawable/history_ic_arrow_up_grey"
         app:bav_label_2="@string/back_to_top"

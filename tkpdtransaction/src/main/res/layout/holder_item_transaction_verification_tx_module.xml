@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/cards_ui_selected"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <ImageView
         android:id="@+id/but_overflow"
@@ -26,7 +26,7 @@
         android:layout_toLeftOf="@+id/but_overflow"
         android:layout_toStartOf="@+id/but_overflow"
         android:textColor="@color/tkpd_light_green"
-        android:textSize="@dimen/font_small"/>
+        android:textSize="@dimen/sp_14"/>
 
     <TextView
         android:id="@+id/date"
@@ -42,8 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/date"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
         android:textSize="@dimen/font_medium"
         android:textStyle="bold"/>
 
@@ -129,8 +129,8 @@
                 android:id="@+id/payment_method_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
                 android:textSize="@dimen/font_medium"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -143,7 +143,7 @@
         android:layout_below="@id/layout_payment_info"
         android:text="@string/title_payment_procedure"
         style="@style/Button.Submit.Green.Full"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:focusable="false"
         android:visibility="visible"/>
 

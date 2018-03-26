@@ -8,12 +8,12 @@
     <TextView
         style="@style/TextView.Small.BlackSecondary"
         android:text="@string/top_ads_title_product"
-        android:layout_marginBottom="@dimen/margin_ms"/>
+        android:layout_marginBottom="@dimen/dp_8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vvvs">
+        android:layout_marginBottom="@dimen/dp_2">
 
         <TextView
             android:id="@+id/text_view_selected_product"
@@ -42,8 +42,8 @@
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/arrow_left"
-                android:layout_width="@dimen/image_width_xxxs"
-                android:layout_height="@dimen/image_width_xxs"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_16"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_arrow_right_default"/>
         </LinearLayout>

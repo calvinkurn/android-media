@@ -26,7 +26,7 @@
             android:id="@+id/tooltip_instant_checkout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_toRightOf="@+id/buy_with_credit_checkbox"
             android:layout_centerVertical="true"
             app:srcCompat="@drawable/info_icon" />
@@ -42,7 +42,7 @@
         android:minHeight="0dp"
         android:background="@drawable/btn_buy"
         android:text="@string/title_buy"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_gravity="right"
         android:textColor="@color/white" />
 

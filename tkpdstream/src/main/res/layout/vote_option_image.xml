@@ -50,7 +50,7 @@
                 android:lineSpacingExtra="-2sp"
                 android:paddingLeft="@dimen/space_small"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_headline"
+                android:textSize="@dimen/sp_34"
                 android:textStyle="bold"
                 tools:text="90"/>
 
@@ -62,8 +62,8 @@
                 android:lineSpacingExtra="0sp"
                 android:text="%"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_title"
-                android:textStyle="normal"/>
+                android:textSize="@dimen/sp_16"
+                android:textStyle="normal" />
         </LinearLayout>
 
         <RelativeLayout
@@ -110,10 +110,9 @@
                 android:paddingRight="@dimen/space_tiny"
                 android:paddingTop="@dimen/space_small"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_micro"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Donald Duck"/>
-
 
         </RelativeLayout>
     </RelativeLayout>

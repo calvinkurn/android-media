@@ -177,7 +177,7 @@
                         android:layout_marginTop="@dimen/margin_vs"
                         android:id="@+id/comment"
                         android:text="Comment Here\n\tComment Here\n\t\tComment There"
-                        android:textSize="@dimen/font_small"/>
+                        android:textSize="@dimen/sp_14"/>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/image_holder"
@@ -243,7 +243,7 @@
                                     android:text="@string/title_prod_quality"
                                     android:id="@+id/label_quality"
                                     android:layout_gravity="center_vertical"
-                                    android:textSize="@dimen/font_small"
+                                    android:textSize="@dimen/sp_14"
                                     android:paddingRight="@dimen/padding_small"
                                     android:gravity="center"
                                     android:layout_marginTop="@dimen/margin_vs" />
@@ -280,7 +280,7 @@
                                     android:text="@string/title_accuracy"
                                     android:id="@+id/label_accuracy"
                                     android:layout_gravity="center_vertical"
-                                    android:textSize="@dimen/font_small"
+                                    android:textSize="@dimen/sp_14"
                                     android:paddingRight="@dimen/padding_small"
                                     android:gravity="center"
                                     android:layout_marginTop="@dimen/margin_vs" />
@@ -317,7 +317,7 @@
                             android:layout_weight=".50"
                             android:layout_gravity="center_vertical"
                             android:text="@string/title_prod_quality"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -335,7 +335,7 @@
                             android:layout_gravity="center_vertical"
                             android:paddingLeft="@dimen/padding_vs"
                             android:text="@string/title_accuracy"
-                            android:textSize="@dimen/font_small"/>
+                            android:textSize="@dimen/sp_14"/>
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -460,7 +460,7 @@
                                 android:text="username"
                                 android:id="@+id/comment_username"
                                 android:singleLine="true"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/sp_14"
                                 android:ellipsize="end" />
 
                             <LinearLayout

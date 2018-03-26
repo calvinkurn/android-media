@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_rect_stroke_gray"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/margin_small"
+    android:padding="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_10"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <android.support.v7.widget.AppCompatTextView
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        android:paddingTop="@dimen/margin_vs"
+        android:paddingTop="@dimen/dp_5"
         tools:text="@string/top_ads_keyword_phrase_match_example"
         android:maxLines="4"
         style="@style/TextView.Small.BlackSecondary"/>

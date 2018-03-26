@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/padding_med"
+        android:paddingBottom="@dimen/dp_20"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
-        android:paddingTop="@dimen/padding_med">
+        android:paddingTop="@dimen/dp_20">
 
         <TextView
             android:id="@+id/title"

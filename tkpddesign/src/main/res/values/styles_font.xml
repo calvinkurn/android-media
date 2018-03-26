@@ -9,16 +9,16 @@
     </style>
 
     <style name="TextView.Display3">
-        <item name="android:textSize">@dimen/font_headline3</item>
+        <item name="android:textSize">@dimen/sp_56</item>
     </style>
 
     <style name="TextView.Display2">
-        <item name="android:textSize">@dimen/font_headline2</item>
+        <item name="android:textSize">@dimen/sp_45</item>
     </style>
 
     <style name="TextView.Headline">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_headline</item>
+        <item name="android:textSize">@dimen/sp_34</item>
     </style>
     <style name="TextView.Headline.Bold">
         <item name="android:textStyle">bold</item>
@@ -29,7 +29,7 @@
 
     <style name="TextView.SubHeadline">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_sub_headline</item>
+        <item name="android:textSize">@dimen/sp_24</item>
     </style>
     <style name="TextView.SubHeadline.Bold">
         <item name="android:textStyle">bold</item>
@@ -43,7 +43,7 @@
 
     <style name="TextView.TitleBig">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_title_big</item>
+        <item name="android:textSize">@dimen/sp_20</item>
     </style>
     <style name="TextView.TitleBig.Bold">
         <item name="android:textStyle">bold</item>
@@ -57,7 +57,7 @@
 
     <style name="TextView.Title">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_title</item>
+        <item name="android:textSize">@dimen/sp_16</item>
     </style>
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
@@ -84,7 +84,7 @@
 
     <style name="TextView.Small">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textSize">@dimen/sp_14</item>
     </style>
     <style name="TextView.Small.Bold">
         <item name="android:textStyle">bold</item>
@@ -134,7 +134,7 @@
 
     <style name="TextView.Micro">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/font_micro</item>
+        <item name="android:textSize">@dimen/sp_12</item>
     </style>
     <style name="TextView.Micro.Bold">
         <item name="android:textStyle">bold</item>
@@ -158,7 +158,7 @@
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
     <style name="TextView.Nano">
-        <item name="android:textSize">@dimen/font_nano</item>
+        <item name="android:textSize">@dimen/sp_8</item>
     </style>
     <style name="TextView.Nano.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>

@@ -12,7 +12,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         tools:text="Rekening Tujuan" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -35,7 +35,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:text="@string/flight_order_payment_due_date_label" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -50,7 +50,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:text="@string/flight_order_unique_code_label" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -65,7 +65,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:text="@string/flight_order_total_label" />
 
     <android.support.v7.widget.AppCompatTextView

@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="@dimen/price_range_separator_margin">
+    android:padding="@dimen/dp_16">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vvs"
+        android:layout_marginBottom="@dimen/dp_3"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="8sp"
         android:text="@string/buyer_reputation"
         android:textColor="@color/font_black_primary_70"
-        android:textSize="@dimen/font_title"
+        android:textSize="@dimen/sp_16"
         android:textStyle="normal"
         />
 
@@ -28,28 +28,28 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/smiley_reputation_size"
+        android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_15"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/smiley_good"
-            android:layout_width="@dimen/smiley_reputation_size"
-            android:layout_height="@dimen/smiley_reputation_size"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_small"
-            android:maxHeight="@dimen/smiley_reputation_size"
-            android:maxWidth="@dimen/smiley_reputation_size"
+            android:layout_marginRight="@dimen/dp_10"
+            android:maxHeight="@dimen/dp_24"
+            android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_smiley_good"/>
 
         <TextView
             android:id="@+id/score_good"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/smiley_good"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
@@ -59,19 +59,19 @@
 
         <ImageView
             android:id="@+id/smiley_neutral"
-            android:layout_width="@dimen/smiley_reputation_size"
-            android:layout_height="@dimen/smiley_reputation_size"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/score_good"
-            android:maxHeight="@dimen/smiley_reputation_size"
-            android:maxWidth="@dimen/smiley_reputation_size"
+            android:maxHeight="@dimen/dp_24"
+            android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_smiley_netral"/>
 
         <TextView
             android:id="@+id/score_netral"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/smiley_neutral"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
@@ -81,19 +81,19 @@
 
         <ImageView
             android:id="@+id/smiley_bad"
-            android:layout_width="@dimen/smiley_reputation_size"
-            android:layout_height="@dimen/smiley_reputation_size"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/score_netral"
-            android:maxHeight="@dimen/smiley_reputation_size"
-            android:maxWidth="@dimen/smiley_reputation_size"
+            android:maxHeight="@dimen/dp_24"
+            android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_smiley_bad"/>
 
         <TextView
             android:id="@+id/score_bad"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/smiley_bad"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
@@ -106,7 +106,7 @@
     <Button
         android:id="@+id/close_button"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/tkpd_main_green"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"

@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
-    android:layout_marginTop="@dimen/margin_small"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_10"
     android:background="@drawable/cards_ui_2">
 
 
@@ -12,23 +12,23 @@
         layout="@layout/promoted_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small" />
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_small" />
+        android:layout_height="@dimen/dp_10" />
 
     <include
         layout="@layout/promoted_shop_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small" />
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_ms" />
+        android:layout_height="@dimen/dp_8" />
 
     <View
         android:layout_width="match_parent"
@@ -37,15 +37,15 @@
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_ms" />
+        android:layout_height="@dimen/dp_8" />
 
 
     <LinearLayout
         android:id="@+id/fav_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:orientation="vertical">
 
         <include

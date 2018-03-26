@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_sm">15dp</dimen>
-    <dimen name="large_dp">30dp</dimen>
     <dimen name="top_option_h">30dp</dimen>
     <dimen name="top_promote_h">35dp</dimen>
     <dimen name="badge_size">15dp</dimen>
     <dimen name="small_dp">10dp</dimen>
     <dimen name="image_thumbnail_size">200dp</dimen>
-    <dimen name="padding_small">10dp</dimen>
-    <dimen name="padding_vs">5dp</dimen>
-    <dimen name="margin_vs">5dp</dimen>
     <dimen name="padding_item_decoration">3dp</dimen>
     <dimen name="padding_2">2dp</dimen>
     <dimen name="margin_2">2dp</dimen>

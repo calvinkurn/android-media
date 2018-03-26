@@ -91,7 +91,7 @@ public class ShopReputationView extends BaseCustomView {
     private void updateMedalView(LinearLayout reputationLayout,
                                  @DrawableRes int imageResource,
                                  int levelMedal) {
-        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
+        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
             if (i < levelMedal) {
@@ -144,7 +144,7 @@ public class ShopReputationView extends BaseCustomView {
     private ImageView getGeneratedMedalImage(@DrawableRes int imageResource) {
         ImageView imageView = new ImageView(getContext());
         imageView.setAdjustViewBounds(true);
-        int size = getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size);
+        int size = getContext().getResources().getDimensionPixelSize(R.dimen.dp_20);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, size);
         imageView.setLayoutParams(param);
         imageView.setImageResource(imageResource);

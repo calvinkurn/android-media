@@ -18,11 +18,11 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/airline_icon"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/image_width_m"
+            android:layout_height="@dimen/dp_40"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_vs" />
+            android:layout_marginRight="@dimen/dp_5" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -60,10 +60,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
-                android:paddingBottom="@dimen/padding_ms"
+                android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/padding_16"
                 android:paddingRight="@dimen/padding_16"
-                android:paddingTop="@dimen/padding_ms"
+                android:paddingTop="@dimen/dp_8"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Refundable"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/container_header"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/padding_16"
@@ -88,19 +88,19 @@
 
         <TextView
             style="@style/TextView.Small.BlackSecondary"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             android:text="@string/flight_label_booking_code_pnr" />
 
         <TextView
             android:id="@+id/pnr_code"
             style="@style/TextView.Small.Green"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
             tools:text="323088926194" />
 
         <ImageView
             android:id="@+id/copy_pnr"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             app:srcCompat="@drawable/ic_copy_order" />
     </LinearLayout>
 

@@ -897,6 +897,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showToastMessage(String message) {
+        if (message == null) {
+             message = getString(R.string.default_request_error_unknown_short);
+        }
         Snackbar snackbar = Snackbar.make(coordinatorLayout,
                 message.replace("\n", " "),
                 Snackbar.LENGTH_LONG);

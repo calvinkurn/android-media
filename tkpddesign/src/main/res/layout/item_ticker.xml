@@ -3,7 +3,7 @@
     android:id="@+id/ticker_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_small"
+    android:padding="@dimen/dp_10"
     android:orientation="vertical">
 
     <TextView

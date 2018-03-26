@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="8dp"
     android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="120dp"
         android:layout_height="15dp"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/dp_16"
         app:use_gradient="true"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/dp_16"
         app:use_gradient="true"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

@@ -18,8 +18,8 @@
         android:layout_alignParentBottom="true"
         app:fillColor="@color/tkpd_main_green"
         app:pageColor="@color/white"
-        android:padding="@dimen/margin_vs"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:padding="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -35,8 +35,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="@dimen/padding_vl"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_20"
         android:visibility="gone"
         android:background="@color/empty_stock_pdp"
         android:gravity="center_horizontal">
@@ -45,8 +45,8 @@
             android:id="@id/error_product_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vl"
-            android:textSize="@dimen/font_small"
+            android:layout_marginTop="@dimen/dp_40"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:text="@string/stock_produk_kosong" />
 
@@ -54,7 +54,7 @@
             android:id="@id/error_product_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/dp_20"
             android:textSize="@dimen/fontvs"
             android:textAlignment="center"
             android:text="@string/deksripsi_produk_kosong" />

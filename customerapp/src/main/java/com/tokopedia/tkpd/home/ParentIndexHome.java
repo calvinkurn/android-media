@@ -73,7 +73,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;

@@ -10,7 +10,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_med">
+        android:paddingBottom="@dimen/dp_20">
 
         <com.tokopedia.design.label.DateLabelView
             android:id="@+id/date_label_view"
@@ -19,8 +19,8 @@
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/gold_merchant_statistic_card_view"
             style="@style/CardViewLayoutMatchParent"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/widget_line_chart_container_loading">
 
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/dp_16"
                 android:paddingLeft="@dimen/gmstat_padding_item_left_right"
                 android:paddingRight="@dimen/gmstat_padding_item_left_right">
 
@@ -132,7 +132,7 @@
 
         <android.support.v7.widget.CardView
             style="@style/CardViewLayoutMatchParent"
-            android:layout_marginTop="@dimen/margin_med">
+            android:layout_marginTop="@dimen/dp_20">
 
             <com.tokopedia.seller.common.widget.LabelView
                 android:id="@+id/gm_statistic_label_sold_product_list_view"

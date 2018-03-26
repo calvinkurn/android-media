@@ -7,14 +7,14 @@
 
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view"
-        android:layout_width="@dimen/spinner_decimal_spinner_width"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content" />
 
     <com.tokopedia.design.text.CounterInputView
         android:id="@+id/counter_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/padding_vs"
-        android:layout_marginStart="@dimen/padding_vs"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
         android:layout_weight="1" />
 </LinearLayout>

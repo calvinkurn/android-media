@@ -8,14 +8,14 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/margin_padding_small"
+        android:padding="@dimen/dp_4"
         android:background="@drawable/bg_white_border_grey"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginBottom="@dimen/dp_20"
             android:visibility="gone"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -28,7 +28,7 @@
                 android:text="Category Title"
                 android:textColor="@color/black"
                 android:textStyle="normal"
-                android:textSize="@dimen/textsize_big" />
+                android:textSize="@dimen/sp_18" />
 
             <TextView
                 android:id="@+id/txt_show_all"

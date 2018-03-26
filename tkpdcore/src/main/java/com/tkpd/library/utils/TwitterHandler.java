@@ -93,7 +93,7 @@ public class TwitterHandler extends Activity {
     class updateTwitterStatus extends AsyncTask<String, String, String> {
 
         /**
-         * Before starting background thread Show Progress Dialog
+         * Before starting background thread Show Progress BaseDialog
          * */
 
         /**
@@ -142,7 +142,7 @@ public class TwitterHandler extends Activity {
     class LoginTwitter extends AsyncTask<Void, Boolean, Boolean> {
 
         /**
-         * Before starting background thread Show Progress Dialog
+         * Before starting background thread Show Progress BaseDialog
          * */
 
         /**

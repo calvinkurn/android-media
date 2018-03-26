@@ -7,9 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="@dimen/margin_med"
-        android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_small"
+        android:paddingBottom="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:paddingTop="@null">
 
         <TableRow
@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_15"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/title_preorder"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_16"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
         </TableRow>
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_14"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/title_min_order"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_13"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
         </TableRow>
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_11"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/title_weight"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_9"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
         </TableRow>
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_11"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/title_insurance"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_9"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
         </TableRow>
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_11"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/title_condition"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:background="@drawable/layout_9"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
         </TableRow>

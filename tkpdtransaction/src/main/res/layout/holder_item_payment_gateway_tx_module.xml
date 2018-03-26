@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <ImageView
         android:id="@+id/img"
@@ -26,9 +26,9 @@
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/margin_med"
+        android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/margin_med">
+        android:paddingStart="@dimen/dp_20">
 
         <TextView
             android:id="@+id/name"
