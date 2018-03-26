@@ -246,8 +246,17 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void showSuccessChangePassengerData() {
+        showSuccessSnackbar(R.string.flight_passenger_update_success);
+    }
+
+    @Override
+    public void onSuccessDeletePassengerData() {
+        showSuccessSnackbar(R.string.flight_passenger_delete_success);
+    }
+
+    private void showSuccessSnackbar(int resId) {
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
-                getString(R.string.flight_passenger_update_success));
+                getString(resId));
     }
 
     private void showDeleteDialog(final String passengerId) {
