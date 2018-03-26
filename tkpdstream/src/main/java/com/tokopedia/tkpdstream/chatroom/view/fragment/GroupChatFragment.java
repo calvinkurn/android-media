@@ -650,7 +650,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onVoteComponentClicked(String type, String name) {
-
+        if (getActivity() instanceof GroupChatActivity) {
+            ((GroupChatActivity) getActivity()).moveToVoteFragment();
+        }
     }
 
     public void setChannel(OpenChannel mChannel) {

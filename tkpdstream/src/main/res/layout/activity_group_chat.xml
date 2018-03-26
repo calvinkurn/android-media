@@ -17,13 +17,26 @@
             android:id="@+id/channel_banner"
             android:layout_width="0dp"
             android:layout_height="128dp"
-            android:alpha="0.8"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@color/cardview_dark_background" />
+
+        <RelativeLayout
+            android:id="@+id/shadow_layer"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:alpha="0.1"
+            android:background="@color/black"
+            android:adjustViewBounds="true"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@id/channel_banner"
+            app:layout_constraintTop_toTopOf="@id/channel_banner"
+            tools:visibility="visible"/>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -65,17 +78,28 @@
                 android:id="@+id/sponsor_image"
                 android:layout_width="96dp"
                 android:layout_height="match_parent"
-                tools:src="@drawable/ic_network_error"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_network_error" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/tab"
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/tab_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/channel_banner" />
+            app:layout_constraintTop_toBottomOf="@id/channel_banner"
+            app:cardElevation="@dimen/space_tiny">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/space_small"
+                android:paddingLeft="@dimen/space_small"
+                android:orientation="horizontal"/>
+
+        </android.support.v7.widget.CardView>
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -86,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tab"
+            app:layout_constraintTop_toBottomOf="@id/tab_container"
             app:layout_constraintVertical_weight="1"
             tools:ignore="MergeRootFrame" />
 

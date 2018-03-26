@@ -422,7 +422,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showTooltip() {
-        ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this), tabs.getChildAt(1));
+        ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this), tabs.getChildAt(0));
     }
 
     private void showChatroomFragment(OpenChannel mChannel) {
@@ -1012,5 +1012,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 
+    }
+
+    public void moveToVoteFragment() {
+        showFragment(CHANNEL_VOTE_FRAGMENT);
     }
 }
