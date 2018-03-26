@@ -1,5 +1,7 @@
 package com.tokopedia.shop.page.view.adapter;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -85,5 +87,12 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
 
     public Fragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
+    }
+
+    @Override
+    public Parcelable saveState() {
+        Bundle bundle = (Bundle) super.saveState();
+        bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+        return bundle;
     }
 }
