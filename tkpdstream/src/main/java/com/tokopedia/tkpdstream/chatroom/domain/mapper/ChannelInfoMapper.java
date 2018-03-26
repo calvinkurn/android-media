@@ -44,7 +44,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getCoverUrl(),
                 pojo.getChannel().getTitle(),
                 hasPoll(pojo.getChannel().getActivePolls()),
-                "http://givekidstheworld.org/run/tools/Run%20GKTW%20Signature%20Banner%20Marathon.jpg",
+                pojo.getChannel().getBannerImageUrl(),
+                pojo.getChannel().getAdsLink(),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()));
     }

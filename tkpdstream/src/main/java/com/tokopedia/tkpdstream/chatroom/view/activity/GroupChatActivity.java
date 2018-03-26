@@ -22,7 +22,6 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -89,6 +88,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         , ToolTipUtils.ToolTipListener {
 
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final long TOOLTIP_DELAY = 1500L;
+
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
     private static final int CHANNEL_VOTE_FRAGMENT = 1;
@@ -239,8 +240,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                 FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
 
@@ -552,7 +555,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     /**
-     * @param context
+     * @param context          activity context
      * @param channelViewModel only to be used from channel list.
      * @return Intent
      */
@@ -567,7 +570,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     /**
-     * @param context
+     * @param context   activity context
      * @param channelId can also be substitued by channelUrl
      * @return Intent
      */
@@ -666,8 +669,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                         checkPollValid(),
                         viewModel.getChannelInfoViewModel().getChannelViewModel()));
 
-        if (getIntent().getExtras() != null & getIntent().getExtras().getBoolean(GroupChatActivity
-                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+        if (getIntent() != null
+                && getIntent().getExtras() != null
+                && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
             channelInfoDialog.show();
         }
     }
@@ -690,7 +694,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 public void run() {
                     showTooltip();
                 }
-            }, 1500L);
+            }, TOOLTIP_DELAY);
         }
     }
 
@@ -773,11 +777,21 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getSponsorUrl(),
                     R.drawable.loading_page);
+            sponsorLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSponsor(viewModel.getChannelInfoViewModel().getAdsLink());
+                }
+            });
             setupChannelBannerParams(true);
         } else {
             sponsorLayout.setVisibility(View.GONE);
             setupChannelBannerParams(false);
         }
+    }
+
+    private void openSponsor(String adsLink) {
+        ((StreamModuleRouter) getApplicationContext()).openRedirectUrl(this, adsLink);
     }
 
     @Override
@@ -935,9 +949,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
-        }
-
-        else if (currentFragmentIsVote()) {
+        } else if (currentFragmentIsVote()) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
         }
@@ -1019,7 +1031,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 //        this.voteType = voteType;
 
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
-        if(!currentFragmentIsVote()) {
+        if (!currentFragmentIsVote()) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 

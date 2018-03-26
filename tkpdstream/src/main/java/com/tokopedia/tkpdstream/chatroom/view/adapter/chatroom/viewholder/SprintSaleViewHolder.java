@@ -64,7 +64,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleViewModel
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onFlashSaleClicked(element.getRedirectUrl());
+                listener.onFlashSaleClicked(element.getRedirectUrl(), element.getCampaignName());
             }
         });
     }
