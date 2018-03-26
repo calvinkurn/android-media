@@ -186,6 +186,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        presenter.onFirstLaunch();
         initTabNavigation();
         initAdapter();
         initRefreshLayout();
@@ -229,6 +230,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        presenter.onResume();
     }
 
     @Override
@@ -468,6 +470,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public boolean isLoading() {
+        return refreshLayout.isRefreshing();
+    }
+
+    @Override
     public void showLoading() {
         refreshLayout.setRefreshing(true);
     }
@@ -480,6 +487,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items) {
         adapter.setItems(items);
+    }
+
+    @Override
+    public void updateListOnResume(List<Visitable> visitables) {
+        adapter.updateItems(visitables);
     }
 
     @Override

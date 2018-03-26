@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 import java.util.List;
@@ -108,5 +109,16 @@ public class HomeRecycleAdapter extends BaseAdapter {
             }
         }
         return pos;
+    }
+
+    public void updateItems(List<Visitable> visitables) {
+        int startIndex = 0;
+        if (getItems().get(0) instanceof HeaderViewModel) {
+            startIndex = 1;
+        }
+        for (int i = 0; i < visitables.size(); i++) {
+            this.visitables.set(startIndex + i, visitables.get(i));
+        }
+        notifyItemRangeChanged(0, visitables.size() + startIndex);
     }
 }

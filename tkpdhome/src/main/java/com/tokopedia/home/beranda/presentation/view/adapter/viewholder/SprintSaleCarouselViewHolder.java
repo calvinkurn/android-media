@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
@@ -9,7 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,10 +74,14 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new SpacingItemDecoration(context.getResources().getDimensionPixelSize(R.dimen.item_space), SpacingItemDecoration.HORIZONTAL));
+        recyclerView.addItemDecoration(new SpacingItemDecoration(convertDpToPixel(16, context), SpacingItemDecoration.HORIZONTAL));
         SnapHelper snapHelper = new StartSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+    }
+
+    public static int convertDpToPixel(float dp, Context context){
+        Resources r = context.getResources();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
     @Override
