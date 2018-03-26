@@ -1,5 +1,5 @@
 
-package com.tokopedia.tkpdstream.chatroom.domain.pojo;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo.poll;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

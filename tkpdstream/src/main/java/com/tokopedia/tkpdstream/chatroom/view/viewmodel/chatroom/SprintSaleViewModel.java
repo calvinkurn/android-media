@@ -11,20 +11,27 @@ import java.util.ArrayList;
 
 public class SprintSaleViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
-    public static final String SPRINT_SALE = "sprint_sale";
+    public static final String SPRINT_SALE = "flashsale_add";
     private ArrayList<SprintSaleProductViewModel> listProducts;
     private String redirectUrl;
     private boolean isActive;
+    private String campaignName;
+    private int startDate;
+    private int endDate;
 
     public SprintSaleViewModel(long createdAt, long updatedAt, String messageId,
                                String senderId, String senderName, String senderIconUrl,
                                boolean isInfluencer, boolean isAdministrator, String redirectUrl,
-                               ArrayList<SprintSaleProductViewModel> listProducts, boolean isActive) {
+                               ArrayList<SprintSaleProductViewModel> listProducts, boolean isActive,
+                               String campaignName, int startDate, int endDate) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
                 isInfluencer, isAdministrator);
         this.redirectUrl = redirectUrl;
         this.listProducts = listProducts;
         this.isActive = isActive;
+        this.campaignName = campaignName;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -42,5 +49,17 @@ public class SprintSaleViewModel extends BaseChatViewModel implements Visitable<
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public String getCampaignName() {
+        return campaignName;
+    }
+
+    public int getStartDate() {
+        return startDate;
+    }
+
+    public int getEndDate() {
+        return endDate;
     }
 }

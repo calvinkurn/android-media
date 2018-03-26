@@ -46,9 +46,8 @@
         android:layout_toRightOf="@id/avatar"
         android:visibility="visible"/>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/vote_layout"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/chat_header"
         android:layout_marginLeft="@dimen/space_small"
@@ -56,47 +55,58 @@
         android:layout_marginTop="@dimen/space_mini"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
-        android:background="@drawable/chat_vote_background"
-        android:maxWidth="@dimen/max_size_bubble"
-        android:paddingBottom="@dimen/space_med"
-        android:paddingLeft="@dimen/space_average"
-        android:paddingRight="@dimen/space_average"
-        android:paddingTop="@dimen/space_med"
-        >
+        android:orientation="horizontal"
+        android:weightSum="9">
 
-        <ImageView
-            android:id="@+id/sprintsale_icon"
-            android:layout_width="10dp"
-            android:layout_height="@dimen/vote_icon_size"
-            android:layout_marginTop="@dimen/margin_vvvs"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_vote"
-            tools:layout_editor_absoluteX="12dp"/>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/sprintsale_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
 
-        <TextView
-            android:id="@+id/sprintsale_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/space_mini"
-            android:layout_marginStart="@dimen/space_mini"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/font_micro"
-            android:textStyle="normal"
-            app:layout_constraintStart_toEndOf="@+id/sprintsale_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="VOTE TELAH BERAKHIR"/>
+                android:background="@drawable/chat_vote_background"
+                android:minWidth="@dimen/max_size_bubble"
+                android:paddingBottom="@dimen/space_med"
+                android:paddingLeft="@dimen/space_average"
+                android:paddingRight="@dimen/space_average"
+                android:paddingTop="@dimen/space_med"
+                >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sprintsale_title"/>
+                <ImageView
+                    android:id="@+id/sprintsale_icon"
+                    android:layout_width="10dp"
+                    android:layout_height="@dimen/vote_icon_size"
+                    android:layout_marginTop="@dimen/margin_vvvs"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_vote"
+                    tools:layout_editor_absoluteX="12dp"/>
 
-    </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/sprintsale_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/space_mini"
+                    android:layout_marginStart="@dimen/space_mini"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/font_micro"
+                    android:textStyle="normal"
+                    app:layout_constraintStart_toEndOf="@+id/sprintsale_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="VOTE TELAH BERAKHIR"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_ms"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sprintsale_title"/>
+
+            </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </RelativeLayout>

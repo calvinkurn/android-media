@@ -7,7 +7,6 @@ import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
@@ -70,7 +69,7 @@ public interface ChatroomContract {
         }
 
         interface SprintSaleViewHolderListener {
-            void onFlashSaleClicked(String url);
+            void onFlashSaleClicked(String url, String campaignName);
         }
     }
 

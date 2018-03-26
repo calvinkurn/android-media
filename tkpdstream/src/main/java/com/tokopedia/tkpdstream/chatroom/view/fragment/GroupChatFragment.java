@@ -530,7 +530,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 //                hideVoteLayout();
                 break;
         }
-        ((GroupChatActivity)getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
+        ((GroupChatActivity) getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
     }
 
     private void addIncomingMessage(Visitable messageItem) {
@@ -674,7 +674,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onFlashSaleClicked(String url) {
-
+    public void onFlashSaleClicked(String url, String campaignName) {
+        analytics.eventClickVoteComponent(StreamAnalytics.COMPONENT_FLASH_SALE, campaignName);
+        ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
+                , url);
     }
 }

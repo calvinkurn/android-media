@@ -6,15 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,11 +22,9 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -90,12 +87,13 @@ public class GroupChatActivity extends BaseSimpleActivity
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
         , ToolTipUtils.ToolTipListener {
 
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final long TOOLTIP_DELAY = 1500L;
+
     private static final int KEYBOARD_TRESHOLD = 100;
     private static final int CHATROOM_FRAGMENT = 0;
     private static final int CHANNEL_VOTE_FRAGMENT = 1;
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final int CHANNEL_INFO_FRAGMENT = 2;
-
 
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
@@ -159,7 +157,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
     private CloseableBottomSheetDialog channelInfoDialog;
-    private LinearLayout sponsorLayout;
+    private View sponsorLayout;
     private ImageView sponsorImage;
 
     private int initialFragment;
@@ -242,8 +240,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                 FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
 
@@ -299,25 +299,25 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setupChannelBannerParams(boolean isThereSponsor) {
-        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
-        if (isThereSponsor) {
-            if (isLollipopOrNewer()) {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_and_sponsor);
-            } else {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_and_sponsor_without_status);
-            }
-        } else {
-            if (isLollipopOrNewer()) {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height);
-            } else {
-                params.height = getResources().getDimensionPixelSize(
-                        R.dimen.channel_banner_height_without_status);
-            }
-        }
-        channelBanner.setLayoutParams(params);
+//        ViewGroup.LayoutParams params = channelBanner.getLayoutParams();
+//        if (isThereSponsor) {
+//            if (isLollipopOrNewer()) {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_and_sponsor);
+//            } else {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_and_sponsor_without_status);
+//            }
+//        } else {
+//            if (isLollipopOrNewer()) {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height);
+//            } else {
+//                params.height = getResources().getDimensionPixelSize(
+//                        R.dimen.channel_banner_height_without_status);
+//            }
+//        }
+//        channelBanner.setLayoutParams(params);
     }
 
     private boolean isLollipopOrNewer() {
@@ -370,17 +370,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showTooltip();
-            }
-        }, 1500L);
-    }
-
     //
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
@@ -419,10 +408,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 break;
         }
 
-    }
-
-    private void showTooltip() {
-        ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this), tabs.getChildAt(0));
     }
 
     private void showChatroomFragment(OpenChannel mChannel) {
@@ -473,7 +458,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         bundle.putParcelable(VOTE, viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
 
-        if(voteAnnouncementViewModel != null){
+        if (voteAnnouncementViewModel != null) {
             bundle.putParcelable(VOTE_ANNOUNCEMENT, voteAnnouncementViewModel);
             bundle.putString(VOTE_TYPE, voteType);
         }
@@ -570,7 +555,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     /**
-     * @param context
+     * @param context          activity context
      * @param channelViewModel only to be used from channel list.
      * @return Intent
      */
@@ -585,7 +570,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     /**
-     * @param context
+     * @param context   activity context
      * @param channelId can also be substitued by channelUrl
      * @return Intent
      */
@@ -681,12 +666,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void showInfoDialog() {
         channelInfoDialog.setContentView(
                 createBottomSheetView(
-                        checkPollValid(viewModel.getChannelInfoViewModel().isHasPoll(),
-                                viewModel.getChannelInfoViewModel().getVoteInfoViewModel()),
+                        checkPollValid(),
                         viewModel.getChannelInfoViewModel().getChannelViewModel()));
 
-        if (getIntent().getExtras() != null & getIntent().getExtras().getBoolean(GroupChatActivity
-                .EXTRA_SHOW_BOTTOM_DIALOG, false)) {
+        if (getIntent() != null
+                && getIntent().getExtras() != null
+                && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
             channelInfoDialog.show();
         }
     }
@@ -698,14 +683,44 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
         setSponsorData();
+
+        setTooltip();
     }
 
-    private boolean checkPollValid(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
-        return (hasPoll
-                && voteInfoViewModel != null
-                && voteInfoViewModel.getStartTime() != 0
-                && voteInfoViewModel.getEndTime() != 0
-                && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime());
+    private void setTooltip() {
+        if (checkPollValid()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showTooltip();
+                }
+            }, TOOLTIP_DELAY);
+        }
+    }
+
+    private void showTooltip() {
+        if (tabs != null
+                && tabAdapter != null
+                && tabAdapter.getItemCount() > 1
+                && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
+            ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this),
+                    tabs.getChildAt(CHATROOM_FRAGMENT));
+        }
+    }
+
+    private boolean checkPollValid() {
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+            VoteInfoViewModel voteInfoViewModel = viewModel.getChannelInfoViewModel()
+                    .getVoteInfoViewModel();
+            return viewModel.getChannelInfoViewModel().isHasPoll()
+                    && voteInfoViewModel.getStartTime() != 0
+                    && voteInfoViewModel.getEndTime() != 0
+                    && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime();
+        } else {
+            return false;
+        }
     }
 
     private View createBottomSheetView(boolean hasValidPoll, ChannelViewModel channelViewModel) {
@@ -762,11 +777,21 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getSponsorUrl(),
                     R.drawable.loading_page);
+            sponsorLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSponsor(viewModel.getChannelInfoViewModel().getAdsLink());
+                }
+            });
             setupChannelBannerParams(true);
         } else {
             sponsorLayout.setVisibility(View.GONE);
             setupChannelBannerParams(false);
         }
+    }
+
+    private void openSponsor(String adsLink) {
+        ((StreamModuleRouter) getApplicationContext()).openRedirectUrl(this, adsLink);
     }
 
     @Override
@@ -924,9 +949,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
-        }
-
-        else if (currentFragmentIsVote()) {
+        } else if (currentFragmentIsVote()) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
         }
@@ -1008,7 +1031,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 //        this.voteType = voteType;
 
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
-        if(!currentFragmentIsVote()) {
+        if (!currentFragmentIsVote()) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 

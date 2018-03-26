@@ -1,8 +1,9 @@
 
-package com.tokopedia.tkpdstream.chatroom.domain.pojo;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 
 public class Channel {
 
@@ -51,6 +52,18 @@ public class Channel {
     @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorProfileUrl;
+    @SerializedName("banner_url")
+    @Expose
+    private String bannerImageUrl;
+    @SerializedName("ads_url")
+    @Expose
+    private String adsUrl;
+    @SerializedName("ads_link")
+    @Expose
+    private String adsLink;
+    @SerializedName("banner_name")
+    @Expose
+    private String bannerName;
 
     public int getChannelId() {
         return channelId;
@@ -166,5 +179,21 @@ public class Channel {
 
     public String getTotalViews() {
         return totalViews;
+    }
+
+    public String getBannerImageUrl() {
+        return bannerImageUrl;
+    }
+
+    public String getAdsUrl() {
+        return adsUrl;
+    }
+
+    public String getAdsLink() {
+        return adsLink;
+    }
+
+    public String getBannerName() {
+        return bannerName;
     }
 }

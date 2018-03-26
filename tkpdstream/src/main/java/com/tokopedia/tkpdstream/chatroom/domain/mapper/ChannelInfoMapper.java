@@ -3,11 +3,11 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.Channel;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.Channel;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -44,7 +44,9 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getCoverUrl(),
                 pojo.getChannel().getTitle(),
                 hasPoll(pojo.getChannel().getActivePolls()),
-                "https://images-na.ssl-images-amazon.com/images/I/81K%2BADxzx4L._SY355_.jpg",
+                pojo.getChannel().getBannerImageUrl(),
+                pojo.getChannel().getAdsLink(),
+                pojo.getChannel().getBannerName(),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()));
     }
