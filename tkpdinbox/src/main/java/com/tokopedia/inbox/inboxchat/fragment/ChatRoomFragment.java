@@ -55,6 +55,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.inbox.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.inbox.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
@@ -402,8 +403,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void startAttachProductActivity(String shopId, String shopName, boolean isSeller) {
-        Intent intent = AttachProductActivity.createInstance(getActivity(),shopId,shopName,isSeller);
-        startActivityForResult(intent,AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
+//        Intent intent = AttachProductActivity.createInstance(getActivity(),shopId,shopName,isSeller);
+//        startActivityForResult(intent,AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
+        Intent intent = AttachInvoiceActivity.createInstance(getActivity(),"");
+        startActivityForResult(intent,AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
     }
 
     private void setPickerButton() {
