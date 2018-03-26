@@ -261,8 +261,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
-
-        throw new RuntimeException("MAMPUS LOOO CRASH HAHAHAHAHAHAH");
     }
 
     private void addShortcuts() {
