@@ -402,12 +402,7 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<List<FlightAirlineDB>> refreshAirlines() {
-        return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
-            @Override
-            public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
-                return flightAirlineDataListSource.getAirlineList();
-            }
-        });
+        return flightAirlineDataListSource.getAirlineList();
     }
 
     @Override

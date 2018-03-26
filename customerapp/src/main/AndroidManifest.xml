@@ -134,15 +134,6 @@
                 <data
                     android:host="tokopedia.onelink.me"
                     android:scheme="https" />
-                <data
-                    android:host="accounts.tokopedia.com"
-                    android:scheme="https" />
-                <data
-                    android:host="apps.tokopedia.com"
-                    android:scheme="http" />
-                <data
-                    android:host="apps.tokopedia.com"
-                    android:scheme="https" />
             </intent-filter>
         </activity>
 
