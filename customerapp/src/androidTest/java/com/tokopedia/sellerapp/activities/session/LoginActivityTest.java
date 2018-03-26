@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -50,12 +51,14 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -64,9 +67,24 @@ import static org.junit.Assert.assertTrue;
 public class LoginActivityTest {
 
     @Rule
-    public IntentsTestRule<LoginActivity> mIntentsRule = new IntentsTestRule<LoginActivity>(
+    public ActivityTestRule<LoginActivity> mIntentsRule = new ActivityTestRule<LoginActivity>(
             LoginActivity.class, true, false
-    );
+    ){
+        @Override
+        protected void afterActivityLaunched() {
+            Intents.init();
+            super.afterActivityLaunched();
+
+            intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
+        }
+
+        @Override
+        protected void afterActivityFinished() {
+            super.afterActivityFinished();
+            Intents.release();
+        }
+
+    };
 
     @Inject
     GCMHandler gcmHandler;
@@ -177,9 +195,6 @@ public class LoginActivityTest {
         resultData.putExtra("phone", phoneNumber);
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-
-        intending(toPackage("com.tokopedia.session.register.view.activity"))
-                .respondWith(result);
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
