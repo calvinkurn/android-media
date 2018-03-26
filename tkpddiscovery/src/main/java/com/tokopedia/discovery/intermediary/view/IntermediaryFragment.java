@@ -646,7 +646,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public String getTrackerAttribution() {
-        return trackerAttribution;
+        if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none/other";
+        else return trackerAttribution;
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
