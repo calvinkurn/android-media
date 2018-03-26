@@ -38,7 +38,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
-        //TODO milhamj get sponsor url from pojo
         return new ChannelInfoViewModel(
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getCoverUrl(),

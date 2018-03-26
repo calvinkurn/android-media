@@ -249,13 +249,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         sponsorLayout = findViewById(R.id.sponsor_layout);
         sponsorImage = findViewById(R.id.sponsor_image);
-
-        sponsorImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     private void initData() {
@@ -760,7 +753,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getSponsorUrl(),
                     R.drawable.loading_page);
-            sponsorLayout.setOnClickListener(new View.OnClickListener() {
+            sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     openSponsor(viewModel.getChannelInfoViewModel().getAdsLink());
