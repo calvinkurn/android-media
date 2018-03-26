@@ -295,25 +295,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.PEOPLE,
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 getTotalBuyerNotif());
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_payment_status),
-                TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_order_status),
-                TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_confirm_delivery),
-                TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_transaction_canceled),
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_REORDER)));
-        buyerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_purchase_list),
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false)));
 
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_shopping_list),
