@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class FirebaseRemoteConfigImpl implements RemoteConfig {
-    private static final long THREE_HOURS = TimeUnit.SECONDS.toSeconds(30);
+    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
     private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
