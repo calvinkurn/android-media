@@ -1,6 +1,6 @@
 package com.tokopedia.posapp.cache.data.source.local;
 
-import com.tokopedia.posapp.database.manager.EtalaseDbManager;
+import com.tokopedia.posapp.etalase.EtalaseDbManager;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 import com.tokopedia.posapp.base.domain.model.ListDomain;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;

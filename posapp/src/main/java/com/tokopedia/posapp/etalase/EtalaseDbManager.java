@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.database.manager;
+package com.tokopedia.posapp.etalase;
 
 import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.EtalaseDb;

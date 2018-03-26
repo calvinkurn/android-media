@@ -3,7 +3,7 @@ package com.tokopedia.posapp.cache;
 import android.content.Context;
 
 import com.tokopedia.posapp.cart.data.source.db.CartDbManager;
-import com.tokopedia.posapp.database.manager.EtalaseDbManager;
+import com.tokopedia.posapp.etalase.EtalaseDbManager;
 import com.tokopedia.posapp.product.common.data.source.local.ProductDbManager;
 import com.tokopedia.posapp.base.domain.model.DataStatus;
 

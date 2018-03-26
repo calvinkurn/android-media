@@ -9,7 +9,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.core.database.DatabaseConstant;
-import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.posapp.database.PosDatabase;
 
 /**
@@ -33,6 +32,18 @@ public class CartDb extends BaseModel {
 
     @Column
     private String outletId;
+
+    @Column
+    private String name;
+
+    @Column
+    private String imageUrl;
+
+    @Column
+    private double priceUnformatted;
+
+    @Column
+    private String price;
 
     public long getId() {
         return id;
@@ -64,5 +75,37 @@ public class CartDb extends BaseModel {
 
     public void setOutletId(String outletId) {
         this.outletId = outletId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public double getPriceUnformatted() {
+        return priceUnformatted;
+    }
+
+    public void setPriceUnformatted(double priceUnformatted) {
+        this.priceUnformatted = priceUnformatted;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }
