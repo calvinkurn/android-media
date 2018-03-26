@@ -37,6 +37,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private TextView seeAllButton;
     private Context context;
     private HomeCategoryListener listener;
+    private View channelTitleContainer;
 
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -47,6 +48,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
 
     private void findViews(View itemView) {
         channelTitle = (TextView)itemView.findViewById( R.id.channel_title );
+        channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
         channelHeroImage = (ImageView)itemView.findViewById( R.id.channel_hero_image );
         channelImage1 = (ImageView)itemView.findViewById( R.id.channel_image_1 );
         channelCaption1 = (TextView)itemView.findViewById( R.id.channel_caption_1 );
@@ -62,7 +64,13 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
-        channelTitle.setText(element.getChannel().getHeader().getName());
+        String titleText = element.getChannel().getHeader().getName();
+        if (!TextUtils.isEmpty(titleText)) {
+            channelTitleContainer.setVisibility(View.VISIBLE);
+            channelTitle.setText(titleText);
+        } else {
+            channelTitleContainer.setVisibility(View.GONE);
+        }
         channelCaption1.setText(element.getChannel().getGrids()[0].getName());
         channelCaption2.setText(element.getChannel().getGrids()[1].getName());
         channelCaption3.setText(element.getChannel().getGrids()[2].getName());

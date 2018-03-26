@@ -73,6 +73,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
                                 channel.getEnhanceImpressionSprintSaleHomePage()
                         );
+                    } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)){
+
                     } else {
                         position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));

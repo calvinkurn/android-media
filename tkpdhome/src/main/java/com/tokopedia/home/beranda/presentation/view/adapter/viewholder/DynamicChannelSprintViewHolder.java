@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -116,7 +117,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         setupClickListeners(channel);
 
         if (isSprintSale(channel)) {
-            Date expiredTime = getExpiredTime(element);
+            Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
             countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
                 @Override
                 public void onCountDownFinished() {
@@ -190,16 +191,5 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
-    }
-
-    private Date getExpiredTime(DynamicChannelViewModel model) {
-        String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
-        try {
-            return format.parse(expiredTimeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Date();
-        }
     }
 }
