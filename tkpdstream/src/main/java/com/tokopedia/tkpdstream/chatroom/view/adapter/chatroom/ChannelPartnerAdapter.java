@@ -64,10 +64,13 @@ public class ChannelPartnerAdapter extends RecyclerView.Adapter<ChannelPartnerAd
                 false);
         holder.partnerChildren.setLayoutManager(linearLayoutManager);
 
-        ChannelPartnerChildAdapter childAdapter =
-                ChannelPartnerChildAdapter.createInstance(listener);
-        childAdapter.setList(list.get(position).getChild());
-        holder.partnerChildren.setAdapter(childAdapter);
+        if (list.get(position).getChild() != null
+            && !list.get(position).getChild().isEmpty()) {
+            ChannelPartnerChildAdapter childAdapter =
+                    ChannelPartnerChildAdapter.createInstance(listener);
+            childAdapter.setList(list.get(position).getChild());
+            holder.partnerChildren.setAdapter(childAdapter);
+        }
     }
 
     @Override

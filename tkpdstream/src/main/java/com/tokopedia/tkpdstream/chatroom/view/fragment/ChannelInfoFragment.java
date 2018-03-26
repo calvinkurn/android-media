@@ -141,7 +141,8 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                 channelViewModel.getAdminPicture(),
                 R.drawable.loading_page);
 
-        if (!channelViewModel.getChannelPartnerViewModels().isEmpty()) {
+        if (channelViewModel.getChannelPartnerViewModels() != null
+                && !channelViewModel.getChannelPartnerViewModels().isEmpty()) {
             channelPartners.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                     LinearLayoutManager.VERTICAL,
