@@ -348,4 +348,6 @@
     <string name="flight_passenger_delete_success">Data penumpang berhasil dihapus.</string>
     <string name="flight_passenger_delete_dialog_title">Hapus Data Penumpang</string>
     <string name="flight_passenger_delete_dialog_description">Data penumpang akan dihapus dari daftar. Anda yakin?</string>
+    <string name="flight_passenger_update_abort_dialog_title">Batalkan Pengubahan Data</string>
+    <string name="flight_passenger_update_abort_dialog_description">Perubahan data penumpang akan dibatalkan. Anda yakin?</string>
 </resources>
