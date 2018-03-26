@@ -120,7 +120,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (isValidNumber(charSequence.toString())) {
                     enableButton(nextButton);
-                } else  {
+                } else {
                     disableButton(nextButton);
                 }
             }
@@ -180,6 +180,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             message.setVisibility(View.GONE);
             errorText.setVisibility(View.VISIBLE);
             errorText.setText(getResources().getString(R.string.error_char_count_over));
+            return false;
         }
         message.setVisibility(View.VISIBLE);
         errorText.setVisibility(View.GONE);
@@ -208,7 +209,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToLoginPhoneNumber() {
-        startActivity(LoginPhoneNumberActivity.getCallingIntent(getActivity()));
+        startActivity(LoginPhoneNumberActivity.getCallingIntentFromRegister(getActivity(), phoneNumber.getText().toString()));
         getActivity().finish();
     }
 
@@ -334,7 +335,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showErrorRegisterPhoneNumber(String message) {
         dismissLoading();
-        showSnackbarErrorWithAction(message);
+        showSnackbar(message);
     }
 
     private void showSnackbarErrorWithAction(String message) {
@@ -344,6 +345,10 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 doRegisterPhoneNumber();
             }
         }).showRetrySnackbar();
+    }
+
+    private void showSnackbar(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override

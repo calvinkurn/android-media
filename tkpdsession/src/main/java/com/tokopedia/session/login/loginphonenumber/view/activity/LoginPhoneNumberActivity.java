@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.session.R;
@@ -27,6 +25,8 @@ public class LoginPhoneNumberActivity extends TActivity implements HasComponent 
         inflateView(R.layout.activity_simple_fragment);
         initView();
     }
+
+    public final static String PARAM_PHONE_NUMBER = "phone_number";
 
     private void initView() {
 
@@ -62,5 +62,13 @@ public class LoginPhoneNumberActivity extends TActivity implements HasComponent 
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, LoginPhoneNumberActivity.class);
+    }
+
+    public static Intent getCallingIntentFromRegister(Context context, String phoneNumber) {
+        Intent intent = new Intent(context, LoginPhoneNumberActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
+        intent.putExtras(bundle);
+        return intent;
     }
 }
