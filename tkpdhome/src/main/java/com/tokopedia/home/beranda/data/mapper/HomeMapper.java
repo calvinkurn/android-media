@@ -76,6 +76,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     } else {
                         position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
+                        channel.setHomeAttribution(String.format("%d - curatedListBanner - %s - $1 - $2", position, channel.getHeader().getName()));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
                                 channel.getEnhanceImpressionDynamicChannelHomePage()
                         );

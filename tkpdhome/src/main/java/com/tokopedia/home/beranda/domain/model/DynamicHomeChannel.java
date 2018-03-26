@@ -60,6 +60,8 @@ public class DynamicHomeChannel {
         private Header header;
         @SerializedName("promoName")
         private String promoName;
+        @SerializedName("homeAttribution")
+        private String homeAttribution;
 
         public String getId() {
             return id;
@@ -241,7 +243,8 @@ public class DynamicHomeChannel {
                                                     "id", hero.getId(),
                                                     "name", getPromoName(),
                                                     "creative", hero.getName(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(position),
+                                                    "home_attribution", getHomeAttribution(position, hero.getName())
                                             )
                                     )
                             )
@@ -262,7 +265,8 @@ public class DynamicHomeChannel {
                                                     "id", grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getName(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(position),
+                                                    "home_attribution", getHomeAttribution(position, grid.getName())
                                             )
                                     )
                             )
@@ -276,6 +280,14 @@ public class DynamicHomeChannel {
 
         public String getPromoName() {
             return promoName;
+        }
+
+        public String getHomeAttribution(int position, String creativeName) {
+            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", creativeName);
+        }
+
+        public void setHomeAttribution(String homeAttribution) {
+            this.homeAttribution = homeAttribution;
         }
     }
 
