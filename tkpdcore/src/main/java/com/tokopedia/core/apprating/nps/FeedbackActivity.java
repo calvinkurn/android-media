@@ -21,9 +21,6 @@ import com.tokopedia.core.R;
 
 public class FeedbackActivity extends BaseSimpleActivity {
 
-    private final static String FEEDBACK_NPS = "NPS";
-    private final static String FEEDBACK_NPS_CODE = "nps-001";
-
     public static void startActivity(Context context, float rating) {
         Intent intent = new Intent(context, FeedbackActivity.class);
         intent.putExtra(FeedbackActivity.class.getSimpleName(), rating);
@@ -63,15 +60,7 @@ public class FeedbackActivity extends BaseSimpleActivity {
             String category = spCategory.getSelectedItem().toString();
             String description = etDesc.getText().toString();
 
-            if (!description.isEmpty()) {
-                category = String.format("%s - %s", category, description);
-            }
-
-            Answers.getInstance().logRating(new RatingEvent()
-                    .putRating(Math.round(rating))
-                    .putContentName(category)
-                    .putContentType(FEEDBACK_NPS)
-                    .putContentId(FEEDBACK_NPS_CODE));
+            // still on confirmation
 
             FeedbackThankPageActivity.startActivity(this, rating);
             this.finish();
