@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.home.R;
@@ -60,6 +61,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private ImageView headerBg;
     private CountDownView countDownView;
     private HomeCategoryListener listener;
+    private DynamicHomeChannel.Channels channels;
 
     public SprintSaleCarouselViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -79,19 +81,20 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         snapHelper.attachToRecyclerView(recyclerView);
     }
 
-    public static int convertDpToPixel(float dp, Context context){
+    public static int convertDpToPixel(float dp, Context context) {
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
     @Override
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), "");
+        HomePageTracking.eventEnhancedClickSprintSaleProduct(channels.getEnhanceClickSprintSaleCarouselHomePage(pos, countDownView.getCurrentCountDown()));
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), channels.getHomeAttribution(pos + 1, grid.getName()));
     }
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        final DynamicHomeChannel.Channels channels = element.getChannel();
+        this.channels = element.getChannel();
         title.setText(channels.getHeader().getName());
         Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
         container.setBackgroundColor(Color.parseColor(channels.getHeader().getBackColor()));
@@ -108,6 +111,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             @Override
             public void onClick(View view) {
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), "");
+                HomePageTracking.eventClickSeeAllProductSprintBackground();
             }
         });
     }
