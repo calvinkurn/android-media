@@ -137,6 +137,22 @@ public class DynamicHomeChannel {
             );
         }
 
+        public Map<String, Object> getEnhanceImpressionSprintSaleCarouselHomePage() {
+            List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale banner impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    list.toArray(new Object[list.size()])
+
+                            ))
+            );
+        }
+
         private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < grids.length; i++) {
@@ -180,6 +196,35 @@ public class DynamicHomeChannel {
                                                     "category", "none / other",
                                                     "variant", "none / other",
                                                     "list", "/ - p1 - sprint sale",
+                                                    "position", position + 1
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickSprintSaleCarouselHomePage(int position, String countDown) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale banner click",
+                    "eventLabel", countDown,
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "click", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf("list", "/ - p2 - sprint sale banner"),
+                                    "products", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "name", getGrids()[position].getName(),
+                                                    "id", getGrids()[position].getId(),
+                                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                                            getGrids()[position].getPrice()
+                                                    )),
+                                                    "brand", "none / other",
+                                                    "category", "none / other",
+                                                    "variant", "none / other",
+                                                    "list", "/ - p2 - sprint sale banner",
                                                     "position", position + 1
                                             )
                                     )
