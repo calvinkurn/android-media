@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.design.widget.BottomSheetBehavior;
@@ -59,6 +61,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
@@ -180,6 +183,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Inject
     StreamAnalytics analytics;
 
+    @Inject
+    NotificationPreference notificationPreference;
+
+    SharedPreferences sharedPreferences;
+
     private UserSession userSession;
 
     @Override
@@ -211,6 +219,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         initView();
         initInjector();
         initData();
+        initPreference();
     }
 
     private void initInjector() {
@@ -261,6 +270,29 @@ public class GroupChatActivity extends BaseSimpleActivity
         userSession = ((AbstractionRouter) getApplication()).getSession();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
+    }
+
+    private void initPreference() {
+        if (userSession != null
+                && !TextUtils.isEmpty(userSession.getUserId())
+                && getApplication() instanceof StreamModuleRouter) {
+
+            sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
+
+            String NOTIFICATION_GROUP_CHAT =
+                    ((StreamModuleRouter) getApplication()).getNotificationPreferenceConstant();
+
+            boolean isNotificationOn =
+                    sharedPreferences.getBoolean(NOTIFICATION_GROUP_CHAT, false);
+
+            if (!isNotificationOn
+                    && notificationPreference.isFirstTimeUser(userSession.getUserId())) {
+                sharedPreferences.edit().putBoolean(NOTIFICATION_GROUP_CHAT, true).apply();
+            }
+
+            notificationPreference.setFirstTime(userSession.getUserId());
+        }
     }
 
     public void showLoading() {
