@@ -227,7 +227,8 @@ ext {
             mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome",
-            content         : ":tkpdcontent"
+            content         : ":tkpdcontent",
+            gamification    : ":features:promo:gamification"
     ]
 
     libraries = [

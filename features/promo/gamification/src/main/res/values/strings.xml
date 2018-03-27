@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Gamification</string>
+    <string name="title_activity_gamification">GamificationActivity</string>
+</resources>
