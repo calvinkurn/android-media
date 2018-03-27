@@ -42,10 +42,14 @@ public class StreamAnalytics {
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
     public static final String COMPONENT_VOTE = "vote";
+    public static final String COMPONENT_PARTNER = "partner";
+
 
     private static final String ATTRIBUTE_GROUP_CHAT = "Group Chat";
     public static final String ATTRIBUTE_FLASH_SALE = "Flash Sale";
     public static final String ATTRIBUTE_BANNER = "Banner";
+    public static final String ATTRIBUTE_PARTNER_LOGO = "Logo";
+
 
 
     @Inject
