@@ -49,7 +49,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private TextView title;
     private TextView subtitle;
     private TextView name;
-    private TextView participant;
+    private TextView totalView;
     private RecyclerView channelPartners;
 
     public static Fragment createInstance(Bundle bundle) {
@@ -117,13 +117,12 @@ public class ChannelInfoFragment extends BaseDaggerFragment
 
     @Override
     public void channelPartnerClicked(String url, String partnerName) {
-
         ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics
                 .COMPONENT_PARTNER, partnerName, StreamAnalytics.ATTRIBUTE_PARTNER_LOGO);
 
         StreamModuleRouter router = ((StreamModuleRouter) getActivity().getApplicationContext());
         router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
-                        StreamAnalytics.ATTRIBUTE_PARTNER_LOGO));
+                StreamAnalytics.ATTRIBUTE_PARTNER_LOGO));
     }
 
     private void initView(View view) {
@@ -132,7 +131,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
-        participant = view.findViewById(R.id.participant);
+        totalView = view.findViewById(R.id.participant);
         channelPartners = view.findViewById(R.id.channel_partners);
     }
 
@@ -144,7 +143,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
             return;
         }
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
+        totalView.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());

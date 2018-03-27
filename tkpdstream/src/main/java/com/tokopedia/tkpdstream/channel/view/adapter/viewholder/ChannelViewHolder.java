@@ -41,7 +41,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
     @Override
     public void bind(ChannelViewModel element) {
 
-        participant.setText(TextFormatter.format(String.valueOf(element.getParticipant())));
+        participant.setText(TextFormatter.format(String.valueOf(element.getTotalView())));
         name.setText(element.getAdminName());
         title.setText(element.getTitle());
         subtitle.setText(element.getDescription());

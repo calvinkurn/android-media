@@ -111,6 +111,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE = "vote";
     public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
     public static final String VOTE_TYPE = "vote_type";
+    private static final String TOTAL_VIEW = "total_view";
     private String voteType;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
@@ -604,6 +605,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         showSprintSaleIcon(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
+
+        Intent intent = new Intent();
+        intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
+        setResult(Activity.RESULT_OK, intent);
     }
 
     private void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
@@ -672,7 +677,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarData(channelInfoViewModel.getTitle(),
                 channelInfoViewModel.getBannerUrl(),
-                channelInfoViewModel.getTotalParticipantsOnline());
+                channelInfoViewModel.getTotalView());
         setSponsorData();
         setTooltip();
     }
@@ -736,7 +741,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         else
             actionButton.setText(R.string.lets_chat);
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
+        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());
@@ -1008,10 +1013,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         try {
             if (!userActionViewModel.getUserId().equalsIgnoreCase(userSession.getUserId())) {
-                viewModel.setTotalParticipant(String.valueOf(Integer.parseInt(viewModel.getTotalParticipant()) +
+                viewModel.setTotalView(String.valueOf(Integer.parseInt(viewModel.getTotalView()) +
                         1));
             }
-            setToolbarParticipantCount(viewModel.getTotalParticipant());
+            setToolbarParticipantCount(viewModel.getTotalView());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

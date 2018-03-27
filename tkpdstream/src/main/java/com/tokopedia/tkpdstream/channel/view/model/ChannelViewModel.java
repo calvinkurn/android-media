@@ -21,7 +21,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     private String adminPicture;
     private String title;
     private String description;
-    private String participant;
+    private String totalView;
     private String channelUrl;
     private List<ChannelPartnerViewModel> channelPartnerViewModels;
 
@@ -31,7 +31,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     }
 
     public ChannelViewModel(String id, String adminName, String image, String adminPicture,
-                            String title, String description, String participant, String channelUrl,
+                            String title, String description, String totalView, String channelUrl,
                             List<ChannelPartnerViewModel> channelPartnerViewModels) {
         this.id = id;
         this.adminName = adminName;
@@ -39,7 +39,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.adminPicture = adminPicture;
         this.title = title;
         this.description = description;
-        this.participant = participant;
+        this.totalView = totalView;
         this.channelUrl = channelUrl;
         this.channelPartnerViewModels = channelPartnerViewModels;
     }
@@ -64,16 +64,16 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return description;
     }
 
-    public String getParticipant() {
-        return participant;
+    public String getTotalView() {
+        return totalView;
     }
 
     public String getAdminPicture() {
         return adminPicture;
     }
 
-    public void setParticipant(String participant) {
-        this.participant = participant;
+    public void setTotalView(String totalView) {
+        this.totalView = totalView;
     }
 
     public String getChannelUrl() {
@@ -97,7 +97,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         dest.writeString(this.adminPicture);
         dest.writeString(this.title);
         dest.writeString(this.description);
-        dest.writeString(this.participant);
+        dest.writeString(this.totalView);
         dest.writeString(this.channelUrl);
         dest.writeTypedList(this.channelPartnerViewModels);
     }
@@ -109,7 +109,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.adminPicture = in.readString();
         this.title = in.readString();
         this.description = in.readString();
-        this.participant = in.readString();
+        this.totalView = in.readString();
         this.channelUrl = in.readString();
         this.channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
     }
