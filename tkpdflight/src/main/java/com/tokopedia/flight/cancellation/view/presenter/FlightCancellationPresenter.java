@@ -70,21 +70,26 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     private void transformJourneyToCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
         int index = 0;
         List<FlightCancellationViewModel> selectedViewModel = new ArrayList<>();
+        List<FlightCancellationViewModel> cancellationModelList = new ArrayList<>();
 
         for (FlightCancellationViewModel item : flightCancellationViewModelList) {
-            item.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
-            item.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
+            if (getView().getFlightCancellationJourney().size() > index) {
+                FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
+                flightCancellationViewModel.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
+                flightCancellationViewModel.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
+                cancellationModelList.add(flightCancellationViewModel);
 
-            FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
-            flightCancellationViewModel.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
-            selectedViewModel.add(flightCancellationViewModel);
-            flightCancellationViewModel.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
+                FlightCancellationViewModel cancellationForSelectedViewModelList = new FlightCancellationViewModel();
+                cancellationForSelectedViewModelList.setFlightCancellationJourney(getView().getFlightCancellationJourney().get(index));
+                cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
+                selectedViewModel.add(cancellationForSelectedViewModelList);
 
-            index++;
+                index++;
+            }
         }
 
         getView().setSelectedCancellationViewModel(selectedViewModel);
-        getView().setFlightCancellationViewModel(flightCancellationViewModelList);
+        getView().setFlightCancellationViewModel(cancellationModelList);
         getView().renderCancelableList();
     }
 
