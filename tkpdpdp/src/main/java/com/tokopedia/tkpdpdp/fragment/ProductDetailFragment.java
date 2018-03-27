@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -791,6 +792,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void showErrorStock() {
+        Snackbar snack = Snackbar.make(coordinatorLayout, getString(R.string.error_variant), Snackbar.LENGTH_INDEFINITE);
+        TextView tv = snack.getView().findViewById(com.tokopedia.core.R.id.snackbar_text);
+        tv.setTextColor(ContextCompat.getColor(context,R.color.black_54));
+        tv.setMaxLines(5);
+
+        Button snackBarAction = snack.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), R.color.black_70));
+        snackBarAction.setAllCaps(false);
+
+        snack.getView().setBackground(getResources().getDrawable(R.drawable.bg_snackbar_variant));
+        snack.setAction(getString(R.string.title_retry), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
+            }
+        });
+        snack.show();
+    }
+
+    @Override
     public void showProductOthersRetry() {
 
     }
@@ -1071,6 +1093,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     if (productVariant != null) {
                         pictureView.renderData(productData);
                         headerInfoView.renderData(productData);
+                        headerInfoView.renderStockAvailability(productData.getInfo());
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
                         ratingTalkCourierView.renderData(productData);
@@ -1265,11 +1288,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
         int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
+        productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+        productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
+        headerInfoView.renderStockAvailability(productData.getInfo());
+
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(),productData);
 
         startShowCase();
 
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
+        productData.getInfo().setProductStockWording(productStock.getStockWording());
+        productData.getInfo().setLimitedStock(productStock.isLimitedStock());
+        headerInfoView.renderStockAvailability(productData.getInfo());
     }
 
     @Override

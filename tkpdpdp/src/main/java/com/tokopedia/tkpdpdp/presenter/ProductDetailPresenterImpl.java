@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
-import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -32,8 +31,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -313,6 +312,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         ,Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
+                                getProductStock(context
+                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData,productPass,context);
                         }
@@ -828,6 +829,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     ,Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
+                            getProductStock(context
+                                    ,Integer.toString(data.getInfo().getProductId()));
                         }
                         validateProductDataWithProductPassAndShowMessage(data,productPass,context);
                     }
@@ -906,7 +909,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.VideoLoadedListener() {
                     @Override
                     public void onSuccess(@NonNull VideoData data) {
-                        Log.e("data", new Gson().toJson(data));
                         viewListener.loadVideo(data);
                     }
 
@@ -1078,6 +1080,24 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(String error) {
                         viewListener.showErrorVariant();
+                    }
+                }
+        );
+    }
+
+    public void getProductStock(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductStock(context, id,
+                new RetrofitInteractor.ProductStockListener() {
+                    @Override
+                    public void onSucccess(final Child productStock) {
+                        if (productStock!=null) {
+                            viewListener.addProductStock(productStock);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.showErrorStock();
                     }
                 }
         );
