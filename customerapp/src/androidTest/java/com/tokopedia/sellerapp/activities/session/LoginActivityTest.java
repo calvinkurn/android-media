@@ -6,9 +6,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.filters.FlakyTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -25,6 +27,7 @@ import com.tokopedia.sellerapp.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
 import com.tokopedia.sellerapp.Utils;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.tkpd.R;
 
@@ -102,6 +105,8 @@ public class LoginActivityTest {
 
     @Before
     public void setup() throws Exception {
+        Intents.init();
+
         server2 = new MockWebServer();
         server2.start();
 
@@ -184,30 +189,48 @@ public class LoginActivityTest {
                 .perform(click());
     }
 
+    @Test
+    public void testFacebookLogin() throws Exception{
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+
+        startLoginActivity();
+    }
+
     /**
-     * try to press back smart lock object
+     * android-intents (not working)
+     * using uiautomator (not working)
+     * this is just experimental !!
+     *
+     * code after startEmptyIntentLoginActivity() not working.
      * @throws Exception
      */
     @Test
     public void testFirstRunSellerHome2() throws Exception{
         Intent resultData = new Intent();
+        Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
-        resultData.putExtra("phone", phoneNumber);
+        bundle.putString("phone", phoneNumber);
+        bundle.putString("username", "cincin.jati+47@tokopedia.com");
+        bundle.putString("password", "optimus");
+
+        resultData.putExtras(bundle);
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
+        intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
         startEmptyIntentLoginActivity();
 
-        Thread.sleep(500);
-
-        UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
-
-        if(smartlock.exists()){
-            Log.i("NORMANSYAH", "smartlock exists");
-            onView(isRoot()).perform(pressBack());
-        }
+//        Thread.sleep(500);
+//
+//        UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
+//
+//        if(smartlock.exists()){
+//            Log.i("NORMANSYAH", "smartlock exists");
+//            onView(isRoot()).perform(pressBack());
+//        }
     }
 
     private void startLoginActivity() {
@@ -226,6 +249,7 @@ public class LoginActivityTest {
     @After
     public void tearDown() throws Exception {
         RxJavaTestPlugins.resetJavaTestPlugins();
+        Intents.release();
         server.shutdown();
         server2.shutdown();
     }
