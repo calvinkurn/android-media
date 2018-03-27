@@ -716,7 +716,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() > 1
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
             ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this),
-                    tabs.getChildAt(CHANNEL_VOTE_FRAGMENT));
+                    tabs.getChildAt(CHATROOM_FRAGMENT));
         }
     }
 
@@ -1074,6 +1074,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 
+    }
+
+    public void moveToVoteFragment() {
+        showFragment(CHANNEL_VOTE_FRAGMENT);
+    }
+
+    public String getToolbarTitle(){
+        return toolbar.getTitle().toString();
     }
 
     @Override
