@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -32,6 +34,11 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_cancellation;
 
+    public interface FlightCancellationListener {
+        void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+    }
+
     private Context context;
     private TextView txtDepartureDetail;
     private TextView txtJourneyDetail;
@@ -39,16 +46,21 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     private TextView txtDuration;
     private VerticalRecyclerView verticalRecyclerView;
     private PassengerAdapter passengerAdapter;
+    private CheckBox checkBoxFlight;
 
-    public FlightCancellationViewHolder(View itemView) {
+    private FlightCancellationListener listener;
+
+    public FlightCancellationViewHolder(View itemView, FlightCancellationListener flightCancellationListener) {
         super(itemView);
 
         context = itemView.getContext();
+        listener = flightCancellationListener;
 
         txtDepartureDetail = itemView.findViewById(R.id.tv_departure_time_label);
         txtJourneyDetail = itemView.findViewById(R.id.tv_journey_detail_label);
         txtAirlineName = itemView.findViewById(R.id.airline_name);
         txtDuration = itemView.findViewById(R.id.duration);
+        checkBoxFlight = itemView.findViewById(R.id.checkbox);
 
         verticalRecyclerView = itemView.findViewById(R.id.recycler_view_passenger);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
@@ -102,11 +114,23 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         );
 
         passengerAdapter.addData(element.getPassengerViewModelList());
+
+        checkBoxFlight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    passengerAdapter.checkAllData();
+                } else {
+                    passengerAdapter.uncheckAllData();
+                }
+            }
+        });
     }
 
     private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder> {
 
         List<FlightCancellationPassengerViewModel> passengerViewModelList;
+        List<PassengerViewHolder> passengerViewHolderList = new ArrayList<>();
 
         public PassengerAdapter() {
             this.passengerViewModelList = new ArrayList<>();
@@ -121,7 +145,8 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         @Override
         public void onBindViewHolder(PassengerViewHolder passengerViewHolder, int position) {
-            passengerViewHolder.bindData(passengerViewModelList.get(position));
+            passengerViewHolder.bindData(passengerViewModelList.get(position), getAdapterPosition());
+            passengerViewHolderList.add(passengerViewHolder);
         }
 
         @Override
@@ -134,20 +159,54 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             this.passengerViewModelList.addAll(passengerViewModelList);
             notifyDataSetChanged();
         }
+
+        public void checkAllData() {
+            for (int index = 0; index < getItemCount(); index++) {
+                passengerViewHolderList.get(index).updateCheckedButton(true);
+            }
+            notifyDataSetChanged();
+        }
+
+        public void uncheckAllData() {
+            for (int index = 0; index < getItemCount(); index++) {
+                passengerViewHolderList.get(index).updateCheckedButton(false);
+            }
+            notifyDataSetChanged();
+        }
     }
 
     private class PassengerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtPassengerName;
         private TextView txtPassengerType;
+        private CheckBox checkBoxPassenger;
+        private boolean isPassengerChecked = false;
+        private FlightCancellationPassengerViewModel passengerViewModel;
+        private int adapterPosition = -1;
 
         public PassengerViewHolder(View itemView) {
             super(itemView);
             txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
             txtPassengerType = itemView.findViewById(R.id.tv_passenger_type);
+            checkBoxPassenger = itemView.findViewById(R.id.checkbox);
+            checkBoxPassenger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    isPassengerChecked = isChecked;
+
+                    if (isChecked) {
+                        listener.onPassengerChecked(passengerViewModel, adapterPosition);
+                    } else {
+                        listener.onPassengerUnchecked(passengerViewModel, adapterPosition);
+                    }
+                }
+            });
         }
 
-        public void bindData(FlightCancellationPassengerViewModel passengerViewModel) {
+        public void bindData(FlightCancellationPassengerViewModel passengerViewModel, int adapterPosition) {
+            this.passengerViewModel = passengerViewModel;
+            this.adapterPosition = adapterPosition;
+
             txtPassengerName.setText(String.format("%s %s %s", passengerViewModel.getTitleString(),
                     passengerViewModel.getFirstName(), passengerViewModel.getLastName()));
 
@@ -166,5 +225,16 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             }
         }
 
+        public void updateCheckedButton(boolean checkedStatus) {
+            checkBoxPassenger.setChecked(checkedStatus);
+        }
+
+        public boolean isPassengerChecked() {
+            return isPassengerChecked;
+        }
+
+        public FlightCancellationPassengerViewModel getPassengerViewModel() {
+            return passengerViewModel;
+        }
     }
 }

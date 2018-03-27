@@ -16,9 +16,10 @@
         android:paddingTop="@dimen/padding_small"
         android:text="@string/flight_cancellation_choose_to_cancel_hint" />
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        android:background="@color/background_apps"
         android:layout_height="0sp"
         android:layout_weight="1" />
 
