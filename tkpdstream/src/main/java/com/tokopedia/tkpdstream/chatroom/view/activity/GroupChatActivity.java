@@ -111,11 +111,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
     public static final String VOTE_TYPE = "vote_type";
 
-    /**
-     * Make sure this is the same as Constants.java at tkpdcore
-     */
-    private static final String PREF_GROUP_CHAT_NOTIF = "notification_group_chat";
-
     private String voteType;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
@@ -275,13 +270,22 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initPreference() {
-        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            boolean isNotificationOn = sharedPreferences.getBoolean(PREF_GROUP_CHAT_NOTIF, false);
+        if (userSession != null
+                && !TextUtils.isEmpty(userSession.getUserId())
+                && getApplication() instanceof StreamModuleRouter) {
+
+            sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
+
+            String NOTIFICATION_GROUP_CHAT =
+                    ((StreamModuleRouter) getApplication()).getNotificationPreferenceConstant();
+
+            boolean isNotificationOn =
+                    sharedPreferences.getBoolean(NOTIFICATION_GROUP_CHAT, false);
 
             if (!isNotificationOn
                     && notificationPreference.isFirstTimeUser(userSession.getUserId())) {
-                sharedPreferences.edit().putBoolean(PREF_GROUP_CHAT_NOTIF, true).apply();
+                sharedPreferences.edit().putBoolean(NOTIFICATION_GROUP_CHAT, true).apply();
             }
 
             notificationPreference.setFirstTime(userSession.getUserId());

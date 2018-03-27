@@ -1611,6 +1611,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getNotificationPreferenceConstant() {
+        return Constants.Settings.NOTIFICATION_GROUP_CHAT;
+    }
+
+    @Override
     public void generateBranchLink(String channelId, String title, String contentMessage, String
             imgUrl, String
                                            shareUrl, Activity activity, final ShareListener
