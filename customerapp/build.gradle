@@ -47,7 +47,14 @@ def allowProguard() {
 }
 
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+    project.logger.info("oka version code")
+    if(project.hasProperty('versionCode')) {
+        project.logger.info(versionCode)
+        return Integer.parseInt(versionCode)
+    } else {
+        project.logger.info(project.defaultVeersionCode)
+        return project.defaultVersionCode
+    }
 }
 
 def getTkpdVersionName() {
