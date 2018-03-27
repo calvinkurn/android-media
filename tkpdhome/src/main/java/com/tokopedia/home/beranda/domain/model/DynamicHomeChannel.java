@@ -180,7 +180,8 @@ public class DynamicHomeChannel {
                                                     "category", "none / other",
                                                     "variant", "none / other",
                                                     "list", "/ - p1 - sprint sale",
-                                                    "position", position + 1
+                                                    "position", position + 1,
+                                                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
                                             )
                                     )
                             )
@@ -283,7 +284,7 @@ public class DynamicHomeChannel {
                                                     "name", getPromoName(),
                                                     "creative", hero.getName(),
                                                     "position", String.valueOf(position),
-                                                    "home_attribution", getHomeAttribution(position, hero.getName())
+                                                    "attribution", getHomeAttribution(position, hero.getName())
                                             )
                                     )
                             )
@@ -305,7 +306,7 @@ public class DynamicHomeChannel {
                                                     "name", getPromoName(),
                                                     "creative", grid.getName(),
                                                     "position", String.valueOf(position),
-                                                    "home_attribution", getHomeAttribution(position, grid.getName())
+                                                    "attribution", getHomeAttribution(position, grid.getName())
                                             )
                                     )
                             )
@@ -328,7 +329,7 @@ public class DynamicHomeChannel {
                                                     "creative", grid.getName(),
                                                     "creative_url", grid.getImageUrl(),
                                                     "position", String.valueOf(position),
-                                                    "home_attribution", getHomeAttribution(position, grid.getName())
+                                                    "attribution", getHomeAttribution(position, grid.getName())
                                             )
                                     )
                             )
