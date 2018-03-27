@@ -55,9 +55,8 @@ public class FeedbackThankPageActivity extends BaseSimpleActivity {
             public void onClick(View v) {
                 if (rating > AdvancedAppRatingDialog.MIN_RATING) {
                     AppRatingDialog.openPlayStore(FeedbackThankPageActivity.this);
-                } else {
-                    FeedbackThankPageActivity.this.finish();
                 }
+                FeedbackThankPageActivity.this.finish();
             }
         });
 

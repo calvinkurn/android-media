@@ -67,7 +67,7 @@ public abstract class AppRatingDialog {
     }
 
     protected void showDialog() {
-        if(isDialogNeedToBeShown()) {
+//        if(isDialogNeedToBeShown()) {
             AlertDialog alertDialog = buildAlertDialog();
                 alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -78,9 +78,9 @@ public abstract class AppRatingDialog {
 
             alertDialog.show();
             onShowDialog();
-        } else {
-            dismissDialog();
-        }
+//        } else {
+//            dismissDialog();
+//        }
     }
 
     private void dismissDialog() {

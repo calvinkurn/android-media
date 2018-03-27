@@ -376,10 +376,12 @@
 
         <activity android:name=".apprating.nps.FeedbackActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:label="@string/fb_app_title"/>
 
         <activity android:name=".apprating.nps.FeedbackThankPageActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:label="@string/fb_app_title"/>
 
         <!-- ======================================================= -->
