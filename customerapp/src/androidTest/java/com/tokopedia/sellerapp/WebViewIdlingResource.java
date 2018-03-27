@@ -24,29 +24,34 @@ public class WebViewIdlingResource extends WebChromeClient implements IdlingReso
         this.webView.setWebChromeClient(this);
     }
 
-    @Override public void onProgressChanged(WebView view, int newProgress) {
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
         if (newProgress == FINISHED && view.getTitle() != null && callback != null) {
             callback.onTransitionToIdle();
         }
     }
 
-    @Override public void onReceivedTitle(WebView view, String title) {
+    @Override
+    public void onReceivedTitle(WebView view, String title) {
         if (webView.getProgress() == FINISHED && callback != null) {
             callback.onTransitionToIdle();
         }
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return "WebView idling resource";
     }
 
-    @Override public boolean isIdleNow() {
+    @Override
+    public boolean isIdleNow() {
         // The webView hasn't been injected yet, so we're idling
         if (webView == null) return true;
         return webView.getProgress() == FINISHED && webView.getTitle() != null;
     }
 
-    @Override public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
+    @Override
+    public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
         this.callback = resourceCallback;
     }
 }

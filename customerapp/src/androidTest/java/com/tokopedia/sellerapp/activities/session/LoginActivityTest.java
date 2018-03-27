@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.activities.session;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,17 +9,11 @@ import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.Intents;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
-import android.support.test.filters.FlakyTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiSelector;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.webkit.WebView;
-import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -54,22 +47,13 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.unregisterIdlingResources;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.hamcrest.Matchers.not;
-import static testutils.TextInputLayoutActions.clickPasswordToggle;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -187,7 +171,7 @@ public class LoginActivityTest {
      * Test yahoo login
      */
     @Test
-    public void testYahooLogin(){
+    public void testYahooLogin() {
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -201,7 +185,7 @@ public class LoginActivityTest {
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview = dialog.getView().findViewById(R.id.web_oauth);
-        if(webview != null){
+        if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -234,7 +218,7 @@ public class LoginActivityTest {
      * @throws Exception
      */
     @Test
-    public void testSmartLockFullBundle() throws Exception{
+    public void testSmartLockFullBundle() throws Exception {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -259,7 +243,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void testSmartLockPartialBundle() throws Exception{
+    public void testSmartLockPartialBundle() throws Exception {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -288,7 +272,7 @@ public class LoginActivityTest {
         mIntentsRule.launchActivity(intent);
     }
 
-    private void startEmptyIntentLoginActivity(){
+    private void startEmptyIntentLoginActivity() {
         mIntentsRule.launchActivity(null);
     }
 

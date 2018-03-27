@@ -1,44 +1,30 @@
 package com.tokopedia.tkpd;
 
-import android.os.SystemClock;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
-import android.test.InstrumentationTestCase;
-import android.view.KeyEvent;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static org.junit.Assert.assertEquals;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SdkSuppress;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject2;
-import android.util.Log;
-
-import org.junit.Before;
-import org.junit.runner.RunWith;
-
 import java.io.File;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 // UiAutomator library test
+
 /**
  * Created by normansyahputa on 3/23/18.
  */

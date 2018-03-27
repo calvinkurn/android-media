@@ -27,63 +27,67 @@ import org.hamcrest.TypeSafeMatcher;
 
 public class TextInputLayoutMatchers {
 
-  /**
-   * Returns a matcher that matches TextInputLayouts with non-empty content descriptions for the
-   * password toggle.
-   */
-  public static Matcher<View> passwordToggleHasContentDescription() {
-    return new TypeSafeMatcher<View>(TextInputLayout.class) {
-      @Override
-      public void describeTo(Description description) {
-        description.appendText(
-            "TextInputLayout has non-empty content description" + "for password toggle.");
-      }
+    /**
+     * Returns a matcher that matches TextInputLayouts with non-empty content descriptions for the
+     * password toggle.
+     */
+    public static Matcher<View> passwordToggleHasContentDescription() {
+        return new TypeSafeMatcher<View>(TextInputLayout.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(
+                        "TextInputLayout has non-empty content description" + "for password toggle.");
+            }
 
-      @Override
-      protected boolean matchesSafely(View view) {
-        TextInputLayout item = (TextInputLayout) view;
-        // Reach in and find the password toggle since we don't have a public API
-        // to get a reference to it
-        View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
-        return !TextUtils.isEmpty(item.getPasswordVisibilityToggleContentDescription())
-            && !TextUtils.isEmpty(passwordToggle.getContentDescription());
-      }
-    };
-  }
+            @Override
+            protected boolean matchesSafely(View view) {
+                TextInputLayout item = (TextInputLayout) view;
+                // Reach in and find the password toggle since we don't have a public API
+                // to get a reference to it
+                View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                return !TextUtils.isEmpty(item.getPasswordVisibilityToggleContentDescription())
+                        && !TextUtils.isEmpty(passwordToggle.getContentDescription());
+            }
+        };
+    }
 
-  /** Returns a matcher that matches TextInputLayouts with non-displayed password toggles */
-  public static Matcher<View> doesNotShowPasswordToggle() {
-    return new TypeSafeMatcher<View>(TextInputLayout.class) {
-      @Override
-      public void describeTo(Description description) {
-        description.appendText("TextInputLayout shows password toggle.");
-      }
+    /**
+     * Returns a matcher that matches TextInputLayouts with non-displayed password toggles
+     */
+    public static Matcher<View> doesNotShowPasswordToggle() {
+        return new TypeSafeMatcher<View>(TextInputLayout.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("TextInputLayout shows password toggle.");
+            }
 
-      @Override
-      protected boolean matchesSafely(View item) {
-        // Reach in and find the password toggle since we don't have a public API
-        // to get a reference to it
-        View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
-        return passwordToggle.getVisibility() != View.VISIBLE;
-      }
-    };
-  }
+            @Override
+            protected boolean matchesSafely(View item) {
+                // Reach in and find the password toggle since we don't have a public API
+                // to get a reference to it
+                View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                return passwordToggle.getVisibility() != View.VISIBLE;
+            }
+        };
+    }
 
-  /** Returns a matcher that matches TextInputLayouts with non-displayed password toggles */
-  public static Matcher<View> passwordToggleIsNotChecked() {
-    return new TypeSafeMatcher<View>(TextInputLayout.class) {
-      @Override
-      public void describeTo(Description description) {
-        description.appendText("TextInputLayout has checked password toggle.");
-      }
+    /**
+     * Returns a matcher that matches TextInputLayouts with non-displayed password toggles
+     */
+    public static Matcher<View> passwordToggleIsNotChecked() {
+        return new TypeSafeMatcher<View>(TextInputLayout.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("TextInputLayout has checked password toggle.");
+            }
 
-      @Override
-      protected boolean matchesSafely(View item) {
-        // Reach in and find the password toggle since we don't have a public API
-        // to get a reference to it
-        CheckableImageButton passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
-        return !passwordToggle.isChecked();
-      }
-    };
-  }
+            @Override
+            protected boolean matchesSafely(View item) {
+                // Reach in and find the password toggle since we don't have a public API
+                // to get a reference to it
+                CheckableImageButton passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                return !passwordToggle.isChecked();
+            }
+        };
+    }
 }

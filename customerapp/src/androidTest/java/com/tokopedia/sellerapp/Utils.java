@@ -64,10 +64,13 @@ public class Utils {
 
     private static Matcher<Object> withToolbarTitle(final Matcher<CharSequence> textMatcher) {
         return new BoundedMatcher<Object, Toolbar>(Toolbar.class) {
-            @Override public boolean matchesSafely(Toolbar toolbar) {
+            @Override
+            public boolean matchesSafely(Toolbar toolbar) {
                 return textMatcher.matches(toolbar.getTitle());
             }
-            @Override public void describeTo(Description description) {
+
+            @Override
+            public void describeTo(Description description) {
                 description.appendText("with toolbar title: ");
                 textMatcher.describeTo(description);
             }
@@ -97,7 +100,7 @@ public class Utils {
         };
     }
 
-    public static String getString(@StringRes int stringId){
+    public static String getString(@StringRes int stringId) {
         return InstrumentationRegistry.getTargetContext().getString(stringId);
     }
 
@@ -123,12 +126,12 @@ public class Utils {
 
     /**
      * this snippet code only worked for lollipop or below
+     *
      * @param name
      * @param activity
      */
-    public static void takeScreenshot(String name, Activity activity)
-    {
-        if(Integer.valueOf(Build.VERSION.SDK) < Build.VERSION_CODES.LOLLIPOP)
+    public static void takeScreenshot(String name, Activity activity) {
+        if (Integer.valueOf(Build.VERSION.SDK) < Build.VERSION_CODES.LOLLIPOP)
             return;
 
         // In Testdroid Cloud, taken screenshots are always stored
@@ -167,7 +170,7 @@ public class Utils {
         }
     }
 
-    public static Matcher<View> withTextColor(final int color){
+    public static Matcher<View> withTextColor(final int color) {
         Checks.checkNotNull(color);
 
         return new BoundedMatcher<View, TextView>(TextView.class) {
@@ -220,7 +223,7 @@ public class Utils {
         return mockResponse;
     }
 
-    public static class RecyclerViewTestUtils{
+    public static class RecyclerViewTestUtils {
         public static <VH extends RecyclerView.ViewHolder> ViewAction actionOnItemViewAtPosition(int position,
                                                                                                  @IdRes
                                                                                                          int viewId,
@@ -251,7 +254,7 @@ public class Utils {
             }
 
             public Matcher<View> getConstraints() {
-                return Matchers.allOf(new Matcher[] {
+                return Matchers.allOf(new Matcher[]{
                         ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
                 });
             }
@@ -295,7 +298,7 @@ public class Utils {
             }
 
             public Matcher<View> getConstraints() {
-                return Matchers.allOf(new Matcher[] {
+                return Matchers.allOf(new Matcher[]{
                         ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
                 });
             }
@@ -335,8 +338,8 @@ public class Utils {
                             idDescription = this.resources.getResourceName(recyclerViewId);
                         } catch (Resources.NotFoundException var4) {
                             idDescription = String.format("%s (resource name not found)",
-                                    new Object[] { Integer.valueOf
-                                            (recyclerViewId) });
+                                    new Object[]{Integer.valueOf
+                                            (recyclerViewId)});
                         }
                     }
 
@@ -352,8 +355,7 @@ public class Utils {
                                 (RecyclerView) view.getRootView().findViewById(recyclerViewId);
                         if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
                             childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
-                        }
-                        else {
+                        } else {
                             return false;
                         }
                     }
@@ -403,7 +405,8 @@ public class Utils {
                 this.visibility = visibility;
             }
 
-            @Override public void describeTo(Description description) {
+            @Override
+            public void describeTo(Description description) {
                 String visibilityName;
                 if (visibility == View.GONE) visibilityName = "GONE";
                 else if (visibility == View.VISIBLE) visibilityName = "VISIBLE";
@@ -411,7 +414,8 @@ public class Utils {
                 description.appendText("View visibility must has equals " + visibilityName);
             }
 
-            @Override public boolean matches(Object o) {
+            @Override
+            public boolean matches(Object o) {
 
                 if (o == null) {
                     if (visibility == View.GONE || visibility == View.INVISIBLE) return true;
@@ -440,11 +444,11 @@ public class Utils {
 
         @Override
         protected boolean matchesSafely(View target) {
-            if (!(target instanceof ImageView)){
+            if (!(target instanceof ImageView)) {
                 return false;
             }
             ImageView imageView = (ImageView) target;
-            if (expectedId < 0){
+            if (expectedId < 0) {
                 return imageView.getDrawable() == null;
             }
             Resources resources = target.getContext().getResources();
@@ -462,9 +466,9 @@ public class Utils {
 //                Bitmap otherBitmap = ((BitmapDrawable) expectedDrawable).getBitmap();
 //                return bitmap.sameAs(otherBitmap);
 //            }else{
-                Drawable.ConstantState bitmap = imageView.getDrawable().getConstantState();
-                Drawable.ConstantState otherBitmap = expectedDrawable.getConstantState();
-                return bitmap.equals(otherBitmap);
+            Drawable.ConstantState bitmap = imageView.getDrawable().getConstantState();
+            Drawable.ConstantState otherBitmap = expectedDrawable.getConstantState();
+            return bitmap.equals(otherBitmap);
 //            }
         }
 

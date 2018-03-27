@@ -24,7 +24,7 @@ public class MockShopApi implements ShopApi {
     private final BehaviorDelegate<ShopApi> shopApiBehaviorDelegate;
 
     @Inject
-    public MockShopApi(MockRetrofit mockRetrofit){
+    public MockShopApi(MockRetrofit mockRetrofit) {
         shopApiBehaviorDelegate = mockRetrofit.create(ShopApi.class);
     }
 

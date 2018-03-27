@@ -18,7 +18,7 @@ public class TestUtilModules {
 
     @Provides
     @Singleton
-    public ImageHandler provideImageHandler(Context context){
+    public ImageHandler provideImageHandler(Context context) {
         return new ImageHandler(context);
     }
 }
