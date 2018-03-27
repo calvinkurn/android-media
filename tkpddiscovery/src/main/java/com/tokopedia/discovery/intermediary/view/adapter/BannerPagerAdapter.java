@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
@@ -63,7 +62,6 @@ public class BannerPagerAdapter extends PagerAdapter {
                             intent.putExtra(URL, bannerList.get(position).getUrl());
                             context.startActivity(intent);
                     }
-
                 }
             });
         }

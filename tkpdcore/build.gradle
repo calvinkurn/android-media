@@ -135,6 +135,7 @@ dependencies {
     compile rootProject.ext.debugToolsDependencies.stetho
 
     compile rootProject.ext.analyticsDependencies.logentries
+    compile project(rootProject.ext.libraries.analytics)
 }
 
 apply plugin: 'com.google.gms.google-services'

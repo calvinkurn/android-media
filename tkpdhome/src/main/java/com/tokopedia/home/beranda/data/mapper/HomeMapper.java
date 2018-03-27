@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,17 +69,21 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
+                int sprintPosition = 1;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
                                 channel.getEnhanceImpressionSprintSaleHomePage()
                         );
+                        HomeTrackingUtils.homeSprintSaleImpression(sprintPosition, channel);
+                        sprintPosition++;
                     } else {
                         position++;
                         channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
                         HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
                                 channel.getEnhanceImpressionDynamicChannelHomePage()
                         );
+                        HomeTrackingUtils.homeDiscoveryWidgetImpression(position - 1, channel);
                     }
                     list.add(mappingDynamicChannel(channel));
                 }

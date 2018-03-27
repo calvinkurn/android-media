@@ -17,7 +17,7 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 
 import java.text.ParseException;
@@ -151,39 +151,47 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                HomeTrackingUtils.homeSprintSaleViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String appLink= DynamicLinkHelper.getActionLink(channel.getGrids()[0]);
                 if (isSprintSale(channel)) {
                     HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(0, countDownView.getCurrentCountDown()));
+                    HomeTrackingUtils.homeSprintSaleClick(1, channel,appLink);
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
+
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]));
+                listener.onDynamicChannelClicked(appLink);
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String appLink= DynamicLinkHelper.getActionLink(channel.getGrids()[1]);
                 if (isSprintSale(channel)) {
                     HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(1, countDownView.getCurrentCountDown()));
+                    HomeTrackingUtils.homeSprintSaleClick(1, channel,appLink);
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]));
+                listener.onDynamicChannelClicked(appLink);
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String appLink= DynamicLinkHelper.getActionLink(channel.getGrids()[2]);
                 if (isSprintSale(channel)) {
                     HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(2, countDownView.getCurrentCountDown()));
+                    HomeTrackingUtils.homeSprintSaleClick(2, channel,appLink);
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]));
+                listener.onDynamicChannelClicked(appLink);
             }
         });
     }

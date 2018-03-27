@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -83,6 +84,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             @Override
             public void onClick(View view) {
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                HomeTrackingUtils.homeDiscoveryWidgetViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
             }
         });
 
@@ -93,6 +95,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                 );
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
+                HomeTrackingUtils.homeDiscoveryWidgetClick(1,channel,DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +105,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
                 );
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]));
+                HomeTrackingUtils.homeDiscoveryWidgetClick(2,channel,DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
             }
         });
         channelImage2.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +115,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
                 );
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]));
+                HomeTrackingUtils.homeDiscoveryWidgetClick(3,channel,DynamicLinkHelper.getActionLink(element.getChannel().getHero()[1]));
             }
         });
         channelImage3.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +125,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
                 );
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
+                HomeTrackingUtils.homeDiscoveryWidgetClick(4,channel,DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
             }
         });
         channelImage4.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +135,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
                 );
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
+                HomeTrackingUtils.homeDiscoveryWidgetClick(5,channel,DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
             }
         });
     }

@@ -5,7 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 import butterknife.ButterKnife;
 
@@ -90,8 +90,10 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         private void eventClickUseCase(LayoutSections layoutSections) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
                 HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
+                HomeTrackingUtils.homeUsedCaseClick(layoutSections.getIcon(),getLayoutPosition(),layoutSections.getApplink());
             } else {
                 HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
+
             }
         }
 

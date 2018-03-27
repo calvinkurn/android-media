@@ -13,6 +13,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -24,7 +25,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -74,10 +74,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
+                AnalyticsEventTrackingHelper.hamburgerIconClickLogin("Login");
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
+                AnalyticsEventTrackingHelper.hamburgerIconClickSignup("Login");
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdCoreRouter) {
@@ -137,6 +139,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     protected void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
+        AnalyticsEventTrackingHelper.hamburgerIconClickCategory(label);
     }
 
     protected static void startIntent(Context context, Class<?> cls) {

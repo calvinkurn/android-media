@@ -17,6 +17,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void onPromoClick(int position) {
         HomePageTracking.eventPromoClick(getPromotion(position));
         listener.onPromoClick(slidesList.get(position));
+        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position) );
     }
 
     @Override
@@ -84,6 +86,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoAllClick() {
         HomePageTracking.eventClickViewAllPromo();
+        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
 
         boolean remoteConfigEnable;
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
@@ -93,6 +96,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
         if (remoteConfigEnable) {
             context.startActivity(PromoListActivity.newInstance(context));
+            HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
         } else {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
@@ -100,7 +104,9 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                     TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
             );
             context.startActivity(intent);
-        }
+            HomeTrackingUtils.homeViewAllPromotions(
+                    TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP);
 
+        }
     }
 }

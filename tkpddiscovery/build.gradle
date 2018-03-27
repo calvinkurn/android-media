@@ -40,4 +40,5 @@ dependencies {
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    compile project(rootProject.ext.libraries.analytics)
 }

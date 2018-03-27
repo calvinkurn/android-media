@@ -39,6 +39,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.SessionAnalyticsEventsHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -188,14 +189,19 @@ public class LoginFragment extends BaseDaggerFragment
         menu.add(Menu.NONE, R.id.action_register, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_register);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItem.setIcon(getDraw());
+        if (getDraw() != null) {
+            menuItem.setIcon(getDraw());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Drawable getDraw() {
-        TextDrawable drawable = new TextDrawable(getActivity());
-        drawable.setText(getResources().getString(R.string.register));
-        drawable.setTextColor(R.color.black_70b);
+        TextDrawable drawable = null;
+        if (getActivity() != null) {
+            drawable = new TextDrawable(getActivity());
+            drawable.setText(getResources().getString(R.string.register));
+            drawable.setTextColor(R.color.black_70b);
+        }
         return drawable;
     }
 
@@ -267,6 +273,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 UnifyTracking.eventCTAAction();
+                SessionAnalyticsEventsHelper.loginPageClickLogin();
             }
         });
 
@@ -279,6 +286,8 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
+                SessionAnalyticsEventsHelper.loginPageClickForgotPassword("ForgotPasswordActivity");
+
             }
         });
 
@@ -685,6 +694,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginFacebookClick();
+                    SessionAnalyticsEventsHelper.loginPageClickLoginFacebook();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
@@ -692,6 +702,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginGoogleClick();
+                    SessionAnalyticsEventsHelper.loginPageClickLoginGoogle();
                 }
             });
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
@@ -699,6 +710,7 @@ public class LoginFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     onLoginPhoneNumberClick();
+                    SessionAnalyticsEventsHelper.loginPageClickLoginPhone();
                 }
             });
         } else {

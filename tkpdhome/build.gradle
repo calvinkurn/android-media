@@ -40,4 +40,5 @@ dependencies {
     compile rootProject.ext.debugToolsDependencies.stetho
     compile project(':tkpddigital')
     compile project(':tkpdfeed')
+    compile project(rootProject.ext.libraries.analytics)
 }
