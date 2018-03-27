@@ -18,7 +18,8 @@ import dagger.Component;
 @ChatroomScope
 @Component(modules = ChatroomModule.class, dependencies = StreamComponent.class)
 public interface ChatroomComponent {
-    @ApplicationContext Context getApplicationContext();
+    @ApplicationContext
+    Context getApplicationContext();
 
     void inject(GroupChatFragment fragment);
 
