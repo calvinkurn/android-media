@@ -147,12 +147,14 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
     }
 
     @Override
@@ -178,6 +180,12 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     private void invalidateTitleToolBar() {
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
     }
 
     private void invalidateHomeUpToolbarIndicator(){

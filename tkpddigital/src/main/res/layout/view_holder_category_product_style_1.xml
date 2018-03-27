@@ -33,6 +33,7 @@
             android:id="@+id/holder_client_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
             android:orientation="vertical" />
 
         <LinearLayout
@@ -63,7 +64,6 @@
 
             <CheckBox
                 android:id="@+id/cb_instant_checkout"
-                app:theme="@style/DigitalCheckboxAndRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -71,7 +71,8 @@
                 android:layout_marginStart="@dimen/digital_margin_min_5"
                 android:text="@string/label_instant_payment_digital"
                 android:textColor="@color/checkbox_text"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/fontvs"
+                app:theme="@style/DigitalCheckboxAndRadioButton" />
 
             <ImageView
                 android:id="@+id/tooltip_instant_checkout"

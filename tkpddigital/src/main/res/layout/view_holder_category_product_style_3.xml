@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -22,44 +22,43 @@
             style="@style/TextTitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/digital_padding_16"
             android:paddingEnd="@null"
             android:paddingLeft="@dimen/padding_vvs"
             android:paddingRight="@null"
             android:paddingStart="@dimen/padding_vvs"
-            android:paddingBottom="@dimen/digital_padding_16"
-            tools:text="Beli Pulsa"/>
+            tools:text="Beli Pulsa" />
 
         <LinearLayout
             android:id="@+id/holder_chooser_operator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:orientation="vertical"/>
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/holder_client_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/holder_chooser_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/holder_additional_info_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/holder_price_info_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
         <RelativeLayout
             android:id="@+id/layout_checkout"
@@ -71,23 +70,23 @@
 
             <CheckBox
                 android:id="@+id/cb_instant_checkout"
-                app:theme="@style/DigitalCheckboxAndRadioButton"
-                android:layout_marginLeft="@dimen/digital_margin_min_5"
-                android:layout_marginStart="@dimen/digital_margin_min_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+                android:layout_marginLeft="@dimen/digital_margin_min_5"
+                android:layout_marginStart="@dimen/digital_margin_min_5"
                 android:text="@string/label_instant_payment_digital"
                 android:textColor="@color/checkbox_text"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/fontvs"
+                app:theme="@style/DigitalCheckboxAndRadioButton" />
 
             <ImageView
                 android:id="@+id/tooltip_instant_checkout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_toRightOf="@+id/cb_instant_checkout"
-                android:layout_centerVertical="true"
                 app:srcCompat="@drawable/info_icon" />
 
         </RelativeLayout>
@@ -97,9 +96,9 @@
         android:id="@+id/btn_buy_digital"
         style="@style/Button.Submit.Orange"
         android:layout_height="@dimen/btn_height"
-        android:layout_weight="0.40"
         android:layout_marginBottom="@dimen/digital_padding_16"
         android:layout_marginTop="@dimen/digital_padding_16"
-        android:text="@string/label_btn_buy_digital"/>
+        android:layout_weight="0.40"
+        android:text="@string/label_btn_buy_digital" />
 
 </LinearLayout>

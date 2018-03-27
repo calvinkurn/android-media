@@ -250,6 +250,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
+        getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     @Override
@@ -262,6 +263,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
+        getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
