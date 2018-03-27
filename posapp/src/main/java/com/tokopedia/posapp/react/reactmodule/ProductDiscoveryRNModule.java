@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.component.DaggerReactCacheComponent;
-import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
 import com.tokopedia.posapp.react.datasource.cloud.ReactProductCloudSource;
 import com.tokopedia.posapp.react.datasource.model.ProductSearchRequest;
 

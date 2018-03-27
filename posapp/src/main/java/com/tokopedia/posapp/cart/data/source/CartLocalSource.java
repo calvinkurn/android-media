@@ -12,6 +12,8 @@ import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -24,6 +26,7 @@ public class CartLocalSource {
     private CartDbManager cartDbManager;
     private ProductDbManager productDbManager;
 
+    @Inject
     public CartLocalSource() {
         this.cartDbManager = new CartDbManager();
         this.productDbManager = new ProductDbManager();
@@ -46,7 +49,7 @@ public class CartLocalSource {
     }
 
     public Observable<List<CartDomain>> getAllCartProducts() {
-        return cartDbManager.getAllData().flatMap(getProducts());
+        return cartDbManager.getAllData();
     }
 
     public Observable<CartDomain> getCartProduct(int productId) {
@@ -56,7 +59,7 @@ public class CartLocalSource {
     }
 
     public Observable<List<CartDomain>> getCartProducts(int offset, int limit) {
-        return cartDbManager.getListData(offset, limit).flatMap(getProducts());
+        return cartDbManager.getListData(offset, limit);
     }
 
     private Func1<DataStatus, ATCStatusDomain> getATCDefaultStatus() {

@@ -18,8 +18,6 @@ import com.tokopedia.posapp.auth.login.view.fragment.PosLoginFragment;
 public class PosLoginActivity extends BaseSimpleActivity implements HasComponent {
     public static Intent getPosLoginIntent(Context context) {
         Intent callingIntent = new Intent(context, PosLoginActivity.class);
-//        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-//        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
         return callingIntent;
     }
 

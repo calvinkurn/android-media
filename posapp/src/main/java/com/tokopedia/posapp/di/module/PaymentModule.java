@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
+import com.tokopedia.posapp.cart.di.CartModule;
 import com.tokopedia.posapp.payment.otp.data.factory.PaymentFactory;
 import com.tokopedia.posapp.payment.otp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.payment.otp.data.mapper.PaymentStatusMapper;

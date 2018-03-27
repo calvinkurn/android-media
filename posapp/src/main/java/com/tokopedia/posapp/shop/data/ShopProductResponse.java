@@ -2,10 +2,11 @@ package com.tokopedia.posapp.shop.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.posapp.base.data.pojo.Paging;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by okasurya on 9/4/17.
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class ShopProductResponse {
     @SerializedName("list")
     @Expose
-    private java.util.List<com.tokopedia.core.shopinfo.models.productmodel.List> list = new ArrayList<List>();
+    private List<ProductDetail> list = new ArrayList<>();
 
     @SerializedName("paging")
     private Paging paging;
@@ -22,11 +23,11 @@ public class ShopProductResponse {
     @SerializedName("total_data")
     private int totalData;
 
-    public java.util.List<List> getList() {
+    public List<ProductDetail> getList() {
         return list;
     }
 
-    public void setList(java.util.List<List> list) {
+    public void setList(List<ProductDetail> list) {
         this.list = list;
     }
 

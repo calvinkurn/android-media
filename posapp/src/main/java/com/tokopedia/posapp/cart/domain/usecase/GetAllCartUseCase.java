@@ -1,13 +1,14 @@
 package com.tokopedia.posapp.cart.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.posapp.cart.data.repository.CartLocalRepository;
 import com.tokopedia.posapp.cart.data.repository.CartRepository;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,15 +17,10 @@ import rx.Observable;
  */
 
 public class GetAllCartUseCase extends UseCase<List<CartDomain>> {
-    private ThreadExecutor threadExecutor;
-    private PostExecutionThread postExecutionThread;
     private CartRepository cartRepository;
 
-    public GetAllCartUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             CartRepository cartRepository) {
-        this.threadExecutor = threadExecutor;
-        this.postExecutionThread = postExecutionThread;
+    @Inject
+    public GetAllCartUseCase(CartLocalRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
 

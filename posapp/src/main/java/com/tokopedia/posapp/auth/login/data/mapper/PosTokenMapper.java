@@ -26,7 +26,7 @@ public class PosTokenMapper extends TokenMapper {
                 tokenViewModel.getScope().contains(PosGetTokenUseCase.O2O_DELEGATE)) {
             return tokenViewModel;
         } else {
-            throw new ErrorMessageException("User doesnt have o2o scope");
+            throw new ErrorMessageException("User doesn't have o2o scope");
         }
     }
 }

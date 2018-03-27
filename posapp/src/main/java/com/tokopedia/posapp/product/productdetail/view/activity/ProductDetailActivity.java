@@ -19,7 +19,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
 import com.tokopedia.posapp.cart.data.factory.CartFactory;
-import com.tokopedia.posapp.di.component.CartComponent;
+import com.tokopedia.posapp.cart.di.CartComponent;
 import com.tokopedia.posapp.di.component.DaggerCartComponent;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
 import com.tokopedia.posapp.product.productdetail.view.fragment.ProductDetailFragment;

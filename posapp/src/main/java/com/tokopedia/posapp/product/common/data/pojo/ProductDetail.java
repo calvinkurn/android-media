@@ -35,7 +35,7 @@ public class ProductDetail {
     private String productStatus;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("product_image_full")
     @Expose
     private String productImageFull;
@@ -105,5 +105,278 @@ public class ProductDetail {
     @SerializedName("product_price_unformatted")
     @Expose
     private double productPriceUnformatted;
+
     private ProductCampaign productCampaign;
+
+    public int getShopLucky() {
+        return shopLucky;
+    }
+
+    public void setShopLucky(int shopLucky) {
+        this.shopLucky = shopLucky;
+    }
+
+    public int getShopGoldStatus() {
+        return shopGoldStatus;
+    }
+
+    public void setShopGoldStatus(int shopGoldStatus) {
+        this.shopGoldStatus = shopGoldStatus;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getProductRatingPoint() {
+        return productRatingPoint;
+    }
+
+    public void setProductRatingPoint(String productRatingPoint) {
+        this.productRatingPoint = productRatingPoint;
+    }
+
+    public String getProductDepartmentId() {
+        return productDepartmentId;
+    }
+
+    public void setProductDepartmentId(String productDepartmentId) {
+        this.productDepartmentId = productDepartmentId;
+    }
+
+    public String getProductEtalase() {
+        return productEtalase;
+    }
+
+    public void setProductEtalase(String productEtalase) {
+        this.productEtalase = productEtalase;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public void setShopUrl(String shopUrl) {
+        this.shopUrl = shopUrl;
+    }
+
+    public int getShopFeaturedShop() {
+        return shopFeaturedShop;
+    }
+
+    public void setShopFeaturedShop(int shopFeaturedShop) {
+        this.shopFeaturedShop = shopFeaturedShop;
+    }
+
+    public String getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(String productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductImageFull() {
+        return productImageFull;
+    }
+
+    public void setProductImageFull(String productImageFull) {
+        this.productImageFull = productImageFull;
+    }
+
+    public String getProductCurrencyId() {
+        return productCurrencyId;
+    }
+
+    public void setProductCurrencyId(String productCurrencyId) {
+        this.productCurrencyId = productCurrencyId;
+    }
+
+    public String getProductRatingDesc() {
+        return productRatingDesc;
+    }
+
+    public void setProductRatingDesc(String productRatingDesc) {
+        this.productRatingDesc = productRatingDesc;
+    }
+
+    public String getProductCurrency() {
+        return productCurrency;
+    }
+
+    public void setProductCurrency(String productCurrency) {
+        this.productCurrency = productCurrency;
+    }
+
+    public String getProductTalkCount() {
+        return productTalkCount;
+    }
+
+    public void setProductTalkCount(String productTalkCount) {
+        this.productTalkCount = productTalkCount;
+    }
+
+    public String getProductPriceNoIdr() {
+        return productPriceNoIdr;
+    }
+
+    public void setProductPriceNoIdr(String productPriceNoIdr) {
+        this.productPriceNoIdr = productPriceNoIdr;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getProductSoldCount() {
+        return productSoldCount;
+    }
+
+    public void setProductSoldCount(String productSoldCount) {
+        this.productSoldCount = productSoldCount;
+    }
+
+    public int getProductReturnable() {
+        return productReturnable;
+    }
+
+    public void setProductReturnable(int productReturnable) {
+        this.productReturnable = productReturnable;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
+    }
+
+    public int getProductNormalPrice() {
+        return productNormalPrice;
+    }
+
+    public void setProductNormalPrice(int productNormalPrice) {
+        this.productNormalPrice = productNormalPrice;
+    }
+
+    public String getProductImage300() {
+        return productImage300;
+    }
+
+    public void setProductImage300(String productImage300) {
+        this.productImage300 = productImage300;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getProductReviewCount() {
+        return productReviewCount;
+    }
+
+    public void setProductReviewCount(String productReviewCount) {
+        this.productReviewCount = productReviewCount;
+    }
+
+    public int getShopIsOwner() {
+        return shopIsOwner;
+    }
+
+    public void setShopIsOwner(int shopIsOwner) {
+        this.shopIsOwner = shopIsOwner;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPreorder() {
+        return productPreorder;
+    }
+
+    public void setProductPreorder(String productPreorder) {
+        this.productPreorder = productPreorder;
+    }
+
+    public String getProductWholesale() {
+        return productWholesale;
+    }
+
+    public void setProductWholesale(String productWholesale) {
+        this.productWholesale = productWholesale;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<Badge> badges) {
+        this.badges = badges;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
+    }
+
+    public double getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(double productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
+    public ProductCampaign getProductCampaign() {
+        return productCampaign;
+    }
+
+    public void setProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
+    }
 }

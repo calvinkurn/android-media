@@ -17,7 +17,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.cart.data.factory.CartFactory;
-import com.tokopedia.posapp.di.component.CartComponent;
+import com.tokopedia.posapp.cart.di.CartComponent;
 import com.tokopedia.posapp.di.component.DaggerCartComponent;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
 

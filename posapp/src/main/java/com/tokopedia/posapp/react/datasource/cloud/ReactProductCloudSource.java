@@ -3,16 +3,12 @@ package com.tokopedia.posapp.react.datasource.cloud;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.product.model.etalase.Etalase;
-import com.tokopedia.core.shopinfo.models.productmodel.List;
-import com.tokopedia.core.shopinfo.models.productmodel.Product;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.cache.data.repository.EtalaseRepositoryImpl;
-import com.tokopedia.posapp.etalase.EtalaseResponse;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.common.data.repository.ProductCloudRepository;
 import com.tokopedia.posapp.product.common.data.repository.ProductRepository;
 import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
@@ -24,9 +20,9 @@ import com.tokopedia.posapp.shop.data.ShopProductResponse;
 import com.tokopedia.posapp.shop.domain.model.EtalaseDomain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -108,7 +104,7 @@ public class ReactProductCloudSource extends ReactDataSource {
             @Override
             public CacheResult call(ProductListDomain productDomains) {
                 ShopProductResponse shopProductResponse = new ShopProductResponse();
-                java.util.List<List> productList = new ArrayList<>();
+                List<ProductDetail> productList = new ArrayList<>();
                 for (ProductDomain productDomain : productDomains.getProductDomains()) {
                     productList.add(domainToResponse(productDomain));
                 }
@@ -132,11 +128,11 @@ public class ReactProductCloudSource extends ReactDataSource {
                         RequestParams requestParams = RequestParams.EMPTY;
                         requestParams.putString(KEYWORD, request.getKeyword());
                         requestParams.putString(SHOP_ID, sessionHandler.getShopID());
-                        if(TextUtils.isEmpty(request.getEtalaseId())) {
+                        if (TextUtils.isEmpty(request.getEtalaseId())) {
                             request.setEtalaseId(etalaseDomains.get(0).getEtalaseId());
                         }
                         requestParams.putString(ETALASE, request.getEtalaseId());
-                        if(request.getOffset() == null || request.getLimit() == null) {
+                        if (request.getOffset() == null || request.getLimit() == null) {
                             request.setOffset(0);
                             request.setLimit(10);
                         }
@@ -147,14 +143,14 @@ public class ReactProductCloudSource extends ReactDataSource {
                 });
     }
 
-    private com.tokopedia.core.shopinfo.models.productmodel.List domainToResponse(ProductDomain productDomain) {
-        com.tokopedia.core.shopinfo.models.productmodel.List item = new com.tokopedia.core.shopinfo.models.productmodel.List();
-        item.productName = productDomain.getProductName();
-        item.productPrice = productDomain.getProductPrice();
-        item.productId = productDomain.getProductId();
-        item.productImage = productDomain.getProductImage();
-        item.productImage300 = productDomain.getProductImage300();
-        item.productImageFull = productDomain.getProductImageFull();
+    private ProductDetail domainToResponse(ProductDomain productDomain) {
+        ProductDetail item = new ProductDetail();
+        item.setProductName(productDomain.getProductName());
+        item.setProductPrice(productDomain.getProductPrice());
+        item.setProductId(productDomain.getProductId());
+        item.setProductImage(productDomain.getProductImage());
+        item.setProductImage300(productDomain.getProductImage300());
+        item.setProductImageFull(productDomain.getProductImageFull());
         return item;
     }
 }
