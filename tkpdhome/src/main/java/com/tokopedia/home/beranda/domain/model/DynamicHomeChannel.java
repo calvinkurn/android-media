@@ -144,12 +144,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "sprint sale banner impression",
                     "eventLabel", "",
-                    "ecommerce", DataLayer.mapOf(
-                            "currencyCode", "IDR",
-                            "impressions", DataLayer.listOf(
-                                    list.toArray(new Object[list.size()])
-
-                            ))
+                    "ecommerce", DataLayer.mapOf("promoClick", DataLayer.mapOf("promotions", list))
             );
         }
 
@@ -181,17 +176,11 @@ public class DynamicHomeChannel {
                 Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                "name", grid.getName(),
                                 "id", grid.getId(),
-                                "price", (grid.getPrice().equalsIgnoreCase("")) ? ""
-                                        : Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                                        grid.getPrice()
-                                )),
-                                "brand", "none / other",
-                                "category", "none / other",
-                                "variant", "none / other",
-                                "list", "/ - p2 - sprint sale banner",
-                                "position", i + 1
+                                "name", "/ - p2 - sprint sale banner",
+                                "position", i + 1,
+                                "creative", grid.getName(),
+                                "creative_url", grid.getImageUrl()
                         )
                 );
             }
@@ -227,29 +216,21 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceClickSprintSaleCarouselHomePage(int position, String countDown) {
+        public Map<String, Object> getEnhanceClickSprintSaleCarouselHomePage(int position, String countDown, String label) {
             return DataLayer.mapOf(
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "sprint sale banner click",
-                    "eventLabel", countDown,
+                    "eventLabel", String.format("%s - %s", countDown, label),
                     "ecommerce", DataLayer.mapOf(
-                            "currencyCode", "IDR",
-                            "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", "/ - p2 - sprint sale banner"),
-                                    "products", DataLayer.listOf(
-                                            DataLayer.mapOf(
-                                                    "name", getGrids()[position].getName(),
-                                                    "id", getGrids()[position].getId(),
-                                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                                                            getGrids()[position].getPrice()
-                                                    )),
-                                                    "brand", "none / other",
-                                                    "category", "none / other",
-                                                    "variant", "none / other",
-                                                    "list", "/ - p2 - sprint sale banner",
-                                                    "position", position + 1
-                                            )
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.mapOf(
+                                            DataLayer.mapOf("id", getGrids()[position].getId(),
+                                                    "name", "/ - p2 - sprint sale banner"),
+                                            "position", position + 1,
+                                            "creative", getGrids()[position].getName(),
+                                            "creative_url", getGrids()[position].getImageUrl(),
+                                            "attribution", getHomeAttribution(position + 1, "")
                                     )
                             )
                     )

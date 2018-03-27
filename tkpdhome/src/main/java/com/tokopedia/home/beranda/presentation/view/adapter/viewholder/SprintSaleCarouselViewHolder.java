@@ -88,8 +88,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     @Override
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
-        HomePageTracking.eventEnhancedClickSprintSaleProduct(channels.getEnhanceClickSprintSaleCarouselHomePage(pos, countDownView.getCurrentCountDown()));
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), channels.getHomeAttribution(pos + 1, grid.getName()));
+        HomePageTracking.eventEnhancedClickSprintSaleProduct(channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
+                countDownView.getCurrentCountDown(), grid.getLabel()));
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
+                channels.getHomeAttribution(pos + 1, grid.getName()));
     }
 
     @Override
