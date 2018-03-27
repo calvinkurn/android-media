@@ -1,6 +1,6 @@
 package com.tokopedia.session.changename.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.changename.view.listener.ChangeNameListener;
 import com.tokopedia.session.changename.view.viewmodel.ChangeNameViewModel;
 
@@ -25,7 +25,7 @@ public class ChangeNameSubscriber extends Subscriber<ChangeNameViewModel> {
     @Override
     public void onError(Throwable throwable) {
         mainView.dismissLoading();
-        mainView.onErrorSubmitName(ErrorHandler.getErrorMessage(mainView.getContext(), throwable));
+        mainView.onErrorSubmitName(ErrorHandler.getErrorMessage(throwable));
     }
 
     @Override
@@ -34,6 +34,6 @@ public class ChangeNameSubscriber extends Subscriber<ChangeNameViewModel> {
         if (changeNameViewModel.isSuccess())
             mainView.onSuccessSubmitName();
         else
-            mainView.onErrorSubmitName(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()));
+            mainView.onErrorSubmitName(ErrorHandler.getErrorMessage(new Throwable()));
     }
 }
