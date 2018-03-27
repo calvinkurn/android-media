@@ -80,7 +80,6 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

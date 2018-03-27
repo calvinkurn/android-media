@@ -136,7 +136,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
-        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -254,21 +253,18 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
-            sessionHandler.clearToken();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -475,11 +471,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
         startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
-    }
-
-    @Override
-    public void clearToken() {
-        presenter.clearToken();
     }
 
     @Override

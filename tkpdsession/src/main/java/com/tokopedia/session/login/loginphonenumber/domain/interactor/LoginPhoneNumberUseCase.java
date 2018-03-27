@@ -31,7 +31,6 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
     private GetTokenUseCase getTokenUseCase;
     private MakeLoginUseCase makeLoginUseCase;
     private GetUserInfoUseCase getUserInfoUseCase;
-    private SessionHandler sessionHandler;
 
     @Inject
     public LoginPhoneNumberUseCase(ThreadExecutor threadExecutor,
@@ -39,14 +38,12 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                                    GetCodeTokoCashUseCase getCodeTokoCashUseCase,
                                    GetTokenUseCase getTokenUseCase,
                                    GetUserInfoUseCase getUserInfoUseCase,
-                                   MakeLoginUseCase makeLoginUseCase,
-                                   SessionHandler sessionHandler) {
+                                   MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
         this.getCodeTokoCashUseCase = getCodeTokoCashUseCase;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -56,13 +53,7 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                 .flatMap(getCodeTokoCash(requestParams))
                 .flatMap(getTokenAccounts())
                 .flatMap(getUserInfo())
-                .flatMap(makeLogin())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        sessionHandler.clearToken();
-                    }
-                });
+                .flatMap(makeLogin());
     }
 
     private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getUserInfo() {

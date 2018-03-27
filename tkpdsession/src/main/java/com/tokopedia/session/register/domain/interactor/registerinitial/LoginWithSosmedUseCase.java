@@ -29,17 +29,14 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     protected final GetTokenUseCase getTokenUseCase;
     protected final GetUserInfoUseCase getUserInfoUseCase;
     protected final MakeLoginUseCase makeLoginUseCase;
-    private final SessionHandler sessionHandler;
 
     @Inject
     public LoginWithSosmedUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
-                                  SessionHandler sessionHandler,
                                   GetTokenUseCase getTokenUseCase,
                                   GetUserInfoUseCase getUserInfoUseCase,
                                   MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.sessionHandler = sessionHandler;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
@@ -68,17 +65,7 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
                             return Observable.just(registerSosmedDomain);
                         }
                     }
-                })
-                .doOnError(clearToken());
-    }
-
-    private Action1<Throwable> clearToken() {
-        return new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                sessionHandler.clearToken();
-            }
-        };
+                });
     }
 
     protected Observable<LoginSosmedDomain> makeLogin(final LoginSosmedDomain
