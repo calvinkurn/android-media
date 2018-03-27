@@ -71,7 +71,7 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
@@ -358,9 +358,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 replyColumn.clearFocus();
 
-                UnifyTracking.eventAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACH,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.eventAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
 
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
                 myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
@@ -385,9 +385,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.eventInsertAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
@@ -416,19 +416,19 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
-        String labelCategory = TopChatTrackingEventLabel.Category.INBOX_CHAT;
+        String labelCategory = TopChatAnalytics.Category.INBOX_CHAT;
         if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
             if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
-                labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
+                labelCategory = TopChatAnalytics.Category.SHOP_PAGE;
             }
             if (getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE, "").length() > 0) {
-                labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
+                labelCategory = TopChatAnalytics.Category.PRODUCT_PAGE;
             }
         }
 
         UnifyTracking.eventClickTemplate(labelCategory,
-                TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+                TopChatAnalytics.Action.TEMPLATE_CHAT_CLICK,
+                TopChatAnalytics.Name.INBOX_CHAT);
         String text = replyColumn.getText().toString();
         int index = replyColumn.getSelectionStart();
         replyColumn.setText(String.format("%s %s %s", text.substring(0, index), message, text.substring(index)));
@@ -453,9 +453,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToWebView(String url, String id) {
-        UnifyTracking.eventClickThumbnailMarketing(TopChatTrackingEventLabel.Category.INBOX_CHAT,
-                TopChatTrackingEventLabel.Action.CLICK_THUMBNAIL,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT,
+        UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.CLICK_THUMBNAIL,
+                TopChatAnalytics.Name.INBOX_CHAT,
                 id
         );
         KeyboardHandler.DropKeyboard(getActivity(), getView());
@@ -1017,9 +1017,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 presenter.sendMessageWithApi();
-                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
             }
         };
     }
@@ -1030,9 +1030,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 presenter.sendMessageWithWebsocket();
-                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
+                        TopChatAnalytics.Name.CHAT_DETAIL);
             }
         };
     }
@@ -1101,9 +1101,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts){
-        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
-                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatAnalytics.Name.CHAT_DETAIL);
 
         String msgId = getArguments().getString(PARAM_MESSAGE_ID);
         for(ResultProduct result: resultProducts){

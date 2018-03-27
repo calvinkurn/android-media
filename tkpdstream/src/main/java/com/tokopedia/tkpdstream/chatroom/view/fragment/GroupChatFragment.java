@@ -262,7 +262,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void refreshChat() {
+    public void Chat() {
         presenter.refreshDataAfterReconnect(mChannel);
     }
 
@@ -578,7 +578,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onVoteComponentClicked(String type, String name) {
+        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics.COMPONENT_VOTE,
+                name, StreamAnalytics.ATTRIBUTE_VOTE);
 
+        ((GroupChatContract.View) getActivity()).showChannelVoteFragment();
     }
 
     public void setChannel(OpenChannel mChannel) {
@@ -601,8 +604,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onFlashSaleClicked(String url, String campaignName) {
-        analytics.eventClickVoteComponent(StreamAnalytics.COMPONENT_FLASH_SALE, campaignName);
+
+        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics
+                .COMPONENT_FLASH_SALE, campaignName, StreamAnalytics.ATTRIBUTE_FLASH_SALE);
+
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , url);
+                , ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
+                        StreamAnalytics.ATTRIBUTE_FLASH_SALE));
     }
 }

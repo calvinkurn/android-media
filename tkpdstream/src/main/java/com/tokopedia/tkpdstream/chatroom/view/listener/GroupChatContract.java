@@ -42,6 +42,14 @@ public interface GroupChatContract {
 
         @Nullable
         ChannelInfoViewModel getChannelInfoViewModel();
+
+        void eventClickComponent(String componentName, String campaignName, String
+                attributeName);
+
+        String generateAttributeApplink(String applink,
+                                        String attributeBanner);
+
+        void showChannelVoteFragment();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

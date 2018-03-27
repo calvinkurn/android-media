@@ -303,6 +303,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                     , getActivity().getString(R.string.voter)));
 
+
             if(getActivity() instanceof GroupChatContract.View){
                 ((GroupChatContract.View)getActivity()).updateVoteViewModel(
                         voteInfoViewModel, "");

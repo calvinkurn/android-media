@@ -375,8 +375,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     //
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
-//        tabs.setLayoutManager(new GridLayoutManager(this, 4,
-//                GridLayoutManager.VERTICAL, false));
         tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tabAdapter = GroupChatTabAdapter.createInstance(this, createListFragment());
         tabs.setAdapter(tabAdapter);
@@ -385,7 +383,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private List<TabViewModel> createListFragment() {
         List<TabViewModel> list = new ArrayList<>();
         list.add(new TabViewModel(getString(R.string.title_group_chat)));
-        list.add(new TabViewModel(getString(R.string.title_vote)));
         list.add(new TabViewModel(getString(R.string.title_info)));
         return list;
     }
@@ -400,8 +397,12 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showChatroomFragment(mChannel);
                 break;
             case CHANNEL_VOTE_FRAGMENT:
-                tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
-                showChannelVoteFragment();
+                if (checkPollValid()) {
+                    tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
+                    showChannelVoteFragment();
+                } else {
+                    showChannelInfoFragment();
+                }
                 break;
             case CHANNEL_INFO_FRAGMENT:
                 showChannelInfoFragment();
@@ -453,7 +454,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         fragmentTransaction.commit();
     }
 
-    private void showChannelVoteFragment() {
+    @Override
+    public void showChannelVoteFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
@@ -694,7 +696,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
         setSponsorData();
-
         setTooltip();
     }
 
@@ -791,7 +792,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openSponsor(viewModel.getChannelInfoViewModel().getAdsLink());
+                    eventClickComponent(StreamAnalytics.COMPONENT_BANNER, viewModel
+                            .getChannelInfoViewModel().getBannerName(), StreamAnalytics
+                            .ATTRIBUTE_BANNER);
+                    openSponsor(generateAttributeApplink(
+                            viewModel.getChannelInfoViewModel().getAdsLink(),
+                            StreamAnalytics.ATTRIBUTE_BANNER,
+                            viewModel.getChannelUrl(),
+                            viewModel.getChannelName()));
                 }
             });
             setupChannelBannerParams(true);
@@ -1047,8 +1055,22 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem, String voteType) {
+        VoteInfoViewModel voteInfoViewModel = messageItem.getVoteInfoViewModel();
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
-        if (!currentFragmentIsVote()) {
+
+        if ((voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
+                && tabAdapter.getItemCount() < 3) {
+            tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
+                    .title_vote)));
+            tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
+        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+            tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
+            tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
+        }
+
+        if (!currentFragmentIsVote()
+                && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 
@@ -1071,6 +1093,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             return viewModel.getChannelInfoViewModel();
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void eventClickComponent(String componentName, String campaignName, String attributeName) {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            analytics.eventClickComponent(componentName, campaignName, attributeName, viewModel
+                    .getChannelUrl(), viewModel.getChannelName());
         }
     }
 
@@ -1098,5 +1128,37 @@ public class GroupChatActivity extends BaseSimpleActivity
                     messageItem.getEndDate(),
                     messageItem.getRedirectUrl()));
         }
+    }
+
+    @Override
+    public String generateAttributeApplink(String applink,
+                                           String attributeBanner) {
+        if (viewModel != null) {
+            return generateAttributeApplink(applink, attributeBanner,
+                    viewModel.getChannelUrl(),
+                    viewModel.getChannelName());
+        } else {
+            return applink;
+        }
+    }
+
+    private String generateAttributeApplink(String applink,
+                                            String attributeBanner,
+                                            String channelUrl,
+                                            String channelName) {
+        if (applink.contains("?")) {
+            return String.format(applink + "&%s", generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName));
+        } else {
+            return String.format(applink + "?%s", generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName));
+        }
+    }
+
+    private String generateTrackerAttribution(String attributeBanner,
+                                              String channelUrl,
+                                              String channelName) {
+        return "tracker_attribution=" + StreamAnalytics.generateTrackerAttribution
+                (attributeBanner, channelUrl, channelName);
     }
 }

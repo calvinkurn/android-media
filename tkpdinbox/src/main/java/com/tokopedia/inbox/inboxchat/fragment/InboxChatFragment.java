@@ -41,7 +41,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
@@ -547,9 +547,9 @@ public class InboxChatFragment extends BaseDaggerFragment
         if (text.length() > 0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
-            UnifyTracking.eventTopChatSearch(TopChatTrackingEventLabel.Category.INBOX_CHAT,
-                    TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
-                    TopChatTrackingEventLabel.Name.INBOX_CHAT);
+            UnifyTracking.eventTopChatSearch(TopChatAnalytics.Category.INBOX_CHAT,
+                    TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
+                    TopChatAnalytics.Name.INBOX_CHAT);
             if(getActivity() instanceof InboxChatActivity){
                 ((InboxChatActivity)getActivity()).hideIndicators();
             }
