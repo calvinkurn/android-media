@@ -189,7 +189,10 @@ public class LoginActivityTest {
     @Test
     public void testYahooLogin(){
 
-        // TODO mock server response for yahoo login.
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
 
         startEmptyIntentLoginActivity();
 
