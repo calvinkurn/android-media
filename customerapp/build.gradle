@@ -137,6 +137,20 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                    String abi = output.getFilter(com.android.build.OutputFile.ABI);
+                    output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                }
+                variant.assemble.doLast {
+                    variant.outputs.each { output ->
+                        if (output.zipAlign) {
+                            archiveAPK(variant, output);
+                        }
+                    }
+                }
+            }
         }
         release {
             signingConfig signingConfigs.debug
