@@ -14,8 +14,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.SprintSaleAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
         mainLayout = itemView.findViewById(R.id.main_layout);
         sprintSaleIcon = itemView.findViewById(R.id.sprintsale_icon);
         sprintSaleTitle = itemView.findViewById(R.id.sprintsale_title);
-        productAdapter = SprintSaleAdapter.createInstance();
+        productAdapter = SprintSaleAdapter.createInstance(listener);
         itemDecoration = new SpaceItemDecoration((int) itemView.getContext().getResources()
                 .getDimension(R.dimen.space_mini), 2);
         listProducts = itemView.findViewById(R.id.list_product);
@@ -58,13 +59,13 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
     public void bind(final SprintSaleAnnouncementViewModel element) {
         super.bind(element);
 
-        checkSprintSaleActive(element.isActive());
+        checkSprintSaleActive(element.getSprintSaleType());
         setProducts(element.getListProducts());
 
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onFlashSaleClicked(element.getRedirectUrl(), element.getCampaignName());
+                listener.onSprintSaleClicked(element.getRedirectUrl(), element.getCampaignName());
             }
         });
     }
@@ -73,11 +74,14 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
         productAdapter.setList(listProducts);
     }
 
-    private void checkSprintSaleActive(boolean isActive) {
-        if (isActive) {
-            setSprintSaleActive();
-        } else {
-            setSprintSaleFinished();
+    private void checkSprintSaleActive(String sprintSaleType) {
+        switch (sprintSaleType) {
+            case SprintSaleViewModel.TYPE_ACTIVE:
+                setSprintSaleActive();
+                break;
+            case SprintSaleViewModel.TYPE_FINISHED:
+                setSprintSaleFinished();
+                break;
         }
     }
 

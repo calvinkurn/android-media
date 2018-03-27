@@ -45,6 +45,30 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
+    public void refreshChannelInfo(String channelUuid) {
+        getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid, true), new Subscriber<ChannelInfoViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null) {
+                    getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
+                            getView().getContext(), e, false
+                    ));
+                }
+            }
+
+            @Override
+            public void onNext(ChannelInfoViewModel channelInfoViewModel) {
+                getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
+            }
+        });
+    }
+
+    @Override
     public void logoutChannel(OpenChannel mChannel) {
         logoutGroupChatUseCase.execute(mChannel);
     }

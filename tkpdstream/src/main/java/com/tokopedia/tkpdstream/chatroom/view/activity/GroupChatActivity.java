@@ -57,7 +57,6 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
-import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
@@ -609,16 +608,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         setResult(Activity.RESULT_OK, intent);
     }
 
-    private void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        if (sprintSaleViewModel != null) {
-            if (currentFragmentIsChat()) {
-                ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
-                        (GroupChatFragment.class.getSimpleName())).showSprintSaleIcon(sprintSaleViewModel);
-            }
-
-        }
-    }
-
     @Override
     public void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
         if (viewModel != null
@@ -806,13 +795,22 @@ public class GroupChatActivity extends BaseSimpleActivity
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        if (reconnect && currentFragmentIsChat()) {
-                            refreshChat();
+                        if (reconnect) {
+                            presenter.refreshChannelInfo(viewModel.getChannelUuid());
                         }
                     }
                 });
 
+    }
 
+
+    @Override
+    public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        setChannelInfoView(channelInfoViewModel);
+
+        if (currentFragmentIsChat()) {
+            refreshChat();
+        }
     }
 
     private void refreshChat() {
@@ -1136,6 +1134,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                     .setStartDate(messageItem.getStartDate());
             this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
                     .setRedirectUrl(messageItem.getRedirectUrl());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setSprintSaleType(messageItem.getSprintSaleType());
         } else if (this.viewModel != null
                 && this.viewModel.getChannelInfoViewModel() != null) {
             this.viewModel.getChannelInfoViewModel().setSprintSaleViewModel(new SprintSaleViewModel(
@@ -1143,7 +1143,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                     messageItem.getCampaignName(),
                     messageItem.getStartDate(),
                     messageItem.getEndDate(),
-                    messageItem.getRedirectUrl()));
+                    messageItem.getRedirectUrl(),
+                    messageItem.getSprintSaleType()));
         }
     }
 

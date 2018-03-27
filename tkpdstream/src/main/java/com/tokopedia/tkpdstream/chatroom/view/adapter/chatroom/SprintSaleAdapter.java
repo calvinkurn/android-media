@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 
 import java.util.ArrayList;
@@ -22,14 +23,16 @@ import java.util.List;
 
 public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.ViewHolder> {
 
+    private final ChatroomContract.View.SprintSaleViewHolderListener listener;
     List<SprintSaleProductViewModel> list;
 
-    public static SprintSaleAdapter createInstance() {
-        return new SprintSaleAdapter();
+    public static SprintSaleAdapter createInstance(ChatroomContract.View.SprintSaleViewHolderListener listener) {
+        return new SprintSaleAdapter(listener);
     }
 
-    private SprintSaleAdapter() {
+    private SprintSaleAdapter(ChatroomContract.View.SprintSaleViewHolderListener listener) {
         this.list = new ArrayList<>();
+        this.listener = listener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -40,6 +43,7 @@ public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.Vi
         TextView price;
         TextView stockText;
         ProgressBar stockProgress;
+        View mainLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -50,10 +54,18 @@ public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.Vi
             priceBeforeDiscount = itemView.findViewById(R.id.price_before_discount);
             stockText = itemView.findViewById(R.id.stock_text);
             stockProgress = itemView.findViewById(R.id.stock_progress);
-
+            mainLayout = itemView.findViewById(R.id.main_layout);
 
             priceBeforeDiscount.setPaintFlags(priceBeforeDiscount.getPaintFlags() | Paint
                     .STRIKE_THRU_TEXT_FLAG);
+
+            mainLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onSprintSaleClicked(list.get(getAdapterPosition()).getProductUrl(),
+                            list.get(getAdapterPosition()).getProductName());
+                }
+            });
 
         }
     }

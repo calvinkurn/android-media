@@ -75,7 +75,7 @@ public interface ChatroomContract {
         }
 
         interface SprintSaleViewHolderListener {
-            void onFlashSaleClicked(String url, String campaignName);
+            void onSprintSaleClicked(String url, String campaignName);
         }
     }
 

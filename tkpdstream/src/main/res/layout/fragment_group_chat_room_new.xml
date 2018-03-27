@@ -151,19 +151,18 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
-            android:id="@+id/sprintsale_icon"
-            android:layout_width="@dimen/sprint_sale_icon_size"
-            android:layout_height="@dimen/sprint_sale_icon_size"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shadow_background_circle"
-            app:srcCompat="@drawable/ic_svg_ss_non_gradient"/>
+                android:id="@+id/sprintsale_icon"
+                android:layout_width="@dimen/sprint_sale_icon_size"
+                android:layout_height="@dimen/sprint_sale_icon_size"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_ss_svg_fin"/>
 
             <TextView
                 android:id="@+id/sprintsale_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sprintsale_icon"
-                android:layout_marginTop="@dimen/margin_vs"
                 android:background="@drawable/bg_rounded_red_label"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"

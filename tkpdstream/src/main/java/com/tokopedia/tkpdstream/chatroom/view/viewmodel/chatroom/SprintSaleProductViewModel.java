@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author by nisie on 3/22/18.
  */
 
-public class SprintSaleProductViewModel implements Parcelable{
+public class SprintSaleProductViewModel implements Parcelable {
 
     String productName;
     String productImage;
@@ -16,10 +16,11 @@ public class SprintSaleProductViewModel implements Parcelable{
     String productPriceBeforeDiscount;
     int stockPercentage;
     String stockText;
+    private String productUrl;
 
     public SprintSaleProductViewModel(String productName, String productImage, String discountLabel,
                                       String productPrice, String productPriceBeforeDiscount,
-                                      int stockPercentage, String stockText) {
+                                      int stockPercentage, String stockText, String productUrl) {
         this.productName = productName;
         this.productImage = productImage;
         this.discountLabel = discountLabel;
@@ -27,6 +28,7 @@ public class SprintSaleProductViewModel implements Parcelable{
         this.productPriceBeforeDiscount = productPriceBeforeDiscount;
         this.stockPercentage = stockPercentage;
         this.stockText = stockText;
+        this.productUrl = productUrl;
     }
 
     protected SprintSaleProductViewModel(Parcel in) {
@@ -37,6 +39,7 @@ public class SprintSaleProductViewModel implements Parcelable{
         productPriceBeforeDiscount = in.readString();
         stockPercentage = in.readInt();
         stockText = in.readString();
+        productUrl = in.readString();
     }
 
     public static final Creator<SprintSaleProductViewModel> CREATOR = new Creator<SprintSaleProductViewModel>() {
@@ -79,6 +82,11 @@ public class SprintSaleProductViewModel implements Parcelable{
         return stockText;
     }
 
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -93,5 +101,6 @@ public class SprintSaleProductViewModel implements Parcelable{
         dest.writeString(productPriceBeforeDiscount);
         dest.writeInt(stockPercentage);
         dest.writeString(stockText);
+        dest.writeString(productUrl);
     }
 }

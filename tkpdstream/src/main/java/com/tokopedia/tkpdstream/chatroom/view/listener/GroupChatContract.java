@@ -50,6 +50,8 @@ public interface GroupChatContract {
                                         String attributeBanner);
 
         void vibratePhone();
+
+        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
@@ -61,5 +63,7 @@ public interface GroupChatContract {
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                           LoginGroupChatUseCase.LoginGroupChatListener
                                   loginGroupChatListener, String sendBirdToken);
+
+        void refreshChannelInfo(String channelUuid);
     }
 }

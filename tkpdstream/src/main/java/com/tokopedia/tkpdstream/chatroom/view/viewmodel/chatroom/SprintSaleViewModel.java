@@ -13,6 +13,9 @@ import java.util.Locale;
 
 public class SprintSaleViewModel implements Parcelable {
 
+    public static final String TYPE_UPCOMING = "upcoming_flashsale";
+    public static final String TYPE_ACTIVE = "sprintsale_active";
+    public static final String TYPE_FINISHED = "sprintsale_finished";
 
     private ArrayList<SprintSaleProductViewModel> listProduct;
     private String campaignName;
@@ -21,9 +24,11 @@ public class SprintSaleViewModel implements Parcelable {
     private String redirectUrl;
     private String formattedStartDate;
     private String formattedEndDate;
+    private String sprintSaleType;
 
     public SprintSaleViewModel(ArrayList<SprintSaleProductViewModel> listProduct,
-                               String campaignName, long startDate, long endDate, String redirectUrl) {
+                               String campaignName, long startDate, long endDate, String
+                                       redirectUrl, String sprintSaleType) {
         Locale localeID = new Locale("in", "ID");
         SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
         this.listProduct = listProduct;
@@ -33,7 +38,48 @@ public class SprintSaleViewModel implements Parcelable {
         this.redirectUrl = redirectUrl;
         this.formattedStartDate = sdfHour.format(startDate);
         this.formattedEndDate = sdfHour.format(endDate);
+        this.sprintSaleType = sprintSaleType;
     }
+
+    protected SprintSaleViewModel(Parcel in) {
+        listProduct = in.createTypedArrayList(SprintSaleProductViewModel.CREATOR);
+        campaignName = in.readString();
+        startDate = in.readLong();
+        endDate = in.readLong();
+        redirectUrl = in.readString();
+        formattedStartDate = in.readString();
+        formattedEndDate = in.readString();
+        sprintSaleType = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(listProduct);
+        dest.writeString(campaignName);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(redirectUrl);
+        dest.writeString(formattedStartDate);
+        dest.writeString(formattedEndDate);
+        dest.writeString(sprintSaleType);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SprintSaleViewModel> CREATOR = new Creator<SprintSaleViewModel>() {
+        @Override
+        public SprintSaleViewModel createFromParcel(Parcel in) {
+            return new SprintSaleViewModel(in);
+        }
+
+        @Override
+        public SprintSaleViewModel[] newArray(int size) {
+            return new SprintSaleViewModel[size];
+        }
+    };
 
     public ArrayList<SprintSaleProductViewModel> getListProduct() {
         return listProduct;
@@ -81,46 +127,19 @@ public class SprintSaleViewModel implements Parcelable {
         this.redirectUrl = redirectUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(listProduct);
-        dest.writeString(campaignName);
-        dest.writeLong(startDate);
-        dest.writeLong(endDate);
-        dest.writeString(redirectUrl);
-    }
-
-
-    protected SprintSaleViewModel(Parcel in) {
-        listProduct = in.createTypedArrayList(SprintSaleProductViewModel.CREATOR);
-        campaignName = in.readString();
-        startDate = in.readLong();
-        endDate = in.readLong();
-        redirectUrl = in.readString();
-    }
-
-    public static final Creator<SprintSaleViewModel> CREATOR = new Creator<SprintSaleViewModel>() {
-        @Override
-        public SprintSaleViewModel createFromParcel(Parcel in) {
-            return new SprintSaleViewModel(in);
-        }
-
-        @Override
-        public SprintSaleViewModel[] newArray(int size) {
-            return new SprintSaleViewModel[size];
-        }
-    };
-
     public String getFormattedStartDate() {
         return formattedStartDate;
     }
 
     public String getFormattedEndDate() {
         return formattedEndDate;
+    }
+
+    public void setSprintSaleType(String sprintSaleType) {
+        this.sprintSaleType = sprintSaleType;
+    }
+
+    public String getSprintSaleType() {
+        return sprintSaleType;
     }
 }

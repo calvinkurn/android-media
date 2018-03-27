@@ -18,6 +18,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -141,10 +142,10 @@ public class GroupChatMessagesMapper {
                 true,
                 "",
                 mapToListFlashSaleProducts(pojo.getUpcomingFlashsale().getProducts()),
-                true,
                 pojo.getUpcomingFlashsale().getCampaignName(),
                 pojo.getUpcomingFlashsale().getStartDate(),
                 pojo.getUpcomingFlashsale().getEndDate(),
+                SprintSaleViewModel.TYPE_UPCOMING,
                 true
 
         );
@@ -166,7 +167,7 @@ public class GroupChatMessagesMapper {
                 product.getDiscountedPrice(),
                 product.getOriginalPrice(),
                 80,
-                "Sudah mau habis");
+                "Sudah mau habis", "tokopedia://product/29379650");
     }
 
     private Visitable mapToUserChat(UserMessage message) {
