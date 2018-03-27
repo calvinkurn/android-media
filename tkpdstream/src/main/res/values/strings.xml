@@ -67,6 +67,7 @@
     <string name="login_to_chat">Masuk untuk Chat</string>
     <string name="title_sprintsale_finished">SPRINT SALE TELAH SELESAI</string>
     <string name="title_sprintsale_started">SPRINT SALE TELAH DIMULAI</string>
+    <string name="ongoing">Berlangsung</string>
     <string name="anonymous">Anonymous</string>
 
 </resources>

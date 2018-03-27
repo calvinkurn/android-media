@@ -33,7 +33,7 @@ public class StreamAnalytics {
     private static final String EVENT_ACTION_CLICK_THUMBNAIL = "click on image thumbnail";
     private static final String EVENT_ACTION_CLICK_VOTE_COMPONENT = "click on component - ";
     private static final String EVENT_ACTION_CLICK_VOTE_EXPAND = "click on vote expand";
-    public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on group chat";
+    public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on groupchat";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
@@ -130,4 +130,5 @@ public class StreamAnalytics {
                 componentType+" "+componentName
         );
     }
+
 }

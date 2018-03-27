@@ -1,14 +1,10 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -45,7 +41,6 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -93,6 +88,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private LinearLayoutManager layoutManager;
     private View chatNotificationView;
     private View login;
+    private View sprintSaleIconLayout;
+    private TextView sprintSaleText;
 
     private OpenChannel mChannel;
     private PreviousMessageListQuery mPrevMessageListQuery;
@@ -169,6 +166,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
         login = view.findViewById(R.id.login);
+        sprintSaleIconLayout = view.findViewById(R.id.sprintsale_icon_layout);
+        sprintSaleText = view.findViewById(R.id.sprintsale_text);
         prepareView();
         return view;
     }
@@ -285,8 +284,23 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-        //TODO SHOW SPRINT SALE ICON
+    public void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
+        if (isValidSprintSale(sprintSaleViewModel)) {
+            sprintSaleIconLayout.setVisibility(View.VISIBLE);
+            setupSprintSaleIcon(sprintSaleViewModel);
+        } else {
+            sprintSaleIconLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
+        long currentTime = new Date().getTime();
+        if (currentTime < sprintSaleViewModel.getStartDate()) {
+            sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
+                    .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
+        } else {
+            sprintSaleText.setText(getString(R.string.ongoing));
+        }
     }
 
     @Override
@@ -337,8 +351,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
-                && sprintSaleViewModel.getStartDate() <= currentTime
-                && sprintSaleViewModel.getStartDate() < sprintSaleViewModel.getEndDate()
                 && sprintSaleViewModel.getEndDate() > currentTime;
     }
 
@@ -387,6 +399,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 autoAddSprintSaleAnnouncement(
                         ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
                         ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
+
+                showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+
             }
         } catch (NullPointerException e) {
             e.printStackTrace();

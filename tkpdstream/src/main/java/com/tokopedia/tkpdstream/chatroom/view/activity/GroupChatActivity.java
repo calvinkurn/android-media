@@ -601,7 +601,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-        showSprintSaleIcon(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
@@ -614,7 +613,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (sprintSaleViewModel != null) {
             if (currentFragmentIsChat()) {
                 ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
-                        (GroupChatFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
+                        (GroupChatFragment.class.getSimpleName())).showSprintSaleIcon(sprintSaleViewModel);
             }
 
         }
@@ -871,6 +870,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             mChannel = openChannel;
             setupViewPager();
             showFragment(initialFragment);
+
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
