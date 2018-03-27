@@ -26,6 +26,8 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboar
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment.DEFAULT_PARENT_STOCK_IF_VARIANT;
+
 /**
  * Created by nathan on 4/11/17.
  */
@@ -94,7 +96,7 @@ public class ProductManageViewHolder extends ProductViewHolder {
             if (listener.getCurrentVariantModel() != null && listener.getCurrentVariantModel().hasSelectedVariant()) {
                 // if variant, always change stock to 1
                 stockTotalCounterInputView.setVisibility(View.GONE);
-                ProductManageViewHolder.this.listener.onTotalStockUpdated(1);
+                ProductManageViewHolder.this.listener.onTotalStockUpdated(DEFAULT_PARENT_STOCK_IF_VARIANT);
             } else {
                 stockTotalCounterInputView.setVisibility(View.VISIBLE);
                 // change the stock to 1, but only if the stock value is 0; will not change the value if it is already > 0

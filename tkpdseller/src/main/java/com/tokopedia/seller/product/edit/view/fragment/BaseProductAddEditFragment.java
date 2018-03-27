@@ -96,6 +96,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         ProductManageViewHolder.Listener, ProductPriceViewHolder.Listener,
         ProductDescriptionViewHolder.Listener {
 
+    public static final int DEFAULT_PARENT_STOCK_IF_VARIANT = 1;
     @Inject
     protected T presenter;
 
@@ -988,7 +989,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             @StockTypeDef int stockType = productVariantViewModel.getCalculateProductStatus();
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
                 onStockStatusUpdated(true);
-                onTotalStockUpdated(1);
+                onTotalStockUpdated(DEFAULT_PARENT_STOCK_IF_VARIANT);
             } else {
                 onStockStatusUpdated(stockType == StockTypeDef.TYPE_ACTIVE);
                 onTotalStockUpdated(0);

@@ -113,15 +113,11 @@ public class ProductVariantViewModel implements Parcelable {
         return StockTypeDef.TYPE_WAREHOUSE;
     }
 
-    public boolean isLimitedStock() {
-        return hasSelectedVariant() && productVariant.get(0).isLimitedStock();
-    }
-
     public void setProductVariant(List<ProductVariantCombinationViewModel> productVariant) {
         this.productVariant = productVariant;
     }
 
-    public int removeSelectedVariantFor(String lv1Value) {
+    private int removeSelectedVariantFor(String lv1Value) {
         if (productVariant == null || productVariant.size() == 0) {
             return -1;
         }
@@ -172,18 +168,21 @@ public class ProductVariantViewModel implements Parcelable {
 
     public void changeStockTo(@StockTypeDef int stockType) {
         if (productVariant != null) {
+            @StockTypeDef int prevStockType = getCalculateProductStatus();
             for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
                 if (stockType == StockTypeDef.TYPE_WAREHOUSE) {
                     productVariantCombinationViewModel.setActive(false);
                     productVariantCombinationViewModel.setStock(0);
                 } else {
-                    productVariantCombinationViewModel.setActive(true);
                     if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
-                        if (productVariantCombinationViewModel.getStock() < 1) {
+                        // if previous stock type is TYPE_EMPTY, change to 1
+                        if (prevStockType != StockTypeDef.TYPE_ACTIVE_LIMITED) {
                             productVariantCombinationViewModel.setStock(1);
+                            productVariantCombinationViewModel.setActive(true);
                         }
                     } else {
                         productVariantCombinationViewModel.setStock(0);
+                        productVariantCombinationViewModel.setActive(true);
                     }
                 }
             }
