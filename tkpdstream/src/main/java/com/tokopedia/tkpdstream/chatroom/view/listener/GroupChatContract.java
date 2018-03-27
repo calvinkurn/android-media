@@ -49,7 +49,7 @@ public interface GroupChatContract {
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
 
-        void showChannelVoteFragment();
+        void vibratePhone();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

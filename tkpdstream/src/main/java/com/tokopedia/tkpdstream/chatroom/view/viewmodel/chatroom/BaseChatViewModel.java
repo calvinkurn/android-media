@@ -131,6 +131,10 @@ public class BaseChatViewModel implements Parcelable {
         return isAdministrator;
     }
 
+    public boolean isCanVibrate() {
+        return canVibrate;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -138,43 +142,45 @@ public class BaseChatViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.showHeaderTime ? (byte) 1 : (byte) 0);
-        dest.writeString(this.message);
-        dest.writeLong(this.createdAt);
-        dest.writeLong(this.updatedAt);
-        dest.writeString(this.formattedCreatedAt);
-        dest.writeString(this.formattedUpdatedAt);
-        dest.writeString(this.messageId);
-        dest.writeLong(this.headerTime);
-        dest.writeString(this.formattedHeaderTime);
-        dest.writeString(this.senderId);
-        dest.writeString(this.senderName);
-        dest.writeString(this.senderIconUrl);
-        dest.writeByte(this.isInfluencer ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isAdministrator ? (byte) 1 : (byte) 0);
+        dest.writeByte((byte) (showHeaderTime ? 1 : 0));
+        dest.writeString(message);
+        dest.writeLong(createdAt);
+        dest.writeLong(updatedAt);
+        dest.writeString(formattedCreatedAt);
+        dest.writeString(formattedUpdatedAt);
+        dest.writeString(messageId);
+        dest.writeLong(headerTime);
+        dest.writeString(formattedHeaderTime);
+        dest.writeString(senderId);
+        dest.writeString(senderName);
+        dest.writeString(senderIconUrl);
+        dest.writeByte((byte) (isInfluencer ? 1 : 0));
+        dest.writeByte((byte) (isAdministrator ? 1 : 0));
+        dest.writeByte((byte) (canVibrate ? 1 : 0));
     }
 
     protected BaseChatViewModel(Parcel in) {
-        this.showHeaderTime = in.readByte() != 0;
-        this.message = in.readString();
-        this.createdAt = in.readLong();
-        this.updatedAt = in.readLong();
-        this.formattedCreatedAt = in.readString();
-        this.formattedUpdatedAt = in.readString();
-        this.messageId = in.readString();
-        this.headerTime = in.readLong();
-        this.formattedHeaderTime = in.readString();
-        this.senderId = in.readString();
-        this.senderName = in.readString();
-        this.senderIconUrl = in.readString();
-        this.isInfluencer = in.readByte() != 0;
-        this.isAdministrator = in.readByte() != 0;
+        showHeaderTime = in.readByte() != 0;
+        message = in.readString();
+        createdAt = in.readLong();
+        updatedAt = in.readLong();
+        formattedCreatedAt = in.readString();
+        formattedUpdatedAt = in.readString();
+        messageId = in.readString();
+        headerTime = in.readLong();
+        formattedHeaderTime = in.readString();
+        senderId = in.readString();
+        senderName = in.readString();
+        senderIconUrl = in.readString();
+        isInfluencer = in.readByte() != 0;
+        isAdministrator = in.readByte() != 0;
+        canVibrate = in.readByte() != 0;
     }
 
     public static final Creator<BaseChatViewModel> CREATOR = new Creator<BaseChatViewModel>() {
         @Override
-        public BaseChatViewModel createFromParcel(Parcel source) {
-            return new BaseChatViewModel(source);
+        public BaseChatViewModel createFromParcel(Parcel in) {
+            return new BaseChatViewModel(in);
         }
 
         @Override

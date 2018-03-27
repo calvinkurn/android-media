@@ -33,7 +33,7 @@ public class StreamAnalytics {
     private static final String EVENT_ACTION_CLICK_THUMBNAIL = "click on image thumbnail";
     private static final String EVENT_ACTION_CLICK_VOTE_COMPONENT = "click on component - ";
     private static final String EVENT_ACTION_CLICK_VOTE_EXPAND = "click on vote expand";
-    public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on group chat";
+    public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on groupchat";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
@@ -42,11 +42,14 @@ public class StreamAnalytics {
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
     public static final String COMPONENT_VOTE = "vote";
+    public static final String COMPONENT_PARTNER = "partner";
+
 
     private static final String ATTRIBUTE_GROUP_CHAT = "Group Chat";
     public static final String ATTRIBUTE_FLASH_SALE = "Flash Sale";
     public static final String ATTRIBUTE_BANNER = "Banner";
-    public static final String ATTRIBUTE_VOTE = "Vote";
+    public static final String ATTRIBUTE_PARTNER_LOGO = "Logo";
+
 
 
     @Inject
@@ -118,6 +121,14 @@ public class StreamAnalytics {
             channelName) {
         return String.format("%s - " + ATTRIBUTE_GROUP_CHAT + " -" +
                 " %s - %s", attributeName, channelUrl, channelName);
+    }
+
+    public void eventClickVoteComponent(String componentType, String componentName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
+                componentType+" "+componentName
+        );
     }
 
 }

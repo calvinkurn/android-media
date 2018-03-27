@@ -6,6 +6,7 @@
     <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
     <string name="dot">●</string>
     <string name="vote">Vote</string>
+    <string name="vote_on_running">Vote sedang berlangsung</string>
     <string name="vote_has_ended">Vote telah berakhir</string>
     <string name="time_remaining">Sisa Waktu</string>
     <string name="title_share">Share</string>
@@ -66,5 +67,6 @@
     <string name="login_to_chat">Masuk untuk Chat</string>
     <string name="title_sprintsale_finished">SPRINT SALE TELAH SELESAI</string>
     <string name="title_sprintsale_started">SPRINT SALE TELAH DIMULAI</string>
+    <string name="ongoing">Berlangsung</string>
 
 </resources>

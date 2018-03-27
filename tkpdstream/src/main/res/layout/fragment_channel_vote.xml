@@ -5,14 +5,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
     <include
         android:id="@+id/vote_bar"
         layout="@layout/layout_vote"
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/channel_banner"/>
+        android:layout_marginTop="@dimen/space_avg_small"/>
 
     <ProgressBar
         android:id="@+id/loading"

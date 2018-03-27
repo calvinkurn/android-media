@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
@@ -34,7 +35,9 @@ public class LoginGroupChatUseCase {
                         String userId,
                         final String userName, final String userAvatar,
                         final LoginGroupChatListener listener) {
-
+        if(TextUtils.isEmpty(userId)){
+            userId = "Anonymous";
+        }
         SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {

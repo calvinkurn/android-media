@@ -27,6 +27,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
 
     @Override
     public void sendVote(String pollId, boolean voted, final VoteViewModel element) {
+
         if (voted) {
             getView().showHasVoted();
         } else {

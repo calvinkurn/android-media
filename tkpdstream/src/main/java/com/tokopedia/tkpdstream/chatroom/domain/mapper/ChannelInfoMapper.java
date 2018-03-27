@@ -60,8 +60,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(),
                     "Campaign name",
-                    0,
-                    0,
+                    1522049031,
+                    1522221831,
                     "REDIRECT_URL"
             );
         } else {
