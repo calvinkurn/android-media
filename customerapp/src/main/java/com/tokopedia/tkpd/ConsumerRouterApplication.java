@@ -1563,7 +1563,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openRedirectUrl(Activity activity, String url) {
         if (isSupportedDelegateDeepLink(url)) {
-            actionAppLink(activity, url);
+            actionApplinkFromActivity(activity, url);
         } else {
             actionOpenGeneralWebView(activity, url);
         }
