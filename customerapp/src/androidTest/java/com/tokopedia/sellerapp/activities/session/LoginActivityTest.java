@@ -72,22 +72,7 @@ public class LoginActivityTest {
     @Rule
     public ActivityTestRule<LoginActivity> mIntentsRule = new ActivityTestRule<LoginActivity>(
             LoginActivity.class, true, false
-    ){
-        @Override
-        protected void afterActivityLaunched() {
-            Intents.init();
-            super.afterActivityLaunched();
-
-            intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
-        }
-
-        @Override
-        protected void afterActivityFinished() {
-            super.afterActivityFinished();
-            Intents.release();
-        }
-
-    };
+    );
 
     @Inject
     GCMHandler gcmHandler;
