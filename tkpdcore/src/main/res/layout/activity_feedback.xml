@@ -18,59 +18,65 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="@dimen/text_size_large"
-            android:text="@string/fb_title"/>
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
 
-        <TextView
-            android:layout_marginTop="@dimen/new_icon_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fb_desc_1"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_large"
+                android:text="@string/fb_title"/>
 
-        <Spinner
-            android:layout_marginTop="@dimen/new_margin_small"
-            android:id="@+id/sp_fb_category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
-            android:entries="@array/feedback_category"/>
+            <TextView
+                android:layout_marginTop="@dimen/new_icon_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fb_desc_1"/>
 
-        <TextView
-            android:layout_marginTop="@dimen/new_icon_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fb_desc_2"/>
+            <Spinner
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:id="@+id/sp_fb_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:entries="@array/feedback_category"/>
 
-        <EditText
-            android:layout_marginTop="@dimen/new_margin_small"
-            android:id="@+id/et_fb_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:lines="6"
-            android:maxLines="8"
-            android:minLines="4"
-            android:scrollbars="vertical"  />
+            <TextView
+                android:layout_marginTop="@dimen/new_icon_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fb_desc_2"/>
 
-        <Button
-            android:layout_marginTop="@dimen/new_icon_size"
-            android:id="@+id/btn_fb_send"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Button.Primary.Medium"
-            android:text="@string/fb_send"
-            android:textAllCaps="false"/>
+            <EditText
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:id="@+id/et_fb_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:lines="6"
+                android:maxLines="8"
+                android:minLines="4"
+                android:scrollbars="vertical"  />
 
-    </LinearLayout>
+            <Button
+                android:layout_marginTop="@dimen/new_icon_size"
+                android:id="@+id/btn_fb_send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Button.Primary.Medium"
+                android:text="@string/fb_send"
+                android:textAllCaps="false"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
