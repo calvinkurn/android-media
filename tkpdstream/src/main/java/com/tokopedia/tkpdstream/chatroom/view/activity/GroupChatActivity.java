@@ -1040,4 +1040,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void moveToVoteFragment() {
         showFragment(CHANNEL_VOTE_FRAGMENT);
     }
+
+    public String getToolbarTitle(){
+        return toolbar.getTitle().toString();
+    }
 }

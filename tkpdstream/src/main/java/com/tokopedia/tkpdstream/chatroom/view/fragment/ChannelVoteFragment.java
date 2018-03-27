@@ -312,7 +312,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
             boolean voted = (votedView.getVisibility() == View.VISIBLE);
             presenter.sendVote(voteInfoViewModel.getPollId(), voted, element);
-//            analytics.eventClickVote(element.getType(), toolbar.getTitle().toString());
+            analytics.eventClickVote(element.getType(), ((GroupChatActivity)getActivity()).getToolbarTitle());
         }
     }
 

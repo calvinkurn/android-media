@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -113,6 +115,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private UserSession userSession;
 
     private CloseableBottomSheetDialog channelInfoDialog;
+
+    private static final int REQUEST_LOGIN = 111;
 
     int newMessageCounter;
 
@@ -240,6 +244,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                        .getLoginIntent
+                                (getActivity()), REQUEST_LOGIN);
+            }
+        });
+
         replyTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -260,8 +273,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         };
-
-        setForLoginUser(userSession.isLoggedIn());
+        setForLoginUser(userSession!= null && userSession.isLoggedIn());
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -678,5 +690,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         analytics.eventClickVoteComponent(StreamAnalytics.COMPONENT_FLASH_SALE, campaignName);
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
                 , url);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            setForLoginUser(userSession!= null && userSession.isLoggedIn());
+        }
     }
 }
