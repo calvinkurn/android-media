@@ -17,11 +17,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
-import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReplyDatum;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,9 +133,13 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PeopleInfoNoDrawerActivity.class);
-                intent.putExtra("user_id", list.get(position).getTicketDetailUserId());
-                context.startActivity(intent);
+                if (context.getApplicationContext() instanceof TkpdInboxRouter) {
+                    context.startActivity(
+                            ((TkpdInboxRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, list.get(position)
+                                            .getTicketDetailUserId())
+                    );
+                }
             }
         };
     }

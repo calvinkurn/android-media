@@ -26,7 +26,7 @@ public class FlightDashboardModule {
     }
 
     @Provides
-    FlightDashboardCache provideFlightDashboardCache(@ApplicationContext Context context, Gson gson) {
-        return new FlightDashboardCache(context, gson);
+    FlightDashboardCache provideFlightDashboardCache(@ApplicationContext Context context) {
+        return new FlightDashboardCache(context);
     }
 }

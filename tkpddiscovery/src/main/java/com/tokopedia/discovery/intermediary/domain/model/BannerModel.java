@@ -12,6 +12,7 @@ public class BannerModel {
     private Integer position;
     private String imageUrl;
     private String url;
+    private String applink;
 
     public Integer getPosition() {
         return position;
@@ -35,5 +36,13 @@ public class BannerModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
+    }
+
+    public String getApplink() {
+        return applink;
     }
 }
