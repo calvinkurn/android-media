@@ -278,13 +278,14 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void showConfirmationPhoneNumber(final String phoneNumber) {
+        final String realPhoneNumberString = this.phoneNumber.getText().toString();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(String.valueOf(phoneNumber));
         builder.setMessage(getResources().getString(R.string.phone_number_not_registered_info));
         builder.setPositiveButton(getResources().getString(R.string.phone_number_not_registered_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                goToVerifyAccountPage(phoneNumber);
+                goToVerifyAccountPage(realPhoneNumberString);
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.phone_number_not_registered_no), new DialogInterface.OnClickListener() {
