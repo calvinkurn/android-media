@@ -118,7 +118,8 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
                 && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
-            return appRatingVersion == null || appRatingVersion == -1;
+            return appRatingVersion == null || appRatingVersion == -1
+                    || appRatingVersion < GlobalConfig.VERSION_CODE;
         }
         return false;
     }
