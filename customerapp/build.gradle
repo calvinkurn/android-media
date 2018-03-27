@@ -148,7 +148,8 @@ android {
                 variant.outputs.each { output ->
                     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                     String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                    output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                    Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                    project.logger.info("oka version code: " + vrsCode);
                 }
                 variant.assemble.doLast {
                     variant.outputs.each { output ->
