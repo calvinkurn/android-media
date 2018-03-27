@@ -6,6 +6,7 @@
     <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
     <string name="dot">●</string>
     <string name="vote">Vote</string>
+    <string name="vote_on_running">Vote sedang berlangsung</string>
     <string name="vote_has_ended">Vote telah berakhir</string>
     <string name="time_remaining">Sisa Waktu</string>
     <string name="title_share">Share</string>

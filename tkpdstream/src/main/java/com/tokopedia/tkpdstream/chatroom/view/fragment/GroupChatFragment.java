@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -98,6 +100,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private UserSession userSession;
 
     private CloseableBottomSheetDialog channelInfoDialog;
+
+    private static final int REQUEST_LOGIN = 111;
+    private Handler sprintSaleHandler;
+    private Runnable sprintSaleRunnable;
 
     int newMessageCounter;
 
@@ -197,6 +203,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         setReplyTextHint();
 
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                        .getLoginIntent
+                                (getActivity()), REQUEST_LOGIN);
+            }
+        });
+
         replyTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -217,8 +232,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         };
-
-        setForLoginUser(userSession.isLoggedIn());
+        setForLoginUser(userSession != null && userSession.isLoggedIn());
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -285,7 +299,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && channelInfoViewModel != null
                 && channelInfoViewModel.getChannelViewModel() != null) {
 
-            new Handler().postDelayed(new Runnable() {
+            sprintSaleHandler = new Handler();
+            sprintSaleRunnable = new Runnable() {
                 @Override
                 public void run() {
                     SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
@@ -305,9 +320,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getEndDate(),
                             false
                     );
-                    addIncomingMessage(sprintSaleAnnouncementViewModel);
+
+                    if (adapter.getItemAt(adapter.getItemCount() - 1) != null
+                            && adapter.getItemAt(adapter.getItemCount() - 1) instanceof
+                            SprintSaleAnnouncementViewModel) {
+                        addIncomingMessage(sprintSaleAnnouncementViewModel);
+                    }
                 }
-            }, DELAY_TIME_SPRINT_SALE);
+            };
+            sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
         }
     }
@@ -315,6 +336,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onPause() {
         super.onPause();
+        if (sprintSaleHandler != null && sprintSaleRunnable != null) {
+            sprintSaleHandler.removeCallbacks(sprintSaleRunnable);
+        }
     }
 
     @Override
@@ -416,12 +440,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void showReconnectingMessage() {
 //        NetworkErrorHelper.showSnackbar(getActivity(), "Reconnecting...");
+        showLoading();
     }
 
     @Override
     public void dismissReconnectingMessage() {
 //        NetworkErrorHelper.showSnackbar(getActivity(), "Connected!");
-
+        hideLoading();
     }
 
     @Override
@@ -433,6 +458,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (getActivity() instanceof GroupChatActivity) {
             ((GroupChatActivity) getActivity()).setChannelHandler();
+            autoAddSprintSaleAnnouncement(
+                    ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
+                    ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
         }
 
     }
@@ -578,10 +606,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onVoteComponentClicked(String type, String name) {
+        if (getActivity() instanceof GroupChatActivity) {
+            ((GroupChatActivity) getActivity()).moveToVoteFragment();
+        }
         ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics.COMPONENT_VOTE,
                 name, StreamAnalytics.ATTRIBUTE_VOTE);
 
-        ((GroupChatContract.View) getActivity()).showChannelVoteFragment();
+//        ((GroupChatContract.View) getActivity()).showChannelVoteFragment();
     }
 
     public void setChannel(OpenChannel mChannel) {
@@ -611,5 +642,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((StreamModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
                 , ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
                         StreamAnalytics.ATTRIBUTE_FLASH_SALE));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            setForLoginUser(userSession != null && userSession.isLoggedIn());
+        }
     }
 }
