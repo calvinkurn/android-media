@@ -183,7 +183,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                 productVariantCombinationViewModel.setActive(productVariantCombinationSubmit.getStatus() == 1);
                 List<Integer> integerList = new ArrayList<>();
                 for (int j = 0, sizej = productVariantCombinationSubmit.getOptionList().size(); j < sizej; j++) {
-                    integerList.add((int)(long) productVariantCombinationSubmit.getOptionList().get(j));
+                    integerList.add((int) (long) productVariantCombinationSubmit.getOptionList().get(j));
                 }
                 productVariantCombinationViewModel.setOpt(integerList);
                 productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
@@ -206,7 +206,8 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         return productCategoryViewModel;
     }
 
-    private @NonNull ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
+    private @NonNull
+    ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
         ProductCatalogViewModel productCatalogViewModel = new ProductCatalogViewModel();
         productCatalogViewModel.setCatalogId(draftModel.getProductCatalogId());
         return productCatalogViewModel;
@@ -229,9 +230,11 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
     private List<ProductVideoViewModel> mapToProductVideo(List<String> productVideos) {
         List<ProductVideoViewModel> productVideoViewModels = new ArrayList<>();
-        for (String url : productVideos) {
-            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
-            productVideoViewModels.add(productVideoViewModel);
+        if (productVideos != null) {
+            for (String url : productVideos) {
+                ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
+                productVideoViewModels.add(productVideoViewModel);
+            }
         }
         return productVideoViewModels;
     }
@@ -251,7 +254,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
         for (ImageProductInputDraftModel draftModel : photos) {
             ProductPictureViewModel productPictureViewModel = generateProductPictureModel(draftModel);
-            if (productPictureViewModel!= null) {
+            if (productPictureViewModel != null) {
                 productPictureViewModelList.add(productPictureViewModel);
             }
         }
@@ -261,7 +264,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     private ProductPictureViewModel generateProductPictureModel(ImageProductInputDraftModel draftModel) {
         ProductPictureViewModel productPictureViewModel = null;
         try {
-            if (draftModel!= null) {
+            if (draftModel != null) {
                 productPictureViewModel = new ProductPictureViewModel();
                 productPictureViewModel.setDescription(draftModel.getDescription());
                 if (TextUtils.isEmpty(draftModel.getPicId())) {
@@ -272,7 +275,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                 productPictureViewModel.setFilePath(draftModel.getImagePath());
                 productPictureViewModel.setUrlThumbnail(draftModel.getUrl());
                 productPictureViewModel.setUrlOriginal(draftModel.getUrl());
-                if (TextUtils.isEmpty( productPictureViewModel.getUriOrPath())){
+                if (TextUtils.isEmpty(productPictureViewModel.getUriOrPath())) {
                     return null;
                 }
             }
