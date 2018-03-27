@@ -225,7 +225,7 @@ public class DynamicHomeChannel {
                     "eventLabel", String.format("%s - %s", countDown, label),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
-                                    "promotions", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
                                             DataLayer.mapOf("id", getGrids()[position].getId(),
                                                     "name", "/ - p2 - sprint sale banner"),
                                             "position", position + 1,
