@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -31,6 +30,7 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
+import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.adapter.PromoListAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
@@ -56,6 +56,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";
     private static final String EXTRA_STATE_FILTER_SELECTED = "EXTRA_STATE_FILTER_SELECTED";
+
+    private static final int PROMO_DETAIL_REQUEST_CODE = 0;
 
     private static final String TYPE_FILTER_ALL = "all";
     @BindView(R2.id.quick_filter)
@@ -364,11 +366,21 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoClicked(PromoData promoData, int position) {
-        String redirectUrl = promoData.getPromoLink();
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
-        }
+//        String redirectUrl = promoData.getPromoLink();
+//        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+//            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+//            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+//        }
+
+//        Fragment fragment = PromoDetailFragment.newInstance(promoData);
+//        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.container, fragment, fragment.getClass().getSimpleName())
+//                .addToBackStack(null)
+//                .commit();
+
+        Intent intent = PromoDetailActivity.getCallingIntent(getActivity(), promoData);
+        startActivityForResult(intent, PROMO_DETAIL_REQUEST_CODE);
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }
 

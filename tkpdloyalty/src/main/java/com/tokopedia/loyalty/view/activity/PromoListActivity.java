@@ -28,6 +28,7 @@ import com.tokopedia.loyalty.di.module.PromoListActivityModule;
 import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
+import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
@@ -41,7 +42,8 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 02/01/18.
  */
 
-public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>, IPromoListActivityView {
+public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>,
+        IPromoListActivityView {
 
     @BindView(R2.id.view_pager)
     TouchViewPager viewPager;
@@ -287,4 +289,5 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                     }
                 });
     }
+
 }

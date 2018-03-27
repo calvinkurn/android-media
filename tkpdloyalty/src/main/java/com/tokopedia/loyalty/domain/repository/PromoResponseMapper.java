@@ -8,9 +8,11 @@ import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
 import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoCode;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
+import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.data.PromoSubMenuData;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -44,8 +48,9 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             PromoData promoData = new PromoData();
             promoData.setId(String.valueOf(promoResponse.getId()));
             promoData.setTitle(promoResponse.getTitle().getRendered());
-            promoData.setAppLink("");
-            promoData.setMultiplePromoCodeCount(promoResponse.getAcf().getPromoCodeList().size());
+            promoData.setTermsAndConditions(parseContent(promoResponse.getContent().getRendered()));
+            promoData.setAppLink(promoResponse.getMeta().getAppLink());
+            promoData.setMultiplePromoCodeCount(promoResponse.getPromoCodes().size());
             try {
                 promoData.setPeriodFormatted(
                         getDatePeriodPromo(
@@ -65,20 +70,68 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
             promoData.setEndDate(promoResponse.getMeta().getEndDate());
-            promoData.setMultiplePromo(promoResponse.getAcf().isMultiplePromoCode());
-            List<String> promoCodeList = new ArrayList<>();
-            for (PromoCode promoCode : promoResponse.getAcf().getPromoCodeList()) {
-                for (GroupCode groupCode : promoCode.getGroupCode()) {
-                    promoCodeList.add(groupCode.getSingleCode());
-                }
-            }
-            promoData.setPromoCodeList(promoCodeList);
+            promoData.setMultiplePromo(promoResponse.getPromoCodes().size() > 0);
+
+            promoData.setPromoCodeList(getPromoCodes(promoResponse));
             promoData.setPromoCode(promoResponse.getMeta().getPromoCode());
             promoDataList.add(promoData);
         }
         return promoDataList;
     }
 
+    private List<PromoCodeViewModel> getPromoCodes(PromoResponse promoResponse) {
+        List<PromoCodeViewModel> promoCodeList = new ArrayList<>();
+
+        if (promoResponse.getPromoCodes().isEmpty()) {
+            List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
+
+            SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+            singleCodeViewModel.setSingleCode(promoResponse.getMeta().getPromoCode());
+            singleCodeViewModelList.add(singleCodeViewModel);
+
+            PromoCodeViewModel promoCodeViewModel = new PromoCodeViewModel();
+            promoCodeViewModel.setGroupCode(singleCodeViewModelList);
+
+            promoCodeList.add(promoCodeViewModel);
+
+        } else {
+            for (PromoCode promoCode : promoResponse.getPromoCodes()) {
+                PromoCodeViewModel promoCodeViewModel = new PromoCodeViewModel();
+                promoCodeViewModel.setGroupCodeTitle(promoCode.getGroupCodeTitle());
+                promoCodeViewModel.setGroupCodeDescription(promoCode.getGroupCodeDescription());
+
+                List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
+                for (GroupCode groupCode : promoCode.getGroupCode()) {
+                    SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+                    singleCodeViewModel.setSingleCode(groupCode.getSingleCode());
+
+                    singleCodeViewModelList.add(singleCodeViewModel);
+                }
+                promoCodeViewModel.setGroupCode(singleCodeViewModelList);
+
+                promoCodeList.add(promoCodeViewModel);
+            }
+        }
+
+        return promoCodeList;
+    }
+
+    private List<String> parseContent(String content) {
+        List<String> termAndConditions = new ArrayList<>();
+
+//        String regex = "[<li style=\"font-weight: 400;\">|<li>](.*?)</li>|<p>(.*?)</p>";
+//
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(content);
+//
+//        while (matcher.find()) {
+//            termAndConditions.add(matcher.group(1));
+//        }
+
+        termAndConditions.add(content);
+
+        return termAndConditions;
+    }
 
     private String getDatePeriodPromo(String startDate, String endDate) throws ParseException {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

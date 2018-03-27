@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_single_code_group_layout"
+    android:layout_width="160dp"
+    android:layout_height="40dp"
+    android:layout_marginTop="16dp"
+    android:layout_below="@id/tv_promo_code_label"
+    android:background="@drawable/round_button">
+
+    <TextView
+        android:id="@+id/tv_single_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/orange_red"
+        android:text="BRIG6P" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:srcCompat="@drawable/ic_copy_mobile"
+        tools:ignore="ContentDescription" />
+
+</RelativeLayout>

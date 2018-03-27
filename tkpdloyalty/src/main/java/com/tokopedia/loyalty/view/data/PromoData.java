@@ -23,22 +23,15 @@ public class PromoData implements Parcelable {
     private boolean isMultiplePromo;
     private int multiplePromoCodeCount;
     private String periodFormatted;
-    private List<String> promoCodeList = new ArrayList<>();
+    private List<String> termsAndConditions = new ArrayList<>();
+    private List<PromoCodeViewModel> promoCodeList = new ArrayList<>();
 
-    public String getPeriodFormatted() {
-        return periodFormatted;
+    public String getId() {
+        return id;
     }
 
-    public void setPeriodFormatted(String periodFormatted) {
-        this.periodFormatted = periodFormatted;
-    }
-
-    public int getMultiplePromoCodeCount() {
-        return multiplePromoCodeCount;
-    }
-
-    public void setMultiplePromoCodeCount(int multiplePromoCodeCount) {
-        this.multiplePromoCodeCount = multiplePromoCodeCount;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -113,22 +106,35 @@ public class PromoData implements Parcelable {
         isMultiplePromo = multiplePromo;
     }
 
-    public String getId() {
-        return id;
+    public int getMultiplePromoCodeCount() {
+        return multiplePromoCodeCount;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMultiplePromoCodeCount(int multiplePromoCodeCount) {
+        this.multiplePromoCodeCount = multiplePromoCodeCount;
     }
 
-    public PromoData() {
+    public String getPeriodFormatted() {
+        return periodFormatted;
     }
 
-    public List<String> getPromoCodeList() {
+    public void setPeriodFormatted(String periodFormatted) {
+        this.periodFormatted = periodFormatted;
+    }
+
+    public List<String> getTermsAndConditions() {
+        return termsAndConditions;
+    }
+
+    public void setTermsAndConditions(List<String> termsAndConditions) {
+        this.termsAndConditions = termsAndConditions;
+    }
+
+    public List<PromoCodeViewModel> getPromoCodeList() {
         return promoCodeList;
     }
 
-    public void setPromoCodeList(List<String> promoCodeList) {
+    public void setPromoCodeList(List<PromoCodeViewModel> promoCodeList) {
         this.promoCodeList = promoCodeList;
     }
 
@@ -151,7 +157,11 @@ public class PromoData implements Parcelable {
         dest.writeByte(this.isMultiplePromo ? (byte) 1 : (byte) 0);
         dest.writeInt(this.multiplePromoCodeCount);
         dest.writeString(this.periodFormatted);
-        dest.writeStringList(this.promoCodeList);
+        dest.writeStringList(this.termsAndConditions);
+        dest.writeTypedList(this.promoCodeList);
+    }
+
+    public PromoData() {
     }
 
     protected PromoData(Parcel in) {
@@ -167,7 +177,8 @@ public class PromoData implements Parcelable {
         this.isMultiplePromo = in.readByte() != 0;
         this.multiplePromoCodeCount = in.readInt();
         this.periodFormatted = in.readString();
-        this.promoCodeList = in.createStringArrayList();
+        this.termsAndConditions = in.createStringArrayList();
+        this.promoCodeList = in.createTypedArrayList(PromoCodeViewModel.CREATOR);
     }
 
     public static final Creator<PromoData> CREATOR = new Creator<PromoData>() {

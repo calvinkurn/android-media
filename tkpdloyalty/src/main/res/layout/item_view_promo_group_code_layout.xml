@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_group_code_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_70"
+        android:textSize="14sp"
+        tools:text="CREDIT CARD BANK BRI" />
+
+    <RelativeLayout
+        android:id="@+id/rl_detail_group_code_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_group_code_title">
+
+        <TextView
+            android:id="@+id/tv_group_code_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            tools:text="Kode 1 untuk LG G6 Plus &amp; Kode 2 untuk LG Q6 Plus" />
+
+        <ImageView
+            android:id="@+id/iv_promo_code_icon"
+            android:layout_width="25dp"
+            android:layout_height="14dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/tv_promo_code_label"
+            app:srcCompat="@drawable/ic_coupon_promo"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_promo_code_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_promo_code_icon"
+            android:layout_toEndOf="@id/iv_promo_code_icon"
+            android:layout_below="@id/tv_group_code_description"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="16dp"
+            android:textSize="10sp"
+            android:textColor="@color/black_38"
+            android:text="Kode Promo"
+            tools:ignore="SmallSp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_single_code_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_promo_code_label" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/rl_detail_group_code_layout"
+        android:paddingBottom="20dp"
+        android:background="@color/grey_200" />
+</RelativeLayout>
