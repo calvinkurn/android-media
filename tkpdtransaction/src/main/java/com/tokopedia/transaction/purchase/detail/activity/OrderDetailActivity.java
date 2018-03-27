@@ -380,7 +380,7 @@ public class OrderDetailActivity extends TActivity
                 );
                 NetworkErrorHelper.showSnackbar(
                         OrderDetailActivity.this,
-                        getString(R.string.awb_info)
+                        getString(R.string.notification_awb_copied)
                 );
             }
         };
