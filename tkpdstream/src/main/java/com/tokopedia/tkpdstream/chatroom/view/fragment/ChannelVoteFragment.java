@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,9 +22,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -68,6 +72,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Inject
     StreamAnalytics analytics;
 
+    private static final int REQUEST_LOGIN = 111;
+
     private View loading;
 
     private View voteBar;
@@ -83,6 +89,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private VoteInfoViewModel voteInfoViewModel;
     private VoteAdapter voteAdapter;
     private ProgressBarWithTimer progressBarWithTimer;
+    private UserSession userSession;
 
     @Override
     protected String getScreenName() {
@@ -110,6 +117,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
     @Nullable
@@ -257,7 +265,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
             boolean voted = (votedView.getVisibility() == View.VISIBLE);
-            presenter.sendVote(voteInfoViewModel.getPollId(), voted, element);
+            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
@@ -318,6 +326,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     }
 
     @Override
+    public void redirectToLogin() {
+        startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
+                .getLoginIntent(getActivity()), REQUEST_LOGIN);
+    }
+
+    @Override
     public void onStartTick() {
         setVoteStarted();
     }
@@ -333,6 +347,15 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
             showVoteLayout(temp);
             ((GroupChatActivity) getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         }
     }
 }

@@ -60,6 +60,6 @@ public interface GroupChatContract {
 
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                           LoginGroupChatUseCase.LoginGroupChatListener
-                                  loginGroupChatListener);
+                                  loginGroupChatListener, String sendBirdToken);
     }
 }

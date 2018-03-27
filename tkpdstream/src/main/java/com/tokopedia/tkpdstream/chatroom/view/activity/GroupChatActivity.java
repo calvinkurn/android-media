@@ -374,14 +374,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         this.initialFragment = fragmentPosition;
         tabAdapter.setActiveFragment(fragmentPosition);
-
+        tabAdapter.change(fragmentPosition, false);
         switch (fragmentPosition) {
             case CHATROOM_FRAGMENT:
                 showChatroomFragment(mChannel);
                 break;
             case CHANNEL_VOTE_FRAGMENT:
                 if (checkPollValid()) {
-                    tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
                     showChannelVoteFragment();
                 } else {
                     showChannelInfoFragment();
@@ -603,7 +602,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this);
+                userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
         Intent intent = new Intent();
         intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
@@ -678,7 +677,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalView());
         setSponsorData();
-        setTooltip();
+        if (channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+            setTooltip();
+        }
     }
 
     private void setTooltip() {
@@ -885,7 +887,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             public void onRetryClicked() {
                 presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
                         userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatActivity.this);
+                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken());
             }
         });
     }
@@ -1068,6 +1070,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() < 3) {
             tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
                     .title_vote)));
+            setTooltip();
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
@@ -1077,6 +1080,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!currentFragmentIsVote()
                 && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
+            setTooltip();
         }
 
     }

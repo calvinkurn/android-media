@@ -39,10 +39,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener) {
+                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken) {
         loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
-                userAvatar,
-                loginGroupChatListener);
+                userAvatar, loginGroupChatListener, sendBirdToken);
     }
 
     @Override

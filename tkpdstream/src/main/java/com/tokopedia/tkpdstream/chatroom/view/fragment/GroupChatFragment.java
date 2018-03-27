@@ -205,8 +205,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             @Override
             public void onClick(View view) {
                 startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())
-                        .getLoginIntent
-                                (getActivity()), REQUEST_LOGIN);
+                        .getLoginIntent(getActivity()), REQUEST_LOGIN);
             }
         });
 

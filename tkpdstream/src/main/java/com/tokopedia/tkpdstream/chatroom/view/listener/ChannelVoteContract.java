@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -25,6 +26,8 @@ public interface ChannelVoteContract {
 
         void onErrorVote(String errorMessage);
 
+        void redirectToLogin();
+
         interface VoteOptionListener{
             void onVoteOptionClicked(VoteViewModel element);
         }
@@ -36,7 +39,7 @@ public interface ChannelVoteContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void sendVote(String pollId, boolean voted, VoteViewModel element);
+        void sendVote(UserSession userSession, String pollId, boolean voted, VoteViewModel element);
 
     }
 }

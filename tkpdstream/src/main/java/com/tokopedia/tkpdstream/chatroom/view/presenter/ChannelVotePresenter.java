@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
@@ -26,8 +27,12 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
     }
 
     @Override
-    public void sendVote(String pollId, boolean voted, final VoteViewModel element) {
+    public void sendVote(UserSession userSession, String pollId, boolean voted, final VoteViewModel element) {
 
+        if(userSession == null || !userSession.isLoggedIn()) {
+            getView().redirectToLogin();
+            return;
+        }
         if (voted) {
             getView().showHasVoted();
         } else {
