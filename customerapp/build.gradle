@@ -52,7 +52,7 @@ def getTkpdVersionCode() {
         project.logger.info(versionCode)
         return Integer.parseInt(versionCode)
     } else {
-        project.logger.info(project.defaultVeersionCode)
+        project.logger.info(project.defaultVersionCode)
         return project.defaultVersionCode
     }
 }
@@ -150,6 +150,8 @@ android {
                     String abi = output.getFilter(com.android.build.OutputFile.ABI);
                     Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     project.logger.info("oka version code: " + vrsCode);
+                    buildConfigField "int", "VERSION_CODE", vrsCode
+                    output.versionCodeOverride = vrsCode;
                 }
                 variant.assemble.doLast {
                     variant.outputs.each { output ->
@@ -180,6 +182,7 @@ android {
                         String abi = output.getFilter(com.android.build.OutputFile.ABI);
                         Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                         project.logger.info("oka version code: " + vrsCode);
+                        buildConfigField "int", "VERSION_CODE", vrsCode
                         output.versionCodeOverride = vrsCode;
                     }
                     variant.assemble.doLast {
@@ -195,6 +198,7 @@ android {
                     variant.outputs.each { output ->
                         Integer vrsCode = (getTkpdVersionCode() * 100);
                         project.logger.info("oka version code: " + vrsCode);
+                        buildConfigField "int", "VERSION_CODE", vrsCode
                         output.versionCodeOverride = vrsCode;
                     }
                 }
