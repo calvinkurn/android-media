@@ -33,10 +33,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -205,6 +201,9 @@ public class FCMCacheManager {
 
             case TkpdState.GCMServiceState.GCM_SELLER_INFO:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
+
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT:
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_GROUP_CHAT, false);
 
             default:
                 return true;
