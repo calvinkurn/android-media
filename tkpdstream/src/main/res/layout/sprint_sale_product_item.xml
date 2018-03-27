@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/margin_vvs"
         android:layout_marginTop="@dimen/margin_vs"
-        android:background="@drawable/bg_rounded_red_label"
+        android:background="@drawable/bg_rounded_red_label_promo"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:paddingBottom="@dimen/padding_vvs"

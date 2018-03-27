@@ -3,13 +3,15 @@ package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * @author by nisie on 3/26/18.
  */
 
-public class SprintSaleViewModel implements Parcelable{
+public class SprintSaleViewModel implements Parcelable {
 
 
     private ArrayList<SprintSaleProductViewModel> listProduct;
@@ -17,14 +19,20 @@ public class SprintSaleViewModel implements Parcelable{
     private long startDate;
     private long endDate;
     private String redirectUrl;
+    private String formattedStartDate;
+    private String formattedEndDate;
 
     public SprintSaleViewModel(ArrayList<SprintSaleProductViewModel> listProduct,
                                String campaignName, long startDate, long endDate, String redirectUrl) {
+        Locale localeID = new Locale("in", "ID");
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
         this.listProduct = listProduct;
         this.campaignName = campaignName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.redirectUrl = redirectUrl;
+        this.formattedStartDate = sdfHour.format(startDate);
+        this.formattedEndDate = sdfHour.format(endDate);
     }
 
     public ArrayList<SprintSaleProductViewModel> getListProduct() {
@@ -56,16 +64,23 @@ public class SprintSaleViewModel implements Parcelable{
     }
 
     public void setStartDate(long startDate) {
+        Locale localeID = new Locale("in", "ID");
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
         this.startDate = startDate;
+        this.formattedStartDate = sdfHour.format(startDate);
     }
 
     public void setEndDate(long endDate) {
+        Locale localeID = new Locale("in", "ID");
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
         this.endDate = endDate;
+        this.formattedEndDate = sdfHour.format(endDate);
     }
 
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,4 +115,12 @@ public class SprintSaleViewModel implements Parcelable{
             return new SprintSaleViewModel[size];
         }
     };
+
+    public String getFormattedStartDate() {
+        return formattedStartDate;
+    }
+
+    public String getFormattedEndDate() {
+        return formattedEndDate;
+    }
 }

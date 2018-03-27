@@ -29,7 +29,7 @@ public class TopChatAnalytics {
         public static final String INBOX_CHAT = "ClickInboxChat";
         public static final String CHAT_DETAIL = "ClickChatDetail";
 
-        String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
+        String EVENT_NAME_CLICK_INBOXCHAT = "ClickInboxChat";
 
     }
 
