@@ -23,7 +23,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.SessionHandler;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

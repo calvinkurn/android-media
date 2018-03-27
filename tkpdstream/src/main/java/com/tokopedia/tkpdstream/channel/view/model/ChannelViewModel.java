@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+
+import java.util.List;
 
 /**
  * @author by StevenFredian on 13/02/18.
@@ -20,8 +23,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     private String description;
     private String participant;
     private String channelUrl;
-    private String partnerName;
-    private String partnerImage;
+    private List<ChannelPartnerViewModel> channelPartnerViewModels;
 
     @Override
     public int type(ChannelTypeFactory typeFactory) {
@@ -30,7 +32,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
 
     public ChannelViewModel(String id, String adminName, String image, String adminPicture,
                             String title, String description, String participant, String channelUrl,
-                            String partnerName, String partnerImage) {
+                            List<ChannelPartnerViewModel> channelPartnerViewModels) {
         this.id = id;
         this.adminName = adminName;
         this.image = image;
@@ -39,8 +41,7 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.description = description;
         this.participant = participant;
         this.channelUrl = channelUrl;
-        this.partnerName = partnerName;
-        this.partnerImage = partnerImage;
+        this.channelPartnerViewModels = channelPartnerViewModels;
     }
 
     public String getId() {
@@ -79,12 +80,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return channelUrl;
     }
 
-    public String getPartnerName() {
-        return partnerName;
-    }
-
-    public String getPartnerImage() {
-        return partnerImage;
+    public List<ChannelPartnerViewModel> getChannelPartnerViewModels() {
+        return channelPartnerViewModels;
     }
 
     @Override
@@ -94,7 +91,6 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.channelUrl);
         dest.writeString(this.id);
         dest.writeString(this.adminName);
         dest.writeString(this.image);
@@ -102,12 +98,11 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         dest.writeString(this.title);
         dest.writeString(this.description);
         dest.writeString(this.participant);
-        dest.writeString(this.partnerName);
-        dest.writeString(this.partnerImage);
+        dest.writeString(this.channelUrl);
+        dest.writeTypedList(this.channelPartnerViewModels);
     }
 
     protected ChannelViewModel(Parcel in) {
-        this.channelUrl = in.readString();
         this.id = in.readString();
         this.adminName = in.readString();
         this.image = in.readString();
@@ -115,8 +110,8 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         this.title = in.readString();
         this.description = in.readString();
         this.participant = in.readString();
-        this.partnerName = in.readString();
-        this.partnerImage = in.readString();
+        this.channelUrl = in.readString();
+        this.channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
     }
 
     public static final Creator<ChannelViewModel> CREATOR = new Creator<ChannelViewModel>() {

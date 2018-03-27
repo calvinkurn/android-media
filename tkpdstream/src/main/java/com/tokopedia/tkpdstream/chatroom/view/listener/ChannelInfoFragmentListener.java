@@ -21,5 +21,9 @@ public interface ChannelInfoFragmentListener {
         void onMessageReceived(Visitable map);
 
         void showSprintSale(SprintSaleViewModel sprintSaleViewModel);
+
+        interface ChannelPartnerViewHolderListener {
+            void channelPartnerClicked(String url);
+        }
     }
 }

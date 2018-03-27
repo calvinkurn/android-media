@@ -3,7 +3,8 @@ package com.tokopedia.tkpdstream.chatroom.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.ChannelPartnerAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -30,7 +33,8 @@ import com.tokopedia.tkpdstream.common.util.TextFormatter;
  */
 
 public class ChannelInfoFragment extends BaseDaggerFragment
-        implements ChannelInfoFragmentListener.View {
+        implements ChannelInfoFragmentListener.View,
+        ChannelInfoFragmentListener.View.ChannelPartnerViewHolderListener {
     public static final String ARGS_CI_VIEW_MODEL = "CI_VIEW_MODEL";
 
     private ChannelViewModel channelViewModel;
@@ -41,10 +45,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private TextView subtitle;
     private TextView name;
     private TextView participant;
-    private View partnerLayout;
-    private ImageView partnerAvatar;
-    private TextView partnerName;
-
+    private RecyclerView channelPartners;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChannelInfoFragment();
@@ -110,6 +111,12 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void channelPartnerClicked(String url) {
+        StreamModuleRouter router = ((StreamModuleRouter) getActivity().getApplicationContext());
+        router.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
     public void onMessageReceived(Visitable map) {
         if (map instanceof SprintSaleAnnouncementViewModel) {
             //showSprintSale();
@@ -128,9 +135,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
         participant = view.findViewById(R.id.participant);
-        partnerLayout = view.findViewById(R.id.partner_layout);
-        partnerAvatar = view.findViewById(R.id.partner_avatar);
-        partnerName = view.findViewById(R.id.partner_name);
+        channelPartners = view.findViewById(R.id.channel_partners);
     }
 
     private void setViewListener() {
@@ -151,15 +156,18 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                 channelViewModel.getAdminPicture(),
                 R.drawable.loading_page);
 
-        if (!TextUtils.isEmpty(channelViewModel.getPartnerImage())
-                && !TextUtils.isEmpty(channelViewModel.getPartnerName())) {
-            partnerLayout.setVisibility(View.VISIBLE);
-            partnerName.setText(channelViewModel.getPartnerName());
-            ImageHandler.loadImage2(partnerAvatar,
-                    channelViewModel.getPartnerImage(),
-                    R.drawable.loading_page);
-        } else {
-            partnerLayout.setVisibility(View.GONE);
+        if (channelViewModel.getChannelPartnerViewModels() != null
+                && !channelViewModel.getChannelPartnerViewModels().isEmpty()) {
+            channelPartners.setNestedScrollingEnabled(false);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false);
+            channelPartners.setLayoutManager(linearLayoutManager);
+
+            ChannelPartnerAdapter channelPartnerAdapter =
+                    ChannelPartnerAdapter.createInstance(this);
+            channelPartnerAdapter.setList(channelViewModel.getChannelPartnerViewModels());
+            channelPartners.setAdapter(channelPartnerAdapter);
         }
     }
 }
