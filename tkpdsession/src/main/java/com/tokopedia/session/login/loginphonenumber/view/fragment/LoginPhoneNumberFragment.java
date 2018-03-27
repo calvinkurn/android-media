@@ -126,9 +126,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         });
 
         if (getArguments() != null) {
-            phoneNumberString = getArguments().getString(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
-            phoneNumber.setText(phoneNumberString);
-            nextButton.performClick();
+            if (getArguments().get(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER) != null) {
+                phoneNumberString = getArguments().getString(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
+                phoneNumber.setText(phoneNumberString);
+                nextButton.performClick();
+            }
         }
     }
 
