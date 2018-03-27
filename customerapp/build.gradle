@@ -47,12 +47,9 @@ def allowProguard() {
 }
 
 def getTkpdVersionCode() {
-    project.logger.info("oka version code")
     if(project.hasProperty('versionCode')) {
-        project.logger.info(versionCode)
         return Integer.parseInt(versionCode)
     } else {
-        project.logger.info(project.defaultVersionCode)
         return project.defaultVersionCode
     }
 }
@@ -148,9 +145,7 @@ android {
                 variant.outputs.each { output ->
                     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                     String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                    Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
-                    output.versionCodeOverride = vrsCode;
-                    project.logger.info("oka version code: " + output.versionCodeOverride);
+                    project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                 }
                 variant.assemble.doLast {
                     variant.outputs.each { output ->
@@ -179,9 +174,7 @@ android {
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
-                        output.versionCodeOverride = vrsCode;
-                        project.logger.info("oka version code: " + output.versionCodeOverride);
+                        project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -194,9 +187,7 @@ android {
             } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
-                        Integer vrsCode = (getTkpdVersionCode() * 100);
-                        output.versionCodeOverride = vrsCode;
-                        project.logger.info("oka version code: " + output.versionCodeOverride);
+                        project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100);
                     }
                 }
             }
