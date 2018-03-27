@@ -76,7 +76,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ChatroomContract.View.SprintSaleViewHolderListener {
 
     private static final long DELAY_TIME = 1000L;
-    private static final long VIBRATE_LENGTH = 1000;
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
 
     @Inject
@@ -102,6 +101,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private CloseableBottomSheetDialog channelInfoDialog;
 
     private static final int REQUEST_LOGIN = 111;
+    private Handler sprintSaleHandler;
+    private Runnable sprintSaleRunnable;
 
     int newMessageCounter;
 
@@ -229,7 +230,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         };
-        setForLoginUser(userSession!= null && userSession.isLoggedIn());
+        setForLoginUser(userSession != null && userSession.isLoggedIn());
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -292,11 +293,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void autoAddSprintSaleAnnouncement(@Nullable final SprintSaleViewModel
                                                       sprintSaleViewModel,
                                               @Nullable final ChannelInfoViewModel channelInfoViewModel) {
-        if (sprintSaleViewModel != null
+        if (isValidSprintSale(sprintSaleViewModel)
                 && channelInfoViewModel != null
                 && channelInfoViewModel.getChannelViewModel() != null) {
 
-            new Handler().postDelayed(new Runnable() {
+            sprintSaleHandler = new Handler();
+            sprintSaleRunnable = new Runnable() {
                 @Override
                 public void run() {
                     SprintSaleAnnouncementViewModel sprintSaleAnnouncementViewModel = new SprintSaleAnnouncementViewModel(
@@ -314,18 +316,38 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getCampaignName(),
                             sprintSaleViewModel.getStartDate(),
                             sprintSaleViewModel.getEndDate(),
-                            false
+                            true
                     );
-                    addIncomingMessage(sprintSaleAnnouncementViewModel);
+
+                    if (adapter.getItemAt(adapter.getItemCount() - 1) != null
+                            && adapter.getItemAt(adapter.getItemCount() - 1) instanceof
+                            SprintSaleAnnouncementViewModel) {
+                        addIncomingMessage(sprintSaleAnnouncementViewModel);
+                        ((GroupChatContract.View) getActivity()).vibratePhone();
+                    }
                 }
-            }, DELAY_TIME_SPRINT_SALE);
+            };
+            sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
         }
+    }
+
+    private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+        long currentTime = new Date().getTime();
+        return sprintSaleViewModel != null
+                && sprintSaleViewModel.getStartDate() != 0
+                && sprintSaleViewModel.getEndDate() != 0
+                && sprintSaleViewModel.getStartDate() <= currentTime
+                && sprintSaleViewModel.getStartDate() < sprintSaleViewModel.getEndDate()
+                && sprintSaleViewModel.getEndDate() > currentTime;
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (sprintSaleHandler != null && sprintSaleRunnable != null) {
+            sprintSaleHandler.removeCallbacks(sprintSaleRunnable);
+        }
     }
 
     @Override
@@ -427,12 +449,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void showReconnectingMessage() {
 //        NetworkErrorHelper.showSnackbar(getActivity(), "Reconnecting...");
+        showLoading();
     }
 
     @Override
     public void dismissReconnectingMessage() {
 //        NetworkErrorHelper.showSnackbar(getActivity(), "Connected!");
-
+        hideLoading();
     }
 
     @Override
@@ -444,6 +467,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (getActivity() instanceof GroupChatActivity) {
             ((GroupChatActivity) getActivity()).setChannelHandler();
+            autoAddSprintSaleAnnouncement(
+                    ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
+                    ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
         }
 
     }
@@ -487,28 +513,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onMessageReceived(Visitable messageItem) {
         if (messageItem instanceof VoteAnnouncementViewModel) {
             handleVoteAnnouncement((VoteAnnouncementViewModel) messageItem);
-        } else if (messageItem instanceof SprintSaleAnnouncementViewModel) {
-            handleSprintSaleAnnouncement((SprintSaleAnnouncementViewModel) messageItem);
         } else {
             addIncomingMessage(messageItem);
         }
 
-        if (messageItem instanceof BaseChatViewModel
-                && ((BaseChatViewModel) messageItem).isAdministrator()) {
-            vibratePhone();
-        }
-    }
-
-    private void vibratePhone() {
-        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null) {
-            if (Build.VERSION.SDK_INT >= 26) {
-                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
-                        .DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(VIBRATE_LENGTH);
-            }
-        }
     }
 
     private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
@@ -522,12 +530,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             case VoteAnnouncementViewModel.POLLING_CANCEL:
                 break;
         }
-
-        ((GroupChatContract.View) getActivity()).handleVoteAnnouncement(messageItem, messageItem.getVoteType());
     }
 
     private void handleSprintSaleAnnouncement(SprintSaleAnnouncementViewModel messageItem) {
-        ((GroupChatContract.View) getActivity()).updateSprintSaleData(messageItem);
         addIncomingMessage(messageItem);
     }
 
@@ -592,10 +597,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getActivity() instanceof GroupChatActivity) {
             ((GroupChatActivity) getActivity()).moveToVoteFragment();
         }
-        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics.COMPONENT_VOTE,
-                name, StreamAnalytics.ATTRIBUTE_VOTE);
-
-//        ((GroupChatContract.View) getActivity()).showChannelVoteFragment();
+        analytics.eventClickVoteComponent(StreamAnalytics.COMPONENT_VOTE, name);
     }
 
     public void setChannel(OpenChannel mChannel) {
@@ -633,7 +635,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_OK) {
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-            setForLoginUser(userSession!= null && userSession.isLoggedIn());
+            setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
     }
 }

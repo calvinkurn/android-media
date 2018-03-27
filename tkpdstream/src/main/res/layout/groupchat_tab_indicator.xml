@@ -6,14 +6,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingRight="@dimen/space_med"
-    android:paddingLeft="@dimen/space_med">
+    android:paddingLeft="@dimen/space_med"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <android.support.v4.widget.Space
+        android:id="@+id/space"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/space_med" />
 
     <TextView
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/container"
-        android:layout_toRightOf="@id/container"
+        android:layout_alignTop="@id/title"
+        android:layout_toEndOf="@id/title"
+        android:layout_toRightOf="@id/title"
+        android:layout_marginLeft="@dimen/margin_vvvs"
+        android:layout_marginStart="@dimen/margin_vvvs"
+        android:layout_marginTop="@dimen/vote_indicator_space"
         android:fontFamily="sans-serif-medium"
         android:text="@string/dot"
         android:textColor="@color/medium_green"
@@ -25,14 +37,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/space_med"
-        android:paddingTop="@dimen/space_med"
+        android:layout_below="@id/space"
+        android:textSize="@dimen/font_small"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
         tools:text="Text" />
 
     <View
         android:id="@+id/highlight"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/space_tiny"
+        android:layout_marginTop="@dimen/space_med"
         android:background="@color/tkpd_main_green"
         android:visibility="invisible"
         android:layout_below="@id/title"

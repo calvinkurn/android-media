@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -231,6 +232,15 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                     break;
                 }
             }
+        }
+    }
+
+    @Nullable
+    public Visitable getItemAt(int position) {
+        if (position < list.size()) {
+            return list.get(position);
+        } else {
+            return null;
         }
     }
 }
