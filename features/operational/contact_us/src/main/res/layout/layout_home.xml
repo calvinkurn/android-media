@@ -9,6 +9,19 @@
         android:layout_height="wrap_content"
         android:background="#fafbfc">
 
+        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            android:background="@color/tkpd_main_green"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
         <include
             android:id="@+id/artikel_populer"
             layout="@layout/layout_article_popular"
@@ -28,11 +41,12 @@
             <include
                 android:id="@+id/order_list"
                 layout="@layout/layout_order_list"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <include
                 android:id="@+id/no_orders"
                 layout="@layout/layout_no_orders"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
         </FrameLayout>
 

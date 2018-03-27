@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            android:background="@color/tkpd_main_green"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="@dimen/new_margin_sm"
+            android:textColor="@color/black3_text"
+            android:textSize="@dimen/textsize_big"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Barang yang diterima tidak sesuai" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:lineSpacingExtra="6sp"
+            android:textColor="@color/black3_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView30"
+            tools:text="Jika kamu tidak puas dengan barang yang diterima, kamu dapat mengajukan komplain kepada penjual melalui fasilitas Pusat Resolusi. Begini caranya:
+1. Klik Komplain pada pesanan di halaman Konfirmasi Penerimaan Barang.
+2. Jelaskan kendala yang dialami dan tawarkan solusi yang diinginkan.
+3. Upload bukti pendukung seperti kemasan produk, foto produk dari berbagai sisi atau resi penerimaan. \n
+
+Jika penjual belum merespon komplainmu setelah 3 hari/belum menemukan kesepakatan setelah berdiskusi, kamu bisa meminta bantuan ke Tokopedia dengan klik Bantuan pada halaman Pusat Resolusi. Tokopedia akan mengecek kendalamu dan memberikan solusi alternatif.\n
+
+Komplain dianggap selesai saat kamu dan penjual sudah klik Komplain Selesai. Perlu kamu ketahui, dana transaksimu aman tersimpan di rekening bersama Tokopedia dan baru akan diteruskan setelah komplain selesai.  " />
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="87dp"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="31dp"
+            android:textColor="@color/black3_text"
+            android:textSize="@dimen/font_micro"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView31"
+            tools:text="Butuh bantuan lain?" />
+
+        <TextView
+            android:id="@+id/textView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_padding_small"
+            android:layout_marginTop="31dp"
+            android:textColor="@color/green_text"
+            android:textSize="@dimen/font_micro"
+            app:layout_constraintLeft_toRightOf="@+id/textView32"
+            app:layout_constraintTop_toBottomOf="@+id/textView31"
+            tools:text="Hubungi Kami" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

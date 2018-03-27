@@ -55,4 +55,7 @@
     <color name="red_text">#f44336</color>
     <color name="grey2_text">#de000000</color>
     <color name="black3_text">#b3000000</color>
+    <color name="black4_text">#8a000000</color>
+    <color name="black5_text">#2e000000</color>
+    <color name="black6_text">#61000000</color>
 </resources>
