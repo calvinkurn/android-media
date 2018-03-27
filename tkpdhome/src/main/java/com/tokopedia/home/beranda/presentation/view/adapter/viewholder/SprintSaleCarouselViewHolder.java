@@ -117,10 +117,20 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         seeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), "");
-                HomePageTracking.eventClickSeeAllProductSprintBackground();
+                onClickSeeAll();
             }
         });
+        headerBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickSeeAll();
+            }
+        });
+    }
+
+    private void onClickSeeAll() {
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), "");
+        HomePageTracking.eventClickSeeAllProductSprintBackground();
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
