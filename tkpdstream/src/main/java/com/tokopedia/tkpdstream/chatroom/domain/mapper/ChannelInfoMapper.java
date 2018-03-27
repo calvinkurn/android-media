@@ -9,6 +9,8 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
@@ -47,8 +49,47 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 hasPoll(pojo.getChannel().getActivePolls()),
                 pojo.getChannel().getBannerImageUrl(),
                 pojo.getChannel().getAdsLink(),
+                pojo.getChannel().getBannerName(),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
-                mapToChannelDesc(pojo.getChannel()));
+                mapToChannelDesc(pojo.getChannel()),
+                mapToSprintSaleViewModel(pojo.getChannel()));
+    }
+
+    private SprintSaleViewModel mapToSprintSaleViewModel(Channel channel) {
+        if (hasSprintSale()) {
+            return new SprintSaleViewModel(
+                    mapToListFlashSaleProducts(),
+                    "Campaign name",
+                    0,
+                    0,
+                    "REDIRECT_URL"
+            );
+        } else {
+            return null;
+        }
+    }
+
+    private boolean hasSprintSale() {
+        return true;
+    }
+
+    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts() {
+        ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            list.add(mapToFlashSaleProduct());
+        }
+        return list;
+    }
+
+    private SprintSaleProductViewModel mapToFlashSaleProduct() {
+        return new SprintSaleProductViewModel(
+                "Produk ampas",
+                "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/11/22/0/0_cdf5e667-e237-46c1-a9a2-6fada186b0ae_780_1040.jpg",
+                "50% OFF",
+                "Rp 300.000",
+                "Rp.500.000",
+                80,
+                "Sudah mau habis");
     }
 
 
@@ -60,7 +101,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
     private VoteInfoViewModel mapToVoteViewModel(ActivePollPojo activePollPojo) {
         if (hasPoll(activePollPojo)) {
-
             return new VoteInfoViewModel(
                     String.valueOf(activePollPojo.getPollId()),
                     activePollPojo.getTitle(),

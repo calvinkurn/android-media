@@ -15,9 +15,10 @@ public class ImageAnnouncementViewModel extends BaseChatViewModel implements Vis
 
     public ImageAnnouncementViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,
                                       String senderId, String senderName, String senderIconUrl, boolean isInfluencer,
-                                      boolean isAdministrator, String redirectUrl) {
+                                      boolean isAdministrator, String redirectUrl, boolean
+                                              canVibrate) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator);
+                isInfluencer, isAdministrator, canVibrate);
         this.contentImageUrl = contentImageUrl;
         this.redirectUrl = redirectUrl;
     }

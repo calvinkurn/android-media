@@ -7,8 +7,8 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.Product;
@@ -16,8 +16,8 @@ import com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale.UpcomingSprintSa
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -85,6 +85,9 @@ public class GroupChatMessagesMapper {
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -99,7 +102,8 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 false,
-                "");
+                "",
+                false);
     }
 
     private Visitable mapToUserMessage(UserMessage message) {
@@ -111,22 +115,22 @@ public class GroupChatMessagesMapper {
                 return mapToPollingViewModel(message,
                         message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
-//                return mapToAdminChat(message);
-                return mapToFlashSale(message, message.getData());
+                return mapToAdminChat(message, message.getData());
             case ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT:
                 return mapToAdminImageChat(message, message.getData());
-            case SprintSaleViewModel.SPRINT_SALE:
-                return mapToFlashSale(message, message.getData());
+            case SprintSaleAnnouncementViewModel.SPRINT_SALE:
+                return mapToSprintSale(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
     }
 
-    private Visitable mapToFlashSale(UserMessage message, String json) {
+    private Visitable mapToSprintSale(UserMessage message, String json) {
+        //TODO ADD CANVIBRATE
         Gson gson = new Gson();
         UpcomingSprintSalePojo pojo = gson.fromJson(json, UpcomingSprintSalePojo.class);
 
-        return new SprintSaleViewModel(
+        return new SprintSaleAnnouncementViewModel(
                 message.getCreatedAt(),
                 message.getCreatedAt(),
                 String.valueOf(message.getMessageId()),
@@ -140,7 +144,9 @@ public class GroupChatMessagesMapper {
                 true,
                 pojo.getUpcomingFlashsale().getCampaignName(),
                 pojo.getUpcomingFlashsale().getStartDate(),
-                pojo.getUpcomingFlashsale().getEndDate()
+                pojo.getUpcomingFlashsale().getEndDate(),
+                true
+
         );
     }
 
@@ -173,11 +179,13 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
+                false,
                 false
         );
     }
 
     private Visitable mapToAdminImageChat(UserMessage message, String json) {
+        //TODO ADD CANVIBRATE
         Gson gson = new Gson();
         AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
 
@@ -191,11 +199,12 @@ public class GroupChatMessagesMapper {
                 message.getSender().getProfileUrl(),
                 false,
                 true,
-                pojo.getRedirectUrl()
-        );
+                pojo.getRedirectUrl(),
+                true);
     }
 
-    private Visitable mapToAdminChat(UserMessage message) {
+    private Visitable mapToAdminChat(UserMessage message, String data) {
+        //TODO ADD CANVIBRATE
         return new ChatViewModel(
                 message.getMessage(),
                 message.getCreatedAt(),
@@ -205,38 +214,30 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                true
+                true,
+                false
         );
     }
 
     private VoteAnnouncementViewModel mapToPollingViewModel(UserMessage message, String json) {
-        try {
-            Gson gson = new Gson();
-            ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
+        //TODO ADD CANVIBRATE
+        Gson gson = new Gson();
+        ActivePollPojo pojo = gson.fromJson(json, ActivePollPojo.class);
 
-            return new VoteAnnouncementViewModel(
-                    pojo.getDescription(),
-                    message.getCustomType(),
-                    message.getCreatedAt(),
-                    message.getCreatedAt(),
-                    String.valueOf(message.getMessageId()),
-                    message.getSender().getUserId(),
-                    message.getSender().getNickname(),
-                    message.getSender().getProfileUrl(),
-                    false,
-                    true,
-                    mappingToVoteInfoViewModel(pojo)
-            );
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-            return null;
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return null;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new VoteAnnouncementViewModel(
+                pojo.getDescription(),
+                message.getCustomType(),
+                message.getCreatedAt(),
+                message.getCreatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true,
+                mappingToVoteInfoViewModel(pojo),
+                true
+        );
     }
 
 

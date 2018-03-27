@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -31,5 +31,5 @@ public interface GroupChatTypeFactory {
 
     int type(VoteAnnouncementViewModel voteAnnouncementViewModel);
 
-    int type (SprintSaleViewModel flashSaleViewModel);
+    int type (SprintSaleAnnouncementViewModel flashSaleViewModel);
 }

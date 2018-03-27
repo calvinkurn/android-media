@@ -9,7 +9,7 @@ import com.tokopedia.tkpdstream.common.util.TimeConverter;
  * @author by nisie on 2/15/18.
  */
 
-public class BaseChatViewModel implements Parcelable{
+public class BaseChatViewModel implements Parcelable {
 
     private boolean showHeaderTime;
     private String message;
@@ -26,7 +26,7 @@ public class BaseChatViewModel implements Parcelable{
     private String senderIconUrl;
     private boolean isInfluencer;
     private boolean isAdministrator;
-
+    private boolean canVibrate;
 
     BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId) {
         this.showHeaderTime = false;
@@ -43,11 +43,12 @@ public class BaseChatViewModel implements Parcelable{
         this.senderIconUrl = "";
         this.isInfluencer = false;
         this.isAdministrator = false;
+        this.canVibrate = false;
     }
 
     BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId,
                       String senderId, String senderName, String senderIconUrl,
-                      boolean isInfluencer, boolean isAdministrator) {
+                      boolean isInfluencer, boolean isAdministrator, boolean canVibrate) {
         this.showHeaderTime = false;
         this.headerTime = 0;
         this.formattedHeaderTime = "tes";
@@ -62,6 +63,7 @@ public class BaseChatViewModel implements Parcelable{
         this.senderIconUrl = senderIconUrl;
         this.isInfluencer = isInfluencer;
         this.isAdministrator = isAdministrator;
+        this.canVibrate = canVibrate;
     }
 
     public boolean isShowHeaderTime() {

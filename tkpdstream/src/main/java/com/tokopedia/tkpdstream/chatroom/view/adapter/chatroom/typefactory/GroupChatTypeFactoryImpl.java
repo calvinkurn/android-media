@@ -15,7 +15,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -69,7 +69,7 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
-    public int type(SprintSaleViewModel flashSaleViewModel) {
+    public int type(SprintSaleAnnouncementViewModel flashSaleViewModel) {
         return SprintSaleViewHolder.LAYOUT;
     }
 

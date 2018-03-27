@@ -15,7 +15,7 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.SprintSaleAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author by nisie on 3/22/18.
  */
 
-public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleViewModel> {
+public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncementViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.sprint_sale_holder;
@@ -55,7 +55,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleViewModel
     }
 
     @Override
-    public void bind(final SprintSaleViewModel element) {
+    public void bind(final SprintSaleAnnouncementViewModel element) {
         super.bind(element);
 
         checkSprintSaleActive(element.isActive());

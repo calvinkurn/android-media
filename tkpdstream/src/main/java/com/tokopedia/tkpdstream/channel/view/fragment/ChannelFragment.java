@@ -86,7 +86,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics.eventClickInboxChat();
+//        analytics.eventClickInboxChat();
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         if (userSession != null && !userSession.isLoggedIn()) {
             startActivityForResult(((StreamModuleRouter) getActivity().getApplicationContext())

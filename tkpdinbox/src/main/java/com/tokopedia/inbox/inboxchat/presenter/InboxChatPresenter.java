@@ -17,7 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
@@ -256,9 +256,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         ws.close(1000, "");
         getView().dropKeyboard();
 
-        UnifyTracking.eventOpenTopChat(TopChatTrackingEventLabel.Category.INBOX_CHAT,
-                TopChatTrackingEventLabel.Action.INBOX_CHAT_CLICK,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+        UnifyTracking.eventOpenTopChat(TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.INBOX_CHAT_CLICK,
+                TopChatAnalytics.Name.INBOX_CHAT);
 
         getView().getAdapter().notifyItemChanged(position);
         Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
