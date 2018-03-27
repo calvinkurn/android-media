@@ -12,12 +12,16 @@ public class LocationPass implements Parcelable {
     private String longitude;
     private String manualAddress;
     private String generatedAddress;
+    private String cityName;
+    private String districtName;
 
     protected LocationPass(Parcel in) {
         latitude = in.readString();
         longitude = in.readString();
         manualAddress = in.readString();
         generatedAddress = in.readString();
+        cityName = in.readString();
+        districtName = in.readString();
     }
 
     public static final Creator<LocationPass> CREATOR = new Creator<LocationPass>() {
@@ -47,6 +51,8 @@ public class LocationPass implements Parcelable {
         parcel.writeString(longitude);
         parcel.writeString(manualAddress);
         parcel.writeString(generatedAddress);
+        parcel.writeString(cityName);
+        parcel.writeString(districtName);
     }
 
     public String getLatitude() {
@@ -77,6 +83,22 @@ public class LocationPass implements Parcelable {
         this.generatedAddress = generatedAddress;
     }
 
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
     public String getGeneratedAddress() {
         return generatedAddress;
     }
@@ -86,6 +108,8 @@ public class LocationPass implements Parcelable {
         private String longitude;
         private String manualAddress;
         private String generatedAddress;
+        private String cityName;
+        private String districtName;
 
         public Builder() {
         }
@@ -114,12 +138,24 @@ public class LocationPass implements Parcelable {
             return this;
         }
 
+        public Builder setCityName(String generateCityName) {
+            this.cityName = generateCityName;
+            return this;
+        }
+
+        public Builder setDistrictName(String districtName) {
+            this.districtName = districtName;
+            return this;
+        }
+
         public Builder but() {
             return aLocationPass()
                     .setLatitude(latitude)
                     .setLongitude(longitude)
                     .setManualAddress(manualAddress)
-                    .setGeneratedAddress(generatedAddress);
+                    .setGeneratedAddress(generatedAddress)
+                    .setCityName(cityName)
+                    .setDistrictName(districtName);
         }
 
         public LocationPass build() {
@@ -128,6 +164,8 @@ public class LocationPass implements Parcelable {
             locationPass.setLongitude(longitude);
             locationPass.setManualAddress(manualAddress);
             locationPass.setGeneratedAddress(generatedAddress);
+            locationPass.setCityName(cityName);
+            locationPass.setDistrictName(districtName);
             return locationPass;
         }
     }

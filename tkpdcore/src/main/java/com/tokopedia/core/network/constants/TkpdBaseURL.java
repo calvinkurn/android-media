@@ -938,6 +938,7 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+        public static final String PATH_MAPS_GEOCODE = "maps/geocode";
     }
 
     public class TokoPoint {

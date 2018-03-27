@@ -358,6 +358,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass.setLatitude(String.valueOf(presenter.getLatLng().latitude));
                 locationPass.setLongitude(String.valueOf(presenter.getLatLng().longitude));
                 locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            } else {
+                locationPass = new LocationPass();
+                locationPass.setCityName((String)spinnerRegency.getSelectedItem());
+                locationPass.setDistrictName((String)spinnerSubDistrict.getSelectedItem());
             }
             Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE);

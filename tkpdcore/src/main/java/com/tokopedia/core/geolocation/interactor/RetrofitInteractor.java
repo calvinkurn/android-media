@@ -23,6 +23,10 @@ public interface RetrofitInteractor {
                         TKPDMapParam<String, String> param,
                         GenerateLatLongListener listener);
 
+    void generateLatLngGeoCode(Context context,
+                        TKPDMapParam<String, String> param,
+                        GenerateLatLongListener listener);
+
     CompositeSubscription getCompositeSubscription();
 
     MapService getMapService();

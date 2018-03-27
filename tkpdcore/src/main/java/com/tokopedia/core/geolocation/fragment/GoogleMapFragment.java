@@ -59,9 +59,12 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         ResultCallback<LocationSettingsResult>, OnMapReadyCallback {
 
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private static final boolean HAS_LOCATION = true;
+    private static final boolean NO_LOCATION = false;
     private static final String TAG = GoogleMapFragment.class.getSimpleName();
     private static final String ARG_PARAM_GEOLOCATION_PASS_DATA = "ARG_PARAM_GEOLOCATION_PASS_DATA";
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
+    private static final String STATE_LOCATION_INITIATED = "STATE_LOCATION_INITIATED";
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -77,6 +80,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     FloatingActionButton fab;
 
     private LocationPass locationPass;
+    private boolean hasLocation;
     private GoogleMap googleMap;
     private SuggestionLocationAdapter adapter;
     private ActionBar actionBar;
@@ -86,6 +90,17 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         GoogleMapFragment fragment = new GoogleMapFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA, locationPass);
+        args.putBoolean(STATE_LOCATION_INITIATED, HAS_LOCATION);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static Fragment newInstanceNoLocation() {
+        GoogleMapFragment fragment = new GoogleMapFragment();
+        Bundle args = new Bundle();
+        LocationPass emptyLocationPass = new LocationPass();
+        args.putParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA, emptyLocationPass);
+        args.putBoolean(STATE_LOCATION_INITIATED, NO_LOCATION);
         fragment.setArguments(args);
         return fragment;
     }
@@ -119,7 +134,12 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new GoogleMapPresenterImpl(getActivity(), this, locationPass);
+        this.presenter = new GoogleMapPresenterImpl(
+                getActivity(),
+                this,
+                locationPass,
+                hasLocation
+        );
     }
 
     @Override
@@ -129,6 +149,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     @Override
     protected void setupArguments(Bundle arguments) {
         locationPass = arguments.getParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA);
+        hasLocation = arguments.getBoolean(STATE_LOCATION_INITIATED);
     }
 
     @Override
@@ -442,7 +463,11 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         this.googleMap = googleMap;
         initMapView();
         initMapListener();
+
+        //This to fulfill 4th condition when no coordinate, no district, and no GPS
+        //TODO remove this if annoys UX or inefficient fending off GPS Error
         presenter.initDefaultLocation();
+
         presenter.onMapReady();
     }
 }
