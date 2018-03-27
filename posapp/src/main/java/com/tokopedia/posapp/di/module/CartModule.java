@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.cart.data.mapper.AddToCartMapper;
 import com.tokopedia.posapp.cart.data.repository.CartRepository;
-import com.tokopedia.posapp.cart.data.repository.CartRepositoryImpl;
+import com.tokopedia.posapp.cart.data.repository.CartLocalRepository;
 import com.tokopedia.posapp.di.scope.CartScope;
 import com.tokopedia.posapp.cart.domain.usecase.AddToCartUseCase;
 import com.tokopedia.posapp.cart.domain.usecase.GetAllCartUseCase;
@@ -32,7 +32,7 @@ public class CartModule {
 
     @Provides
     CartRepository provideCartRepository(CartFactory cartFactory) {
-        return new CartRepositoryImpl(cartFactory);
+        return new CartLocalRepository(cartFactory);
     }
 
     @Provides

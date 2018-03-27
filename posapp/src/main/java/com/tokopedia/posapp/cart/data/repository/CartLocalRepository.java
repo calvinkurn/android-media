@@ -1,55 +1,55 @@
 package com.tokopedia.posapp.cart.data.repository;
 
+
 import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
-import com.tokopedia.posapp.product.common.data.source.cloud.ProductCloudSource;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
 /**
- * @author okasurya on 3/21/18.
+ * Created by okasurya on 8/22/17.
  */
 
-public class CartCloudRepository implements CartRepository {
+public class CartLocalRepository implements CartRepository {
     private CartLocalSource cartLocalSource;
-    private ProductCloudSource productCloudSource;
 
-    private CartCloudRepository(CartLocalSource cartLocalSource,
-                                ProductCloudSource productCloudSource) {
+    @Inject
+    public CartLocalRepository(CartLocalSource cartLocalSource) {
         this.cartLocalSource = cartLocalSource;
-        this.productCloudSource = productCloudSource;
     }
 
     @Override
     public Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain) {
-        return null;
+        return cartLocalSource.storeCartProduct(cartDomain);
     }
 
     @Override
     public Observable<ATCStatusDomain> updateCartProduct(CartDomain cartDomain) {
-        return null;
+        return cartLocalSource.updateCartProduct(cartDomain);
     }
 
     @Override
     public Observable<ATCStatusDomain> deleteCartProduct(CartDomain cartDomain) {
-        return null;
+        return cartLocalSource.deleteCartProduct(cartDomain);
     }
 
     @Override
     public Observable<ATCStatusDomain> deleteCart() {
-        return null;
+        return cartLocalSource.deleteCart();
     }
 
     @Override
     public Observable<CartDomain> getCartProduct(int productId) {
-        return null;
+        return cartLocalSource.getCartProduct(productId);
     }
 
     @Override
     public Observable<List<CartDomain>> getAllCartProducts() {
-        return null;
+        return cartLocalSource.getAllCartProducts();
     }
 }

@@ -4,7 +4,7 @@ package com.tokopedia.posapp.product.common.domain.model;
  * Created by okasurya on 8/9/17.
  */
 public class ProductDomain {
-    private int productId;
+    private long productId;
     private String productName;
     private String productPrice;
     private double productPriceUnformatted;
@@ -17,11 +17,11 @@ public class ProductDomain {
     private String productOriginalPrice;
     private double productOriginalPriceUnformatted;
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

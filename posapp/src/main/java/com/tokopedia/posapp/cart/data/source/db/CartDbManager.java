@@ -6,6 +6,7 @@ import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.database.model.CartDb;
 import com.tokopedia.posapp.database.model.CartDb_Table;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
+import com.tokopedia.posapp.product.common.domain.model.ProductDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,14 @@ public class CartDbManager extends PosDbOperation<CartDomain, CartDb> {
             cartDomain.setProductId(cartDb.getProductId());
             cartDomain.setQuantity(cartDb.getQuantity());
             cartDomain.setOutletId(cartDb.getOutletId());
+
+            ProductDomain productDomain = new ProductDomain();
+            productDomain.setProductId(cartDb.getId());
+            productDomain.setProductName(cartDb.getName());
+            productDomain.setProductImage300(cartDb.getImageUrl());
+            productDomain.setProductPriceUnformatted(cartDb.getPriceUnformatted());
+            productDomain.setProductPrice(cartDb.getPrice());
+            cartDomain.setProduct(productDomain);
             return cartDomain;
         }
 
@@ -67,6 +76,10 @@ public class CartDbManager extends PosDbOperation<CartDomain, CartDb> {
             cartDb.setProductId(cartDomain.getProductId());
             cartDb.setQuantity(cartDomain.getQuantity());
             cartDb.setOutletId(cartDomain.getOutletId());
+            cartDb.setName(cartDomain.getProduct().getProductName());
+            cartDb.setImageUrl(cartDomain.getProduct().getProductImage300());
+            cartDb.setPriceUnformatted(cartDomain.getProduct().getProductPriceUnformatted());
+            cartDb.setPrice(cartDomain.getProduct().getProductPrice());
             return cartDb;
         }
 
