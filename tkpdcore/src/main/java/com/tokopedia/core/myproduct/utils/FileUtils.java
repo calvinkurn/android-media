@@ -203,12 +203,28 @@ public class FileUtils {
         if (uri.getAuthority() != null) {
             try {
                 is = context.getContentResolver().openInputStream(uri);
+                if (is == null) {
+                    return null;
+                }
                 String path = getPathFromMediaUri(context, uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
+                if (TextUtils.isEmpty(path)) {
+                    path = getPath(context, uri);
+                }
+                if (TextUtils.isEmpty(path)) {
+                    return null;
+                }
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                options.inSampleSize = ImageHandler.calculateInSampleSize(is.available());
+                Bitmap bmp = BitmapFactory.decodeStream(is, null, options);
+                if (bmp == null) {
+                    return null;
+                }
                 if (!TextUtils.isEmpty(path)) {
                     bmp = ImageHandler.RotatedBitmap(bmp, path);
                 }
                 File file = writeImageToTkpdPath(bmp);
+                bmp.recycle();
                 if (file != null) {
                     return file.getAbsolutePath();
                 } else {
@@ -218,7 +234,9 @@ public class FileUtils {
                 e.printStackTrace();
             } finally {
                 try {
-                    is.close();
+                    if (is!=null) {
+                        is.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
