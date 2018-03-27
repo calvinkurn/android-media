@@ -893,6 +893,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             case ATCIntentService.RESULT_ADD_TO_CART_SUCCESS:
                 hideProgressLoading();
                 presenter.sendAnalyticsATCSuccess(this, productCartPass, createFinalOrderData());
+                presenter.sendAddToCartCheckoutAnalytic();
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));
                 presenter.setCacheCart(this);

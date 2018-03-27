@@ -2,6 +2,7 @@ package com.tokopedia.transaction.addtocart.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -42,6 +43,11 @@ public interface AddToCartPresenter {
     void addToCart(@NonNull Context context, @NonNull OrderData orderData);
 
     boolean isValidOrder(@NonNull Context context, @NonNull OrderData orderData);
+
+    void sendAddToCartCheckoutAnalytic(@NonNull Context context,
+                                       @NonNull ProductCartPass productCartPass,
+                                       int quantity,
+                                       @NonNull Bundle analyticBundle);
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 

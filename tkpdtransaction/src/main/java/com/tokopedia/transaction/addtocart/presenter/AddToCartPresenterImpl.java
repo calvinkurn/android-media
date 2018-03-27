@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Window;
@@ -21,6 +22,7 @@ import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -418,6 +420,28 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             }
         }
         return true;
+    }
+
+    @Override
+    public void sendAddToCartCheckoutAnalytic(@NonNull Context context,
+                                              @NonNull ProductCartPass productCartPass,
+                                              int quantity,
+                                              @NonNull Bundle addToCartBundle) {
+        com.tokopedia.core.analytics.nishikino.model.Product product =
+                new com.tokopedia.core.analytics.nishikino.model.Product();
+        product.setProductName(productCartPass.getProductName());
+        product.setProductID(productCartPass.getProductId());
+        product.setPrice(productCartPass.getPrice());
+        product.setBrand("none/other");
+        product.setCategory(productCartPass.getProductCategory());
+        product.setVariant("none/other");
+        product.setQty(quantity);
+        product.setShopId(productCartPass.getShopId());
+        product.setShopType
+        product.setShopName(productCartPass.getShopName());
+        product.setCategoryId(productCartPass.getCategoryId());
+        product.setCartId(productCartPass.ge);
+        GTMContainer.newInstance(context).eventAddToCartPurchase(product);
     }
 
     @Override

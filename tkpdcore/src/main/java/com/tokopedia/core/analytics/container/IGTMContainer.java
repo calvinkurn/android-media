@@ -133,6 +133,8 @@ public interface IGTMContainer {
 
     void eventRemoveFromCartPurchase(Product product);
 
+    void eventCheckout(List<Product> productList, String step, String option);
+
     void eventImpressionPromoList(List<Object> list, String promoName);
 
     void eventClickPromoListItem(List<Object> list, String promoName);

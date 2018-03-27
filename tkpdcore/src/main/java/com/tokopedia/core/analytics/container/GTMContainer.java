@@ -36,6 +36,7 @@ import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -639,6 +640,33 @@ public class GTMContainer implements IGTMContainer {
                                 "add", DataLayer.mapOf(
                                         "products", product.getProduct())
                         )
+                )
+        );
+    }
+
+    @Override
+    public void eventCheckout(List<Product> productList,
+                              String step,
+                              String option) {
+        clearEnhanceEcommerce();
+        List<Object> productHashedList = new ArrayList<>();
+        for(int i = 0; i < productList.size(); i++) {
+            DataLayer.mapOf(productList.get(i).getProduct());
+        }
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf(
+                        AppEventTracking.EVENT,
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                "checkout", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf(
+                                            "step", step,
+                                                "option", option
+                                        ),
+                                        "products", DataLayer.listOf(productHashedList)
+                                )
+
+                        )
+
                 )
         );
     }

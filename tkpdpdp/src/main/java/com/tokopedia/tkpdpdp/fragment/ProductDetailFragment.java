@@ -452,8 +452,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setPrice(productData.getInfo().getProductPrice())
                         .build();
                 pass.setNotes(generateVariantString());
-                if (!productData.getBreadcrumb().isEmpty())
+                if (!productData.getBreadcrumb().isEmpty()) {
                     pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
+                    pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
+                }
                 onProductBuySessionLogin(pass);
             } else {
                 Bundle bundle = new Bundle();

@@ -18,6 +18,8 @@ public class ProductCartPass implements Parcelable {
     private String shopId;
     private String price;
     private String notes;
+    private String categoryId;
+    private String shopName;
 
     public ProductCartPass() {
     }
@@ -94,6 +96,22 @@ public class ProductCartPass implements Parcelable {
         this.notes = notes;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
     protected ProductCartPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -104,6 +122,8 @@ public class ProductCartPass implements Parcelable {
         shopId = in.readString();
         price = in.readString();
         notes = in.readString();
+        categoryId = in.readString();
+        shopName = in.readString();
     }
 
 
@@ -123,6 +143,8 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(shopId);
         dest.writeString(price);
         dest.writeString(notes);
+        dest.writeString(categoryId);
+        dest.writeString(shopName);
     }
 
     @SuppressWarnings("unused")
@@ -150,6 +172,8 @@ public class ProductCartPass implements Parcelable {
         private String shopId;
         private String price;
         private String notes;
+        private String categoryId;
+        private String shopName;
 
         private Builder() {
         }
@@ -203,6 +227,16 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setCategoryId(String categoryId) {
+            this.categoryId = categoryId;
+            return this;
+        }
+
+        public Builder setShopName(String shopName) {
+            this.shopName = shopName;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -213,7 +247,9 @@ public class ProductCartPass implements Parcelable {
                     .setWeight(weight)
                     .setShopId(shopId)
                     .setPrice(price)
-                    .setNotes(notes);
+                    .setNotes(notes)
+                    .setCategoryId(categoryId)
+                    .setShopName(shopName);
 
         }
 
@@ -228,6 +264,8 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setShopId(shopId);
             productCartPass.setPrice(price);
             productCartPass.setNotes(notes);
+            productCartPass.setCategoryId(categoryId);
+            productCartPass.setShopName(shopName);
             return productCartPass;
         }
     }

@@ -23,6 +23,7 @@ public class Product extends BaseGTMModel {
     public static final String KEY_CART_ID = "cart_id";
     public static final String KEY_POS      = "position";
     public static final String KEY_LIST     = "list";
+    public static final String KEY_HOME_ATTRIBUTION     = "home_attribution";
 
     public Product() {
 
@@ -62,6 +63,10 @@ public class Product extends BaseGTMModel {
 
     public void setVariant(Object variant) {
         Product.put(KEY_VARIANT, variant);
+    }
+
+    public void setHomeAttribution(Object homeAttribution) {
+        Product.put(KEY_HOME_ATTRIBUTION, homeAttribution);
     }
 
     public Map<String, Object> getProduct() {
