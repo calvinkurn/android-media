@@ -146,19 +146,6 @@ public class ImageHandler {
         return inSampleSize;
     }
 
-    public static int calculateInSampleSize(int size) {
-        int inSampleSize = 1;
-        if (size > IMAGE_WIDTH_HD * IMAGE_WIDTH_HD) {
-            inSampleSize = inSampleSize * 2;
-            int halfSize = size / 4;
-            while (halfSize > IMAGE_WIDTH_HD * IMAGE_WIDTH_HD) {
-                inSampleSize = inSampleSize * 2;
-                halfSize = size / 4;
-            }
-        }
-        return inSampleSize;
-    }
-
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
