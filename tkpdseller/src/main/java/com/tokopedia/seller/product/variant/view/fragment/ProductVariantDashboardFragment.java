@@ -60,7 +60,6 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         implements ProductVariantMainView, ProductVariantDashboardNewAdapter.OnProductVariantDashboardNewAdapterListener,
         BaseListAdapter.Callback<ProductVariantDashboardViewModel> {
 
-    public static final String SIZE_IDENTIFIER = "ukuran";
     private LabelView variantLevelOneLabelView;
     private LabelView variantLevelTwoLabelView;
 
@@ -126,7 +125,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         }
         if (productVariantByCatModelList != null) {
             for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {
-                if (productVariantByCatModelList.get(i).getName().toLowerCase().contains(SIZE_IDENTIFIER)) {
+                if (productVariantByCatModelList.get(i).isSizeIdentifier()) {
                     indexOptionParentSizeChart = i;
                     break;
                 }
