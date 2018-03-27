@@ -17,6 +17,7 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -60,8 +61,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.hamcrest.Matchers.not;
+import static testutils.TextInputLayoutActions.clickPasswordToggle;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -208,14 +211,17 @@ public class LoginActivityTest {
 
         startEmptyIntentLoginActivity();
 
-//        Thread.sleep(500);
-//
-//        UiObject smartlock = device.findObject(new UiSelector().resourceId("com.google.android.gms:id/credentials_picker_title"));
-//
-//        if(smartlock.exists()){
-//            Log.i("NORMANSYAH", "smartlock exists");
-//            onView(isRoot()).perform(pressBack());
-//        }
+        final EditText textInput = mIntentsRule.getActivity().findViewById(R.id.password);
+
+        onView(withId(R.id.email_auto))
+                .check(matches(withText("cincin.jati+47@tokopedia.com")));
+
+        onView(withId(R.id.password)).perform(clickPasswordToggle());
+
+        // And assert that the password is not disguised
+        assertEquals("optimus", textInput.getLayout().getText().toString());
+
+        Thread.sleep(3000);
     }
 
     private void startLoginActivity() {
