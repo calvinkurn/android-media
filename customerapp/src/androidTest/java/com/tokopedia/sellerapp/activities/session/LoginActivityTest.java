@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.FlakyTest;
@@ -16,7 +17,9 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.webkit.WebView;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
@@ -27,6 +30,7 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.sellerapp.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
 import com.tokopedia.sellerapp.Utils;
+import com.tokopedia.sellerapp.WebViewIdlingResource;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.tkpd.ConsumerMainApplication;
@@ -48,6 +52,7 @@ import rx.schedulers.Schedulers;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.unregisterIdlingResources;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -90,6 +95,7 @@ public class LoginActivityTest {
     private String loginSuccessKainan;
 
     private UiDevice device;
+    private WebViewIdlingResource webViewIdlingResource;
 
     @Before
     public void setup() throws Exception {
@@ -146,7 +152,7 @@ public class LoginActivityTest {
      * @throws Exception just throw exception
      */
     @Test
-    public void testFirstRunSellerHome() throws Exception {
+    public void testEmailLogin() throws Exception {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
         startLoginActivity();
@@ -177,18 +183,55 @@ public class LoginActivityTest {
                 .perform(click());
     }
 
+    /**
+     * Test yahoo login
+     */
     @Test
-    public void testFacebookLogin() throws Exception{
-        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+    public void testYahooLogin(){
 
-        startLoginActivity();
+        // TODO mock server response for yahoo login.
+
+        startEmptyIntentLoginActivity();
+
+        // click button2
+        onView(withText("You should car about that")).perform(click());
+        // waiting all url to be finished
+        DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        final WebView webview = dialog.getView().findViewById(R.id.web_oauth);
+        if(webview != null){
+            try {
+                mIntentsRule.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webViewIdlingResource = new WebViewIdlingResource(webview);
+                        Espresso.registerIdlingResources(webViewIdlingResource);
+                    }
+                });
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+
+        // set target fragment bundle
+        Bundle bundle = new Bundle();
+        bundle.putString("server", "accounts.tokopedia.com");
+        bundle.putString("path", "/mappauth/code");
+        bundle.putString("NAME", "Yahoo");
+        bundle.putString("code", "v");
+        bundle.putString("state", "ad5d4603-7243-4e8e-85a2-d5ae4bcc8deb");
+        Intent intent = new Intent();
+        intent.putExtra("bundle", bundle);
+        dialog.getTargetFragment().onActivityResult(dialog.getTargetRequestCode(), Activity.RESULT_OK, intent);
+
+        // dismiss fragment or press back
+        dialog.dismiss();
     }
 
     /**
      * @throws Exception
      */
     @Test
-    public void testFirstRunSellerHome2() throws Exception{
+    public void testSmartLockFullBundle() throws Exception{
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -213,7 +256,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void testFirstRunSellerHome3() throws Exception{
+    public void testSmartLockPartialBundle() throws Exception{
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
         String phoneNumber = "123-345-6789";
@@ -249,6 +292,7 @@ public class LoginActivityTest {
     @After
     public void tearDown() throws Exception {
         RxJavaTestPlugins.resetJavaTestPlugins();
+        unregisterIdlingResources(webViewIdlingResource);
         Intents.release();
         server.shutdown();
         server2.shutdown();
