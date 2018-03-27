@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -57,6 +59,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
@@ -107,6 +110,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE = "vote";
     public static final String VOTE_ANNOUNCEMENT = "vote_announcement";
     public static final String VOTE_TYPE = "vote_type";
+
+    /**
+     * Make sure this is the same as Constants.java at tkpdcore
+     */
+    private static final String PREF_GROUP_CHAT_NOTIF = "notification_group_chat";
+
     private String voteType;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
@@ -175,6 +184,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Inject
     StreamAnalytics analytics;
 
+    @Inject
+    NotificationPreference notificationPreference;
+
+    SharedPreferences sharedPreferences;
+
     private UserSession userSession;
 
     @Override
@@ -206,6 +220,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         initView();
         initInjector();
         initData();
+        initPreference();
     }
 
     private void initInjector() {
@@ -257,6 +272,20 @@ public class GroupChatActivity extends BaseSimpleActivity
         userSession = ((AbstractionRouter) getApplication()).getSession();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
+    }
+
+    private void initPreference() {
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean isNotificationOn = sharedPreferences.getBoolean(PREF_GROUP_CHAT_NOTIF, false);
+
+            if (!isNotificationOn
+                    && notificationPreference.isFirstTimeUser(userSession.getUserId())) {
+                sharedPreferences.edit().putBoolean(PREF_GROUP_CHAT_NOTIF, true).apply();
+            }
+
+            notificationPreference.setFirstTime(userSession.getUserId());
+        }
     }
 
     public void showLoading() {

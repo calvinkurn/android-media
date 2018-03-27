@@ -262,7 +262,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void Chat() {
+    public void refreshChat() {
         presenter.refreshDataAfterReconnect(mChannel);
     }
 

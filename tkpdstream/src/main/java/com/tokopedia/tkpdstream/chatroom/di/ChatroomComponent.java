@@ -1,5 +1,8 @@
 package com.tokopedia.tkpdstream.chatroom.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
@@ -15,6 +18,7 @@ import dagger.Component;
 @ChatroomScope
 @Component(modules = ChatroomModule.class, dependencies = StreamComponent.class)
 public interface ChatroomComponent {
+    @ApplicationContext Context getApplicationContext();
 
     void inject(GroupChatFragment fragment);
 
