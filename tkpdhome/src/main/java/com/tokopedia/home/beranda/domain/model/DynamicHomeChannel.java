@@ -138,7 +138,7 @@ public class DynamicHomeChannel {
         }
 
         public Map<String, Object> getEnhanceImpressionSprintSaleCarouselHomePage() {
-            List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
+            List<Object> list = convertProductEnhanceSprintSaleCarouselDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
@@ -168,6 +168,29 @@ public class DynamicHomeChannel {
                                 "category", "none / other",
                                 "variant", "none / other",
                                 "list", "/ - p1 - sprint sale",
+                                "position", i + 1
+                        )
+                );
+            }
+            return list;
+        }
+
+        private List<Object> convertProductEnhanceSprintSaleCarouselDataLayer(Grid[] grids) {
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < grids.length; i++) {
+                Grid grid = grids[i];
+                list.add(
+                        DataLayer.mapOf(
+                                "name", grid.getName(),
+                                "id", grid.getId(),
+                                "price", (grid.getPrice().equalsIgnoreCase("")) ? ""
+                                        : Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                        grid.getPrice()
+                                )),
+                                "brand", "none / other",
+                                "category", "none / other",
+                                "variant", "none / other",
+                                "list", "/ - p2 - sprint sale banner",
                                 "position", i + 1
                         )
                 );

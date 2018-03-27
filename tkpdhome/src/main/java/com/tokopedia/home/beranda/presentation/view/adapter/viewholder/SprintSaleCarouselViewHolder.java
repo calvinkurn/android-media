@@ -81,7 +81,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         snapHelper.attachToRecyclerView(recyclerView);
     }
 
-    public static int convertDpToPixel(float dp, Context context){
+    public static int convertDpToPixel(float dp, Context context) {
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
@@ -89,7 +89,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     @Override
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
         HomePageTracking.eventEnhancedClickSprintSaleProduct(channels.getEnhanceClickSprintSaleCarouselHomePage(pos, countDownView.getCurrentCountDown()));
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), channels.getHomeAttribution(pos, grid.getName()));
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), channels.getHomeAttribution(pos + 1, grid.getName()));
     }
 
     @Override
