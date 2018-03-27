@@ -149,9 +149,8 @@ android {
                     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                     String abi = output.getFilter(com.android.build.OutputFile.ABI);
                     Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
-                    project.logger.info("oka version code: " + vrsCode);
-                    output.buildConfigField "int", "VERSION_CODE", vrsCode
                     output.versionCodeOverride = vrsCode;
+                    project.logger.info("oka version code: " + output.versionCodeOverride);
                 }
                 variant.assemble.doLast {
                     variant.outputs.each { output ->
@@ -181,9 +180,8 @@ android {
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         String abi = output.getFilter(com.android.build.OutputFile.ABI);
                         Integer vrsCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
-                        project.logger.info("oka version code: " + vrsCode);
-                        output.buildConfigField "int", "VERSION_CODE", vrsCode
                         output.versionCodeOverride = vrsCode;
+                        project.logger.info("oka version code: " + output.versionCodeOverride);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -197,9 +195,8 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         Integer vrsCode = (getTkpdVersionCode() * 100);
-                        project.logger.info("oka version code: " + vrsCode);
-//                        buildConfigField "int", "VERSION_CODE", vrsCode
                         output.versionCodeOverride = vrsCode;
+                        project.logger.info("oka version code: " + output.versionCodeOverride);
                     }
                 }
             }
