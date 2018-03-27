@@ -1,7 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;

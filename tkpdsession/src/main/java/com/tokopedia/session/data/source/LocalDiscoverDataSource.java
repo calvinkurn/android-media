@@ -27,13 +27,13 @@ public class LocalDiscoverDataSource {
         this.globalCacheManager = globalCacheManager;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(String source) {
+    public Observable<DiscoverViewModel> getDiscover(final String source) {
         return Observable.just(KEY_DISCOVER + source)
                 .map(new Func1<String, DiscoverViewModel>() {
                     @Override
                     public DiscoverViewModel call(String s) {
-                        if (getCache() != null) {
-                            return CacheUtil.convertStringToModel(getCache(),
+                        if (getCache(source) != null) {
+                            return CacheUtil.convertStringToModel(getCache(source),
                                     new TypeToken<DiscoverViewModel>() {
                                     }.getType());
                         } else {
@@ -50,7 +50,7 @@ public class LocalDiscoverDataSource {
                 });
     }
 
-    private String getCache() {
-        return globalCacheManager.getValueString(KEY_DISCOVER);
+    private String getCache(String source) {
+        return globalCacheManager.getValueString(KEY_DISCOVER + source);
     }
 }

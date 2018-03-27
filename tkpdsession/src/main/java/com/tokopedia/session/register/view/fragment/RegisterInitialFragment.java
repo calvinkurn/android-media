@@ -37,6 +37,9 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -82,6 +85,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
+    private static final String PHONE_NUMBER = "phonenumber";
+    private static final String REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER = "mainapp_show_register_phone_number";
     private static final String COLOR_WHITE = "#FFFFFF";
 
     public static final int TYPE_SQ_PHONE = 1;
@@ -103,6 +108,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     SessionHandler sessionHandler;
 
     CallbackManager callbackManager;
+    RemoteConfig remoteConfig;
 
     public static RegisterInitialFragment createInstance() {
         return new RegisterInitialFragment();
@@ -136,6 +142,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Nullable
@@ -168,6 +175,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
+        registerPhoneNumberButton.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(R.color.black);
@@ -321,22 +329,28 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         layoutParams.setMargins(0, 20, 0, 15);
 
         for (int i = 0; i < listProvider.size(); i++) {
-            String color = listProvider.get(i).getColor();
-            int colorInt;
-            if (color == null) {
-                colorInt = Color.parseColor(COLOR_WHITE);
-            } else {
-                colorInt = Color.parseColor(color);
-            }
-            LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
-            loginTextView.setTextRegister(listProvider.get(i).getName());
-            loginTextView.setImage(listProvider.get(i).getImage());
-            loginTextView.setRoundCorner(10);
+            DiscoverItemViewModel item = listProvider.get(i);
+            if (!item.getId().equals(PHONE_NUMBER)) {
+                String color = item.getColor();
+                int colorInt;
+                if (color == null) {
+                    colorInt = Color.parseColor(COLOR_WHITE);
+                } else {
+                    colorInt = Color.parseColor(color);
+                }
+                LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
+                loginTextView.setTextRegister(item.getName());
+                loginTextView.setImage(item.getImage());
+                loginTextView.setRoundCorner(10);
 
-            setDiscoverOnClickListener(listProvider.get(i), loginTextView);
+                setDiscoverOnClickListener(item, loginTextView);
 
-            if (registerContainer != null) {
-                registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                if (registerContainer != null) {
+                    registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                }
+            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
+                registerPhoneNumberButton.setVisibility(View.VISIBLE);
+                registerPhoneNumberButton.setImage(item.getImage());
             }
         }
 
