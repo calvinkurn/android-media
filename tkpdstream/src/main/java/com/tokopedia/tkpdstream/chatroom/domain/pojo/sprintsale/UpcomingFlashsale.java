@@ -2,6 +2,7 @@
 package com.tokopedia.tkpdstream.chatroom.domain.pojo.sprintsale;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,10 +16,10 @@ public class UpcomingFlashsale {
     private String campaignShortName;
     @SerializedName("start_date")
     @Expose
-    private int startDate;
+    private long startDate;
     @SerializedName("end_date")
     @Expose
-    private int endDate;
+    private long endDate;
     @SerializedName("products")
     @Expose
     private List<Product> products = null;
@@ -39,19 +40,19 @@ public class UpcomingFlashsale {
         this.campaignShortName = campaignShortName;
     }
 
-    public int getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(int startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 
-    public int getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(int endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 

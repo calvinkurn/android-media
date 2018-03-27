@@ -14,9 +14,10 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
 
     public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,
-                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
+                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator,
+                         boolean canVibrate) {
         super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
-                isInfluencer, isAdministrator);
+                isInfluencer, isAdministrator, canVibrate);
     }
 
     @Override

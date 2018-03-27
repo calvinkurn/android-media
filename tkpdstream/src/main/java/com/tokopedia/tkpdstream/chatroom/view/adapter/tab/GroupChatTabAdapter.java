@@ -107,4 +107,12 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
         notifyItemChanged(position);
     }
 
+    public void add(int position, TabViewModel tabViewModel) {
+        this.listTab.add(position,tabViewModel);
+    }
+
+    public void remove(int position) {
+        this.listTab.remove(position);
+    }
+
 }

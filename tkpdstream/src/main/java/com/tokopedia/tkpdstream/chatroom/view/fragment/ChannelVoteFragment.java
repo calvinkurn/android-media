@@ -33,6 +33,7 @@ import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
@@ -48,13 +49,9 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
-import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE_ANNOUNCEMENT;
 
 /**
  * @author by StevenFredian on 20/03/18.
@@ -164,16 +161,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
     }
 
-    public void expand(final View v) {
-        v.setVisibility(View.VISIBLE);
-    }
-
-    public void collapse(final View v) {
-        v.setVisibility(View.GONE);
-    }
-
     public void showVoteLayout(final VoteInfoViewModel model) {
-        Log.d("NISNIS", "showVoteLayout");
 
         this.voteInfoViewModel = model;
         loading.setVisibility(View.GONE);
@@ -228,29 +216,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     }
 
-//    private void updateVoteViewModel(VoteInfoViewModel model, String voteType) {
-//        if (voteInfoViewModel != null) {
-//            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
-//                    || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
-//                    || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
-//                boolean isVoted = voteInfoViewModel.isVoted();
-//                List<Visitable> tempListOption = new ArrayList<>();
-//                tempListOption.addAll(voteInfoViewModel.getListOption());
-//                for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
-//                    if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
-//                        ((VoteViewModel) voteInfoViewModel.getListOption().get(i)).setSelected(
-//                                ((VoteViewModel) (tempListOption.get(i))).getSelected());
-//                    }
-//                }
-//                voteInfoViewModel.setVoted(isVoted);
-//                voteInfoViewModel = model;
-//
-//            } else {
-//                voteInfoViewModel = model;
-//            }
-//        }
-//    }
-
     public void hideVoteLayout() {
         voteBar.setVisibility(View.GONE);
         voteBody.setVisibility(View.GONE);
@@ -286,25 +251,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void setVoted() {
         votedView.setVisibility(View.VISIBLE);
     }
-//
-//    private void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem) {
-//
-//        switch (messageItem.getVoteType()) {
-//            case VoteAnnouncementViewModel.POLLING_START:
-//                votedView.setVisibility(View.GONE);
-//                showVoteLayout(messageItem.getVoteInfoViewModel());
-//                break;
-//            case VoteAnnouncementViewModel.POLLING_UPDATE:
-//                showVoteLayout(messageItem.getVoteInfoViewModel());
-//                break;
-//            case VoteAnnouncementViewModel.POLLING_FINISHED:
-//                showVoteLayout(messageItem.getVoteInfoViewModel());
-//                break;
-//            case VoteAnnouncementViewModel.POLLING_CANCEL:
-//                hideVoteLayout();
-//                break;
-//        }
-//    }
 
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
@@ -312,7 +258,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
             boolean voted = (votedView.getVisibility() == View.VISIBLE);
             presenter.sendVote(voteInfoViewModel.getPollId(), voted, element);
-            analytics.eventClickVote(element.getType(), ((GroupChatActivity)getActivity()).getToolbarTitle());
+
+            if (getActivity() != null
+                    && getActivity() instanceof GroupChatContract.View
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelViewModel() != null) {
+                analytics.eventClickVote(element.getType(), ((GroupChatContract.View) getActivity
+                        ()).getChannelInfoViewModel().getChannelViewModel().getChannelUrl());
+            }
         }
     }
 
@@ -349,6 +302,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
             voteParticipant.setText(String.format("%s %s", TextFormatter.format(voteInfoViewModel.getParticipant())
                     , getActivity().getString(R.string.voter)));
+
+
+            if(getActivity() instanceof GroupChatContract.View){
+                ((GroupChatContract.View)getActivity()).updateVoteViewModel(
+                        voteInfoViewModel, "");
+            }
         }
     }
 
@@ -373,7 +332,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
             VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
             showVoteLayout(temp);
-            ((GroupChatActivity)getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
+            ((GroupChatActivity) getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
         }
     }
 }

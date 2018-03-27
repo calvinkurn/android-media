@@ -2,6 +2,8 @@ package com.tokopedia.tkpdstream.common.util;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 /**
@@ -11,10 +13,15 @@ import javax.inject.Inject;
 public class StreamAnalytics {
     private AnalyticTracker analyticTracker;
 
+    private static final String EVENT_NAME = "event";
+    private static final String EVENT_CATEGORY = "eventCategory";
+    private static final String EVENT_ACTION = "eventAction";
+    private static final String EVENT_LABEL = "eventLabel";
+    private static final String TRACKER_ATTRIBUTION = "tracker_attribution";
+
     private static final String EVENT_CATEGORY_GROUPCHAT_LIST = "groupchat";
     private static final String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
     private static final String EVENT_CATEGORY_SHARE = "share page";
-    private static final String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
     public static final String EVENT_CATEGORY_LEFT_NAVIGATION = "left navigation";
 
 
@@ -26,15 +33,20 @@ public class StreamAnalytics {
     private static final String EVENT_ACTION_CLICK_THUMBNAIL = "click on image thumbnail";
     private static final String EVENT_ACTION_CLICK_VOTE_COMPONENT = "click on component - ";
     private static final String EVENT_ACTION_CLICK_VOTE_EXPAND = "click on vote expand";
-    private static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
     public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on group chat";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
-    private static final String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
     public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
+    public static final String COMPONENT_BANNER = "banner";
+    public static final String COMPONENT_VOTE = "vote";
+
+    private static final String ATTRIBUTE_GROUP_CHAT = "Group Chat";
+    public static final String ATTRIBUTE_FLASH_SALE = "Flash Sale";
+    public static final String ATTRIBUTE_BANNER = "Banner";
+    public static final String ATTRIBUTE_VOTE = "Vote";
 
 
     @Inject
@@ -90,28 +102,22 @@ public class StreamAnalytics {
         );
     }
 
-    public void eventClickVoteComponent(String componentType, String componentName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
-                componentType + " " + componentName
-        );
+    public void eventClickComponent(String componentType, String componentName, String
+            attributeName, String channelUrl, String channelName) {
+        HashMap<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT);
+        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM);
+        eventTracking.put(EVENT_ACTION, EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType);
+        eventTracking.put(EVENT_LABEL, componentType + " " + componentName);
+        eventTracking.put(TRACKER_ATTRIBUTION, generateTrackerAttribution(attributeName,
+                channelUrl, channelName));
+        analyticTracker.sendEventTracking(eventTracking);
     }
 
-    public void eventClickVoteExpand() {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_VOTE_EXPAND,
-                ""
-        );
-    }
-
-    public void eventClickInboxChat() {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_INBOXCHAT,
-                EVENT_CATEGORY_INBOX_CHAT,
-                EVENT_ACTION_CLICK_COMMUNITY_TAB,
-                ""
-        );
+    public static String generateTrackerAttribution(String attributeName, String channelUrl, String
+            channelName) {
+        return String.format("%s - " + ATTRIBUTE_GROUP_CHAT + " -" +
+                " %s - %s", attributeName, channelUrl, channelName);
     }
 
 }

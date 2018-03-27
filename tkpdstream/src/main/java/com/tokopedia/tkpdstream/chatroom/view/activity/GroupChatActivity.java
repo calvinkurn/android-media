@@ -55,10 +55,13 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
@@ -162,7 +165,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
-    private VoteAnnouncementViewModel voteAnnouncementViewModel;
 
     private CallbackManager callbackManager;
     private OpenChannel mChannel;
@@ -373,8 +375,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     //
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
-//        tabs.setLayoutManager(new GridLayoutManager(this, 4,
-//                GridLayoutManager.VERTICAL, false));
         tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tabAdapter = GroupChatTabAdapter.createInstance(this, createListFragment());
         tabs.setAdapter(tabAdapter);
@@ -383,7 +383,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private List<TabViewModel> createListFragment() {
         List<TabViewModel> list = new ArrayList<>();
         list.add(new TabViewModel(getString(R.string.title_group_chat)));
-        list.add(new TabViewModel(getString(R.string.title_vote)));
         list.add(new TabViewModel(getString(R.string.title_info)));
         return list;
     }
@@ -398,8 +397,12 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showChatroomFragment(mChannel);
                 break;
             case CHANNEL_VOTE_FRAGMENT:
-                tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
-                showChannelVoteFragment();
+                if (checkPollValid()) {
+                    tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
+                    showChannelVoteFragment();
+                } else {
+                    showChannelInfoFragment();
+                }
                 break;
             case CHANNEL_INFO_FRAGMENT:
                 showChannelInfoFragment();
@@ -451,17 +454,13 @@ public class GroupChatActivity extends BaseSimpleActivity
         fragmentTransaction.commit();
     }
 
-    private void showChannelVoteFragment() {
+    @Override
+    public void showChannelVoteFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
         bundle.putParcelable(VOTE, viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-
-        if (voteAnnouncementViewModel != null) {
-            bundle.putParcelable(VOTE_ANNOUNCEMENT, voteAnnouncementViewModel);
-            bundle.putString(VOTE_TYPE, voteType);
-        }
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (ChannelVoteFragment.class.getSimpleName());
@@ -621,8 +620,22 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
+        showSprintSale(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
+    }
+
+    private void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+        if (sprintSaleViewModel != null) {
+            if (currentFragmentIsChat()) {
+                ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
+                        (GroupChatFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
+            } else if (currentFragmentIsInfo()) {
+                ((ChannelInfoFragmentListener.View) getSupportFragmentManager().findFragmentByTag
+                        (ChannelInfoFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
+            }
+
+        }
     }
 
     @Override
@@ -683,7 +696,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
         setSponsorData();
-
         setTooltip();
     }
 
@@ -780,7 +792,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openSponsor(viewModel.getChannelInfoViewModel().getAdsLink());
+                    eventClickComponent(StreamAnalytics.COMPONENT_BANNER, viewModel
+                            .getChannelInfoViewModel().getBannerName(), StreamAnalytics
+                            .ATTRIBUTE_BANNER);
+                    openSponsor(generateAttributeApplink(
+                            viewModel.getChannelInfoViewModel().getAdsLink(),
+                            StreamAnalytics.ATTRIBUTE_BANNER,
+                            viewModel.getChannelUrl(),
+                            viewModel.getChannelName()));
                 }
             });
             setupChannelBannerParams(true);
@@ -936,6 +955,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelVoteFragment;
     }
 
+    private boolean currentFragmentIsInfo() {
+        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
+    }
+
     private void setUserNameOnReplyText() {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -952,6 +976,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsVote()) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
+        } else if (currentFragmentIsInfo()) {
+            ((ChannelInfoFragment) getSupportFragmentManager().findFragmentByTag
+                    (ChannelInfoFragment.class.getSimpleName())).onMessageReceived(map);
         }
     }
 
@@ -1026,12 +1053,24 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
+    @Override
     public void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem, String voteType) {
-//        voteAnnouncementViewModel = messageItem;
-//        this.voteType = voteType;
-
+        VoteInfoViewModel voteInfoViewModel = messageItem.getVoteInfoViewModel();
         updateVoteViewModel(messageItem.getVoteInfoViewModel(), voteType);
-        if (!currentFragmentIsVote()) {
+
+        if ((voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)
+                && tabAdapter.getItemCount() < 3) {
+            tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
+                    .title_vote)));
+            tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
+        } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+            tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
+            tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
+        }
+
+        if (!currentFragmentIsVote()
+                && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
         }
 
@@ -1043,5 +1082,91 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public String getToolbarTitle(){
         return toolbar.getTitle().toString();
+    }
+
+    @Override
+    public SprintSaleViewModel getSprintSaleViewModel() {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null && viewModel
+                .getChannelInfoViewModel().getSprintSaleViewModel() != null) {
+            return viewModel.getChannelInfoViewModel().getSprintSaleViewModel();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+
+    public ChannelInfoViewModel getChannelInfoViewModel() {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            return viewModel.getChannelInfoViewModel();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void eventClickComponent(String componentName, String campaignName, String attributeName) {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            analytics.eventClickComponent(componentName, campaignName, attributeName, viewModel
+                    .getChannelUrl(), viewModel.getChannelName());
+        }
+    }
+
+    @Override
+    public void updateSprintSaleData(SprintSaleAnnouncementViewModel messageItem) {
+        if (this.viewModel != null
+                && this.viewModel.getChannelInfoViewModel() != null
+                && this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel() != null) {
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setCampaignName(messageItem.getCampaignName());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setListProduct(messageItem.getListProducts());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setEndDate(messageItem.getEndDate());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setStartDate(messageItem.getStartDate());
+            this.viewModel.getChannelInfoViewModel().getSprintSaleViewModel()
+                    .setRedirectUrl(messageItem.getRedirectUrl());
+        } else if (this.viewModel != null
+                && this.viewModel.getChannelInfoViewModel() != null) {
+            this.viewModel.getChannelInfoViewModel().setSprintSaleViewModel(new SprintSaleViewModel(
+                    messageItem.getListProducts(),
+                    messageItem.getCampaignName(),
+                    messageItem.getStartDate(),
+                    messageItem.getEndDate(),
+                    messageItem.getRedirectUrl()));
+        }
+    }
+
+    @Override
+    public String generateAttributeApplink(String applink,
+                                           String attributeBanner) {
+        if (viewModel != null) {
+            return generateAttributeApplink(applink, attributeBanner,
+                    viewModel.getChannelUrl(),
+                    viewModel.getChannelName());
+        } else {
+            return applink;
+        }
+    }
+
+    private String generateAttributeApplink(String applink,
+                                            String attributeBanner,
+                                            String channelUrl,
+                                            String channelName) {
+        if (applink.contains("?")) {
+            return String.format(applink + "&%s", generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName));
+        } else {
+            return String.format(applink + "?%s", generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName));
+        }
+    }
+
+    private String generateTrackerAttribution(String attributeBanner,
+                                              String channelUrl,
+                                              String channelName) {
+        return "tracker_attribution=" + StreamAnalytics.generateTrackerAttribution
+                (attributeBanner, channelUrl, channelName);
     }
 }

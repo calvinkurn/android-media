@@ -1,10 +1,13 @@
 package com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author by nisie on 3/22/18.
  */
 
-public class SprintSaleProductViewModel {
+public class SprintSaleProductViewModel implements Parcelable{
 
     String productName;
     String productImage;
@@ -25,6 +28,28 @@ public class SprintSaleProductViewModel {
         this.stockPercentage = stockPercentage;
         this.stockText = stockText;
     }
+
+    protected SprintSaleProductViewModel(Parcel in) {
+        productName = in.readString();
+        productImage = in.readString();
+        discountLabel = in.readString();
+        productPrice = in.readString();
+        productPriceBeforeDiscount = in.readString();
+        stockPercentage = in.readInt();
+        stockText = in.readString();
+    }
+
+    public static final Creator<SprintSaleProductViewModel> CREATOR = new Creator<SprintSaleProductViewModel>() {
+        @Override
+        public SprintSaleProductViewModel createFromParcel(Parcel in) {
+            return new SprintSaleProductViewModel(in);
+        }
+
+        @Override
+        public SprintSaleProductViewModel[] newArray(int size) {
+            return new SprintSaleProductViewModel[size];
+        }
+    };
 
     public String getProductName() {
         return productName;
@@ -52,5 +77,21 @@ public class SprintSaleProductViewModel {
 
     public String getStockText() {
         return stockText;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productName);
+        dest.writeString(productImage);
+        dest.writeString(discountLabel);
+        dest.writeString(productPrice);
+        dest.writeString(productPriceBeforeDiscount);
+        dest.writeInt(stockPercentage);
+        dest.writeString(stockText);
     }
 }
