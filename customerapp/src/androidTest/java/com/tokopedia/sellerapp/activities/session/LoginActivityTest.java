@@ -208,18 +208,11 @@ public class LoginActivityTest {
         intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
 
         startEmptyIntentLoginActivity();
-
-        final EditText textInput = mIntentsRule.getActivity().findViewById(R.id.password);
-
-        onView(withId(R.id.email_auto))
-                .check(matches(withText("cincin.jati+47@tokopedia.com")));
-
-        onView(withId(R.id.password)).perform(clickPasswordToggle());
-
-        // And assert that the password is not disguised
-        assertEquals("optimus", textInput.getLayout().getText().toString());
 
         Thread.sleep(3000);
     }
