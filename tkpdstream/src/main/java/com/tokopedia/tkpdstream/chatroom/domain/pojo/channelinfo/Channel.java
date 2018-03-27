@@ -64,6 +64,9 @@ public class Channel {
     @SerializedName("banner_name")
     @Expose
     private String bannerName;
+    @SerializedName("sendbird_access_token")
+    @Expose
+    private String sendBirdToken;
 
     public int getChannelId() {
         return channelId;
@@ -195,5 +198,9 @@ public class Channel {
 
     public String getBannerName() {
         return bannerName;
+    }
+
+    public String getSendBirdToken() {
+        return sendBirdToken;
     }
 }

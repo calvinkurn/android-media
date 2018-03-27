@@ -622,7 +622,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         setChannelInfoView(channelInfoViewModel);
         showSprintSale(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this);
+                userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
     }
 
     private void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
@@ -696,7 +696,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalParticipantsOnline());
         setSponsorData();
-        setTooltip();
+        if (channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
+                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+            setTooltip();
+        }
     }
 
     private void setTooltip() {
@@ -903,7 +906,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             public void onRetryClicked() {
                 presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
                         userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatActivity.this);
+                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken());
             }
         });
     }
@@ -1063,6 +1066,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter.getItemCount() < 3) {
             tabAdapter.add(CHANNEL_VOTE_FRAGMENT, new TabViewModel(getString(R.string
                     .title_vote)));
+            setTooltip();
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
@@ -1072,6 +1076,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!currentFragmentIsVote()
                 && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
+            setTooltip();
         }
 
     }

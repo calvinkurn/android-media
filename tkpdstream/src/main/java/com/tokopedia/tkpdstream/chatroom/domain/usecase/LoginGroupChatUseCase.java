@@ -32,13 +32,12 @@ public class LoginGroupChatUseCase {
     }
 
     public void execute(final Context context, final String channelUrl,
-                        String userId,
-                        final String userName, final String userAvatar,
-                        final LoginGroupChatListener listener) {
+                        String userId, final String userName, final String userAvatar,
+                        final LoginGroupChatListener listener, String sendBirdToken) {
         if(TextUtils.isEmpty(userId)){
             userId = "Anonymous";
         }
-        SendBird.connect(userId, new SendBird.ConnectHandler() {
+        SendBird.connect(userId, sendBirdToken, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
                 if (e != null) {
