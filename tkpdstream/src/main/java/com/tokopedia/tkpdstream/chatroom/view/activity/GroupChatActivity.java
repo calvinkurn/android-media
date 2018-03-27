@@ -229,7 +229,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setupToolbar();
-        setupViewPager();
 
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
@@ -383,6 +382,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     private List<TabViewModel> createListFragment() {
         List<TabViewModel> list = new ArrayList<>();
         list.add(new TabViewModel(getString(R.string.title_group_chat)));
+        if (checkPollValid()) {
+            list.add(new TabViewModel(getString(R.string.title_vote)));
+        }
         list.add(new TabViewModel(getString(R.string.title_info)));
         return list;
     }
@@ -620,12 +622,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-        showSprintSale(channelInfoViewModel.getSprintSaleViewModel());
+        showSprintSaleIcon(channelInfoViewModel.getSprintSaleViewModel());
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
     }
 
-    private void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+    private void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel != null) {
             if (currentFragmentIsChat()) {
                 ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
@@ -886,6 +888,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         try {
             hideLoading();
             mChannel = openChannel;
+            setupViewPager();
             showFragment(initialFragment);
 
         } catch (NumberFormatException e) {
@@ -1080,7 +1083,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         showFragment(CHANNEL_VOTE_FRAGMENT);
     }
 
-    public String getToolbarTitle(){
+    public String getToolbarTitle() {
         return toolbar.getTitle().toString();
     }
 

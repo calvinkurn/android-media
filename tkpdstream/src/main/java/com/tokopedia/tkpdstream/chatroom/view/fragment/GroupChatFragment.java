@@ -295,7 +295,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void autoAddSprintSaleAnnouncement(@Nullable final SprintSaleViewModel
                                                       sprintSaleViewModel,
                                               @Nullable final ChannelInfoViewModel channelInfoViewModel) {
-        if (sprintSaleViewModel != null
+        if (isValidSprintSale(sprintSaleViewModel)
                 && channelInfoViewModel != null
                 && channelInfoViewModel.getChannelViewModel() != null) {
 
@@ -331,6 +331,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             sprintSaleHandler.postDelayed(sprintSaleRunnable, DELAY_TIME_SPRINT_SALE);
 
         }
+    }
+
+    private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+        long currentTime = new Date().getTime();
+        return sprintSaleViewModel != null
+                && sprintSaleViewModel.getStartDate() != 0
+                && sprintSaleViewModel.getEndDate() != 0
+                && sprintSaleViewModel.getStartDate() <= currentTime
+                && sprintSaleViewModel.getStartDate() < sprintSaleViewModel.getEndDate()
+                && sprintSaleViewModel.getEndDate() > currentTime;
     }
 
     @Override
