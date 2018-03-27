@@ -44,6 +44,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
+import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.SCREEN_NAME;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -66,6 +67,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "false");
+        requestParams.putString(SCREEN_NAME,ShakeDetectManager.sTopActivity);
         shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
