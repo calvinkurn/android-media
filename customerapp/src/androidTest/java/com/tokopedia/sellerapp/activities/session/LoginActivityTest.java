@@ -185,11 +185,6 @@ public class LoginActivityTest {
     }
 
     /**
-     * android-intents (not working)
-     * using uiautomator (not working)
-     * this is just experimental !!
-     *
-     * code after startEmptyIntentLoginActivity() not working.
      * @throws Exception
      */
     @Test
@@ -211,6 +206,27 @@ public class LoginActivityTest {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
         server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
+
+        startEmptyIntentLoginActivity();
+
+        Thread.sleep(3000);
+    }
+
+    @Test
+    public void testFirstRunSellerHome3() throws Exception{
+        Intent resultData = new Intent();
+        Bundle bundle = new Bundle();
+        String phoneNumber = "123-345-6789";
+        bundle.putString("phone", phoneNumber);
+        bundle.putString("username", "cincin.jati+47@tokopedia.com");
+
+        resultData.putExtras(bundle);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
+        intending(hasComponent(SmartLockActivity.class.getName())).respondWith(result);
+
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
 
         startEmptyIntentLoginActivity();
 
