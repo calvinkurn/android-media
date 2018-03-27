@@ -46,7 +46,6 @@ public class StreamAnalytics {
     private static final String ATTRIBUTE_GROUP_CHAT = "Group Chat";
     public static final String ATTRIBUTE_FLASH_SALE = "Flash Sale";
     public static final String ATTRIBUTE_BANNER = "Banner";
-    public static final String ATTRIBUTE_VOTE = "Vote";
 
 
     @Inject
@@ -120,4 +119,11 @@ public class StreamAnalytics {
                 " %s - %s", attributeName, channelUrl, channelName);
     }
 
+    public void eventClickVoteComponent(String componentType, String componentName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_VOTE_COMPONENT + componentType,
+                componentType+" "+componentName
+        );
+    }
 }

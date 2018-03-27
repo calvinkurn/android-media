@@ -109,18 +109,6 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         populateData();
     }
 
-    @Override
-    public void onMessageReceived(Visitable map) {
-        if (map instanceof SprintSaleAnnouncementViewModel) {
-            //showSprintSale();
-        }
-    }
-
-    @Override
-    public void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-//TODO SHOW SPRINTSALE ICON
-    }
-
     private void initView(View view) {
         KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);

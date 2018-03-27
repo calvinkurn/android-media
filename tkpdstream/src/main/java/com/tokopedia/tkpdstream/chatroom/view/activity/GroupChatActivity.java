@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -60,6 +62,7 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -90,6 +93,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
         , ToolTipUtils.ToolTipListener {
 
+    private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final long TOOLTIP_DELAY = 1500L;
 
@@ -456,8 +460,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         fragmentTransaction.commit();
     }
 
-    @Override
-    public void showChannelVoteFragment() {
+    private void showChannelVoteFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
@@ -632,9 +635,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (currentFragmentIsChat()) {
                 ((ChatroomContract.View) getSupportFragmentManager().findFragmentByTag
                         (GroupChatFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
-            } else if (currentFragmentIsInfo()) {
-                ((ChannelInfoFragmentListener.View) getSupportFragmentManager().findFragmentByTag
-                        (ChannelInfoFragment.class.getSimpleName())).showSprintSale(sprintSaleViewModel);
             }
 
         }
@@ -973,15 +973,38 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onMessageReceived(Visitable map) {
+        if (map instanceof VoteAnnouncementViewModel) {
+            VoteAnnouncementViewModel voteAnnouncementViewModel = ((VoteAnnouncementViewModel) map);
+            handleVoteAnnouncement(voteAnnouncementViewModel, voteAnnouncementViewModel.getVoteType());
+        } else if (map instanceof SprintSaleAnnouncementViewModel) {
+            updateSprintSaleData((SprintSaleAnnouncementViewModel) map);
+        }
+
+
+        if (map instanceof BaseChatViewModel
+                && ((BaseChatViewModel) map).isCanVibrate()) {
+            vibratePhone();
+        }
+
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
         } else if (currentFragmentIsVote()) {
             ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
                     (ChannelVoteFragment.class.getSimpleName())).onMessageReceived(map);
-        } else if (currentFragmentIsInfo()) {
-            ((ChannelInfoFragment) getSupportFragmentManager().findFragmentByTag
-                    (ChannelInfoFragment.class.getSimpleName())).onMessageReceived(map);
+        }
+    }
+
+    @Override
+    public void vibratePhone() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
+                        .DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(VIBRATE_LENGTH);
+            }
         }
     }
 

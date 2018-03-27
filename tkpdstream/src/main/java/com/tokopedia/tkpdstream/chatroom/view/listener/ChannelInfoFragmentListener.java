@@ -17,9 +17,5 @@ public interface ChannelInfoFragmentListener {
         Context getContext();
 
         void renderData(ChannelViewModel channelViewModel);
-
-        void onMessageReceived(Visitable map);
-
-        void showSprintSale(SprintSaleViewModel sprintSaleViewModel);
     }
 }
