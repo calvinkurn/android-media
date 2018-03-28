@@ -182,7 +182,7 @@ public class LoginActivityTest {
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
         server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
 
-        startEmptyIntentLoginActivity();
+        startLoginActivity();
 
         // click button2
         onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
