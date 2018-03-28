@@ -1109,10 +1109,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
         }
 
-        if (!currentFragmentIsVote()
-                && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
+        if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
-            setTooltip();
+            if(voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
+                    && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
+                setTooltip();
+            }
         }
 
     }
