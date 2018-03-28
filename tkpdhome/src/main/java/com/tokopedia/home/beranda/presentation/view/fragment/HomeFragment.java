@@ -288,6 +288,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initAdapter() {
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.getItemAnimator().setChangeDuration(0);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
