@@ -696,10 +696,15 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarData(channelInfoViewModel.getTitle(),
                 channelInfoViewModel.getBannerUrl(),
-                channelInfoViewModel.getTotalView());
+                channelInfoViewModel.getTotalView(),
+                channelInfoViewModel.getBlurredBannerUrl());
         setSponsorData();
-        if (channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
-                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+
+        if (channelInfoViewModel.getVoteInfoViewModel() != null
+                && (channelInfoViewModel.getVoteInfoViewModel().getStatusId() ==
+                VoteInfoViewModel.STATUS_ACTIVE
+                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel
+                .STATUS_FORCE_ACTIVE)) {
             setTooltip();
         }
     }
@@ -775,9 +780,15 @@ public class GroupChatActivity extends BaseSimpleActivity
         return view;
     }
 
-    private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
+    private void setToolbarData(String title, String bannerUrl, String totalParticipant, String blurredBannerUrl) {
         toolbar.setTitle(title);
-        ImageHandler.LoadImage(channelBanner, bannerUrl);
+
+        if (TextUtils.isEmpty(blurredBannerUrl)) {
+            ImageHandler.loadImageBlur(this, channelBanner, bannerUrl);
+        } else {
+            ImageHandler.LoadImage(channelBanner, blurredBannerUrl);
+        }
+
         setToolbarParticipantCount(totalParticipant);
         setVisibilityHeader(View.VISIBLE);
 
