@@ -193,16 +193,6 @@ public class LoginActivityTest {
                                         withId(R.id.login_buttons_container),
                                         3));
 
-//        ViewInteraction loginTextView = onView(
-//                nthChildOf(
-//                        Matchers.allOf(withId(R.id.login_buttons_container),
-//                                nthChildOf(
-//                                        withId(R.id.login_layout),
-//                                        5)),
-//                        3));
-
-//        loginTextView.perform(scrollTo());
-
         onView(withId(R.id.btn_load_more)).perform(click());//.check(not(isVisible()));
 
 
