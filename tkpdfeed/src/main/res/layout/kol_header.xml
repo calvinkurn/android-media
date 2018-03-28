@@ -63,31 +63,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_marginEnd="@dimen/margin_sm"
+        android:background="@drawable/bg_button_green"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:gravity="center">
-
-        <ImageView
-            android:id="@+id/follow_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/padding_vs"
-            android:layout_marginRight="@dimen/margin_vs"
-            app:srcCompat="@drawable/ic_plus_green"
-            />
 
         <TextView
             android:id="@+id/follow_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:layout_toEndOf="@id/follow_icon"
-            android:layout_toRightOf="@id/follow_icon"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
             android:text="@string/action_follow_english"
-            android:textColor="@color/green_500"
-            android:textSize="@dimen/text_size_l_medium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12"
             android:textStyle="normal"/>
     </RelativeLayout>
 </LinearLayout>

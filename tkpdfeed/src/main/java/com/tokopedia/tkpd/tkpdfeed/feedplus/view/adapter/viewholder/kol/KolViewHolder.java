@@ -5,6 +5,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -41,7 +42,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private View followButton;
     private ImageView reviewImage;
     private TextView tooltip;
-    private View tooltipClickArea;
+    private RelativeLayout tooltipClickArea;
     private TextView kolText;
     private ImageView likeIcon;
     private TextView likeText;
