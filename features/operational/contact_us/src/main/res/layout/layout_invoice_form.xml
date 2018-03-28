@@ -192,13 +192,13 @@
         tools:text="Lampiran" />
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
         android:id="@+id/rv_selected_images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_default"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView38" />
 
@@ -326,7 +326,7 @@
     <TextView
         android:id="@+id/btn_tutup"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/image_width_l"
         android:layout_marginBottom="@dimen/margin_default"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
