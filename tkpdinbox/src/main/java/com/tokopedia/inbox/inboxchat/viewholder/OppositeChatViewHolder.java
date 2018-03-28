@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
@@ -39,6 +40,9 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     private TextView oldMessage;
     private View oldMessageView;
     private ImageView attachment;
+    private LinearLayout ratingHolder;
+    private ImageView ratingYes, ratingNo;
+    private ImageView ratingSelected;
 
     ChatRoomContract.View viewListener;
 
@@ -58,6 +62,10 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         oldMessageView = itemView.findViewById(R.id.old_message_container);
         dot = itemView.findViewById(R.id.dot);
         attachment = itemView.findViewById(R.id.image);
+        ratingHolder = itemView.findViewById(R.id.rating_option_holder);
+        ratingYes = itemView.findViewById(R.id.rating_option_yes);
+        ratingNo = itemView.findViewById(R.id.rating_option_no);
+        ratingSelected = itemView.findViewById(R.id.rating_selected);
         position = getAdapterPosition();
         attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
@@ -136,6 +144,50 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             fullTime = ChatTimeConverter.formatFullTime(Long.parseLong(element.getReplyTime()));
         }catch (NumberFormatException e){
             fullTime = "";
+        }
+
+        ratingHolder.setVisibility(element.isShowRating()
+                && element.getRatingStatus() == 0 ? View.VISIBLE : View.GONE);
+
+        ratingSelected.setVisibility(element.isShowRating()
+                && element.getRatingStatus() != 0 ? View.VISIBLE : View.GONE);
+
+        if (element.isShowRating()) {
+            switch (element.getRatingStatus()) {
+                case 0:
+                    ratingHolder.setVisibility(View.VISIBLE);
+                    ratingSelected.setVisibility(View.GONE);
+                    ratingYes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            viewListener.onClickRating(element, 1);
+                        }
+                    });
+
+                    ratingNo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            viewListener.onClickRating(element, -1);
+                        }
+                    });
+                    break;
+
+                case 1:
+                    ratingHolder.setVisibility(View.GONE);
+                    ratingSelected.setSelected(true);
+                    ratingSelected.setVisibility(View.VISIBLE);
+                    break;
+
+                case -1:
+                    ratingHolder.setVisibility(View.GONE);
+                    ratingSelected.setSelected(false);
+                    ratingSelected.setVisibility(View.VISIBLE);
+                    break;
+
+                default:
+                    ratingHolder.setVisibility(View.GONE);
+                    ratingSelected.setVisibility(View.GONE);
+            }
         }
 
         attachmentChatHelper.parse(attachment, message, element, viewListener, fullTime);

@@ -21,6 +21,7 @@ import com.tokopedia.inbox.inboxchat.viewholder.AttachedProductViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
@@ -316,6 +317,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void showRetryFor(MyChatViewModel model, boolean b) {
         int position = list.indexOf(model);
         ((MyChatViewModel) list.get(position)).setRetry(true);
+        notifyItemChanged(position);
+    }
+
+
+    public void changeRating(OppositeChatViewModel model) {
+        int position = list.indexOf(model);
+        ((OppositeChatViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
         notifyItemChanged(position);
     }
 }

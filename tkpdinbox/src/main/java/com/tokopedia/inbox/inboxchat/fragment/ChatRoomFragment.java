@@ -34,6 +34,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -89,6 +90,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachProductViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
@@ -742,6 +744,27 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
         adapter.remove(model);
         addView(data, UPLOADING);
+    }
+
+    @Override
+    public void onSuccessSetRating(OppositeChatViewModel model) {
+        adapter.changeRating(model);
+    }
+
+    @Override
+    public void onErrorSetRating() {
+        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R.string.string_general_error)));
+    }
+
+    @Override
+    public void onClickRating(OppositeChatViewModel element, int rating) {
+        UserSession userSession = ((AbstractionRouter) getContext().
+                getApplicationContext()).getSession();
+        int userId = 0;
+        if (userSession != null && userSession.getUserId() != "") {
+            userId = Integer.valueOf(userSession.getUserId());
+        }
+        presenter.setChatRating(element, userId, rating);
     }
 
     @Override

@@ -139,9 +139,9 @@
 
     </android.support.v7.widget.CardView>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/view_user_box"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/card_group_chat_message"
         android:layout_toEndOf="@id/user_ava"
@@ -149,10 +149,10 @@
 
         <LinearLayout
             android:id="@+id/message_holder"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@+id/rating_selected"
+            android:layout_alignParentLeft="true"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_vs"
             android:orientation="vertical">
 
@@ -160,8 +160,8 @@
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:background="@drawable/left_bubble"
                 android:linksClickable="true"
                 android:padding="@dimen/padding_small"
@@ -169,7 +169,8 @@
                 android:textColorLink="@color/black_70"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/fonts"
-                tools:text="Proses pengambilan dana berbeda-beda tergantung metode pembayaran yang digunakan. Untuk metode pembayaran transfer bank, biasanya memakan waktu 1x24 jam" />
+                android:visibility="visible"
+                tools:text="jfhalksjhdfkajhsdkjfalkfh"/>
 
             <LinearLayout
                 android:id="@+id/bottom_message_holder"
@@ -190,13 +191,13 @@
                     android:id="@+id/rating_option_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginRight="25dp"
                     android:layout_marginTop="8dp"
                     android:foregroundGravity="right"
                     android:gravity="end"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/rating_option_yes"
@@ -228,17 +229,14 @@
             android:id="@+id/rating_selected"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            app:layout_constraintRight_toRightOf="@+id/message_holder"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/circle_grey_border"
             android:scaleType="center"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_chat_rating_yes" />
+            android:visibility="visible"
+            app:srcCompat="@drawable/selector_chat_rating"/>
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

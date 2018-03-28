@@ -22,12 +22,14 @@ import com.tokopedia.inbox.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
+import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SetChatRatingUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
@@ -74,6 +76,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final ReplyMessageUseCase replyMessageUseCase;
     private final AttachImageUseCase attachImageUseCase;
     private GetTemplateUseCase getTemplateUseCase;
+    private SetChatRatingUseCase setChatRatingUseCase;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
@@ -100,12 +103,14 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       GetTemplateUseCase getTemplateUseCase,
                       SendMessageUseCase sendMessageUseCase,
                       AttachImageUseCase attachImageUseCase,
+                      SetChatRatingUseCase setChatRatingUseCase,
                       SessionHandler sessionHandler) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
         this.attachImageUseCase = attachImageUseCase;
+        this.setChatRatingUseCase = setChatRatingUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -389,6 +394,30 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         });
     }
 
+    public void setChatRating(final OppositeChatViewModel element, int userId, final int rating) {
+        setChatRatingUseCase.execute(
+                SetChatRatingUseCase.
+                        getParams(element.getMsgId(), userId, element.getReplyTime(), rating),
+                new Subscriber<SetChatRatingPojo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getView().onErrorSetRating();
+                    }
+
+                    @Override
+                    public void onNext(SetChatRatingPojo setChatRatingPojo) {
+                        element.setRatingStatus(rating);
+                        getView().onSuccessSetRating(element);
+                    }
+                }
+        );
+    }
+
     @Override
     public String getFileLocFromCamera() {
         return cameraFileLoc;
@@ -611,6 +640,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+
     public void getTemplate() {
         getTemplateUseCase.execute(GetTemplateUseCase.generateParam(),
                 new Subscriber<GetTemplateViewModel>() {
@@ -639,5 +669,4 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
         });
     }
-
 }

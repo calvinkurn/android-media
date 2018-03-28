@@ -31,11 +31,33 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private boolean isOpposite;
     private boolean isHighlight;
     private String oldMessageTitle;
+    private boolean showRating;
+    private int ratingStatus;
 
     public ListReplyViewModel() {
     }
 
-    public ListReplyViewModel(int msgId, int userId, int replyId, String senderId, String senderName, String role, String msg, Spanned spanned, String replyTime, int fraudStatus, String readTime, Attachment attachment, int attachmentId, int oldMsgId, boolean showTime, boolean showHour, boolean isOpposite, boolean isHighlight, String oldMessageTitle) {
+    public ListReplyViewModel(int msgId,
+                              int userId,
+                              int replyId,
+                              String senderId,
+                              String senderName,
+                              String role,
+                              String msg,
+                              Spanned spanned,
+                              String replyTime,
+                              int fraudStatus,
+                              String readTime,
+                              Attachment attachment,
+                              int attachmentId,
+                              int oldMsgId,
+                              boolean showTime,
+                              boolean showHour,
+                              boolean isOpposite,
+                              boolean isHighlight,
+                              String oldMessageTitle,
+                              boolean showRating,
+                              int ratingStatus) {
         this.msgId = msgId;
         this.userId = userId;
         this.replyId = replyId;
@@ -55,6 +77,8 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
         this.isOpposite = isOpposite;
         this.isHighlight = isHighlight;
         this.oldMessageTitle = oldMessageTitle;
+        this.showRating = showRating;
+        this.ratingStatus = ratingStatus;
     }
 
     public int getReplyId() {
@@ -211,5 +235,21 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public boolean isShowRating() {
+        return showRating;
+    }
+
+    public void setShowRating(boolean showRating) {
+        this.showRating = showRating;
+    }
+
+    public int getRatingStatus() {
+        return ratingStatus;
+    }
+
+    public void setRatingStatus(int ratingStatus) {
+        this.ratingStatus = ratingStatus;
     }
 }

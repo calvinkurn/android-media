@@ -30,4 +30,5 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/black_38</item>
     </style>
+
 </resources>

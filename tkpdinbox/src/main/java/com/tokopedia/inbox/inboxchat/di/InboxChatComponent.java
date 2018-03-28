@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.inbox.inboxchat.data.network.ChatRatingApi;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.fragment.SendChatFragment;
@@ -20,4 +21,5 @@ public interface InboxChatComponent {
 
     void inject (SendChatFragment fragment);
 
+    ChatRatingApi chatRatingApi();
 }

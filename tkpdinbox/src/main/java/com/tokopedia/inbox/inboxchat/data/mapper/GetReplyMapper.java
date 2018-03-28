@@ -24,8 +24,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ThumbnailChatViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -136,6 +134,8 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setSenderName(item.getSenderName());
                     temp.setHighlight(item.isHighlight());
                     temp.setOldMessageTitle(item.getOldMessageTitle());
+                    temp.setShowRating(item.isShowRating());
+                    temp.setRatingStatus(item.getRatingStatus());
                     if (item.isHighlight()) {
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }

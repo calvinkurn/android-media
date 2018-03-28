@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
 import java.util.List;
 
@@ -128,6 +128,12 @@ public class ChatRoomContract {
         void productClicked(Integer productId, String productName, String productPrice, Long dateTime, String url);
 
         boolean isChatBot();
+
+        void onClickRating(OppositeChatViewModel element, int rating);
+
+        void onSuccessSetRating(OppositeChatViewModel element);
+
+        void onErrorSetRating();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -152,5 +158,7 @@ public class ChatRoomContract {
         void startUpload(List<MyChatViewModel> list, int network);
 
         String getFileLocFromCamera();
+
+        void setChatRating(OppositeChatViewModel model, int userId, int rating);
     }
 }
