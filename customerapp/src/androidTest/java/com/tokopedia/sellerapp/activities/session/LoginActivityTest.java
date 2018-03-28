@@ -193,8 +193,8 @@ public class LoginActivityTest {
         onView(withText("You should car about that"))
                 .perform(scrollTo());
 
-        onView(allOf(withId(R.id.provider_name), isDescendantOfA(nthChildOf(withId(R.id.login_buttons_container), 3))))
-                .check(matches(withText("You should car about that")));
+//        onView(allOf(withId(R.id.provider_name), isDescendantOfA(nthChildOf(withId(R.id.login_buttons_container), 3))))
+//                .check(matches(withText("You should car about that")));
 
         onView(nthChildOf(withId(R.id.login_buttons_container), 3)).perform(click());
 
