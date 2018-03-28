@@ -13,6 +13,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -64,7 +65,7 @@ import rx.Observable;
 
 public class PosRouterApplication extends MainApplication implements
         TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter,
-        AbstractionRouter {
+        AbstractionRouter, SessionRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

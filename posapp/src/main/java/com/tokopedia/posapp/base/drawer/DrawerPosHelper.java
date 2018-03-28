@@ -63,9 +63,7 @@ public class DrawerPosHelper extends DrawerHelper
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.INDEX_HOME,
                 true));
-
-        if(PosSessionHandler.getOutletId(context) != null
-                && !PosSessionHandler.getOutletId(context).isEmpty()) {
+        if(PosSessionHandler.getOutletId(context) != null && !PosSessionHandler.getOutletId(context).isEmpty()) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_riwayat_tx),
                     R.drawable.ic_hourglass,
                     TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY,
@@ -75,10 +73,12 @@ public class DrawerPosHelper extends DrawerHelper
                 R.drawable.ic_store,
                 TkpdState.DrawerPosition.POS_OUTLET,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_product_management),
-                R.drawable.ic_product_management,
-                TkpdState.DrawerPosition.POS_PRODUCT_MANAGEMENET,
-                true));
+        if(PosSessionHandler.getOutletId(context) != null && !PosSessionHandler.getOutletId(context).isEmpty()) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_product_management),
+                    R.drawable.ic_product_management,
+                    TkpdState.DrawerPosition.POS_PRODUCT_MANAGEMENET,
+                    true));
+        }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.icon_logout,
                 TkpdState.DrawerPosition.LOGOUT,
