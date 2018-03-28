@@ -1,4 +1,4 @@
-package com.tokopedia.design.bottomnavigation;
+package com.tokopedia.design.component;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

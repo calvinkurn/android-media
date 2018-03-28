@@ -1,4 +1,4 @@
-package com.tokopedia.design.snackbar;
+package com.tokopedia.design.base;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -13,14 +13,14 @@ import android.widget.TextView;
  * Base Snackbar builder
  */
 
-public class BaseSnackbar {
+public class BaseToaster {
     protected static class Builder {
         private View view;
         private Snackbar snackbar;
         private TextView snackbarTextView;
         private Button snackbarActionButton;
 
-        Builder(View view, String snackbarText, @Snackbar.Duration int duration) {
+        public Builder(View view, String snackbarText, @Snackbar.Duration int duration) {
             this.view = view;
             snackbar = Snackbar.make(view, snackbarText, duration);
             snackbarTextView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -34,27 +34,27 @@ public class BaseSnackbar {
             snackbarActionButton.setAllCaps(false);
         }
 
-        Builder setBackgroundDrawable(@DrawableRes int backgroundDrawable) {
+        public Builder setBackgroundDrawable(@DrawableRes int backgroundDrawable) {
             snackbar.getView().setBackground(ContextCompat.getDrawable(view.getContext(), backgroundDrawable));
             return this;
         }
 
-        Builder setTextColor(@ColorRes int textColor) {
+        public Builder setTextColor(@ColorRes int textColor) {
             snackbarTextView.setTextColor(ContextCompat.getColor(view.getContext(), textColor));
             return this;
         }
 
-        Builder setActionTextColor(@ColorRes int actionColor) {
+        public Builder setActionTextColor(@ColorRes int actionColor) {
             snackbarActionButton.setTextColor(ContextCompat.getColor(view.getContext(), actionColor));
             return this;
         }
 
-        Builder setAction(String actionText, View.OnClickListener actionListener) {
+        public Builder setAction(String actionText, View.OnClickListener actionListener) {
             snackbar.setAction(actionText, actionListener);
             return this;
         }
 
-        Snackbar build() {
+        public Snackbar build() {
             return snackbar;
         }
     }

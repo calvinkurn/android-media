@@ -1,15 +1,16 @@
-package com.tokopedia.design.snackbar;
+package com.tokopedia.design.component;
 
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.base.BaseToaster;
 
 /**
  * @author okasurya on 1/30/18.
  */
 
-public class SnackbarError extends BaseSnackbar {
+public class ToasterError extends BaseToaster {
     public static Snackbar make(View view,
                                 String snackbarText,
                                 @Snackbar.Duration int duration) {
