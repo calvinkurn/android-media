@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -143,8 +144,17 @@ public class FloatingTextButton extends FrameLayout {
 
         title = styleable.getString(R.styleable.FloatingTextButton_floating_title);
         titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, Color.BLACK);
-        leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
-        rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
+            rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
+        } else{
+            final int drawableLeftId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_left_icon, -1);
+            final int drawableRightId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_right_icon, -1);
+            if (drawableLeftId != -1)
+                leftIcon = AppCompatResources.getDrawable(getContext(), drawableLeftId);
+            if (drawableRightId != -1)
+                rightIcon = AppCompatResources.getDrawable(getContext(), drawableRightId);
+        }
         background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE);
         titleAllCaps = styleable.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, true);
         titleView.setAllCaps(titleAllCaps);
