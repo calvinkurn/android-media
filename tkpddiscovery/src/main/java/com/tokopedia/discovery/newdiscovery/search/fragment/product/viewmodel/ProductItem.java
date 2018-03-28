@@ -156,7 +156,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     }
 
     public int getPageNumber() {
-        return (position - 1) / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
+        return (position - 1) / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1;
     }
 
     public int getPosition() {

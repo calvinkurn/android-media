@@ -3349,4 +3349,14 @@ public class UnifyTracking extends TrackingUtils {
                 screenName
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchResultFavoriteShopClick(String keyword, String shopName,
+                                                          int page, int position) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.FAVORITE_SHOP_CLICK,
+                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
+        ).setUserId().getEvent());
+    }
 }
