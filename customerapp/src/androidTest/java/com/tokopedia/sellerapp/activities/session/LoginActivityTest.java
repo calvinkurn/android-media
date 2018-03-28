@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -31,6 +32,7 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.tkpd.R;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -57,6 +59,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -189,17 +192,18 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        // click button
-        onView(withText("You should car about that"))
-                .perform(scrollTo());
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        Matchers.allOf(withId(R.id.login_buttons_container),
+                                nthChildOf(
+                                        withClassName(Matchers.is("android.widget.LinearLayout")),
+                                        2)),
+                        2));
 
-//        onView(allOf(withId(R.id.provider_name), isDescendantOfA(nthChildOf(withId(R.id.login_buttons_container), 3))))
-//                .check(matches(withText("You should car about that")));
-
-        onView(nthChildOf(withId(R.id.login_buttons_container), 3)).perform(click());
+        loginTextView.perform(scrollTo(), click());
 
         // necessary to make it wait.
-        Thread.sleep(3000);
+        Thread.sleep(10000);
 
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
