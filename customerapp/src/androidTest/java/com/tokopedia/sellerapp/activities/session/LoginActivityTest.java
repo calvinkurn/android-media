@@ -186,20 +186,24 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-//        ViewInteraction loginTextView = onView(
-//                                    nthChildOf(
-//                                        withId(R.id.login_buttons_container),
-//                                        3));
-
         ViewInteraction loginTextView = onView(
-                nthChildOf(
-                        Matchers.allOf(withId(R.id.login_buttons_container),
-                                nthChildOf(
-                                        withId(R.id.login_layout),
-                                        5)),
-                        3));
+                                    nthChildOf(
+                                        withId(R.id.login_buttons_container),
+                                        3));
 
-        loginTextView.perform(scrollTo(), click());
+//        ViewInteraction loginTextView = onView(
+//                nthChildOf(
+//                        Matchers.allOf(withId(R.id.login_buttons_container),
+//                                nthChildOf(
+//                                        withId(R.id.login_layout),
+//                                        5)),
+//                        3));
+
+        loginTextView.perform(scrollTo());
+
+        Thread.sleep(3_000);
+
+        loginTextView.perform(click());
 
         // necessary to make it wait.
         Thread.sleep(10000);
