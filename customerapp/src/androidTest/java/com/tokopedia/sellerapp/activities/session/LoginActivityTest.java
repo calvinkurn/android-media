@@ -185,9 +185,9 @@ public class LoginActivityTest {
         startLoginActivity();
 
         // click button2
-        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
-//        onView(withText("You should car about that"))
-//                .perform(scrollTo(), click());
+//        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
+        onView(withText("You should car about that"))
+                .perform(scrollTo(), click());
 //        onView(withText("You should car about that")).perform(click());
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
