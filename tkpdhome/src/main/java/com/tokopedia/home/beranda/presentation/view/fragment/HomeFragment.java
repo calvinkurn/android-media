@@ -380,14 +380,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
-        openApplink("tokopedia://discovery/tokopedia-exclusive-blp-duma");
-//        if (getActivity() != null
-//                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-//                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-//            openApplink(slidesModel.getApplink());
-//        } else {
-//            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
-//        }
+        /*if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+            openApplink(slidesModel.getApplink());
+        } else {
+            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
+        }*/
+        openApplink("tokopedia://discovery/sprint-sale-pagination");
     }
 
     @Override
@@ -484,8 +484,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             return;
         }
 
-        openApplink("tokopedia://discovery/exclusive-page-new");
-
 //        if (getActivity() != null
 //                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
 //                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
@@ -493,6 +491,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 //        } else {
 //            openWebViewURL(actionLink, getContext());
 //        }
+
+        openApplink("tokopedia://discovery/sprint-sale");
     }
 
     private void openApplink(String applink) {
