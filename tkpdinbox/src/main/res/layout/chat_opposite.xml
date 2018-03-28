@@ -150,10 +150,10 @@
         <LinearLayout
             android:id="@+id/message_holder"
             android:layout_width="wrap_content"
-            android:layout_toLeftOf="@+id/rating_selected"
-            android:layout_alignParentLeft="true"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/margin_vs"
+            android:layout_toLeftOf="@+id/rating_selected"
             android:orientation="vertical">
 
             <TextView
@@ -170,7 +170,7 @@
                 android:textIsSelectable="true"
                 android:textSize="@dimen/fonts"
                 android:visibility="visible"
-                tools:text="jfhalksjhdfkajhsdkjfalkfh"/>
+                tools:text="jfhalksjhdfkajhsdkjfalkfh" />
 
             <LinearLayout
                 android:id="@+id/bottom_message_holder"
@@ -197,7 +197,7 @@
                     android:foregroundGravity="right"
                     android:gravity="end"
                     android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/rating_option_yes"
@@ -229,13 +229,14 @@
             android:id="@+id/rating_selected"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            app:layout_constraintRight_toRightOf="@+id/message_holder"
             android:layout_alignParentTop="true"
             android:layout_marginTop="8dp"
             android:background="@drawable/circle_grey_border"
+            android:padding="8dp"
             android:scaleType="center"
-            android:visibility="visible"
-            app:srcCompat="@drawable/selector_chat_rating"/>
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="@+id/message_holder"
+            app:srcCompat="@drawable/selector_chat_rating" />
 
     </android.support.constraint.ConstraintLayout>
 

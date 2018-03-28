@@ -188,6 +188,9 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
                     ratingHolder.setVisibility(View.GONE);
                     ratingSelected.setVisibility(View.GONE);
             }
+        } else {
+            ratingHolder.setVisibility(View.GONE);
+            ratingSelected.setVisibility(View.GONE);
         }
 
         attachmentChatHelper.parse(attachment, message, element, viewListener, fullTime);
