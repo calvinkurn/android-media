@@ -777,7 +777,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
         toolbar.setTitle(title);
-        ImageHandler.loadImageBlur(this, channelBanner, bannerUrl);
+        ImageHandler.LoadImage(channelBanner, bannerUrl);
         setToolbarParticipantCount(totalParticipant);
         setVisibilityHeader(View.VISIBLE);
 
@@ -789,10 +789,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setSponsorData() {
-        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getSponsorUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
-                    viewModel.getChannelInfoViewModel().getSponsorUrl(),
+                    viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     R.drawable.loading_page);
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override

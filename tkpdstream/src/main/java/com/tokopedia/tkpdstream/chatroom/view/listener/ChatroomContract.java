@@ -48,8 +48,6 @@ public interface ChatroomContract {
 
         void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
 
-        void onVoteOptionClicked(VoteViewModel element);
-
         void showHasVoted();
 
         void showSuccessVoted();

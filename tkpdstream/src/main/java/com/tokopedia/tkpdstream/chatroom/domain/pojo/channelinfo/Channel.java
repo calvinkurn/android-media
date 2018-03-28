@@ -5,7 +5,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 
+import java.util.List;
+
 public class Channel {
+
 
     @SerializedName("channel_id")
     @Expose
@@ -42,8 +45,8 @@ public class Channel {
     private boolean isFreeze;
     @SerializedName("active_poll")
     @Expose
-    private ActivePollPojo activePolls = null;
-    @SerializedName("moderator_id")
+    private ActivePollPojo activePolls;
+    @SerializedName("moderator_sendbird_id")
     @Expose
     private String moderatorId;
     @SerializedName("moderator_name")
@@ -52,21 +55,27 @@ public class Channel {
     @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorProfileUrl;
+    @SerializedName("flashsale")
+    @Expose
+    private Flashsale flashsale;
+    @SerializedName("sendbird_access_token")
+    @Expose
+    private String sendBirdToken;
     @SerializedName("banner_url")
     @Expose
-    private String bannerImageUrl;
+    private String bannerBlurredUrl;
     @SerializedName("ads_url")
     @Expose
-    private String adsUrl;
+    private String adsImageUrl;
     @SerializedName("ads_link")
     @Expose
     private String adsLink;
     @SerializedName("banner_name")
     @Expose
     private String bannerName;
-    @SerializedName("sendbird_access_token")
+    @SerializedName("list_officials")
     @Expose
-    private String sendBirdToken;
+    private List<ListOfficial> listOfficials = null;
 
     public int getChannelId() {
         return channelId;
@@ -184,12 +193,8 @@ public class Channel {
         return totalViews;
     }
 
-    public String getBannerImageUrl() {
-        return bannerImageUrl;
-    }
-
-    public String getAdsUrl() {
-        return adsUrl;
+    public String getAdsImageUrl() {
+        return adsImageUrl;
     }
 
     public String getAdsLink() {
@@ -202,5 +207,17 @@ public class Channel {
 
     public String getSendBirdToken() {
         return sendBirdToken;
+    }
+
+    public Flashsale getFlashsale() {
+        return flashsale;
+    }
+
+    public String getBannerBlurredUrl() {
+        return bannerBlurredUrl;
+    }
+
+    public List<ListOfficial> getListOfficials() {
+        return listOfficials;
     }
 }

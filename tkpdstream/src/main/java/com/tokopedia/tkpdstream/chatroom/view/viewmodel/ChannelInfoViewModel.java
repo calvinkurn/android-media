@@ -17,7 +17,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String channelUrl;
     private String bannerUrl;
     private boolean hasPoll;
-    private String sponsorUrl;
+    private String adsImageUrl;
     private String adsLink;
     private String bannerName;
     private String sendBirdToken;
@@ -31,14 +31,14 @@ public class ChannelInfoViewModel implements Parcelable {
     private SprintSaleViewModel sprintSaleViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
-                                String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
+                                String adsImageUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
         this.hasPoll = hasPoll;
-        this.sponsorUrl = sponsorUrl;
+        this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
         this.bannerName = bannerName;
         this.voteInfoViewModel = voteInfoViewModel;
@@ -77,8 +77,8 @@ public class ChannelInfoViewModel implements Parcelable {
         return hasPoll;
     }
 
-    public String getSponsorUrl() {
-        return sponsorUrl;
+    public String getAdsImageUrl() {
+        return adsImageUrl;
     }
 
     public String getAdsLink() {
@@ -124,7 +124,7 @@ public class ChannelInfoViewModel implements Parcelable {
         channelUrl = in.readString();
         bannerUrl = in.readString();
         hasPoll = in.readByte() != 0;
-        sponsorUrl = in.readString();
+        adsImageUrl = in.readString();
         adsLink = in.readString();
         bannerName = in.readString();
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
@@ -139,7 +139,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(channelUrl);
         dest.writeString(bannerUrl);
         dest.writeByte((byte) (hasPoll ? 1 : 0));
-        dest.writeString(sponsorUrl);
+        dest.writeString(adsImageUrl);
         dest.writeString(adsLink);
         dest.writeString(bannerName);
         dest.writeParcelable(voteInfoViewModel, flags);
