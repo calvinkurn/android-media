@@ -28,7 +28,7 @@ public class SearchTracking extends TrackingUtils {
                 "clickSearchResult",
                 "search result",
                 "click - guided search",
-                String.format("%s - %s - %s", previousKey, page, nextKey)
+                String.format("%s - %s - %s", previousKey, nextKey, page)
         ).getEvent());
     }
 
