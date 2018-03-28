@@ -3247,12 +3247,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
+    public static void eventSearchResultShopItemClick(String keyword, String shopName,
+                                                      int page, int position) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_SHOP,
-                keyword + " - " + shopName
+                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
         ).setUserId().getEvent());
     }
 

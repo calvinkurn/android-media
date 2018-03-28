@@ -317,7 +317,8 @@ public class ShopListFragment extends SearchSectionFragment
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopItem.getShopId(), shopItem.getShopDomain()));
         lastSelectedItemPosition = adapterPosition;
-        UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName());
+        UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName(),
+                shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
 
