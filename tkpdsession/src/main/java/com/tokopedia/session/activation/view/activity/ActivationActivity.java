@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment;
@@ -101,7 +102,7 @@ public class ActivationActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
-        return null;
+        return RegisterAnalytics.Screen.SCREEN_ACCOUNT_ACTIVATION;
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {

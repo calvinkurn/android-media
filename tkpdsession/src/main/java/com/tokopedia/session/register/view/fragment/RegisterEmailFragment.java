@@ -7,19 +7,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,12 +35,11 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -120,7 +116,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_REGISTER;
+        return RegisterAnalytics.Screen.SCREEN_REGISTER_WITH_EMAIL;
     }
 
     @Override
