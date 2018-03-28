@@ -13,8 +13,6 @@ import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiSelector;
 import android.support.v4.app.DialogFragment;
 import android.webkit.WebView;
 
@@ -56,16 +54,12 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.sellerapp.Utils.nthChildOf;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.core.Is.is;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -192,10 +186,18 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
+//        ViewInteraction loginTextView = onView(
+//                                    nthChildOf(
+//                                        withId(R.id.login_buttons_container),
+//                                        3));
+
         ViewInteraction loginTextView = onView(
-                                    nthChildOf(
-                                        withId(R.id.login_buttons_container),
-                                        3));
+                nthChildOf(
+                        Matchers.allOf(withId(R.id.login_buttons_container),
+                                nthChildOf(
+                                        withId(R.id.login_layout),
+                                        5)),
+                        3));
 
         loginTextView.perform(scrollTo(), click());
 
@@ -301,7 +303,7 @@ public class LoginActivityTest {
     @After
     public void tearDown() throws Exception {
         RxJavaTestPlugins.resetJavaTestPlugins();
-        if(webViewIdlingResource!=null)
+        if (webViewIdlingResource != null)
             unregisterIdlingResources(webViewIdlingResource);
 
         Intents.release();
