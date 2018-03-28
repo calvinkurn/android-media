@@ -773,6 +773,9 @@ public class CartPresenter implements ICartPresenter {
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
         view.renderPromoView(data.getIsCouponActive() == 1);
+        if(data.getAutoApply() != null) {
+            view.renderAutoApplyVoucherView(data.getAutoApply());
+        }
     }
 
     @Override

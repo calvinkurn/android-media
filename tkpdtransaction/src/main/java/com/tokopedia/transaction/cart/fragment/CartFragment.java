@@ -84,6 +84,7 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.AutoApply;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -806,6 +807,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void renderAutoApplyVoucherView(AutoApply autoApply) {
+        if(autoApply.getIsCoupon() == 1)
+            setCouponResultLayout(
+                    autoApply.getCode(),
+                    autoApply.getTitleDescription(),
+                    autoApply.getMessageSuccess());
+        else setVoucherResultLayout(autoApply.getCode(),
+                String.valueOf(autoApply.getCashbackAmount()),
+                autoApply.getMessageSuccess());
+    }
+
+    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -1008,21 +1021,34 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
-                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
-                promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
-                voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
+                //bundle.getString(LoyaltyActivity.COUPON_TITLE, "")
+                //bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
+                //bundle.getString(LoyaltyActivity.COUPON_CODE)
+                setCouponResultLayout(
+                        bundle.getString(LoyaltyActivity.COUPON_CODE),
+                        bundle.getString(LoyaltyActivity.COUPON_TITLE, ""),
+                        bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
+                );
 
-                //TODO check state
-                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
-                instantPromoPlaceHolder.setVisibility(View.GONE);
-                promoCodeLayout.setVisibility(View.GONE);
-                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
         }
+    }
+
+    private void setCouponResultLayout(String couponCode,
+                                        String couponTitle,
+                                        String description) {
+        promoResultLayout.setVisibility(View.VISIBLE);
+        labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
+        promoVoucherCode.setText(couponCode);
+        voucherDescription.setText(description);
+
+        //TODO check state
+        this.voucherCode = couponCode;
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+        promoCodeLayout.setVisibility(View.GONE);
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
     }
 
     private void setVoucherResultLayout(String voucherCode,
@@ -1037,6 +1063,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         this.voucherCode = voucherCode;
         promoCodeLayout.setVisibility(View.GONE);
         instantPromoPlaceHolder.setVisibility(View.GONE);
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
     }
 
     private View.OnClickListener onPromoCancelled() {

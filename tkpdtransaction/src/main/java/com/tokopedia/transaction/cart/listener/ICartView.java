@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.cartdata.AutoApply;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -122,6 +123,8 @@ public interface ICartView extends IBaseView {
     void renderInstantPromo(CartPromo cartPromo);
 
     void renderPromoView(boolean isCouponActive);
+
+    void renderAutoApplyVoucherView(AutoApply autoApply);
 
     Activity getActivity();
 

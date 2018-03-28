@@ -88,6 +88,8 @@ public class CartData implements Parcelable {
     private CartPromo cartPromo;
     @SerializedName("is_coupon_active")
     private int isCouponActive = 0;
+    @SerializedName("autoapply")
+    private AutoApply autoApply;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -297,6 +299,14 @@ public class CartData implements Parcelable {
         this.isCouponActive = isCouponActive;
     }
 
+    public AutoApply getAutoApply() {
+        return autoApply;
+    }
+
+    public void setAutoApply(AutoApply autoApply) {
+        this.autoApply = autoApply;
+    }
+
     public CartData() {
     }
 
@@ -334,6 +344,7 @@ public class CartData implements Parcelable {
         dest.writeParcelable(this.donation, flags);
         dest.writeParcelable(this.cartPromo, flags);
         dest.writeInt(this.isCouponActive);
+        dest.writeParcelable(this.autoApply, flags);
     }
 
     protected CartData(Parcel in) {
@@ -363,6 +374,7 @@ public class CartData implements Parcelable {
         this.donation = in.readParcelable(CartDonation.class.getClassLoader());
         this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
         this.isCouponActive = in.readInt();
+        this.autoApply = in.readParcelable(AutoApply.class.getClassLoader());
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {
