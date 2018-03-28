@@ -506,6 +506,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
 
+        setSendButtonEnabled(true);
+
     }
 
     @Override
