@@ -138,7 +138,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @Override
     public void renderPromoMenuDataList(final List<PromoMenuData> promoMenuDataList) {
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
-        adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
+        adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         int indexMenuAutoSelected = 0;

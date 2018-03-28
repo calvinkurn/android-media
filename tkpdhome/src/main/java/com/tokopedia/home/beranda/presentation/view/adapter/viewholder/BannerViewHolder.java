@@ -90,9 +90,6 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         remoteConfigEnable = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
-
-        remoteConfigEnable = true;
-
         if (remoteConfigEnable) {
             context.startActivity(PromoListActivity.newInstance(context, 0, 0));
         } else {
