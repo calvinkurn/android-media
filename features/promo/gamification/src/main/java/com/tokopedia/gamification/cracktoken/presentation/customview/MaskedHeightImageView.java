@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.cracktoken;
+package com.tokopedia.gamification.cracktoken.presentation.customview;
 
 import android.content.Context;
 import android.graphics.Bitmap;

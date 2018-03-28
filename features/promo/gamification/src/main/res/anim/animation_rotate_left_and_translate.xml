@@ -10,6 +10,6 @@
 
     <translate
         android:fromXDelta="0"
-        android:toYDelta="@dimen/translate_egg_to_y_delta" />
+        android:toYDelta="@integer/translate_egg_to_y_delta" />
 
 </set>

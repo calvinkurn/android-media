@@ -4,14 +4,14 @@
     android:fillAfter="true">
 
     <scale android:fromXScale="0.0"
-        android:toXScale="@dimen/to_x_scale_reward_anim"
+        android:toXScale="@fraction/to_x_scale_reward_anim"
         android:fromYScale="0.0"
-        android:toYScale="@dimen/to_y_scale_reward_anim"
+        android:toYScale="@fraction/to_y_scale_reward_anim"
         android:pivotY="50%"
         android:pivotX="50%"/>
 
     <translate
         android:fromYDelta="0"
-        android:toYDelta="@dimen/reward_translate_y_axis" />
+        android:toYDelta="@integer/reward_translate_y_axis" />
 
 </set>
