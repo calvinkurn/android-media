@@ -19,6 +19,7 @@ public class FlightCancellationJourney implements Parcelable {
     private String arrivalAirportId;
     private String arrivalTime;
     private String airlineName;
+    private boolean isRefundable;
 
     public FlightCancellationJourney() {
     }
@@ -145,5 +146,13 @@ public class FlightCancellationJourney implements Parcelable {
 
     public void setAirlineName(String airlineName) {
         this.airlineName = airlineName;
+    }
+
+    public boolean isRefundable() {
+        return isRefundable;
+    }
+
+    public void setRefundable(boolean refundable) {
+        isRefundable = refundable;
     }
 }

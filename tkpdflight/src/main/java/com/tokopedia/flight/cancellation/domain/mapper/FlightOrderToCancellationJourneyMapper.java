@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.ArrayList;
@@ -30,7 +31,24 @@ public class FlightOrderToCancellationJourneyMapper {
         flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
         flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
         flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
-        flightCancellationJourney.setAirlineName(flightOrderJourney.getRouteViewModels().get(0).getAirlineName());
+
+        for (FlightDetailRouteViewModel item : flightOrderJourney.getRouteViewModels()) {
+            if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
+                    flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
+                if (item.isRefundable()) {
+                    flightCancellationJourney.setRefundable(item.isRefundable());
+                }
+            } else if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
+                    !flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
+                flightCancellationJourney.setAirlineName("Multi Maskapai");
+                if (item.isRefundable()) {
+                    flightCancellationJourney.setRefundable(item.isRefundable());
+                }
+            } else {
+                flightCancellationJourney.setAirlineName(item.getAirlineName());
+                flightCancellationJourney.setRefundable(item.isRefundable());
+            }
+        }
 
         flightCancellationJourneyList.add(flightCancellationJourney);
         return flightCancellationJourneyList;
@@ -49,7 +67,24 @@ public class FlightOrderToCancellationJourneyMapper {
             flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
             flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
             flightCancellationJourney.setArrivalAirportId(flightOrderJourney.getArrivalAirportId());
-            flightCancellationJourney.setAirlineName(flightOrderJourney.getRouteViewModels().get(0).getAirlineName());
+
+            for (FlightDetailRouteViewModel item : flightOrderJourney.getRouteViewModels()) {
+                if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
+                        flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
+                    if (item.isRefundable()) {
+                        flightCancellationJourney.setRefundable(item.isRefundable());
+                    }
+                } else if (flightCancellationJourney.getAirlineName() != null && flightCancellationJourney.getAirlineName().length() > 0 &&
+                        !flightCancellationJourney.getAirlineName().equals(item.getAirlineName())) {
+                    flightCancellationJourney.setAirlineName("Multi Maskapai");
+                    if (item.isRefundable()) {
+                        flightCancellationJourney.setRefundable(item.isRefundable());
+                    }
+                } else {
+                    flightCancellationJourney.setAirlineName(item.getAirlineName());
+                    flightCancellationJourney.setRefundable(item.isRefundable());
+                }
+            }
 
             flightCancellationJourneyList.add(flightCancellationJourney);
         }
