@@ -54,7 +54,7 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.setOnCatalogClicked(element.getID());
+                listener.setOnCatalogClicked(element.getID(), element.getName());
             }
         });
     }

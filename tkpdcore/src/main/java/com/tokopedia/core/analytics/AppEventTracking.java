@@ -498,6 +498,7 @@ public interface AppEventTracking {
         String CLICK_BAR = "click - bar - ";
         String CLICK_CHANGE_GRID = "click - ";
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
+        String CLICK_CATALOG = "click - catalog";
     }
 
     interface ImageEditor{

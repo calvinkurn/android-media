@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -235,7 +236,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void setOnCatalogClicked(String catalogID) {
+    public void setOnCatalogClicked(String catalogID, String catalogName) {
+        UnifyTracking.eventSearchResultCatalogClick(query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }

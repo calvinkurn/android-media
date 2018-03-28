@@ -3360,4 +3360,13 @@ public class UnifyTracking extends TrackingUtils {
                 keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchResultCatalogClick(String keyword, String catalogName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.CLICK_CATALOG,
+                keyword + " - " + catalogName
+        ).setUserId().getEvent());
+    }
 }
