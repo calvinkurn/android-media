@@ -504,13 +504,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
 
             showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-
         }
-
-    }
-
-    @Override
-    public void onVoteOptionClicked(VoteViewModel element) {
 
     }
 

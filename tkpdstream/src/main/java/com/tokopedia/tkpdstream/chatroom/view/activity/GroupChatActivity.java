@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -765,7 +765,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
         toolbar.setTitle(title);
-        ImageHandler.loadImageBlur(this, channelBanner, bannerUrl);
+        ImageHandler.LoadImage(channelBanner, bannerUrl);
         setToolbarParticipantCount(totalParticipant);
         setVisibilityHeader(View.VISIBLE);
 
@@ -777,10 +777,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setSponsorData() {
-        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getSponsorUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
-                    viewModel.getChannelInfoViewModel().getSponsorUrl(),
+                    viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     R.drawable.loading_page);
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -815,7 +815,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        if (reconnect) {
+                        if (reconnect || (viewModel != null && viewModel.getChannelInfoViewModel()
+                                != null)) {
                             presenter.refreshChannelInfo(viewModel.getChannelUuid());
                         }
                     }
@@ -1118,7 +1119,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
-            if(voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
                     && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
                 setTooltip();
             }
