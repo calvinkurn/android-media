@@ -120,12 +120,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                 onClickSeeAll();
             }
         });
-        headerBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickSeeAll();
-            }
-        });
     }
 
     private void onClickSeeAll() {
