@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.tab;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.tab.TabViewModel;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -83,7 +81,7 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
         if(listTab.get(position).isUpdated()){
             holder.dot.setVisibility(View.VISIBLE);
         }else{
-            holder.dot.setVisibility(View.GONE);
+            holder.dot.setVisibility(View.INVISIBLE);
         }
     }
 
