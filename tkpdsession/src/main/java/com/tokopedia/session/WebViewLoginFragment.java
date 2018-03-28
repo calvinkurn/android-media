@@ -194,7 +194,7 @@ public class WebViewLoginFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (getTargetFragment().isVisible()) {
+        if (getTargetFragment().isVisible() && getActivity() != null) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
         }
         super.onDismiss(dialog);
