@@ -152,12 +152,7 @@ public class ChangeNameFragment extends BaseDaggerFragment implements ChangeName
 
     @Override
     public void onErrorSubmitName(String error) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.submitName(etName.getText().toString());
-            }
-        }).showRetrySnackbar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
