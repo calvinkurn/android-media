@@ -1162,11 +1162,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void moveToVoteFragment() {
-        showFragment(CHANNEL_VOTE_FRAGMENT);
+        if (hasVoteTab()) {
+            showFragment(CHANNEL_VOTE_FRAGMENT);
+        }
     }
 
-    public String getToolbarTitle() {
-        return toolbar.getTitle().toString();
+    private boolean hasVoteTab() {
+        return tabAdapter.getItemCount() > 2
+                && tabAdapter.getItemAt(CHANNEL_VOTE_FRAGMENT).getTitle().equals(getString(R.string
+                .title_vote));
     }
 
     @Override

@@ -117,4 +117,8 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
         this.listTab.remove(position);
     }
 
+    public TabViewModel getItemAt(int position){
+        return listTab.get(position);
+    }
+
 }
