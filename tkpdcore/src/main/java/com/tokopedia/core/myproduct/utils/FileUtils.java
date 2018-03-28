@@ -224,6 +224,11 @@ public class FileUtils {
                         if (is == null) {
                             return null;
                         }
+                        // estimate sample size
+                        if (inSampleSize == 1 && is.available() >
+                                (1.5 * ImageHandler.IMAGE_WIDTH_HD *  ImageHandler.IMAGE_WIDTH_HD)) {
+                            inSampleSize = 2;
+                        }
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                         options.inSampleSize = inSampleSize;
