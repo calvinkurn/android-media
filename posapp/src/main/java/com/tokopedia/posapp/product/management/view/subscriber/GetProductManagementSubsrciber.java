@@ -42,7 +42,7 @@ public class GetProductManagementSubsrciber extends Subscriber<ProductListDomain
         List<Visitable> visitables = new ArrayList<>();
         for(ProductDomain productDomain : productListDomain.getProductDomains()) {
             ProductViewModel productViewModel = new ProductViewModel();
-            productViewModel.setId(Integer.toString(productDomain.getProductId()));
+            productViewModel.setId(Long.toString(productDomain.getProductId()));
             productViewModel.setName(productDomain.getProductName());
             productViewModel.setImageUrl(productDomain.getProductImage300());
             productViewModel.setOnlinePrice(productDomain.getProductOriginalPriceUnformatted());

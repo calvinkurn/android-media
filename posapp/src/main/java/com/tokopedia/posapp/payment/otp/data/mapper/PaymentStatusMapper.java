@@ -14,6 +14,8 @@ import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusItemDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -24,6 +26,7 @@ import rx.functions.Func1;
 public class PaymentStatusMapper implements Func1<Response<TkpdResponse>, PaymentStatusDomain> {
     private Gson gson;
 
+    @Inject
     public PaymentStatusMapper(Gson gson) {
         this.gson = gson;
     }

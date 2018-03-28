@@ -1,8 +1,8 @@
 package com.tokopedia.posapp.payment.otp.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.payment.otp.domain.model.CreateOrderDomain;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

@@ -1,11 +1,12 @@
 package com.tokopedia.posapp.payment.otp.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.posapp.payment.otp.data.repository.PaymentCloudRepository;
 import com.tokopedia.posapp.payment.otp.data.repository.PaymentRepository;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,10 +17,8 @@ import rx.Observable;
 public class CheckPaymentStatusUseCase extends UseCase<PaymentStatusDomain> {
     private PaymentRepository paymentRepository;
 
-    public CheckPaymentStatusUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     PaymentRepository paymentRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public CheckPaymentStatusUseCase(PaymentCloudRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 

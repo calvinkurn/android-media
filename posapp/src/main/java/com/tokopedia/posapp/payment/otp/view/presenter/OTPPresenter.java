@@ -3,9 +3,8 @@ package com.tokopedia.posapp.payment.otp.view.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.posapp.PosConstants;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.payment.otp.data.pojo.CartDetail;
@@ -22,6 +21,7 @@ import com.tokopedia.posapp.cart.domain.usecase.GetAllCartUseCase;
 import com.tokopedia.posapp.payment.otp.OTP;
 import com.tokopedia.posapp.payment.otp.view.viewmodel.OTPData;
 import com.tokopedia.posapp.payment.otp.view.viewmodel.OTPDetailTransaction;
+import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,16 +79,19 @@ public class OTPPresenter implements OTP.Presenter {
     private Context context;
     private BankDomain bankDomain;
     private String transactionId;
+    private UserSession userSession;
 
     @Inject
     public OTPPresenter(CheckPaymentStatusUseCase checkPaymentStatusUseCase,
                         CreateOrderUseCase createOrderUseCase,
                         GetAllCartUseCase getAllCartUseCase,
-                        @ApplicationContext Context context) {
+                        @ApplicationContext Context context,
+                        UserSession userSession) {
         this.checkPaymentStatusUseCase = checkPaymentStatusUseCase;
         this.createOrderUseCase = createOrderUseCase;
         this.getAllCartUseCase = getAllCartUseCase;
         this.context = context;
+        this.userSession = userSession;
     }
 
     public void attachView(OTP.View viewListener) {
@@ -250,7 +253,7 @@ public class OTPPresenter implements OTP.Presenter {
             public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
                 return Observable.zip(
                     Observable.just(paymentStatusDomain),
-                    getAllCartUseCase.createObservable(RequestParams.create()),
+                    getAllCartUseCase.createObservable(com.tokopedia.usecase.RequestParams.create()),
                     new Func2<PaymentStatusDomain, List<CartDomain>, PaymentStatusDomain>() {
                         @Override
                         public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, List<CartDomain> cartDomains) {
@@ -322,7 +325,7 @@ public class OTPPresenter implements OTP.Presenter {
 
     private CreateOrderParameter getCreateOrderParam(PaymentStatusDomain paymentStatusDomain) {
         CreateOrderParameter createOrderParameter = new CreateOrderParameter();
-        createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        createOrderParameter.setUserId(Integer.parseInt(userSession.getUserId()));
         createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
         createOrderParameter.setState(paymentStatusDomain.getState() + "");
         createOrderParameter.setAmount(paymentStatusDomain.getAmount());
@@ -347,7 +350,7 @@ public class OTPPresenter implements OTP.Presenter {
             cartDetails.add(cartDetail);
         }
         cart.setDetails(cartDetails);
-        cart.setShopId(Integer.parseInt(SessionHandler.getShopID(context)));
+        cart.setShopId(Integer.parseInt(userSession.getShopId()));
         cart.setAddressId(Integer.parseInt(PosSessionHandler.getOutletId(context)));
         createOrderParameter.setCart(cart);
         return createOrderParameter;

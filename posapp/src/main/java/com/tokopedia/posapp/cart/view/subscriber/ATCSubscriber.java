@@ -1,6 +1,7 @@
-package com.tokopedia.posapp.cart.view;
+package com.tokopedia.posapp.cart.view.subscriber;
 
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
+import com.tokopedia.posapp.cart.view.AddToCart;
 
 import rx.Subscriber;
 

@@ -3,7 +3,6 @@ package com.tokopedia.posapp.payment.otp.data.source;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.posapp.PosConstants;
 import com.tokopedia.posapp.payment.otp.data.mapper.CreateOrderMapper;
@@ -11,6 +10,9 @@ import com.tokopedia.posapp.payment.otp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.payment.otp.data.pojo.CreateOrderParameter;
 import com.tokopedia.posapp.payment.otp.domain.model.CreateOrderDomain;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -29,6 +31,7 @@ public class PaymentCloudSource {
     private PaymentStatusMapper paymentStatusMapper;
     private CreateOrderMapper createOrderMapper;
 
+    @Inject
     public PaymentCloudSource(PaymentApi paymentApi,
                               PaymentStatusMapper paymentStatusMapper,
                               CreateOrderMapper createOrderMapper) {

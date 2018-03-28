@@ -2,8 +2,8 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.cart.data.pojo.CartResponse;
+import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
@@ -24,46 +24,46 @@ import rx.functions.Func1;
  */
 
 public class ReactCartCacheSource extends ReactDataSource {
-    private CartFactory cartFactory;
+    private CartLocalSource cartLocalSource;
 
     @Inject
-    public ReactCartCacheSource(CartFactory cartFactory,
+    public ReactCartCacheSource(CartLocalSource cartLocalSource,
                                 Gson gson) {
         super(gson);
-        this.cartFactory = cartFactory;
+        this.cartLocalSource = cartLocalSource;
     }
 
     @Override
     public Observable<String> getData(String productId) {
-        return cartFactory.local().getCartProduct(Integer.parseInt(productId)).map(getCartMapper());
+        return cartLocalSource.getCartProduct(Integer.parseInt(productId)).map(getCartMapper());
     }
 
     @Override
     public Observable<String> getDataList(int offset, int limit) {
-        return cartFactory.local().getCartProducts(offset, limit).map(getCartListMapper());
+        return cartLocalSource.getCartProducts(offset, limit).map(getCartListMapper());
     }
 
     @Override
     public Observable<String> getDataAll() {
-        return cartFactory.local().getAllCartProducts().map(getCartListMapper());
+        return cartLocalSource.getAllCartProducts().map(getCartListMapper());
     }
 
     @Override
     public Observable<String> deleteAll() {
-        return cartFactory.local().deleteCart().map(getDbOperationMapper());
+        return cartLocalSource.deleteCart().map(getDbOperationMapper());
     }
 
     @Override
     public Observable<String> deleteItem(String id) {
         CartDomain cartDomain = new CartDomain();
         cartDomain.setProductId(Integer.parseInt(id));
-        return cartFactory.local().deleteCartProduct(cartDomain).map(getDbOperationMapper());
+        return cartLocalSource.deleteCartProduct(cartDomain).map(getDbOperationMapper());
     }
 
     @Override
     public Observable<String> update(String data) {
         CartResponse cartResponse = gson.fromJson(data, CartResponse.class);
-        return cartFactory.local().updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
+        return cartLocalSource.updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
     }
 
     @Override

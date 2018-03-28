@@ -13,9 +13,6 @@ import rx.Observable;
  */
 
 public interface CartRepository {
-    String CART = "CART";
-    String EXISTING_CART = "EXISTING_CART";
-
     Observable<ATCStatusDomain> storeCartProduct(RequestParams cartDomain);
 
     Observable<ATCStatusDomain> updateCartProduct(RequestParams requestParams);

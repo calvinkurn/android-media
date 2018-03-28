@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.cart.view;
+package com.tokopedia.posapp.cart.view.activity;
 
 
 import android.content.Context;

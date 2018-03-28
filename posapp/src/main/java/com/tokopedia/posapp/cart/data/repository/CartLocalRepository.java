@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.cart.data.repository;
 
 
+import com.tokopedia.posapp.cart.CartConstant;
 import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
@@ -26,14 +27,14 @@ public class CartLocalRepository implements CartRepository {
 
     @Override
     public Observable<ATCStatusDomain> storeCartProduct(RequestParams requestParams) {
-        CartDomain cart = (CartDomain) requestParams.getObject(CART);
+        CartDomain cart = (CartDomain) requestParams.getObject(CartConstant.KEY_CART);
         return cartLocalSource.storeCartProduct(cart);
     }
 
     @Override
     public Observable<ATCStatusDomain> updateCartProduct(RequestParams requestParams) {
-        CartDomain cart = (CartDomain) requestParams.getObject(CART);
-        CartDomain existingCart = (CartDomain) requestParams.getObject(EXISTING_CART);
+        CartDomain cart = (CartDomain) requestParams.getObject(CartConstant.KEY_CART);
+        CartDomain existingCart = (CartDomain) requestParams.getObject(CartConstant.KEY_EXISTING_CART);
         cart.setQuantity(existingCart.getQuantity() + cart.getQuantity());
         return cartLocalSource.updateCartProduct(cart);
     }
@@ -50,7 +51,7 @@ public class CartLocalRepository implements CartRepository {
 
     @Override
     public Observable<CartDomain> getCartProduct(RequestParams requestParams) {
-        CartDomain cart = (CartDomain) requestParams.getObject(CART);
+        CartDomain cart = (CartDomain) requestParams.getObject(CartConstant.KEY_CART);
         return cartLocalSource.getCartProduct(cart.getProductId());
     }
 

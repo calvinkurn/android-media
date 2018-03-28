@@ -11,36 +11,34 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
-import com.tokopedia.posapp.cart.data.factory.CartFactory;
 import com.tokopedia.posapp.cart.di.CartComponent;
-import com.tokopedia.posapp.di.component.DaggerCartComponent;
-import com.tokopedia.posapp.cart.domain.model.CartDomain;
-import com.tokopedia.posapp.product.productdetail.view.fragment.ProductDetailFragment;
-import com.tokopedia.posapp.cart.view.LocalCartActivity;
+import com.tokopedia.posapp.cart.di.DaggerCartComponent;
+import com.tokopedia.posapp.cart.view.CartMenu;
+import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
+import com.tokopedia.posapp.cart.view.presenter.CartMenuPresenter;
 import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
+import com.tokopedia.posapp.product.productdetail.view.fragment.ProductDetailFragment;
 
-import java.util.List;
-
-import rx.Subscriber;
-import rx.functions.Func1;
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 8/8/17.
  */
 
 public class ProductDetailActivity extends BasePresenterActivity
-        implements HasComponent, ProductDetailFragment.ProductDetailFragmentListener {
+        implements HasComponent, ProductDetailFragment.ProductDetailFragmentListener, CartMenu.View {
 
-    protected View vCart;
+    @Inject
+    CartMenuPresenter cartMenuPresenter;
+    private View vCart;
     private TextView tvNotif;
-    private CartFactory cartFactory;
 
     @DeepLink(PosAppLink.PRODUCT_INFO)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
@@ -53,6 +51,12 @@ public class ProductDetailActivity extends BasePresenterActivity
         return new Intent(context, ProductDetailActivity.class)
                 .setData(uri)
                 .putExtras(extras);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInjector();
     }
 
     @Override
@@ -133,56 +137,9 @@ public class ProductDetailActivity extends BasePresenterActivity
                 m.performIdentifierAction(item.getItemId(), 0);
             }
         });
-        initInjector();
+        tvNotif = vCart.findViewById(R.id.toggle_notif);
+        cartMenuPresenter.checkCartItem();
         return super.onCreateOptionsMenu(menu);
-    }
-
-    protected void initInjector() {
-        AppComponent appComponent = ((MainApplication) this.getApplicationContext()).getAppComponent();
-        CartComponent cartComponent = DaggerCartComponent.builder().appComponent(appComponent).build();
-        cartFactory = cartComponent.provideCartFactory();
-        getCartCount();
-    }
-
-    private void getCartCount() {
-        if(cartFactory != null) {
-            cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
-                @Override
-                public String call(List<CartDomain> cartDomains) {
-                    if (cartDomains.size() > 0)
-                        return cartDomains.size() + "";
-                    else
-                        return "null";
-                }
-            }).subscribe(new Subscriber<String>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(String o) {
-                    updateNotification(o);
-                }
-            });
-        }
-    }
-
-    private void updateNotification(String s) {
-        if (vCart != null) {
-            tvNotif = vCart.findViewById(R.id.toggle_notif);
-            if (!s.equals("null")) {
-                tvNotif.setVisibility(View.VISIBLE);
-                tvNotif.setText(s);
-            } else {
-                tvNotif.setVisibility(View.GONE);
-            }
-        }
     }
 
     @Override
@@ -200,6 +157,24 @@ public class ProductDetailActivity extends BasePresenterActivity
 
     @Override
     public void onAddToCart() {
-        getCartCount();
+        cartMenuPresenter.checkCartItem();
+    }
+
+    @Override
+    public void onCartFilled(int cartCount) {
+        tvNotif.setVisibility(View.VISIBLE);
+        tvNotif.setText(Integer.toString(cartCount));
+    }
+
+    @Override
+    public void onCartEmpty() {
+        tvNotif.setVisibility(View.GONE);
+    }
+
+    private void initInjector() {
+        BaseAppComponent appComponent = ((BaseMainApplication) this.getApplicationContext()).getBaseAppComponent();
+        CartComponent cartComponent = DaggerCartComponent.builder().baseAppComponent(appComponent).build();
+        cartComponent.inject(this);
+        cartMenuPresenter.attachView(this);
     }
 }

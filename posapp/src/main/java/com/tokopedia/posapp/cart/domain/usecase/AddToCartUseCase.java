@@ -2,6 +2,7 @@ package com.tokopedia.posapp.cart.domain.usecase;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.posapp.cart.CartConstant;
 import com.tokopedia.posapp.cart.data.repository.CartLocalRepository;
 import com.tokopedia.posapp.cart.data.repository.CartRepository;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
@@ -34,7 +35,7 @@ public class AddToCartUseCase extends UseCase<ATCStatusDomain> {
                     @Override
                     public Observable<ATCStatusDomain> call(CartDomain existingCart) {
                         if(existingCart != null) {
-                            requestParams.putObject(CartRepository.EXISTING_CART, existingCart);
+                            requestParams.putObject(CartConstant.KEY_EXISTING_CART, existingCart);
                             return cartRepository.updateCartProduct(requestParams);
                         } else {
                             return cartRepository.storeCartProduct(requestParams);

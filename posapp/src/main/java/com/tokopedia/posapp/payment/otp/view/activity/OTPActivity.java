@@ -23,14 +23,15 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.applink.PosAppLink;
-import com.tokopedia.posapp.di.component.DaggerPaymentComponent;
+import com.tokopedia.posapp.payment.di.PaymentComponent;
+import com.tokopedia.posapp.payment.di.DaggerPaymentComponent;
 import com.tokopedia.posapp.payment.otp.domain.model.PaymentStatusDomain;
 import com.tokopedia.posapp.payment.otp.OTP;
 import com.tokopedia.posapp.payment.invoice.InvoiceActivity;
@@ -91,11 +92,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     protected void initialPresenter() {
-        AppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
-        DaggerPaymentComponent daggerPaymentComponent =
-                (DaggerPaymentComponent) DaggerPaymentComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
+        BaseAppComponent appComponent = ((BaseMainApplication) getApplication()).getBaseAppComponent();
+        PaymentComponent daggerPaymentComponent = DaggerPaymentComponent.builder().baseAppComponent(appComponent).build();
 
         daggerPaymentComponent.inject(this);
 

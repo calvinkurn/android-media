@@ -9,6 +9,8 @@ import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
 import com.tokopedia.posapp.payment.otp.data.pojo.payment.PaymentAction;
 import com.tokopedia.posapp.payment.otp.domain.model.CreateOrderDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -22,6 +24,7 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
 
     private Gson gson;
 
+    @Inject
     public CreateOrderMapper(Gson gson) {
         this.gson = gson;
     }

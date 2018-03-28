@@ -24,7 +24,7 @@ import java.util.List;
 public class ProductDb extends BaseModel {
     @Column
     @PrimaryKey
-    private int productId;
+    private long productId;
 
     @Column
     private String productName;
@@ -53,11 +53,11 @@ public class ProductDb extends BaseModel {
     @Column
     private String etalaseId;
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
