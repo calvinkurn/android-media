@@ -2,13 +2,10 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,20 +40,14 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
         public TextView productName;
 
-        public TextView productPrice;
-
         public ImageView productImage;
-
-        public FrameLayout blackScreen;
 
         public TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             productName = (TextView) itemView.findViewById(R.id.title);
-            productPrice = (TextView) itemView.findViewById(R.id.price);
             extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
-            blackScreen = (FrameLayout) itemView.findViewById(R.id.black_screen);
             productImage = (ImageView) itemView.findViewById(R.id.product_image);
         }
     }
@@ -85,31 +76,22 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        if (getItemCount() == 1) {
-            holder.productName.setEllipsize(TextUtils.TruncateAt.END);
-            holder.productName.setMaxLines(1);
-            lp.setMargins(0, 5, 0, 0);
-
-        } else {
-            holder.productName.setEllipsize(TextUtils.TruncateAt.END);
-            holder.productName.setMaxLines(2);
-            lp.setMargins(18, 18, 18, 0);
-        }
-
-        holder.productImage.setLayoutParams(lp);
-
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
-        holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.loadImageFit2(holder.productImage.getContext(),
+        ImageHandler.loadImage2(
                 holder.productImage,
-                getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
+                getItemCount() > 1 ? list.get(position).getImageSource() : list.get(position).getImageSourceSingle(),
+                R.drawable.ic_loading_image);
 
         if (list.size() > MAX_FEED_SIZE && position == LAST_FEED_POSITION) {
-            holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
+            holder.extraProduct.setBackground(new ColorDrawable(
+                    MethodChecker.getColor(
+                            holder.extraProduct.getContext(),
+                            R.color.black_screen_overlay))
+            );
             holder.extraProduct.setVisibility(View.VISIBLE);
             String extra = "+" + (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION);
             holder.extraProduct.setText(extra);
-            holder.blackScreen.setOnClickListener(new View.OnClickListener() {
+            holder.extraProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToFeedDetail(
@@ -119,7 +101,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             });
 
         } else {
-            holder.blackScreen.setForeground(null);
+            holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
 
             holder.productName.setOnClickListener(new View.OnClickListener() {

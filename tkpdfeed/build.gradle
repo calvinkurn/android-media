@@ -44,4 +44,5 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
