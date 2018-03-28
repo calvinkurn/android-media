@@ -1,7 +1,8 @@
 package com.tokopedia.posapp.outlet.data.source;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
 import com.tokopedia.posapp.common.PosUrl;
+import com.tokopedia.posapp.outlet.data.pojo.OutletResponse;
 
 import java.util.Map;
 
@@ -16,5 +17,5 @@ import rx.Observable;
 
 public interface OutletApi {
     @GET(PosUrl.Shop.OUTLET_LIST_V1)
-    Observable<Response<TkpdResponse>> getAddress(@QueryMap Map<String, String> params);
+    Observable<Response<GeneralResponse<OutletResponse>>> getAddress(@QueryMap Map<String, String> params);
 }

@@ -2,6 +2,7 @@ package com.tokopedia.posapp.cart.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 
 /**
  * Created by okasurya on 9/15/17.
@@ -12,10 +13,10 @@ public class CartResponse {
     private long id;
 
     @SerializedName("product_id")
-    private int productId;
+    private long productId;
 
     @SerializedName("product")
-    private com.tokopedia.core.shopinfo.models.productmodel.List product;
+    private ProductDetail product;
 
     @SerializedName("quantity")
     private int quantity;
@@ -28,19 +29,19 @@ public class CartResponse {
         this.id = id;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
-    public List getProduct() {
+    public ProductDetail getProduct() {
         return product;
     }
 
-    public void setProduct(List product) {
+    public void setProduct(ProductDetail product) {
         this.product = product;
     }
 

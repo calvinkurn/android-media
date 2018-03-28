@@ -38,7 +38,9 @@ public class PosAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put(X_TKPD_HEADER_AUTHORIZATION, xTkpdAuthorization);
 
         headerMap.remove(HEADER_AUTHORIZATION);
-        String bearerAutorization = BEARER + userSession.getAccessToken();
+        // TODO: 3/28/18 change this
+        // hard code, dont do dis at home
+        String bearerAutorization = BEARER + "LdBnlBuwQ3G41VzUwQZH7A";
         headerMap.put(HEADER_AUTHORIZATION, bearerAutorization);
 
         return headerMap;

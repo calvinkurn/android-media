@@ -597,7 +597,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToCartPresenter.add(Integer.parseInt(productPass.getProductId()), 1);
+                addToCartPresenter.add(productPass, 1);
                 listener.onAddToCart();
             }
         });
@@ -605,7 +605,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToCartPresenter.addAndCheckout(Integer.parseInt(productPass.getProductId()), 1);
+                addToCartPresenter.addAndCheckout(productPass, 1);
             }
         });
     }
@@ -619,17 +619,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
         for (ProductImage productImage : productData.getProductImages()) {
             imageSources.add(productImage.getImageSrc());
         }
-//        if (productData.getInfo().getHasVariant() && productVariant!=null && productVariant.getChildren()!=null) {
-//            for (Child child: productVariant.getChildren()) {
-//                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
-//                    arrayList.add(child.getPicture().getOriginal());
-//                }
-//            }
-//            Set<String> imagesSet = new LinkedHashSet<>(arrayList);
-//            ArrayList<String> finalImage = new ArrayList<>();
-//            finalImage.addAll(imagesSet);
-//            return finalImage;
-//        }
         return imageSources;
     }
 }

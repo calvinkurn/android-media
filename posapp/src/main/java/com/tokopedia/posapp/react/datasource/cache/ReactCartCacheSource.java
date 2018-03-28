@@ -1,11 +1,12 @@
 package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.posapp.cart.data.pojo.CartResponse;
 import com.tokopedia.posapp.cart.data.source.CartLocalSource;
 import com.tokopedia.posapp.cart.domain.model.ATCStatusDomain;
 import com.tokopedia.posapp.cart.domain.model.CartDomain;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.react.datasource.ReactDataSource;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;
 import com.tokopedia.posapp.react.datasource.model.ListResult;
@@ -135,15 +136,15 @@ public class ReactCartCacheSource extends ReactDataSource {
         cartResponse.setQuantity(cartDomain.getQuantity());
         cartResponse.setProductId(cartDomain.getProductId());
 
-        com.tokopedia.core.shopinfo.models.productmodel.List product = new com.tokopedia.core.shopinfo.models.productmodel.List();
-        product.productId = cartDomain.getProductId();
-        product.productName = cartDomain.getProduct().getProductName();
-        product.productPrice = cartDomain.getProduct().getProductPrice();
-        product.productUrl = cartDomain.getProduct().getProductUrl();
-        product.productImage = cartDomain.getProduct().getProductImage();
-        product.productImage300 = cartDomain.getProduct().getProductImage300();
-        product.productImageFull = cartDomain.getProduct().getProductImageFull();
-        product.productPriceUnformatted = CurrencyFormatHelper.convertRupiahToInt(cartDomain.getProduct().getProductPrice());
+        ProductDetail product = new ProductDetail();
+        product.setProductId(cartDomain.getProductId());
+        product.setProductName(cartDomain.getProduct().getProductName());
+        product.setProductPrice(cartDomain.getProduct().getProductPrice());
+        product.setProductUrl(cartDomain.getProduct().getProductUrl());
+        product.setProductImage(cartDomain.getProduct().getProductImage());
+        product.setProductImage300(cartDomain.getProduct().getProductImage300());
+        product.setProductImageFull(cartDomain.getProduct().getProductImageFull());
+        product.setProductPriceUnformatted(CurrencyFormatHelper.convertRupiahToInt(cartDomain.getProduct().getProductPrice()));
         cartResponse.setProduct(product);
 
         return cartResponse;

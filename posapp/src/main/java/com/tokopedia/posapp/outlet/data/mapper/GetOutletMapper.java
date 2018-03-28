@@ -1,7 +1,8 @@
 package com.tokopedia.posapp.outlet.data.mapper;
 
-import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.base.data.pojo.GeneralResponse;
+import com.tokopedia.posapp.outlet.data.pojo.OutletItemResponse;
 import com.tokopedia.posapp.outlet.data.pojo.OutletResponse;
 import com.tokopedia.posapp.outlet.domain.model.OutletItemDomain;
 import com.tokopedia.posapp.outlet.domain.model.OutletDomain;
@@ -17,20 +18,16 @@ import rx.functions.Func1;
  * Created by okasurya on 7/31/17.
  */
 
-public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDomain> {
+public class GetOutletMapper implements Func1<Response<GeneralResponse<OutletResponse>>, OutletDomain> {
 
     @Inject
     public GetOutletMapper() {
     }
 
     @Override
-    public OutletDomain call(Response<TkpdResponse> response) {
-        return mapResponse(response);
-    }
-
-    private OutletDomain mapResponse(Response<TkpdResponse> response) {
+    public OutletDomain call(Response<GeneralResponse<OutletResponse>> response) {
         if(response.body() != null && response.isSuccessful()) {
-            OutletResponse outletResponse = response.body().convertDataObj(OutletResponse.class);
+            OutletResponse outletResponse = response.body().getData();
 
             if(outletResponse != null && outletResponse.getList() != null) {
                 OutletDomain outletDomain = getOutletFromResponse(outletResponse);
@@ -44,17 +41,17 @@ public class GetOutletMapper implements Func1<Response<TkpdResponse>, OutletDoma
     private OutletDomain getOutletFromResponse(OutletResponse outletResponse) {
         OutletDomain outletDomain = new OutletDomain();
         outletDomain.setListOutlet(new ArrayList<OutletItemDomain>());
-        for(AddressModel addressModel: outletResponse.getList()) {
+        for(OutletItemResponse addressModel: outletResponse.getList()) {
             OutletItemDomain outlet = new OutletItemDomain();
-            outlet.setOutletId(addressModel.getAddressId());
-            outlet.setOutletAddres(addressModel.getAddressStreet());
-            outlet.setOutletName(addressModel.getAddressName());
-            outlet.setOutletPhone(addressModel.getReceiverPhone());
+            outlet.setOutletId(addressModel.getOutletId());
+            outlet.setOutletAddres(addressModel.getAddress());
+            outlet.setOutletName(addressModel.getName());
+            outlet.setOutletPhone("");
             outletDomain.getListOutlet().add(outlet);
         }
 
-        outletDomain.setUriNext(outletResponse.getPaging().getUriNext());
-        outletDomain.setUriPrevious(outletResponse.getPaging().getUriPrevious());
+        outletDomain.setUriNext("");
+        outletDomain.setUriPrevious("");
 
         return outletDomain;
     }

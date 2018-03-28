@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class CartDetail {
     @SerializedName("prod_id")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("qty")
     @Expose
     private int qty;
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class PaymentStatusItemDomain {
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -24,11 +24,11 @@ public class PaymentStatusItemDomain {
     @Expose
     private String imageUrl;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

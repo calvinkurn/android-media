@@ -52,7 +52,7 @@ public class CartLocalSource {
         return cartDbManager.getAllData();
     }
 
-    public Observable<CartDomain> getCartProduct(int productId) {
+    public Observable<CartDomain> getCartProduct(long productId) {
         return cartDbManager.getData(
                 ConditionGroup.clause().and(CartDb_Table.productId.eq(productId))
         );

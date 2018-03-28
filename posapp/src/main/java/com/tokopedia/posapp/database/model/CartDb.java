@@ -25,7 +25,7 @@ public class CartDb extends BaseModel {
 
     @Column
     @Unique(onUniqueConflict = ConflictAction.FAIL)
-    private int productId;
+    private long productId;
 
     @Column
     private int quantity;
@@ -53,11 +53,11 @@ public class CartDb extends BaseModel {
         this.id = id;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

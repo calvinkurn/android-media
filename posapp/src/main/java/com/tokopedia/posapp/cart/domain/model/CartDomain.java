@@ -15,7 +15,7 @@ public class CartDomain implements DefaultParams {
     private Long id;
     @SerializedName("productId")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("product")
     @Expose
     private ProductDomain product;
@@ -34,11 +34,11 @@ public class CartDomain implements DefaultParams {
         this.id = id;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

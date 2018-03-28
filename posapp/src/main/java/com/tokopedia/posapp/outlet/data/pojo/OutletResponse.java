@@ -13,27 +13,27 @@ import java.util.List;
  */
 
 public class OutletResponse {
-    @SerializedName("paging")
+    @SerializedName("status")
     @Expose
-    private Paging paging;
+    private String status;
 
-    @SerializedName("list")
+    @SerializedName("outlet_list")
     @Expose
-    private List<AddressModel> list = new ArrayList<>();
+    private List<OutletItemResponse> list = new ArrayList<>();
 
-    public Paging getPaging() {
-        return paging;
-    }
-
-    public void setPaging(Paging paging) {
-        this.paging = paging;
-    }
-
-    public List<AddressModel> getList() {
+    public List<OutletItemResponse> getList() {
         return list;
     }
 
-    public void setList(List<AddressModel> list) {
+    public void setList(List<OutletItemResponse> list) {
         this.list = list;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
