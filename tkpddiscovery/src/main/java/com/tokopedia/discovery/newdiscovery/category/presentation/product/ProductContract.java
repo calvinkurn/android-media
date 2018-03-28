@@ -11,6 +11,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author by alifa on 10/26/17.
@@ -27,6 +28,18 @@ public class ProductContract {
         boolean isUserHasLogin();
 
         String getUserId();
+
+        void trackEnhanceProduct(Map<String, Object> dataLayer);
+
+        List<ProductItem> mappingTrackerProduct(List<ProductItem> productList, int page);
+
+        void clearLastProductTracker(boolean clear);
+
+        int getLastPositionProductTracker();
+
+        void setLastPositionProductTracker(int lastPositionProductTracker);
+
+        Map<String, Object> createImpressionProductDataLayer(List<ProductItem> productList);
 
         void initTopAdsParams();
 

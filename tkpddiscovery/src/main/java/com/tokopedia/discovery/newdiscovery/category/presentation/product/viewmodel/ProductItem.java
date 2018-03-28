@@ -3,10 +3,13 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product.viewm
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.typefactory.CategoryProductListTypeFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 10/9/17.
@@ -28,6 +31,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItem> badgesList;
     private List<LabelItem> labelList;
+    private String trackerName;
+    private String trackerPosition;
+    private String homeAttribution;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -149,6 +155,39 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         return labelList;
     }
 
+    public ProductItem() {
+    }
+
+    @Override
+    public int type(CategoryProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    public void setTrackerName(String trackerName) {
+        this.trackerName = trackerName;
+    }
+
+    public String getTrackerName() {
+        return trackerName;
+    }
+
+    public void setTrackerPosition(String trackerPosition) {
+        this.trackerPosition = trackerPosition;
+    }
+
+    public String getTrackerPosition() {
+        return trackerPosition;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getHomeAttribution() {
+        if (homeAttribution == null || homeAttribution.isEmpty()) return "none / other";
+        else return homeAttribution;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -171,9 +210,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.badgesList);
         dest.writeTypedList(this.labelList);
-    }
-
-    public ProductItem() {
+        dest.writeString(this.trackerName);
+        dest.writeString(this.trackerPosition);
+        dest.writeString(this.homeAttribution);
     }
 
     protected ProductItem(Parcel in) {
@@ -192,6 +231,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.isWishlistButtonEnabled = in.readByte() != 0;
         this.badgesList = in.createTypedArrayList(BadgeItem.CREATOR);
         this.labelList = in.createTypedArrayList(LabelItem.CREATOR);
+        this.trackerName = in.readString();
+        this.trackerPosition = in.readString();
+        this.homeAttribution = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -206,8 +248,32 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         }
     };
 
-    @Override
-    public int type(CategoryProductListTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public Map<String, Object> generateImpressionDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                        getPrice()
+                )),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", getTrackerName(),
+                "position", getTrackerPosition(),
+                "attribution", getHomeAttribution()
+        );
+    }
+
+    public Map<String, Object> generateClickDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "position", getTrackerPosition(),
+                "attribution", getHomeAttribution()
+        );
     }
 }

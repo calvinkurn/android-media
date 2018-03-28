@@ -34,7 +34,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     private FragmentManager fragmentManager;
     MenuItem searchItem;
     public static final String CATEGORY_DEFAULT_TITLE = "";
-    private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution";
 
     private String departmentId = "";
     private String trackerAttribution = "";
@@ -48,8 +48,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
     public static Intent getCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, IntermediaryActivity.class);
-        return intent
-                .putExtras(bundle);
+        Bundle newBundle = new Bundle();
+        newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        newBundle.putString(EXTRA_TRACKER_ATTRIBUTION, bundle.getString("tracker_attribution"));
+        return intent.putExtras(newBundle);
     }
 
     @Override
