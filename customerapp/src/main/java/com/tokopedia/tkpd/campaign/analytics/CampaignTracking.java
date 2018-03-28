@@ -10,12 +10,12 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 public class CampaignTracking extends UnifyTracking {
 
     public static void eventShakeShake(String status,String screenName,String campaignId,String url) {
-        sendGTMEvent(new EventTracking(
+        /*sendGTMEvent(new EventTracking(
                 CampaignAppEventTracking.Event.GenericCampaignEvent,
                 CampaignAppEventTracking.Category.EventTriggerBasedCampaign,
                 String.format(CampaignAppEventTracking.Action.EventShakeDevice,screenName,status),
                 String.format(CampaignAppEventTracking.Label.LabelShake, campaignId,url)
-        ).getEvent());
+        ).getEvent());*/
     }
 
     public static void eventQRButtonClick() {
