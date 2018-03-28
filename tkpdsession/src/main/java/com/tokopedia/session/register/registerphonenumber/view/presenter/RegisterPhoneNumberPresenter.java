@@ -1,6 +1,9 @@
 package com.tokopedia.session.register.registerphonenumber.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.session.R;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
@@ -47,8 +50,9 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     @Override
     public void checkPhoneNumber(String phoneNumber) {
         getView().showLoading();
-        checkMsisdnPhoneNumberUseCase.execute(CheckMsisdnPhoneNumberUseCase.getParams(phoneNumber),
-                new CheckMsisdnRegisterPhoneNumberSubscriber(getView(), phoneNumber));
+        if (isValid(phoneNumber))
+            checkMsisdnPhoneNumberUseCase.execute(CheckMsisdnPhoneNumberUseCase.getParams(phoneNumber),
+                    new CheckMsisdnRegisterPhoneNumberSubscriber(getView(), phoneNumber));
     }
 
     @Override
@@ -58,5 +62,12 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
                 new RegisterPhoneNumberSubscriber(getView()));
 
     }
-
+    private boolean isValid(String phoneNumber) {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(phoneNumber)) {
+            getView().showErrorPhoneNumber(R.string.error_field_required);
+            isValid = false;
+        }
+        return isValid;
+    }
 }
