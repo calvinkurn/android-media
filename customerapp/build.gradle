@@ -47,11 +47,7 @@ def allowProguard() {
 }
 
 def getTkpdVersionCode() {
-    if(project.hasProperty('versionCode')) {
-        return Integer.parseInt(versionCode)
-    } else {
-        return project.defaultVersionCode
-    }
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
 
 def getTkpdVersionName() {
@@ -145,7 +141,7 @@ android {
                 variant.outputs.each { output ->
                     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                     String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                    project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                    output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                 }
                 variant.assemble.doLast {
                     variant.outputs.each { output ->
@@ -174,7 +170,7 @@ android {
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
                         String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -187,7 +183,7 @@ android {
             } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
-                        project.android.defaultConfig.versionCode = (getTkpdVersionCode() * 100);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
                     }
                 }
             }
