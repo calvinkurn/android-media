@@ -175,7 +175,7 @@ public class LoginActivityTest {
      * Test yahoo login
      */
     @Test
-    public void testYahooLogin() {
+    public void testYahooLogin() throws Exception {
 
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
         server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
@@ -188,6 +188,10 @@ public class LoginActivityTest {
 //        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
         onView(withText("You should car about that"))
                 .perform(scrollTo(), click());
+
+        // necessary to make it wait.
+        Thread.sleep(3000);
+
 //        onView(withText("You should car about that")).perform(click());
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
