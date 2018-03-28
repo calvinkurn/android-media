@@ -1,6 +1,7 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -23,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -200,6 +203,9 @@ public class FileUtils {
 
     public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
+        if (!isImageMimeType(context, uri)) {
+            return null;
+        }
         if (uri.getAuthority() != null) {
             try {
                 String path = getPathFromMediaUri(context, uri);
@@ -262,6 +268,25 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    private static String getMimeType(Context context, Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    private static boolean isImageMimeType(Context context, Uri uri) {
+        String mimeType = getMimeType(context, uri);
+        return !TextUtils.isEmpty(mimeType) && mimeType.startsWith("image");
     }
 
     public static String getPathFromMediaUri(Context context, Uri contentUri) {

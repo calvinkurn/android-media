@@ -38,9 +38,11 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 
@@ -53,10 +55,12 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
+    public static final String IMAGE_OR_VIDEO = "*/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
 
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
+    private CompositeSubscription compositeSubscription;
 
     public static void start(Activity activity) {
         Intent intent = new Intent(activity, ProductAddActivity.class);
@@ -220,7 +224,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
         if (type == null) {
             return false;
         }
-        if (!type.startsWith(IMAGE)) {
+        if (!type.startsWith(IMAGE) && !type.startsWith(IMAGE_OR_VIDEO)) {
             return false;
         }
         if (Intent.ACTION_SEND.equals(action)) {
@@ -264,7 +268,11 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
     private void processMultipleImage(ArrayList<Uri> imageUris) {
         showProgressDialog();
 
-        Observable.just(imageUris).map(new Func1<ArrayList<Uri>, ArrayList<String>>() {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+
+        Subscription subscription = Observable.just(imageUris).map(new Func1<ArrayList<Uri>, ArrayList<String>>() {
             @Override
             public ArrayList<String> call(ArrayList<Uri> imageUris) {
                 int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
@@ -294,17 +302,36 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissDialog();
-                        createProductAddFragment();
+                        showProductAddFragment();
                     }
 
                     @Override
                     public void onNext(ArrayList<String> imageUrls) {
-                        dismissDialog();
-                        createProductAddFragment();
+                        showProductAddFragment();
                     }
                 });
+        compositeSubscription.add(subscription);
     }
 
+    private void showProductAddFragment(){
+        if (!ProductAddActivity.this.isPausing() && !ProductAddActivity.this.isFinishing()) {
+            dismissDialog();
+            createProductAddFragment();
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isDialogShowing()) {
+            createProductAddFragment();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        dismissDialog();
+        compositeSubscription.unsubscribe();
+        super.onPause();
+    }
 }
