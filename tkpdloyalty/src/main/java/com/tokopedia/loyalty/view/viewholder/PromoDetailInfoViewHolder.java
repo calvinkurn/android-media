@@ -2,11 +2,14 @@ package com.tokopedia.loyalty.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
 import com.tokopedia.loyalty.view.compoundview.PromoImageView;
+import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 
 /**
@@ -17,18 +20,24 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_DETAIL_INFO = R.layout.item_view_promo_detail_info_layout;
 
+    private PromoDetailAdapter.OnAdapterActionListener adapterActionListener;
+
     private PromoImageView ivPromoDetailThumbnail;
     private TextView tvPromoDetailTitle;
     private TextView tvPromoDetailPeriod;
     private TextView tvPromoDetailMinTransaction;
+    private ImageButton ibPromoDetailShare;
 
-    public PromoDetailInfoViewHolder(View itemView) {
+    public PromoDetailInfoViewHolder(View itemView, PromoDetailAdapter.OnAdapterActionListener adapterActionListener) {
         super(itemView);
+
+        this.adapterActionListener = adapterActionListener;
 
         this.ivPromoDetailThumbnail = itemView.findViewById(R.id.iv_promo_detail_thumbnail);
         this.tvPromoDetailTitle = itemView.findViewById(R.id.tv_promo_detail_title);
         this.tvPromoDetailPeriod = itemView.findViewById(R.id.tv_promo_detail_period);
         this.tvPromoDetailMinTransaction = itemView.findViewById(R.id.tv_promo_detail_min_transaction);
+        this.ibPromoDetailShare = itemView.findViewById(R.id.ib_promo_detail_share);
     }
 
     public void bind(PromoDetailInfoHolderData holderData) {
@@ -36,5 +45,15 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
         this.tvPromoDetailTitle.setText(holderData.getTitle());
         this.tvPromoDetailPeriod.setText(holderData.getPromoPeriod());
         this.tvPromoDetailMinTransaction.setText(holderData.getMinTransaction());
+        this.ibPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
+    }
+
+    private View.OnClickListener promoShareListener(final PromoData promoData) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapterActionListener.onItemPromoShareClicked(promoData);
+            }
+        };
     }
 }

@@ -14,6 +14,8 @@ public class PromoDetailInfoHolderData implements Parcelable {
     private String promoPeriod;
     private String minTransaction;
 
+    private PromoData promoData;
+
     public String getThumbnailImageUrl() {
         return thumbnailImageUrl;
     }
@@ -46,6 +48,14 @@ public class PromoDetailInfoHolderData implements Parcelable {
         this.minTransaction = minTransaction;
     }
 
+    public PromoData getPromoData() {
+        return promoData;
+    }
+
+    public void setPromoData(PromoData promoData) {
+        this.promoData = promoData;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,6 +67,7 @@ public class PromoDetailInfoHolderData implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.promoPeriod);
         dest.writeString(this.minTransaction);
+        dest.writeParcelable(this.promoData, flags);
     }
 
     public PromoDetailInfoHolderData() {
@@ -67,6 +78,7 @@ public class PromoDetailInfoHolderData implements Parcelable {
         this.title = in.readString();
         this.promoPeriod = in.readString();
         this.minTransaction = in.readString();
+        this.promoData = in.readParcelable(PromoData.class.getClassLoader());
     }
 
     public static final Creator<PromoDetailInfoHolderData> CREATOR = new Creator<PromoDetailInfoHolderData>() {

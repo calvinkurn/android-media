@@ -44,6 +44,8 @@ public class PromoDataMapper {
         holderData.setPromoPeriod(promoData.getPeriodFormatted());
         holderData.setMinTransaction(promoData.getMinTransaction());
 
+        holderData.setPromoData(promoData);
+
         return holderData;
     }
 

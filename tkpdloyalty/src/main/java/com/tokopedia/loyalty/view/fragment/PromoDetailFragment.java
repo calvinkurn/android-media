@@ -135,7 +135,7 @@ public class PromoDetailFragment extends BaseDaggerFragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(PromoData promoData) {
         if (this.actionListener != null) {
-            this.actionListener.onSelectPromo(promoData);
+            this.actionListener.onSharePromo(promoData);
         }
     }
 
@@ -158,6 +158,11 @@ public class PromoDetailFragment extends BaseDaggerFragment {
 
     private PromoDetailAdapter.OnAdapterActionListener getAdapterActionListener() {
         return new PromoDetailAdapter.OnAdapterActionListener() {
+            @Override
+            public void onItemPromoShareClicked(PromoData promoData) {
+                actionListener.onSharePromo(promoData);
+            }
+
             @Override
             public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
                 String message = "Kode Voucher telah tersalin";
@@ -214,7 +219,8 @@ public class PromoDetailFragment extends BaseDaggerFragment {
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSelectPromo(PromoData promoData);
+
+        void onSharePromo(PromoData promoData);
+
     }
 }

@@ -8,6 +8,10 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -55,7 +59,14 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void onSelectPromo(PromoData promoData) {
-
+    public void onSharePromo(PromoData promoData) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.REFERRAL_TYPE)
+                .setId(promoData.getId())
+                .setName(this.getString(com.tokopedia.core.R.string.app_share_title))
+                .setTextContent(promoData.getTitle())
+                .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .build();
+        this.startActivity(ShareActivity.createIntent(this, shareData));
     }
 }

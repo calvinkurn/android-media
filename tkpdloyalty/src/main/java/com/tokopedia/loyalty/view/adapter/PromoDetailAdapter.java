@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
+import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder;
@@ -44,7 +45,7 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
 
         if (viewType == ITEM_VIEW_DETAIL_INFO) {
-            return new PromoDetailInfoViewHolder(view);
+            return new PromoDetailInfoViewHolder(view, adapterActionListener);
         } else if (viewType == ITEM_VIEW_GROUP_CODE) {
             return new PromoDetailGroupCodeViewHolder(view, context, adapterActionListener);
         } else if (viewType == ITEM_VIEW_SIMPLE_CODE) {
@@ -103,6 +104,8 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public interface OnAdapterActionListener {
+
+        void onItemPromoShareClicked(PromoData promoData);
 
         void onItemPromoCodeCopyClipboardClicked(String promoCode);
 

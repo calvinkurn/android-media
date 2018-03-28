@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <ImageButton
-        android:id="@+id/ib_share_social_icon"
+        android:id="@+id/ib_promo_detail_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -19,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/ib_share_social_icon"
-        android:layout_toEndOf="@id/ib_share_social_icon"
+        android:layout_toRightOf="@id/ib_promo_detail_share"
+        android:layout_toEndOf="@id/ib_promo_detail_share"
         android:text="Messages" />
 
 </RelativeLayout>

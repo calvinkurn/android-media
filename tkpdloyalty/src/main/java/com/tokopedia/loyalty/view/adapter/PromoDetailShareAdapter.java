@@ -55,7 +55,7 @@ public class PromoDetailShareAdapter extends RecyclerView.Adapter<PromoDetailSha
         ShareSocialViewHolder(View itemView) {
             super(itemView);
 
-            ibShareSocialIcon = itemView.findViewById(R.id.ib_share_social_icon);
+            ibShareSocialIcon = itemView.findViewById(R.id.ib_promo_detail_share);
             tvShareSocialName = itemView.findViewById(R.id.tv_share_social_name);
         }
     }
