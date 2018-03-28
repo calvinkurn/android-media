@@ -264,7 +264,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
-                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY,true);
+                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY, true);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -467,7 +467,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_manage_label_snackbar_variant));
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
-        }else {
+        } else {
             if (actionMode != null) {
                 int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
                 actionMode.setTitle(String.valueOf(totalChecked));
@@ -643,7 +643,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         }
                     });
                 } else if (itemId == R.id.change_price_product_menu) {
-                    showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
+                    if (productManageViewModel.isProductVariant()) {
+                        showDialogVariantPriceLocked();
+                    } else {
+                        showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
+                    }
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
@@ -651,6 +655,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 }
             }
         };
+    }
+
+    private void showDialogVariantPriceLocked(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                .setTitle(getString(R.string.product_price_locked))
+                .setMessage(getString(R.string.product_price_locked_manage_desc))
+                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // no op, just dismiss
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {

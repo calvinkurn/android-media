@@ -71,7 +71,7 @@ public class ProductVariantViewModel implements Parcelable {
         List<ProductVariantOptionChild> productVariantOptionChildList = productVariantOptionParent.getProductVariantOptionChild();
         for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
             ProductVariantOptionChild prevProductVariantOptionChild = productVariantOptionChildList.get(i);
-            if ((productVariantOptionChildToAdd.getVuv()!= 0 &&
+            if ((productVariantOptionChildToAdd.getVuv() != 0 &&
                     prevProductVariantOptionChild.getVuv() == productVariantOptionChildToAdd.getVuv()) ||
                     prevProductVariantOptionChild.getValue().equalsIgnoreCase(productVariantOptionChildToAdd.getValue())) {
                 productVariantOptionChildList.remove(i);
@@ -95,7 +95,8 @@ public class ProductVariantViewModel implements Parcelable {
         return productVariant != null && productVariant.size() > 0;
     }
 
-    public @StockTypeDef int getCalculateProductStatus() {
+    public @StockTypeDef
+    int getCalculateProductStatus() {
         boolean hasAnyAlwaysAvailable = false;
         for (ProductVariantCombinationViewModel productVariantCombinationViewModel : productVariant) {
             // once we get the limited, we assume the status is all limited.
@@ -190,10 +191,10 @@ public class ProductVariantViewModel implements Parcelable {
         }
     }
 
-    public void changePriceTo(double value){
+    public void changePriceTo(double value) {
         if (hasSelectedVariant()) {
             List<ProductVariantCombinationViewModel> combinationViewModelList = productVariant;
-            for (ProductVariantCombinationViewModel combinationViewModel: combinationViewModelList) {
+            for (ProductVariantCombinationViewModel combinationViewModel : combinationViewModelList) {
                 combinationViewModel.setPriceVar(value);
             }
         }
@@ -248,17 +249,29 @@ public class ProductVariantViewModel implements Parcelable {
             return this;
         }
 
+        boolean hasLevel2 = productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild();
+
         // generate the matrix axb based on level 1 and level2.
         // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
         // map is used to lookup if the value1x value2 already exist.
+        ArrayList<Integer> invalidIndexList = new ArrayList<>();
+
         for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
+
             String level1String = productVariantCombinationViewModel.getLevel1String();
 
             List<Integer> integerList = new ArrayList<>();
             Integer indexLevel1;
             if (TextUtils.isEmpty(level1String)) {
                 // using pvo
+                if (productVariantCombinationViewModel.getOpt() == null || productVariantCombinationViewModel.getOpt().size() == 0) {
+                    continue;
+                }
+                if (productVariantCombinationViewModel.getOpt().size() != (hasLevel2 ? 2 : 1)) {
+                    invalidIndexList.add(i);
+                    continue;
+                }
                 indexLevel1 = mapPvoLevel1.get(productVariantCombinationViewModel.getOpt().get(0));
             } else {
                 indexLevel1 = mapLevel1.get(level1String);
@@ -268,7 +281,7 @@ public class ProductVariantViewModel implements Parcelable {
             if (productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild()) {
                 String level2String = productVariantCombinationViewModel.getLevel2String();
                 Integer indexLevel2;
-                if (TextUtils.isEmpty(level1String)) {
+                if (TextUtils.isEmpty(level2String)) {
                     // using pvo
                     indexLevel2 = mapPvoLevel2.get(productVariantCombinationViewModel.getOpt().get(1));
                 } else {
@@ -278,6 +291,15 @@ public class ProductVariantViewModel implements Parcelable {
                 integerList.add(tIdLevel2);
             }
             productVariantCombinationViewModel.setOpt(integerList);
+        }
+
+        //This is to remove invalid index; got from server;
+        if (invalidIndexList.size() > 0) {
+            for (int i = invalidIndexList.size() - 1; i >= 0; i--) {
+                int indexToRemove = invalidIndexList.get(i);
+                productVariantCombinationViewModelList.remove(indexToRemove);
+            }
+            setProductVariant(productVariantCombinationViewModelList);
         }
         return this;
     }

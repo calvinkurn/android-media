@@ -158,6 +158,9 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     public void setProductName(String productName) {
+        if (productName == null) {
+            this.productName = "";
+        }
         this.productName = productName;
     }
 
