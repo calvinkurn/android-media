@@ -12,6 +12,8 @@ import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiSelector;
 import android.support.v4.app.DialogFragment;
 import android.webkit.WebView;
 
@@ -184,12 +186,12 @@ public class LoginActivityTest {
 
         startLoginActivity();
 
-        // click button2
-//        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
+        // click button
         onView(withText("You should car about that"))
                 .perform(scrollTo());
 
-        onView(withText("You should car about that")).perform(click());
+        UiObject threeButton = device.findObject(new UiSelector().text("You should car about that"));
+        threeButton.click();
 
         // necessary to make it wait.
         Thread.sleep(3000);
