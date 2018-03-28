@@ -19,7 +19,9 @@
             android:paddingBottom="@dimen/space_med"
             android:paddingLeft="@dimen/space_med"
             android:paddingRight="@dimen/space_med"
-            android:paddingTop="@dimen/space_sm">
+            android:paddingTop="@dimen/space_sm"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
 
             <TextView
                 android:id="@id/title"
@@ -27,8 +29,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="4sp"
-                android:maxLines="2"
-                android:ellipsize="marquee"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/font_title"
                 android:textStyle="normal"
@@ -53,60 +53,71 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/space_med" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/prof_pict"
-                    android:layout_width="@dimen/groupchat_avatar_size_large"
-                    android:layout_height="@dimen/groupchat_avatar_size_large"
-                    android:layout_marginRight="@dimen/space_small"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/prof_pict"
-                    android:layout_toRightOf="@+id/prof_pict"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/font_micro"
-                    android:textStyle="normal"
-                    tools:text="Darius Sinathrya" />
+                    android:layout_weight="0.7"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/logo_participant"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/prof_pict"
+                        android:layout_width="@dimen/groupchat_avatar_size_large"
+                        android:layout_height="@dimen/groupchat_avatar_size_large"
+                        android:layout_marginEnd="@dimen/space_small"
+                        android:layout_marginRight="@dimen/space_small"
+                        android:layout_gravity="center_vertical"
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="normal"
+                        tools:text="Darius Sinathrya Darius Sinathrya Darius Sinathrya " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/participant"
-                    android:layout_toStartOf="@+id/participant"
-                    app:srcCompat="@drawable/ic_eyes_view" />
+                    android:layout_weight="0.3"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="end"
+                    android:orientation="horizontal">
 
+                    <ImageView
+                        android:id="@+id/logo_participant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/ic_eyes_view" />
 
-                <TextView
-                    android:id="@+id/participant"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/space_mini"
-                    android:layout_marginStart="@dimen/space_mini"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/font_micro"
-                    android:textStyle="normal"
-                    tools:text="2.546.000" />
+                    <TextView
+                        android:id="@+id/participant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_mini"
+                        android:layout_marginStart="@dimen/space_mini"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/black_38"
+                        android:textSize="@dimen/font_micro"
+                        android:textStyle="normal"
+                        tools:text="2.546.000" />
 
-            </RelativeLayout>
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
