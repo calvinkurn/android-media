@@ -3369,4 +3369,13 @@ public class UnifyTracking extends TrackingUtils {
                 keyword + " - " + catalogName
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchResultTabClick(String tabTitle) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_TAB,
+                AppEventTracking.Action.CLICK_TAB,
+                tabTitle
+        ).setUserId().getEvent());
+    }
 }

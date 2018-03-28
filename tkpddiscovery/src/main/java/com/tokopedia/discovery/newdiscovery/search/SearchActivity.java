@@ -219,10 +219,22 @@ public class SearchActivity extends DiscoveryActivity
                     case TAB_THIRD_POSITION:
                         shopListFragment.backToTop();
                         break;
-
-
                 }
+            }
 
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        UnifyTracking.eventSearchResultTabClick(productTabTitle);
+                        break;
+                    case TAB_SECOND_POSITION:
+                        UnifyTracking.eventSearchResultTabClick(catalogTabTitle);
+                        break;
+                    case TAB_THIRD_POSITION:
+                        UnifyTracking.eventSearchResultTabClick(shopTabTitle);
+                        break;
+                }
             }
         });
     }
@@ -259,9 +271,19 @@ public class SearchActivity extends DiscoveryActivity
                     case TAB_SECOND_POSITION:
                         shopListFragment.backToTop();
                         break;
-
                 }
+            }
 
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        UnifyTracking.eventSearchResultTabClick(productTabTitle);
+                        break;
+                    case TAB_SECOND_POSITION:
+                        UnifyTracking.eventSearchResultTabClick(shopTabTitle);
+                        break;
+                }
             }
         });
 

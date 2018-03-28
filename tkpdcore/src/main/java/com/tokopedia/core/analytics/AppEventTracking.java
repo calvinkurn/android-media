@@ -302,6 +302,7 @@ public interface AppEventTracking {
         String APPSHARE = "App share";
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
+        String SEARCH_TAB = "search tab";
     }
 
     interface Action {
@@ -499,6 +500,7 @@ public interface AppEventTracking {
         String CLICK_CHANGE_GRID = "click - ";
         String FAVORITE_SHOP_CLICK = "click - favoritkan";
         String CLICK_CATALOG = "click - catalog";
+        String CLICK_TAB = "click - tab";
     }
 
     interface ImageEditor{
