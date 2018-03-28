@@ -34,6 +34,7 @@ import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.di.component.DaggerPosLoginComponent;
 import com.tokopedia.posapp.auth.login.view.PosLogin;
+import com.tokopedia.posapp.outlet.view.Outlet;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -189,7 +190,8 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onSuccessLogin() {
-
+        startActivity(OutletActivity.newTopIntent(getActivity()));
+        getActivity().finish();
     }
 
     @Override
@@ -268,8 +270,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onSuccessLoginEmail() {
-        startActivity(OutletActivity.newTopIntent(getActivity()));
-        getActivity().finish();
+        onSuccessLogin();
     }
 
     @Override
@@ -301,35 +302,35 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
                     data.getExtras().getString(SmartLockActivity.PASSWORD));
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
             getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
