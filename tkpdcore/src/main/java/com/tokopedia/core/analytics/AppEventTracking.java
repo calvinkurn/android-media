@@ -300,6 +300,7 @@ public interface AppEventTracking {
         String HOME_BOTTOM_NAV = "bottom nav";
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
+        String SEARCH_SHARE = "search share";
     }
 
     interface Action {
@@ -493,6 +494,7 @@ public interface AppEventTracking {
 
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
+        String CLICK_BAR = "click - bar - ";
     }
 
     interface ImageEditor{

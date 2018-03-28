@@ -3332,4 +3332,12 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
+    public static void eventSearchResultShare(String screenName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_SHARE,
+                AppEventTracking.Action.CLICK_BAR + screenName,
+                ""
+        ).setUserId().getEvent());
+    }
 }

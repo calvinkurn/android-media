@@ -240,6 +240,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
+        UnifyTracking.eventSearchResultShare(getScreenName());
+
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
