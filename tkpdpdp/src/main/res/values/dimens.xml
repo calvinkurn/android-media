@@ -193,4 +193,7 @@
 
     <dimen name="width_video_pdp">140dp</dimen>
     <dimen name="height_video_pdp">80dp</dimen>
+
+    <dimen name="icon_stock_width">27dp</dimen>
+    <dimen name="icon_stock_height">21dp</dimen>
 </resources>

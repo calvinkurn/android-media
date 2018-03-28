@@ -50,7 +50,15 @@ public class Child implements Parcelable {
     @SerializedName("campaign")
     @Expose
     private Campaign campaign;
-
+    @SerializedName("stock_wording")
+    @Expose
+    private String stockWording;
+    @SerializedName("is_limited_stock")
+    @Expose
+    private boolean isLimitedStock;
+    @SerializedName("variant_type")
+    @Expose
+    private String variantType;
 
     public int getProductId() {
         return productId;
@@ -175,6 +183,9 @@ public class Child implements Parcelable {
         url = in.readString();
         isWishlist = in.readByte() != 0x00;
         campaign = (Campaign) in.readValue(Campaign.class.getClassLoader());
+        stockWording = in.readString();
+        isLimitedStock = in.readByte() != 0x00;
+        variantType = in.readString();
     }
 
     @Override
@@ -202,6 +213,9 @@ public class Child implements Parcelable {
         dest.writeString(url);
         dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
         dest.writeValue(campaign);
+        dest.writeString(stockWording);
+        dest.writeByte((byte) (isLimitedStock ? 0x01 : 0x00));
+        dest.writeString(variantType);
     }
 
     @SuppressWarnings("unused")
@@ -216,4 +230,28 @@ public class Child implements Parcelable {
             return new Child[size];
         }
     };
+
+    public String getStockWording() {
+        return stockWording;
+    }
+
+    public void setStockWording(String stockWording) {
+        this.stockWording = stockWording;
+    }
+
+    public boolean isLimitedStock() {
+        return isLimitedStock;
+    }
+
+    public void setLimitedStock(boolean limitedStock) {
+        isLimitedStock = limitedStock;
+    }
+
+    public String getVariantType() {
+        return variantType;
+    }
+
+    public void setVariantType(String variantType) {
+        this.variantType = variantType;
+    }
 }
