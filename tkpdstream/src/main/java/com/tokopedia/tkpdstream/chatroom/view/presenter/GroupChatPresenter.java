@@ -106,7 +106,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         getChannelInfoUseCase.unsubscribe();
     }
 
-    public void setHandler(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
-        channelHandlerUseCase.execute(channelUrl, listener);
+    public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
+        channelHandlerUseCase.execute(channelUrl,channelHandlerId, listener);
     }
 }
