@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChannelVotePresenter;
@@ -74,8 +72,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     private static final int REQUEST_LOGIN = 111;
 
+    private View rootView;
     private View loading;
-
     private View voteBar;
     private View voteBody;
     private TextView voteTitle;
@@ -123,7 +121,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_channel_vote, container, false);
+        rootView = inflater.inflate(R.layout.fragment_channel_vote, container, false);
 
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -133,25 +131,28 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
                 FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
 
-        loading = view.findViewById(R.id.loading);
-        voteRecyclerView = view.findViewById(R.id.vote_list);
-        voteBar = view.findViewById(R.id.vote_header);
-        voteBody = view.findViewById(R.id.vote_body);
-        voteTitle = view.findViewById(R.id.vote_title);
-        voteParticipant = view.findViewById(R.id.vote_participant);
-        voteInfoLink = view.findViewById(R.id.vote_info_link);
-        iconVote = view.findViewById(R.id.icon_vote);
-        voteStatus = view.findViewById(R.id.vote_status);
-        votedView = view.findViewById(R.id.layout_voted);
-        progressBarWithTimer = view.findViewById(R.id.timer);
+        loading = rootView.findViewById(R.id.loading);
+        voteRecyclerView = rootView.findViewById(R.id.vote_list);
+        voteBar = rootView.findViewById(R.id.vote_header);
+        voteBody = rootView.findViewById(R.id.vote_body);
+        voteTitle = rootView.findViewById(R.id.vote_title);
+        voteParticipant = rootView.findViewById(R.id.vote_participant);
+        voteInfoLink = rootView.findViewById(R.id.vote_info_link);
+        iconVote = rootView.findViewById(R.id.icon_vote);
+        voteStatus = rootView.findViewById(R.id.vote_status);
+        votedView = rootView.findViewById(R.id.layout_voted);
+        progressBarWithTimer = rootView.findViewById(R.id.timer);
+        progressBarWithTimer.setListener(this);
 
         prepareView();
-        return view;
+        return rootView;
     }
 
     @Override
@@ -197,9 +198,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
     }
 
+    @Override
     public void showVoteLayout(final VoteInfoViewModel model) {
-
         this.voteInfoViewModel = model;
+
+        if (rootView == null || model == null) {
+            return;
+        }
+
         loading.setVisibility(View.GONE);
 
         voteBody.setVisibility(View.VISIBLE);
@@ -217,7 +223,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
-        voteTitle.setText(voteInfoViewModel.getTitle());
+        voteTitle.setText(voteInfoViewModel.getQuestion());
 
         voteAdapter.addList(voteInfoViewModel.getListOption());
 
@@ -340,8 +346,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                     , getActivity().getString(R.string.voter)));
 
 
-            if(getActivity() instanceof GroupChatContract.View){
-                ((GroupChatContract.View)getActivity()).updateVoteViewModel(
+            if (getActivity() instanceof GroupChatContract.View) {
+                ((GroupChatContract.View) getActivity()).updateVoteViewModel(
                         voteInfoViewModel, "");
             }
         }
@@ -374,7 +380,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
             VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
             showVoteLayout(temp);
-            ((GroupChatActivity) getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
         }
     }
 

@@ -41,7 +41,9 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
             mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    tabListener.onTabClicked(getAdapterPosition());
+                    if (getAdapterPosition() < listTab.size()) {
+                        tabListener.onTabClicked(getAdapterPosition());
+                    }
                 }
             });
         }
@@ -80,9 +82,9 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
             holder.highlight.setVisibility(View.INVISIBLE);
         }
 
-        if(listTab.get(position).isUpdated()){
+        if (listTab.get(position).isUpdated()) {
             holder.dot.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.dot.setVisibility(View.GONE);
         }
     }
@@ -108,11 +110,15 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
     }
 
     public void add(int position, TabViewModel tabViewModel) {
-        this.listTab.add(position,tabViewModel);
+        this.listTab.add(position, tabViewModel);
     }
 
     public void remove(int position) {
         this.listTab.remove(position);
+    }
+
+    public TabViewModel getItemAt(int position){
+        return listTab.get(position);
     }
 
 }

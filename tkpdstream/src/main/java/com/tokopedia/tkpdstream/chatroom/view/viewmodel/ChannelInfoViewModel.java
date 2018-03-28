@@ -17,8 +17,8 @@ public class ChannelInfoViewModel implements Parcelable {
     private String title;
     private String channelUrl;
     private String bannerUrl;
-    private boolean hasPoll;
-    private String sponsorUrl;
+    private String blurredBannerUrl;
+    private String adsImageUrl;
     private String adsLink;
     private String bannerName;
     private String sendBirdToken;
@@ -34,16 +34,18 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private GroupChatPointsViewModel groupChatPointsViewModel;
 
-    public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
-                                String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
+    public ChannelInfoViewModel(String channelUrl, String bannerUrl, String blurredBannerUrl,
+                                String title,
+                                String adsImageUrl, String adsLink, String bannerName,
+                                @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken,
                                 @Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
+        this.blurredBannerUrl = blurredBannerUrl;
         this.title = title;
-        this.hasPoll = hasPoll;
-        this.sponsorUrl = sponsorUrl;
+        this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
         this.bannerName = bannerName;
         this.voteInfoViewModel = voteInfoViewModel;
@@ -52,6 +54,18 @@ public class ChannelInfoViewModel implements Parcelable {
         this.sendBirdToken = sendBirdToken;
         this.groupChatPointsViewModel = groupChatPointsViewModel;
     }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
 
     public String getChannelUrl() {
         return channelUrl;
@@ -75,16 +89,8 @@ public class ChannelInfoViewModel implements Parcelable {
         }
     }
 
-    public void setHasPoll(boolean hasPoll) {
-        this.hasPoll = hasPoll;
-    }
-
-    public boolean isHasPoll() {
-        return hasPoll;
-    }
-
-    public String getSponsorUrl() {
-        return sponsorUrl;
+    public String getAdsImageUrl() {
+        return adsImageUrl;
     }
 
     public String getAdsLink() {
@@ -125,6 +131,18 @@ public class ChannelInfoViewModel implements Parcelable {
         return sendBirdToken;
     }
 
+
+    public String getBlurredBannerUrl() {
+        return blurredBannerUrl;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
     @Nullable
     public GroupChatPointsViewModel getGroupChatPointsViewModel() {
         return groupChatPointsViewModel;
@@ -138,8 +156,6 @@ public class ChannelInfoViewModel implements Parcelable {
         title = in.readString();
         channelUrl = in.readString();
         bannerUrl = in.readString();
-        hasPoll = in.readByte() != 0;
-        sponsorUrl = in.readString();
         adsLink = in.readString();
         bannerName = in.readString();
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
@@ -154,31 +170,15 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(title);
         dest.writeString(channelUrl);
         dest.writeString(bannerUrl);
-        dest.writeByte((byte) (hasPoll ? 1 : 0));
-        dest.writeString(sponsorUrl);
+        dest.writeString(blurredBannerUrl);
+        dest.writeString(adsImageUrl);
         dest.writeString(adsLink);
         dest.writeString(bannerName);
+        dest.writeString(sendBirdToken);
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(channelViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
         dest.writeString(sendBirdToken);
         dest.writeParcelable(groupChatPointsViewModel, flags);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel in) {
-            return new ChannelInfoViewModel(in);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
 }

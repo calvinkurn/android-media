@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +60,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
@@ -217,11 +219,19 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         callbackManager = CallbackManager.Factory.create();
+        userSession = ((AbstractionRouter) getApplication()).getSession();
 
         initView();
         initInjector();
         initData();
         initPreference();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_VIEW_MODEL, viewModel);
+        outState.putInt(INITIAL_FRAGMENT, initialFragment);
     }
 
     private void initInjector() {
@@ -276,7 +286,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initData() {
-        userSession = ((AbstractionRouter) getApplication()).getSession();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -393,7 +402,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    //
+
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
         tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -450,10 +459,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             if (fragment == null) {
                 fragment = GroupChatFragment.createInstance(bundle);
+                ((GroupChatFragment) fragment).setChannel(mChannel);
+            } else {
+                ((GroupChatFragment) fragment).setChannel(mChannel);
+                ((GroupChatFragment) fragment).refreshChat();
             }
-            ((GroupChatFragment) fragment).setChannel(mChannel);
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
+
         }
     }
 
@@ -474,7 +487,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         ((ChannelInfoFragmentListener.View) fragment).renderData(
                 viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void showChannelVoteFragment() {
@@ -490,8 +503,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (fragment == null) {
             fragment = ChannelVoteFragment.createInstance(bundle);
         }
+        ((ChannelVoteContract.View) fragment).showVoteLayout(
+                viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void removePaddingStatusBar() {
@@ -641,13 +656,18 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
-        setChannelInfoView(channelInfoViewModel);
-        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
+        Log.d("NISNIS", "onSuccessGetChannelInfo");
+        try {
+            setChannelInfoView(channelInfoViewModel);
+            presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                    userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
-        Intent intent = new Intent();
-        intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
-        setResult(Activity.RESULT_OK, intent);
+            Intent intent = new Intent();
+            intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
+            setResult(Activity.RESULT_OK, intent);
+        } catch (Exception e) {
+            Log.d("NISNIS", "onSuccessGetChannelInfoErr " + e.toString());
+        }
     }
 
     @Override
@@ -706,10 +726,15 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarData(channelInfoViewModel.getTitle(),
                 channelInfoViewModel.getBannerUrl(),
-                channelInfoViewModel.getTotalView());
+                channelInfoViewModel.getTotalView(),
+                channelInfoViewModel.getBlurredBannerUrl());
         setSponsorData();
-        if (channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_ACTIVE
-                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE) {
+
+        if (channelInfoViewModel.getVoteInfoViewModel() != null
+                && (channelInfoViewModel.getVoteInfoViewModel().getStatusId() ==
+                VoteInfoViewModel.STATUS_ACTIVE
+                || channelInfoViewModel.getVoteInfoViewModel().getStatusId() == VoteInfoViewModel
+                .STATUS_FORCE_ACTIVE)) {
             setTooltip();
         }
     }
@@ -740,8 +765,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
             VoteInfoViewModel voteInfoViewModel = viewModel.getChannelInfoViewModel()
                     .getVoteInfoViewModel();
-            return viewModel.getChannelInfoViewModel().isHasPoll()
-                    && voteInfoViewModel.getStartTime() != 0
+            return voteInfoViewModel.getStartTime() != 0
                     && voteInfoViewModel.getEndTime() != 0
                     && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime();
         } else {
@@ -784,9 +808,15 @@ public class GroupChatActivity extends BaseSimpleActivity
         return view;
     }
 
-    private void setToolbarData(String title, String bannerUrl, String totalParticipant) {
+    private void setToolbarData(String title, String bannerUrl, String totalParticipant, String blurredBannerUrl) {
         toolbar.setTitle(title);
-        ImageHandler.loadImageBlur(this, channelBanner, bannerUrl);
+
+        if (TextUtils.isEmpty(blurredBannerUrl)) {
+            ImageHandler.loadImageBlur(this, channelBanner, bannerUrl);
+        } else {
+            ImageHandler.LoadImage(channelBanner, blurredBannerUrl);
+        }
+
         setToolbarParticipantCount(totalParticipant);
         setVisibilityHeader(View.VISIBLE);
 
@@ -798,10 +828,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setSponsorData() {
-        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getSponsorUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
-                    viewModel.getChannelInfoViewModel().getSponsorUrl(),
+                    viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     R.drawable.loading_page);
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -828,6 +858,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("NISNIS", "onResume");
 
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
@@ -840,7 +871,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        if (reconnect) {
+                        if (loading != null
+                                && loading.getVisibility() != View.VISIBLE
+                                && (reconnect
+                                || (viewModel != null && viewModel.getChannelInfoViewModel() != null))) {
                             presenter.refreshChannelInfo(viewModel.getChannelUuid());
                         }
                     }
@@ -848,6 +882,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("NISNIS", "onStart");
+    }
 
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
@@ -940,6 +979,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
+            Log.d("NISNIS", "onSuccessEnterChannel");
             hideLoading();
             mChannel = openChannel;
             setupViewPager();
@@ -955,6 +995,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorEnterChannel(String errorMessage) {
+        Log.d("NISNIS", "onErrorEnterChannel " + errorMessage);
+        hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
             @Override
@@ -1147,8 +1189,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             setTooltip();
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
-            tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
+            tabAdapter.notifyItemChanged(CHANNEL_VOTE_FRAGMENT);
+            showFragment(CHATROOM_FRAGMENT);
         }
 
         if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
@@ -1162,11 +1206,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void moveToVoteFragment() {
-        showFragment(CHANNEL_VOTE_FRAGMENT);
+        if (hasVoteTab()) {
+            showFragment(CHANNEL_VOTE_FRAGMENT);
+        }
     }
 
-    public String getToolbarTitle() {
-        return toolbar.getTitle().toString();
+    private boolean hasVoteTab() {
+        return tabAdapter.getItemCount() > 2
+                && tabAdapter.getItemAt(CHANNEL_VOTE_FRAGMENT).getTitle().equals(getString(R.string
+                .title_vote));
     }
 
     @Override

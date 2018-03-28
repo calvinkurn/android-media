@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.Flashsale;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
@@ -45,24 +46,24 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         return new ChannelInfoViewModel(
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getCoverUrl(),
+                pojo.getChannel().getBannerBlurredUrl(),
                 pojo.getChannel().getTitle(),
-                hasPoll(pojo.getChannel().getActivePolls()),
-                pojo.getChannel().getBannerImageUrl(),
+                pojo.getChannel().getAdsImageUrl(),
                 pojo.getChannel().getAdsLink(),
                 pojo.getChannel().getBannerName(),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()),
-                mapToSprintSaleViewModel(pojo.getChannel()),
+                mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
                 pojo.getChannel().getSendBirdToken(), null);
     }
 
-    private SprintSaleViewModel mapToSprintSaleViewModel(Channel channel) {
+    private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
         if (hasSprintSale()) {
             return new SprintSaleViewModel(
-                    mapToListFlashSaleProducts(),
-                    "Campaign name",
-                    1522049031,
-                    1522221831,
+                    mapToListFlashSaleProducts(flashsale.getProducts()),
+                    flashsale.getCampaignName(),
+                    flashsale.getStartDate(),
+                    flashsale.getEndDate(),
                     "REDIRECT_URL",
                     SprintSaleViewModel.TYPE_UPCOMING
             );
@@ -75,7 +76,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         return true;
     }
 
-    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts() {
+    private ArrayList<SprintSaleProductViewModel> mapToListFlashSaleProducts(List<Object> products) {
         ArrayList<SprintSaleProductViewModel> list = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             list.add(mapToFlashSaleProduct());
