@@ -59,7 +59,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.tokopedia.sellerapp.Utils.ExtraAssertions.isVisible;
 import static com.tokopedia.sellerapp.Utils.nthChildOf;
+import static org.mockito.AdditionalMatchers.not;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -199,7 +201,10 @@ public class LoginActivityTest {
 //                                        5)),
 //                        3));
 
-        loginTextView.perform(scrollTo());
+//        loginTextView.perform(scrollTo());
+
+        onView(withId(R.id.btn_load_more)).perform(click()).check(not(isVisible()));
+
 
         Thread.sleep(3_000);
 
