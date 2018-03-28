@@ -17,7 +17,6 @@ public class ChannelInfoViewModel implements Parcelable {
     private String channelUrl;
     private String bannerUrl;
     private String blurredBannerUrl;
-    private boolean hasPoll;
     private String adsImageUrl;
     private String adsLink;
     private String bannerName;
@@ -32,7 +31,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private SprintSaleViewModel sprintSaleViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String blurredBannerUrl,
-                                String title, boolean hasPoll,
+                                String title,
                                 String adsImageUrl, String adsLink, String bannerName,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
@@ -41,7 +40,6 @@ public class ChannelInfoViewModel implements Parcelable {
         this.bannerUrl = bannerUrl;
         this.blurredBannerUrl = blurredBannerUrl;
         this.title = title;
-        this.hasPoll = hasPoll;
         this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
         this.bannerName = bannerName;
@@ -56,7 +54,6 @@ public class ChannelInfoViewModel implements Parcelable {
         channelUrl = in.readString();
         bannerUrl = in.readString();
         blurredBannerUrl = in.readString();
-        hasPoll = in.readByte() != 0;
         adsImageUrl = in.readString();
         adsLink = in.readString();
         bannerName = in.readString();
@@ -98,14 +95,6 @@ public class ChannelInfoViewModel implements Parcelable {
         if (channelViewModel != null) {
             channelViewModel.setTotalView(totalView);
         }
-    }
-
-    public void setHasPoll(boolean hasPoll) {
-        this.hasPoll = hasPoll;
-    }
-
-    public boolean isHasPoll() {
-        return hasPoll;
     }
 
     public String getAdsImageUrl() {
@@ -166,7 +155,6 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(channelUrl);
         dest.writeString(bannerUrl);
         dest.writeString(blurredBannerUrl);
-        dest.writeByte((byte) (hasPoll ? 1 : 0));
         dest.writeString(adsImageUrl);
         dest.writeString(adsLink);
         dest.writeString(bannerName);

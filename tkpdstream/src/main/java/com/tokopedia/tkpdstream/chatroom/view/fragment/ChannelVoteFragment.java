@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -14,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +53,6 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity.VOTE;
-
 /**
  * @author by StevenFredian on 20/03/18.
  */
@@ -74,8 +70,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     private static final int REQUEST_LOGIN = 111;
 
+    private View rootView;
     private View loading;
-
     private View voteBar;
     private View voteBody;
     private TextView voteTitle;
@@ -123,7 +119,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_channel_vote, container, false);
+        rootView = inflater.inflate(R.layout.fragment_channel_vote, container, false);
 
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -133,45 +129,57 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
                 FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-                BottomSheetBehavior.from(bottomSheet)
-                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
 
-        loading = view.findViewById(R.id.loading);
-        voteRecyclerView = view.findViewById(R.id.vote_list);
-        voteBar = view.findViewById(R.id.vote_header);
-        voteBody = view.findViewById(R.id.vote_body);
-        voteTitle = view.findViewById(R.id.vote_title);
-        voteParticipant = view.findViewById(R.id.vote_participant);
-        voteInfoLink = view.findViewById(R.id.vote_info_link);
-        iconVote = view.findViewById(R.id.icon_vote);
-        voteStatus = view.findViewById(R.id.vote_status);
-        votedView = view.findViewById(R.id.layout_voted);
-        progressBarWithTimer = view.findViewById(R.id.timer);
+        loading = rootView.findViewById(R.id.loading);
+        voteRecyclerView = rootView.findViewById(R.id.vote_list);
+        voteBar = rootView.findViewById(R.id.vote_header);
+        voteBody = rootView.findViewById(R.id.vote_body);
+        voteTitle = rootView.findViewById(R.id.vote_title);
+        voteParticipant = rootView.findViewById(R.id.vote_participant);
+        voteInfoLink = rootView.findViewById(R.id.vote_info_link);
+        iconVote = rootView.findViewById(R.id.icon_vote);
+        voteStatus = rootView.findViewById(R.id.vote_status);
+        votedView = rootView.findViewById(R.id.layout_voted);
+        progressBarWithTimer = rootView.findViewById(R.id.timer);
 
-        KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
         prepareView();
-        return view;
+        return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        progressBarWithTimer.setListener(this);
-        Parcelable temp = getArguments().getParcelable(VOTE);
-        showVoteLayout((VoteInfoViewModel) temp);
+    public void onResume() {
+        super.onResume();
+        KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
+        if (progressBarWithTimer != null) {
+            progressBarWithTimer.setListener(this);
+        }
     }
-
 
     private void prepareView() {
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
         voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
     }
 
-    public void showVoteLayout(final VoteInfoViewModel model) {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showVoteLayout(voteInfoViewModel);
+    }
 
+    @Override
+    public void showVoteLayout(final VoteInfoViewModel model) {
         this.voteInfoViewModel = model;
+
+        if (rootView == null || model == null) {
+            return;
+        }
+
         loading.setVisibility(View.GONE);
 
         voteBody.setVisibility(View.VISIBLE);
@@ -189,7 +197,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
-        voteTitle.setText(voteInfoViewModel.getTitle());
+        voteTitle.setText(voteInfoViewModel.getQuestion());
 
         voteAdapter.addList(voteInfoViewModel.getListOption());
 
@@ -312,8 +320,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                     , getActivity().getString(R.string.voter)));
 
 
-            if(getActivity() instanceof GroupChatContract.View){
-                ((GroupChatContract.View)getActivity()).updateVoteViewModel(
+            if (getActivity() instanceof GroupChatContract.View) {
+                ((GroupChatContract.View) getActivity()).updateVoteViewModel(
                         voteInfoViewModel, "");
             }
         }

@@ -60,6 +60,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
+import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.preference.NotificationPreference;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
@@ -492,6 +493,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (fragment == null) {
             fragment = ChannelVoteFragment.createInstance(bundle);
         }
+        ((ChannelVoteContract.View) fragment).showVoteLayout(
+                viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -753,8 +756,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
             VoteInfoViewModel voteInfoViewModel = viewModel.getChannelInfoViewModel()
                     .getVoteInfoViewModel();
-            return viewModel.getChannelInfoViewModel().isHasPoll()
-                    && voteInfoViewModel.getStartTime() != 0
+            return voteInfoViewModel.getStartTime() != 0
                     && voteInfoViewModel.getEndTime() != 0
                     && voteInfoViewModel.getStartTime() < voteInfoViewModel.getEndTime();
         } else {
