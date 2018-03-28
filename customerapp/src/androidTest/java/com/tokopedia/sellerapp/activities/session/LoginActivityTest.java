@@ -279,7 +279,9 @@ public class LoginActivityTest {
     @After
     public void tearDown() throws Exception {
         RxJavaTestPlugins.resetJavaTestPlugins();
-        unregisterIdlingResources(webViewIdlingResource);
+        if(webViewIdlingResource!=null)
+            unregisterIdlingResources(webViewIdlingResource);
+
         Intents.release();
         server.shutdown();
         server2.shutdown();
