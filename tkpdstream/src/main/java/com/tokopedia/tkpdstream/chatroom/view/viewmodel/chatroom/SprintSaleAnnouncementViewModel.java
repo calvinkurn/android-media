@@ -14,25 +14,25 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
     public static final String SPRINT_SALE = "flashsale_add";
     private ArrayList<SprintSaleProductViewModel> listProducts;
     private String redirectUrl;
-    private boolean isActive;
     private String campaignName;
     private long startDate;
     private long endDate;
+    private String sprintSaleType;
 
     public SprintSaleAnnouncementViewModel(long createdAt, long updatedAt, String messageId,
                                            String senderId, String senderName, String senderIconUrl,
                                            boolean isInfluencer, boolean isAdministrator, String redirectUrl,
-                                           ArrayList<SprintSaleProductViewModel> listProducts, boolean isActive,
+                                           ArrayList<SprintSaleProductViewModel> listProducts,
                                            String campaignName, long startDate, long endDate,
-                                           boolean canVibrate) {
+                                           String sprintSaleType, boolean canVibrate) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
                 isInfluencer, isAdministrator, canVibrate);
         this.redirectUrl = redirectUrl;
         this.listProducts = listProducts;
-        this.isActive = isActive;
         this.campaignName = campaignName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.sprintSaleType = sprintSaleType;
     }
 
     @Override
@@ -48,10 +48,6 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
         return listProducts;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
     public String getCampaignName() {
         return campaignName;
     }
@@ -62,5 +58,9 @@ public class SprintSaleAnnouncementViewModel extends BaseChatViewModel implement
 
     public long getEndDate() {
         return endDate;
+    }
+
+    public String getSprintSaleType() {
+        return sprintSaleType;
     }
 }

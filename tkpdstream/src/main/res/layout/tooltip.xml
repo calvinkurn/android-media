@@ -6,6 +6,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TOOLTIP"/>
+        android:text="@string/vote_on_running"
+        android:textColor="@color/medium_green"
+        android:background="@drawable/combined_shape"
+        android:paddingTop="@dimen/space_med"
+        android:paddingRight="@dimen/space_average"
+        android:paddingLeft="@dimen/space_average"
+        android:paddingBottom="@dimen/space_average"
+        android:textSize="@dimen/font_micro"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"/>
 
 </android.support.constraint.ConstraintLayout>

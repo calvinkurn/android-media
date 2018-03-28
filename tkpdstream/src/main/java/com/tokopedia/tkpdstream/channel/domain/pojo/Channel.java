@@ -48,6 +48,9 @@ public class Channel {
     @SerializedName("moderator_thumb_url")
     @Expose
     private String moderatorThumbUrl;
+    @SerializedName("sendbird_access_token")
+    @Expose
+    private String sendBirdToken;
 
     public int getChannelId() {
         return channelId;
@@ -161,4 +164,7 @@ public class Channel {
         this.moderatorThumbUrl = moderatorThumbUrl;
     }
 
+    public String getSendBirdToken() {
+        return sendBirdToken;
+    }
 }

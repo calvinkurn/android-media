@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -22,11 +21,13 @@ import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.chatroom.ChannelPartnerAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.listener.ChannelInfoFragmentListener;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
 import com.tokopedia.tkpdstream.common.util.TextFormatter;
+
+import javax.inject.Inject;
 
 /**
  * @author by milhamj on 20/03/18.
@@ -35,6 +36,10 @@ import com.tokopedia.tkpdstream.common.util.TextFormatter;
 public class ChannelInfoFragment extends BaseDaggerFragment
         implements ChannelInfoFragmentListener.View,
         ChannelInfoFragmentListener.View.ChannelPartnerViewHolderListener {
+
+    @Inject
+    StreamAnalytics analytics;
+
     public static final String ARGS_CI_VIEW_MODEL = "CI_VIEW_MODEL";
 
     private ChannelViewModel channelViewModel;
@@ -44,7 +49,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private TextView title;
     private TextView subtitle;
     private TextView name;
-    private TextView participant;
+    private TextView totalView;
     private RecyclerView channelPartners;
 
     public static Fragment createInstance(Bundle bundle) {
@@ -111,21 +116,13 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void channelPartnerClicked(String url) {
+    public void channelPartnerClicked(String url, String partnerName) {
+        ((GroupChatContract.View) getActivity()).eventClickComponent(StreamAnalytics
+                .COMPONENT_PARTNER, partnerName, StreamAnalytics.ATTRIBUTE_PARTNER_LOGO);
+
         StreamModuleRouter router = ((StreamModuleRouter) getActivity().getApplicationContext());
-        router.openRedirectUrl(getActivity(), url);
-    }
-
-    @Override
-    public void onMessageReceived(Visitable map) {
-        if (map instanceof SprintSaleAnnouncementViewModel) {
-            //showSprintSale();
-        }
-    }
-
-    @Override
-    public void showSprintSale(SprintSaleViewModel sprintSaleViewModel) {
-//TODO SHOW SPRINTSALE ICON
+        router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity()).generateAttributeApplink(url,
+                StreamAnalytics.ATTRIBUTE_PARTNER_LOGO));
     }
 
     private void initView(View view) {
@@ -134,7 +131,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
-        participant = view.findViewById(R.id.participant);
+        totalView = view.findViewById(R.id.participant);
         channelPartners = view.findViewById(R.id.channel_partners);
     }
 
@@ -146,7 +143,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
             return;
         }
 
-        participant.setText(TextFormatter.format(String.valueOf(channelViewModel.getParticipant())));
+        totalView.setText(TextFormatter.format(String.valueOf(channelViewModel.getTotalView())));
         name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
         subtitle.setText(channelViewModel.getDescription());

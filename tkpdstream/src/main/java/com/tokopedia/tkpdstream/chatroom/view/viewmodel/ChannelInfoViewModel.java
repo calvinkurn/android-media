@@ -20,6 +20,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String sponsorUrl;
     private String adsLink;
     private String bannerName;
+    private String sendBirdToken;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -32,7 +33,7 @@ public class ChannelInfoViewModel implements Parcelable {
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
                                 String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
-                                @Nullable SprintSaleViewModel sprintSaleViewModel) {
+                                @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
@@ -43,6 +44,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.voteInfoViewModel = voteInfoViewModel;
         this.channelViewModel = channelViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
+        this.sendBirdToken = sendBirdToken;
     }
 
     public String getChannelUrl() {
@@ -57,13 +59,13 @@ public class ChannelInfoViewModel implements Parcelable {
         return title;
     }
 
-    public String getTotalParticipantsOnline() {
-        return channelViewModel != null ? channelViewModel.getParticipant() : "0";
+    public String getTotalView() {
+        return channelViewModel != null ? channelViewModel.getTotalView() : "0";
     }
 
-    public void setTotalParticipant(String totalParticipant) {
+    public void setTotalView(String totalView) {
         if (channelViewModel != null) {
-            channelViewModel.setParticipant(totalParticipant);
+            channelViewModel.setTotalView(totalView);
         }
     }
 
@@ -113,6 +115,10 @@ public class ChannelInfoViewModel implements Parcelable {
         this.sprintSaleViewModel = sprintSaleViewModel;
     }
 
+    public String getSendBirdToken() {
+        return sendBirdToken;
+    }
+
     protected ChannelInfoViewModel(Parcel in) {
         title = in.readString();
         channelUrl = in.readString();
@@ -124,6 +130,7 @@ public class ChannelInfoViewModel implements Parcelable {
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        sendBirdToken = in.readString();
     }
 
     @Override
@@ -138,6 +145,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(channelViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
+        dest.writeString(sendBirdToken);
     }
 
     @Override

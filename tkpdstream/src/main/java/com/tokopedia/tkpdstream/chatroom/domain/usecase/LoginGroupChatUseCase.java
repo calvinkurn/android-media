@@ -1,11 +1,13 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
+import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import javax.inject.Inject;
@@ -31,11 +33,12 @@ public class LoginGroupChatUseCase {
     }
 
     public void execute(final Context context, final String channelUrl,
-                        String userId,
-                        final String userName, final String userAvatar,
-                        final LoginGroupChatListener listener) {
-
-        SendBird.connect(userId, new SendBird.ConnectHandler() {
+                        String userId, final String userName, final String userAvatar,
+                        final LoginGroupChatListener listener, String sendBirdToken) {
+        if(TextUtils.isEmpty(userId)){
+            userId = context.getString(R.string.anonymous);
+        }
+        SendBird.connect(userId, sendBirdToken, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
                 if (e != null) {

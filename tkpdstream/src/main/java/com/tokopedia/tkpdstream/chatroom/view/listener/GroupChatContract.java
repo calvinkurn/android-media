@@ -49,7 +49,9 @@ public interface GroupChatContract {
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
 
-        void showChannelVoteFragment();
+        void vibratePhone();
+
+        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
@@ -60,6 +62,8 @@ public interface GroupChatContract {
 
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                           LoginGroupChatUseCase.LoginGroupChatListener
-                                  loginGroupChatListener);
+                                  loginGroupChatListener, String sendBirdToken);
+
+        void refreshChannelInfo(String channelUuid);
     }
 }

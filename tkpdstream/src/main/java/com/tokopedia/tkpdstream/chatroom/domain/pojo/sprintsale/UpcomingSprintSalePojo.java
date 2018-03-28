@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class UpcomingSprintSalePojo {
 
-    @SerializedName("upcoming_flashsale")
+    @SerializedName("flashsale")
     @Expose
     private UpcomingFlashsale upcomingFlashsale;
 

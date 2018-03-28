@@ -52,7 +52,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getBannerName(),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()),
-                mapToSprintSaleViewModel(pojo.getChannel()));
+                mapToSprintSaleViewModel(pojo.getChannel()),
+                pojo.getChannel().getSendBirdToken());
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Channel channel) {
@@ -60,9 +61,10 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
             return new SprintSaleViewModel(
                     mapToListFlashSaleProducts(),
                     "Campaign name",
-                    0,
-                    0,
-                    "REDIRECT_URL"
+                    1522049031,
+                    1522221831,
+                    "REDIRECT_URL",
+                    SprintSaleViewModel.TYPE_UPCOMING
             );
         } else {
             return null;
@@ -89,7 +91,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 "Rp 300.000",
                 "Rp.500.000",
                 80,
-                "Sudah mau habis");
+                "Sudah mau habis",
+                "tokopedia://product/29379650");
     }
 
 

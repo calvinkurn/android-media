@@ -62,7 +62,7 @@ public interface ChatroomContract {
 
         void setReplyTextHint();
 
-        void showSprintSale(SprintSaleViewModel sprintSaleViewModel);
+        void showSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
 
@@ -75,7 +75,7 @@ public interface ChatroomContract {
         }
 
         interface SprintSaleViewHolderListener {
-            void onFlashSaleClicked(String url, String campaignName);
+            void onSprintSaleClicked(String url, String campaignName);
         }
     }
 
