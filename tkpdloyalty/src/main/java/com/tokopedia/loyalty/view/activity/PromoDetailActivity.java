@@ -63,9 +63,9 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.REFERRAL_TYPE)
                 .setId(promoData.getId())
-                .setName(this.getString(com.tokopedia.core.R.string.app_share_title))
-                .setTextContent(promoData.getTitle())
-                .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setName(promoData.getTitle())
+                .setTextContent(promoData.getTitle() + " | Tokopedia")
+                .setUri(promoData.getPromoLink())
                 .build();
         this.startActivity(ShareActivity.createIntent(this, shareData));
     }
