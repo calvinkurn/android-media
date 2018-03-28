@@ -54,6 +54,7 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -192,7 +193,7 @@ public class LoginActivityTest {
         onView(withText("You should car about that"))
                 .perform(scrollTo());
 
-        onView(allOf(withId(R.id.provider_name), nthChildOf(withId(R.id.login_buttons_container), 3)))
+        onView(allOf(withId(R.id.provider_name), isDescendantOfA(nthChildOf(withId(R.id.login_buttons_container), 3))))
                 .check(matches(withText("You should car about that")));
 
         onView(nthChildOf(withId(R.id.login_buttons_container), 3)).perform(click());
