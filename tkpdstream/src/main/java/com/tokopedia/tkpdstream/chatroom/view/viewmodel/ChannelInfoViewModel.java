@@ -18,6 +18,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String title;
     private String channelUrl;
     private String bannerUrl;
+    private String blurredBannerUrl;
     private boolean hasPoll;
     private String adsImageUrl;
     private String adsLink;
@@ -37,16 +38,18 @@ public class ChannelInfoViewModel implements Parcelable {
     private SprintSaleViewModel sprintSaleViewModel;
 
     public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
-                                boolean hasPoll, String adsImageUrl, String adsLink,
-                                String bannerName, String sendBirdToken, String adminName,
-                                String image, String adminPicture, String description,
-                                String totalView,
+                                String blurredBannerUrl, boolean hasPoll, String adsImageUrl,
+                                String adsLink, String bannerName, String sendBirdToken,
+                                String adminName, String image, String adminPicture,
+                                String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel) {
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
+        this.blurredBannerUrl = blurredBannerUrl;
+        this.title = title;
         this.hasPoll = hasPoll;
         this.adsImageUrl = adsImageUrl;
         this.adsLink = adsLink;
@@ -68,6 +71,10 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public String getBannerUrl() {
         return bannerUrl;
+    }
+
+    public String getBlurredBannerUrl() {
+        return blurredBannerUrl;
     }
 
     public String getTitle() {
@@ -150,6 +157,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.channelUrl);
         dest.writeString(this.bannerUrl);
+        dest.writeString(this.blurredBannerUrl);
         dest.writeByte(this.hasPoll ? (byte) 1 : (byte) 0);
         dest.writeString(this.adsImageUrl);
         dest.writeString(this.adsLink);
@@ -169,6 +177,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.title = in.readString();
         this.channelUrl = in.readString();
         this.bannerUrl = in.readString();
+        this.blurredBannerUrl = in.readString();
         this.hasPoll = in.readByte() != 0;
         this.adsImageUrl = in.readString();
         this.adsLink = in.readString();
