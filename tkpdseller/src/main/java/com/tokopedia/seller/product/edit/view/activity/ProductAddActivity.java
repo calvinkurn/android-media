@@ -331,7 +331,9 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
     @Override
     protected void onPause() {
         dismissDialog();
-        compositeSubscription.unsubscribe();
+        if (compositeSubscription!= null) {
+            compositeSubscription.unsubscribe();
+        }
         super.onPause();
     }
 }
