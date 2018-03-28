@@ -60,6 +60,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.sellerapp.Utils.nthChildOf;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.core.Is.is;
 
 /**
@@ -191,7 +192,8 @@ public class LoginActivityTest {
         onView(withText("You should car about that"))
                 .perform(scrollTo());
 
-        onView(nthChildOf(withId(R.id.login_buttons_container), 3)).check(matches(withText("You should car about that")));
+        onView(allOf(withId(R.id.provider_name), nthChildOf(withId(R.id.login_buttons_container), 3)))
+                .check(matches(withText("You should car about that")));
 
         onView(nthChildOf(withId(R.id.login_buttons_container), 3)).perform(click());
 
