@@ -23,6 +23,8 @@ public interface StreamModuleRouter {
             shareUrl, Activity activity, final ShareListener
                                     listener);
 
+    String getNotificationPreferenceConstant();
+
     public interface ShareListener {
         void onGenerateLink(String shareContents, String shareUri);
     }
