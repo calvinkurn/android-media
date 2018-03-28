@@ -55,7 +55,9 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -183,9 +185,10 @@ public class LoginActivityTest {
         startEmptyIntentLoginActivity();
 
         // click button2
-        onView(withText("You should car about that"))
-                .perform(scrollTo(), click());
-        onView(withText("You should car about that")).perform(click());
+        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
+//        onView(withText("You should car about that"))
+//                .perform(scrollTo(), click());
+//        onView(withText("You should car about that")).perform(click());
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview = dialog.getView().findViewById(R.id.web_oauth);

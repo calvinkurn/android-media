@@ -503,6 +503,7 @@ public class LoginFragment extends BaseDaggerFragment
         for (int i = 0; i < listProvider.size(); i++) {
             int colorInt = Color.parseColor(COLOR_WHITE);
             LoginTextView tv = new LoginTextView(getActivity(), colorInt);
+            tv.setTag(listProvider.get(i).getId());
             tv.setText(listProvider.get(i).getName());
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());
