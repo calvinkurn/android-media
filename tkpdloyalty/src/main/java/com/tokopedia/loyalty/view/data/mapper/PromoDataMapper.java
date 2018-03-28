@@ -23,9 +23,6 @@ public class PromoDataMapper {
     }
 
     public List<Object> convert(PromoData promoData) {
-        // TODO for testing purpose only
-        promoData.setPromoCodeList(getPromoCodeList());
-
         List<Object> promoDetailData = new ArrayList<>();
 
         promoDetailData.add(convertToPromoDetailInfoHolderData(promoData));
