@@ -26,10 +26,7 @@ public class ChangeNameMapper implements Func1<Response<TkpdResponse>, ChangeNam
     @Override
     public ChangeNameViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (response.body().getErrorMessages() != null
-                    && !response.body().getErrorMessages().isEmpty()) {
-                throw new ErrorMessageException(response.body().getErrorMessageJoined());
-            } else if ((!response.body().isNullData()
+            if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
@@ -37,7 +34,12 @@ public class ChangeNameMapper implements Func1<Response<TkpdResponse>, ChangeNam
                         .class);
                 return mappingToViewModel(pojo);
             } else {
-                throw new ErrorMessageException("");
+                if (response.body().getErrorMessages() != null
+                        && !response.body().getErrorMessages().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
