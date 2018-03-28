@@ -264,6 +264,7 @@ dependencies {
     compile project(':tkpdstream')
     compile project(rootProject.ext.libraries.reactNative)
     compile project(rootProject.ext.features.content)
+    compile project(rootProject.ext.features.gamification)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

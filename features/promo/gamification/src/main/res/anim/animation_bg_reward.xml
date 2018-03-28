@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:fillAfter="true">
+
+    <scale
+        android:fromXScale="0.0"
+        android:toXScale="@fraction/to_x_scale_bg_reward_anim"
+        android:fromYScale="0.0"
+        android:toYScale="@fraction/to_y_scale_bg_reward_anim"
+        android:pivotX="50%"
+        android:pivotY="50%" />
+
+    <translate
+        android:fromYDelta="0"
+        android:toYDelta="@integer/reward_translate_y_axis" />
+
+</set>
