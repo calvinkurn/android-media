@@ -36,6 +36,7 @@ import javax.inject.Inject;
 public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View {
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
 
     public static final int TAB_SHOP_CATALOG= 1;
     public static final int TAB_PRODUCT = 0;
@@ -43,6 +44,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private String departmentId;
     private String categoryName;
     private String categoryUrl;
+    private String trackerAttribution;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -56,11 +58,12 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private CategoryComponent categoryComponent;
 
-    public static void moveTo(Context context, String departmentId, String categoryName, boolean removeAnimation) {
+    public static void moveTo(Context context, String departmentId, String categoryName, boolean removeAnimation, String trackerAttribution) {
         if (context != null) {
             Intent intent = new Intent(context, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+            intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -77,11 +80,14 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         }
     }
 
-    public static void moveTo(Context context, CategoryHeaderModel categoryHeaderModel,
-                              boolean removeAnimation) {
+    public static void moveTo(Context context,
+                              CategoryHeaderModel categoryHeaderModel,
+                              boolean removeAnimation,
+                              String trackerAttribution) {
         if (context != null) {
             Intent intent = new Intent(context, CategoryActivity.class);
             intent.putExtra(EXTRA_CATEGORY_HEADER_VIEW_MODEL, categoryHeaderModel);
+            intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -155,16 +161,19 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         Bundle bundle = getIntent().getExtras();
         if (bundle.getParcelable(EXTRA_CATEGORY_HEADER_VIEW_MODEL)!=null) {
             CategoryHeaderModel categoryHeaderModel = bundle.getParcelable(EXTRA_CATEGORY_HEADER_VIEW_MODEL);
+            trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             departmentId = categoryHeaderModel.getDepartementId();
             categoryName = categoryHeaderModel.getHeaderModel().getCategoryName();
             categoryPresenter.getCategoryPage1(categoryHeaderModel);
         } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.DEPARTMENT_ID))){
+            trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             departmentId = bundle.getString(BrowseProductRouter.DEPARTMENT_ID);
             if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.DEPARTMENT_NAME))) {
                 categoryName = bundle.getString(BrowseProductRouter.DEPARTMENT_NAME);
             }
             categoryPresenter.getCategoryHeader(departmentId,new HashMap<String, String>());
         } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL))){
+            trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             categoryUrl = bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL);
             URLParser urlParser = new URLParser(categoryUrl);
             departmentId = urlParser.getDepIDfromURI(CategoryActivity.this);
@@ -177,10 +186,11 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     public void prepareFragment(ProductViewModel productViewModel) {
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
         if (!TextUtils.isEmpty(categoryUrl)) {
-            productFragment = ProductFragment.newInstance(productViewModel,categoryUrl);
+            productFragment = ProductFragment.newInstance(productViewModel, categoryUrl, trackerAttribution);
         } else {
-            productFragment = ProductFragment.newInstance(productViewModel);
+            productFragment = ProductFragment.newInstance(productViewModel, trackerAttribution);
         }
+
         if (productViewModel.isHasCatalog()) {
             catalogFragment = getCatalogFragment(
                     productViewModel.getCategoryHeaderModel().getDepartementId());
@@ -234,7 +244,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     }
 
     private Fragment getProductFragment(ProductViewModel productViewModel) {
-        return ProductFragment.newInstance(productViewModel);
+        return ProductFragment.newInstance(productViewModel, trackerAttribution);
     }
     protected void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);

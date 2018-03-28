@@ -493,7 +493,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                     getActivity(),
                     departmentId,
                     ((IntermediaryActivity) getActivity()).getCategoryName(),
-                    true
+                    true,
+                    trackerAttribution
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -506,7 +507,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             CategoryActivity.moveTo(
                     getActivity(),
                     CategoryHeaderModel.convertIntermediaryToCategoryHeader(categoryHadesModel),
-                    true
+                    true,
+                    trackerAttribution
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -568,7 +570,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 getActivity(),
                 departmentId,
                 ((IntermediaryActivity) getActivity()).getCategoryName(),
-                true
+                true,
+                ""
         );
         getActivity().finish();
     }

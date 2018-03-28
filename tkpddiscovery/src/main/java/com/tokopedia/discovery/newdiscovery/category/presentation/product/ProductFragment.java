@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,8 +13,11 @@ import android.view.ViewGroup;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -60,6 +62,8 @@ import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -78,8 +82,11 @@ public class ProductFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+    private static final String ARGS_TRACKER_ATTRIBUTION = "ARGS_TRACKER_ATTRIBUTION";
     private static final String ARG_URL = "ARG_URL";
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+    private static final String CATEGORY_ENHANCE_ANALYTIC = "CATEGORY_ENHANCE_ANALYTIC";
 
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout refreshLayout;
@@ -92,21 +99,26 @@ public class ProductFragment extends SearchSectionFragment
     private CategoryProductListAdapter adapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
+    private String trackerAttribution;
 
     private boolean isLoadingData;
 
-    public static ProductFragment newInstance(ProductViewModel productViewModel) {
+    private LocalCacheHandler trackerProductCache;
+
+    public static ProductFragment newInstance(ProductViewModel productViewModel, String trackerAttribution) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
+        args.putString(ARGS_TRACKER_ATTRIBUTION, trackerAttribution);
         ProductFragment productListFragment = new ProductFragment();
         productListFragment.setArguments(args);
         return productListFragment;
     }
 
-    public static ProductFragment newInstance(ProductViewModel productViewModel, String categoryUrl) {
+    public static ProductFragment newInstance(ProductViewModel productViewModel, String categoryUrl, String trackerAttribution) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
         args.putString(ARG_URL,categoryUrl);
+        args.putString(ARGS_TRACKER_ATTRIBUTION, trackerAttribution);
         ProductFragment productListFragment = new ProductFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -122,6 +134,8 @@ public class ProductFragment extends SearchSectionFragment
         }
         sessionHandler = new SessionHandler(getContext());
         gcmHandler = new GCMHandler(getContext());
+        trackerProductCache = new LocalCacheHandler(getActivity(), CATEGORY_ENHANCE_ANALYTIC);
+        clearLastProductTracker(true);
     }
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
@@ -130,6 +144,7 @@ public class ProductFragment extends SearchSectionFragment
 
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
+        trackerAttribution = getArguments().getString(ARGS_TRACKER_ATTRIBUTION, "none / other");
         if (!TextUtils.isEmpty(getArguments().getString(ARG_URL))) {
             URLParser urlParser = new URLParser(getArguments().getString(ARG_URL));
             setSelectedFilter(urlParser.getParamKeyValueMap());
@@ -196,6 +211,10 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     private void setupAdapter() {
+        if (productViewModel.getProductList() != null && !productViewModel.getProductList().isEmpty()) {
+            productViewModel.setProductList(mappingTrackerProduct(productViewModel.getProductList(), 1));
+            trackEnhanceProduct(createImpressionProductDataLayer(productViewModel.getProductList()));
+        }
         adapter = new CategoryProductListAdapter(this,
                 productViewModel.getCategoryHeaderModel(),
                 productViewModel.getProductList(),
@@ -221,6 +240,85 @@ public class ProductFragment extends SearchSectionFragment
         } else {
             showBottomBarNavigation(true);
         }
+    }
+
+    @Override
+    public void trackEnhanceProduct(Map<String, Object> dataLayer) {
+        CategoryPageTracking.eventEnhance(dataLayer);
+    }
+
+    @Override
+    public List<ProductItem> mappingTrackerProduct(List<ProductItem> productList, int page) {
+        int lastPositionProduct = getLastPositionProductTracker();
+        for (int i = 0; i < productList.size(); i++) {
+            lastPositionProduct++;
+            ProductItem item = productList.get(i);
+            item.setTrackerName(String.format(
+                    Locale.getDefault(),
+                    "/category/%s - product %d",
+                    productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName(),
+                    page)
+            );
+            item.setTrackerPosition(String.valueOf(lastPositionProduct));
+            item.setHomeAttribution(trackerAttribution);
+            productList.set(i, item);
+        }
+        return productList;
+    }
+
+    @Override
+    public void clearLastProductTracker(boolean clear) {
+        if (clear) {
+            LocalCacheHandler.clearCache(getActivity(), CATEGORY_ENHANCE_ANALYTIC);
+        }
+    }
+
+    @Override
+    public int getLastPositionProductTracker() {
+        return trackerProductCache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
+    }
+
+    @Override
+    public void setLastPositionProductTracker(int lastPositionProductTracker) {
+        trackerProductCache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastPositionProductTracker);
+        trackerProductCache.applyEditor();
+    }
+
+    @Override
+    public Map<String, Object> createImpressionProductDataLayer(List<ProductItem> productList) {
+        List<Map<String, Object>> productListDataLayer = new ArrayList<>();
+        for (ProductItem model : productList) {
+            productListDataLayer.add(model.generateImpressionDataLayer());
+        }
+        return DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "category page",
+                "eventAction", "product list impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                productListDataLayer.toArray(new Object[productListDataLayer.size()])
+
+                        ))
+        );
+    }
+
+    public Map<String, Object> createClickProductDataLayer(Map<String, Object> productMap, String trackerName) {
+        return DataLayer.mapOf("event", "productClick",
+                "eventCategory", "hotlist page",
+                "eventAction", "click product curation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", trackerName),
+                                "products", DataLayer.listOf(
+                                        productMap
+                                )
+                        )
+                )
+        );
     }
 
     private void setupListener() {
@@ -259,12 +357,16 @@ public class ProductFragment extends SearchSectionFragment
         presenter.loadMore(searchParameter, new ProductPresenter.LoadMoreListener() {
             @Override
             public void onSuccess(List<ProductItem> productItemList) {
+                int page = (startRow / 12) + 1;
+                clearLastProductTracker(page == 1);
                 if (productItemList.isEmpty()) {
                     unSetTopAdsEndlessListener();
                     showBottomBarNavigation(false);
                 } else {
+                    List<ProductItem> resultMapper = mappingTrackerProduct(productItemList, page);
+                    trackEnhanceProduct(createImpressionProductDataLayer(resultMapper));
                     List<Visitable> list = new ArrayList<Visitable>();
-                    list.addAll(productItemList);
+                    list.addAll(resultMapper);
                     setProductList(list);
                     showBottomBarNavigation(true);
                 }
@@ -397,6 +499,7 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
+        trackEnhanceProduct(createClickProductDataLayer(item.generateClickDataLayer(), item.getTrackerName()));
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());
         data.setName(item.getProductName());
@@ -585,7 +688,8 @@ public class ProductFragment extends SearchSectionFragment
                 getActivity(),
                 child.getCategoryId(),
                 child.getCategoryName(),
-                true
+                true,
+                ""
         );
     }
 
@@ -597,7 +701,8 @@ public class ProductFragment extends SearchSectionFragment
                 getActivity(),
                 child.getCategoryId(),
                 child.getCategoryName(),
-                true
+                true,
+                ""
         );
     }
 
