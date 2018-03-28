@@ -193,12 +193,9 @@ public class LoginActivityTest {
         startLoginActivity();
 
         ViewInteraction loginTextView = onView(
-                nthChildOf(
-                        Matchers.allOf(withId(R.id.login_buttons_container),
-                                nthChildOf(
-                                        withClassName(Matchers.is("android.widget.LinearLayout")),
-                                        2)),
-                        2));
+                                    nthChildOf(
+                                        withId(R.id.login_buttons_container),
+                                        3));
 
         loginTextView.perform(scrollTo(), click());
 
