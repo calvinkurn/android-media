@@ -10,9 +10,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
-import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,9 +18,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 
 /**
@@ -33,16 +31,14 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_activity_card;
 
-    View container;
-    TextView title;
-    View header;
-    ImageView shopAvatar;
-    ImageView gmBadge;
-    ImageView osBadge;
-    TextView time;
-    View shareButton;
-    View buyButton;
-    RecyclerView recyclerView;
+    private TextView title;
+    private View header;
+    private ImageView shopAvatar;
+    private ImageView gmBadge;
+    private ImageView osBadge;
+    private TextView time;
+    private View shareButton;
+    private View buyButton;
 
     private final static String ADD_STRING = "tambah";
     private final static String EDIT_STRING = "ubah";
@@ -53,15 +49,14 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         super(itemView);
 
         header = itemView.findViewById(R.id.header);
-        title = (TextView) itemView.findViewById(R.id.title);
-        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
-        time = (TextView) itemView.findViewById(R.id.time);
+        title = itemView.findViewById(R.id.title);
+        shopAvatar = itemView.findViewById(R.id.shop_avatar);
+        time = itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
         buyButton = itemView.findViewById(R.id.buy_button);
-        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
-        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
-        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
-        container = itemView.findViewById(R.id.container);
+        gmBadge = itemView.findViewById(R.id.gold_merchant);
+        osBadge = itemView.findViewById(R.id.official_store);
+        RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
 
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
@@ -72,37 +67,19 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter.getData().getListProduct().size() == 1) {
-                    return 6;
-                } else if (adapter.getData().getListProduct().size() % 3 == 0
-                        || adapter.getData().getListProduct().size() > 6) {
-                    return 2;
-                } else if (adapter.getData().getListProduct().size() % 2 == 0) {
-                    return 3;
-                } else if (adapter.getData().getListProduct().size() == 5) {
-                    return getSpanSizeFor5Item(position);
-                } else {
-                    return 0;
+                switch (adapter.getData().getListProduct().size()) {
+                    case 1:
+                        return 6;
+                    case 2:
+                        return 3;
+                    default:
+                        return 2;
                 }
             }
         });
         adapter = new FeedProductAdapter(itemView.getContext(), viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
-    }
-
-    private int getSpanSizeFor5Item(int position) {
-        switch (position) {
-            case 0:
-            case 1:
-                return 3;
-            case 2:
-            case 3:
-            case 4:
-                return 2;
-            default:
-                return 0;
-        }
     }
 
     @Override
@@ -144,8 +121,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(viewListener.getColor(R.color.black_70));
-                ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                ds.setColor(viewListener.getColor(R.color.black_38));
+                ds.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
             }
         };
 
@@ -169,16 +146,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             }
         };
 
-        ForegroundColorSpan spanColorChange = new ForegroundColorSpan(viewListener.getColor(R.color.black_54));
-        TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
-
         setSpan(actionSpanString, goToFeedDetail, titleText, actionString);
         setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
-        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
-        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
-
-        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
-        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
 
         if (activityCardViewModel.getHeader().isOfficialStore()) {
             gmBadge.setVisibility(View.GONE);
@@ -228,7 +197,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
     public void setFooter(final ActivityCardViewModel viewModel) {
         if (viewModel.getListProduct().size() > 1) {
-            shareButton.setVisibility(View.VISIBLE);
+            shareButton.setVisibility(View.GONE);
             buyButton.setVisibility(View.GONE);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -244,7 +213,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             });
         } else {
             shareButton.setVisibility(View.GONE);
-            buyButton.setVisibility(View.VISIBLE);
+            buyButton.setVisibility(View.GONE);
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
