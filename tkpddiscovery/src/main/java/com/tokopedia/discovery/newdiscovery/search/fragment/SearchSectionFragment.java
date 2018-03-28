@@ -208,15 +208,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
+                UnifyTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
+                UnifyTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
+                UnifyTracking.eventSearchResultChangeGrid("list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();

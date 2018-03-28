@@ -3340,4 +3340,13 @@ public class UnifyTracking extends TrackingUtils {
                 ""
         ).setUserId().getEvent());
     }
+
+    public static void eventSearchResultChangeGrid(String gridName, String screenName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.GRID_MENU,
+                AppEventTracking.Action.CLICK_CHANGE_GRID + gridName,
+                screenName
+        ).setUserId().getEvent());
+    }
 }

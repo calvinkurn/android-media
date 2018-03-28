@@ -301,6 +301,7 @@ public interface AppEventTracking {
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
         String SEARCH_SHARE = "search share";
+        String GRID_MENU = "grid menu";
     }
 
     interface Action {
@@ -495,6 +496,7 @@ public interface AppEventTracking {
         String LOGIN_NOW = "masuk sekarang";
         String CHECKOUT = "Checkout";
         String CLICK_BAR = "click - bar - ";
+        String CLICK_CHANGE_GRID = "click - ";
     }
 
     interface ImageEditor{
