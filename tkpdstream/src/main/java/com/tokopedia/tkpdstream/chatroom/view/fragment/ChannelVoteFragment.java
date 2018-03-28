@@ -150,7 +150,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         votedView = view.findViewById(R.id.layout_voted);
         progressBarWithTimer = view.findViewById(R.id.timer);
 
-        KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
         prepareView();
         return view;
     }
@@ -159,6 +158,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBarWithTimer.setListener(this);
+        KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
     }
@@ -357,5 +357,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 && resultCode == Activity.RESULT_OK) {
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         }
+    }
+
+    public void refreshVote(VoteInfoViewModel voteInfoViewModel) {
+        showVoteLayout(voteInfoViewModel);
     }
 }

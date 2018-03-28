@@ -42,6 +42,7 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -363,6 +364,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
+    public void autoAddGroupChatPoints(@Nullable final GroupChatPointsViewModel
+                                               groupChatPointsViewModel) {
+        if (groupChatPointsViewModel != null) {
+            if (adapter.getItemAt(adapter.getItemCount() - 1) != null
+                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof GroupChatPointsViewModel)
+                    && groupChatPointsViewModel != null) {
+                addIncomingMessage(groupChatPointsViewModel);
+                ((GroupChatContract.View) getActivity()).vibratePhone();
+            }
+        }
+    }
+
     private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
         long currentTime = new Date().getTime() / MILIS_TO_SECOND;
         return sprintSaleViewModel != null
@@ -420,6 +433,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 showSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
 
             }
+            autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -672,5 +686,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
+    }
+
+    public void onPushNotifReceived(GroupChatPointsViewModel model) {
+        autoAddGroupChatPoints(model);
     }
 }

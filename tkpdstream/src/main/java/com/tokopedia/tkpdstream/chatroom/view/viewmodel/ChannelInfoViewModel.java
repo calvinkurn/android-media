@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
@@ -30,10 +31,14 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private SprintSaleViewModel sprintSaleViewModel;
 
+    @Nullable
+    private GroupChatPointsViewModel groupChatPointsViewModel;
+
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, boolean hasPoll,
                                 String sponsorUrl, String adsLink, String bannerName, @Nullable VoteInfoViewModel voteInfoViewModel,
                                 ChannelViewModel channelViewModel,
-                                @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken) {
+                                @Nullable SprintSaleViewModel sprintSaleViewModel, String sendBirdToken,
+                                @Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;
@@ -45,6 +50,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelViewModel = channelViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
         this.sendBirdToken = sendBirdToken;
+        this.groupChatPointsViewModel = groupChatPointsViewModel;
     }
 
     public String getChannelUrl() {
@@ -119,6 +125,15 @@ public class ChannelInfoViewModel implements Parcelable {
         return sendBirdToken;
     }
 
+    @Nullable
+    public GroupChatPointsViewModel getGroupChatPointsViewModel() {
+        return groupChatPointsViewModel;
+    }
+
+    public void setGroupChatPointsViewModel(@Nullable GroupChatPointsViewModel groupChatPointsViewModel) {
+        this.groupChatPointsViewModel = groupChatPointsViewModel;
+    }
+
     protected ChannelInfoViewModel(Parcel in) {
         title = in.readString();
         channelUrl = in.readString();
@@ -131,6 +146,7 @@ public class ChannelInfoViewModel implements Parcelable {
         channelViewModel = in.readParcelable(ChannelViewModel.class.getClassLoader());
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
         sendBirdToken = in.readString();
+        groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
     }
 
     @Override
@@ -146,6 +162,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(channelViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
         dest.writeString(sendBirdToken);
+        dest.writeParcelable(groupChatPointsViewModel, flags);
     }
 
     @Override

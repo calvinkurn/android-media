@@ -65,6 +65,7 @@ import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.UserActionViewModel;
@@ -720,8 +721,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter != null
                 && tabAdapter.getItemCount() > 1
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
-            ToolTipUtils.showToolTip(ToolTipUtils.setToolTip(this, R.layout.tooltip, this),
-                    tabs.getChildAt(CHATROOM_FRAGMENT));
+            View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
+            View anchorView = tabs.getChildAt(CHATROOM_FRAGMENT);
+            if(view != null && anchorView != null){
+                ToolTipUtils.showToolTip(view, anchorView);
+            }
         }
     }
 
@@ -842,12 +846,37 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (currentFragmentIsChat()) {
             refreshChat();
+        }else if(currentFragmentIsVote()){
+            refreshVote(channelInfoViewModel.getVoteInfoViewModel());
         }
+    }
+
+    public void onPushNotifReceived(){
+        GroupChatPointsViewModel model = new GroupChatPointsViewModel(
+                "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
+                , "Cek sekarang!"
+                , "www.tokopedia.com"
+        );
+        if(currentFragmentIsChat()){
+            showPushNotif(model);
+        }else {
+            viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
+        }
+    }
+
+    private void showPushNotif(GroupChatPointsViewModel model) {
+        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName())).onPushNotifReceived(model);
     }
 
     private void refreshChat() {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).refreshChat();
+    }
+
+    private void refreshVote(VoteInfoViewModel voteInfoViewModel) {
+        ((ChannelVoteFragment) getSupportFragmentManager().findFragmentByTag
+                (ChannelVoteFragment.class.getSimpleName())).refreshVote(voteInfoViewModel);
     }
 
     @Override
