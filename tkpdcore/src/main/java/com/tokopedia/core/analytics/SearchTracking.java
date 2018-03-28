@@ -12,11 +12,17 @@ import java.util.Map;
 
 public class SearchTracking extends TrackingUtils {
 
-    public static final String ACTION_FIELD = "/search result - product 2 - product list";
+    private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+
+    public static String getActionFieldString(int pageNumber) {
+        return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
+    }
 
     public static void trackEventClickSearchResultProduct(Object item,
+                                                          int pageNumber,
                                                           String eventLabel) {
-        getGTMEngine().enhanceClickSearchResultProduct(item, eventLabel, ACTION_FIELD);
+        getGTMEngine().enhanceClickSearchResultProduct(item,
+                eventLabel, getActionFieldString(pageNumber));
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
