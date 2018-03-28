@@ -51,6 +51,7 @@ import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -212,6 +213,8 @@ public class LoginActivityTest {
 
         // dismiss fragment or press back
         dialog.dismiss();
+
+        onView(withId(R.id.login_status)).check(matches(isDisplayed()));
     }
 
     /**
