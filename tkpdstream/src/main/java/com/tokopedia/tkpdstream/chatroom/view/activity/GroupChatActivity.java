@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -214,11 +215,19 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         callbackManager = CallbackManager.Factory.create();
+        userSession = ((AbstractionRouter) getApplication()).getSession();
 
         initView();
         initInjector();
         initData();
         initPreference();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_VIEW_MODEL, viewModel);
+        outState.putInt(INITIAL_FRAGMENT, initialFragment);
     }
 
     private void initInjector() {
@@ -266,7 +275,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initData() {
-        userSession = ((AbstractionRouter) getApplication()).getSession();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -440,10 +448,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             if (fragment == null) {
                 fragment = GroupChatFragment.createInstance(bundle);
+                ((GroupChatFragment) fragment).setChannel(mChannel);
+            } else {
+                ((GroupChatFragment) fragment).setChannel(mChannel);
+                ((GroupChatFragment) fragment).refreshChat();
             }
-            ((GroupChatFragment) fragment).setChannel(mChannel);
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
+
         }
     }
 
@@ -464,7 +476,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         ((ChannelInfoFragmentListener.View) fragment).renderData(
                 viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void showChannelVoteFragment() {
@@ -481,7 +493,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             fragment = ChannelVoteFragment.createInstance(bundle);
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void removePaddingStatusBar() {
@@ -631,13 +643,18 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
-        setChannelInfoView(channelInfoViewModel);
-        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
+        Log.d("NISNIS", "onSuccessGetChannelInfo");
+        try {
+            setChannelInfoView(channelInfoViewModel);
+            presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                    userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
-        Intent intent = new Intent();
-        intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
-        setResult(Activity.RESULT_OK, intent);
+            Intent intent = new Intent();
+            intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
+            setResult(Activity.RESULT_OK, intent);
+        } catch (Exception e) {
+            Log.d("NISNIS", "onSuccessGetChannelInfoErr " + e.toString());
+        }
     }
 
     @Override
@@ -830,6 +847,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("NISNIS", "onResume");
 
         kickIfIdleForTooLong();
 
@@ -838,8 +856,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
-                        if (reconnect || (viewModel != null && viewModel.getChannelInfoViewModel()
-                                != null)) {
+                        if (loading != null
+                                && loading.getVisibility() != View.VISIBLE
+                                && (reconnect
+                                || (viewModel != null && viewModel.getChannelInfoViewModel() != null))) {
                             presenter.refreshChannelInfo(viewModel.getChannelUuid());
                         }
                     }
@@ -847,6 +867,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("NISNIS", "onStart");
+    }
 
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
@@ -908,6 +933,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         try {
+            Log.d("NISNIS", "onSuccessEnterChannel");
             hideLoading();
             mChannel = openChannel;
             setupViewPager();
@@ -923,6 +949,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorEnterChannel(String errorMessage) {
+        Log.d("NISNIS", "onErrorEnterChannel " + errorMessage);
+        hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
             @Override
