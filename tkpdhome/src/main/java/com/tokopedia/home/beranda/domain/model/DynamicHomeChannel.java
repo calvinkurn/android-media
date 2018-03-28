@@ -144,7 +144,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "sprint sale banner impression",
                     "eventLabel", "",
-                    "ecommerce", DataLayer.mapOf("promoClick", DataLayer.mapOf("promotions", list))
+                    "ecommerce", DataLayer.mapOf("promoView", DataLayer.mapOf("promotions", list))
             );
         }
 
