@@ -24,6 +24,7 @@ public class PromoData implements Parcelable {
     private int multiplePromoCodeCount;
     private String periodFormatted;
     private List<String> termsAndConditions = new ArrayList<>();
+    private String ctaText;
     private List<PromoCodeViewModel> promoCodeList = new ArrayList<>();
 
     public String getId() {
@@ -130,6 +131,14 @@ public class PromoData implements Parcelable {
         this.termsAndConditions = termsAndConditions;
     }
 
+    public String getCtaText() {
+        return ctaText;
+    }
+
+    public void setCtaText(String ctaText) {
+        this.ctaText = ctaText;
+    }
+
     public List<PromoCodeViewModel> getPromoCodeList() {
         return promoCodeList;
     }
@@ -158,6 +167,7 @@ public class PromoData implements Parcelable {
         dest.writeInt(this.multiplePromoCodeCount);
         dest.writeString(this.periodFormatted);
         dest.writeStringList(this.termsAndConditions);
+        dest.writeString(this.ctaText);
         dest.writeTypedList(this.promoCodeList);
     }
 
@@ -178,6 +188,7 @@ public class PromoData implements Parcelable {
         this.multiplePromoCodeCount = in.readInt();
         this.periodFormatted = in.readString();
         this.termsAndConditions = in.createStringArrayList();
+        this.ctaText = in.readString();
         this.promoCodeList = in.createTypedArrayList(PromoCodeViewModel.CREATOR);
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder;
+import com.tokopedia.loyalty.view.viewholder.PromoDetailSimpleCodeViewHolder;
 import com.tokopedia.loyalty.view.viewholder.PromoDetailTnCViewHolder;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.viewholder.PromoDetailSimpleCodeViewHolder.ITEM_VIEW_SIMPLE_CODE;
 import static com.tokopedia.loyalty.view.viewholder.PromoDetailTnCViewHolder.ITEM_VIEW_TNC;
 import static com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder.ITEM_VIEW_GROUP_CODE;
 import static com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder.ITEM_VIEW_DETAIL_INFO;
@@ -28,6 +30,7 @@ import static com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder.IT
 
 public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private OnAdapterActionListener adapterActionListener;
     private List<Object> promoDetailObjectList;
 
     @Inject
@@ -43,7 +46,9 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (viewType == ITEM_VIEW_DETAIL_INFO) {
             return new PromoDetailInfoViewHolder(view);
         } else if (viewType == ITEM_VIEW_GROUP_CODE) {
-            return new PromoDetailGroupCodeViewHolder(view, context);
+            return new PromoDetailGroupCodeViewHolder(view, context, adapterActionListener);
+        } else if (viewType == ITEM_VIEW_SIMPLE_CODE) {
+            return new PromoDetailSimpleCodeViewHolder(view, adapterActionListener);
         } else if (viewType == ITEM_VIEW_TNC) {
             return new PromoDetailTnCViewHolder(view);
         }
@@ -60,6 +65,8 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((PromoDetailInfoViewHolder) viewHolder).bind((PromoDetailInfoHolderData) data);
         } else if (viewType == ITEM_VIEW_GROUP_CODE) {
             ((PromoDetailGroupCodeViewHolder) viewHolder).bind((PromoCodeViewModel) data);
+        } else if (viewType == ITEM_VIEW_SIMPLE_CODE) {
+            ((PromoDetailSimpleCodeViewHolder) viewHolder).bind((String) data);
         } else if (viewType == ITEM_VIEW_TNC) {
             ((PromoDetailTnCViewHolder) viewHolder).bind((PromoDetailTncHolderData) data);
         }
@@ -78,6 +85,8 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return ITEM_VIEW_DETAIL_INFO;
         } else if (item instanceof PromoCodeViewModel) {
             return ITEM_VIEW_GROUP_CODE;
+        } else if (item instanceof String) {
+            return ITEM_VIEW_SIMPLE_CODE;
         } else if (item instanceof PromoDetailTncHolderData) {
             return ITEM_VIEW_TNC;
         }
@@ -89,7 +98,15 @@ public class PromoDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.promoDetailObjectList = new ArrayList<>(promoDetailObjectList);
     }
 
-    public interface OnAdapterActionListener extends PromoDetailAdapterActionListener {
+    public void setAdapterActionListener(OnAdapterActionListener adapterActionListener) {
+        this.adapterActionListener = adapterActionListener;
+    }
+
+    public interface OnAdapterActionListener {
+
+        void onItemPromoCodeCopyClipboardClicked(String promoCode);
+
+        void onItemPromoCodeTooltipClicked();
 
     }
 }

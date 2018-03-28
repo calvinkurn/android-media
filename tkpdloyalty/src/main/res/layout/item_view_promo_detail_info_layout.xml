@@ -12,12 +12,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_promo_detail_thumbnail"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="130dp"-->
-            <!--tools:ignore="ContentDescription" />-->
-
         <com.tokopedia.loyalty.view.compoundview.PromoImageView
             android:id="@+id/iv_promo_detail_thumbnail"
             android:layout_width="match_parent"
@@ -35,20 +29,18 @@
             android:textColor="@color/black_70"
             tools:text="Temukan Teknologi Andalan dalam Genggaman dengan LG G6 Plus &amp; LG Q6 Plus, Dapatkan Potongan Harga dan Bonusnya!"/>
 
-        <!--<ImageButton-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginTop="190dp"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:layout_marginEnd="20dp"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:background="@drawable/circle_button"-->
-            <!--android:elevation="3dp"-->
-            <!--android:contentDescription="Share Button"-->
-            <!--app:layout_constraintLeft_toLeftOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:srcCompat="@drawable/ic_share_android" />-->
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="190dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/circle_button"
+            android:elevation="3dp"
+            android:contentDescription="Share Button"
+            app:srcCompat="@drawable/ic_share_android" />
 
     </RelativeLayout>
 

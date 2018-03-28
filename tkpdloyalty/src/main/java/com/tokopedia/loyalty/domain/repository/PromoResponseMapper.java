@@ -66,6 +66,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
                     .appendQueryParameter(QUERY_FLAG_APP, DEFAULT_VALUE_QUERY_FLAG_APP)
                     .build().toString();
             promoData.setPromoLink(urlPromo);
+            promoData.setCtaText(promoResponse.getCtaText());
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
@@ -82,35 +83,21 @@ public class PromoResponseMapper implements IPromoResponseMapper {
     private List<PromoCodeViewModel> getPromoCodes(PromoResponse promoResponse) {
         List<PromoCodeViewModel> promoCodeList = new ArrayList<>();
 
-        if (promoResponse.getPromoCodes().isEmpty()) {
-            List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
-
-            SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
-            singleCodeViewModel.setSingleCode(promoResponse.getMeta().getPromoCode());
-            singleCodeViewModelList.add(singleCodeViewModel);
-
+        for (PromoCode promoCode : promoResponse.getPromoCodes()) {
             PromoCodeViewModel promoCodeViewModel = new PromoCodeViewModel();
+            promoCodeViewModel.setGroupCodeTitle(promoCode.getGroupCodeTitle());
+            promoCodeViewModel.setGroupCodeDescription(promoCode.getGroupCodeDescription());
+
+            List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
+            for (GroupCode groupCode : promoCode.getGroupCode()) {
+                SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+                singleCodeViewModel.setSingleCode(groupCode.getSingleCode());
+
+                singleCodeViewModelList.add(singleCodeViewModel);
+            }
             promoCodeViewModel.setGroupCode(singleCodeViewModelList);
 
             promoCodeList.add(promoCodeViewModel);
-
-        } else {
-            for (PromoCode promoCode : promoResponse.getPromoCodes()) {
-                PromoCodeViewModel promoCodeViewModel = new PromoCodeViewModel();
-                promoCodeViewModel.setGroupCodeTitle(promoCode.getGroupCodeTitle());
-                promoCodeViewModel.setGroupCodeDescription(promoCode.getGroupCodeDescription());
-
-                List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
-                for (GroupCode groupCode : promoCode.getGroupCode()) {
-                    SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
-                    singleCodeViewModel.setSingleCode(groupCode.getSingleCode());
-
-                    singleCodeViewModelList.add(singleCodeViewModel);
-                }
-                promoCodeViewModel.setGroupCode(singleCodeViewModelList);
-
-                promoCodeList.add(promoCodeViewModel);
-            }
         }
 
         return promoCodeList;

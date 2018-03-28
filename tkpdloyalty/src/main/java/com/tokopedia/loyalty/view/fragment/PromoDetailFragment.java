@@ -1,8 +1,13 @@
 package com.tokopedia.loyalty.view.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
@@ -27,8 +35,7 @@ import javax.inject.Inject;
  * @author Aghny A. Putra on 23/03/18
  */
 
-public class PromoDetailFragment extends BaseDaggerFragment
-        implements PromoDetailAdapter.OnAdapterActionListener {
+public class PromoDetailFragment extends BaseDaggerFragment {
 
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
 
@@ -36,7 +43,9 @@ public class PromoDetailFragment extends BaseDaggerFragment
     private CardView cvPromoDetailBottomContainer;
     private RecyclerView rvPromoDetailView;
     private LinearLayout llPromoDetailBottomLayout;
+    private BottomSheetView bottomSheetInfoPromoCode;
 
+    private PromoData promoData;
     private List<Object> promoDetailObjectList;
     private PromoDetailFragment.OnFragmentInteractionListener actionListener;
 
@@ -70,8 +79,8 @@ public class PromoDetailFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            PromoData promoData = getArguments().getParcelable(ARG_EXTRA_PROMO_DATA);
-            this.promoDetailObjectList = promoDataMapper.convert(promoData);
+            this.promoData = getArguments().getParcelable(ARG_EXTRA_PROMO_DATA);
+            this.promoDetailObjectList = promoDataMapper.convert(this.promoData);
         }
     }
 
@@ -108,14 +117,17 @@ public class PromoDetailFragment extends BaseDaggerFragment
         });
 
         this.promoDetailAdapter.setPromoDetail(promoDetailObjectList);
+        this.promoDetailAdapter.setAdapterActionListener(getAdapterActionListener());
         this.promoDetailAdapter.notifyDataSetChanged();
 
         this.cvPromoDetailBottomContainer.setVisibility(View.VISIBLE);
         this.llPromoDetailBottomLayout.setVisibility(View.GONE);
+        this.tvPromoDetailAction.setText(this.promoData.getCtaText());
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(promoData.getAppLink()));
+                startActivity(browserIntent);
             }
         });
     }
@@ -142,6 +154,57 @@ public class PromoDetailFragment extends BaseDaggerFragment
     public void onDetach() {
         super.onDetach();
         this.actionListener = null;
+    }
+
+    private PromoDetailAdapter.OnAdapterActionListener getAdapterActionListener() {
+        return new PromoDetailAdapter.OnAdapterActionListener() {
+            @Override
+            public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
+                String message = "Kode Voucher telah tersalin";
+
+                if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+                else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+                UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoCode);
+                ClipboardManager clipboard = (ClipboardManager)
+                        getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+
+                ClipData clip = ClipData.newPlainText("CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode);
+
+                if (clipboard != null) clipboard.setPrimaryClip(clip);
+
+                promoDetailAdapter.notifyItemChanged(2);
+            }
+
+            @Override
+            public void onItemPromoCodeTooltipClicked() {
+                UnifyTracking.eventPromoTooltipClickOpenTooltip();
+                if (bottomSheetInfoPromoCode == null) {
+                    bottomSheetInfoPromoCode = new BottomSheetView(getActivity());
+
+                    bottomSheetInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
+                            .BottomSheetFieldBuilder()
+                            .setTitle("Kode Promo")
+                            .setBody("Masukan Kode Promo di halaman pembayaran")
+                            .setImg(R.drawable.ic_promo)
+                            .build());
+
+                    bottomSheetInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
+                        @Override
+                        public void clickOnTextLink(String url) {
+
+                        }
+
+                        @Override
+                        public void clickOnButton(String url, String appLink) {
+                            UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                        }
+                    });
+                }
+
+                bottomSheetInfoPromoCode.show();
+            }
+        };
     }
 
     /**

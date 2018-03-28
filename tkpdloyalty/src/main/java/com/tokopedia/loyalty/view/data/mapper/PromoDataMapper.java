@@ -4,6 +4,7 @@ import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoDetailInfoHolderData;
 import com.tokopedia.loyalty.view.data.PromoDetailTncHolderData;
+import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,17 @@ public class PromoDataMapper {
     }
 
     public List<Object> convert(PromoData promoData) {
+        // TODO for testing purpose only
+        promoData.setPromoCodeList(getPromoCodeList());
+
         List<Object> promoDetailData = new ArrayList<>();
 
         promoDetailData.add(convertToPromoDetailInfoHolderData(promoData));
-        promoDetailData.addAll(promoData.getPromoCodeList());
+        if (promoData.getPromoCodeList().isEmpty()) {
+            promoDetailData.add(promoData.getPromoCode());
+        } else {
+            promoDetailData.addAll(promoData.getPromoCodeList());
+        }
         promoDetailData.add(convertToPromoDetailTncHolderData(promoData));
 
         return promoDetailData;
@@ -49,20 +57,31 @@ public class PromoDataMapper {
     }
 
     private List<PromoCodeViewModel> getPromoCodeList() {
+        List<SingleCodeViewModel> singleCodeViewModelList = new ArrayList<>();
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOABC"));
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMODEF"));
+        singleCodeViewModelList.add(getSingleCodeViewModel("PROMOGHI"));
+
         List<PromoCodeViewModel> promoCodeViewModelList = new ArrayList<>();
-
-        PromoCodeViewModel promoCodeViewModel1 = new PromoCodeViewModel();
-        promoCodeViewModel1.setGroupCodeTitle("CREDIT CARD BANK BRI");
-        promoCodeViewModel1.setGroupCodeDescription("Kode 1 untuk LG G6 Plus & Kode 2 untuk LG Q6 Plus");
-
-        promoCodeViewModelList.add(promoCodeViewModel1);
-
-        PromoCodeViewModel promoCodeViewModel2 = new PromoCodeViewModel();
-        promoCodeViewModel2.setGroupCodeTitle("CREDIT CARD BANK MANDIRI");
-        promoCodeViewModel2.setGroupCodeDescription("Kode 1 untuk LG G6 Plus & Kode 2 untuk LG Q6 Plus");
-
-        promoCodeViewModelList.add(promoCodeViewModel2);
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BCA", singleCodeViewModelList));
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan BRI", singleCodeViewModelList));
+        promoCodeViewModelList.add(getPromoCodeViewModel("Promo Untuk Pelanggan Mandiri", singleCodeViewModelList));
 
         return promoCodeViewModelList;
+    }
+
+    private SingleCodeViewModel getSingleCodeViewModel(String singleCode) {
+        SingleCodeViewModel singleCodeViewModel = new SingleCodeViewModel();
+        singleCodeViewModel.setSingleCode(singleCode);
+        return singleCodeViewModel;
+    }
+
+    private PromoCodeViewModel getPromoCodeViewModel(String title, List<SingleCodeViewModel> singleCodeViewModelList) {
+        PromoCodeViewModel promoCodeViewModel1 = new PromoCodeViewModel();
+        promoCodeViewModel1.setGroupCodeTitle(title);
+        promoCodeViewModel1.setGroupCodeDescription("Kode 1 untuk LG G6 Plus & Kode 2 untuk LG Q6 Plus");
+        promoCodeViewModel1.setGroupCode(singleCodeViewModelList);
+
+        return promoCodeViewModel1;
     }
 }

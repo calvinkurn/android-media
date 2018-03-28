@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/iv_promo_code_icon"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
+            android:layout_alignTop="@+id/tv_promo_code_label"
+            app:srcCompat="@drawable/ic_coupon_promo"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_promo_code_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_promo_code_icon"
+            android:layout_toEndOf="@id/iv_promo_code_icon"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/black_38"
+            android:text="Kode Promo"
+            tools:ignore="SmallSp" />
+
+        <ImageView
+            android:id="@+id/iv_tooltip_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_promo_code_label"
+            android:layout_toEndOf="@id/tv_promo_code_label"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            app:srcCompat="@drawable/info_icon"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_promo_code_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <RelativeLayout
+            android:id="@+id/fl_single_code_group_layout"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/round_button_left">
+
+            <TextView
+                android:id="@+id/tv_single_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/orange_red"
+                android:text="BRIG6P" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_single_code_copy_layout"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@id/fl_single_code_group_layout"
+            android:background="@drawable/round_button_right">
+
+            <TextView
+                android:id="@+id/tv_promo_code_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/black_38"
+                android:text="Salin Kode" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
