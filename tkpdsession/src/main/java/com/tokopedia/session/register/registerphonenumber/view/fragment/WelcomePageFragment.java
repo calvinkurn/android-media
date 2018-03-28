@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.session.R;
 
 /**
@@ -71,7 +72,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return null;
+        return RegisterAnalytics.Screen.SCREEN_ACCOUNT_ACTIVATION;
     }
 
     @Override

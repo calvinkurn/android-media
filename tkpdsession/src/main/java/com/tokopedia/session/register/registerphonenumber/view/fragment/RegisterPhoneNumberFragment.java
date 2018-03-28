@@ -22,7 +22,10 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
@@ -70,7 +73,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return RegisterAnalytics.Screen.SCREEN_REGISTER_WITH_PHONE_NUMBER;
     }
 
     @Override
@@ -325,6 +328,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterPhoneNumber());
         if (model.getMakeLoginDomain().isLogin()) {
             goToWelcomePage();
         } else {
