@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/padding_ms">
+
+    <RelativeLayout
+        android:id="@+id/channel_title_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/page_margin">
+
+        <TextView
+            android:id="@+id/channel_title"
+            android:maxEms="12"
+            android:layout_centerVertical="true"
+            style="@style/TextView.Title.Bold"
+            tools:text="Hypebeast Banget Pokoknya"/>
+
+        <TextView
+            android:id="@+id/see_all_button"
+            style="@style/TextView.Small.Green"
+            android:text="@string/see_all"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
