@@ -180,9 +180,9 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
                 "name", getProductName(),
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "brand", "",
-                "category", "",
-                "variant", "",
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
                 "list", SearchTracking.getActionFieldString(getPageNumber()),
                 "position", Integer.toString(getPosition()),
                 "userId", userId
