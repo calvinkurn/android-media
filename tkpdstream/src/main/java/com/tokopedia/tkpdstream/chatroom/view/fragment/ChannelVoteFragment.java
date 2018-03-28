@@ -147,6 +147,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteStatus = rootView.findViewById(R.id.vote_status);
         votedView = rootView.findViewById(R.id.layout_voted);
         progressBarWithTimer = rootView.findViewById(R.id.timer);
+        progressBarWithTimer.setListener(this);
 
         prepareView();
         return rootView;
@@ -156,9 +157,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onResume() {
         super.onResume();
         KeyboardHandler.DropKeyboard(getActivity(), progressBarWithTimer);
-        if (progressBarWithTimer != null) {
-            progressBarWithTimer.setListener(this);
-        }
     }
 
     private void prepareView() {
@@ -354,7 +352,6 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             VoteAnnouncementViewModel announcement = (VoteAnnouncementViewModel) messageItem;
             VoteInfoViewModel temp = announcement.getVoteInfoViewModel();
             showVoteLayout(temp);
-            ((GroupChatActivity) getActivity()).handleVoteAnnouncement(announcement, announcement.getVoteType());
         }
     }
 

@@ -392,7 +392,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    //
+
     private void setupViewPager() {
         tabs = findViewById(R.id.tab);
         tabs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -1145,8 +1145,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             setTooltip();
             tabAdapter.notifyItemInserted(CHANNEL_VOTE_FRAGMENT);
         } else if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_CANCELED) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
-            tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
+            tabAdapter.notifyItemChanged(CHANNEL_VOTE_FRAGMENT);
+            showFragment(CHATROOM_FRAGMENT);
         }
 
         if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {

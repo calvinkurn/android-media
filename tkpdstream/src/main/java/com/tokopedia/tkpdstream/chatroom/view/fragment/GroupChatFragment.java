@@ -52,8 +52,6 @@ import com.tokopedia.tkpdstream.common.design.SpaceItemDecoration;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.util.StreamAnalytics;
-import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
-import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -70,7 +68,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ChatroomContract.View.VoteAnnouncementViewHolderListener,
         ChatroomContract.View.SprintSaleViewHolderListener {
 
-    private static final long DELAY_TIME = 1000L;
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final long MILIS_TO_SECOND = 1000;
 
@@ -508,37 +505,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         setSendButtonEnabled(true);
 
-    }
-
-    @Override
-    public void showHasVoted() {
-        View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
-        TextView title = view.findViewById(R.id.title);
-        title.setText(R.string.has_voted);
-        channelInfoDialog.setContentView(view);
-        channelInfoDialog.show();
-    }
-
-    @Override
-    public void showSuccessVoted() {
-        View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
-        channelInfoDialog.setContentView(view);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                channelInfoDialog.show();
-            }
-        }, DELAY_TIME);
-    }
-
-    @Override
-    public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
-
-    }
-
-    @Override
-    public void onErrorVote(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     public void onMessageReceived(Visitable messageItem) {
