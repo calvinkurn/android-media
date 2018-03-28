@@ -187,12 +187,13 @@ public class LoginActivityTest {
         // click button2
 //        onView(withTagValue(is((Object) "Yahoo"))).perform(scrollTo(), click());
         onView(withText("You should car about that"))
-                .perform(scrollTo(), click());
+                .perform(scrollTo());
+
+        onView(withText("You should car about that")).perform(click());
 
         // necessary to make it wait.
         Thread.sleep(3000);
 
-//        onView(withText("You should car about that")).perform(click());
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
         final WebView webview = dialog.getView().findViewById(R.id.web_oauth);
