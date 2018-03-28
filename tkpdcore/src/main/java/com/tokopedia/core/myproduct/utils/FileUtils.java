@@ -1,6 +1,7 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -23,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -200,15 +203,53 @@ public class FileUtils {
 
     public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
+        if (!isImageMimeType(context, uri)) {
+            return null;
+        }
         if (uri.getAuthority() != null) {
             try {
-                is = context.getContentResolver().openInputStream(uri);
                 String path = getPathFromMediaUri(context, uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                if (!TextUtils.isEmpty(path)) {
-                    bmp = ImageHandler.RotatedBitmap(bmp, path);
+                if (TextUtils.isEmpty(path)) {
+                    path = getPath(context, uri);
+                }
+                if (TextUtils.isEmpty(path)) {
+                    return null;
+                }
+                Bitmap bmp = null;
+                int inSampleSize = 1;
+                boolean oomError;
+                do {
+                    try {
+                        is = context.getContentResolver().openInputStream(uri);
+                        if (is == null) {
+                            return null;
+                        }
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                        options.inSampleSize = inSampleSize;
+                        bmp = BitmapFactory.decodeStream(is, null, options);
+                        if (bmp == null) {
+                            return null;
+                        }
+                        bmp = ImageHandler.RotatedBitmap(bmp, path);
+                        oomError = false;
+                    } catch (OutOfMemoryError outOfMemoryError) {
+                        if (bmp != null) {
+                            bmp.recycle();
+                            bmp = null;
+                        }
+                        inSampleSize *= 2;
+                        oomError = true;
+                        if (inSampleSize > 16) {
+                            break;
+                        }
+                    }
+                } while (oomError);
+                if (bmp == null) {
+                    return null;
                 }
                 File file = writeImageToTkpdPath(bmp);
+                bmp.recycle();
                 if (file != null) {
                     return file.getAbsolutePath();
                 } else {
@@ -218,13 +259,34 @@ public class FileUtils {
                 e.printStackTrace();
             } finally {
                 try {
-                    is.close();
+                    if (is != null) {
+                        is.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         return null;
+    }
+
+    private static String getMimeType(Context context, Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    private static boolean isImageMimeType(Context context, Uri uri) {
+        String mimeType = getMimeType(context, uri);
+        return !TextUtils.isEmpty(mimeType) && mimeType.startsWith("image");
     }
 
     public static String getPathFromMediaUri(Context context, Uri contentUri) {
@@ -241,8 +303,7 @@ public class FileUtils {
                 }
             } catch (Exception e) {
                 return null;
-            }
-            finally {
+            } finally {
                 cursor.close();
             }
         } else {

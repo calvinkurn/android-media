@@ -71,7 +71,8 @@ public class ProductVariantViewModel implements Parcelable {
         List<ProductVariantOptionChild> productVariantOptionChildList = productVariantOptionParent.getProductVariantOptionChild();
         for (int i = 0, sizei = productVariantOptionChildList.size(); i < sizei; i++) {
             ProductVariantOptionChild prevProductVariantOptionChild = productVariantOptionChildList.get(i);
-            if (prevProductVariantOptionChild.getVuv() == productVariantOptionChildToAdd.getVuv() ||
+            if ((productVariantOptionChildToAdd.getVuv()!= 0 &&
+                    prevProductVariantOptionChild.getVuv() == productVariantOptionChildToAdd.getVuv()) ||
                     prevProductVariantOptionChild.getValue().equalsIgnoreCase(productVariantOptionChildToAdd.getValue())) {
                 productVariantOptionChildList.remove(i);
                 productVariantOptionChildList.add(i, productVariantOptionChildToAdd);
