@@ -340,5 +340,6 @@
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_choose_to_cancel_hint">Pilih Penerbangan dan Penumpang</string>
     <string name="flight_cancellation_next_button">Selanjutnya</string>
+    <string name="flight_cancellation_recommendation_to_contact_airlines_description">Tiket dengan jadwal penerbangan kurang dari 6 jam, hanya bisa dibatalkan melalui counter maskapai terkait.\n\nSilakan hubungi customer care maskapai disini.</string>
 
 </resources>

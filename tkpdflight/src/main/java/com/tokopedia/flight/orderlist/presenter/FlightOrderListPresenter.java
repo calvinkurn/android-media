@@ -9,14 +9,18 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -164,5 +168,22 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Override
     public List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
         return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
+    }
+
+    @Override
+    public void checkIfFlightCancellable(FlightOrderSuccessViewModel flightOrderSuccessViewModel) {
+        if (isDepartureDateMoreThan6Hours(
+                FlightDateUtil.stringToDate(flightOrderSuccessViewModel
+                        .getOrderJourney().getDepartureTime()))) {
+            getView().goToCancellationPage(flightOrderSuccessViewModel);
+        } else {
+            getView().showLessThan6HoursDialog();
+        }
+    }
+
+    private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
+        Date currentDate = FlightDateUtil.getCurrentDate();
+        long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
+        return diffHours >= 6;
     }
 }
