@@ -2,18 +2,19 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.Flashsale;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.ListBrand;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.channelinfo.ListOfficial;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -44,17 +45,23 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
         return new ChannelInfoViewModel(
+                pojo.getChannel().getTitle(),
                 pojo.getChannel().getChannelUrl(),
                 pojo.getChannel().getBannerBlurredUrl(),
-                pojo.getChannel().getTitle(),
                 hasPoll(pojo.getChannel().getActivePolls()),
                 pojo.getChannel().getAdsImageUrl(),
                 pojo.getChannel().getAdsLink(),
                 pojo.getChannel().getBannerName(),
+                pojo.getChannel().getSendBirdToken(),
+                pojo.getChannel().getModeratorName(),
+                pojo.getChannel().getCoverUrl(),
+                pojo.getChannel().getModeratorProfileUrl(),
+                pojo.getChannel().getDescription(),
+                pojo.getChannel().getTotalViews(),
+                convertChannelPartner(pojo.getChannel()),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
-                mapToChannelDesc(pojo.getChannel()),
-                mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
-                pojo.getChannel().getSendBirdToken());
+                mapToSprintSaleViewModel(pojo.getChannel().getFlashsale())
+        );
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Flashsale flashsale) {
@@ -160,20 +167,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         return list;
     }
 
-
-    private ChannelViewModel mapToChannelDesc(Channel pojo) {
-        //TODO milhamj set channel mapper from API
-        return new ChannelViewModel(String.valueOf(pojo.getChannelId()),
-                pojo.getModeratorName(),
-                pojo.getCoverUrl(),
-                pojo.getModeratorProfileUrl(),
-                pojo.getTitle(),
-                pojo.getDescription(),
-                pojo.getTotalViews(),
-                pojo.getChannelUrl(),
-                convertChannelPartner(pojo));
-    }
-
     private int checkIfSelected(boolean isAnswered, boolean isSelected) {
         if (isAnswered && isSelected) {
             return VoteViewModel.SELECTED;
@@ -192,45 +185,32 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private List<ChannelPartnerViewModel> convertChannelPartner(Channel channel) {
-        ArrayList<ChannelPartnerChildViewModel> childViewModels1 = new ArrayList<>();
-        ChannelPartnerChildViewModel childViewModel1 =
-                new ChannelPartnerChildViewModel(
-                        "https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/10/29/5700655/pic_5700655_E67E4D68-7E5C-11E5-AEAE-10B4EA20ADBC.jpg",
-                        "Agung Hertanto",
-                        "tokopedia://people/5700655"
-                );
-        childViewModels1.add(childViewModel1);
-        ChannelPartnerChildViewModel childViewModel2 =
-                new ChannelPartnerChildViewModel(
-                        "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2017/4/18/18419943/18419943_be10a950-76a7-4efe-8183-44b5f3548e61.jpg",
-                        "Hengky Salamah",
-                        "tokopedia://people/18419943"
-                );
-        childViewModels1.add(childViewModel2);
+        ArrayList<ChannelPartnerViewModel> channelPartnerViewModelList = new ArrayList<>();
 
-        ArrayList<ChannelPartnerChildViewModel> childViewModels2 = new ArrayList<>();
-        ChannelPartnerChildViewModel childViewModel3 =
-                new ChannelPartnerChildViewModel(
-                        "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2016/10/28/1557608/1557608_b15a6886-f5d2-48c3-baa0-474add36a396.jpg",
-                        "Agen Resmi Mega 6",
-                        "https://www.tokopedia.com/agenresmimega6"
-                );
-        childViewModels2.add(childViewModel3);
+        for (ListOfficial official : channel.getListOfficials()) {
 
-        ArrayList<ChannelPartnerViewModel> channelPartnerViewModels = new ArrayList<>();
-        ChannelPartnerViewModel channelPartnerViewModel1 = new ChannelPartnerViewModel("Official banget nih?", childViewModels1);
-        channelPartnerViewModels.add(channelPartnerViewModel1);
+            ChannelPartnerViewModel channelPartnerViewModel = new ChannelPartnerViewModel(
+                    official.getTitle(),
+                    convertChannelPartnerChild(official)
+            );
 
-        ChannelPartnerViewModel channelPartnerViewModel2 = new ChannelPartnerViewModel("Official partner dong", childViewModels2);
-        channelPartnerViewModels.add(channelPartnerViewModel2);
-        channelPartnerViewModels.add(channelPartnerViewModel2);
-        channelPartnerViewModels.add(channelPartnerViewModel1);
-        channelPartnerViewModels.add(channelPartnerViewModel2);
-        channelPartnerViewModels.add(channelPartnerViewModel1);
-        channelPartnerViewModels.add(channelPartnerViewModel2);
-        channelPartnerViewModels.add(channelPartnerViewModel2);
-        channelPartnerViewModels.add(channelPartnerViewModel1);
+            channelPartnerViewModelList.add(channelPartnerViewModel);
+        }
+        return channelPartnerViewModelList;
+    }
 
-        return channelPartnerViewModels;
+    private List<ChannelPartnerChildViewModel> convertChannelPartnerChild(ListOfficial official) {
+        ArrayList<ChannelPartnerChildViewModel> childViewModelList = new ArrayList<>();
+
+        for (ListBrand brand : official.getListBrands()) {
+            ChannelPartnerChildViewModel childViewModel = new ChannelPartnerChildViewModel(
+                    brand.getImageUrl(),
+                    brand.getTitle(),
+                    brand.getBrandUrl()
+            );
+            childViewModelList.add(childViewModel);
+        }
+
+        return childViewModelList;
     }
 }

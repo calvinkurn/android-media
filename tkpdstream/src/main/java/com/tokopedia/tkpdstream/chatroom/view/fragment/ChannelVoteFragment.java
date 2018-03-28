@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -269,10 +268,11 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelViewModel() != null) {
-                analytics.eventClickVote(element.getType(), ((GroupChatContract.View) getActivity
-                        ()).getChannelInfoViewModel().getChannelViewModel().getChannelUrl());
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                analytics.eventClickVote(
+                        element.getType(),
+                        ((GroupChatContract.View) getActivity()).
+                                getChannelInfoViewModel().getChannelUrl());
             }
         }
     }

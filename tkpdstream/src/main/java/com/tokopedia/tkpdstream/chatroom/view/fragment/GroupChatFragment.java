@@ -325,8 +325,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)
-                && channelInfoViewModel != null
-                && channelInfoViewModel.getChannelViewModel() != null) {
+                && channelInfoViewModel != null) {
 
             sprintSaleHandler = new Handler();
             sprintSaleRunnable = new Runnable() {
@@ -337,8 +336,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             new Date().getTime() / MILIS_TO_SECOND,
                             "0",
                             "0",
-                            channelInfoViewModel.getChannelViewModel().getAdminName(),
-                            channelInfoViewModel.getChannelViewModel().getAdminPicture(),
+                            channelInfoViewModel.getAdminName(),
+                            channelInfoViewModel.getAdminPicture(),
                             false,
                             true,
                             sprintSaleViewModel.getRedirectUrl(),
