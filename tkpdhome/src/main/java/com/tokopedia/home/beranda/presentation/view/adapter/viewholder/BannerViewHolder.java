@@ -91,8 +91,10 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                 TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
 
+        remoteConfigEnable = true;
+
         if (remoteConfigEnable) {
-            context.startActivity(PromoListActivity.newInstance(context));
+            context.startActivity(PromoListActivity.newInstance(context, 0, 0));
         } else {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));

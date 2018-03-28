@@ -16,7 +16,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
@@ -43,6 +42,9 @@ import butterknife.BindView;
 
 public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>, IPromoListActivityView {
 
+    private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
+    private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
+
     @BindView(R2.id.view_pager)
     TouchViewPager viewPager;
     @BindView(R2.id.tab_layout)
@@ -52,22 +54,24 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     private PromoPagerAdapter adapter;
 
+    private int autoSelectedMenuId;
+    private int autoSelectedCategoryId;
+
     @Inject
     IPromoListActivityPresenter dPresenter;
 
-    @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
-    public static Intent appLinkInstance(Context context) {
-        return new Intent(context, PromoListActivity.class);
-    }
-
-    public static Intent newInstance(Context context) {
-        return new Intent(context, PromoListActivity.class);
+    public static Intent newInstance(Context context, int menuId, int categoryId) {
+        return new Intent(context, PromoListActivity.class)
+                .putExtra(EXTRA_AUTO_SELECTED_MENU_ID, menuId)
+                .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, categoryId);
     }
 
     @SuppressWarnings("unused")
-    @DeepLink(Constants.Applinks.PROMO_LIST)
+    @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        return PromoListActivity.newInstance(context);
+        int autoSelectedMenuId = extras.getInt(LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, 0);
+        int autoSelectedCategoryId = extras.getInt(LoyaltyAppLink.PROMO_NATIVE_QUERY_CATEGORY_ID, 0);
+        return PromoListActivity.newInstance(context, autoSelectedMenuId, autoSelectedCategoryId);
     }
 
     @Override
@@ -82,7 +86,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        autoSelectedMenuId = extras.getInt(EXTRA_AUTO_SELECTED_MENU_ID);
+        autoSelectedCategoryId = extras.getInt(EXTRA_AUTO_SELECTED_CATEGORY_ID);
     }
 
     @Override
@@ -136,10 +141,14 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        int indexMenuAutoSelected = 0;
         for (int i = 0; i < promoMenuDataList.size(); i++) {
             MenuPromoTab menuPromoTab = new MenuPromoTab(this);
             menuPromoTab.renderData(promoMenuDataList.get(i));
             tabLayout.getTabAt(i).setCustomView(menuPromoTab);
+            if (promoMenuDataList.get(i).getMenuId().equals(String.valueOf(autoSelectedMenuId))) {
+                indexMenuAutoSelected = i;
+            }
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -166,7 +175,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        TabLayout.Tab firstTab = tabLayout.getTabAt(0);
+        TabLayout.Tab firstTab = tabLayout.getTabAt(indexMenuAutoSelected);
+
         if (firstTab != null) {
             firstTab.select();
             ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
