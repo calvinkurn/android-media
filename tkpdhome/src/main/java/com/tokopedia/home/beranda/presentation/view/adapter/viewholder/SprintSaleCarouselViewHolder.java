@@ -177,7 +177,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                 } else {
                     holder.stockStatus.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
-                if (grid.getSoldPercentage() > 0) {
+                if (grid.getSoldPercentage() < 100) {
                     holder.stockProgress.setVisibility(View.VISIBLE);
                     holder.stockProgress.setProgress(grid.getSoldPercentage());
                 } else {
