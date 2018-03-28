@@ -12,12 +12,6 @@
 
             <corners android:topLeftRadius="0dp" android:topRightRadius="12dp"
                      android:bottomLeftRadius="12dp" android:bottomRightRadius="12dp"/>
-
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
         </shape>
     </item>
 

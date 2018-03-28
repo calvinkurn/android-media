@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
-import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
@@ -30,7 +29,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     private static final String KEY_TOKOCASH_DATA = TkpdCache.Key.KEY_TOKOCASH_DATA;
 
     private final PeopleService peopleService;
-    private final CloverService cloverService;
     private final DepositService depositService;
     private final NotificationService notificationService;
     private final CompositeSubscription compositeSubscription;
@@ -38,7 +36,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     public NetworkInteractorImpl() {
         peopleService = new PeopleService();
         depositService = new DepositService();
-        cloverService = new CloverService();
         notificationService = new NotificationService();
         compositeSubscription = new CompositeSubscription();
     }
