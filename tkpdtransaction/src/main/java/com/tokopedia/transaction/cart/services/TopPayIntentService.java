@@ -46,6 +46,11 @@ public class TopPayIntentService extends IntentService {
     public static final int SERVICE_ACTION_NO_DEFINED = 0;
     public static final int SERVICE_ACTION_GET_PARAMETER_DATA = 1;
     public static final int SERVICE_ACTION_GET_THANKS_TOP_PAY = 2;
+    public static final String FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
+    public static final String FINGERPRINT_SUPPORT = "fingerprint_support";
+    public static final String FINGERPRINT_SUPPORT1 = "fingerprint_support";
+    public static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    public static final String FINGERPRINT = "fingerprint";
 
     private ICartDataInteractor cartDataInteractor;
 
@@ -161,7 +166,7 @@ public class TopPayIntentService extends IntentService {
     }
 
     private void getParameterDataTopPay(CheckoutData checkoutData) {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.put("donation_amt", checkoutData.getDonationValue());
         params.put("gateway", checkoutData.getGateway());
         params.put("token_cart", checkoutData.getToken());
@@ -195,7 +200,7 @@ public class TopPayIntentService extends IntentService {
         sendBroadcast(intent);
 
         cartDataInteractor.getParameterTopPay(
-                AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
+                AuthUtil.generateParamsNetwork2(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {
                     @Override
                     public void onCompleted() {
@@ -253,14 +258,14 @@ public class TopPayIntentService extends IntentService {
         );
     }
 
-    private TKPDMapParam<String, String> createParamFingerprint(TKPDMapParam<String, String> params) {
+    private TKPDMapParam<String, Object> createParamFingerprint(TKPDMapParam<String, Object> params) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             FingerprintManagerCompat fingerprintManagerCompat = FingerprintManagerCompat.from(this);
             if (fingerprintManagerCompat.isHardwareDetected() && fingerprintManagerCompat.hasEnrolledFingerprints()) {
                 String publicKey = "";
                 try {
-                    KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-                    KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder("tes",
+                    KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE);
+                    KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(FINGERPRINT,
                             KeyProperties.PURPOSE_ENCRYPT |
                                     KeyProperties.PURPOSE_DECRYPT)
                             .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
@@ -274,10 +279,10 @@ public class TopPayIntentService extends IntentService {
                 } catch (NoSuchProviderException e) {
                     e.printStackTrace();
                 }
-                params.put("fingerprint_publickey", publicKey);
-                params.put("fingerprint_support", "true");
+                params.put(FINGERPRINT_PUBLICKEY, publicKey);
+                params.put(FINGERPRINT_SUPPORT, true);
             }else{
-                params.put("fingerprint_support", "false");
+                params.put(FINGERPRINT_SUPPORT1, false);
             }
         }
         return params;

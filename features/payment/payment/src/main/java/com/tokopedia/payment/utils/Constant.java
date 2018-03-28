@@ -14,5 +14,8 @@ public interface Constant {
         String APP_LINK_SCHEME_WEB_VIEW = "tokopedia://webviewbackhome";
         String APP_LINK_SCHEME_HOME = "tokopedia://home";
         String APP_LINK_FINGERPRINT = "tokopedia://fingerprint/save";
+        String TOP_PAY_DOMAIN_CREDIT_CARD = "https://pay.tokopedia.com";
+        String TOP_PAY_PATH_CREDIT_CARD_VERITRANS = "/v2/3dsecure/cc/veritrans";
+        String TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA = "/v2/3dsecure/sprintasia";
     }
 }

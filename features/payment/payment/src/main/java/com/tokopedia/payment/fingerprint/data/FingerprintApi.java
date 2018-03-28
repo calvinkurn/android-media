@@ -1,7 +1,12 @@
 package com.tokopedia.payment.fingerprint.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.payment.fingerprint.data.model.DataResponseSavePublicKey;
+import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
+import com.tokopedia.payment.fingerprint.data.model.ResponseRegisterFingerprint;
+import com.tokopedia.payment.fingerprint.util.FingerprintConstant;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -17,7 +22,10 @@ import rx.Observable;
 public interface FingerprintApi {
 
     @FormUrlEncoded
-    @POST()
-    Observable<Response<DataResponse<Boolean>>> saveFingerPrint(@FieldMap Map<String, String> params);
+    @POST(FingerprintConstant.V2_FINGERPRINT_PUBLICKEY_SAVE)
+    Observable<Response<ResponseRegisterFingerprint>> saveFingerPrint(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(FingerprintConstant.V2_PAYMENT_CC_FINGERPRINT)
+    Observable<Response<ResponsePaymentFingerprint>> paymentWithFingerPrint(@FieldMap HashMap<String, String> params);
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.payment.fingerprint.data;
 
+import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
 
 import java.util.HashMap;
@@ -21,5 +22,15 @@ public class FingerprintRepositoryImpl implements FingerprintRepository {
     @Override
     public Observable<Boolean> saveFingerprint(HashMap<String, String> params) {
         return fingerprintDataSourceCloud.saveFingerPrint(params);
+    }
+
+    @Override
+    public Observable<ResponsePaymentFingerprint> paymentWithFingerPrint(HashMap<String, String> params) {
+        return fingerprintDataSourceCloud.paymentWithFingerPrint(params);
+    }
+
+    @Override
+    public Observable<Boolean> savePublicKey(HashMap<String, String> params) {
+        return fingerprintDataSourceCloud.savePublicKey(params);
     }
 }

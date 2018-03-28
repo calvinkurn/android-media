@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/dp_16"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_fingerprint" />
+
+    <TextView
+        style="@style/TextView.Micro"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:text="@string/fingerprint_label_or" />
+
+    <Button
+        android:id="@+id/button_use_otp"
+        style="@style/Button.Submit.Green"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_36"
+        android:padding="@dimen/dp_4"
+        android:text="@string/fingerprint_label_use_OTP" />
+
+</LinearLayout>

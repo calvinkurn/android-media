@@ -2,4 +2,9 @@
     <string name="app_name">Tokopedia Payment</string>
 
     <string name="app_android">App Android</string>
+    <string name="fingerprint_label_successed_fingerprint">Pendaftaran sidik jari berhasil</string>
+    <string name="fingerprint_label_failed_fingerprint">Pendaftaran sidik jari gagal.</string>
+    <string name="fingerprint_label_failed_scan">Scan Gagal, Coba Lagi</string>
+    <string name="fingerprint_label_or">Atau</string>
+    <string name="fingerprint_label_use_OTP">Gunakan OTP</string>
 </resources>
