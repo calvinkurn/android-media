@@ -1,9 +1,9 @@
 <resources>
-    <dimen name="reward_translate_y_axis">-1000</dimen>
+    <integer name="reward_translate_y_axis">-300</integer>
     <dimen name="width_egg">200dp</dimen>
     <dimen name="height_egg">200dp</dimen>
-    <dimen name="to_x_scale_reward_anim">6.0</dimen>
-    <dimen name="to_y_scale_reward_anim">6.0</dimen>
-    <dimen name="translate_egg_to_y_delta">-100</dimen>
+    <fraction name="to_x_scale_reward_anim">6.0%</fraction>
+    <fraction name="to_y_scale_reward_anim">6.0%</fraction>
+    <integer name="translate_egg_to_y_delta">-100</integer>
     <dimen name="text_size_countdown_timer">24sp</dimen>
 </resources>

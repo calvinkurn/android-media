@@ -1,7 +1,5 @@
-package com.tokopedia.gamification.cracktoken;
+package com.tokopedia.gamification.cracktoken.presentation.fragment;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,7 +18,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,32 +26,21 @@ import android.widget.TextView;
 
 import com.example.gamification.R;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetTokenView;
 
 /**
  * @author Rizky on 28/03/18.
  */
 
-public class CrackTokenFragment extends BaseDaggerFragment {
+public class CrackTokenFragment extends BaseDaggerFragment implements WidgetTokenView.OnWidgetTokenViewListener {
 
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-    private static final String FORMAT = "%02d";
 
     private CountDownTimer countDownTimer;
 
     private TextView textCountdownTimer;
 
-    private Bitmap fullEggBitmap;
-    private Bitmap crackedEgg;
-    private Bitmap leftCrackedEgg;
-    private Bitmap rightCrackedEgg;
-
-    private ImageView imageViewFull;
-    private MaskedHeightImageView imageViewCracked;
-    private ImageView imageViewLeft;
-    private ImageView imageViewRight;
-
-    private ImageView imageViewLightLeft;
-    private ImageView imageViewLightRight;
+    private WidgetTokenView widgetTokenView;
 
 //    private ImageView imageHand;
 
@@ -90,22 +76,9 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.special_sprite);
-        fullEggBitmap = getFullEgg(bitmap);
-        crackedEgg = getCrackedEgg(bitmap);
-        leftCrackedEgg = getCrackedLeftEgg(bitmap);
-        rightCrackedEgg = getCrackedRightEgg(bitmap);
-        bitmap.recycle();
-
         textCountdownTimer = v.findViewById(R.id.text_countdown_timer);
 
-        imageViewFull = v.findViewById(R.id.imagefull);
-        imageViewCracked = v.findViewById(R.id.imagecracked);
-        imageViewLeft = v.findViewById(R.id.imageleft);
-        imageViewRight = v.findViewById(R.id.imageright);
-
-        imageViewLightLeft = v.findViewById(R.id.image_light_left);
-        imageViewLightRight = v.findViewById(R.id.image_light_top);
+        widgetTokenView = v.findViewById(R.id.widget_token_view);
 
 //        imageHand = v.findViewById(R.id.image_hand);
 
@@ -115,36 +88,44 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         imageReward = v.findViewById(R.id.image_reward);
         imageBgReward = v.findViewById(R.id.image_bg_reward);
 
-        imageViewFull.setImageBitmap(fullEggBitmap);
-        imageViewCracked.setImageBitmap(crackedEgg);
-
         decAccInterpolator = new AccelerateDecelerateInterpolator();
 
-        showCountdownTimer();
-        showLightAnimation();
-        shakeTheEgg();
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.special_sprite);
+        Bitmap fullEggBitmap = getFullEgg(bitmap);
+        Bitmap crackedEgg = getCrackedEgg(bitmap);
+        Bitmap leftCrackedEgg = getCrackedLeftEgg(bitmap);
+        Bitmap rightCrackedEgg = getCrackedRightEgg(bitmap);
+        bitmap.recycle();
 
-        imageViewFull.setOnClickListener(new View.OnClickListener() {
+        showCountdownTimer();
+
+        //        showLightAnimation();
+
+        widgetTokenView.setListener(this);
+
+        widgetTokenView.setToken(fullEggBitmap, crackedEgg, rightCrackedEgg, leftCrackedEgg);
+
+        widgetTokenView.shake();
+
+        widgetTokenView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isClicked) {
-                    imageViewLightLeft.clearAnimation();
-                    imageViewLightLeft.setVisibility(View.GONE);
-                    imageViewLightRight.clearAnimation();
-                    imageViewLightRight.setVisibility(View.GONE);
+//                    imageViewLightLeft.clearAnimation();
+//                    imageViewLightLeft.setVisibility(View.GONE);
+//                    imageViewLightRight.clearAnimation();
+//                    imageViewLightRight.setVisibility(View.GONE);
+//
+//                    imageViewFull.clearAnimation();
+//                    imageViewCracked.clearAnimation();
 
-                    imageViewFull.clearAnimation();
-                    imageViewCracked.clearAnimation();
-
-                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.shake_hard);
-                    imageViewFull.startAnimation(animation);
-                    imageViewCracked.startAnimation(animation);
+                    widgetTokenView.shakeHard();
 
                     countDownTimer.cancel();
 
                     textCountdownTimer.setVisibility(View.GONE);
 
-                    doCrack();
+                    widgetTokenView.crack();
                 }
                 isClicked = true;
             }
@@ -228,88 +209,6 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         }.start();
     }
 
-    private void showLightAnimation() {
-        AlphaAnimation alphaAnimationLeft = new AlphaAnimation(0f, 1f);
-        alphaAnimationLeft.setDuration(100);
-        alphaAnimationLeft.setRepeatCount(Animation.INFINITE);
-        alphaAnimationLeft.setStartOffset(5000);
-        alphaAnimationLeft.setRepeatMode(Animation.REVERSE);
-
-        AlphaAnimation alphaAnimationRight = new AlphaAnimation(0f, 1f);
-        alphaAnimationRight.setDuration(100);
-        alphaAnimationRight.setRepeatCount(Animation.INFINITE);
-        alphaAnimationRight.setStartOffset(8000);
-        alphaAnimationRight.setRepeatMode(Animation.REVERSE);
-
-        imageViewLightLeft.setAnimation(alphaAnimationLeft);
-        imageViewLightRight.setAnimation(alphaAnimationRight);
-
-        alphaAnimationLeft.start();
-        alphaAnimationRight.start();
-    }
-
-    private void shakeTheEgg() {
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
-        imageViewFull.startAnimation(animation);
-        imageViewCracked.startAnimation(animation);
-    }
-
-    private void doCrack() {
-        ValueAnimator crackingEggValAnimator = ValueAnimator.ofInt(100, 0);
-        crackingEggValAnimator.setInterpolator(new DecelerateInterpolator());
-        crackingEggValAnimator.setDuration(1000);
-        crackingEggValAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animatedValue = (int) animation.getAnimatedValue();
-                imageViewCracked.setPercentMasked(animatedValue);
-            }
-        });
-        crackingEggValAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imageViewFull.setVisibility(View.GONE);
-                imageViewCracked.setVisibility(View.GONE);
-
-                imageViewLeft.setImageBitmap(leftCrackedEgg);
-                imageViewRight.setImageBitmap(rightCrackedEgg);
-                imageViewLeft.setVisibility(View.VISIBLE);
-                imageViewRight.setVisibility(View.VISIBLE);
-
-                imageViewFull.clearAnimation();
-                imageViewCracked.clearAnimation();
-
-                doSplit();
-                showRewards();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        crackingEggValAnimator.start();
-    }
-
-    private void doSplit() {
-        Animation rotateRightAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.animation_rotate_right_and_translate);
-        imageViewRight.setAnimation(rotateRightAnimation);
-        Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.animation_rotate_left_and_translate);
-        imageViewLeft.setAnimation(rotateLeftAnimation);
-        rotateLeftAnimation.start();
-        rotateRightAnimation.start();
-    }
-
     private void showRewards() {
         showRewardImageAnimation();
         showRewardBackgroundAnimation();
@@ -375,20 +274,23 @@ public class CrackTokenFragment extends BaseDaggerFragment {
     private void resetEgg() {
         isClicked = false;
 
-        imageViewRight.clearAnimation();
-        imageViewRight.setVisibility(View.GONE);
+        widgetTokenView.reset();
 
-        imageViewLeft.clearAnimation();
-        imageViewLeft.setVisibility(View.GONE);
-
-        imageViewFull.setVisibility(View.VISIBLE);
-        imageViewCracked.setPercentMasked(100);
+//        imageViewRight.clearAnimation();
+//        imageViewRight.setVisibility(View.GONE);
+//
+//        imageViewLeft.clearAnimation();
+//        imageViewLeft.setVisibility(View.GONE);
+//
+//        imageViewFull.setVisibility(View.VISIBLE);
+//        imageViewCracked.setPercentMasked(100);
 
         textCountdownTimer.setVisibility(View.VISIBLE);
 
         showCountdownTimer();
-        showLightAnimation();
-        shakeTheEgg();
+
+        //        showLightAnimation();
+        widgetTokenView.shake();
     }
 
     private Bitmap getFullEgg(Bitmap bitmap) {
@@ -426,4 +328,8 @@ public class CrackTokenFragment extends BaseDaggerFragment {
         return bmOverlay;
     }
 
+    @Override
+    public void onTokenCracked() {
+        widgetTokenView.split();
+    }
 }
