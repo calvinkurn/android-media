@@ -17,6 +17,9 @@ public class GetChannelInfoUseCase extends UseCase<ChannelInfoViewModel> {
 
 
     public static final String PARAM_CHANNEL_UUID = "channel_uuid";
+    private static final String PARAM_IS_REFRESH = "is_refresh";
+    private static final int TRUE = 1;
+    private static int FALSE = 0;
 
     private ChannelInfoSource channelInfoSource;
 
@@ -34,6 +37,13 @@ public class GetChannelInfoUseCase extends UseCase<ChannelInfoViewModel> {
     public static RequestParams createParams(String channelUuid) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_CHANNEL_UUID, channelUuid);
+        return params;
+    }
+
+    public static RequestParams createParams(String channelUuid, boolean isRefresh) {
+        RequestParams params = RequestParams.create();
+        params.putAll(createParams(channelUuid).getParameters());
+        params.putInt(PARAM_IS_REFRESH, isRefresh ? TRUE : FALSE);
         return params;
     }
 }
