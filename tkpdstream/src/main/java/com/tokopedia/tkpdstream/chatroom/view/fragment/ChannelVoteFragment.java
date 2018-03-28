@@ -163,6 +163,34 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         showVoteLayout((VoteInfoViewModel) temp);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (voteInfoViewModel != null
+                && voteInfoViewModel != null
+                && voteInfoViewModel.getStartTime() != 0
+                && voteInfoViewModel.getEndTime() != 0
+                && voteInfoViewModel.getStartTime()
+                < voteInfoViewModel.getEndTime()
+                && voteInfoViewModel.getEndTime()
+                > System.currentTimeMillis() / 1000L
+                ) {
+            progressBarWithTimer.restart();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        progressBarWithTimer.cancel();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        progressBarWithTimer.cancel();
+        super.onDestroy();
+    }
 
     private void prepareView() {
         VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);

@@ -116,6 +116,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     public static final String VOTE_TYPE = "vote_type";
     private static final String TOTAL_VIEW = "total_view";
     private String voteType;
+    private Runnable runnable;
+    private Handler tooltipHandler;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -264,6 +266,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         sponsorLayout = findViewById(R.id.sponsor_layout);
         sponsorImage = findViewById(R.id.sponsor_image);
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                showTooltip();
+            }
+        };
     }
 
     private void initData() {
@@ -707,12 +716,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setTooltip() {
         if (checkPollValid()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showTooltip();
-                }
-            }, TOOLTIP_DELAY);
+            tooltipHandler = new Handler();
+            tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
         }
     }
 
@@ -723,7 +728,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabs.getChildAt(CHANNEL_VOTE_FRAGMENT) != null) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip, this);
             View anchorView = tabs.getChildAt(CHATROOM_FRAGMENT);
-            if(view != null && anchorView != null){
+            if (view != null && anchorView != null) {
                 ToolTipUtils.showToolTip(view, anchorView);
             }
         }
@@ -824,6 +829,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
+        if (tooltipHandler != null && runnable != null) {
+            tooltipHandler.postDelayed(runnable, TOOLTIP_DELAY);
+        }
+
         kickIfIdleForTooLong();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
@@ -846,20 +855,20 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (currentFragmentIsChat()) {
             refreshChat();
-        }else if(currentFragmentIsVote()){
+        } else if (currentFragmentIsVote()) {
             refreshVote(channelInfoViewModel.getVoteInfoViewModel());
         }
     }
 
-    public void onPushNotifReceived(){
+    public void onPushNotifReceived() {
         GroupChatPointsViewModel model = new GroupChatPointsViewModel(
                 "Selamat! Anda mendapatkan 20 poin dari channel ini. Cek sekarang!"
                 , "Cek sekarang!"
                 , "www.tokopedia.com"
         );
-        if(currentFragmentIsChat()){
+        if (currentFragmentIsChat()) {
             showPushNotif(model);
-        }else {
+        } else {
             viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
         }
     }
@@ -881,6 +890,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onPause() {
+        if(tooltipHandler !=null && runnable != null) {
+            tooltipHandler.removeCallbacks(runnable);
+        }
         super.onPause();
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
@@ -892,6 +904,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(tooltipHandler !=null && runnable != null) {
+            tooltipHandler.removeCallbacks(runnable);
+        }
         presenter.detachView();
         presenter.logoutChannel(mChannel);
     }
@@ -1138,7 +1153,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (!currentFragmentIsVote() && voteInfoViewModel.getStatusId() != VoteInfoViewModel.STATUS_CANCELED) {
             tabAdapter.change(CHANNEL_VOTE_FRAGMENT, true);
-            if(voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
+            if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE
                     && voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_ACTIVE) {
                 setTooltip();
             }

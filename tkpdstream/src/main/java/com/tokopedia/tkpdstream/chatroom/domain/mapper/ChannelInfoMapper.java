@@ -53,7 +53,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToChannelDesc(pojo.getChannel()),
                 mapToSprintSaleViewModel(pojo.getChannel()),
-                pojo.getChannel().getSendBirdToken());
+                pojo.getChannel().getSendBirdToken(), null);
     }
 
     private SprintSaleViewModel mapToSprintSaleViewModel(Channel channel) {
