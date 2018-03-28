@@ -115,6 +115,7 @@ public class ExploreDataSource {
                     for (int i = 0; i < model.getLayoutSections().size(); i++) {
                         LayoutSections s = model.getLayoutSections().get(i);
                         ExploreSectionViewModel sectionViewModel = new ExploreSectionViewModel();
+                        sectionViewModel.setUseCaseIcon(model.getUseCaseIcons().get(i));
                         sectionViewModel.setTitle(s.getTitle());
                         if (i == 0 && model.getFavCategory() != null) {
                             sectionViewModel.addVisitable(mappingFavoriteCategory(model.getFavCategory()));
