@@ -42,10 +42,10 @@ public class ActivePoll {
     private String status;
     @SerializedName("start_time")
     @Expose
-    private int startTime;
+    private long startTime;
     @SerializedName("end_time")
     @Expose
-    private int endTime;
+    private long endTime;
     @SerializedName("statistic")
     @Expose
     private Statistic statistic;
@@ -144,19 +144,19 @@ public class ActivePoll {
         this.status = status;
     }
 
-    public int getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
