@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_special_egg">
+
+    <TextView
+        android:id="@+id/text_countdown_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/container_egg_and_light"
+        android:layout_marginBottom="@dimen/margin_bottom_text_countdown_timer"
+        android:background="@drawable/bg_countdown_timer"
+        android:paddingBottom="8dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_countdown_timer"
+        android:textStyle="bold"
+        tools:text="12:00:00" />
+
+    <FrameLayout
+        android:id="@+id/container_egg_and_light"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imagefull"
+            android:layout_width="@dimen/width_egg"
+            android:layout_height="@dimen/height_egg"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@mipmap/ic_launcher" />
+
+        <com.example.nakama.myapplication.MaskedHeightImageView
+            android:id="@+id/imagecracked"
+            android:layout_width="@dimen/width_egg"
+            android:layout_height="@dimen/height_egg"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@mipmap/ic_launcher" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginEnd="100dp"
+            android:layout_gravity="center"
+            android:id="@+id/image_light_left"
+            android:src="@drawable/sinar_copy"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="100dp"
+            android:layout_gravity="center|top"
+            android:id="@+id/image_light_top"
+            android:src="@drawable/sinar_copy"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageleft"
+            android:layout_width="@dimen/width_egg"
+            android:layout_height="@dimen/height_egg"
+            android:layout_marginRight="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@mipmap/ic_launcher" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageright"
+            android:layout_width="@dimen/width_egg"
+            android:layout_height="@dimen/height_egg"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@mipmap/ic_launcher" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/background_view_reward"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/container_text_reward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginBottom="@dimen/margin_bottom_container_text_reward"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_reward_label"
+            android:text="Selamat anda mendapatkan"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+50 Points"
+            android:textColor="#ffdc00"
+            android:textSize="34sp" />
+
+        <Button
+            android:id="@+id/button_check_reward"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cek dan Gunakan Hadiah Anda" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_bg_reward"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/bg_light_reward"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_reward"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/coupon"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <!--<android.support.v7.widget.AppCompatImageView-->
+        <!--android:id="@+id/image_hand"-->
+        <!--android:src="@drawable/hand"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="80dp" />-->
+
+</RelativeLayout>
