@@ -153,8 +153,6 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 presenter.checkPhoneNumber(phoneNumber.getText().toString());
             }
         });
-        nextButton.setEnabled(false);
-
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
                 " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
