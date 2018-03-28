@@ -448,21 +448,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showChannelInfoFragment() {
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        Fragment fragment = getSupportFragmentManager().
-                findFragmentByTag(ChannelInfoFragment.class.getSimpleName());
+        Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ChannelInfoFragment.createInstance(bundle);
-        }
-        ((ChannelInfoFragmentListener.View) fragment).renderData(
-                viewModel.getChannelInfoViewModel().getChannelViewModel());
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
@@ -842,12 +830,33 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (currentFragmentIsChat()) {
             refreshChat();
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
     }
 
     private void refreshChat() {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).refreshChat();
+    }
+
+    private Fragment populateChannelInfoFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(
+                ChannelInfoFragment.class.getSimpleName());
+
+        if (fragment == null) {
+            fragment = ChannelInfoFragment.createInstance(bundle);
+        }
+
+        ((ChannelInfoFragmentListener.View) fragment).renderData(
+                viewModel.getChannelInfoViewModel().getChannelViewModel());
+
+        return fragment;
     }
 
     @Override
