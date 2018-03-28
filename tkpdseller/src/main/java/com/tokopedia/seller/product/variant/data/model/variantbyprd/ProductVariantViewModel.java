@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.util.SparseIntArray;
 
 import java.util.ArrayList;
@@ -13,9 +14,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
@@ -251,11 +250,12 @@ public class ProductVariantViewModel implements Parcelable {
 
         boolean hasLevel2 = productVariantOptionParentLevel2 != null && productVariantOptionParentLevel2.hasProductVariantOptionChild();
 
+        HashMap<Pair<Integer, Integer>, Integer> mapCombination = new HashMap<>();
+
+        ArrayList<Integer> invalidIndexList = new ArrayList<>();
         // generate the matrix axb based on level 1 and level2.
         // example level1 has a variant, level 2 has b variants, the matrix will be (axb)
         // map is used to lookup if the value1x value2 already exist.
-        ArrayList<Integer> invalidIndexList = new ArrayList<>();
-
         for (int i = 0, sizei = productVariantCombinationViewModelList.size(); i < sizei; i++) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel = productVariantCombinationViewModelList.get(i);
 
@@ -290,6 +290,14 @@ public class ProductVariantViewModel implements Parcelable {
                 int tIdLevel2 = productVariantOptionParentLevel2.getProductVariantOptionChild().get(indexLevel2).gettId();
                 integerList.add(tIdLevel2);
             }
+            // to remove duplicate pair that we found (bug from server)
+            Pair<Integer, Integer> pair = new Pair<>(integerList.get(0), integerList.size() > 1 ? integerList.get(1) : -1);
+            if (mapCombination.get(pair) != null) {
+                invalidIndexList.add(i);
+                continue;
+            }
+            mapCombination.put(pair, i);
+
             productVariantCombinationViewModel.setOpt(integerList);
         }
 
@@ -301,6 +309,7 @@ public class ProductVariantViewModel implements Parcelable {
             }
             setProductVariant(productVariantCombinationViewModelList);
         }
+
         return this;
     }
 
