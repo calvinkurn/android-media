@@ -721,7 +721,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         Integer.valueOf(product.getAdId()),
                         FeedEnhancedTracking.Promotion
                                 .createContentNameTopadsProduct(),
-                        product.getAdRefKey(),
+                        (product.getAdRefKey().equals("") ? "none" : product.getAdRefKey()),
                         position,
                         String.valueOf(product.getCategory()),
                         Integer.valueOf(product.getId()),

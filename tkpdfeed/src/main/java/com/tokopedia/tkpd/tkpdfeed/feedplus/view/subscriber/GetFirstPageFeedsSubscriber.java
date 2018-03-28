@@ -333,7 +333,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                         Integer.valueOf(data.getId()),
                                         FeedEnhancedTracking.Promotion
                                                 .createContentNameTopadsProduct(),
-                                        data.getAdRefKey(),
+                                        (data.getAdRefKey().equals("") ? "none" : data.getAdRefKey()),
                                         currentPosition,
                                         String.valueOf(data.getProduct().getCategory()),
                                         Integer.valueOf(data.getId()),
