@@ -106,9 +106,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
             Intent intent = null;
-            if (false && !isAudioShakeEnable()) {
+            if (!isAudioShakeEnable()) {
                 intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext);
-            } else { // feature under development
+            } else if(false) { // feature under development
                 intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
             }
             if(intent != null) {

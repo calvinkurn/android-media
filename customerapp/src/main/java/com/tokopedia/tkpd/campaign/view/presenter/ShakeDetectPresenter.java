@@ -99,7 +99,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                 CampaignTracking.eventShakeShake("fail",ShakeDetectManager.sTopActivity,"","");
                 getView().sendBroadcast(intent);
-                v.vibrate(500);
                 getView().finish();
             }
 
@@ -111,7 +110,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 intent.putExtra("data",s.getUrl());
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
-                v.vibrate(500);
+                if(s.getVibrate() == 1)
+                    v.vibrate(500);
                 getView().sendBroadcast(intent);
                 CampaignTracking.eventShakeShake("success",ShakeDetectManager.sTopActivity,"",s.getUrl());
 
