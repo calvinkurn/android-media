@@ -86,6 +86,13 @@ public class CartProduct implements Parcelable {
     @SerializedName("product_min_order")
     @Expose
     private String productMinOrder;
+    @SerializedName("home_attribution")
+    @Expose
+    private String homeAttribution;
+    @SerializedName("list_name_product")
+    @Expose
+    private String listNameProduct;
+
 
     public String getProductTotalWeight() {
         return productTotalWeight;
@@ -295,6 +302,21 @@ public class CartProduct implements Parcelable {
         this.productMinOrder = productMinOrder;
     }
 
+    public String getHomeAttribution() {
+        return homeAttribution;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getListNameProduct() {
+        return listNameProduct;
+    }
+
+    public void setListNameProduct(String listNameProduct) {
+        this.listNameProduct = listNameProduct;
+    }
 
     @Override
     public int describeContents() {
@@ -329,6 +351,8 @@ public class CartProduct implements Parcelable {
         dest.writeValue(this.productUseInsurance);
         dest.writeString(this.productTotalPriceIdr);
         dest.writeString(this.productMinOrder);
+        dest.writeString(this.homeAttribution);
+        dest.writeString(this.listNameProduct);
     }
 
     public CartProduct() {
@@ -361,6 +385,8 @@ public class CartProduct implements Parcelable {
         this.productUseInsurance = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productTotalPriceIdr = in.readString();
         this.productMinOrder = in.readString();
+        this.homeAttribution = in.readString();
+        this.listNameProduct = in.readString();
     }
 
     public static final Creator<CartProduct> CREATOR = new Creator<CartProduct>() {
