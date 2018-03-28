@@ -59,6 +59,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.tokopedia.sellerapp.Utils.nthChildOf;
 import static org.hamcrest.core.Is.is;
 
 /**
@@ -190,8 +191,9 @@ public class LoginActivityTest {
         onView(withText("You should car about that"))
                 .perform(scrollTo());
 
-        UiObject threeButton = device.findObject(new UiSelector().text("You should car about that"));
-        threeButton.click();
+        onView(nthChildOf(withId(R.id.login_buttons_container), 3)).check(matches(withText("You should car about that")));
+
+        onView(nthChildOf(withId(R.id.login_buttons_container), 3)).perform(click());
 
         // necessary to make it wait.
         Thread.sleep(3000);
