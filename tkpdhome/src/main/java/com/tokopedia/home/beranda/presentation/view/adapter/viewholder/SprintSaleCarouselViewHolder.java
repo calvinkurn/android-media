@@ -70,6 +70,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         container = itemView.findViewById(R.id.container);
         headerBg = itemView.findViewById(R.id.header_bg);
         title = itemView.findViewById(R.id.title);
+        title.setSelected(true);
         seeMore = itemView.findViewById(R.id.see_more);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
