@@ -52,8 +52,6 @@ public interface GroupChatContract {
         void vibratePhone();
 
         void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
-
-        VoteInfoViewModel getVoteInfoViewModel();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
