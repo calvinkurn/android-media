@@ -37,7 +37,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private TextView name;
     private ImageView avatar;
     private TextView label;
-    //private ImageView followIcon;
     private TextView followText;
     private View followButton;
     private ImageView reviewImage;
@@ -58,7 +57,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         name = (TextView) itemView.findViewById(R.id.name);
         avatar = (ImageView) itemView.findViewById(R.id.avatar);
         label = (TextView) itemView.findViewById(R.id.label);
-        //followIcon = (ImageView) itemView.findViewById(R.id.follow_icon);
         followText = (TextView) itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
         reviewImage = (ImageView) itemView.findViewById(R.id.image);
@@ -98,11 +96,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
-            //ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
             topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
-            //ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.green_500));
             followText.setText(R.string.action_follow_english);
