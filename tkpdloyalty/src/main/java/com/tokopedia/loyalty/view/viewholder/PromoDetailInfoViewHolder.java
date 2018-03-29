@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.viewholder;
 
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,7 +43,7 @@ public class PromoDetailInfoViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(PromoDetailInfoHolderData holderData) {
         ImageHandler.LoadImage(this.ivPromoDetailThumbnail, holderData.getThumbnailImageUrl());
-        this.tvPromoDetailTitle.setText(holderData.getTitle());
+        this.tvPromoDetailTitle.setText(Html.fromHtml(holderData.getTitle()));
         this.tvPromoDetailPeriod.setText(holderData.getPromoPeriod());
         this.tvPromoDetailMinTransaction.setText(holderData.getMinTransaction());
         this.fabPromoDetailShare.setOnClickListener(promoShareListener(holderData.getPromoData()));
