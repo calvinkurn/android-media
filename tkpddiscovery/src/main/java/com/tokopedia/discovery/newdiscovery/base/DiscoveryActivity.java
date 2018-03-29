@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -48,7 +47,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -78,7 +76,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private MenuItem searchItem;
     private boolean isLastRequestForceSearch;
 
-    private boolean fromCamera;
     private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
     private final int MAX_WIDTH = 400;
@@ -424,8 +421,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
 
-            fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
-
             uploadDialog.onResult(
                     requestCode,
                     resultCode,
@@ -458,16 +453,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void onImagePickedSuccess(String imagePath) {
-
         File imgFile = new File(imagePath);
         if (imgFile.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
             myBitmap = resize(myBitmap);
-
-            if (fromCamera) {
-                addImageToGallery(myBitmap);
-            }
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
@@ -554,14 +543,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
         return image;
-    }
-
-    public void addImageToGallery(final Bitmap filePath) {
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n;
-        MediaStore.Images.Media.insertImage(getContentResolver(), filePath, fname, "");
     }
 
     public void showSnackBarView(String message) {
