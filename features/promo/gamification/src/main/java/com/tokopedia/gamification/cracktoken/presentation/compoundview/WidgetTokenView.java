@@ -1,6 +1,5 @@
 package com.tokopedia.gamification.cracktoken.presentation.compoundview;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -36,10 +35,12 @@ public class WidgetTokenView extends FrameLayout {
     private Bitmap rightCrackedEgg;
     private Bitmap leftCrackedEgg;
 
-    private OnWidgetTokenViewListener listener;
+    private boolean isTokenClicked;
 
-    public interface OnWidgetTokenViewListener {
-        void onTokenCracked();
+    private WidgetTokenListener listener;
+
+    public interface WidgetTokenListener {
+        void onClick();
     }
 
     public WidgetTokenView(@NonNull Context context) {
@@ -57,7 +58,7 @@ public class WidgetTokenView extends FrameLayout {
         init();
     }
 
-    public void setListener(OnWidgetTokenViewListener listener) {
+    public void setListener(WidgetTokenListener listener) {
         this.listener = listener;
     }
 
@@ -69,6 +70,19 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight = view.findViewById(R.id.imageright);
         imageViewLightLeft = view.findViewById(R.id.image_light_left);
         imageViewLightRight = view.findViewById(R.id.image_light_top);
+
+        imageViewFull.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isTokenClicked) {
+                    clearTokenAnimation();
+                    shakeHard();
+                    crack();
+                    listener.onClick();
+                }
+                isTokenClicked = true;
+            }
+        });
     }
 
     public void setToken(Bitmap full, Bitmap cracked, Bitmap right, Bitmap left) {
@@ -76,6 +90,7 @@ public class WidgetTokenView extends FrameLayout {
         this.leftCrackedEgg = left;
         imageViewFull.setImageBitmap(full);
         imageViewCracked.setImageBitmap(cracked);
+        shake();
         showLightAnimation();
     }
 
@@ -94,21 +109,23 @@ public class WidgetTokenView extends FrameLayout {
 
         imageViewLightLeft.setAnimation(alphaAnimationLeft);
         imageViewLightRight.setAnimation(alphaAnimationRight);
-
-        alphaAnimationLeft.start();
-        alphaAnimationRight.start();
     }
 
-    public void shake() {
+    private void shake() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
-        imageViewFull.startAnimation(animation);
-        imageViewCracked.startAnimation(animation);
+        imageViewFull.setAnimation(animation);
+        imageViewCracked.setAnimation(animation);
     }
 
-    public void shakeHard() {
+    private void shakeHard() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake_hard);
-        imageViewFull.startAnimation(animation);
-        imageViewCracked.startAnimation(animation);
+        imageViewFull.setAnimation(animation);
+        imageViewCracked.setAnimation(animation);
+    }
+
+    public void stopShaking() {
+        imageViewFull.clearAnimation();
+        imageViewCracked.clearAnimation();
     }
 
     public void crack() {
@@ -122,51 +139,30 @@ public class WidgetTokenView extends FrameLayout {
                 imageViewCracked.setPercentMasked(animatedValue);
             }
         });
-        crackingEggValAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imageViewFull.setVisibility(View.GONE);
-                imageViewCracked.setVisibility(View.GONE);
-
-                imageViewLeft.setImageBitmap(leftCrackedEgg);
-                imageViewRight.setImageBitmap(rightCrackedEgg);
-                imageViewLeft.setVisibility(View.VISIBLE);
-                imageViewRight.setVisibility(View.VISIBLE);
-
-                imageViewFull.clearAnimation();
-                imageViewCracked.clearAnimation();
-
-                listener.onTokenCracked();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         crackingEggValAnimator.start();
     }
 
     public void split() {
+        imageViewFull.setVisibility(View.GONE);
+        imageViewCracked.setVisibility(View.GONE);
+
+        imageViewLeft.setImageBitmap(leftCrackedEgg);
+        imageViewRight.setImageBitmap(rightCrackedEgg);
+        imageViewLeft.setVisibility(View.VISIBLE);
+        imageViewRight.setVisibility(View.VISIBLE);
+
+        imageViewFull.clearAnimation();
+        imageViewCracked.clearAnimation();
+
         Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
         imageViewRight.setAnimation(rotateRightAnimation);
         Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
         imageViewLeft.setAnimation(rotateLeftAnimation);
-        rotateLeftAnimation.start();
-        rotateRightAnimation.start();
     }
 
     public void reset() {
+        isTokenClicked = false;
+
         imageViewRight.clearAnimation();
         imageViewRight.setVisibility(View.GONE);
 
@@ -175,6 +171,18 @@ public class WidgetTokenView extends FrameLayout {
 
         imageViewFull.setVisibility(View.VISIBLE);
         imageViewCracked.setPercentMasked(100);
+
+        showLightAnimation();
+    }
+
+    public void clearTokenAnimation() {
+        imageViewLightLeft.clearAnimation();
+        imageViewLightLeft.setVisibility(View.GONE);
+        imageViewLightRight.clearAnimation();
+        imageViewLightRight.setVisibility(View.GONE);
+
+        imageViewFull.clearAnimation();
+        imageViewCracked.clearAnimation();
     }
 
 }

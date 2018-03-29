@@ -8,11 +8,11 @@
 
     <integer name="translate_egg_to_y_delta">-85</integer>
 
-    <integer name="reward_translate_y_axis">-300</integer>
-    <fraction name="to_x_scale_reward_anim">4.5%</fraction>
-    <fraction name="to_y_scale_reward_anim">4.5%</fraction>
-    <fraction name="to_x_scale_bg_reward_anim">5.5%</fraction>
-    <fraction name="to_y_scale_bg_reward_anim">5.5%</fraction>
+    <integer name="reward_translate_y_axis">-500</integer>
+    <fraction name="to_x_scale_reward_anim">450%</fraction>
+    <fraction name="to_y_scale_reward_anim">450%</fraction>
+    <fraction name="to_x_scale_bg_reward_anim">550%</fraction>
+    <fraction name="to_y_scale_bg_reward_anim">550%</fraction>
 
     <dimen name="text_size_reward_label">16sp</dimen>
     <dimen name="margin_bottom_container_text_reward">120dp</dimen>
