@@ -10,6 +10,11 @@
             android:name="com.tokopedia.gamification.GamificationActivity"
             android:label="@string/title_activity_gamification"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity
+            android:name="com.tokopedia.gamification.TestFloatingActivity"
+            android:label="@string/title_activity_gamification"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

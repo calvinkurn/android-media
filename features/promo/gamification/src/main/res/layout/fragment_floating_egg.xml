@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ini hanya test untuk egg"
+        android:textSize="20sp"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:layout_gravity="bottom|end"/>
+
+    <FrameLayout
+        android:layout_width="@dimen/floating_egg_widget_width"
+        android:layout_height="@dimen/floating_egg_widget_height">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            tools:src="@mipmap/ic_launcher"
+            android:layout_gravity="center_vertical"/>
+        
+    </FrameLayout>
+</FrameLayout>
