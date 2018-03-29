@@ -27,18 +27,35 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
     // if level 2 is null, this will belong to level 1 [Merah: stock 1 price 1000]
     private List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList = new ArrayList<>();
 
-    public ProductVariantDashboardViewModel(ProductVariantOptionChild productVariantOptionChild){
+    public ProductVariantDashboardViewModel(ProductVariantOptionChild productVariantOptionChild) {
         this.productVariantOptionChildLv1 = productVariantOptionChild;
     }
 
-    public void addCombinationModelIfAligned(@NonNull ProductVariantCombinationViewModel productVariantCombinationViewModel,
-                                                @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp,
-                                                SparseIntArray mapPvoToIndex){
+    public void addCombinationModelIfAligned( @NonNull ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                                             @Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp,
+                                             SparseIntArray mapPvoToIndex) {
         List<Integer> optionIntegerList = productVariantCombinationViewModel.getOpt();
         if (optionIntegerList != null && optionIntegerList.size() != 0) {
-            int level1IdOrPvo = productVariantOptionChildLv1.gettId() > 0 ? productVariantOptionChildLv1.gettId():
+            int level1IdOrPvo = productVariantOptionChildLv1.gettId() > 0 ? productVariantOptionChildLv1.gettId() :
                     productVariantOptionChildLv1.getPvo();
-            if (level1IdOrPvo == productVariantCombinationViewModel.getOpt().get(0)){
+
+            // to ignore invalid data from server
+            if (productVariantCombinationViewModel.getOpt() == null || productVariantCombinationViewModel.getOpt().size() == 0) {
+                return;
+            }
+            if (productVariantOptionChildLv2LookUp!= null && productVariantOptionChildLv2LookUp.size() > 0) { // has variant level 2
+                if (productVariantCombinationViewModel.getOpt().size() < 2) {
+                    // but the model is less than 2
+                    return;
+                }
+            } else { // no variant level 2
+                if (productVariantCombinationViewModel.getOpt().size() >= 2) {
+                    // but the model has 2 option
+                    return;
+                }
+            }
+
+            if (level1IdOrPvo == productVariantCombinationViewModel.getOpt().get(0)) {
 
                 // add the string name to the model
                 // example: from "opt": [23495,23497] to [Level 1 = "Merah"; Level 2 = "XL"]
@@ -52,13 +69,23 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
             }
         } else { // do not have the List of integer, so we use the string value instead.
             if (productVariantCombinationViewModel.getLevel1String().equalsIgnoreCase(productVariantOptionChildLv1.getValue())) {
+                // with exception the option is not correct, do not add it.
+                if (productVariantOptionChildLv2LookUp != null && productVariantOptionChildLv2LookUp.size() > 0) { //has option level 2
+                    if (TextUtils.isEmpty(productVariantCombinationViewModel.getLevel2String())) { // but no level 2 in model
+                        return;
+                    }
+                } else { // has no option level 2
+                    if (!TextUtils.isEmpty(productVariantCombinationViewModel.getLevel2String())) { // but has level 2 in model
+                        return;
+                    }
+                }
                 this.productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
             }
         }
     }
 
-    public void addCombinationModel(@Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp){
-        if (productVariantOptionChildLv2LookUp == null || productVariantOptionChildLv2LookUp.size() == 0){
+    public void addCombinationModel(@Nullable List<ProductVariantOptionChild> productVariantOptionChildLv2LookUp) {
+        if (productVariantOptionChildLv2LookUp == null || productVariantOptionChildLv2LookUp.size() == 0) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel = new ProductVariantCombinationViewModel(
                     false,
                     0,
@@ -66,13 +93,13 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
                     "",
                     productVariantOptionChildLv1.getValue(),
                     ""
-                    );
+            );
             productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
             return;
         }
         for (int j = 0, sizej = productVariantOptionChildLv2LookUp.size(); j < sizej; j++) {
             ProductVariantCombinationViewModel productVariantCombinationViewModel = new ProductVariantCombinationViewModel(
-                false,
+                    false,
                     0,
                     0,
                     "",
@@ -83,14 +110,14 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
         }
     }
 
-    public boolean haslevel2(){
+    public boolean haslevel2() {
         if (productVariantCombinationViewModelList == null || productVariantCombinationViewModelList.size() == 0) {
             return false;
         }
         return !TextUtils.isEmpty(productVariantCombinationViewModelList.get(0).getLevel2String());
     }
 
-    public boolean has1LevelOnly(){
+    public boolean has1LevelOnly() {
         return (productVariantCombinationViewModelList != null && productVariantCombinationViewModelList.size() == 1 &&
                 TextUtils.isEmpty(productVariantCombinationViewModelList.get(0).getLevel2String()));
     }
@@ -121,7 +148,7 @@ public class ProductVariantDashboardViewModel implements ItemType, Parcelable {
         String lvl1String = productVariantCombinationViewModel.getLevel1String();
         String lvl2String = productVariantCombinationViewModel.getLevel2String();
         int removedIndex = removeSelectedVariantFor(lvl1String, lvl2String);
-        if (removedIndex > - 1) {
+        if (removedIndex > -1) {
             productVariantCombinationViewModelList.add(removedIndex, productVariantCombinationViewModel);
         } else {
             productVariantCombinationViewModelList.add(productVariantCombinationViewModel);

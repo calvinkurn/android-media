@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 
@@ -38,4 +39,10 @@ public class ProductDraftAddFragment extends BaseProductDraftAddEditFragment<Pro
                 .inject(this);
     }
 
+    @Override
+    public void onSuccessLoadProduct(ProductViewModel model) {
+        // bug fix when instagram draft from old version that does not have name editable attribute.
+        model.setProductNameEditable(true);
+        super.onSuccessLoadProduct(model);
+    }
 }
