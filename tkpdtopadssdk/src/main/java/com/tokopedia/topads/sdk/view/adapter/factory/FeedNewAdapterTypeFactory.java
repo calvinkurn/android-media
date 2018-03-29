@@ -48,10 +48,10 @@ public class FeedNewAdapterTypeFactory implements FeedNewTypeFactory {
     @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
-        if (viewType == ShopFeedNewViewHolder.LAYOUT) {
-            holder = new ShopFeedNewViewHolder(view, imageLoader, itemClickListener);
-        } else if (viewType == ProductFeedNewViewHolder.LAYOUT) {
+        if (viewType == ProductFeedNewViewHolder.LAYOUT) {
             holder = new ProductFeedNewViewHolder(view, imageLoader, itemClickListener);
+        } else if (viewType == ShopFeedNewViewHolder.LAYOUT) {
+            holder = new ShopFeedNewViewHolder(view, imageLoader, itemClickListener);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

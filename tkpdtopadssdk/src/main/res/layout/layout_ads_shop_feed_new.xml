@@ -71,7 +71,7 @@
                 tools:text="kacamata kual kacamata kual kacamata kual " />
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/favorite_button"
             android:layout_width="80dp"
             android:layout_height="24dp"
@@ -85,6 +85,7 @@
             android:textStyle="normal"
             android:gravity="center_horizontal"
             android:textSize="@dimen/font_very_small"
+            app:drawableLeftCompat="@drawable/ic_add_white_24px"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
