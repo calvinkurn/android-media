@@ -2,6 +2,7 @@ package com.tokopedia.gamification.floating.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -16,12 +17,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.gamification.R;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.EggGamificationActivity;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
+import com.tokopedia.gamification.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -33,16 +33,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
+    public static final String COORD_EGG_PREF = "_egg.pref";
+
+    private View vgRoot;
     private View vgFloatingEgg;
     private ImageView ivFloatingEgg;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
-    private boolean isDraggable;
-    private View vgRoot;
+
     private float eggMarginRight;
     private float eggMarginBottom;
-    private int x;
-    private int y;
+    private boolean isDraggable;
+    private int xEgg;
+    private int yEgg;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -91,12 +94,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initEggCoordinate();
+    }
+
+    private void initEggCoordinate(){
         if (eggMarginRight != 0 && eggMarginBottom != 0) {
             int bottomPx = 0;
             int rightPx = 0;
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
             if (isDraggable && hasCoordPreference()) {
-                layoutParams.setMargins(x, y, 0, 0);
+                layoutParams.setMargins(xEgg, yEgg, 0, 0);
             } else {
                 layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
                 Resources r = getResources();
@@ -110,9 +117,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     private boolean hasCoordPreference() {
         SharedPreferences sharedPreferences = getSharedPref();
-        x = sharedPreferences.getInt(COORD_X, -1);
-        y = sharedPreferences.getInt(COORD_Y, -1);
-        return x != -1 && y != -1;
+        xEgg = sharedPreferences.getInt(COORD_X, -1);
+        yEgg = sharedPreferences.getInt(COORD_Y, -1);
+        return xEgg != -1 && yEgg != -1;
     }
 
     private void saveCoordPreference() {
@@ -124,7 +131,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
 
     private SharedPreferences getSharedPref(){
         return getContext().getSharedPreferences(
-                getActivity().getClass().getSimpleName() + "_egg.pref"
+                getActivity().getClass().getSimpleName() + COORD_EGG_PREF
                 , MODE_PRIVATE);
     }
 
@@ -164,7 +171,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Test", Toast.LENGTH_LONG).show();
+                // TODO will point to which activity or page based on applink/url
+                Intent intent = new Intent(getContext(), EggGamificationActivity.class);
+                startActivity(intent);
             }
         });
 
