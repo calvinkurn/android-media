@@ -24,6 +24,7 @@ public class FlightCancellationViewModel implements Parcelable,
 
     protected FlightCancellationViewModel(Parcel in) {
         flightCancellationJourney = in.readParcelable(FlightCancellationJourney.class.getClassLoader());
+        passengerViewModelList = in.createTypedArrayList(FlightCancellationPassengerViewModel.CREATOR);
     }
 
     public static final Creator<FlightCancellationViewModel> CREATOR = new Creator<FlightCancellationViewModel>() {
@@ -52,6 +53,7 @@ public class FlightCancellationViewModel implements Parcelable,
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(flightCancellationJourney, flags);
+        dest.writeTypedList(passengerViewModelList);
     }
 
     public FlightCancellationJourney getFlightCancellationJourney() {
