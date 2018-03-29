@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.inboxchat.domain.usecase;
 
 import com.tokopedia.inbox.inboxchat.data.mapper.SetChatRatingMapper;
-import com.tokopedia.inbox.inboxchat.data.network.ChatRatingApi;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
 import com.tokopedia.inbox.inboxchat.data.pojo.SetChatRatingPojo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -21,11 +21,11 @@ public class SetChatRatingUseCase extends UseCase<SetChatRatingPojo>{
     public static final String PARAM_TIMESTAMP = "timestamp";
     public static final String PARAM_RATING = "rating";
 
-    private final ChatRatingApi chatRatingApi;
+    private final ChatBotApi chatRatingApi;
     private final SetChatRatingMapper setChatRatingMapper;
 
     @Inject
-    public SetChatRatingUseCase(ChatRatingApi chatRatingApi,
+    public SetChatRatingUseCase(ChatBotApi chatRatingApi,
                                 SetChatRatingMapper setChatRatingMapper){
         this.chatRatingApi = chatRatingApi;
         this.setChatRatingMapper = setChatRatingMapper;

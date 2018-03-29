@@ -25,7 +25,8 @@ import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SearchChatMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
-import com.tokopedia.inbox.inboxchat.data.network.ChatRatingApi;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotApi;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
@@ -356,14 +357,14 @@ public class InboxChatModule {
     @Provides
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder){
-        return retrofitBuilder.baseUrl("https://private-anon-a01db28602-chatbot17.apiary-mock.com/")
+        return retrofitBuilder.baseUrl(ChatBotUrl.BASE_URL)
                 .client(okHttpClient)
                 .build();
     }
 
     @InboxChatScope
     @Provides
-    ChatRatingApi provideChatRatingApi(@InboxQualifier Retrofit retrofit){
-        return retrofit.create(ChatRatingApi.class);
+    ChatBotApi provideChatRatingApi(@InboxQualifier Retrofit retrofit){
+        return retrofit.create(ChatBotApi.class);
     }
 }

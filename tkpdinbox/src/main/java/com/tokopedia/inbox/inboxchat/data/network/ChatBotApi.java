@@ -13,8 +13,11 @@ import rx.Observable;
  * @author by alvinatin on 27/03/18.
  */
 
-public interface ChatRatingApi {
-    @POST("/post-rating")
+public interface ChatBotApi {
+
+    String PATH_SET_RATING = "/cs/chatbot/post-rating";
+
+    @POST(PATH_SET_RATING)
     @Headers({"Content-Type: application/json"})
     Observable<Response<SetChatRatingPojo>>
     setChatRating(@Body RequestParams requestParams);

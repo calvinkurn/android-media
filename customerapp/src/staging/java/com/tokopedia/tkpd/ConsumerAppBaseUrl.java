@@ -44,4 +44,5 @@ public class ConsumerAppBaseUrl {
     public static final String TOKO_CAMPAIGN_URL = "https://booking-staging.tokopedia.com/trigger/v1/api/";
     public static final String HOME_DATA_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String TOPPROFILE_DOMAIN = "https://18-feature-m-staging.tokopedia.com/graphql/";
+    public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
 }
