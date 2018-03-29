@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
@@ -55,6 +56,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     private boolean isDraggable;
     private int xEgg;
     private int yEgg;
+
+    private CountDownTimer countDownTimer;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -169,7 +172,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
     @Override
     public void onPause() {
         super.onPause();
-        // TODO reset the timer if any
+        stopCountdownTimer();
         // TODO cancel the load data of presenter
     }
 
@@ -186,8 +189,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         String tokenUnit = "buah";
         //String pageUrl = "http://tokopedia.com";
         //String appLink = "tokopedia://";
-        long timeRemainingSeconds = 61;
-        String timeRemainingSecondsString = "00:00:01";
+        long timeRemainingSeconds = 10;
         boolean isShowTime = true;
         String imageUrl = "https://user-images.githubusercontent.com/13778932/38075015-049430aa-335b-11e8-822e-ca662dc45b7f.png";
 
@@ -223,17 +225,55 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment {
         ImageHandler.LoadImage(ivFloatingEgg, imageUrl);
         tvFloatingCounter.setText(sumTokenString);
         if (isShowTime) {
-            tvFloatingTimer.setText(timeRemainingSecondsString);
+            setUIFloatingTimer(timeRemainingSeconds);
             tvFloatingTimer.setVisibility(View.VISIBLE);
         } else {
             tvFloatingTimer.setVisibility(View.GONE);
         }
 
         if (timeRemainingSeconds > 0) {
-            // TODO run the timer here
+            startCountdownTimer(timeRemainingSeconds);
         } else {
-            // TODO stop the countdown timer if any
+            stopCountdownTimer();
+            tvFloatingTimer.setVisibility(View.GONE);
         }
+    }
+
+    private void startCountdownTimer(long timeRemainingSeconds){
+        stopCountdownTimer();
+        countDownTimer = new CountDownTimer(timeRemainingSeconds * 1000L, 1000L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long ms = millisUntilFinished / 1000L;
+                if (ms <= 0) {
+                    vgFloatingEgg.setVisibility(View.GONE);
+                    loadEggData();
+                } else {
+                    setUIFloatingTimer(ms);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
+    }
+
+    private void stopCountdownTimer(){
+        if (countDownTimer!= null) {
+            countDownTimer.cancel();
+        }
+    }
+
+    private void setUIFloatingTimer(long timeRemainingSeconds) {
+        int seconds = (int)timeRemainingSeconds;
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
+        minutes = minutes % 60;
+        seconds = seconds % 60;
+        tvFloatingTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
     }
 
     private void animateToLeftOrRightBound(){
