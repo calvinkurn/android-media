@@ -28,75 +28,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
-        android:id="@+id/background_view_reward"
+    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetRemainingToken
+        android:id="@+id/widget_remaining_token_view"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.gamification.cracktoken.presentation.compoundview.WidgetCrackResult
+        android:id="@+id/widget_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <LinearLayout
-        android:id="@+id/container_text_reward"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:layout_marginBottom="@dimen/margin_bottom_container_text_reward"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_reward_label"
-            android:text="Selamat anda mendapatkan"
-            android:textColor="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+50 Points"
-            android:textColor="#ffdc00"
-            android:textSize="34sp" />
-
-        <Button
-            android:id="@+id/button_check_reward"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cek dan Gunakan Hadiah Anda" />
-
-    </LinearLayout>
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image_bg_reward"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/bg_light_reward"
-        android:visibility="gone"
-        tools:visibility="visible"/>
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/image_reward"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/coupon"
-        android:visibility="gone"
-        tools:visibility="visible"/>
-
-    <!--<android.support.v7.widget.AppCompatImageView-->
-        <!--android:id="@+id/image_hand"-->
-        <!--android:src="@drawable/hand"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="80dp" />-->
 
 </RelativeLayout>
