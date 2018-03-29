@@ -113,6 +113,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 if(s.getVibrate() == 1)
                     v.vibrate(500);
                 getView().sendBroadcast(intent);
+                getView().showMessage(context.getString(R.string.shake_shake_success));
                 CampaignTracking.eventShakeShake("success",ShakeDetectManager.sTopActivity,"",s.getUrl());
 
                 //Open next activity based upon the result from server

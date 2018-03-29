@@ -65,6 +65,7 @@
     <string name="title_scan_qr">Scan Kode QR</string>
     <string name="title_dialog_wrong_scan">Oops!</string>
     <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="shake_shake_success">Berhasil shake shake</string>
     <string name="btn_dialog_wrong_scan">OK</string>
     <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
     <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>

@@ -130,6 +130,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     @Override
+    public void showMessage(String message) {
+        Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode,resultCode,data);
