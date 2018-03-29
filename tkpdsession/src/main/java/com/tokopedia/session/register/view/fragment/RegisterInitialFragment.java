@@ -333,11 +333,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             if (!item.getId().equals(PHONE_NUMBER)) {
                 String color = item.getColor();
                 int colorInt;
-                if (color == null) {
-                    colorInt = Color.parseColor(COLOR_WHITE);
-                } else {
-                    colorInt = Color.parseColor(color);
-                }
+                colorInt = Color.parseColor(COLOR_WHITE);
                 LoginTextView loginTextView = new LoginTextView(getActivity(), colorInt);
                 loginTextView.setTextRegister(item.getName());
                 loginTextView.setImage(item.getImage());
