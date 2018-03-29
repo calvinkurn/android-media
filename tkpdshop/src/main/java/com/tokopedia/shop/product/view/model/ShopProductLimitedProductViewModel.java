@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.model;
 
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 
 import java.util.List;
@@ -9,13 +10,13 @@ import java.util.List;
  */
 
 public class ShopProductLimitedProductViewModel implements ShopProductBaseViewModel {
-    private List<ShopProductViewModel> shopProductViewModelList;
+    private PagingList<ShopProductViewModel> shopProductViewModelList;
 
-    public List<ShopProductViewModel> getShopProductViewModelList() {
+    public PagingList<ShopProductViewModel> getShopProductViewModelList() {
         return shopProductViewModelList;
     }
 
-    public void setShopProductViewModelList(List<ShopProductViewModel> shopProductViewModelList) {
+    public void setShopProductViewModelList(PagingList<ShopProductViewModel> shopProductViewModelList) {
         this.shopProductViewModelList = shopProductViewModelList;
     }
 
