@@ -135,14 +135,14 @@ public class BottomSheetAdapterBuilder {
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerView.setAdapter(adapter);
         } else {
-            final int columns = mContext.getResources().getInteger(R.integer.bottomsheet_grid_columns);
+            final int columns = mContext.getResources().getInteger(R.integer.int_3);
             GridLayoutManager layoutManager = new GridLayoutManager(mContext, columns);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.post(new Runnable() {
                 @Override
                 public void run() {
                     float margin = mContext.getResources()
-                            .getDimensionPixelSize(R.dimen.bottomsheet_grid_horizontal_margin);
+                            .getDimensionPixelSize(R.dimen.dp_24);
                     adapter.setItemWidth((int) ((recyclerView.getWidth() - 2 * margin) / columns));
                     recyclerView.setAdapter(adapter);
                 }

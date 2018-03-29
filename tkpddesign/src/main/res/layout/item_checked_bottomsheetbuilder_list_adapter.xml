@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/bottomsheet_list_item_height"
+    android:layout_height="@dimen/dp_48"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottomsheet_list_item_height"
+        android:layout_height="@dimen/dp_48"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -32,7 +32,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/bottom_sheet_item_text_color"
-            android:textSize="@dimen/bottomsheet_item_textsize"
+            android:textSize="@dimen/sp_16"
             tools:text="Test 1 2 3" />
     </LinearLayout>
 

@@ -6,7 +6,7 @@
         android:id="@+id/ctv_onhold_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
+        android:layout_marginBottom="@dimen/dp_12"
         app:circle_color="@color/colorGreen"
         app:text="@string/gm_statistic_on_hold_trans_text"/>
 
@@ -14,13 +14,13 @@
         android:id="@+id/ctv_onhold_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
+        android:layout_marginBottom="@dimen/dp_12"
         app:text="@string/gm_statistic_trans_amount_text"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
+        android:layout_marginBottom="@dimen/dp_12"
         android:layout_marginLeft="16dp"
         android:background="@drawable/bg_line_separator" />
 
@@ -28,7 +28,7 @@
         android:id="@+id/ctv_res_center_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gm_unfinished_margin_top"
+        android:layout_marginBottom="@dimen/dp_12"
         app:circle_color="@color/tkpd_dark_red"
         app:text="@string/gm_statistic_trans_in_res_center_text"/>
 

@@ -132,7 +132,7 @@ public class BottomSheetMenuDialog extends BottomSheetDialog implements BottomSh
                 CoordinatorLayout.LayoutParams layoutParams
                         = (CoordinatorLayout.LayoutParams) sheet.getLayoutParams();
                 layoutParams.width = getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.bottomsheet_width);
+                        .getDimensionPixelSize(R.dimen.dp_500);
                 sheet.setLayoutParams(layoutParams);
             }
 
