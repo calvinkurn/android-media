@@ -14,8 +14,11 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.webkit.WebView;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -25,10 +28,14 @@ import com.tokopedia.sellerapp.BaseJsonFactory;
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
 import com.tokopedia.sellerapp.Utils;
 import com.tokopedia.sellerapp.WebViewIdlingResource;
+import com.tokopedia.sellerapp.activities.session.modules.TestSessionModule;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.usecase.RequestParams;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -36,6 +43,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -62,6 +75,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.sellerapp.Utils.ExtraAssertions.isVisible;
 import static com.tokopedia.sellerapp.Utils.nthChildOf;
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by normansyahputa on 3/21/18.
@@ -234,7 +250,62 @@ public class LoginActivityTest {
         // dismiss fragment or press back
         dialog.dismiss();
 
-        onView(withId(R.id.login_status)).check(matches(isDisplayed()));
+        onView(withId(R.id.login_status)).check(isVisible());
+    }
+
+    @Test
+    public void testFacebookLogin() throws Exception{
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("api_discover.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("token.json")));
+        server.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("info.json")));
+        server2.enqueue(Utils.createSuccess200Response(baseJsonFactory.convertFromAndroidResource("make_login.json")));
+
+        startLoginActivity();
+
+        Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
+        if(fragment != null && fragment.isVisible()){
+            TestSessionModule testSessionModule = new TestSessionModule();
+            ((LoginFragment)fragment).initOuterInjector(testSessionModule);
+
+            AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
+
+            ArrayList<String> declinedPermissions = new ArrayList<>();
+            declinedPermissions.add("user_mobile_phone");
+
+            final AccessToken accessToken = new AccessToken(
+                    "lalala",
+                    "126665634029576",
+                    "lalala",
+                    Collections.<String>emptyList(),
+                    declinedPermissions,
+                    accessTokenSource,
+                    new Date(),
+                    new Date()
+            );
+
+            doAnswer(new Answer() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    GetFacebookCredentialSubscriber gcmHandlerListener =
+                            (GetFacebookCredentialSubscriber) invocation.getArguments()[1];
+                    gcmHandlerListener.onSuccess(accessToken, "noiz354@gmail.com");
+                    return null;
+                }
+            }).when(testSessionModule.getGetFacebookCredentialUseCase()).execute(any(RequestParams.class), any(GetFacebookCredentialSubscriber.class));
+
+
+        }
+
+        ViewInteraction loginTextView = onView(
+                nthChildOf(
+                        withId(R.id.login_buttons_container),
+                        0));
+
+        loginTextView.perform(click());
+
+        onView(withId(R.id.login_status)).check(isVisible());
+
+
     }
 
     /**

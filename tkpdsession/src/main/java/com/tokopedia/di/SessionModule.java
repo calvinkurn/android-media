@@ -58,6 +58,7 @@ import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 
 import javax.inject.Named;
 
@@ -70,8 +71,7 @@ import dagger.Provides;
  */
 
 @Module
-public class
-SessionModule {
+public class SessionModule {
 
     public static final String HMAC_SERVICE = "HMAC_SERVICE";
     public static final String BEARER_SERVICE = "BEARER_SERVICE";
@@ -269,6 +269,16 @@ SessionModule {
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
+    }
+
+    @SessionScope
+    @Provides
+    public GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase(){
+        return provideOverridenGetFacebookCredentialUseCase();
+    }
+
+    public GetFacebookCredentialUseCase provideOverridenGetFacebookCredentialUseCase(){
+        return new GetFacebookCredentialUseCase();
     }
 
 }
