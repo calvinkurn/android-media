@@ -17,6 +17,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORY;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM;
 
@@ -56,7 +57,10 @@ public class LoyaltyViewModule {
                                         .getString(EXTRA_PLATFORM, ""),
                                 activity.getIntent()
                                         .getExtras()
-                                        .getString(EXTRA_CATEGORY, "")))
+                                        .getString(EXTRA_CATEGORY, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CART_ID, "")))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()
@@ -69,7 +73,10 @@ public class LoyaltyViewModule {
                                         .getString(EXTRA_PLATFORM, ""),
                                 activity.getIntent()
                                         .getExtras()
-                                        .getString(EXTRA_CATEGORY, "")))
+                                        .getString(EXTRA_CATEGORY, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CART_ID, "")))
                         .position(0)
                         .tabTitle("Kupon Saya")
                         .build()

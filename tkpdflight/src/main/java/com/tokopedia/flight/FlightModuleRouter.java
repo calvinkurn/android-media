@@ -3,6 +3,7 @@ package com.tokopedia.flight;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
@@ -44,4 +45,6 @@ public interface FlightModuleRouter {
     Observable<ProfileInfo> getProfile();
 
     Interceptor getChuckInterceptor();
+
+    Intent getLoyaltyWithCoupon(FragmentActivity activity, String platform, String categoryId, String cartId);
 }

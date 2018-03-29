@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -52,8 +53,10 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
     public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
     public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
+    public static final String EXTRA_CART_ID = "EXTRA_CART_ID";
     public static final String MARKETPLACE_STRING = "marketplace";
     public static final String DIGITAL_STRING = "digital";
+    public static final String FLIGHT_STRING = "flight";
     public static final String VOUCHER_CODE = "voucher_code";
     public static final String VOUCHER_MESSAGE = "voucher_message";
     public static final String VOUCHER_AMOUNT = "voucher_amount";
@@ -254,6 +257,17 @@ public class LoyaltyActivity extends BasePresenterActivity
         intent.putExtras(bundle);
         setResult(COUPON_RESULT_CODE, intent);
         finish();
+    }
+
+    public static Intent newInstanceCouponActive(FragmentActivity activity, String platform, String categoryId, String cartId) {
+        Intent intent = new Intent(activity, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CART_ID, cartId);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {

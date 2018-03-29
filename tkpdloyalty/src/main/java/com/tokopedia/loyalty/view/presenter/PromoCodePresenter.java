@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -52,6 +53,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         promoCodeInteractor.submitDigitalVoucher(voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
                 makeDigitalVoucherViewModel());
+    }
+
+    @Override
+    public void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId) {
+
     }
 
     private Subscriber<VoucherViewModel> makeVoucherViewModel() {

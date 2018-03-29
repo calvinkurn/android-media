@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.design.voucher.VoucherCartView;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -73,7 +73,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener, OnBackActionListener {
+public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
 
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
@@ -82,6 +82,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
+    private static final int REQUEST_CODE_LOYALTY = 200;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
@@ -99,7 +100,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private TextView reviewDiscountPrice;
     private AppCompatTextView reviewFinalTotalPrice;
     private Button buttonSubmit;
-    private VoucherCartView voucherCartView;
+    private VoucherCartHachikoView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
@@ -150,7 +151,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);
         reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-        voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
+        voucherCartView = (VoucherCartHachikoView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
@@ -276,6 +277,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                     }
                 }
                 break;
+            case REQUEST_CODE_LOYALTY:
+                break;
         }
     }
 
@@ -319,7 +322,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void onSuccessSubmitData() {
 
-    }
+    }/*
 
     @Override
     public void onVoucherCheckButtonClicked() {
@@ -344,6 +347,19 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void trackingErrorVoucher(String errorMsg) {
+
+    }*/
+
+    @Override
+    public void onClickUseVoucher() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter){
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(),"flight", "27", getCurrentCartData().getId());
+            startActivityForResult(intent, REQUEST_CODE_LOYALTY);
+        }
+    }
+
+    @Override
+    public void disableVoucherDisount() {
 
     }
 
