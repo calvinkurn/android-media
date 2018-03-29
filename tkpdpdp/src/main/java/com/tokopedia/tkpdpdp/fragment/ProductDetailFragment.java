@@ -51,6 +51,7 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
+import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
@@ -450,11 +451,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setWeight(weightProduct)
                         .setShopId(productData.getShopInfo().getShopId())
                         .setPrice(productData.getInfo().getProductPrice())
+                        .setShopType(generateShopType(productData.getShopInfo()))
                         .build();
                 pass.setNotes(generateVariantString());
                 if (!productData.getBreadcrumb().isEmpty()) {
                     pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
                     pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
+                    pass.setCategoryLevelName(
+                            productData.getBreadcrumb()
+                                    .get(0)
+                                    .getDepartmentIdentifier()
+                                    .replace("_", "/")
+                    );
                 }
                 onProductBuySessionLogin(pass);
             } else {
@@ -478,6 +486,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             bundle.putBoolean("login", true);
             onProductBuySessionNotLogin(bundle);
         }
+    }
+
+    private String generateShopType(ProductShopInfo productShopInfo) {
+        if (productShopInfo.getShopIsOfficial() == 1)
+            return "official_store";
+        else if(productShopInfo.getShopIsGold() == 1)
+            return "gold_merchant";
+        else return "reguler";
     }
 
     @Override
