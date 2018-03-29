@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +40,6 @@ public class PromoDetailFragment extends BaseDaggerFragment {
     private static final String ARG_EXTRA_PROMO_DATA = "promo_data";
 
     private TextView tvPromoDetailAction;
-    private CardView cvPromoDetailBottomContainer;
     private RecyclerView rvPromoDetailView;
     private LinearLayout llPromoDetailBottomLayout;
     private BottomSheetView bottomSheetInfoPromoCode;
@@ -91,7 +90,6 @@ public class PromoDetailFragment extends BaseDaggerFragment {
         View view = inflater.inflate(R.layout.fragment_promo_detail, container, false);
 
         this.tvPromoDetailAction = view.findViewById(R.id.tv_promo_detail_action);
-        this.cvPromoDetailBottomContainer = view.findViewById(R.id.cv_promo_detail_bottom_container);
         this.rvPromoDetailView = view.findViewById(R.id.rv_promo_detail_view);
         this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
 
@@ -120,13 +118,14 @@ public class PromoDetailFragment extends BaseDaggerFragment {
         this.promoDetailAdapter.setAdapterActionListener(getAdapterActionListener());
         this.promoDetailAdapter.notifyDataSetChanged();
 
-        this.cvPromoDetailBottomContainer.setVisibility(View.VISIBLE);
         this.llPromoDetailBottomLayout.setVisibility(View.GONE);
         this.tvPromoDetailAction.setText(this.promoData.getCtaText());
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(promoData.getAppLink()));
+                String uri = TextUtils.isEmpty(promoData.getAppLink()) ? promoData.getPromoLink()
+                        : promoData.getAppLink();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 startActivity(browserIntent);
             }
         });

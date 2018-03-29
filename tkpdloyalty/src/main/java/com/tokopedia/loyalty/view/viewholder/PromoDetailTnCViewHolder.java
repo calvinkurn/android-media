@@ -26,7 +26,7 @@ public class PromoDetailTnCViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(PromoDetailTncHolderData holderData) {
-        this.tvPromoDetailTnC.setText(Html.fromHtml(holderData.getTermAndConditions().get(0)));
+        this.tvPromoDetailTnC.setText(Html.fromHtml(Html.fromHtml(holderData.getTermAndConditions().get(0)).toString()));
         this.tvPromoDetailTnC.setMovementMethod(LinkMovementMethod.getInstance());
     }
 

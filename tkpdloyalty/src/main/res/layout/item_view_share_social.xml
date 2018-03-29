@@ -10,7 +10,7 @@
         android:id="@+id/ib_promo_detail_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="12dp"
         android:background="@color/transparent"
         app:srcCompat="@drawable/ic_share_message" />
 
